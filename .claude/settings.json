@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(WEB_PORT=3001 timeout 5 npx tsx src/web.ts)",
+      "Bash(WEB_PORT=3002 timeout 5 npx tsx src/web.ts)"
+    ]
+  }
+}
