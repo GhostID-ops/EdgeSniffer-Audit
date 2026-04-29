@@ -1,5 +1,6 @@
 import { startBot, stopBot, printPnlReport } from "./botService.js";
 import { registerKeyboardShortcuts, restoreTerminal } from "./keyboard.js";
+import { startServer } from "./server.js";
 
 let shuttingDown = false;
 
@@ -20,6 +21,7 @@ process.on("SIGINT", () => shutdown("SIGINT"));
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 
 registerKeyboardShortcuts(() => shutdown("keyboard"));
+startServer();
 
 startBot().catch((err) => {
   console.error(err);

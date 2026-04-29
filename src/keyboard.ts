@@ -29,7 +29,7 @@ function printStatus(): void {
   console.log("");
   console.log("📡 Status:");
   console.log(`   Running: ${s.running ? "yes" : "no"}`);
-  console.log(`   Mode:    ${s.simulationMode ? "SIMULATION" : "LIVE"}`);
+  console.log(`   Mode:    ${s.tradingMode}`);
   console.log(`   Wallet:  ${s.ourWallet ?? "—"}`);
   console.log(`   Tracked: ${s.trackedWallets.length} wallet(s)`);
   console.log(`   Balance: ${s.lastBalanceSol?.toFixed(4) ?? "—"} SOL`);
@@ -42,13 +42,17 @@ function printStatus(): void {
 
 export function registerKeyboardShortcuts(onQuit: () => void): void {
   if (!process.stdin.isTTY) {
-    return; // not a terminal (piped or detached) — skip silently
+    console.warn("Keyboard shortcuts disabled: stdin is not an interactive terminal.");
+    return;
   }
 
   const shortcuts: Shortcut[] = [
     { key: "1", label: "Sell Trade #1 position", action: () => void sellPositionByIndex(1) },
     { key: "2", label: "Sell Trade #2 position", action: () => void sellPositionByIndex(2) },
-    { key: "a", label: "Sell ALL open positions (sim/live)", action: () => void sellAllPositions() },
+    { key: "a", label: "Sell ALL open positions (sim/live)", action: () => {
+      console.log("Manual sell-all requested from keyboard.");
+      void sellAllPositions();
+    } },
     { key: "e", label: "Close all open positions (sim) at market & report", action: () => void closeAllOpenPositionsSimulated() },
     { key: "r", label: "Print PnL report", action: printPnlReport },
     { key: "x", label: "Clear all positions & history", action: resetTradingState },
@@ -66,24 +70,33 @@ export function registerKeyboardShortcuts(onQuit: () => void): void {
 
   printHelp(shortcuts);
 
+  const actions = new Map<string, () => void>([
+    ["1", () => void sellPositionByIndex(1)],
+    ["2", () => void sellPositionByIndex(2)],
+    ["a", () => {
+      console.log("Manual sell-all requested from keyboard.");
+      void sellAllPositions();
+    }],
+    ["e", () => void closeAllOpenPositionsSimulated()],
+    ["r", printPnlReport],
+    ["x", resetTradingState],
+    ["s", printStatus],
+    ["m", toggleMirrorSells],
+    ["b", toggleBuyOncePerToken],
+    ["c", toggleShowMarketCap],
+    ["h", () => printHelp(shortcuts)],
+    ["?", () => printHelp(shortcuts)],
+  ]);
+
   process.stdin.on("data", (raw: string) => {
-    const key = raw.toLowerCase();
-    // Ctrl+C is \u0003 in raw mode (doesn't fire SIGINT).
-    if (key === "\u0003" || key === "q") {
-      onQuit();
-      return;
+    for (const key of raw.toLowerCase()) {
+      // Ctrl+C is \u0003 in raw mode (doesn't fire SIGINT).
+      if (key === "\u0003" || key === "q") {
+        onQuit();
+        return;
+      }
+      actions.get(key)?.();
     }
-    if (key === "1") void sellPositionByIndex(1);
-    else if (key === "2") void sellPositionByIndex(2);
-    else if (key === "a") void sellAllPositions();
-    else if (key === "e") void closeAllOpenPositionsSimulated();
-    else if (key === "r") printPnlReport();
-    else if (key === "x") resetTradingState();
-    else if (key === "s") printStatus();
-    else if (key === "m") toggleMirrorSells();
-    else if (key === "b") toggleBuyOncePerToken();
-    else if (key === "c") toggleShowMarketCap();
-    else if (key === "h" || key === "?") printHelp(shortcuts);
   });
 }
 
@@ -98,4 +111,3 @@ export function restoreTerminal(): void {
     }
   }
 }
-

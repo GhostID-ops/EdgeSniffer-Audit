@@ -1,4 +1,4 @@
-import { TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, simulationMode } from "./config.js";
+import { TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, tradingMode } from "./config.js";
 
 export interface TelegramMessage {
   text: string;
@@ -12,6 +12,7 @@ export interface TradeNotification {
   solAmount: string;
   marketCap?: string;
   isSimulated: boolean;
+  isDryRun?: boolean;
   wallet: string;
   tokenAddress: string;
   pnl?: string;
@@ -31,6 +32,17 @@ export interface PnlNotification {
   openPositions: number;
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function truncate(value: string, maxLength: number): string {
+  return value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
+}
+
 class TelegramService {
   private botToken: string;
   private chatId: string;
@@ -40,11 +52,11 @@ class TelegramService {
     this.botToken = TELEGRAM_BOT_TOKEN || "";
     this.chatId = TELEGRAM_CHAT_ID || "";
     this.enabled = !!(this.botToken && this.chatId);
-    
+
     if (!this.enabled) {
-      console.log("📱 Telegram notifications disabled (missing bot token or chat ID)");
+      console.log("Telegram notifications disabled (missing bot token or chat ID)");
     } else {
-      console.log("📱 Telegram notifications enabled");
+      console.log("Telegram notifications enabled");
     }
   }
 
@@ -53,7 +65,7 @@ class TelegramService {
 
     try {
       const url = `https://api.telegram.org/bot${this.botToken}/sendMessage`;
-      
+
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -70,40 +82,39 @@ class TelegramService {
 
       if (!response.ok) {
         const error = await response.text();
-        console.warn(`📱 Telegram send failed: ${response.status} ${error}`);
+        console.warn(`Telegram send failed: ${response.status} ${error}`);
         return false;
       }
 
       return true;
     } catch (err) {
-      console.warn(`📱 Telegram error:`, err instanceof Error ? err.message : String(err));
+      console.warn("Telegram error:", err instanceof Error ? err.message : String(err));
       return false;
     }
   }
 
   async notifyTrade(trade: TradeNotification): Promise<boolean> {
-    const emoji = trade.isSimulated ? "🎭" : "💰";
-    const typeEmoji = trade.type === "buy" ? "🟢" : "🔴";
-    const simTag = trade.isSimulated ? " (SIM)" : "";
+    const modeTag = trade.isDryRun ? "DRY RUN" : trade.isSimulated ? "SIM" : "LIVE";
+    const simTag = trade.isDryRun ? " (DRY)" : trade.isSimulated ? " (SIM)" : "";
 
-    let message = `${emoji} ${typeEmoji} ${trade.type.toUpperCase()}${simTag}\n\n`;
-    message += `💎 Token: <code>${trade.symbol}</code>\n`;
-    message += `💰 Amount: ${trade.amount}\n`;
-    message += `🪙 SOL: ${trade.solAmount}\n`;
-    
+    let message = `${modeTag} ${trade.type.toUpperCase()}${simTag}\n\n`;
+    message += `Token: <code>${escapeHtml(trade.symbol)}</code>\n`;
+    message += `Amount: ${escapeHtml(trade.amount)}\n`;
+    message += `SOL: ${escapeHtml(trade.solAmount)}\n`;
+
     if (trade.marketCap) {
-      message += `📊 MC: ${trade.marketCap}\n`;
+      message += `MC: ${escapeHtml(trade.marketCap)}\n`;
     }
-    
-    message += `👤 Wallet: <code>${trade.wallet}</code>\n`;
-    message += `🔗 CA: <code>${trade.tokenAddress}</code>\n`;
-    
+
+    message += `Wallet: <code>${escapeHtml(trade.wallet)}</code>\n`;
+    message += `CA: <code>${escapeHtml(trade.tokenAddress)}</code>\n`;
+
     if (trade.pnl) {
-      message += `📈 PnL: ${trade.pnl}\n`;
+      message += `PnL: ${escapeHtml(trade.pnl)}\n`;
     }
-    
+
     if (trade.txSignature) {
-      message += `📝 TX: <code>${trade.txSignature}</code>\n`;
+      message += `TX: <code>${escapeHtml(trade.txSignature)}</code>\n`;
     }
 
     return this.sendMessage({ text: message, parse_mode: "HTML" });
@@ -111,58 +122,47 @@ class TelegramService {
 
   async notifyPnlReport(pnl: PnlNotification): Promise<boolean> {
     const totalPnlValue = parseFloat(pnl.totalPnl.replace(/[^0-9.-]/g, ""));
-    const pnlColor = totalPnlValue >= 0 ? "🟢" : "🔴";
+    const pnlColor = totalPnlValue >= 0 ? "PROFIT" : "LOSS";
 
-    let message = `${pnlColor} 📊 PnL REPORT\n\n`;
-    message += `📈 Total PnL: <b>${pnl.totalPnl}</b>\n`;
-    message += `💰 Realized: ${pnl.realizedPnl}\n`;
-    message += `📊 Unrealized: ${pnl.unrealizedPnl}\n\n`;
-    
-    message += `📊 Stats:\n`;
-    message += `• Total Trades: ${pnl.totalTrades}\n`;
-    message += `• Buys: ${pnl.totalBuys} | Sells: ${pnl.totalSells}\n`;
-    message += `• Win Rate: ${pnl.winRate}\n`;
-    message += `• Avg Win: ${pnl.avgWin}\n`;
-    message += `• Avg Loss: ${pnl.avgLoss}\n`;
-    message += `• Open Positions: ${pnl.openPositions}\n`;
+    let message = `${pnlColor} PnL REPORT\n\n`;
+    message += `Total PnL: <b>${escapeHtml(pnl.totalPnl)}</b>\n`;
+    message += `Realized: ${escapeHtml(pnl.realizedPnl)}\n`;
+    message += `Unrealized: ${escapeHtml(pnl.unrealizedPnl)}\n\n`;
+
+    message += `Stats:\n`;
+    message += `- Total Trades: ${pnl.totalTrades}\n`;
+    message += `- Buys: ${pnl.totalBuys} | Sells: ${pnl.totalSells}\n`;
+    message += `- Win Rate: ${escapeHtml(pnl.winRate)}\n`;
+    message += `- Avg Win: ${escapeHtml(pnl.avgWin)}\n`;
+    message += `- Avg Loss: ${escapeHtml(pnl.avgLoss)}\n`;
+    message += `- Open Positions: ${pnl.openPositions}\n`;
 
     return this.sendMessage({ text: message, parse_mode: "HTML" });
   }
 
   async notifyError(error: string, context?: string): Promise<boolean> {
-    let message = `🚨 ERROR\n\n`;
+    let message = `ERROR\n\n`;
     if (context) {
-      message += `Context: ${context}\n`;
+      message += `Context: ${escapeHtml(truncate(context, 1000))}\n`;
     }
-    message += `Error: <code>${error}</code>`;
+    message += `Error: <code>${escapeHtml(truncate(error, 2500))}</code>`;
 
     return this.sendMessage({ text: message, parse_mode: "HTML" });
   }
 
   async notifyBotStatus(status: "started" | "stopped" | "reset"): Promise<boolean> {
-    const statusEmoji = {
-      started: "🟢",
-      stopped: "🔴", 
-      reset: "🔄"
-    }[status];
-
-    const message = `${statusEmoji} Bot ${status.toUpperCase()}\n\nMode: ${simulationMode ? "SIMULATION" : "LIVE"}`;
+    const message = `Bot ${status.toUpperCase()}\n\nMode: ${tradingMode}`;
 
     return this.sendMessage({ text: message });
   }
 
   async testConnection(): Promise<boolean> {
-    if (!this.enabled) return false;
-
-    const message = "🤖 FinalBot is online and ready to trade! 🚀";
-    return this.sendMessage({ text: message });
+    return this.sendMessage({ text: "FinalBot is online and ready to trade!" });
   }
 }
 
-// Export singleton instance
 export const telegram = new TelegramService();
 
-// Helper function to format PnL for Telegram
 export function formatPnlForTelegram(pnlLamports: number): string {
   const pnlSol = pnlLamports / 1e9;
   const sign = pnlSol >= 0 ? "+" : "";

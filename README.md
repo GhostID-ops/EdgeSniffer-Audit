@@ -31,11 +31,15 @@ Optional: `SENDER_ENDPOINT`, `TIP_LAMPORTS`, `PRIORITY_FEE_MICRO_LAMPORTS`, `MIN
 
 Your SOL balance is printed at startup and again every 60 seconds while the bot runs.
 
-## Simulation mode (dry run)
+## Simulation mode
 
-Set `SIMULATION_MODE=true` or `DRY_RUN=true` in `.env` to run without sending any transactions. The bot **still tracks every tracked wallet's transactions** (same polling and swap detection as live), detects Jupiter swaps, and builds the mirror tx (quote + swap + Sender tx) but skips broadcast and confirmation. Use this to test before going live.
+Set `SIMULATION_MODE=true` in `.env` to paper trade without sending transactions. The bot **still tracks every tracked wallet's transactions** (same polling and swap detection as live), detects Jupiter swaps, gets quotes, builds the mirror tx (quote + swap + Sender tx), records simulated positions/PnL, but skips broadcast and confirmation. Use this to test strategy behavior before going live.
 
 In simulation mode you can set a **starting SOL balance** for display: set `SIMULATION_SOL_BALANCE=10` or `STARTING_SOL_BALANCE=10` (e.g. 10 SOL). The bot will show that amount as your balance instead of fetching from chain, so you can test as if you had more or less SOL.
+
+## Dry run mode
+
+Set `DRY_RUN=true` in `.env` for a lighter, safer quote-only run. Dry run still watches wallets and detects swaps, but it stops after the Jupiter quote: it does **not** request a swap transaction, build/sign a Sender transaction, broadcast, confirm, or mutate paper positions/PnL. If both `DRY_RUN=true` and `SIMULATION_MODE=true` are set, dry run takes precedence.
 
 ## Scripts
 

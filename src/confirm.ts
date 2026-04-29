@@ -3,6 +3,15 @@ import { readConnection } from "./config.js";
 const POLL_INTERVAL_MS = 1000;
 const TIMEOUT_MS = 120_000;
 
+function describeTransactionError(err: unknown): string {
+  const raw = JSON.stringify(err);
+  const match = raw.match(/"Custom":(\d+)/);
+  if (match?.[1] === "6024") {
+    return `${raw} (Jupiter InsufficientFunds: insufficient token balance, SOL for fees, or rent)`;
+  }
+  return raw;
+}
+
 /**
  * Confirm a transaction by polling getSignatureStatuses.
  * Stops on confirmed/finalized, throws on failure or timeout.
@@ -17,7 +26,7 @@ export async function confirmSignature(
     const status = result.value[0];
 
     if (status?.err) {
-      throw new Error(`Transaction failed: ${JSON.stringify(status.err)}`);
+      throw new Error(`Transaction failed: ${describeTransactionError(status.err)}`);
     }
     if (status?.confirmationStatus === "finalized") {
       return "finalized";
@@ -35,7 +44,7 @@ export async function confirmSignature(
   const finalStatus = finalResult.value[0];
 
   if (finalStatus?.err) {
-    throw new Error(`Transaction failed: ${JSON.stringify(finalStatus.err)}`);
+    throw new Error(`Transaction failed: ${describeTransactionError(finalStatus.err)}`);
   }
   if (finalStatus?.confirmationStatus === "finalized") {
     console.log("Transaction was actually finalized (late confirmation)");

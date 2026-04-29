@@ -1,0 +1,112 @@
+{
+  "generatedAt": "2026-04-28T01:39:45.610Z",
+  "assumptions": {
+    "buyTxCostSol": 0.006,
+    "sellTxCostSol": 0.0035,
+    "entryPenaltyBps": 150,
+    "exitPenaltyBps": 150,
+    "sourceSizeMultiplier": 1,
+    "maxBuySol": 3
+  },
+  "campaigns": 0,
+  "policies": [
+    {
+      "name": "copy_all",
+      "description": "Paper copy every source buy and mirror source sell fractions.",
+      "campaignsTouched": 0,
+      "buysCopied": 0,
+      "sellsCopied": 0,
+      "spent": 0,
+      "proceeds": 0,
+      "costs": 0,
+      "realizedNet": 0,
+      "roi": 0,
+      "winRate": 0,
+      "openPositions": 0
+    },
+    {
+      "name": "conviction_buys_only",
+      "description": "Copy only source buy legs of at least 3 SOL.",
+      "campaignsTouched": 0,
+      "buysCopied": 0,
+      "sellsCopied": 0,
+      "spent": 0,
+      "proceeds": 0,
+      "costs": 0,
+      "realizedNet": 0,
+      "roi": 0,
+      "winRate": 0,
+      "openPositions": 0
+    },
+    {
+      "name": "first_wave_approx_only",
+      "description": "Copy only if mint-address transaction rank approximation is <= 2.",
+      "campaignsTouched": 0,
+      "buysCopied": 0,
+      "sellsCopied": 0,
+      "spent": 0,
+      "proceeds": 0,
+      "costs": 0,
+      "realizedNet": 0,
+      "roi": 0,
+      "winRate": 0,
+      "openPositions": 0
+    },
+    {
+      "name": "first_wave_conviction_approx",
+      "description": "Copy 3+ SOL buy legs only when approximate rank is <= 2.",
+      "campaignsTouched": 0,
+      "buysCopied": 0,
+      "sellsCopied": 0,
+      "spent": 0,
+      "proceeds": 0,
+      "costs": 0,
+      "realizedNet": 0,
+      "roi": 0,
+      "winRate": 0,
+      "openPositions": 0
+    },
+    {
+      "name": "skip_crowded_rank_3_25_approx",
+      "description": "Copy all ranked campaigns except approximate rank 3-25. Unknown rank is skipped.",
+      "campaignsTouched": 0,
+      "buysCopied": 0,
+      "sellsCopied": 0,
+      "spent": 0,
+      "proceeds": 0,
+      "costs": 0,
+      "realizedNet": 0,
+      "roi": 0,
+      "winRate": 0,
+      "openPositions": 0
+    },
+    {
+      "name": "fast_second_buy_confirm",
+      "description": "Wait for a second buy within 10 seconds, then copy from second buy onward.",
+      "campaignsTouched": 0,
+      "buysCopied": 0,
+      "sellsCopied": 0,
+      "spent": 0,
+      "proceeds": 0,
+      "costs": 0,
+      "realizedNet": 0,
+      "roi": 0,
+      "winRate": 0,
+      "openPositions": 0
+    },
+    {
+      "name": "fast_third_buy_confirm",
+      "description": "Wait for three buys within 10 seconds, then copy from third buy onward.",
+      "campaignsTouched": 0,
+      "buysCopied": 0,
+      "sellsCopied": 0,
+      "spent": 0,
+      "proceeds": 0,
+      "costs": 0,
+      "realizedNet": 0,
+      "roi": 0,
+      "winRate": 0,
+      "openPositions": 0
+    }
+  ]
+}

@@ -2,10 +2,13 @@ import { Keypair } from "@solana/web3.js";
 import {
   minBuyLamports,
   maxBuyLamports,
+  dryRunMode,
   simulationMode,
   fastMode,
   mirrorSlippageBps,
   mirrorRetrySlippageBps,
+  copySellFullBalance,
+  minSellOutputLamports,
 } from "./config.js";
 import { getQuote, getSwap } from "./jupiter.js";
 import {
@@ -18,11 +21,21 @@ import { getTokenMeta, WRAPPED_SOL_MINT, type TokenMeta } from "./tokenRegistry.
 import { getPosition } from "./pnl.js";
 import type { DetectedSwap } from "./types.js";
 
+const COPY_SELL_BALANCE_BUFFER_BPS = 20;
+
+function bufferedSellAmount(heldRaw: number): number {
+  return Math.max(
+    1,
+    Math.floor((heldRaw * (10_000 - COPY_SELL_BALANCE_BUFFER_BPS)) / 10_000)
+  );
+}
+
 export type Side = "buy" | "sell" | "swap";
 
 export type MirrorResult = {
   signature: string;
   isSimulated: boolean;
+  isDryRun?: boolean;
   side: Side;
   input: { meta: TokenMeta; amountRaw: number };
   output: { meta: TokenMeta; amountRaw: number };
@@ -48,6 +61,22 @@ export class AlreadyBoughtError extends Error {
   }
 }
 
+export class DustSellError extends Error {
+  readonly mint: string;
+  readonly outLamports: number;
+  readonly minLamports: number;
+
+  constructor(mint: string, outLamports: number, minLamports: number) {
+    super(
+      `Skipping sell for ${mint}: quote output ${outLamports} lamports is below minimum ${minLamports} lamports`
+    );
+    this.mint = mint;
+    this.outLamports = outLamports;
+    this.minLamports = minLamports;
+    this.name = "DustSellError";
+  }
+}
+
 function classifySide(inputMint: string, outputMint: string): Side {
   if (inputMint === WRAPPED_SOL_MINT) return "buy";
   if (outputMint === WRAPPED_SOL_MINT) return "sell";
@@ -64,6 +93,32 @@ function isSlippageFailure(err: unknown): boolean {
     msg.includes("6001") ||
     msg.includes("SlippageToleranceExceeded") ||
     msg.toLowerCase().includes("slippage")
+  );
+}
+
+function isSellRetryableFailure(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return (
+    msg.includes("6024") ||
+    msg.includes("InsufficientFunds") ||
+    msg.toLowerCase().includes("insufficient funds") ||
+    msg.toLowerCase().includes("insufficient liquidity")
+  );
+}
+
+function isTransientUpstreamFailure(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  const lower = msg.toLowerCase();
+  return (
+    lower.includes("returned non-json") ||
+    lower.includes("returned invalid json") ||
+    lower.includes("fetch failed") ||
+    lower.includes("network") ||
+    msg.includes("HTTP 429") ||
+    msg.includes("HTTP 500") ||
+    msg.includes("HTTP 502") ||
+    msg.includes("HTTP 503") ||
+    msg.includes("HTTP 504")
   );
 }
 
@@ -92,18 +147,55 @@ async function getMirrorAmount(
   }
 
   if (side === "sell") {
-    const amountRaw = simulationMode
-      ? getPosition(swap.inputMint)?.heldRaw ?? 0
-      : await getTokenBalance(keypair.publicKey, swap.inputMint);
+    const trackedHeldRaw = getPosition(swap.inputMint)?.heldRaw ?? 0;
+    const heldRaw = simulationMode || dryRunMode
+      ? trackedHeldRaw
+      : await getLiveSellAmount(keypair, swap.inputMint, trackedHeldRaw);
+    const amountRaw = copySellFullBalance ? heldRaw : bufferedSellAmount(heldRaw);
 
-    if (amountRaw <= 0) {
+    if (heldRaw <= 0 || amountRaw <= 0) {
       throw new NoPositionError(swap.inputMint);
+    }
+
+    if (!copySellFullBalance && amountRaw < heldRaw) {
+      console.log(
+        `Copy sell amount buffered: selling ${(100 - COPY_SELL_BALANCE_BUFFER_BPS / 100).toFixed(2)}% of live balance to avoid dust/rent mismatches.`
+      );
+    } else if (copySellFullBalance) {
+      console.log(
+        "Copy sell full-balance mode: trying 100% first; buffered retries will be used if preflight fails."
+      );
     }
 
     return amountRaw;
   }
 
   throw new Error(`Unsupported token-to-token swap (input ${swap.inputMint})`);
+}
+
+async function getLiveSellAmount(
+  keypair: Keypair,
+  mint: string,
+  trackedHeldRaw: number
+): Promise<number> {
+  try {
+    const liveHeldRaw = await getTokenBalance(keypair.publicKey, mint);
+    if (liveHeldRaw > 0) return liveHeldRaw;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(
+      `Live token balance lookup failed for ${mint.slice(0, 8)}...; ${
+        trackedHeldRaw > 0 ? "falling back to tracked position" : "no tracked fallback available"
+      }: ${msg}`
+    );
+  }
+
+  if (trackedHeldRaw > 0) {
+    console.warn(
+      `Live token balance lookup returned 0 for ${mint.slice(0, 8)}...; attempting tracked position amount.`
+    );
+  }
+  return trackedHeldRaw;
 }
 
 export async function mirrorSwap(
@@ -132,6 +224,21 @@ export async function mirrorSwap(
       });
     }
   }
+  if (side === "sell" && amountRaw > 1) {
+    const scales = copySellFullBalance
+      ? [(10_000 - COPY_SELL_BALANCE_BUFFER_BPS) / 10_000, 0.99, 0.95]
+      : [0.99, 0.95];
+    for (const scale of scales) {
+      const reducedAmountRaw = Math.max(1, Math.floor(amountRaw * scale));
+      if (reducedAmountRaw < amountRaw) {
+        attempts.push({
+          amountRaw: reducedAmountRaw,
+          slippageBps: mirrorRetrySlippageBps,
+          reason: `reduced sell size ${(scale * 100).toFixed(0)}% + ${(mirrorRetrySlippageBps / 100).toFixed(2)}% slippage`,
+        });
+      }
+    }
+  }
   let lastSlippageError: unknown;
 
   for (let i = 0; i < attempts.length; i++) {
@@ -139,8 +246,12 @@ export async function mirrorSwap(
     const isLastAttempt = i === attempts.length - 1;
 
     try {
+      const amountLabel =
+        side === "buy"
+          ? `${attempt.amountRaw / 1_000_000_000} SOL`
+          : `${attempt.amountRaw} raw tokens`;
       console.log(
-        `Getting quote for ${attempt.amountRaw / 1_000_000_000} SOL (${attempt.reason})...`
+        `Getting quote for ${amountLabel} (${attempt.reason})...`
       );
       const quote = await getQuote(
         swap.inputMint,
@@ -152,6 +263,28 @@ export async function mirrorSwap(
 
       const inAmountRaw = parseInt(quote.inAmount ?? String(attempt.amountRaw), 10);
       const outAmountRaw = parseInt(quote.outAmount ?? "0", 10);
+      if (side === "sell" && minSellOutputLamports > 0 && outAmountRaw < minSellOutputLamports) {
+        throw new DustSellError(swap.inputMint, outAmountRaw, minSellOutputLamports);
+      }
+
+      if (dryRunMode) {
+        console.log("Dry run mode - quote received; skipping swap response, transaction creation, broadcast, and confirmation.");
+        console.log("Getting token metadata...");
+        const [inputMeta, outputMeta] = await Promise.all([
+          getTokenMeta(swap.inputMint),
+          getTokenMeta(swap.outputMint),
+        ]);
+        console.log("Token metadata received");
+        return {
+          signature: `dry-${swap.signature}-${Date.now()}`,
+          isSimulated: true,
+          isDryRun: true,
+          side,
+          input: { meta: inputMeta, amountRaw: inAmountRaw },
+          output: { meta: outputMeta, amountRaw: outAmountRaw },
+          priceImpactPct: quote.priceImpactPct,
+        };
+      }
 
       console.log("Getting swap response...");
       const swapResponse = await getSwap(quote, keypair.publicKey.toBase58());
@@ -211,12 +344,16 @@ export async function mirrorSwap(
         priceImpactPct: quote.priceImpactPct,
       };
     } catch (err) {
-      if (!isSlippageFailure(err) || isLastAttempt) {
+      const retryable =
+        isSlippageFailure(err) ||
+        isTransientUpstreamFailure(err) ||
+        (side === "sell" && isSellRetryableFailure(err));
+      if (!retryable || isLastAttempt) {
         throw err;
       }
       lastSlippageError = err;
       console.warn(
-        `Slippage exceeded on ${attempt.reason}; retrying with ${attempts[i + 1]!.reason}...`
+        `Swap failed on ${attempt.reason}; retrying with ${attempts[i + 1]!.reason}...`
       );
     }
   }

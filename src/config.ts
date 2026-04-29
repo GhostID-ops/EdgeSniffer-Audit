@@ -21,6 +21,8 @@ const MIRROR_RETRY_SLIPPAGE_BPS = parseInt(
   process.env.MIRROR_RETRY_SLIPPAGE_BPS ?? "1500",
   10
 ) as number;
+const COPY_SELL_FULL_BALANCE_RAW = (process.env.COPY_SELL_FULL_BALANCE ?? "true").toLowerCase();
+const MIN_SELL_OUTPUT_SOL = parseFloat(process.env.MIN_SELL_OUTPUT_SOL ?? "0");
 
 /** Tracked wallet addresses (comma-separated in TRACKED_WALLETS). */
 const TRACKED_WALLETS_RAW = process.env.TRACKED_WALLETS ?? "";
@@ -108,6 +110,18 @@ export const mirrorSlippageBps = MIRROR_SLIPPAGE_BPS;
 /** One-time retry slippage for Jupiter 6001 slippage failures. 1500 = 15%. */
 export const mirrorRetrySlippageBps = MIRROR_RETRY_SLIPPAGE_BPS;
 
+/** When true, copy-sells try 100% of live token balance first, then fall back to buffered sizes. */
+export const copySellFullBalance =
+  COPY_SELL_FULL_BALANCE_RAW !== "false" &&
+  COPY_SELL_FULL_BALANCE_RAW !== "0" &&
+  COPY_SELL_FULL_BALANCE_RAW !== "no";
+
+/** Skip copy-sells whose Jupiter quote would receive less than this many SOL. */
+export const minSellOutputLamports = Math.max(
+  0,
+  Math.round((Number.isFinite(MIN_SELL_OUTPUT_SOL) ? MIN_SELL_OUTPUT_SOL : 0) * LAMPORTS_PER_SOL)
+);
+
 /** Compute Unit Limit override. Set 0 to keep Jupiter's dynamic estimate. */
 const COMPUTE_UNIT_LIMIT = parseInt(process.env.COMPUTE_UNIT_LIMIT ?? "1400000", 10);
 export const computeUnitLimit = COMPUTE_UNIT_LIMIT;
@@ -129,13 +143,23 @@ export const pollIntervalMs = Math.max(
   parseInt(process.env.POLL_INTERVAL_MS ?? "2500", 10)
 );
 
-/** Simulation/dry-run mode: no transactions sent, only log what would be done. Set SIMULATION_MODE=true or DRY_RUN=true. */
-const SIMULATION_RAW =
-  process.env.SIMULATION_MODE ?? process.env.DRY_RUN ?? "";
+function envBool(value: string | undefined): boolean {
+  const raw = (value ?? "").toLowerCase();
+  return raw === "true" || raw === "1" || raw === "yes";
+}
+
+/** Dry-run mode: quote only; do not build, broadcast, confirm, or record paper positions. */
+export const dryRunMode = envBool(process.env.DRY_RUN);
+
+/** Simulation mode: paper trade; build the swap transaction but skip broadcast/confirmation. */
 export const simulationMode =
-  SIMULATION_RAW === "true" ||
-  SIMULATION_RAW === "1" ||
-  SIMULATION_RAW.toLowerCase() === "yes";
+  !dryRunMode && envBool(process.env.SIMULATION_MODE);
+
+export const tradingMode = dryRunMode
+  ? "DRY_RUN"
+  : simulationMode
+  ? "SIMULATION"
+  : "LIVE";
 
 /** In simulation mode, use this as your starting SOL balance for display (e.g. 10 = 10 SOL). Set SIMULATION_SOL_BALANCE or STARTING_SOL_BALANCE. */
 const SIM_SOL_RAW =

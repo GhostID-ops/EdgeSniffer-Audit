@@ -8,12 +8,16 @@
     "bot": "tsx src/copytrade.ts",
     "dev": "tsx src/copytrade.ts",
     "web": "tsx src/web.ts",
+    "investigate:signal": "npm run build && node dist/signalInvestigator.js",
+    "backtest:strategy": "npm run build && node dist/strategyBacktester.js",
+    "shadow:live": "npm run build && node dist/liveShadowRecorder.js",
     "swap": "tsx src/swap.ts"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.0",
     "bs58": "^6.0.0",
-    "dotenv": "^16.4.0"
+    "dotenv": "^16.4.0",
+    "lightweight-charts": "^5.2.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

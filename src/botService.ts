@@ -3,6 +3,7 @@ import bs58 from "bs58";
 import {
   getPrivateKeyBase58,
   trackedWallets,
+  dryRunMode,
   simulationMode,
   simulationSolBalance,
   minBuyLamports,
@@ -12,6 +13,7 @@ import {
   mirrorSells,
   buyOncePerToken,
   showMarketCap,
+  tradingMode,
 } from "./config.js";
 import {
   getNewSwaps,
@@ -22,6 +24,7 @@ import {
   mirrorSwap,
   NoPositionError,
   AlreadyBoughtError,
+  DustSellError,
   type Side,
   type MirrorResult,
 } from "./mirror.js";
@@ -46,6 +49,7 @@ import {
   recordSell,
   getPositions,
   getPosition,
+  markPositionClosedAsDust,
   getTotals,
   resetPositions,
   type PositionSnapshot,
@@ -55,6 +59,7 @@ import {
 const WARM_INTERVAL_MS = 30_000;
 const BALANCE_LOG_INTERVAL_MS = 60_000;
 const MAX_RECENT_SWAPS = 50;
+const MANUAL_SELL_BALANCE_BUFFER_BPS = 5;
 
 type LegView = {
   mint: string;
@@ -73,6 +78,7 @@ export type MirrorRecord = {
   input: LegView;
   output: LegView;
   isSimulated: boolean;
+  isDryRun?: boolean;
   mirrorSignature?: string;
   marketCapUsd?: number | null;
   error?: string;
@@ -84,6 +90,8 @@ export type BotState = {
   ourWallet: string | null;
   trackedWallets: string[];
   simulationMode: boolean;
+  dryRunMode: boolean;
+  tradingMode: string;
   minBuySol: number;
   maxBuySol: number;
   pollIntervalMs: number;
@@ -97,6 +105,8 @@ export type BotState = {
 
 export const recentSwaps: MirrorRecord[] = [];
 const processedSignatures = new Set<string>();
+const buyMintsInFlight = new Set<string>();
+const boughtMintsThisSession = new Set<string>();
 let running = false;
 let startedAt: number | null = null;
 let stopRequested = false;
@@ -252,7 +262,11 @@ function logTrade(
   swap: DetectedSwap,
   marketCapUsd: number | null
 ): void {
-  const simTag = result.isSimulated ? " Simulated" : "";
+  const simTag = result.isDryRun
+    ? " Dry Run"
+    : result.isSimulated
+    ? " Simulated"
+    : "";
   const inputDisplay = legDisplay(result.input);
   const outputDisplay = legDisplay(result.output);
   const mcLine = marketCapUsd != null ? `📈 MC: ${formatMarketCap(marketCapUsd)}` : `📊 MC: Not available yet`;
@@ -260,8 +274,8 @@ function logTrade(
   const walletTag = `${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)}`;
 
   if (result.side === "buy") {
-    const pos = recordBuy(result.output.meta, result.output.amountRaw, result.input.amountRaw);
     const tokenMint = result.output.meta.mint;
+    boughtMintsThisSession.add(tokenMint);
     const sourceSol = formatSolAmount(swap.amountRaw);
     const mirroredSol = formatSolAmount(result.input.amountRaw);
     const clamped = swap.amountRaw !== result.input.amountRaw;
@@ -273,15 +287,20 @@ function logTrade(
     const impactStr = result.priceImpactPct
       ? ` · impact ${(parseFloat(result.priceImpactPct) * 100).toFixed(2)}%`
       : "";
-    console.log(`✅ Buy${simTag} (${walletTag}): ${mirroredSol} SOL${clamped ? ` (capped from ${sourceSol} SOL)` : ""}`);
+    console.log(`${result.isDryRun ? "DRY RUN Buy" : "✅ Buy" + simTag} (${walletTag}): ${mirroredSol} SOL${clamped ? ` (capped from ${sourceSol} SOL)` : ""}`);
     console.log(`🪙 Tokens: ${outputDisplay}`);
-    console.log(`💹 Entry: ${formatPrice(entryPrice)} SOL per $${pos.symbol}${impactStr}`);
+    console.log(`💹 Entry: ${formatPrice(entryPrice)} SOL per $${result.output.meta.symbol}${impactStr}`);
     console.log(`🔗 CA: ${tokenMint}`);
     if (mcLine) console.log(mcLine);
     if (!result.isSimulated) console.log(`📝 Tx: ${result.signature}`);
-    console.log(
-      `📦 Position $${pos.symbol}: ${formatTokenAmount(pos.heldRaw, pos.decimals)} held, spent ${formatSolAmount(pos.totalSolSpentLamports)} SOL`
-    );
+    if (result.isDryRun) {
+      console.log("Dry run only: no swap transaction was built or sent, and PnL/positions were not changed.");
+      console.log("");
+      return;
+    }
+
+    const pos = recordBuy(result.output.meta, result.output.amountRaw, result.input.amountRaw);
+    console.log(`📦 Position $${pos.symbol}: ${formatTokenAmount(pos.heldRaw, pos.decimals)} held, spent ${formatSolAmount(pos.totalSolSpentLamports)} SOL`);
     console.log("");
 
     // Send Telegram notification
@@ -292,6 +311,7 @@ function logTrade(
       solAmount: mirroredSol,
       marketCap: mcDisplay,
       isSimulated: result.isSimulated,
+      isDryRun: result.isDryRun,
       wallet: walletTag,
       tokenAddress: tokenMint,
       txSignature: result.isSimulated ? undefined : result.signature,
@@ -302,6 +322,26 @@ function logTrade(
   }
 
   if (result.side === "sell") {
+    if (result.isDryRun) {
+      const tokenMint = result.input.meta.mint;
+      const exitPrice = tokenPriceInSol(
+        result.output.amountRaw,
+        result.input.amountRaw,
+        result.input.meta.decimals
+      );
+      const sellImpactStr = result.priceImpactPct
+        ? ` · impact ${(parseFloat(result.priceImpactPct) * 100).toFixed(2)}%`
+        : "";
+      console.log(`DRY RUN Sell (${walletTag}): ${inputDisplay}`);
+      console.log(`💰 Would receive: ${outputDisplay}`);
+      console.log(`💹 Exit: ${formatPrice(exitPrice)} SOL per $${result.input.meta.symbol}${sellImpactStr}`);
+      console.log(`🔗 CA: ${tokenMint}`);
+      if (mcLine) console.log(mcLine);
+      console.log("Dry run only: no swap transaction was built or sent, and PnL/positions were not changed.");
+      console.log("");
+      return;
+    }
+
     const pos = recordSell(result.input.meta, result.input.amountRaw, result.output.amountRaw);
     const tokenMint = result.input.meta.mint;
     const exitPrice = tokenPriceInSol(
@@ -341,6 +381,7 @@ function logTrade(
       solAmount: outputDisplay,
       marketCap: mcDisplay,
       isSimulated: result.isSimulated,
+      isDryRun: result.isDryRun,
       wallet: walletTag,
       tokenAddress: tokenMint,
       pnl: formatPnl(pos.realizedPnlLamports),
@@ -360,6 +401,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   const ts = Date.now();
   const processStartedAt = Date.now();
   const elapsed = () => `${Date.now() - processStartedAt}ms`;
+  let lockedBuyMint: string | null = null;
   console.log(
     `⚡ Processing ${swap.inputMint === WRAPPED_SOL_MINT ? "buy" : "sell"} from ${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)} (${swap.signature.slice(0, 8)}…)`
   );
@@ -374,17 +416,42 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
 
   // Skip duplicate buys of the same token if buy-once is ON. Position lookup is in-memory (no API cost).
   if (buyOncePerTokenEnabled && swap.inputMint === WRAPPED_SOL_MINT) {
-    const existing = getPosition(swap.outputMint);
-    if (existing && existing.buysCount > 0) {
+    const mint = swap.outputMint;
+    const existing = getPosition(mint);
+    if (boughtMintsThisSession.has(mint) || (existing && existing.buysCount > 0)) {
       console.log(
-        `ℹ️  Skipping buy: already bought ${swap.outputMint.slice(0, 8)}… this session (buy-once ON, press 'b' to allow pyramiding).`
+        `ℹ️  Skipping buy: already bought ${mint.slice(0, 8)}… this session (buy-once ON, press 'b' to allow pyramiding).`
       );
       return;
     }
+    if (buyMintsInFlight.has(mint)) {
+      console.log(
+        `ℹ️  Skipping buy: ${mint.slice(0, 8)}… is already being bought (buy-once ON).`
+      );
+      return;
+    }
+    if (!simulationMode && !dryRunMode) {
+      try {
+        const existingWalletBalance = await getTokenBalance(kp.publicKey, mint);
+        if (existingWalletBalance > 0) {
+          console.log(
+            `ℹ️  Skipping buy: wallet already holds ${mint.slice(0, 8)}… (buy-once ON).`
+          );
+          return;
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(
+          `Could not check existing wallet balance for ${mint.slice(0, 8)}… before buy: ${msg}`
+        );
+      }
+    }
+    buyMintsInFlight.add(mint);
+    lockedBuyMint = mint;
   }
 
   // Fast SOL reserve check - only for buys and only in LIVE mode (sells don't spend SOL)
-  if (swap.inputMint === WRAPPED_SOL_MINT && !simulationMode) {
+  if (swap.inputMint === WRAPPED_SOL_MINT && !simulationMode && !dryRunMode) {
     const mirroredAmount = mirroredBuyAmountLamports(swap.amountRaw);
     // Update balance cache (fast, cached)
     const currentBalance = await updateBalanceCache(readConnection, kp.publicKey);
@@ -401,6 +468,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         console.log(`   Source trade: ${(swap.amountRaw / LAMPORTS_PER_SOL).toFixed(4)} SOL`);
       }
       console.log(`   ⚠️ Skipping trade to preserve gas fees`);
+      if (lockedBuyMint) {
+        buyMintsInFlight.delete(lockedBuyMint);
+        lockedBuyMint = null;
+      }
       
       // Send Telegram notification for reserve protection
       void telegram.notifyError(
@@ -422,7 +493,9 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   }
   
   // Log simulation mode notice for clarity
-  if (simulationMode && swap.inputMint === WRAPPED_SOL_MINT) {
+  if (dryRunMode && swap.inputMint === WRAPPED_SOL_MINT) {
+    console.log(`Dry Run Mode: reserve checks, swap construction, broadcast, confirmation, and position mutation are disabled.`);
+  } else if (simulationMode && swap.inputMint === WRAPPED_SOL_MINT) {
     console.log(`🎭 Simulation Mode: SOL reserve check disabled (no real gas fees)`);
   }
   
@@ -440,6 +513,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       input: toLegView(result.input),
       output: toLegView(result.output),
       isSimulated: result.isSimulated,
+      isDryRun: result.isDryRun,
       mirrorSignature: result.signature,
       marketCapUsd,
     });
@@ -459,6 +533,18 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       console.log(
         `ℹ️ Skipping buy: already bought ${err.mint.slice(0, 8)}… this session`
       );
+      return;
+    }
+    if (err instanceof DustSellError) {
+      const dustPosition = markPositionClosedAsDust(err.mint);
+      console.log(
+        `Skipping dust sell: quote for ${err.mint.slice(0, 8)}... would receive ${formatSolAmount(err.outLamports)} SOL, below minimum ${formatSolAmount(err.minLamports)} SOL.`
+      );
+      if (dustPosition) {
+        console.log(
+          `Marked remaining $${dustPosition.symbol} as dust so it no longer appears as an open position.`
+        );
+      }
       return;
     }
     const msg = err instanceof Error ? err.message : String(err);
@@ -500,7 +586,8 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           amountRaw: 0,
           display: "FAILED (untradable)",
         },
-        isSimulated: simulationMode,
+        isSimulated: simulationMode || dryRunMode,
+        isDryRun: dryRunMode,
         error: `SELL FAILED: ${msg}`,
       });
       return;
@@ -544,9 +631,14 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         amountRaw: 0,
         display: "—",
       },
-      isSimulated: simulationMode,
+      isSimulated: simulationMode || dryRunMode,
+      isDryRun: dryRunMode,
       error: msg,
     });
+  } finally {
+    if (lockedBuyMint) {
+      buyMintsInFlight.delete(lockedBuyMint);
+    }
   }
 }
 
@@ -614,7 +706,13 @@ export async function startBot(): Promise<void> {
   // Send Telegram notification
   void telegram.notifyBotStatus("started");
   await updateBalance(keypair.publicKey);
-  if (simulationMode) {
+  if (dryRunMode) {
+    console.log(
+      "Running in DRY RUN mode –",
+      trackedWallets.length,
+      "wallet(s); quotes only, no swap transaction construction, no broadcasts, and no paper PnL."
+    );
+  } else if (simulationMode) {
     console.log(
       "Running in SIMULATION mode –",
       trackedWallets.length,
@@ -628,6 +726,7 @@ export async function startBot(): Promise<void> {
   unsubscribeWs = await subscribeWalletSwaps(
     trackedWallets,
     processedSignatures,
+    Math.floor(startedAt / 1000),
     (swap) => {
       processSwap(swap, kp).catch((err) => {
         console.error("WS processSwap error:", err);
@@ -658,6 +757,8 @@ export function resetTradingState(): void {
   resetPositions();
   recentSwaps.length = 0;
   processedSignatures.clear();
+  buyMintsInFlight.clear();
+  boughtMintsThisSession.clear();
   console.log("?? Cleared all positions, trade history, and signature cache.");
 }
 
@@ -665,6 +766,11 @@ export function resetTradingState(): void {
  * Sell specific position by index (#1, #2, etc)
  */
 export async function sellPositionByIndex(index: number): Promise<void> {
+  if (dryRunMode) {
+    console.log("Dry run mode: manual sells are disabled because no transactions are sent and no paper positions are recorded.");
+    return;
+  }
+
   const open = getPositions().filter((p) => p.heldRaw > 0);
   
   if (open.length === 0) {
@@ -711,53 +817,7 @@ export async function sellPositionByIndex(index: number): Promise<void> {
       });
       
     } else {
-      // Live sell - use existing Jupiter logic
-      const quoteResponse = await getQuote(
-        position.mint,
-        WRAPPED_SOL_MINT,
-        position.heldRaw,
-        80 // slippage bps
-      );
-      
-      if (!quoteResponse) {
-        throw new Error(`Failed to get quote for $${position.symbol}`);
-      }
-      
-      const swapResponse = await getSwap(quoteResponse, keypair!.publicKey.toBase58());
-      if (!swapResponse) {
-        throw new Error(`Failed to get swap for $${position.symbol}`);
-      }
-      
-      const tx = await createSenderTransactionFromSwapResponse(swapResponse, keypair!);
-      const signature = await broadcastTransactionWithSender(tx);
-      
-      await confirmSignature(signature);
-      
-      console.log(`✅ Sold #${index}: ${formatTokenAmount(position.heldRaw, position.decimals)} $${position.symbol}`);
-      console.log(`💰 Received: ${formatSolAmount(Number(swapResponse.outAmount))} SOL`);
-      console.log(`📝 Tx: ${signature}`);
-      
-      // Record the sell
-      const meta = {
-        mint: position.mint,
-        symbol: position.symbol,
-        name: position.symbol,
-        decimals: position.decimals,
-        isSol: false,
-      };
-      recordSell(meta, position.heldRaw, Number(swapResponse.outAmount));
-      
-      // Send Telegram notification
-      void telegram.notifyTrade({
-        type: "sell",
-        symbol: position.symbol,
-        amount: formatTokenAmount(position.heldRaw, position.decimals),
-        solAmount: formatSolAmount(Number(swapResponse.outAmount)),
-        isSimulated: false,
-        wallet: "manual",
-        tokenAddress: position.mint,
-        txSignature: signature,
-      });
+      await sellLivePosition(position);
     }
   } catch (error) {
     console.error(`❌ Failed to sell position #${index}:`, error);
@@ -773,9 +833,21 @@ export async function sellPositionByIndex(index: number): Promise<void> {
  */
 async function sellLivePosition(p: PositionSnapshot): Promise<void> {
   const liveHeldRaw = await getTokenBalance(keypair!.publicKey, p.mint);
-  if (liveHeldRaw <= 0) {
-    console.warn(`Skipped $${p.symbol}: no live token balance found in wallet.`);
+  const balanceRaw = liveHeldRaw > 0 ? liveHeldRaw : p.heldRaw;
+  if (liveHeldRaw <= 0 && p.heldRaw > 0) {
+    console.warn(
+      `Live balance lookup returned 0 for $${p.symbol}; attempting tracked position amount ${formatTokenAmount(p.heldRaw, p.decimals)}.`
+    );
+  }
+  if (balanceRaw <= 0) {
+    console.warn(`Skipped $${p.symbol}: no token balance found in wallet or tracked position.`);
     return;
+  }
+  const sellRaw = Math.max(1, Math.floor((balanceRaw * (10_000 - MANUAL_SELL_BALANCE_BUFFER_BPS)) / 10_000));
+  if (sellRaw < balanceRaw) {
+    console.log(
+      `Sell amount for $${p.symbol}: ${formatTokenAmount(balanceRaw, p.decimals)} available; selling ${formatTokenAmount(sellRaw, p.decimals)} with a small dust buffer.`
+    );
   }
 
   const result = await mirrorSwap(
@@ -784,7 +856,7 @@ async function sellLivePosition(p: PositionSnapshot): Promise<void> {
       wallet: "manual-sell",
       inputMint: p.mint,
       outputMint: WRAPPED_SOL_MINT,
-      amountRaw: liveHeldRaw,
+      amountRaw: sellRaw,
       isNativeInput: false,
     },
     keypair!
@@ -821,6 +893,11 @@ async function sellLivePosition(p: PositionSnapshot): Promise<void> {
 }
 
 export async function sellAllPositions(): Promise<void> {
+  if (dryRunMode) {
+    console.log("Dry run mode: sell-all is disabled because no transactions are sent and no paper positions are recorded.");
+    return;
+  }
+
   const open = getPositions().filter((p) => p.heldRaw > 0);
   if (open.length === 0) {
     console.log("?? No open positions to sell.");
@@ -1197,6 +1274,8 @@ export function getBotState(): BotState {
     ourWallet: keypair?.publicKey.toBase58() ?? null,
     trackedWallets,
     simulationMode,
+    dryRunMode,
+    tradingMode,
     minBuySol: minBuyLamports / LAMPORTS_PER_SOL,
     maxBuySol: maxBuyLamports / LAMPORTS_PER_SOL,
     pollIntervalMs,

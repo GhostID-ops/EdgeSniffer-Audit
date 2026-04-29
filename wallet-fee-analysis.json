@@ -1,0 +1,662 @@
+[
+    {
+        "time":  "2026-04-27 14:21:17",
+        "timestamp":  1777314077,
+        "sig":  "36dpz8nmSwXeC8YwejNhv6bvP5fED88LFabtXqcgVbDaMJFyGEJhC7wF35Z46edwgGqzcxr4tyPQVp6iq3Yg76EX",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.00033852,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.003337172
+    },
+    {
+        "time":  "2026-04-27 14:20:34",
+        "timestamp":  1777314034,
+        "sig":  "2VttHVWuA5DKczmdNY6AdrvGgE2Q7yqZsFG41eHGqAhdGDg9zKcvyPDRZvnvZeoAGujttvnkFPxYB449hPMtZX87",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.00034627,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.002592249
+    },
+    {
+        "time":  "2026-04-27 14:19:49",
+        "timestamp":  1777313989,
+        "sig":  "2vh9w5s9vyq1ZPSDi1hiWsFL9UjbV7dFvshh11fBFtWuxyZjaknnatiidGDvvs1FxqVXtS62Xes1zf5Ti3BsBfN",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000219282,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.003219183
+    },
+    {
+        "time":  "2026-04-27 14:19:47",
+        "timestamp":  1777313987,
+        "sig":  "3Bj6YM5GqfQLy3HPekvVk3sJF63MYeF8oSqNSDTk1QJgSwbt5ChMqkTAxAGHCbZukboY1qXqVHtXSUTqSTjr4ciE",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.00030161,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.003045187
+    },
+    {
+        "time":  "2026-04-27 14:19:46",
+        "timestamp":  1777313986,
+        "sig":  "22D7Z2kbEgvn75QRqyBkYVuzxAKRuf4fXpyVxQWUeZJYpfMjq3xiebTPrWzMM51K5sTsDV5tp6fw2oNupvUZdJwb",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000235206,
+        "tipSol":  0.003,
+        "walletDeltaSol":  0.1885157
+    },
+    {
+        "time":  "2026-04-27 14:19:31",
+        "timestamp":  1777313971,
+        "sig":  "2A2YTSX1CLGrEzihvnsKzeTMHS7JRAVm9tr87SvZPMT53mWSFvN73o6j6zUTrJyk9r6dEidr5hUCGyHupJRYmp4j",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000345544,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.055419624
+    },
+    {
+        "time":  "2026-04-27 14:19:22",
+        "timestamp":  1777313962,
+        "sig":  "4MZzwMHmRSQPzUc7JkbLZ4ULNKSCrs7VfUw33RSBbWiB2e6rmqkJF1va56LQqxHAQhsaskv2rn1izkxW2QqZHwxz",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000308972,
+        "tipSol":  0.003,
+        "walletDeltaSol":  0.020213672
+    },
+    {
+        "time":  "2026-04-27 14:19:21",
+        "timestamp":  1777313961,
+        "sig":  "eGgwb5TuFSKL4SxUxtEgWgW5pnqjBDZ2bBJJDEKUyEP4WZtqXm32yhcuTg3j93zuiBGgSc1j2Zmnpw5jxNiShTr",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6001}]}",
+        "feeSol":  0.000308972,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.000308972
+    },
+    {
+        "time":  "2026-04-27 14:19:01",
+        "timestamp":  1777313941,
+        "sig":  "47W8oCSEeLkGEGeSCkYWR1QYaZqU1sAxWYiZ8WVof573wubegEzM4m68u4J2uwMtDkBVNQX8bAP4WwJcCaoNDCtz",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000239104,
+        "tipSol":  0.003,
+        "walletDeltaSol":  0.024394352
+    },
+    {
+        "time":  "2026-04-27 14:18:55",
+        "timestamp":  1777313935,
+        "sig":  "sBgdVrtr2rT7hLgxtg271zirzELexZgGq2pNDtCxA4FBMZrf4z6wwiYTCpUsxwzK9hxcRTKEUvXY5624GqjXhuG",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000378104,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.055452184
+    },
+    {
+        "time":  "2026-04-27 14:18:38",
+        "timestamp":  1777313918,
+        "sig":  "5BCmTUdQgd7rZxMBteaRLfxX8wU9spfKi7Hwwhx9Sbw2Pk7peKL66EstwKGdc9KtDK6uFhq7eAM3phxNnmE7t4p1",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000349436,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.055423516
+    },
+    {
+        "time":  "2026-04-27 14:18:31",
+        "timestamp":  1777313911,
+        "sig":  "2a4batFAGGfN2Tf1WuKci7Y67Jpb4e6TR5zbUf3A1y1671WaLjARhHuBFnUqjSEuwoYmYsyjBAyBzacTFi1H9Ycw",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000228539,
+        "tipSol":  0,
+        "walletDeltaSol":  0.003323404
+    },
+    {
+        "time":  "2026-04-27 14:18:20",
+        "timestamp":  1777313900,
+        "sig":  "113MPDWyaNFDRAEJLq4YSPQNV1bkDL9Nux9RhEY6LRJEMrTYc4ujHWnft3nuawxAApv3zDzeN4axYKy91VwySNX",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[2,{\"Custom\":15001}]}",
+        "feeSol":  0.000191272,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.000191272
+    },
+    {
+        "time":  "2026-04-27 14:17:51",
+        "timestamp":  1777313871,
+        "sig":  "4h7QdzFysMZFGnx8fs9TXSgLzuRTREpy52cPg3ifCziq5mQ6HNRkA2xzwKQX28mUFiZ42oZS63PwM2Vuu2QQe9cZ",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000242854,
+        "tipSol":  0.003,
+        "walletDeltaSol":  0.065859396
+    },
+    {
+        "time":  "2026-04-27 14:17:42",
+        "timestamp":  1777313862,
+        "sig":  "yiFTUHiA15X7arnamnSbc9HB4bAt5cWdHpjVpG5CioxxhuR41JcpL7H7sYfyQspRw3TCdPPhQvGRm3Zz6srDqLC",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.00035311,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.05542719
+    },
+    {
+        "time":  "2026-04-27 14:16:55",
+        "timestamp":  1777313815,
+        "sig":  "5w3o9KbsQqWkBPRaHrUkj3Fsb78MjrgKYvKvoqzgpBusLNixDZfhbzrPJRQpNhYbnqqnvBLYGu2mRYzGTnFjTmAd",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000316572,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.003277473
+    },
+    {
+        "time":  "2026-04-27 14:12:16",
+        "timestamp":  1777313536,
+        "sig":  "4VxFJ3T5Nwz35Mg3tY9DcLjH8RVRmEWZnqFCHoXYJSW65WoMHowZozxbpE4K3CGe8zHXBQdxYMF6PeNxX4zZx5GR",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000219732,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.003169183
+    },
+    {
+        "time":  "2026-04-27 14:12:15",
+        "timestamp":  1777313535,
+        "sig":  "3WjL17UbaYRuFtGC22tLyqeFGVecokQL3DtW1WPLjgyfQtF28gqMqKj7Spi513whWAKGc3djxKpSBAu3J86U5GQB",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000223554,
+        "tipSol":  0.003,
+        "walletDeltaSol":  0.055136876
+    },
+    {
+        "time":  "2026-04-27 14:11:57",
+        "timestamp":  1777313517,
+        "sig":  "2CZY2TvickthkiySufqmh2jvxVTq7R5pQp7tRDTzcUmXTyiyUjPcJQTka6845V7zYoB2soxMCf2v1QvEdHfTQojP",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000342032,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.055416111999999997
+    },
+    {
+        "time":  "2026-04-27 14:11:14",
+        "timestamp":  1777313474,
+        "sig":  "FijguKtVXY7AQRhcbwbfAc6Vv1fqJrNvQB7WEUnYsQ5PYxiqTfPUHz1rhTQjRzoAhyp185uKWQr6Cm5ua6aPUL8",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000219874,
+        "tipSol":  0.003,
+        "walletDeltaSol":  0.025051719
+    },
+    {
+        "time":  "2026-04-27 14:11:02",
+        "timestamp":  1777313462,
+        "sig":  "4WKNgjNMSBBXTAQLtYybU1wUsy2b6gjUqdPZZ3dNVgC2zppUTqupaEkFLbdaaL1EGQnedht8s21nWMghVDmKs4Ps",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000342246,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.055416326
+    },
+    {
+        "time":  "2026-04-27 14:10:16",
+        "timestamp":  1777313416,
+        "sig":  "32n8M7g5Fuwfko4WQv9ne7j4HYD7xEbkDN3sM56PyYvK2Sd9BFi7bfw3oja9nFKwznjYZTV2DTMWPTZk1e2Kbh1M",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000239104,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.00314194
+    },
+    {
+        "time":  "2026-04-27 14:09:54",
+        "timestamp":  1777313394,
+        "sig":  "3TgwHmyXj9odHoG8bC6Pe1eMZsEMHswoooDi8MZ6zAe1ogXhxpHFLMx5xGRSPZtUCuXkUzk3yMnnoEaJnwLUC4ZF",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.00023896,
+        "tipSol":  0.003,
+        "walletDeltaSol":  0.072076582
+    },
+    {
+        "time":  "2026-04-27 14:09:21",
+        "timestamp":  1777313361,
+        "sig":  "4sDtzCjyEgCiM5eWwjfT1GbdTtSrzRScid6XoaKhmtYWKdMrYTexYDtEHUuShLC5uNAyhquD2FE7esN54eWezw2U",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.00035304,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.05542712
+    },
+    {
+        "time":  "2026-04-27 14:06:23",
+        "timestamp":  1777313183,
+        "sig":  "4WpZxfoGgGzca9qyCWHzS4J4F7hF1BkEEd5iiD8baE6TennyM1argjrQhcNCjoxMzcwFCEXp24mpYYyALPDmreqG",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000177406,
+        "tipSol":  0.0025,
+        "walletDeltaSol":  0.017778708
+    },
+    {
+        "time":  "2026-04-27 14:06:11",
+        "timestamp":  1777313171,
+        "sig":  "5s5QeMEHH5NgmpisuifPiCYJSwgBDffWakYU1st2kQBxEF6XR3bPLbP7zXh2eiL2i7dztw1gYsFm8T8wGA6HCEai",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.00026627,
+        "tipSol":  0.0025,
+        "walletDeltaSol":  -0.05484035
+    },
+    {
+        "time":  "2026-04-27 14:03:06",
+        "timestamp":  1777312986,
+        "sig":  "3BxbXAxPy7C4UKz2Zic6HYYNJuHyU7XixPhkVG9wFh6T5dGwUmtuYJ9zTBqYDbvyQsSR129s8ckgjaaTuVorJbyK",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000177239,
+        "tipSol":  0.0025,
+        "walletDeltaSol":  0.027892691
+    },
+    {
+        "time":  "2026-04-27 14:02:43",
+        "timestamp":  1777312963,
+        "sig":  "pfwxRN2F1eaqpJJxkQi333ZVPMWvKfNbQYFgdqjRjKGdd7PyvV45EJbHNqymw6vozu6sSBHxhA4YQtadoTxuvnG",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000269185,
+        "tipSol":  0.0025,
+        "walletDeltaSol":  -0.054843265
+    },
+    {
+        "time":  "2026-04-27 14:02:29",
+        "timestamp":  1777312949,
+        "sig":  "4SvnUb4yegrH3hE73nADvmJazXrkidhc867WPAFfciRtwm2MPWgLWGDLt5LPeX69bR8JH4htCKFNPsFX6yd37KG7",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.00016318,
+        "tipSol":  0.0025,
+        "walletDeltaSol":  0.019737245
+    },
+    {
+        "time":  "2026-04-27 14:02:27",
+        "timestamp":  1777312947,
+        "sig":  "5rtRpyvD8PZRBkQURXcdwDNQ4c2PyPeUR7DowDQnYpFNtg8eku7KXCDDVgzvoKajRzaxSJ5yTqgwfnDn4bRwHJpQ",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6001}]}",
+        "feeSol":  0.000163178,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.000163178
+    },
+    {
+        "time":  "2026-04-27 14:02:20",
+        "timestamp":  1777312940,
+        "sig":  "3pnproemW5CxFYdMD33Ycdfs8ruitczmDGJY2DDUH2Vuw7MAkxb99gMngqPmfe4CrULytKsd7UTYHnrbaGWX2NfL",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.00025231,
+        "tipSol":  0.0025,
+        "walletDeltaSol":  -0.05482639
+    },
+    {
+        "time":  "2026-04-27 14:01:29",
+        "timestamp":  1777312889,
+        "sig":  "2adkmJMW4b76TzG6FUuAyEjzv5mrtSj3hagS6pUXhpmEmxzmqvyZGtZ2JDuESUYfqZJskKmDD1ueRC7GbtjNUR7",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000241343,
+        "tipSol":  0.0025,
+        "walletDeltaSol":  -0.002600869
+    },
+    {
+        "time":  "2026-04-27 14:00:34",
+        "timestamp":  1777312834,
+        "sig":  "3BegZG72pe61kvXVDnNymPJnHtYUPpwUwo9YbbriFgXpK7XRAv3PGiirf1meURa13jxRh5HJagb8rFJ3WLGgzQSk",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000241366,
+        "tipSol":  0.0025,
+        "walletDeltaSol":  0.184234798
+    },
+    {
+        "time":  "2026-04-27 14:00:32",
+        "timestamp":  1777312832,
+        "sig":  "3u7mRDZnpaw2Tc1hjY3PySVwyECNYfxdEeQ37PQrUNgPGzg6HLyc6jJLkgB3q67p8ZzGetbXKaEUSyFE6txYEhfu",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6001}]}",
+        "feeSol":  0.000265619,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.000265619
+    },
+    {
+        "time":  "2026-04-27 13:52:15",
+        "timestamp":  1777312335,
+        "sig":  "4uccNhxdbZ2ug61iUT8sjCWwDhFkJ6ZuyEXDKyVPDKLGfRnd6xrW3mbNGVfV5uW8v1vg9ovsywapVi7QkE4ziE8D",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000123686,
+        "tipSol":  0.002,
+        "walletDeltaSol":  0.068598854
+    },
+    {
+        "time":  "2026-04-27 13:51:43",
+        "timestamp":  1777312303,
+        "sig":  "5XKV5yBcLYmPTwmWLB62Mpz1vwfL1QT21oKH3SX2ge2s7MReMHth4VNR3fB9mzdowJ9ezP1u7VG29FsUkcA2hHod",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000186751,
+        "tipSol":  0.002,
+        "walletDeltaSol":  -0.054260831
+    },
+    {
+        "time":  "2026-04-27 13:51:21",
+        "timestamp":  1777312281,
+        "sig":  "24R3ynXeHv12RfuCAhtCp8D817v1LgAkiNfrdrNFkQZKskz5fHmYPYBS9DkDbYhuQgDWAGRqvjrnQdzVmqGA9m8J",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  8.0001E-05,
+        "tipSol":  0,
+        "walletDeltaSol":  0.001461882
+    },
+    {
+        "time":  "2026-04-27 13:50:32",
+        "timestamp":  1777312232,
+        "sig":  "5VyHGYYzZe7r4dCAMMcyfTyx1ePwEocdu1FtZjkHn1arku5rDQPG2QQXVcK5PzMHKjGvRMjPFgHFwfREzdDMAwbN",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000171971,
+        "tipSol":  0.002,
+        "walletDeltaSol":  0.017698049
+    },
+    {
+        "time":  "2026-04-27 13:48:31",
+        "timestamp":  1777312111,
+        "sig":  "4pq4kLZ3rYPSUFcXNS2BTof8zYBz6tcBzMFfJGpo7tLLQgEDX46BFAik26ZMbkvRFFqDjmLSsbXtWpAFHsttuvq4",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.00020497,
+        "tipSol":  0.002,
+        "walletDeltaSol":  -0.05427905
+    },
+    {
+        "time":  "2026-04-27 11:48:25",
+        "timestamp":  1777304905,
+        "sig":  "4GpyyUa6kthfkFtm3PbA6YY9tnncbypNFRUHXTRTTNHi3wpM2gnJBWSWJUB2ecESkQz9KohGTvkCrzDcZx5ai5HZ",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:48:24",
+        "timestamp":  1777304904,
+        "sig":  "5fSjGR35exnuNP915xzwiRigNACyoCq6aaFfFq3fqgrumT9upHtowraDphjrMGnCe3zM5go3eJAUvAXmuymZMr7n",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:48:23",
+        "timestamp":  1777304903,
+        "sig":  "QAqCqFo8z4mBsRA8ZRmYgncyFowJVT7tAzc6mbUJxDUM3iVYCknRKE3BPiKzhWTAF4pjhwzcX9yCthAPQECLo1F",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:48:21",
+        "timestamp":  1777304901,
+        "sig":  "5cLHHs9Zk893ddgW3DJtZfCkDNynnzzsTdetGxQGswTFAsnqRmx2katonSuggDqNfnd2YdhxeUFoyk5k14NRVkUQ",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:48:19",
+        "timestamp":  1777304899,
+        "sig":  "2bLkrNwayK4QEn2qPSoVeCHqBJebCKwX14UfVhAtZMnykFXA1MhwHT6vHpLGNv8ZaDDaKFtA2r6A8eJaKxs6K7AD",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:30:52",
+        "timestamp":  1777303852,
+        "sig":  "5Zwn5ZJEW19jBdpJeaiMfbU8kYgRMHoJdgcwRNLvoYQNRDVfzmeMUuZFQVesZPeMkmEWzkopw3ZfpjkFBTQd1Swm",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:30:51",
+        "timestamp":  1777303851,
+        "sig":  "675RgGm8AQK1GHgiZUMbcUMTRfJvkAyU1i6cyo8fjEBFMAojfHfSRKqqXQBjMDVwvCPqAJjykhttBuvZV1UchuLW",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:30:50",
+        "timestamp":  1777303850,
+        "sig":  "652DBjcGYfMC8ArxUaL7i6KBuL2878nMdHTQJ4iRrQfykFD6wUz3Rfd3jiCq11293NfRh5YuNdPyWeY8JH4h1Fvf",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:30:45",
+        "timestamp":  1777303845,
+        "sig":  "sCefeutZ3sWu6vELXXtP4EDLVe8z7b8oPowqXx2crG7L4nDHd2Zuk3EVWFRa67kYPFHAZ1W6d5USQyv4YtCEk1j",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:30:44",
+        "timestamp":  1777303844,
+        "sig":  "qc6DWEnGhCogW5VJvSuJwCxuobp8cGLYhc9JE5rA7zaYzt5ZTMGPBAnsd9hcgZeo6qxq1Ysv9iT2dcHRdru8vxf",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:21:03",
+        "timestamp":  1777303263,
+        "sig":  "gcXQXvzKZ7D11kSZcEPYBL51m7LmvSX7kMFNPUw324rxNn3aZtxoN48XbwApYZxcPjTNHVgZjHt6RULuMB1uE4e",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:21:01",
+        "timestamp":  1777303261,
+        "sig":  "4X263HcRPSWF3D15qNLbF3GdFMeBk9CjBB9XewydZWZTB3dWaDuVmmdJRHqKfmgQyWXN7x4rqV558iyYUNHtRhMv",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.002805,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.002805
+    },
+    {
+        "time":  "2026-04-27 11:20:24",
+        "timestamp":  1777303224,
+        "sig":  "TCf88NwBTer3NBZ3LyZQEqupC9wY185s95tsUdVGNu9guBfYiYm5TXJhwiVFAxWMy6uRQ2xUPGgg1374wRTBNNh",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000258722,
+        "tipSol":  0.003,
+        "walletDeltaSol":  0.057489173
+    },
+    {
+        "time":  "2026-04-27 11:20:21",
+        "timestamp":  1777303221,
+        "sig":  "3nuxskyGEZrSwtATGezu81DeZzYMLJsXTpvr6mt6kkXAZEx4yYw4v9HX5Fg8Vb8faFwzHEZTnQPWCjxdNsYGtNNB",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000258724,
+        "tipSol":  0.003,
+        "walletDeltaSol":  0.03410059
+    },
+    {
+        "time":  "2026-04-27 11:20:01",
+        "timestamp":  1777303201,
+        "sig":  "r3wtkRkzV1aHZRSNg68bVnkLnxgNDnTDyfgJoZydaojthgZwvwTF881BEENignEdFvEEkcRuJcbdQ5BCcGfiWCH",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000325364,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.055364644
+    },
+    {
+        "time":  "2026-04-26 13:41:43",
+        "timestamp":  1777225303,
+        "sig":  "4WLT4XQXmhWN8F2qysQkfY2CSkCnoQpoh4UqCRBPmEyRrT3oT3s2qXvtHu6YHZHK9gb2Dfndq3pKNZ4jTjUaj85b",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.001405,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.001405
+    },
+    {
+        "time":  "2026-04-26 13:41:05",
+        "timestamp":  1777225265,
+        "sig":  "4sb2VDpAN4dC3EXt5sHdH7HwfQhNWEwtn74EAAEd9NjFAAU6NyDrxww3dtvURaUvewVcJv8kqHBZ7mvgQ1j8nbgy",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000175271,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.105249351
+    },
+    {
+        "time":  "2026-04-26 13:22:38",
+        "timestamp":  1777224158,
+        "sig":  "4S2Q69vWLMnLaeX839QMP14egrYQRDqkhoRg365rABsL5hhxkcrUkSahFw6RmeyScuyTBWSNTkManBcjbAZAfy2v",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000158443,
+        "tipSol":  0,
+        "walletDeltaSol":  0.208559884
+    },
+    {
+        "time":  "2026-04-26 13:21:59",
+        "timestamp":  1777224119,
+        "sig":  "3hoiEdQ5D2ce4EDEenmWUnFJ4fd1GXWcJHvrLmLinkpaCZP2fgcDy3onQ449wPmv7QNeUcNxWFqpQKkHempzCBLq",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000208071,
+        "tipSol":  0,
+        "walletDeltaSol":  0.097190206
+    },
+    {
+        "time":  "2026-04-26 13:21:54",
+        "timestamp":  1777224114,
+        "sig":  "2ZhLhYcGmXSBGDtZp3AiU7jMP7gy7BoCxMGaykQXxXGm1wzC2FHzUMATJRf4mpdbCCzGwYoiVSZL43b4j7rNvVQp",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000177263,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.105251343
+    },
+    {
+        "time":  "2026-04-25 20:33:27",
+        "timestamp":  1777163607,
+        "sig":  "55hszrNMxw3BrKD4oq7qhJ9MdErby6emeb7GX57hF75xUQFAwNh5uHNLrTszNDsNB1i2z8RUW4E63HUVox7421Af",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6024}]}",
+        "feeSol":  0.001405,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.001405
+    },
+    {
+        "time":  "2026-04-25 20:32:48",
+        "timestamp":  1777163568,
+        "sig":  "xhGrY7gJ4hD85BY5Bmgbgs9KwdWNzKKAcogE6yTM11LcY95jp6kzJaLQ4R83oNsx31D27cdbD1qhzsWCF7PtFum",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  0.000182928,
+        "tipSol":  0.003,
+        "walletDeltaSol":  -0.255257008
+    },
+    {
+        "time":  "2026-04-25 20:27:56",
+        "timestamp":  1777163276,
+        "sig":  "3rwiZJd835nnW1vd7oZ6YXxcwZi3Mu5RibpBBNdTnEHQMW7XQQ8aSMiSQvCTnFZAqBqt1DSQWeE59cWhyHgXsHD5",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[6,{\"Custom\":6001}]}",
+        "feeSol":  0.000179091,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.000179091
+    },
+    {
+        "time":  "2026-04-25 20:09:39",
+        "timestamp":  1777162179,
+        "sig":  "5fhckT2crXHfntgq1B7qA8ByPQTonSMVo1X4oTJY7VBLwdxYxt8DrqjPVYvuERx5YhJrhZE51YJXsSRFtqwAjpmP",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[3,{\"Custom\":6025}]}",
+        "feeSol":  0.001405,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.001405
+    },
+    {
+        "time":  "2026-04-25 20:08:48",
+        "timestamp":  1777162128,
+        "sig":  "4cDpFxTH2csVj9XjfavEcAN1BU9Hxqvby8kHYPPauMxwY4pwJLMEP6XDo6FS5Vx6bcbKkrFsoXtGH3FwMbpNGrf7",
+        "failed":  true,
+        "err":  "{\"InstructionError\":[6,{\"Custom\":6001}]}",
+        "feeSol":  0.000179058,
+        "tipSol":  0,
+        "walletDeltaSol":  -0.000179058
+    },
+    {
+        "time":  "2026-04-24 19:50:04",
+        "timestamp":  1777074604,
+        "sig":  "2B3byvWhKEPU2xFzogihRTe3TNKcnw8YjbAhRTWF71z5G59UX2dLJbQdXM7AGmNb4gEfQHfaM8ZahUggdNALbfdf",
+        "failed":  true,
+        "err":  "{\"InsufficientFundsForRent\":{\"account_index\":12}}",
+        "feeSol":  5E-06,
+        "tipSol":  0,
+        "walletDeltaSol":  0
+    },
+    {
+        "time":  "2026-04-24 19:50:03",
+        "timestamp":  1777074603,
+        "sig":  "VV9D7prx3yHxb5YkbXDTeugb5D5kjJB6XXQgkqqLyv7AcCTKYePcr9N2qvk2SxUcPZsx2BZ2VeBj3ZHQLtmWX2m",
+        "failed":  false,
+        "err":  "",
+        "feeSol":  8.125E-06,
+        "tipSol":  0,
+        "walletDeltaSol":  0.315102
+    }
+]

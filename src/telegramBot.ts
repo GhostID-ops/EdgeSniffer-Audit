@@ -344,7 +344,7 @@ Welcome to your copytrading bot dashboard! Choose an option below:
     let message = `🤖 <b>Bot Status</b>\n\n`;
     
     message += `🟢 <b>Status:</b> ${botState.running ? "Running" : "Stopped"}\n`;
-    message += `🎭 <b>Mode:</b> ${botState.simulationMode ? "Simulation" : "Live"}\n`;
+    message += `🎭 <b>Mode:</b> ${botState.tradingMode}\n`;
     
     if (botState.ourWallet) {
       message += `👛 <b>Wallet:</b> <code>${botState.ourWallet.slice(0, 8)}…${botState.ourWallet.slice(-8)}</code>\n`;
@@ -518,7 +518,7 @@ Are you absolutely sure you want to reset everything?
 
   private async sendToggleMode(chatId: number): Promise<void> {
     const botState = getBotState();
-    const currentMode = botState.simulationMode ? "Simulation" : "Live";
+    const currentMode = botState.tradingMode;
     const newMode = botState.simulationMode ? "Live" : "Simulation";
     
     const keyboard: InlineKeyboardMarkup = {
@@ -607,7 +607,7 @@ Are you sure you want to switch modes?
     // Note: This would require implementing a toggle function in botService
     // For now, just show a message that this feature is coming soon
     const botState = getBotState();
-    const currentMode = botState.simulationMode ? "Simulation" : "Live";
+    const currentMode = botState.tradingMode;
     
     await this.sendMessage(chatId, 
       `🔄 <b>Mode Toggle</b>\n\n` +

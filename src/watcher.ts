@@ -313,43 +313,52 @@ function extractTransferSwap(tx: HeliusParsedTx, wallet: string): DetectedSwap |
     if (nt.fromUserAccount === wallet) nativeNet -= amt;
   }
 
-  // Net token flow for wallet, per mint.
+  // Net token flow for wallet, per mint. Some Raydium routes use WSOL token
+  // accounts instead of native SOL transfers, so track WSOL as the SOL leg.
   const tokenNet = new Map<string, TokenNet>();
+  let wrappedSolNet = 0;
   for (const tt of tokenTransfers) {
-    if (!tt.mint || tt.mint === WRAPPED_SOL_MINT) continue;
+    if (!tt.mint) continue;
     const decimals = typeof tt.decimals === "number" ? tt.decimals : 0;
     const amtStr = tt.tokenAmount;
     if (amtStr == null) continue;
     const raw = Math.floor(parseFloat(amtStr) * Math.pow(10, decimals));
     if (!Number.isFinite(raw) || raw === 0) continue;
-    if (tt.toUserAccount === wallet) addTokenNet(tokenNet, tt.mint, raw, decimals);
-    if (tt.fromUserAccount === wallet) addTokenNet(tokenNet, tt.mint, -raw, decimals);
+    const addNet = tt.mint === WRAPPED_SOL_MINT
+      ? (amount: number) => {
+          wrappedSolNet += amount;
+        }
+      : (amount: number) => addTokenNet(tokenNet, tt.mint, amount, decimals);
+
+    if (tt.toUserAccount === wallet) addNet(raw);
+    if (tt.fromUserAccount === wallet) addNet(-raw);
     if (!tt.toUserAccount && isWalletTokenAccount(wallet, tt.mint, tt.toTokenAccount)) {
-      addTokenNet(tokenNet, tt.mint, raw, decimals);
+      addNet(raw);
     }
     if (!tt.fromUserAccount && isWalletTokenAccount(wallet, tt.mint, tt.fromTokenAccount)) {
-      addTokenNet(tokenNet, tt.mint, -raw, decimals);
+      addNet(-raw);
     }
   }
 
   // Pick the token with the largest |net| for this wallet.
   const { mint: bestMint, net: bestNet, abs: bestAbs } = getBestTokenNet(tokenNet);
   if (!bestMint || bestAbs === 0) return null;
+  const solNet = Math.abs(wrappedSolNet) > Math.abs(nativeNet) ? wrappedSolNet : nativeNet;
 
   // BUY: SOL out, token in.
-  if (nativeNet < 0 && bestNet > 0) {
+  if (solNet < 0 && bestNet > 0) {
     return {
       signature: tx.signature,
       wallet,
       inputMint: WRAPPED_SOL_MINT,
       outputMint: bestMint,
-      amountRaw: Math.abs(nativeNet),
+      amountRaw: Math.abs(solNet),
       isNativeInput: true,
     };
   }
 
   // SELL: token out, SOL in.
-  if (nativeNet > 0 && bestNet < 0) {
+  if (solNet > 0 && bestNet < 0) {
     return {
       signature: tx.signature,
       wallet,
@@ -382,37 +391,43 @@ function extractFromAccountData(tx: HeliusParsedTx, wallet: string): DetectedSwa
 
   // Sum token balance changes where the ATA's owner (userAccount) is our wallet, grouped by mint.
   const tokenNet = new Map<string, TokenNet>();
+  let wrappedSolNet = 0;
   for (const a of accountData) {
     for (const tbc of a.tokenBalanceChanges ?? []) {
       const belongsToWallet =
         tbc.userAccount === wallet ||
         isWalletTokenAccount(wallet, tbc.mint, tbc.tokenAccount ?? a.account);
       if (!belongsToWallet) continue;
-      if (!tbc.mint || tbc.mint === WRAPPED_SOL_MINT) continue;
+      if (!tbc.mint) continue;
       const raw = parseFloat(tbc.rawTokenAmount?.tokenAmount ?? "0");
       if (!Number.isFinite(raw) || raw === 0) continue;
       const decimals = tbc.rawTokenAmount?.decimals ?? 0;
+      if (tbc.mint === WRAPPED_SOL_MINT) {
+        wrappedSolNet += raw;
+        continue;
+      }
       addTokenNet(tokenNet, tbc.mint, raw, decimals);
     }
   }
 
   const { mint: bestMint, net: bestNet, abs: bestAbs } = getBestTokenNet(tokenNet);
   if (!bestMint || bestAbs === 0) return null;
+  const solNet = Math.abs(wrappedSolNet) > Math.abs(nativeNet) ? wrappedSolNet : nativeNet;
 
   // BUY: SOL decreased, token increased.
-  if (nativeNet < 0 && bestNet > 0) {
+  if (solNet < 0 && bestNet > 0) {
     return {
       signature: tx.signature,
       wallet,
       inputMint: WRAPPED_SOL_MINT,
       outputMint: bestMint,
-      amountRaw: Math.abs(nativeNet),
+      amountRaw: Math.abs(solNet),
       isNativeInput: true,
     };
   }
 
   // SELL: SOL increased, token decreased.
-  if (nativeNet > 0 && bestNet < 0) {
+  if (solNet > 0 && bestNet < 0) {
     return {
       signature: tx.signature,
       wallet,
@@ -451,8 +466,9 @@ export async function getNewSwaps(
         for (const tx of parsedList) {
           if (!tx?.signature || processedSignatures.has(tx.signature)) continue;
           processedSignatures.add(tx.signature);
-          // Ignore anything older than bot startup — fresh track only.
-          if (tx.timestamp != null && tx.timestamp < minTimestampSec) continue;
+          // Ignore anything at or before startup. Helius timestamps are second-granularity,
+          // so strict `>` avoids replaying trades from the same second the bot boots.
+          if (tx.timestamp == null || tx.timestamp <= minTimestampSec) continue;
           const swap = extractSwap(tx, wallet);
           if (swap) {
             swaps.push(swap);
@@ -480,6 +496,7 @@ export type Unsubscribe = () => Promise<void>;
 export async function subscribeWalletSwaps(
   trackedWallets: string[],
   processedSignatures: Set<string>,
+  minTimestampSec: number,
   onSwap: (swap: DetectedSwap) => void
 ): Promise<Unsubscribe> {
   if (!websocketUrl) {
@@ -506,6 +523,13 @@ export async function subscribeWalletSwaps(
               return;
             }
             processedSignatures.add(sig);
+            if (tx.timestamp == null || tx.timestamp <= minTimestampSec) {
+              console.log(
+                `Ignoring startup/old WS tx ${sig.slice(0, 8)}... ` +
+                `(tx=${tx.timestamp ?? "?"}, start=${minTimestampSec})`
+              );
+              return;
+            }
             const swap = extractSwap(tx, wallet);
             if (swap) {
               console.log(`⚡ WS detected swap ${sig.slice(0, 8)}…`);
