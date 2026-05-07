@@ -27,29 +27,40 @@ export async function getTokenBalance(
   owner: PublicKey,
   mint: string
 ): Promise<number> {
-  const mintKey = new PublicKey(mint);
-  try {
-    const direct = await readConnection.getParsedTokenAccountsByOwner(owner, {
-      mint: mintKey,
-    });
-    const directTotal = sumParsedTokenAccounts(direct.value);
-    if (directTotal > 0) {
-      return directTotal;
-    }
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    console.warn(
-      `Token balance lookup by mint failed for ${mint.slice(0, 8)}...; scanning token accounts instead: ${msg}`
-    );
-  }
-
   let total = 0;
+  let hadRpcSuccess = false;
+
+  try {
+    const resp = await readConnection.getParsedTokenAccountsByOwner(owner, {
+      mint: new PublicKey(mint),
+    });
+    hadRpcSuccess = true;
+    for (const acct of resp.value) {
+      const parsed = acct.account.data as
+        | {
+            parsed?: {
+              info?: {
+                tokenAmount?: { amount?: string };
+              };
+            };
+          }
+        | undefined;
+      const amountStr = parsed?.parsed?.info?.tokenAmount?.amount;
+      if (typeof amountStr === "string") {
+        total += parseInt(amountStr, 10);
+      }
+    }
+    return total;
+  } catch {
+    // Fall back to program scans below for RPCs that do not support mint filters.
+  }
 
   for (const programId of TOKEN_PROGRAM_IDS) {
     try {
       const resp = await readConnection.getParsedTokenAccountsByOwner(owner, {
         programId,
       });
+      hadRpcSuccess = true;
       for (const acct of resp.value) {
         const parsed = acct.account.data as
           | {
@@ -68,49 +79,15 @@ export async function getTokenBalance(
           total += parseInt(amountStr, 10);
         }
       }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.warn(
-        `Token account scan failed for ${programId.toBase58().slice(0, 8)}... while checking ${mint.slice(0, 8)}...: ${msg}`
-      );
+    } catch {
       // Try the next token program.
     }
   }
 
-  return total;
-}
-
-function sumParsedTokenAccounts(
-  accounts: Array<{
-    account: {
-      data:
-        | Buffer
-        | {
-            parsed?: {
-              info?: {
-                tokenAmount?: { amount?: string };
-              };
-            };
-          };
-    };
-  }>
-): number {
-  let total = 0;
-  for (const acct of accounts) {
-    const parsed = acct.account.data as
-      | {
-          parsed?: {
-            info?: {
-              tokenAmount?: { amount?: string };
-            };
-          };
-        }
-      | undefined;
-    const amountStr = parsed?.parsed?.info?.tokenAmount?.amount;
-    if (typeof amountStr === "string") {
-      total += parseInt(amountStr, 10);
-    }
+  if (!hadRpcSuccess) {
+    throw new Error(`Could not fetch token balance for ${mint}`);
   }
+
   return total;
 }
 

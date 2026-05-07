@@ -102,20 +102,6 @@ export function getPosition(mint: string): PositionSnapshot | null {
   return p ? snapshot(p) : null;
 }
 
-export function markPositionClosedAsDust(mint: string): PositionSnapshot | null {
-  const p = positions.get(mint);
-  if (!p) return null;
-
-  const heldRaw = p.totalBoughtRaw - p.totalSoldRaw;
-  if (heldRaw > 0) {
-    p.totalSoldRaw += heldRaw;
-    p.sellsCount++;
-    p.lastTradeAt = Date.now();
-  }
-
-  return snapshot(p);
-}
-
 /** Clear all tracked positions. Used by the "reset" keyboard shortcut. */
 export function resetPositions(): void {
   positions.clear();

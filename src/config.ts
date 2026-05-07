@@ -21,8 +21,18 @@ const MIRROR_RETRY_SLIPPAGE_BPS = parseInt(
   process.env.MIRROR_RETRY_SLIPPAGE_BPS ?? "1500",
   10
 ) as number;
-const COPY_SELL_FULL_BALANCE_RAW = (process.env.COPY_SELL_FULL_BALANCE ?? "true").toLowerCase();
-const MIN_SELL_OUTPUT_SOL = parseFloat(process.env.MIN_SELL_OUTPUT_SOL ?? "0");
+
+function parseOptionalPositiveNumber(value: string | undefined): number | null {
+  if (value == null || value.trim() === "") return null;
+  const n = parseFloat(value);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+function parseOptionalPositiveInteger(value: string | undefined): number | null {
+  if (value == null || value.trim() === "") return null;
+  const n = parseInt(value, 10);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
 
 /** Tracked wallet addresses (comma-separated in TRACKED_WALLETS). */
 const TRACKED_WALLETS_RAW = process.env.TRACKED_WALLETS ?? "";
@@ -37,6 +47,10 @@ const MIN_BUY_SOL = parseFloat(process.env.MIN_BUY_SOL ?? "0.01");
 const MAX_BUY_SOL = parseFloat(process.env.MAX_BUY_SOL ?? "1");
 /** SOL reserve amount to keep for gas fees. Prevents wallet from going to 0 SOL. Default 0.1 SOL. */
 const SOL_RESERVE = parseFloat(process.env.SOL_RESERVE ?? "0.1");
+/** Optional max entry price impact. Empty/0 = disabled. */
+export const maxEntryPriceImpactPct = parseOptionalPositiveNumber(
+  process.env.MAX_ENTRY_PRICE_IMPACT_PCT
+);
 
 /** Helius staked RPC URL for read-only operations (blockhash, ALTs). */
 export const readRpcUrl =
@@ -83,6 +97,9 @@ const BUY_ONCE_RAW = (process.env.BUY_ONCE_PER_TOKEN ?? "true").toLowerCase();
 export const buyOncePerToken =
   BUY_ONCE_RAW !== "false" && BUY_ONCE_RAW !== "0" && BUY_ONCE_RAW !== "no";
 
+/** Optional cap on simultaneously open token positions. Empty/0 = no cap. */
+export const maxOpenPositions = parseOptionalPositiveInteger(process.env.MAX_OPEN_POSITIONS);
+
 /**
  * When true (default), fetch & display market cap from DexScreener whenever available.
  * Note: can be inaccurate for fresh pump.fun tokens (wrong pool picked, stale data).
@@ -91,6 +108,16 @@ export const buyOncePerToken =
 const SHOW_MC_RAW = (process.env.SHOW_MARKET_CAP ?? "true").toLowerCase();
 export const showMarketCap =
   SHOW_MC_RAW !== "false" && SHOW_MC_RAW !== "0" && SHOW_MC_RAW !== "no";
+
+/** Skip pump.fun tokens identified as Mayhem Mode. Default off so the hot path has zero Mayhem-filter cost. */
+const BLOCK_MAYHEM_RAW = (process.env.BLOCK_PUMPFUN_MAYHEM ?? "false").toLowerCase();
+export const blockPumpfunMayhem =
+  BLOCK_MAYHEM_RAW !== "false" && BLOCK_MAYHEM_RAW !== "0" && BLOCK_MAYHEM_RAW !== "no";
+
+/** When true, skip pump.fun buys if Mayhem status cannot be verified. */
+const MAYHEM_STRICT_RAW = (process.env.PUMPFUN_MAYHEM_STRICT ?? "false").toLowerCase();
+export const pumpfunMayhemStrict =
+  MAYHEM_STRICT_RAW === "true" || MAYHEM_STRICT_RAW === "1" || MAYHEM_STRICT_RAW === "yes";
 
 /** Telegram Bot Token for notifications. Get from @BotFather. */
 export const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN ?? "";
@@ -109,18 +136,6 @@ export const mirrorSlippageBps = MIRROR_SLIPPAGE_BPS;
 
 /** One-time retry slippage for Jupiter 6001 slippage failures. 1500 = 15%. */
 export const mirrorRetrySlippageBps = MIRROR_RETRY_SLIPPAGE_BPS;
-
-/** When true, copy-sells try 100% of live token balance first, then fall back to buffered sizes. */
-export const copySellFullBalance =
-  COPY_SELL_FULL_BALANCE_RAW !== "false" &&
-  COPY_SELL_FULL_BALANCE_RAW !== "0" &&
-  COPY_SELL_FULL_BALANCE_RAW !== "no";
-
-/** Skip copy-sells whose Jupiter quote would receive less than this many SOL. */
-export const minSellOutputLamports = Math.max(
-  0,
-  Math.round((Number.isFinite(MIN_SELL_OUTPUT_SOL) ? MIN_SELL_OUTPUT_SOL : 0) * LAMPORTS_PER_SOL)
-);
 
 /** Compute Unit Limit override. Set 0 to keep Jupiter's dynamic estimate. */
 const COMPUTE_UNIT_LIMIT = parseInt(process.env.COMPUTE_UNIT_LIMIT ?? "1400000", 10);
@@ -143,23 +158,27 @@ export const pollIntervalMs = Math.max(
   parseInt(process.env.POLL_INTERVAL_MS ?? "2500", 10)
 );
 
-function envBool(value: string | undefined): boolean {
-  const raw = (value ?? "").toLowerCase();
-  return raw === "true" || raw === "1" || raw === "yes";
-}
+/** Optional risk exits. Percent values are measured against remaining cost basis. Empty/0 = disabled. */
+export const stopLossPct = parseOptionalPositiveNumber(process.env.STOP_LOSS_PCT);
+export const takeProfitPct = parseOptionalPositiveNumber(process.env.TAKE_PROFIT_PCT);
+export const riskCheckIntervalMs = Math.max(
+  1_000,
+  parseInt(process.env.RISK_CHECK_INTERVAL_MS ?? "5000", 10)
+);
+/** Stop-loss-only grace period after a buy. Take-profit can still trigger immediately. */
+export const minHoldBeforeStopLossMs = Math.max(
+  0,
+  parseInt(process.env.MIN_HOLD_BEFORE_STOP_LOSS_MS ?? "0", 10)
+);
+export const riskControlsEnabled = stopLossPct != null || takeProfitPct != null;
 
-/** Dry-run mode: quote only; do not build, broadcast, confirm, or record paper positions. */
-export const dryRunMode = envBool(process.env.DRY_RUN);
-
-/** Simulation mode: paper trade; build the swap transaction but skip broadcast/confirmation. */
+/** Simulation/dry-run mode: no transactions sent, only log what would be done. Set SIMULATION_MODE=true or DRY_RUN=true. */
+const SIMULATION_RAW =
+  process.env.SIMULATION_MODE ?? process.env.DRY_RUN ?? "";
 export const simulationMode =
-  !dryRunMode && envBool(process.env.SIMULATION_MODE);
-
-export const tradingMode = dryRunMode
-  ? "DRY_RUN"
-  : simulationMode
-  ? "SIMULATION"
-  : "LIVE";
+  SIMULATION_RAW === "true" ||
+  SIMULATION_RAW === "1" ||
+  SIMULATION_RAW.toLowerCase() === "yes";
 
 /** In simulation mode, use this as your starting SOL balance for display (e.g. 10 = 10 SOL). Set SIMULATION_SOL_BALANCE or STARTING_SOL_BALANCE. */
 const SIM_SOL_RAW =

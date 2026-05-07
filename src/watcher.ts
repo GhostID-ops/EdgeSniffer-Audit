@@ -14,6 +14,10 @@ const SWAP_TYPES = new Set(["SWAP", "SWAP_EXACT_OUT", "SWAP_WITH_PRICE_IMPACT"])
 const wsParseInFlight = new Set<string>();
 const WS_PARSE_ATTEMPTS = 12;
 const WS_PARSE_RETRY_MS = 250;
+const HELIUS_MIN_REQUEST_GAP_MS = 600;
+const HELIUS_RATE_LIMIT_COOLDOWN_MS = 60_000;
+let heliusNextRequestAt = 0;
+let heliusCooldownUntil = 0;
 const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
 );
@@ -21,6 +25,21 @@ const TOKEN_PROGRAM_IDS = [
   new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
   new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPu8NQkMZ6H4hWzPvyxC"),
 ];
+
+async function sleep(ms: number): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function waitForHeliusSlot(): Promise<void> {
+  const now = Date.now();
+  const waitMs = Math.max(heliusCooldownUntil - now, heliusNextRequestAt - now, 0);
+  if (waitMs > 0) await sleep(waitMs);
+  heliusNextRequestAt = Date.now() + HELIUS_MIN_REQUEST_GAP_MS;
+}
+
+function noteHeliusRateLimit(): void {
+  heliusCooldownUntil = Math.max(heliusCooldownUntil, Date.now() + HELIUS_RATE_LIMIT_COOLDOWN_MS);
+}
 
 type HeliusParsedTx = {
   signature: string;
@@ -117,12 +136,14 @@ async function fetchWithRetry(url: string, init?: RequestInit): Promise<Response
   let lastErr: unknown;
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
+      await waitForHeliusSlot();
       const response = await fetch(url, {
         ...init,
         signal: AbortSignal.timeout(8000),
       });
       if (!response.ok) {
         if (response.status === 429 && attempt < MAX_ATTEMPTS) {
+          noteHeliusRateLimit();
           // Rate limited - use exponential backoff with jitter
           const baseDelay = 1000; // 1 second base
           const maxDelay = 10000; // 10 second max
@@ -131,13 +152,13 @@ async function fetchWithRetry(url: string, init?: RequestInit): Promise<Response
           const delay = exponentialDelay + jitter;
           
           console.warn(`?? Rate limited (429), retrying in ${Math.round(delay)}ms... (attempt ${attempt}/${MAX_ATTEMPTS})`);
-          await new Promise((r) => setTimeout(r, delay));
+          await sleep(delay);
           lastErr = new Error(`Rate limited: 429`);
           continue;
         }
         if (response.status >= 500 && attempt < MAX_ATTEMPTS) {
           lastErr = new Error(`HTTP ${response.status}`);
-          await new Promise((r) => setTimeout(r, 300 * attempt));
+          await sleep(300 * attempt);
           continue;
         }
       }
@@ -145,7 +166,7 @@ async function fetchWithRetry(url: string, init?: RequestInit): Promise<Response
     } catch (err) {
       lastErr = err;
       if (attempt >= MAX_ATTEMPTS) break;
-      await new Promise((r) => setTimeout(r, 300 * attempt));
+      await sleep(300 * attempt);
     }
   }
   throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
@@ -179,6 +200,7 @@ async function parseTransactions(signatures: string[]): Promise<HeliusParsedTx[]
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
+      await waitForHeliusSlot();
       const response = await fetch(heliusEnhancedTransactionsUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -189,6 +211,7 @@ async function parseTransactions(signatures: string[]): Promise<HeliusParsedTx[]
         const text = await response.text();
         // Retry on 5xx and 429; fail fast on other 4xx.
         if (response.status === 429 && attempt < MAX_ATTEMPTS) {
+          noteHeliusRateLimit();
           // Rate limited - use exponential backoff with jitter
           const baseDelay = 2000; // 2 second base for enhanced API
           const maxDelay = 15000; // 15 second max
@@ -197,13 +220,13 @@ async function parseTransactions(signatures: string[]): Promise<HeliusParsedTx[]
           const delay = exponentialDelay + jitter;
           
           console.warn(`?? Enhanced API rate limited (429), retrying in ${Math.round(delay)}ms... (attempt ${attempt}/${MAX_ATTEMPTS})`);
-          await new Promise((r) => setTimeout(r, delay));
+          await sleep(delay);
           lastErr = new Error(`Enhanced API rate limited: 429`);
           continue;
         }
         if (response.status >= 500 && attempt < MAX_ATTEMPTS) {
           lastErr = new Error(`Helius ${response.status}: ${text.slice(0, 120)}`);
-          await new Promise((r) => setTimeout(r, 300 * attempt));
+          await sleep(300 * attempt);
           continue;
         }
         throw new Error(`Helius parse transactions failed: ${response.status} ${text}`);
@@ -212,7 +235,7 @@ async function parseTransactions(signatures: string[]): Promise<HeliusParsedTx[]
     } catch (err) {
       lastErr = err;
       if (attempt >= MAX_ATTEMPTS) break;
-      await new Promise((r) => setTimeout(r, 300 * attempt));
+      await sleep(300 * attempt);
     }
   }
   throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
@@ -223,7 +246,7 @@ async function parseTransactionsSoon(signatures: string[]): Promise<HeliusParsed
     const parsed = await parseTransactions(signatures);
     if (parsed.length > 0) return parsed;
     if (attempt < WS_PARSE_ATTEMPTS) {
-      await new Promise((r) => setTimeout(r, WS_PARSE_RETRY_MS));
+      await sleep(WS_PARSE_RETRY_MS);
     }
   }
   return [];
@@ -313,52 +336,43 @@ function extractTransferSwap(tx: HeliusParsedTx, wallet: string): DetectedSwap |
     if (nt.fromUserAccount === wallet) nativeNet -= amt;
   }
 
-  // Net token flow for wallet, per mint. Some Raydium routes use WSOL token
-  // accounts instead of native SOL transfers, so track WSOL as the SOL leg.
+  // Net token flow for wallet, per mint.
   const tokenNet = new Map<string, TokenNet>();
-  let wrappedSolNet = 0;
   for (const tt of tokenTransfers) {
-    if (!tt.mint) continue;
+    if (!tt.mint || tt.mint === WRAPPED_SOL_MINT) continue;
     const decimals = typeof tt.decimals === "number" ? tt.decimals : 0;
     const amtStr = tt.tokenAmount;
     if (amtStr == null) continue;
     const raw = Math.floor(parseFloat(amtStr) * Math.pow(10, decimals));
     if (!Number.isFinite(raw) || raw === 0) continue;
-    const addNet = tt.mint === WRAPPED_SOL_MINT
-      ? (amount: number) => {
-          wrappedSolNet += amount;
-        }
-      : (amount: number) => addTokenNet(tokenNet, tt.mint, amount, decimals);
-
-    if (tt.toUserAccount === wallet) addNet(raw);
-    if (tt.fromUserAccount === wallet) addNet(-raw);
+    if (tt.toUserAccount === wallet) addTokenNet(tokenNet, tt.mint, raw, decimals);
+    if (tt.fromUserAccount === wallet) addTokenNet(tokenNet, tt.mint, -raw, decimals);
     if (!tt.toUserAccount && isWalletTokenAccount(wallet, tt.mint, tt.toTokenAccount)) {
-      addNet(raw);
+      addTokenNet(tokenNet, tt.mint, raw, decimals);
     }
     if (!tt.fromUserAccount && isWalletTokenAccount(wallet, tt.mint, tt.fromTokenAccount)) {
-      addNet(-raw);
+      addTokenNet(tokenNet, tt.mint, -raw, decimals);
     }
   }
 
   // Pick the token with the largest |net| for this wallet.
   const { mint: bestMint, net: bestNet, abs: bestAbs } = getBestTokenNet(tokenNet);
   if (!bestMint || bestAbs === 0) return null;
-  const solNet = Math.abs(wrappedSolNet) > Math.abs(nativeNet) ? wrappedSolNet : nativeNet;
 
   // BUY: SOL out, token in.
-  if (solNet < 0 && bestNet > 0) {
+  if (nativeNet < 0 && bestNet > 0) {
     return {
       signature: tx.signature,
       wallet,
       inputMint: WRAPPED_SOL_MINT,
       outputMint: bestMint,
-      amountRaw: Math.abs(solNet),
+      amountRaw: Math.abs(nativeNet),
       isNativeInput: true,
     };
   }
 
   // SELL: token out, SOL in.
-  if (solNet > 0 && bestNet < 0) {
+  if (nativeNet > 0 && bestNet < 0) {
     return {
       signature: tx.signature,
       wallet,
@@ -391,43 +405,37 @@ function extractFromAccountData(tx: HeliusParsedTx, wallet: string): DetectedSwa
 
   // Sum token balance changes where the ATA's owner (userAccount) is our wallet, grouped by mint.
   const tokenNet = new Map<string, TokenNet>();
-  let wrappedSolNet = 0;
   for (const a of accountData) {
     for (const tbc of a.tokenBalanceChanges ?? []) {
       const belongsToWallet =
         tbc.userAccount === wallet ||
         isWalletTokenAccount(wallet, tbc.mint, tbc.tokenAccount ?? a.account);
       if (!belongsToWallet) continue;
-      if (!tbc.mint) continue;
+      if (!tbc.mint || tbc.mint === WRAPPED_SOL_MINT) continue;
       const raw = parseFloat(tbc.rawTokenAmount?.tokenAmount ?? "0");
       if (!Number.isFinite(raw) || raw === 0) continue;
       const decimals = tbc.rawTokenAmount?.decimals ?? 0;
-      if (tbc.mint === WRAPPED_SOL_MINT) {
-        wrappedSolNet += raw;
-        continue;
-      }
       addTokenNet(tokenNet, tbc.mint, raw, decimals);
     }
   }
 
   const { mint: bestMint, net: bestNet, abs: bestAbs } = getBestTokenNet(tokenNet);
   if (!bestMint || bestAbs === 0) return null;
-  const solNet = Math.abs(wrappedSolNet) > Math.abs(nativeNet) ? wrappedSolNet : nativeNet;
 
   // BUY: SOL decreased, token increased.
-  if (solNet < 0 && bestNet > 0) {
+  if (nativeNet < 0 && bestNet > 0) {
     return {
       signature: tx.signature,
       wallet,
       inputMint: WRAPPED_SOL_MINT,
       outputMint: bestMint,
-      amountRaw: Math.abs(solNet),
+      amountRaw: Math.abs(nativeNet),
       isNativeInput: true,
     };
   }
 
   // SELL: SOL increased, token decreased.
-  if (solNet > 0 && bestNet < 0) {
+  if (nativeNet > 0 && bestNet < 0) {
     return {
       signature: tx.signature,
       wallet,
@@ -458,32 +466,24 @@ export async function getNewSwaps(
   processedSignatures: Set<string>,
   minTimestampSec: number = 0
 ): Promise<DetectedSwap[]> {
-  const perWallet = await Promise.all(
-    trackedWallets.map(async (wallet): Promise<DetectedSwap[]> => {
-      try {
-        const parsedList = await parseAddressHistory(wallet);
-        const swaps: DetectedSwap[] = [];
-        for (const tx of parsedList) {
-          if (!tx?.signature || processedSignatures.has(tx.signature)) continue;
-          processedSignatures.add(tx.signature);
-          // Ignore anything at or before startup. Helius timestamps are second-granularity,
-          // so strict `>` avoids replaying trades from the same second the bot boots.
-          if (tx.timestamp == null || tx.timestamp <= minTimestampSec) continue;
-          const swap = extractSwap(tx, wallet);
-          if (swap) {
-            swaps.push(swap);
-          }
-        }
-        return swaps;
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.warn(`⚠️  Watcher skip ${wallet.slice(0, 6)}…: ${msg}`);
-        return [];
+  const allSwaps: DetectedSwap[] = [];
+  for (const wallet of trackedWallets) {
+    try {
+      const parsedList = await parseAddressHistory(wallet, 5);
+      for (const tx of parsedList) {
+        if (!tx?.signature || processedSignatures.has(tx.signature)) continue;
+        processedSignatures.add(tx.signature);
+        if (tx.timestamp != null && tx.timestamp < minTimestampSec) continue;
+        const swap = extractSwap(tx, wallet);
+        if (swap) allSwaps.push(swap);
       }
-    })
-  );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Watcher skip ${wallet.slice(0, 6)}...: ${msg}`);
+    }
+  }
 
-  return perWallet.flat();
+  return allSwaps;
 }
 
 export type Unsubscribe = () => Promise<void>;
@@ -496,7 +496,6 @@ export type Unsubscribe = () => Promise<void>;
 export async function subscribeWalletSwaps(
   trackedWallets: string[],
   processedSignatures: Set<string>,
-  minTimestampSec: number,
   onSwap: (swap: DetectedSwap) => void
 ): Promise<Unsubscribe> {
   if (!websocketUrl) {
@@ -523,13 +522,6 @@ export async function subscribeWalletSwaps(
               return;
             }
             processedSignatures.add(sig);
-            if (tx.timestamp == null || tx.timestamp <= minTimestampSec) {
-              console.log(
-                `Ignoring startup/old WS tx ${sig.slice(0, 8)}... ` +
-                `(tx=${tx.timestamp ?? "?"}, start=${minTimestampSec})`
-              );
-              return;
-            }
             const swap = extractSwap(tx, wallet);
             if (swap) {
               console.log(`⚡ WS detected swap ${sig.slice(0, 8)}…`);
@@ -574,3 +566,4 @@ export async function subscribeWalletSwaps(
     }
   };
 }
+
