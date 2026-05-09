@@ -1,6 +1,7 @@
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, type VersionedTransactionResponse } from "@solana/web3.js";
 import {
   wsConnection,
+  readConnection,
   heliusEnhancedTransactionsUrl,
   heliusAddressTransactionsUrl,
   websocketUrl,
@@ -424,6 +425,7 @@ function extractFromAccountData(tx: HeliusParsedTx, wallet: string): DetectedSwa
 
   // BUY: SOL decreased, token increased.
   if (nativeNet < 0 && bestNet > 0) {
+    const decimals = tokenNet.get(bestMint)?.decimals ?? 0;
     return {
       signature: tx.signature,
       wallet,
@@ -431,6 +433,8 @@ function extractFromAccountData(tx: HeliusParsedTx, wallet: string): DetectedSwa
       outputMint: bestMint,
       amountRaw: Math.abs(nativeNet),
       isNativeInput: true,
+      counterpartyAmountRaw: bestNet,
+      counterpartyDecimals: decimals,
     };
   }
 
@@ -443,6 +447,8 @@ function extractFromAccountData(tx: HeliusParsedTx, wallet: string): DetectedSwa
       outputMint: WRAPPED_SOL_MINT,
       amountRaw: Math.abs(bestNet),
       isNativeInput: false,
+      counterpartyAmountRaw: nativeNet,
+      counterpartyDecimals: 9,
     };
   }
 
@@ -458,12 +464,159 @@ function extractSwap(tx: HeliusParsedTx, wallet: string): DetectedSwap | null {
 }
 
 /**
+ * Resolve every account key referenced by a versioned transaction (static + ALT-loaded).
+ * Returns base58 strings so we can match against the wallet address by string equality.
+ */
+function resolveAccountKeys(tx: VersionedTransactionResponse): string[] {
+  const message = tx.transaction.message;
+  const staticKeys = (
+    "staticAccountKeys" in message
+      ? message.staticAccountKeys
+      : (message as unknown as { accountKeys: PublicKey[] }).accountKeys ?? []
+  ) as PublicKey[];
+  const loaded = tx.meta?.loadedAddresses;
+  const writable = loaded?.writable ?? [];
+  const readonly = loaded?.readonly ?? [];
+  return [...staticKeys, ...writable, ...readonly].map((k) =>
+    typeof k === "string" ? k : k.toBase58()
+  );
+}
+
+/**
+ * Direct extraction from a raw `getTransaction` response — uses balance deltas (preBalances/postBalances
+ * and preTokenBalances/postTokenBalances) to classify a SOL↔memecoin swap. This is the fast path; it
+ * bypasses the Helius enhanced-parse round-trip and its 600-1500ms indexing lag.
+ */
+function extractSwapFromRawTx(
+  tx: VersionedTransactionResponse,
+  wallet: string,
+  signature: string
+): DetectedSwap | null {
+  const meta = tx.meta;
+  if (!meta || meta.err) return null;
+
+  const accountKeys = resolveAccountKeys(tx);
+  const walletIdx = accountKeys.indexOf(wallet);
+  if (walletIdx < 0) return null;
+
+  const preLamports = meta.preBalances?.[walletIdx] ?? 0;
+  const postLamports = meta.postBalances?.[walletIdx] ?? 0;
+  const fee = meta.fee ?? 0;
+  // Add fee back so amountRaw reflects swap size, not gross outflow (only the signer pays the fee).
+  const isSigner = walletIdx === 0;
+  const nativeNet = postLamports - preLamports + (isSigner ? fee : 0);
+
+  // Build pre and post token snapshots for our wallet only, indexed by accountIndex.
+  type TokenSnap = { mint: string; amount: bigint; decimals: number };
+  const preMap = new Map<number, TokenSnap>();
+  for (const ptb of meta.preTokenBalances ?? []) {
+    if (ptb.owner !== wallet) continue;
+    if (ptb.mint === WRAPPED_SOL_MINT) continue;
+    preMap.set(ptb.accountIndex, {
+      mint: ptb.mint,
+      amount: BigInt(ptb.uiTokenAmount.amount),
+      decimals: ptb.uiTokenAmount.decimals,
+    });
+  }
+
+  const tokenNet = new Map<string, TokenNet>();
+  const handledIndices = new Set<number>();
+  for (const ptb of meta.postTokenBalances ?? []) {
+    if (ptb.owner !== wallet) continue;
+    if (ptb.mint === WRAPPED_SOL_MINT) continue;
+    handledIndices.add(ptb.accountIndex);
+    const pre = preMap.get(ptb.accountIndex);
+    const preAmount = pre?.amount ?? 0n;
+    const postAmount = BigInt(ptb.uiTokenAmount.amount);
+    const delta = Number(postAmount - preAmount);
+    if (delta === 0) continue;
+    addTokenNet(tokenNet, ptb.mint, delta, ptb.uiTokenAmount.decimals);
+  }
+  // Account closed during the tx (existed pre, gone post) — count its full balance as outflow.
+  for (const [idx, pre] of preMap) {
+    if (handledIndices.has(idx)) continue;
+    addTokenNet(tokenNet, pre.mint, -Number(pre.amount), pre.decimals);
+  }
+
+  const { mint: bestMint, net: bestNet, abs: bestAbs } = getBestTokenNet(tokenNet);
+  if (!bestMint || bestAbs === 0) return null;
+
+  // BUY: SOL out, token in.
+  if (nativeNet < 0 && bestNet > 0) {
+    const decimals = tokenNet.get(bestMint)?.decimals ?? 0;
+    return {
+      signature,
+      wallet,
+      inputMint: WRAPPED_SOL_MINT,
+      outputMint: bestMint,
+      amountRaw: Math.abs(nativeNet),
+      isNativeInput: true,
+      counterpartyAmountRaw: bestNet, // tokens received
+      counterpartyDecimals: decimals,
+    };
+  }
+
+  // SELL: token out, SOL in.
+  if (nativeNet > 0 && bestNet < 0) {
+    return {
+      signature,
+      wallet,
+      inputMint: bestMint,
+      outputMint: WRAPPED_SOL_MINT,
+      amountRaw: Math.abs(bestNet),
+      isNativeInput: false,
+      counterpartyAmountRaw: nativeNet, // SOL received
+      counterpartyDecimals: 9,
+    };
+  }
+
+  return null;
+}
+
+/**
+ * Try to fetch and extract a swap directly from the chain via getTransaction. Retries briefly while
+ * the tx is still propagating; returns null if it never appears or isn't a SOL↔memecoin swap.
+ *
+ * This is the WS fast path. On hit, saves ~600-1500ms vs the Helius enhanced-parse round-trip.
+ */
+const RAW_TX_ATTEMPTS = 6;
+const RAW_TX_RETRY_MS = 75;
+
+async function getRawTxSwap(
+  signature: string,
+  wallet: string
+): Promise<DetectedSwap | null> {
+  for (let attempt = 0; attempt < RAW_TX_ATTEMPTS; attempt++) {
+    try {
+      const tx = await readConnection.getTransaction(signature, {
+        maxSupportedTransactionVersion: 0,
+        commitment: "confirmed",
+      });
+      if (tx) {
+        // Tx is visible — extract or give up immediately (no further retries).
+        return extractSwapFromRawTx(tx, wallet, signature);
+      }
+    } catch {
+      // Transient RPC error — retry.
+    }
+    if (attempt < RAW_TX_ATTEMPTS - 1) await sleep(RAW_TX_RETRY_MS);
+  }
+  return null;
+}
+
+/** Minimal surface used by watcher — accepts either a Set or a TTL-bounded wrapper. */
+export interface SignatureDedupe {
+  has(sig: string): boolean;
+  add(sig: string): void;
+}
+
+/**
  * Poll fallback: fetch recent parsed txs per wallet (one round-trip each) and return unseen swaps
  * that landed at or after `minTimestampSec`. Used as a safety net in case the WebSocket drops.
  */
 export async function getNewSwaps(
   trackedWallets: string[],
-  processedSignatures: Set<string>,
+  processedSignatures: SignatureDedupe,
   minTimestampSec: number = 0
 ): Promise<DetectedSwap[]> {
   const allSwaps: DetectedSwap[] = [];
@@ -495,7 +648,7 @@ export type Unsubscribe = () => Promise<void>;
  */
 export async function subscribeWalletSwaps(
   trackedWallets: string[],
-  processedSignatures: Set<string>,
+  processedSignatures: SignatureDedupe,
   onSwap: (swap: DetectedSwap) => void
 ): Promise<Unsubscribe> {
   if (!websocketUrl) {
@@ -514,30 +667,53 @@ export async function subscribeWalletSwaps(
           const sig = logs.signature;
           if (!sig || logs.err || processedSignatures.has(sig) || wsParseInFlight.has(sig)) return;
           wsParseInFlight.add(sig);
+          const detectedAt = Date.now();
           try {
-            const parsed = await parseTransactionsSoon([sig]);
-            const tx = parsed[0];
-            if (!tx) {
-              console.log(`🔍 WS: no parsed tx for ${sig.slice(0, 8)}… (Helius returned nothing)`);
+            // Run both paths in parallel. Fast path = raw getTransaction (~150-300ms typical).
+            // Slow path = Helius enhanced parse (~600-1500ms typical, rich diagnostic output).
+            // If fast yields a swap we go immediately; otherwise we fall back to slow path.
+            const fastPromise = getRawTxSwap(sig, wallet).catch(() => null);
+            const slowPromise = parseTransactionsSoon([sig])
+              .then((parsed) => {
+                const tx = parsed[0];
+                return { tx, swap: tx ? extractSwap(tx, wallet) : null };
+              })
+              .catch(() => ({ tx: undefined as HeliusParsedTx | undefined, swap: null as DetectedSwap | null }));
+
+            let swap = await fastPromise;
+            let source: "raw" | "enhanced" = "raw";
+            let slowTx: HeliusParsedTx | undefined;
+
+            if (!swap) {
+              const slow = await slowPromise;
+              swap = slow.swap;
+              slowTx = slow.tx;
+              source = "enhanced";
+            }
+
+            processedSignatures.add(sig);
+
+            if (swap) {
+              const ms = Date.now() - detectedAt;
+              console.log(`⚡ WS detected swap ${sig.slice(0, 8)}… (${source}, ${ms}ms)`);
+              onSwap(swap);
               return;
             }
-            processedSignatures.add(sig);
-            const swap = extractSwap(tx, wallet);
-            if (swap) {
-              console.log(`⚡ WS detected swap ${sig.slice(0, 8)}…`);
-              onSwap(swap);
-            } else {
-              // Diagnostic: WS caught a tx we couldn't extract. Useful to see why sells are missed.
-              const hasSwapEvent = Boolean((tx as { events?: { swap?: unknown } }).events?.swap);
-              const tokenXfers = ((tx as { tokenTransfers?: unknown[] }).tokenTransfers ?? []).length;
-              const nativeXfers = ((tx as { nativeTransfers?: unknown[] }).nativeTransfers ?? []).length;
-              const acctData = ((tx as { accountData?: unknown[] }).accountData ?? []).length;
-              console.log(
-                `🔍 WS: no swap extracted from ${sig.slice(0, 8)}… ` +
-                `(type=${tx.type ?? "?"}, source=${tx.source ?? "?"}, ` +
-                `swapEvent=${hasSwapEvent}, tokenXfers=${tokenXfers}, nativeXfers=${nativeXfers}, accountData=${acctData})`
-              );
+
+            // Neither path found a swap. Emit diagnostic from the enhanced tx if we got one.
+            if (!slowTx) {
+              console.log(`🔍 WS: no parsed tx for ${sig.slice(0, 8)}… (raw + Helius both empty)`);
+              return;
             }
+            const hasSwapEvent = Boolean((slowTx as { events?: { swap?: unknown } }).events?.swap);
+            const tokenXfers = ((slowTx as { tokenTransfers?: unknown[] }).tokenTransfers ?? []).length;
+            const nativeXfers = ((slowTx as { nativeTransfers?: unknown[] }).nativeTransfers ?? []).length;
+            const acctData = ((slowTx as { accountData?: unknown[] }).accountData ?? []).length;
+            console.log(
+              `🔍 WS: no swap extracted from ${sig.slice(0, 8)}… ` +
+                `(type=${slowTx.type ?? "?"}, source=${slowTx.source ?? "?"}, ` +
+                `swapEvent=${hasSwapEvent}, tokenXfers=${tokenXfers}, nativeXfers=${nativeXfers}, accountData=${acctData})`
+            );
           } catch (err) {
             const msg = err instanceof Error ? err.message : String(err);
             console.warn(`⚠️  WS parse skip ${sig.slice(0, 8)}…: ${msg}`);

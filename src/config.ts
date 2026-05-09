@@ -47,9 +47,95 @@ const MIN_BUY_SOL = parseFloat(process.env.MIN_BUY_SOL ?? "0.01");
 const MAX_BUY_SOL = parseFloat(process.env.MAX_BUY_SOL ?? "1");
 /** SOL reserve amount to keep for gas fees. Prevents wallet from going to 0 SOL. Default 0.1 SOL. */
 const SOL_RESERVE = parseFloat(process.env.SOL_RESERVE ?? "0.1");
-/** Optional max entry price impact. Empty/0 = disabled. */
+
+/**
+ * Soft cap on entry price impact (percent). When a buy quote exceeds this, the bot reduces size
+ * and re-quotes (rather than skipping the trade outright). If the reduced quote still exceeds
+ * the cap and the trade can't fit at MIN_BUY_SOL, the trade is skipped. Empty/0 = disabled.
+ */
 export const maxEntryPriceImpactPct = parseOptionalPositiveNumber(
   process.env.MAX_ENTRY_PRICE_IMPACT_PCT
+);
+/** Number of size-reduction attempts before giving up on the entry. Default 2. */
+export const maxImpactReduceAttempts = Math.max(
+  0,
+  parseInt(process.env.MAX_IMPACT_REDUCE_ATTEMPTS ?? "2", 10)
+);
+
+/**
+ * Maximum drift between source wallet's effective fill price and our quoted price (percent).
+ * If our price is more than this % above the source's, we skip — we're chasing, not copying.
+ * Empty/0 = disabled. Buys only.
+ */
+export const maxSourceDriftPct = parseOptionalPositiveNumber(process.env.MAX_SOURCE_DRIFT_PCT);
+
+/**
+ * Daily session loss limit in lamports. When cumulative realized PnL since session start drops
+ * below this threshold, new buys are blocked for the rest of the session. Existing positions can
+ * still exit. Empty/0 = disabled.
+ */
+const DAILY_LOSS_LIMIT_SOL = parseOptionalPositiveNumber(process.env.DAILY_LOSS_LIMIT_SOL);
+export const dailyLossLimitLamports =
+  DAILY_LOSS_LIMIT_SOL != null ? Math.round(DAILY_LOSS_LIMIT_SOL * LAMPORTS_PER_SOL) : null;
+
+/** When N losing trades fire in a row, pause new buys. 0 = disabled. */
+export const consecutiveLossLimit = Math.max(
+  0,
+  parseInt(process.env.CONSECUTIVE_LOSS_LIMIT ?? "0", 10)
+);
+/** Pause duration in ms after a circuit breaker trip. */
+export const circuitBreakerPauseMs = Math.max(
+  0,
+  parseInt(process.env.CIRCUIT_BREAKER_PAUSE_MS ?? "600000", 10)
+);
+
+/**
+ * Stair-step trailing stop: when a position's peak PnL clears `peakPct`, the effective stop
+ * threshold is raised to `floorPct` (signed — can be 0, 5, -5, etc).
+ * Format: "peakPct:floorPct,peakPct:floorPct,..." — empty string disables.
+ * Example: "10:0,20:5" = "at +10% peak, lock breakeven; at +20% peak, lock +5%".
+ *
+ * Steps are sorted ascending by peakPct internally. Effective stop = max(steps that have triggered),
+ * starting from the base -STOP_LOSS_PCT.
+ */
+type TrailingStep = { peakPct: number; floorPct: number };
+function parseTrailingSteps(raw: string | undefined): TrailingStep[] {
+  if (!raw || raw.trim() === "") return [];
+  const out: TrailingStep[] = [];
+  for (const piece of raw.split(",")) {
+    const [pkRaw, flRaw] = piece.split(":");
+    if (pkRaw == null || flRaw == null) continue;
+    const peakPct = parseFloat(pkRaw);
+    const floorPct = parseFloat(flRaw);
+    if (!Number.isFinite(peakPct) || !Number.isFinite(floorPct)) continue;
+    out.push({ peakPct, floorPct });
+  }
+  out.sort((a, b) => a.peakPct - b.peakPct);
+  return out;
+}
+export const trailingSteps = parseTrailingSteps(process.env.TRAILING_STEPS);
+export const trailingEnabled = trailingSteps.length > 0;
+
+/**
+ * When true (default), buys whose output mint is a pre-graduation pump.fun bonding-curve token
+ * are routed directly to the pump.fun program — bypassing Jupiter entirely. Falls back to Jupiter
+ * for graduated tokens or when curve detection fails.
+ */
+const PUMPFUN_DIRECT_RAW = (process.env.PUMPFUN_DIRECT_ENABLED ?? "true").toLowerCase();
+export const pumpfunDirectEnabled =
+  PUMPFUN_DIRECT_RAW !== "false" && PUMPFUN_DIRECT_RAW !== "0" && PUMPFUN_DIRECT_RAW !== "no";
+
+/**
+ * Dynamic priority fees: background poll of getRecentPrioritizationFees on pump.fun program;
+ * effective fee = max(static_floor, p75 of recent fees). Default ON.
+ * The static PRIORITY_FEE_MICRO_LAMPORTS is the floor — we never go below it.
+ */
+const DYN_FEE_RAW = (process.env.DYNAMIC_PRIORITY_FEE_ENABLED ?? "true").toLowerCase();
+export const dynamicPriorityFeeEnabled =
+  DYN_FEE_RAW !== "false" && DYN_FEE_RAW !== "0" && DYN_FEE_RAW !== "no";
+export const dynamicPriorityFeeRefreshMs = Math.max(
+  1000,
+  parseInt(process.env.DYNAMIC_PRIORITY_FEE_REFRESH_MS ?? "5000", 10)
 );
 
 /** Helius staked RPC URL for read-only operations (blockhash, ALTs). */
@@ -66,7 +152,7 @@ export const senderEndpointUrl = SENDER_ENDPOINT;
 /** Helius enhanced transactions API (parse transactions). POST with { transactions: [sigs] }. */
 export const heliusEnhancedTransactionsUrl =
   HELIUS_API_KEY.length > 0
-    ? `https://api-mainnet.helius-rpc.com/v0/transactions?api-key=${HELIUS_API_KEY}`
+    ? `https://api-mainnet.helius-rpc.com/v0/transactions/?api-key=${HELIUS_API_KEY}`
     : "";
 
 /** Helius Parse Transaction History base. GET {base}/{address}/transactions?api-key=... */
@@ -125,6 +211,10 @@ export const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN ?? "";
 /** Telegram Chat ID for notifications. Get from getUpdates API. */
 export const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID ?? "";
 
+/** Optional Telegram group/channel chat ID for bot mode/status broadcasts. */
+export const TELEGRAM_BROADCAST_CHAT_ID =
+  process.env.TELEGRAM_BROADCAST_CHAT_ID ?? "";
+
 /** Tip amount in lamports (default 65_000 = 0.000065 SOL). Configurable via TIP_LAMPORTS. */
 export const tipLamports = TIP_LAMPORTS;
 
@@ -161,16 +251,77 @@ export const pollIntervalMs = Math.max(
 /** Optional risk exits. Percent values are measured against remaining cost basis. Empty/0 = disabled. */
 export const stopLossPct = parseOptionalPositiveNumber(process.env.STOP_LOSS_PCT);
 export const takeProfitPct = parseOptionalPositiveNumber(process.env.TAKE_PROFIT_PCT);
-export const riskCheckIntervalMs = Math.max(
-  1_000,
-  parseInt(process.env.RISK_CHECK_INTERVAL_MS ?? "5000", 10)
+
+/**
+ * Tiered risk-check cadence. Each position falls into one of three buckets per loop tick:
+ *   - "fast": within riskFastWindowMs of the buy — every riskFastIntervalMs.
+ *   - "near": last-known PnL projects to within riskNearTriggerPct points of TP/SL — every riskNearTriggerIntervalMs.
+ *   - "normal": otherwise — every riskNormalIntervalMs.
+ * Setting RISK_CHECK_INTERVAL_MS still works as a back-compat alias for the normal bucket.
+ */
+export const riskFastIntervalMs = Math.max(
+  100,
+  parseInt(process.env.RISK_FAST_INTERVAL_MS ?? "500", 10)
 );
-/** Stop-loss-only grace period after a buy. Take-profit can still trigger immediately. */
+export const riskFastWindowMs = Math.max(
+  0,
+  parseInt(process.env.RISK_FAST_WINDOW_MS ?? "20000", 10)
+);
+export const riskNearTriggerIntervalMs = Math.max(
+  100,
+  parseInt(process.env.RISK_NEAR_TRIGGER_INTERVAL_MS ?? "400", 10)
+);
+export const riskNormalIntervalMs = Math.max(
+  250,
+  parseInt(
+    process.env.RISK_NORMAL_INTERVAL_MS ?? process.env.RISK_CHECK_INTERVAL_MS ?? "1000",
+    10
+  )
+);
+/** Distance in PnL percentage points from a trigger that counts as "near". */
+export const riskNearTriggerPct = Math.max(
+  0,
+  parseFloat(process.env.RISK_NEAR_TRIGGER_PCT ?? "8")
+);
+/**
+ * Worst-case projected PnL drift per second since the last Jupiter quote, in percentage points.
+ * Used to decide whether we can safely skip a Jupiter quote this tick: if (lastPnl ± drift × elapsed)
+ * cannot have crossed a trigger, we don't quote. Higher = more conservative (more quotes).
+ */
+export const riskDriftPctPerSec = Math.max(
+  0,
+  parseFloat(process.env.RISK_DRIFT_PCT_PER_SEC ?? "3")
+);
+/** Legacy field surfaced for status display. Kept equal to the normal-bucket interval. */
+export const riskCheckIntervalMs = riskNormalIntervalMs;
+/** Maximum open positions to quote per risk-check cycle. Prevents risk checks from starving buy quotes. */
+export const maxRiskQuotesPerCheck = Math.max(
+  1,
+  parseInt(process.env.MAX_RISK_QUOTES_PER_CHECK ?? "2", 10)
+);
+/**
+ * Stop-loss grace period after a buy. Take-profit can still trigger immediately.
+ * Default 3500ms protects against quote noise in the first tick or two without disarming SL when it matters most.
+ */
 export const minHoldBeforeStopLossMs = Math.max(
   0,
-  parseInt(process.env.MIN_HOLD_BEFORE_STOP_LOSS_MS ?? "0", 10)
+  parseInt(process.env.MIN_HOLD_BEFORE_STOP_LOSS_MS ?? "3500", 10)
 );
 export const riskControlsEnabled = stopLossPct != null || takeProfitPct != null;
+
+/** Shared Jupiter quote throttle/backoff for buys, sells, and risk checks. */
+export const jupiterQuoteMinGapMs = Math.max(
+  0,
+  parseInt(process.env.JUPITER_QUOTE_MIN_GAP_MS ?? "650", 10)
+);
+export const jupiterQuoteRateLimitCooldownMs = Math.max(
+  0,
+  parseInt(process.env.JUPITER_QUOTE_429_COOLDOWN_MS ?? "3000", 10)
+);
+export const jupiterQuoteRetries = Math.max(
+  0,
+  parseInt(process.env.JUPITER_QUOTE_RETRIES ?? "1", 10)
+);
 
 /** Simulation/dry-run mode: no transactions sent, only log what would be done. Set SIMULATION_MODE=true or DRY_RUN=true. */
 const SIMULATION_RAW =

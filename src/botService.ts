@@ -10,8 +10,15 @@ import {
   pollIntervalMs,
   blockPumpfunMayhem,
   riskCheckIntervalMs,
+  riskFastIntervalMs,
+  riskFastWindowMs,
+  riskNearTriggerIntervalMs,
+  riskNormalIntervalMs,
+  riskNearTriggerPct,
+  riskDriftPctPerSec,
   riskControlsEnabled,
   pumpfunMayhemStrict,
+  maxRiskQuotesPerCheck,
   readConnection,
   mirrorSells,
   buyOncePerToken,
@@ -20,7 +27,11 @@ import {
   stopLossPct,
   takeProfitPct,
   minHoldBeforeStopLossMs,
+  trailingSteps,
+  trailingEnabled,
+  pumpfunDirectEnabled,
 } from "./config.js";
+import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import {
   getNewSwaps,
   subscribeWalletSwaps,
@@ -30,15 +41,16 @@ import {
   mirrorSwap,
   NoPositionError,
   AlreadyBoughtError,
-  PriceImpactTooHighError,
+  ImpactTooHighError,
+  SourceDriftError,
   type Side,
   type MirrorResult,
 } from "./mirror.js";
-import { getQuote, getSwap } from "./jupiter.js";
+import { getQuote, getSwap, isJupiterRateLimitError } from "./jupiter.js";
 import type { DetectedSwap } from "./types.js";
 import { warmConnection, createSenderTransactionFromSwapResponse, broadcastTransactionWithSender } from "./sender.js";
 import { confirmSignature } from "./confirm.js";
-import { getSolBalance, formatSol, getTokenBalance } from "./balance.js";
+import { getSolBalance, formatSol, getTokenBalance, getTokenBalanceFast } from "./balance.js";
 import { telegram, type TradeNotification, type PnlNotification, formatPnlForTelegram } from "./telegram.js";
 import "./telegramBot.js"; // Initialize Telegram bot handler
 import { hasEnoughSOLForTrade, updateBalanceCache, getBalanceInfo, isBalanceCriticallyLow } from "./solReserve.js";
@@ -60,6 +72,13 @@ import {
   type PositionSnapshot,
   type PnlTotals,
 } from "./pnl.js";
+import { logTradeAsync } from "./tradeLog.js";
+import {
+  shouldBlockNewBuys,
+  recordTradeOutcome,
+  resetCircuitBreaker,
+} from "./circuitBreaker.js";
+import { startFeeOracle, stopFeeOracle } from "./feeOracle.js";
 
 const WARM_INTERVAL_MS = 30_000;
 const BALANCE_LOG_INTERVAL_MS = 60_000;
@@ -111,7 +130,43 @@ export type BotState = {
 };
 
 export const recentSwaps: MirrorRecord[] = [];
-const processedSignatures = new Set<string>();
+
+/**
+ * TTL-bounded signature dedupe — same .has/.add surface as Set, but evicts entries older than
+ * SIGNATURE_TTL_MS so a long-running session doesn't accumulate millions of WS-event signatures.
+ *
+ * Sweep cadence: every SIGNATURE_SWEEP_EVERY_N adds, we drop entries past the TTL. Cheap.
+ */
+const SIGNATURE_TTL_MS = 4 * 60 * 60 * 1000; // 4h — well past any polling fallback's reach.
+const SIGNATURE_SWEEP_EVERY_N = 256;
+class BoundedSignatureSet {
+  private readonly entries = new Map<string, number>();
+  private addsSinceSweep = 0;
+  has(sig: string): boolean {
+    return this.entries.has(sig);
+  }
+  add(sig: string): void {
+    this.entries.set(sig, Date.now());
+    if (++this.addsSinceSweep >= SIGNATURE_SWEEP_EVERY_N) {
+      this.addsSinceSweep = 0;
+      this.sweep();
+    }
+  }
+  clear(): void {
+    this.entries.clear();
+    this.addsSinceSweep = 0;
+  }
+  private sweep(): void {
+    const cutoff = Date.now() - SIGNATURE_TTL_MS;
+    for (const [sig, ts] of this.entries) {
+      if (ts < cutoff) this.entries.delete(sig);
+    }
+  }
+  get size(): number {
+    return this.entries.size;
+  }
+}
+const processedSignatures = new BoundedSignatureSet();
 const buyMintsInFlight = new Set<string>();
 const boughtMintsThisSession = new Set<string>();
 const openPositionBuyMintsInFlight = new Set<string>();
@@ -124,6 +179,18 @@ type RiskTracePoint = {
   stopLossTrue: boolean;
 };
 const riskTraceByMint = new Map<string, RiskTracePoint[]>();
+
+type RiskQuoteState = {
+  /** Last Jupiter quote PnL %. */
+  lastPnlPct: number;
+  /** Wall-clock timestamp of that quote. */
+  lastQuotedAt: number;
+  /** Wall-clock timestamp of the last loop tick that visited this position (quote or skip). */
+  lastTickedAt: number;
+  /** Highest PnL% observed for this position. Drives trailing-stop stair-steps. */
+  peakPnlPct: number;
+};
+const riskQuoteStateByMint = new Map<string, RiskQuoteState>();
 let running = false;
 let startedAt: number | null = null;
 let stopRequested = false;
@@ -132,6 +199,7 @@ let keypair: Keypair | null = null;
 let lastBalanceLamports: number | null = null;
 let lastBalanceAt: number | null = null;
 let unsubscribeWs: Unsubscribe | null = null;
+let riskPositionCursor = 0;
 let mirrorSellsEnabled = mirrorSells; // initialized from MIRROR_SELLS env, runtime-toggleable
 let buyOncePerTokenEnabled = buyOncePerToken; // initialized from BUY_ONCE_PER_TOKEN env
 let showMarketCapEnabled = showMarketCap; // initialized from SHOW_MARKET_CAP env
@@ -180,9 +248,37 @@ export function toggleShowMarketCap(): void {
   setShowMarketCapEnabled(!showMarketCapEnabled);
 }
 
-function pushSwap(rec: MirrorRecord): void {
+type TradeLogExtras = {
+  realizedPnlLamports?: number;
+  realizedPnlPct?: number;
+  exitReason?: string;
+  priceImpactPct?: number | null;
+};
+
+function pushSwap(rec: MirrorRecord, extras?: TradeLogExtras): void {
   recentSwaps.unshift(rec);
   if (recentSwaps.length > MAX_RECENT_SWAPS) recentSwaps.pop();
+
+  // Fire-and-forget JSONL persistence so we have a paper trail across sessions.
+  logTradeAsync({
+    ts: rec.ts,
+    side: rec.side,
+    mirrorSignature: rec.mirrorSignature,
+    sourceSignature: rec.sourceSignature,
+    sourceWallet: rec.wallet,
+    inputMint: rec.input.mint,
+    outputMint: rec.output.mint,
+    inputAmountRaw: rec.input.amountRaw,
+    outputAmountRaw: rec.output.amountRaw,
+    inputSymbol: rec.input.symbol,
+    outputSymbol: rec.output.symbol,
+    priceImpactPct: extras?.priceImpactPct ?? null,
+    marketCapUsd: rec.marketCapUsd ?? null,
+    realizedPnlLamports: extras?.realizedPnlLamports ?? null,
+    realizedPnlPct: extras?.realizedPnlPct ?? null,
+    exitReason: extras?.exitReason ?? null,
+    error: rec.error,
+  });
 }
 
 function pushRiskTrace(
@@ -463,6 +559,15 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     return;
   }
 
+  // Circuit breaker gate: only blocks BUYS, never sells. Existing positions can always exit.
+  if (swap.inputMint === WRAPPED_SOL_MINT) {
+    const blocked = shouldBlockNewBuys();
+    if (blocked) {
+      console.log(`⛔ Skipping buy: ${blocked}.`);
+      return;
+    }
+  }
+
   // Skip duplicate buys of the same token if buy-once is ON. Position lookup is in-memory (no API cost).
   if (buyOncePerTokenEnabled && swap.inputMint === WRAPPED_SOL_MINT) {
     const mint = swap.outputMint;
@@ -570,18 +675,37 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     const marketCapUsd = tokenMint ? await maybeGetMarketCap(tokenMint) : null;
     const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
     logTrade(result, swap, marketCapUsd, marketCapCheckedAt);
-    pushSwap({
-      ts,
-      sourceSignature: swap.signature,
-      wallet: swap.wallet,
-      side: result.side,
-      input: toLegView(result.input),
-      output: toLegView(result.output),
-      isSimulated: result.isSimulated,
-      mirrorSignature: result.signature,
-      marketCapUsd,
-      marketCapCheckedAt,
-    });
+    const impactPct = result.priceImpactPct ? parseFloat(result.priceImpactPct) * 100 : null;
+    // For mirrored sells we have realized PnL on the position now that recordSell ran inside logTrade.
+    let realizedPnlLamports: number | undefined;
+    let realizedPnlPct: number | undefined;
+    if (result.side === "sell") {
+      const pos = getPosition(result.input.meta.mint);
+      if (pos) {
+        realizedPnlLamports = pos.realizedPnlLamports;
+        const cost = pos.totalSolSpentLamports;
+        if (cost > 0) realizedPnlPct = (pos.realizedPnlLamports / cost) * 100;
+      }
+    }
+    pushSwap(
+      {
+        ts,
+        sourceSignature: swap.signature,
+        wallet: swap.wallet,
+        side: result.side,
+        input: toLegView(result.input),
+        output: toLegView(result.output),
+        isSimulated: result.isSimulated,
+        mirrorSignature: result.signature,
+        marketCapUsd,
+        marketCapCheckedAt,
+      },
+      { priceImpactPct: impactPct, realizedPnlLamports, realizedPnlPct }
+    );
+    if (result.side === "sell" && realizedPnlLamports != null) {
+      // Feed the breaker only on actual closes — opens (buys) aren't outcomes yet.
+      recordTradeOutcome(realizedPnlLamports);
+    }
   } catch (err) {
     if (err instanceof NoPositionError) {
       console.log(
@@ -597,6 +721,26 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     if (err instanceof AlreadyBoughtError) {
       console.log(
         `ℹ️ Skipping buy: already bought ${err.mint.slice(0, 8)}… this session`
+      );
+      return;
+    }
+    if (err instanceof ImpactTooHighError) {
+      console.log(
+        `🚫 Skipping buy: ${err.mint.slice(0, 8)}… impact ${err.impactPct.toFixed(1)}% > cap ${err.capPct.toFixed(1)}% even at MIN_BUY_SOL.`
+      );
+      void telegram.notifyError(
+        `🚫 Buy skipped: impact too high`,
+        `Token: ${err.mint.slice(0, 8)}… · impact ${err.impactPct.toFixed(1)}% > cap ${err.capPct.toFixed(1)}%`
+      );
+      return;
+    }
+    if (err instanceof SourceDriftError) {
+      console.log(
+        `🚫 Skipping buy: ${err.mint.slice(0, 8)}… source drift ${err.driftPct.toFixed(1)}% > cap ${err.capPct.toFixed(1)}% — chasing.`
+      );
+      void telegram.notifyError(
+        `🚫 Buy skipped: chasing source`,
+        `Token: ${err.mint.slice(0, 8)}… · drift ${err.driftPct.toFixed(1)}% > cap ${err.capPct.toFixed(1)}%`
       );
       return;
     }
@@ -720,7 +864,14 @@ async function loop(): Promise<void> {
         await updateBalance(kp.publicKey);
         lastBalanceLog = now;
       }
-      if (riskControlsEnabled && now - lastRiskCheck >= riskCheckIntervalMs) {
+      // checkRiskExits now decides per-position cadence (fast / near-trigger / normal),
+      // so we just call it on every loop tick and let it skip positions that aren't due.
+      const minRiskInterval = Math.min(
+        riskFastIntervalMs,
+        riskNearTriggerIntervalMs,
+        riskNormalIntervalMs
+      );
+      if (riskControlsEnabled && now - lastRiskCheck >= minRiskInterval) {
         await checkRiskExits();
         lastRiskCheck = now;
       }
@@ -729,10 +880,16 @@ async function loop(): Promise<void> {
     }
 
     if (stopRequested) break;
+    // Loop floor must be small enough to honor the fastest tier; fall back to pollIntervalMs when risk is off.
     const sleepMs = riskControlsEnabled
-      ? Math.min(pollIntervalMs, riskCheckIntervalMs)
+      ? Math.min(
+          pollIntervalMs,
+          riskFastIntervalMs,
+          riskNearTriggerIntervalMs,
+          riskNormalIntervalMs
+        )
       : pollIntervalMs;
-    await interruptibleSleep(Math.max(250, sleepMs));
+    await interruptibleSleep(Math.max(100, sleepMs));
   }
 
   if (unsubscribeWs) {
@@ -747,6 +904,7 @@ async function loop(): Promise<void> {
   running = false;
   startedAt = null;
   stopRequested = false;
+  stopFeeOracle();
   console.log("Bot stopped.");
 }
 
@@ -759,6 +917,8 @@ export async function startBot(): Promise<void> {
   running = true;
   startedAt = Date.now();
   stopRequested = false;
+  resetCircuitBreaker();
+  startFeeOracle();
   console.log(
     "Copytrading bot started. Our wallet:",
     keypair.publicKey.toBase58()
@@ -779,8 +939,13 @@ export async function startBot(): Promise<void> {
   console.log("🧹 Fresh start — only trades from this moment onward will be mirrored.");
 
   if (riskControlsEnabled) {
+    const trailDesc = trailingEnabled
+      ? ` trailing=${trailingSteps.map((s) => `${s.peakPct}%→${s.floorPct >= 0 ? "+" : ""}${s.floorPct}%`).join(",")},`
+      : "";
     console.log(
-      `Risk exits enabled: stop loss ${stopLossPct ?? "off"}%, take profit ${takeProfitPct ?? "off"}%, check every ${riskCheckIntervalMs}ms.`
+      `Risk exits enabled: SL ${stopLossPct ?? "off"}%, TP ${takeProfitPct ?? "off"}%,${trailDesc} ` +
+        `tiers fast=${riskFastIntervalMs}ms (first ${riskFastWindowMs}ms) / near=${riskNearTriggerIntervalMs}ms (within ${riskNearTriggerPct}pp of trigger) / normal=${riskNormalIntervalMs}ms, ` +
+        `drift=${riskDriftPctPerSec}pp/s, SL min hold ${minHoldBeforeStopLossMs}ms, max ${maxRiskQuotesPerCheck} quote(s)/tick.`
     );
   }
   if (maxOpenPositions != null) {
@@ -829,6 +994,8 @@ export function resetTradingState(): void {
   openPositionBuyMintsInFlight.clear();
   riskSellsInFlight.clear();
   riskTraceByMint.clear();
+  riskQuoteStateByMint.clear();
+  resetCircuitBreaker();
   console.log("?? Cleared all positions, trade history, and signature cache.");
 }
 
@@ -871,31 +1038,39 @@ async function sellSimulatedPosition(
   if (note) console.log(`Reason: ${note}`);
   if (note) printRiskTrace(position, outSolLamports, finalPnlPct, note);
 
-  pushSwap({
-    ts: Date.now(),
-    sourceSignature: `manual-sell-${position.mint}`,
-    wallet: note ? "risk-sell" : "manual-sell",
-    side: "sell",
-    input: {
-      mint: position.mint,
-      symbol: position.symbol,
-      name: position.symbol,
-      decimals: position.decimals,
-      amountRaw: position.heldRaw,
-      display: `${formatTokenAmount(position.heldRaw, position.decimals)} $${position.symbol}`,
+  pushSwap(
+    {
+      ts: Date.now(),
+      sourceSignature: `manual-sell-${position.mint}`,
+      wallet: note ? "risk-sell" : "manual-sell",
+      side: "sell",
+      input: {
+        mint: position.mint,
+        symbol: position.symbol,
+        name: position.symbol,
+        decimals: position.decimals,
+        amountRaw: position.heldRaw,
+        display: `${formatTokenAmount(position.heldRaw, position.decimals)} $${position.symbol}`,
+      },
+      output: {
+        mint: WRAPPED_SOL_MINT,
+        symbol: "SOL",
+        name: "Solana",
+        decimals: 9,
+        amountRaw: outSolLamports,
+        display: `${formatSolAmount(outSolLamports)} SOL`,
+      },
+      isSimulated: true,
+      marketCapUsd,
+      marketCapCheckedAt,
     },
-    output: {
-      mint: WRAPPED_SOL_MINT,
-      symbol: "SOL",
-      name: "Solana",
-      decimals: 9,
-      amountRaw: outSolLamports,
-      display: `${formatSolAmount(outSolLamports)} SOL`,
-    },
-    isSimulated: true,
-    marketCapUsd,
-    marketCapCheckedAt,
-  });
+    {
+      realizedPnlLamports: snap.realizedPnlLamports,
+      realizedPnlPct: finalPnlPct,
+      exitReason: note,
+    }
+  );
+  recordTradeOutcome(snap.realizedPnlLamports);
 
   void telegram.notifyTrade({
     type: "sell",
@@ -909,6 +1084,7 @@ async function sellSimulatedPosition(
     tokenAddress: position.mint,
     pnl: formatPnl(snap.realizedPnlLamports),
     note,
+    quotedPnlPct: note ? `${finalPnlPct >= 0 ? "+" : ""}${finalPnlPct.toFixed(1)}%` : undefined,
   });
 }
 
@@ -958,14 +1134,10 @@ export async function sellPositionByIndex(index: number): Promise<void> {
 async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<void> {
   let liveHeldRaw: number;
   try {
-    liveHeldRaw = await getTokenBalance(keypair!.publicKey, p.mint);
+    // Fast path: direct ATA read. Falls back to scan-all on null (unusual token program / closed ATA).
+    const fast = await getTokenBalanceFast(keypair!.publicKey, p.mint);
+    liveHeldRaw = fast ?? (await getTokenBalance(keypair!.publicKey, p.mint));
   } catch (err) {
-    if (err instanceof PriceImpactTooHighError) {
-      console.log(
-        `Skipping buy: ${err.mint.slice(0, 8)}... entry impact ${err.priceImpactPct.toFixed(2)}% exceeds max ${err.maxPriceImpactPct.toFixed(2)}%.`
-      );
-      return;
-    }
     const msg = err instanceof Error ? err.message : String(err);
     console.warn(`Token balance lookup failed for $${p.symbol}: ${msg}; attempting tracked amount.`);
     liveHeldRaw = p.heldRaw;
@@ -998,6 +1170,10 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
   const avgEntry = p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
   const exitPerRaw = soldRaw > 0 ? receivedLamports / soldRaw : 0;
   const pct = avgEntry > 0 ? (exitPerRaw / avgEntry - 1) * 100 : 0;
+  const quotedPnlPct =
+    p.costBasisRemainingLamports > 0
+      ? `${((receivedLamports - p.costBasisRemainingLamports) / p.costBasisRemainingLamports * 100) >= 0 ? "+" : ""}${(((receivedLamports - p.costBasisRemainingLamports) / p.costBasisRemainingLamports) * 100).toFixed(1)}%`
+      : undefined;
 
   console.log(`Sell LIVE (manual): ${formatTokenAmount(soldRaw, p.decimals)} $${p.symbol}`);
   console.log(`Received: ${formatSolAmount(receivedLamports)} SOL`);
@@ -1021,52 +1197,216 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
     tokenAddress: p.mint,
     pnl: formatPnl(snap.realizedPnlLamports),
     note,
+    quotedPnlPct: note ? quotedPnlPct : undefined,
     txSignature: result.signature,
   });
 
-  pushSwap({
-    ts: Date.now(),
-    sourceSignature: `manual-sell-${p.mint}`,
-    wallet: note ? "risk-sell" : "manual-sell",
-    side: "sell",
-    input: toLegView(result.input),
-    output: toLegView(result.output),
-    isSimulated: false,
-    marketCapUsd,
-    marketCapCheckedAt,
-    mirrorSignature: result.signature,
-  });
+  pushSwap(
+    {
+      ts: Date.now(),
+      sourceSignature: `manual-sell-${p.mint}`,
+      wallet: note ? "risk-sell" : "manual-sell",
+      side: "sell",
+      input: toLegView(result.input),
+      output: toLegView(result.output),
+      isSimulated: false,
+      marketCapUsd,
+      marketCapCheckedAt,
+      mirrorSignature: result.signature,
+    },
+    {
+      realizedPnlLamports: snap.realizedPnlLamports,
+      realizedPnlPct: pct,
+      exitReason: note,
+      priceImpactPct: result.priceImpactPct ? parseFloat(result.priceImpactPct) * 100 : null,
+    }
+  );
+  recordTradeOutcome(snap.realizedPnlLamports);
 }
 
-function riskExitReason(pnlPct: number): string | null {
-  if (stopLossPct != null && pnlPct <= -stopLossPct) {
-    return `Stop loss hit (${pnlPct.toFixed(1)}% <= -${stopLossPct}%)`;
+/**
+ * Compute the effective stop threshold for a position given its peak PnL.
+ * Starts at -stopLossPct (the base SL), then walks the trailing steps in ascending order;
+ * each step the peak has cleared raises the threshold to its `floorPct`.
+ * Returns the threshold as a signed % (e.g. -25 means "exit if pnl <= -25%", +5 means "+5% lock").
+ */
+function effectiveStopPct(peakPnlPct: number): number | null {
+  if (stopLossPct == null) return null;
+  let threshold = -stopLossPct;
+  if (trailingEnabled) {
+    for (const step of trailingSteps) {
+      if (peakPnlPct >= step.peakPct) {
+        threshold = Math.max(threshold, step.floorPct);
+      } else {
+        break; // steps are sorted asc; no later step can have triggered
+      }
+    }
   }
+  return threshold;
+}
+
+function riskExitReason(
+  pnlPct: number,
+  positionAgeMs: number,
+  peakPnlPct: number
+): string | null {
   if (takeProfitPct != null && pnlPct >= takeProfitPct) {
     return `Take profit hit (${pnlPct.toFixed(1)}% >= ${takeProfitPct}%)`;
   }
+  const threshold = effectiveStopPct(peakPnlPct);
+  if (
+    threshold != null &&
+    pnlPct <= threshold &&
+    positionAgeMs >= minHoldBeforeStopLossMs
+  ) {
+    if (trailingEnabled && threshold > -(stopLossPct ?? 0)) {
+      return `Trailing stop hit (${pnlPct.toFixed(1)}% <= ${threshold >= 0 ? "+" : ""}${threshold.toFixed(1)}%, peak ${peakPnlPct.toFixed(1)}%)`;
+    }
+    return `Stop loss hit (${pnlPct.toFixed(1)}% <= ${threshold.toFixed(1)}%)`;
+  }
   return null;
+}
+
+type RiskBucket = "fast" | "near" | "normal";
+
+function bucketIntervalMs(bucket: RiskBucket): number {
+  if (bucket === "fast") return riskFastIntervalMs;
+  if (bucket === "near") return riskNearTriggerIntervalMs;
+  return riskNormalIntervalMs;
+}
+
+/**
+ * Decide whether we still need a Jupiter quote for this position right now, and which cadence bucket it belongs to.
+ *
+ * We can skip the quote when (lastPnl ± riskDriftPctPerSec × elapsed) cannot have crossed any trigger. This is the
+ * "cheap price tracking" — no extra HTTP, just a worst-case projection from the last known quote.
+ */
+function planRiskTick(
+  p: PositionSnapshot,
+  state: RiskQuoteState | undefined,
+  now: number
+): { bucket: RiskBucket; shouldQuote: boolean; projectedPnlPct: number | null } {
+  const ageMs = now - p.firstSeenAt;
+  const inFastWindow = ageMs < riskFastWindowMs;
+
+  // No prior quote → must quote.
+  if (!state) {
+    return {
+      bucket: inFastWindow ? "fast" : "normal",
+      shouldQuote: true,
+      projectedPnlPct: null,
+    };
+  }
+
+  const elapsedSec = Math.max(0, (now - state.lastQuotedAt) / 1000);
+  const drift = riskDriftPctPerSec * elapsedSec;
+  const lowerProjection = state.lastPnlPct - drift;
+  const upperProjection = state.lastPnlPct + drift;
+
+  // Effective stop level reflects trailing stair-steps that the peak has cleared.
+  const effSL = effectiveStopPct(state.peakPnlPct);
+
+  // Could a trigger have plausibly fired since the last quote?
+  const couldHitSL =
+    effSL != null && ageMs >= minHoldBeforeStopLossMs && lowerProjection <= effSL;
+  const couldHitTP = takeProfitPct != null && upperProjection >= takeProfitPct;
+  const triggerInRange = couldHitSL || couldHitTP;
+
+  // Distance to nearest trigger using last known PnL.
+  const distances: number[] = [];
+  if (effSL != null) distances.push(Math.abs(state.lastPnlPct - effSL));
+  if (takeProfitPct != null) distances.push(Math.abs(state.lastPnlPct - takeProfitPct));
+  const nearestTriggerDist = distances.length ? Math.min(...distances) : Infinity;
+  const nearTrigger = nearestTriggerDist <= riskNearTriggerPct;
+
+  let bucket: RiskBucket;
+  if (inFastWindow) bucket = "fast";
+  else if (nearTrigger) bucket = "near";
+  else bucket = "normal";
+
+  const interval = bucketIntervalMs(bucket);
+  const tickDue = now - state.lastTickedAt >= interval;
+
+  // Always quote when projection says a trigger could already have fired, even if the bucket cadence hasn't hit.
+  // Otherwise honor the cadence: quote only when the bucket interval has elapsed since the last tick.
+  const shouldQuote = triggerInRange || tickDue;
+
+  return { bucket, shouldQuote, projectedPnlPct: state.lastPnlPct };
 }
 
 async function checkRiskExits(): Promise<void> {
   if (!riskControlsEnabled) return;
 
   const open = getPositions().filter((p) => p.heldRaw > 0);
-  for (const p of open) {
+  if (open.length === 0) return;
+
+  // First pass: pick the positions that are due to quote this tick.
+  const now = Date.now();
+  const candidates: { p: PositionSnapshot; bucket: RiskBucket }[] = [];
+  for (let i = 0; i < open.length; i++) {
+    const p = open[(riskPositionCursor + i) % open.length]!;
+    if (riskSellsInFlight.has(p.mint)) continue;
+    if (p.costBasisRemainingLamports <= 0) continue;
+    const state = riskQuoteStateByMint.get(p.mint);
+    const plan = planRiskTick(p, state, now);
+    if (plan.shouldQuote) candidates.push({ p, bucket: plan.bucket });
+  }
+  if (candidates.length === 0) return;
+
+  // Cap quotes per tick so risk checks can't starve buy quotes. Prioritize near-trigger > fast > normal.
+  const priority: Record<RiskBucket, number> = { near: 0, fast: 1, normal: 2 };
+  candidates.sort((a, b) => priority[a.bucket] - priority[b.bucket]);
+  const positionsToCheck = candidates
+    .slice(0, Math.min(maxRiskQuotesPerCheck, candidates.length))
+    .map((c) => c.p);
+  riskPositionCursor = (riskPositionCursor + 1) % open.length;
+
+  for (const p of positionsToCheck) {
     if (riskSellsInFlight.has(p.mint)) continue;
     if (p.costBasisRemainingLamports <= 0) continue;
 
     try {
-      const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);
-      const outSolLamports = parseInt(quote.outAmount ?? "0", 10);
-      if (!Number.isFinite(outSolLamports) || outSolLamports <= 0) continue;
+      // Curve-first valuation: pump.fun direct gives accurate, indexing-lag-free pricing.
+      // Falls back to Jupiter only if the token isn't on a curve or has graduated.
+      let outSolLamports: number;
+      if (pumpfunDirectEnabled) {
+        const onCurve = await valueOnCurve(p.mint, p.heldRaw);
+        if (onCurve != null) {
+          outSolLamports = onCurve.solOut;
+        } else {
+          const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);
+          outSolLamports = parseInt(quote.outAmount ?? "0", 10);
+        }
+      } else {
+        const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);
+        outSolLamports = parseInt(quote.outAmount ?? "0", 10);
+      }
+      const tickAt = Date.now();
+      if (!Number.isFinite(outSolLamports) || outSolLamports <= 0) {
+        const prev = riskQuoteStateByMint.get(p.mint);
+        riskQuoteStateByMint.set(p.mint, {
+          lastPnlPct: prev?.lastPnlPct ?? 0,
+          lastQuotedAt: prev?.lastQuotedAt ?? tickAt,
+          lastTickedAt: tickAt,
+          peakPnlPct: prev?.peakPnlPct ?? -Infinity,
+        });
+        continue;
+      }
 
       const pnlPct =
         ((outSolLamports - p.costBasisRemainingLamports) /
           p.costBasisRemainingLamports) *
         100;
+      const prevPeak = riskQuoteStateByMint.get(p.mint)?.peakPnlPct ?? -Infinity;
+      const peakPnlPct = Math.max(prevPeak, pnlPct);
+      riskQuoteStateByMint.set(p.mint, {
+        lastPnlPct: pnlPct,
+        lastQuotedAt: tickAt,
+        lastTickedAt: tickAt,
+        peakPnlPct,
+      });
       pushRiskTrace(p, outSolLamports, pnlPct);
-      const reason = riskExitReason(pnlPct);
+      const reason = riskExitReason(pnlPct, tickAt - p.firstSeenAt, peakPnlPct);
       if (!reason) continue;
 
       riskSellsInFlight.add(p.mint);
@@ -1074,17 +1414,6 @@ async function checkRiskExits(): Promise<void> {
       console.log(
         `Quoted exit: ${formatSolAmount(outSolLamports)} SOL vs cost basis ${formatSolAmount(p.costBasisRemainingLamports)} SOL`
       );
-      void telegram.notifyRiskExit({
-        status: "triggered",
-        symbol: p.symbol,
-        reason,
-        quotedSol: formatSolAmount(outSolLamports),
-        costBasisSol: formatSolAmount(p.costBasisRemainingLamports),
-        pnlPct: `${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(1)}%`,
-        tokenAddress: p.mint,
-        isSimulated: simulationMode,
-      });
-
       try {
         if (simulationMode) {
           await sellSimulatedPosition(p, reason, outSolLamports);
@@ -1112,6 +1441,7 @@ async function checkRiskExits(): Promise<void> {
       riskSellsInFlight.delete(p.mint);
       const msg = err instanceof Error ? err.message : String(err);
       console.warn(`Risk check skipped $${p.symbol}: ${msg}`);
+      if (isJupiterRateLimitError(err)) break;
     }
   }
 }
@@ -1504,6 +1834,7 @@ export function getBotState(): BotState {
     pollIntervalMs,
     riskControlsEnabled,
     riskCheckIntervalMs,
+    minHoldBeforeStopLossMs,
     stopLossPct,
     takeProfitPct,
     lastBalanceLamports,

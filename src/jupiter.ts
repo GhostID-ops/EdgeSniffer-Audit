@@ -1,5 +1,49 @@
+import {
+  jupiterQuoteMinGapMs,
+  jupiterQuoteRateLimitCooldownMs,
+  jupiterQuoteRetries,
+} from "./config.js";
+
 const JUPITER_LITE_QUOTE = "https://lite-api.jup.ag/swap/v1/quote";
 const JUPITER_LITE_SWAP = "https://lite-api.jup.ag/swap/v1/swap";
+let quoteGate = Promise.resolve();
+let nextQuoteAt = 0;
+let quoteCooldownUntil = 0;
+
+export class JupiterRateLimitError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "JupiterRateLimitError";
+  }
+}
+
+export function isJupiterRateLimitError(err: unknown): boolean {
+  return err instanceof JupiterRateLimitError || String(err).includes("Jupiter quote failed: 429");
+}
+
+async function sleep(ms: number): Promise<void> {
+  if (ms > 0) await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function waitForQuoteSlot(): Promise<void> {
+  const run = quoteGate.then(async () => {
+    const now = Date.now();
+    const waitMs = Math.max(nextQuoteAt - now, quoteCooldownUntil - now, 0);
+    await sleep(waitMs);
+    nextQuoteAt = Date.now() + jupiterQuoteMinGapMs;
+  });
+  quoteGate = run.catch(() => undefined);
+  await run;
+}
+
+function noteQuoteRateLimit(response: Response): void {
+  const retryAfter = response.headers.get("retry-after");
+  const retryAfterMs = retryAfter ? Number(retryAfter) * 1000 : 0;
+  quoteCooldownUntil = Math.max(
+    quoteCooldownUntil,
+    Date.now() + Math.max(jupiterQuoteRateLimitCooldownMs, retryAfterMs)
+  );
+}
 
 export type QuoteResponse = {
   inputMint?: string;
@@ -33,12 +77,23 @@ export async function getQuote(
   slippageBps: number = 50
 ): Promise<QuoteResponse> {
   const url = `${JUPITER_LITE_QUOTE}?inputMint=${encodeURIComponent(inputMint)}&outputMint=${encodeURIComponent(outputMint)}&amount=${amount}&slippageBps=${slippageBps}`;
-  const response = await fetch(url);
-  if (!response.ok) {
+
+  for (let attempt = 0; attempt <= jupiterQuoteRetries; attempt++) {
+    await waitForQuoteSlot();
+    const response = await fetch(url);
+    if (response.ok) return (await response.json()) as QuoteResponse;
+
     const text = await response.text();
+    if (response.status === 429) {
+      noteQuoteRateLimit(response);
+      if (attempt < jupiterQuoteRetries) continue;
+      throw new JupiterRateLimitError(`Jupiter quote failed: 429 ${text}`);
+    }
+
     throw new Error(`Jupiter quote failed: ${response.status} ${text}`);
   }
-  return (await response.json()) as QuoteResponse;
+
+  throw new Error("Jupiter quote failed");
 }
 
 /** Get a swap transaction from Jupiter using a quote. */

@@ -14,11 +14,42 @@ import {
   senderEndpointUrl,
   TIP_ACCOUNTS,
   tipLamports,
-  priorityFeeMicroLamports,
   computeUnitLimit,
 } from "./config.js";
+import { getDynamicPriorityFee } from "./feeOracle.js";
 
 export type SwapResponse = { swapTransaction: string; [key: string]: unknown };
+
+/**
+ * Address-lookup-table cache. Jupiter reuses a small set of hot ALTs across thousands of swaps,
+ * so warm-cache hit rate is near 100%. Saves 50-150ms per transaction build.
+ *
+ * 30-minute TTL is a safety net — ALTs can technically be extended, so we re-validate periodically.
+ */
+const ALT_CACHE_TTL_MS = 30 * 60 * 1000;
+const ALT_CACHE_MAX = 64;
+const altCache = new Map<string, { account: AddressLookupTableAccount; cachedAt: number }>();
+
+async function fetchAlt(accountKey: PublicKey): Promise<AddressLookupTableAccount> {
+  const key = accountKey.toBase58();
+  const cached = altCache.get(key);
+  const now = Date.now();
+  if (cached && now - cached.cachedAt < ALT_CACHE_TTL_MS) {
+    // Refresh recency for LRU semantics: re-insert moves the entry to the end.
+    altCache.delete(key);
+    altCache.set(key, cached);
+    return cached.account;
+  }
+  const resp = await readConnection.getAddressLookupTable(accountKey);
+  if (resp.value == null) throw new Error("Address lookup table is null");
+  // Evict oldest (first) entry when at capacity.
+  if (altCache.size >= ALT_CACHE_MAX) {
+    const oldestKey = altCache.keys().next().value;
+    if (oldestKey != null) altCache.delete(oldestKey);
+  }
+  altCache.set(key, { account: resp.value, cachedAt: now });
+  return resp.value;
+}
 
 function getComputeInstructionType(
   instruction: TransactionInstruction
@@ -47,16 +78,9 @@ export async function createSenderTransactionFromSwapResponse(
     Buffer.from(transactionBase64, "base64")
   );
 
-  const altResponses = await Promise.all(
-    jupiterTransaction.message.addressTableLookups.map((lookup) =>
-      readConnection.getAddressLookupTable(lookup.accountKey)
-    )
+  const altAccounts: AddressLookupTableAccount[] = await Promise.all(
+    jupiterTransaction.message.addressTableLookups.map((lookup) => fetchAlt(lookup.accountKey))
   );
-
-  const altAccounts: AddressLookupTableAccount[] = altResponses.map((item) => {
-    if (item.value == null) throw new Error("Address lookup table is null");
-    return item.value;
-  });
 
   const decompiledMessage = TransactionMessage.decompile(
     jupiterTransaction.message,
@@ -77,7 +101,7 @@ export async function createSenderTransactionFromSwapResponse(
   const tipAccount =
     TIP_ACCOUNTS[Math.floor(Math.random() * TIP_ACCOUNTS.length)]!;
   const priorityFeeIx = ComputeBudgetProgram.setComputeUnitPrice({
-    microLamports: priorityFeeMicroLamports,
+    microLamports: getDynamicPriorityFee(),
   });
   const tipIx = SystemProgram.transfer({
     fromPubkey: keypair.publicKey,

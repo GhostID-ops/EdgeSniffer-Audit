@@ -5,6 +5,48 @@ const TOKEN_PROGRAM_IDS = [
   new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
   new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPu8NQkMZ6H4hWzPvyxC"),
 ];
+const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
+  "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+);
+
+/** Derive the ATA for (owner, mint, tokenProgram). Returns null on derivation failure. */
+function deriveAta(owner: PublicKey, mint: string, tokenProgramId: PublicKey): PublicKey | null {
+  try {
+    const [ata] = PublicKey.findProgramAddressSync(
+      [owner.toBuffer(), tokenProgramId.toBuffer(), new PublicKey(mint).toBuffer()],
+      ASSOCIATED_TOKEN_PROGRAM_ID
+    );
+    return ata;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fast path: derive the ATA and read its balance directly. One account read instead of scanning
+ * every token account the wallet owns. Tries original Token program first, then Token-2022.
+ * Returns null if neither ATA exists or both reads fail — caller should fall back to getTokenBalance.
+ */
+export async function getTokenBalanceFast(
+  owner: PublicKey,
+  mint: string
+): Promise<number | null> {
+  for (const programId of TOKEN_PROGRAM_IDS) {
+    const ata = deriveAta(owner, mint, programId);
+    if (!ata) continue;
+    try {
+      const resp = await readConnection.getTokenAccountBalance(ata);
+      const amount = resp?.value?.amount;
+      if (typeof amount === "string") {
+        const parsed = parseInt(amount, 10);
+        if (Number.isFinite(parsed) && parsed >= 0) return parsed;
+      }
+    } catch {
+      // ATA may not exist for this token program — try the next one.
+    }
+  }
+  return null;
+}
 
 /**
  * Fetch SOL balance for a public key (lamports and SOL).
