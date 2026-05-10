@@ -6,8 +6,14 @@ export const PUMP_FUN_PROGRAM_ID = new PublicKey("6EF8rrecthR5Dkzon8Nwu78hRvfCKu
 /** Trading-fee recipient. Read on-chain from the global account; this is the historical default. */
 export const PUMP_FUN_FEE_RECIPIENT = new PublicKey("CebN5WGQ4jvEPvsVU4EoHEpgzq1VV7AbicfhtW4xC9iM");
 
-/** SPL Token program (classic). pump.fun bonding-curve mints use this, not Token-2022. */
+/** SPL Token program (classic). Older pump.fun mints use this. */
 export const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+
+/** Token-2022 program. Newer pump.fun mints use this — must detect per-mint via getAccountInfo. */
+export const TOKEN_2022_PROGRAM_ID = new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb");
+
+/** All token programs we recognize as valid mint owners. */
+export const KNOWN_TOKEN_PROGRAM_IDS: readonly PublicKey[] = [TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID];
 
 /** Associated Token Account program. */
 export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
@@ -57,10 +63,18 @@ export function deriveEventAuthorityPda(): PublicKey {
   return pda;
 }
 
-/** Derive the ATA address for (owner, mint) under the classic SPL Token program. */
-export function deriveAta(owner: PublicKey, mint: PublicKey): PublicKey {
+/**
+ * Derive the ATA address for (owner, mint, tokenProgram). The token program is part of the seeds,
+ * so a Token-2022 mint has a different ATA than a classic-SPL mint with the same address.
+ * Defaults to classic Token for backwards-compat with older callsites.
+ */
+export function deriveAta(
+  owner: PublicKey,
+  mint: PublicKey,
+  tokenProgramId: PublicKey = TOKEN_PROGRAM_ID
+): PublicKey {
   const [pda] = PublicKey.findProgramAddressSync(
-    [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+    [owner.toBuffer(), tokenProgramId.toBuffer(), mint.toBuffer()],
     ASSOCIATED_TOKEN_PROGRAM_ID
   );
   return pda;

@@ -1,60 +1,76 @@
-# FinalBot – Copytrading Bot
+# FinalBot Copytrading Bot
 
-Copytrading bot for Solana: watches tracked wallets for Jupiter swaps and mirrors them with your wallet. Uses **Helius Sender** for submission and **Jupiter** for quotes/swaps.
+Solana copytrading bot that watches tracked wallets, detects SOL/token swaps, and mirrors buys or exits with your wallet. The live bot entrypoint is `src/copytrade.ts`.
 
-## How it works
-
-1. **Watch** – Polls Helius for recent transactions of each tracked wallet and parses them (Enhanced Transactions API).
-2. **Detect** – Identifies Jupiter swaps (SOL→token, token→token, token→SOL).
-3. **Mirror** – Clamps size to your min/max buy (SOL terms), gets a Jupiter quote, builds a Sender-ready tx (tip + priority fee), broadcasts via Helius Sender, confirms on the send path.
-
-## Run the bot
+## Run
 
 ```bash
-# Copy .env.example to .env and set your keys + TRACKED_WALLETS
 npm run bot
-# or after build:
-npm run start
 ```
 
-## Required env (in `.env`)
+These commands all run the same live source entrypoint:
+
+```bash
+npm run bot
+npm run dev
+npm start
+```
+
+`dist/` is build output only. Normal bot runs should not depend on it.
+
+## Required `.env`
 
 | Variable | Description |
-|----------|-------------|
-| `HELIUS_API_KEY` | Helius API key (read RPC + parse transactions) |
-| `PRIVATE_KEY_BASE58` | Your wallet private key (base58, e.g. from Phantom) |
-| `TRACKED_WALLETS` | Comma-separated Solana addresses to copy |
+| --- | --- |
+| `HELIUS_API_KEY` | Helius API key for RPC, websocket, and transaction parsing. |
+| `PRIVATE_KEY_BASE58` | Wallet private key used for mirrored trades. |
+| `TRACKED_WALLETS` | Comma-separated wallets to copy. |
 
-Optional: `SENDER_ENDPOINT`, `TIP_LAMPORTS`, `PRIORITY_FEE_MICRO_LAMPORTS`, `MIN_BUY_SOL`, `MAX_BUY_SOL`.
-
-`MIN_BUY_SOL` is your minimum position size per copied token. If the source wallet buys less than this, the bot raises the mirrored buy to `MIN_BUY_SOL`; it does not skip the trade. `MAX_BUY_SOL` still caps oversized buys.
-
-## Pump.fun Mayhem Filter
-
-Set `BLOCK_PUMPFUN_MAYHEM=true` to skip pump.fun tokens detected as Mayhem Mode before buying. The bot checks pump.fun metadata/page data and falls back to mint supply/Token-2022 heuristics. Set `PUMPFUN_MAYHEM_STRICT=true` if you prefer skipping pump.fun buys when Mayhem status cannot be verified.
-
-## Risk exits
-
-Stop loss and take profit are optional. Leave them empty or `0` to disable.
+Common live/simulation controls:
 
 | Variable | Description |
-|----------|-------------|
-| `STOP_LOSS_PCT` | Auto-sell an open position when its quoted exit is this percent below remaining cost basis, e.g. `25` for -25%. |
-| `TAKE_PROFIT_PCT` | Auto-sell an open position when its quoted exit is this percent above remaining cost basis, e.g. `100` for +100%. |
-| `RISK_CHECK_INTERVAL_MS` | How often open positions are quoted for risk exits. Default `5000`. |
+| --- | --- |
+| `SIMULATION_MODE` | `true` for dry runs, `false` for live trading. |
+| `MIN_BUY_SOL` | Minimum mirrored buy size. |
+| `MAX_BUY_SOL` | Maximum mirrored buy size. |
+| `SOL_RESERVE` | SOL kept aside for fees. |
+| `MIRROR_SELLS` | Whether to mirror source-wallet sells. |
+| `BUY_ONCE_PER_TOKEN` | Whether to skip duplicate buys of the same token per session. |
 
-## Balance
+Risk exits:
 
-Your SOL balance is printed at startup and again every 60 seconds while the bot runs.
-
-## Simulation mode (dry run)
-
-Set `SIMULATION_MODE=true` or `DRY_RUN=true` in `.env` to run without sending any transactions. The bot **still tracks every tracked wallet's transactions** (same polling and swap detection as live), detects Jupiter swaps, and builds the mirror tx (quote + swap + Sender tx) but skips broadcast and confirmation. Use this to test before going live.
-
-In simulation mode you can set a **starting SOL balance** for display: set `SIMULATION_SOL_BALANCE=10` or `STARTING_SOL_BALANCE=10` (e.g. 10 SOL). The bot will show that amount as your balance instead of fetching from chain, so you can test as if you had more or less SOL.
+| Variable | Description |
+| --- | --- |
+| `STOP_LOSS_PCT` | Base stop-loss percent below remaining cost basis. |
+| `TAKE_PROFIT_PCT` | Take-profit percent above remaining cost basis. |
+| `TRAILING_STEPS` | Stair-step trailing stop, e.g. `10:-8,13:3`. |
+| `RISK_FAST_INTERVAL_MS` | Quote cadence during the first fast window after a buy. |
+| `RISK_FAST_WINDOW_MS` | Duration of the fast risk window. |
+| `RISK_NEAR_TRIGGER_INTERVAL_MS` | Quote cadence when near TP/SL. |
+| `RISK_NORMAL_INTERVAL_MS` | Normal quote cadence. |
+| `MAX_RISK_QUOTES_PER_CHECK` | Max open positions quoted per risk tick. |
+| `MIN_HOLD_BEFORE_STOP_LOSS_MS` | Stop-loss grace period after entry. |
 
 ## Scripts
 
-- **`npm run bot`** / **`npm run dev`** – Run the copytrading bot (tsx).
-- **`npm run start`** – Run the bot (node, after `npm run build`).
-- **`npm run swap`** – One-off manual Jupiter swap (for testing).
+| Command | Purpose |
+| --- | --- |
+| `npm run bot` | Run the copytrading bot from source. |
+| `npm run dev` | Same as `npm run bot`. |
+| `npm start` | Same as `npm run bot`. |
+| `npm run build` | Type-check and compile to `dist/`. |
+| `npm run web` | Run the optional web dashboard. |
+| `npm run swap` | Run the one-off manual swap helper. |
+
+## Cleanup Notes
+
+The bot needs `.env`, `package.json`, `package-lock.json`, `tsconfig.json`, `src/`, and `node_modules/`.
+
+Generated or disposable items:
+
+| Path | Safe to remove? | Notes |
+| --- | --- | --- |
+| `dist/` | Yes | Recreated by `npm run build`. |
+| `.cache/` | Usually | Old investigation/cache data, not used by normal bot runs. |
+| `web-server-*.log` | Yes | Old local server logs. |
+| `.restore-backups/` | Maybe | Keep only if you still want old backup files. |

@@ -669,7 +669,15 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   }
   
   try {
-    const result = await mirrorSwap(swap, kp);
+    const result = await mirrorSwap(swap, kp, {
+      onFastBuyConfirmFailure: ({ mint }) => {
+        if (boughtMintsThisSession.delete(mint)) {
+          console.warn(
+            `🧹 Buy-once marker cleared for ${mint.slice(0, 8)}… after failed fast-mode buy.`
+          );
+        }
+      },
+    });
     console.log(`⚡ Mirror path completed in ${elapsed()}`);
     const tokenMint = tokenSideMint(result);
     const marketCapUsd = tokenMint ? await maybeGetMarketCap(tokenMint) : null;

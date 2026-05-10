@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/copytrade.js",
+    "start": "tsx src/copytrade.ts",
     "bot": "tsx src/copytrade.ts",
     "dev": "tsx src/copytrade.ts",
     "web": "tsx src/web.ts",

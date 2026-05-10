@@ -17,7 +17,6 @@ import { getDynamicPriorityFee } from "../feeOracle.js";
 import {
   PUMP_FUN_PROGRAM_ID,
   PUMP_FUN_FEE_RECIPIENT,
-  TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   RENT_SYSVAR_ID,
@@ -44,18 +43,22 @@ function encodeBuyArgs(amount: bigint, maxSolCost: bigint): Buffer {
  * Build the `buy` TransactionInstruction. Account order is canonical for the pump.fun program:
  *   [global, fee_recipient, mint, bonding_curve, associated_bonding_curve, associated_user,
  *    user, system_program, token_program, rent, event_authority, program]
+ *
+ * `tokenProgramId` MUST be the program that owns the mint (classic SPL Token or Token-2022).
+ * Both ATA derivations are also keyed on this program.
  */
 export function buildPumpFunBuyIx(args: {
   user: PublicKey;
   mint: PublicKey;
   bondingCurve: PublicKey;
+  tokenProgramId: PublicKey;
   amount: bigint;
   maxSolCost: bigint;
 }): TransactionInstruction {
   const global = deriveGlobalPda();
   const eventAuthority = deriveEventAuthorityPda();
-  const associatedBondingCurve = deriveAta(args.bondingCurve, args.mint);
-  const associatedUser = deriveAta(args.user, args.mint);
+  const associatedBondingCurve = deriveAta(args.bondingCurve, args.mint, args.tokenProgramId);
+  const associatedUser = deriveAta(args.user, args.mint, args.tokenProgramId);
 
   const keys = [
     { pubkey: global, isSigner: false, isWritable: false },
@@ -66,7 +69,7 @@ export function buildPumpFunBuyIx(args: {
     { pubkey: associatedUser, isSigner: false, isWritable: true },
     { pubkey: args.user, isSigner: true, isWritable: true },
     { pubkey: SYSTEM_PROGRAM_ID, isSigner: false, isWritable: false },
-    { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: args.tokenProgramId, isSigner: false, isWritable: false },
     { pubkey: RENT_SYSVAR_ID, isSigner: false, isWritable: false },
     { pubkey: eventAuthority, isSigner: false, isWritable: false },
     { pubkey: PUMP_FUN_PROGRAM_ID, isSigner: false, isWritable: false },
@@ -83,21 +86,24 @@ export function buildPumpFunBuyIx(args: {
  * Build `createAssociatedTokenAccountIdempotent` instruction. Idempotent variant doesn't fail
  * if the ATA already exists — safe to include unconditionally on every buy.
  *
- * Instruction discriminator for AssociatedTokenAccount program: 1 (idempotent variant).
+ * `tokenProgramId` MUST match the mint's owner (classic Token or Token-2022). Account index 5
+ * is what the ATA program does CPI into; passing the wrong program here is what caused the
+ * `IncorrectProgramId at instruction 2` failures we saw on Token-2022 mints.
  */
 export function buildCreateAtaIdempotentIx(args: {
   payer: PublicKey;
   owner: PublicKey;
   mint: PublicKey;
+  tokenProgramId: PublicKey;
 }): TransactionInstruction {
-  const ata = deriveAta(args.owner, args.mint);
+  const ata = deriveAta(args.owner, args.mint, args.tokenProgramId);
   const keys = [
     { pubkey: args.payer, isSigner: true, isWritable: true },
     { pubkey: ata, isSigner: false, isWritable: true },
     { pubkey: args.owner, isSigner: false, isWritable: false },
     { pubkey: args.mint, isSigner: false, isWritable: false },
     { pubkey: SYSTEM_PROGRAM_ID, isSigner: false, isWritable: false },
-    { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: args.tokenProgramId, isSigner: false, isWritable: false },
   ];
   return new TransactionInstruction({
     keys,
@@ -116,6 +122,7 @@ export async function buildPumpFunBuyTransaction(args: {
   user: Keypair;
   mint: PublicKey;
   bondingCurve: PublicKey;
+  tokenProgramId: PublicKey;
   tokensOut: bigint;
   solInLamports: bigint;
   slippageBps: number;
@@ -148,12 +155,14 @@ export async function buildPumpFunBuyTransaction(args: {
     payer: args.user.publicKey,
     owner: args.user.publicKey,
     mint: args.mint,
+    tokenProgramId: args.tokenProgramId,
   });
 
   const buyIx = buildPumpFunBuyIx({
     user: args.user.publicKey,
     mint: args.mint,
     bondingCurve: args.bondingCurve,
+    tokenProgramId: args.tokenProgramId,
     amount: args.tokensOut,
     maxSolCost,
   });

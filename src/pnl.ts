@@ -107,6 +107,30 @@ export function resetPositions(): void {
   positions.clear();
 }
 
+/**
+ * Roll back a previously recorded buy — used when a tx broadcast successfully but failed on chain
+ * (e.g., during background confirmation). Subtracts tokens and SOL from the position. If this was
+ * the only buy and there are no sells, the position is fully removed.
+ *
+ * Returns true if a position was rolled back, false if no matching position existed.
+ */
+export function unrecordBuy(
+  mint: string,
+  tokenAmountRaw: number,
+  solLamports: number
+): boolean {
+  const p = positions.get(mint);
+  if (!p) return false;
+  p.totalBoughtRaw = Math.max(0, p.totalBoughtRaw - tokenAmountRaw);
+  p.totalSolSpentLamports = Math.max(0, p.totalSolSpentLamports - solLamports);
+  p.buysCount = Math.max(0, p.buysCount - 1);
+  // If the position has no buys and no sells left, drop it entirely.
+  if (p.buysCount === 0 && p.sellsCount === 0) {
+    positions.delete(mint);
+  }
+  return true;
+}
+
 export type PnlTotals = {
   buysCount: number;
   sellsCount: number;

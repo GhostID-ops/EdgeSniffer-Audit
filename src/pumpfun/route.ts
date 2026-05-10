@@ -43,6 +43,12 @@ export async function tryPumpFunDirectBuy(args: {
   minSolLamports: number;
   startedAt: number;
   log: (msg: string) => void;
+  /**
+   * Called only in fastMode if background confirmation reports the buy failed on chain.
+   * Caller should roll back the recorded position so the risk loop doesn't keep trying to sell
+   * tokens we never actually received.
+   */
+  onConfirmFailure?: (mint: string, tokensOutRaw: number, solInLamports: number, reason: string) => void;
 }): Promise<PumpFunBuyOutcome> {
   const elapsed = () => `${Date.now() - args.startedAt}ms`;
   const mintKey = new PublicKey(args.mint);
@@ -55,7 +61,9 @@ export async function tryPumpFunDirectBuy(args: {
   if (curve.state.complete) {
     return { ok: false, recoverable: true, reason: "pump.fun token has graduated" };
   }
-  args.log(`Pump.fun curve detected (${elapsed()}); virtSol=${(Number(curve.state.virtualSolReserves) / 1e9).toFixed(2)} SOL`);
+  args.log(
+    `Pump.fun curve detected (${elapsed()}); virtSol=${(Number(curve.state.virtualSolReserves) / 1e9).toFixed(2)} SOL · tokenProg=${curve.tokenProgramId.toBase58().slice(0, 8)}…`
+  );
 
   // 2. Liquidity-aware sizing: if size exceeds the impact cap, shrink to fit using exact curve math.
   let solIn = BigInt(args.solInLamports);
@@ -102,6 +110,7 @@ export async function tryPumpFunDirectBuy(args: {
     user: args.user,
     mint: mintKey,
     bondingCurve: curve.pda,
+    tokenProgramId: curve.tokenProgramId,
     tokensOut: quote.tokensOut,
     solInLamports: quote.solIn,
     slippageBps: args.slippageBps,
@@ -118,11 +127,22 @@ export async function tryPumpFunDirectBuy(args: {
   args.log(`Broadcast: ${signature} (${elapsed()})`);
 
   if (fastMode) {
+    const tokensOut = quote.tokensOut;
+    const solIn = quote.solIn;
+    const onFail = args.onConfirmFailure;
     void confirmSignature(signature)
       .then(() => console.log(`Pump.fun buy confirmed in background: ${signature}`))
       .catch((e) => {
         const m = e instanceof Error ? e.message : String(e);
         console.warn(`Pump.fun buy bg-confirm failed for ${signature}: ${m}`);
+        if (onFail) {
+          try {
+            onFail(args.mint, Number(tokensOut), Number(solIn), m);
+          } catch (cbErr) {
+            const cbMsg = cbErr instanceof Error ? cbErr.message : String(cbErr);
+            console.warn(`onConfirmFailure callback errored: ${cbMsg}`);
+          }
+        }
       });
   } else {
     await confirmSignature(signature);
@@ -212,6 +232,7 @@ export async function tryPumpFunDirectSell(args: {
     user: args.user,
     mint: mintKey,
     bondingCurve: curve.pda,
+    tokenProgramId: curve.tokenProgramId,
     tokensIn: args.tokensInRaw,
     expectedSolOut: quote.solOut,
     slippageBps: args.slippageBps,

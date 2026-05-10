@@ -19,7 +19,7 @@ import {
 import { confirmSignature } from "./confirm.js";
 import { getTokenBalance, getTokenBalanceFast } from "./balance.js";
 import { getTokenMeta, WRAPPED_SOL_MINT, type TokenMeta } from "./tokenRegistry.js";
-import { getPosition } from "./pnl.js";
+import { getPosition, unrecordBuy } from "./pnl.js";
 import type { DetectedSwap } from "./types.js";
 import { tryPumpFunDirectBuy, tryPumpFunDirectSell } from "./pumpfun/route.js";
 
@@ -33,6 +33,16 @@ export type MirrorResult = {
   output: { meta: TokenMeta; amountRaw: number };
   /** Jupiter's reported price impact as a decimal string (e.g. "0.0234" = 2.34%). */
   priceImpactPct?: string;
+};
+
+export type MirrorSwapOptions = {
+  onFastBuyConfirmFailure?: (args: {
+    mint: string;
+    tokenAmountRaw: number;
+    solLamports: number;
+    reason: string;
+    positionRemoved: boolean;
+  }) => void;
 };
 
 export class NoPositionError extends Error {
@@ -225,7 +235,8 @@ async function getMirrorAmount(
 
 export async function mirrorSwap(
   swap: DetectedSwap,
-  keypair: Keypair
+  keypair: Keypair,
+  options: MirrorSwapOptions = {}
 ): Promise<MirrorResult> {
   const startedAt = Date.now();
   const elapsed = () => `${Date.now() - startedAt}ms`;
@@ -245,6 +256,24 @@ export async function mirrorSwap(
       minSolLamports: minBuyLamports,
       startedAt,
       log: (m) => console.log(m),
+      onConfirmFailure: (mint, tokensRaw, solLamports, reason) => {
+        // Phantom-position cleanup: in fastMode we recorded the buy before confirmation.
+        // If the tx failed on chain, roll back so the risk loop stops trying to sell
+        // tokens we never actually received.
+        const removed = unrecordBuy(mint, tokensRaw, solLamports);
+        if (removed) {
+          console.warn(
+            `🧹 Phantom buy cleaned up: ${mint.slice(0, 8)}… (reason: ${reason}). Position removed from tracking.`
+          );
+        }
+        options.onFastBuyConfirmFailure?.({
+          mint,
+          tokenAmountRaw: tokensRaw,
+          solLamports,
+          reason,
+          positionRemoved: removed,
+        });
+      },
     });
     if (direct.ok) {
       const solMeta = await getTokenMeta(WRAPPED_SOL_MINT);

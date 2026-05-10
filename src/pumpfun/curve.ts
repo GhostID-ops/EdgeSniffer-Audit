@@ -3,6 +3,8 @@ import { readConnection } from "../config.js";
 import {
   PUMP_FUN_PROGRAM_ID,
   PUMP_FUN_TRADE_FEE_BPS,
+  TOKEN_PROGRAM_ID,
+  TOKEN_2022_PROGRAM_ID,
   deriveBondingCurvePda,
 } from "./constants.js";
 
@@ -44,18 +46,36 @@ export function decodeBondingCurve(data: Buffer): BondingCurveState | null {
 }
 
 /**
- * Fetch + decode the bonding curve for a mint. Returns null if the account doesn't exist
- * (not a pump.fun token), is owned by the wrong program (corrupt), or is malformed.
+ * Fetch + decode the bonding curve for a mint, AND detect which SPL token program owns the mint.
+ * Returns null if the curve account doesn't exist, isn't pump.fun, or is malformed, OR if the mint
+ * is owned by an unrecognized token program. Token program detection matters because pump.fun mints
+ * use both classic SPL Token (older) and Token-2022 (newer) — ATA derivation and instruction account
+ * lists need the right one or the tx fails with IncorrectProgramId.
  */
 export async function getBondingCurveState(
   mint: PublicKey
-): Promise<{ pda: PublicKey; state: BondingCurveState } | null> {
+): Promise<{
+  pda: PublicKey;
+  state: BondingCurveState;
+  tokenProgramId: PublicKey;
+} | null> {
   const pda = deriveBondingCurvePda(mint);
-  const acct = await readConnection.getAccountInfo(pda, "confirmed");
-  if (!acct || !acct.owner.equals(PUMP_FUN_PROGRAM_ID)) return null;
-  const state = decodeBondingCurve(acct.data);
+  // Fetch curve and mint in parallel — both reads cost ~80-150ms; serial would be wasteful.
+  const [curveAcct, mintAcct] = await Promise.all([
+    readConnection.getAccountInfo(pda, "confirmed"),
+    readConnection.getAccountInfo(mint, "confirmed"),
+  ]);
+  if (!curveAcct || !curveAcct.owner.equals(PUMP_FUN_PROGRAM_ID)) return null;
+  if (!mintAcct) return null;
+  // Token program = whoever owns the mint account.
+  const tokenProgramId = mintAcct.owner;
+  if (!tokenProgramId.equals(TOKEN_PROGRAM_ID) && !tokenProgramId.equals(TOKEN_2022_PROGRAM_ID)) {
+    // Unknown token program — refuse rather than guess.
+    return null;
+  }
+  const state = decodeBondingCurve(curveAcct.data);
   if (!state) return null;
-  return { pda, state };
+  return { pda, state, tokenProgramId };
 }
 
 /**

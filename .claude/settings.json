@@ -5,7 +5,14 @@
       "Bash(WEB_PORT=3001 timeout 5 npx tsx src/web.ts)",
       "Bash(WEB_PORT=3002 timeout 5 npx tsx src/web.ts)",
       "Bash(git show *)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(node -e \"const {PublicKey} = require\\('c:/Trading/FinalBot/node_modules/@solana/web3.js'\\); const a = new PublicKey\\('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'\\); console.log\\('My constant decoded:', a.toBase58\\(\\)\\); const b = new PublicKey\\('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'\\); console.log\\('Same?', a.equals\\(b\\)\\);\")",
+      "Bash(node -e ' *)",
+      "Bash(cp \"c:/Users/Cheet/OneDrive/Documents/FinalBot/src/pumpfun/constants.ts\" \"c:/Trading/FinalBot/src/pumpfun/constants.ts\")",
+      "Bash(cp \"c:/Users/Cheet/OneDrive/Documents/FinalBot/src/pumpfun/curve.ts\" \"c:/Trading/FinalBot/src/pumpfun/curve.ts\")",
+      "Bash(cp \"c:/Users/Cheet/OneDrive/Documents/FinalBot/src/pumpfun/buy.ts\" \"c:/Trading/FinalBot/src/pumpfun/buy.ts\")",
+      "Bash(cp \"c:/Users/Cheet/OneDrive/Documents/FinalBot/src/pumpfun/sell.ts\" \"c:/Trading/FinalBot/src/pumpfun/sell.ts\")",
+      "Bash(cp \"c:/Users/Cheet/OneDrive/Documents/FinalBot/src/pumpfun/route.ts\" \"c:/Trading/FinalBot/src/pumpfun/route.ts\")"
     ]
   }
 }

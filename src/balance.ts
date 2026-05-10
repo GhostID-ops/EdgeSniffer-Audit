@@ -3,7 +3,7 @@ import { readConnection } from "./config.js";
 
 const TOKEN_PROGRAM_IDS = [
   new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
-  new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPu8NQkMZ6H4hWzPvyxC"),
+  new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"),
 ];
 const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"

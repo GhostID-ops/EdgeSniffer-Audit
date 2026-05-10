@@ -17,7 +17,6 @@ import { getDynamicPriorityFee } from "../feeOracle.js";
 import {
   PUMP_FUN_PROGRAM_ID,
   PUMP_FUN_FEE_RECIPIENT,
-  TOKEN_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   RENT_SYSVAR_ID,
   SELL_DISCRIMINATOR,
@@ -47,13 +46,14 @@ export function buildPumpFunSellIx(args: {
   user: PublicKey;
   mint: PublicKey;
   bondingCurve: PublicKey;
+  tokenProgramId: PublicKey;
   amount: bigint;
   minSolOutput: bigint;
 }): TransactionInstruction {
   const global = deriveGlobalPda();
   const eventAuthority = deriveEventAuthorityPda();
-  const associatedBondingCurve = deriveAta(args.bondingCurve, args.mint);
-  const associatedUser = deriveAta(args.user, args.mint);
+  const associatedBondingCurve = deriveAta(args.bondingCurve, args.mint, args.tokenProgramId);
+  const associatedUser = deriveAta(args.user, args.mint, args.tokenProgramId);
 
   const keys = [
     { pubkey: global, isSigner: false, isWritable: false },
@@ -64,7 +64,7 @@ export function buildPumpFunSellIx(args: {
     { pubkey: associatedUser, isSigner: false, isWritable: true },
     { pubkey: args.user, isSigner: true, isWritable: true },
     { pubkey: SYSTEM_PROGRAM_ID, isSigner: false, isWritable: false },
-    { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: args.tokenProgramId, isSigner: false, isWritable: false },
     { pubkey: RENT_SYSVAR_ID, isSigner: false, isWritable: false },
     { pubkey: eventAuthority, isSigner: false, isWritable: false },
     { pubkey: PUMP_FUN_PROGRAM_ID, isSigner: false, isWritable: false },
@@ -88,6 +88,7 @@ export async function buildPumpFunSellTransaction(args: {
   user: Keypair;
   mint: PublicKey;
   bondingCurve: PublicKey;
+  tokenProgramId: PublicKey;
   tokensIn: bigint;
   expectedSolOut: bigint;
   slippageBps: number;
@@ -122,6 +123,7 @@ export async function buildPumpFunSellTransaction(args: {
     user: args.user.publicKey,
     mint: args.mint,
     bondingCurve: args.bondingCurve,
+    tokenProgramId: args.tokenProgramId,
     amount: args.tokensIn,
     minSolOutput,
   });
