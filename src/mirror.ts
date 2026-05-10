@@ -36,6 +36,7 @@ export type MirrorResult = {
 };
 
 export type MirrorSwapOptions = {
+  exactAmountRaw?: number;
   onFastBuyConfirmFailure?: (args: {
     mint: string;
     tokenAmountRaw: number;
@@ -93,6 +94,19 @@ export class SourceDriftError extends Error {
   }
 }
 
+function quoteImpactPct(quote: QuoteResponse): number {
+  const impact = quote.priceImpactPct ? parseFloat(quote.priceImpactPct) * 100 : 0;
+  return Number.isFinite(impact) ? impact : 0;
+}
+
+function assertEntryImpactWithinCap(mint: string, quote: QuoteResponse): void {
+  if (maxEntryPriceImpactPct == null) return;
+  const impactPct = quoteImpactPct(quote);
+  if (impactPct > maxEntryPriceImpactPct) {
+    throw new ImpactTooHighError(mint, impactPct, maxEntryPriceImpactPct);
+  }
+}
+
 /**
  * Probe-and-shrink: keep re-quoting at smaller sizes until Jupiter's reported price impact is at or
  * below the configured cap. Saves the last valid quote so the slippage-ladder phase can reuse it.
@@ -111,7 +125,7 @@ async function probeBuySizeForImpact(
 
   for (let attempt = 0; attempt <= maxImpactReduceAttempts; attempt++) {
     const quote = await getQuote(inputMint, outputMint, probed, mirrorSlippageBps);
-    const impactPct = quote.priceImpactPct ? parseFloat(quote.priceImpactPct) * 100 : 0;
+    const impactPct = quoteImpactPct(quote);
     lastQuote = quote;
     lastImpactPct = impactPct;
 
@@ -183,19 +197,11 @@ function isTransientBroadcastFailure(err: unknown): boolean {
   );
 }
 
-function confirmInBackground(signature: string): void {
-  void confirmSignature(signature)
-    .then(() => console.log(`Transaction confirmed in background: ${signature}`))
-    .catch((err) => {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.warn(`Background confirmation failed for ${signature}: ${msg}`);
-    });
-}
-
 async function getMirrorAmount(
   side: Side,
   swap: DetectedSwap,
-  keypair: Keypair
+  keypair: Keypair,
+  options: MirrorSwapOptions
 ): Promise<number> {
   if (side === "buy") {
     const amountRaw = clampBuy(swap.amountRaw);
@@ -214,6 +220,10 @@ async function getMirrorAmount(
   }
 
   if (side === "sell") {
+    if (options.exactAmountRaw != null && options.exactAmountRaw > 0) {
+      return options.exactAmountRaw;
+    }
+
     let amountRaw: number;
     if (simulationMode) {
       amountRaw = getPosition(swap.inputMint)?.heldRaw ?? 0;
@@ -241,7 +251,7 @@ export async function mirrorSwap(
   const startedAt = Date.now();
   const elapsed = () => `${Date.now() - startedAt}ms`;
   const side = classifySide(swap.inputMint, swap.outputMint);
-  const initialAmountRaw = await getMirrorAmount(side, swap, keypair);
+  const initialAmountRaw = await getMirrorAmount(side, swap, keypair, options);
 
   // Phase 0: Direct pump.fun bonding-curve route. Bypasses Jupiter entirely for pre-graduation
   // pump.fun tokens — solves the "Jupiter says 100% impact" indexing-lag problem and shaves
@@ -256,6 +266,7 @@ export async function mirrorSwap(
       minSolLamports: minBuyLamports,
       startedAt,
       log: (m) => console.log(m),
+      sourceSignature: swap.signature,
       onConfirmFailure: (mint, tokensRaw, solLamports, reason) => {
         // Phantom-position cleanup: in fastMode we recorded the buy before confirmation.
         // If the tx failed on chain, roll back so the risk loop stops trying to sell
@@ -306,6 +317,7 @@ export async function mirrorSwap(
       slippageBps: mirrorSlippageBps,
       startedAt,
       log: (m) => console.log(m),
+      sourceSignature: swap.signature,
     });
     if (direct.ok) {
       const solMeta = await getTokenMeta(WRAPPED_SOL_MINT);
@@ -418,6 +430,9 @@ export async function mirrorSwap(
         );
         console.log(`Quote received: ${quote.outAmount} out amount (${elapsed()})`);
       }
+      if (side === "buy") {
+        assertEntryImpactWithinCap(swap.outputMint, quote);
+      }
 
       const inAmountRaw = parseInt(quote.inAmount ?? String(attempt.amountRaw), 10);
       const outAmountRaw = parseInt(quote.outAmount ?? "0", 10);
@@ -456,15 +471,12 @@ export async function mirrorSwap(
       console.log(`Transaction broadcast: ${signature} (${elapsed()})`);
 
       if (fastMode) {
-        console.log(
-          "Fast mode enabled: recording immediately after broadcast; confirmation continues in background."
-        );
-        confirmInBackground(signature);
+        console.log("Fast mode: broadcast sent; confirming before recording trade.");
       } else {
         console.log("Confirming transaction...");
-        await confirmSignature(signature);
-        console.log(`Transaction confirmed (${elapsed()})`);
       }
+      await confirmSignature(signature);
+      console.log(`Transaction confirmed (${elapsed()})`);
 
       console.log("Getting token metadata...");
       const [inputMeta, outputMeta] = await Promise.all([

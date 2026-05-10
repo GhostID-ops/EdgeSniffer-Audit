@@ -1,8 +1,9 @@
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { Keypair, PublicKey, type AccountMeta } from "@solana/web3.js";
 import { broadcastTransactionWithSender } from "../sender.js";
 import { confirmSignature } from "../confirm.js";
-import { fastMode, simulationMode, mirrorSlippageBps } from "../config.js";
+import { fastMode, simulationMode, mirrorRetrySlippageBps, readConnection } from "../config.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
+import { PUMP_FUN_PROGRAM_ID } from "./constants.js";
 import {
   getBondingCurveState,
   quoteBuyOnCurve,
@@ -24,6 +25,51 @@ export type PumpFunBuyOutcome =
     }
   | { ok: false; reason: string; recoverable: boolean };
 
+function isPumpFunRetryableBuyFailure(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return msg.includes("\"Custom\":6002") || msg.includes("Custom:6002");
+}
+
+async function getSourcePumpRemainingAccounts(
+  sourceSignature: string | undefined,
+  mint: PublicKey
+): Promise<AccountMeta[]> {
+  if (!sourceSignature || sourceSignature.startsWith("manual-")) return [];
+  try {
+    const tx = await readConnection.getTransaction(sourceSignature, {
+      commitment: "confirmed",
+      maxSupportedTransactionVersion: 0,
+    });
+    if (!tx) return [];
+    const message = tx.transaction.message;
+    const staticKeys = message.staticAccountKeys;
+    const loaded = tx.meta?.loadedAddresses
+      ? [...tx.meta.loadedAddresses.writable, ...tx.meta.loadedAddresses.readonly]
+      : [];
+    const allKeys = [...staticKeys, ...loaded];
+
+    for (const ix of message.compiledInstructions) {
+      const accountKeys = ix.accountKeyIndexes.map((idx) => allKeys[idx]);
+      if (accountKeys.length < 18) continue;
+      if (!accountKeys[2]?.equals(mint)) continue;
+      if (!accountKeys[11]?.equals(PUMP_FUN_PROGRAM_ID)) continue;
+
+      const remaining = ix.accountKeyIndexes.slice(16).map((idx) => ({
+        pubkey: allKeys[idx]!,
+        isSigner: message.isAccountSigner(idx),
+        isWritable: message.isAccountWritable(idx),
+      }));
+      if (remaining.length > 0) {
+        return remaining;
+      }
+    }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`Could not inspect source pump.fun accounts: ${msg}`);
+  }
+  return [];
+}
+
 /**
  * Attempt a direct pump.fun bonding-curve buy. Returns:
  *   { ok: true, ... }                    — buy succeeded
@@ -43,11 +89,7 @@ export async function tryPumpFunDirectBuy(args: {
   minSolLamports: number;
   startedAt: number;
   log: (msg: string) => void;
-  /**
-   * Called only in fastMode if background confirmation reports the buy failed on chain.
-   * Caller should roll back the recorded position so the risk loop doesn't keep trying to sell
-   * tokens we never actually received.
-   */
+  sourceSignature?: string;
   onConfirmFailure?: (mint: string, tokensOutRaw: number, solInLamports: number, reason: string) => void;
 }): Promise<PumpFunBuyOutcome> {
   const elapsed = () => `${Date.now() - args.startedAt}ms`;
@@ -60,6 +102,9 @@ export async function tryPumpFunDirectBuy(args: {
   }
   if (curve.state.complete) {
     return { ok: false, recoverable: true, reason: "pump.fun token has graduated" };
+  }
+  if (!curve.state.creator) {
+    return { ok: false, recoverable: true, reason: "pump.fun bonding curve missing creator field" };
   }
   args.log(
     `Pump.fun curve detected (${elapsed()}); virtSol=${(Number(curve.state.virtualSolReserves) / 1e9).toFixed(2)} SOL · tokenProg=${curve.tokenProgramId.toBase58().slice(0, 8)}…`
@@ -106,14 +151,20 @@ export async function tryPumpFunDirectBuy(args: {
 
   // 5. Build + sign + broadcast.
   args.log("Building pump.fun buy tx...");
+  const remainingAccounts = await getSourcePumpRemainingAccounts(args.sourceSignature, mintKey);
+  if (remainingAccounts.length > 0) {
+    args.log(`Using ${remainingAccounts.length} source pump.fun remaining account(s) for fee/buyback routing.`);
+  }
   const tx = await buildPumpFunBuyTransaction({
     user: args.user,
     mint: mintKey,
     bondingCurve: curve.pda,
+    creator: curve.state.creator,
     tokenProgramId: curve.tokenProgramId,
     tokensOut: quote.tokensOut,
     solInLamports: quote.solIn,
     slippageBps: args.slippageBps,
+    remainingAccounts,
   });
   args.log(`Tx built (${elapsed()})`);
 
@@ -127,27 +178,23 @@ export async function tryPumpFunDirectBuy(args: {
   args.log(`Broadcast: ${signature} (${elapsed()})`);
 
   if (fastMode) {
-    const tokensOut = quote.tokensOut;
-    const solIn = quote.solIn;
-    const onFail = args.onConfirmFailure;
-    void confirmSignature(signature)
-      .then(() => console.log(`Pump.fun buy confirmed in background: ${signature}`))
-      .catch((e) => {
-        const m = e instanceof Error ? e.message : String(e);
-        console.warn(`Pump.fun buy bg-confirm failed for ${signature}: ${m}`);
-        if (onFail) {
-          try {
-            onFail(args.mint, Number(tokensOut), Number(solIn), m);
-          } catch (cbErr) {
-            const cbMsg = cbErr instanceof Error ? cbErr.message : String(cbErr);
-            console.warn(`onConfirmFailure callback errored: ${cbMsg}`);
-          }
-        }
-      });
-  } else {
-    await confirmSignature(signature);
-    args.log(`Confirmed (${elapsed()})`);
+    args.log("Fast mode: broadcast sent; confirming before recording position...");
   }
+  try {
+    await confirmSignature(signature);
+  } catch (err) {
+    if (isPumpFunRetryableBuyFailure(err) && mirrorRetrySlippageBps > args.slippageBps) {
+      args.log(
+        `Pump.fun buy exceeded slippage; retrying fresh quote at ${(mirrorRetrySlippageBps / 100).toFixed(2)}% slippage...`
+      );
+      return tryPumpFunDirectBuy({
+        ...args,
+        slippageBps: mirrorRetrySlippageBps,
+      });
+    }
+    throw err;
+  }
+  args.log(`Confirmed (${elapsed()})`);
 
   const mintMeta = await getTokenMeta(args.mint);
   return {
@@ -194,6 +241,7 @@ export async function tryPumpFunDirectSell(args: {
   slippageBps: number;
   startedAt: number;
   log: (msg: string) => void;
+  sourceSignature?: string;
 }): Promise<PumpFunSellOutcome> {
   const elapsed = () => `${Date.now() - args.startedAt}ms`;
   const mintKey = new PublicKey(args.mint);
@@ -204,6 +252,9 @@ export async function tryPumpFunDirectSell(args: {
   }
   if (curve.state.complete) {
     return { ok: false, recoverable: true, reason: "pump.fun token has graduated" };
+  }
+  if (!curve.state.creator) {
+    return { ok: false, recoverable: true, reason: "pump.fun bonding curve missing creator field" };
   }
   args.log(
     `Pump.fun curve detected (${elapsed()}); virtSol=${(Number(curve.state.virtualSolReserves) / 1e9).toFixed(2)} SOL`
@@ -228,14 +279,20 @@ export async function tryPumpFunDirectSell(args: {
   }
 
   args.log("Building pump.fun sell tx...");
+  const remainingAccounts = await getSourcePumpRemainingAccounts(args.sourceSignature, mintKey);
+  if (remainingAccounts.length > 0) {
+    args.log(`Using ${remainingAccounts.length} source pump.fun remaining account(s) for fee/buyback routing.`);
+  }
   const tx = await buildPumpFunSellTransaction({
     user: args.user,
     mint: mintKey,
     bondingCurve: curve.pda,
+    creator: curve.state.creator,
     tokenProgramId: curve.tokenProgramId,
     tokensIn: args.tokensInRaw,
     expectedSolOut: quote.solOut,
     slippageBps: args.slippageBps,
+    remainingAccounts,
   });
   args.log(`Tx built (${elapsed()})`);
 
@@ -249,16 +306,10 @@ export async function tryPumpFunDirectSell(args: {
   args.log(`Broadcast: ${signature} (${elapsed()})`);
 
   if (fastMode) {
-    void confirmSignature(signature)
-      .then(() => console.log(`Pump.fun sell confirmed in background: ${signature}`))
-      .catch((e) => {
-        const m = e instanceof Error ? e.message : String(e);
-        console.warn(`Pump.fun sell bg-confirm failed for ${signature}: ${m}`);
-      });
-  } else {
-    await confirmSignature(signature);
-    args.log(`Confirmed (${elapsed()})`);
+    args.log("Fast mode: broadcast sent; confirming before recording sell...");
   }
+  await confirmSignature(signature);
+  args.log(`Confirmed (${elapsed()})`);
 
   const mintMeta = await getTokenMeta(args.mint);
   return {

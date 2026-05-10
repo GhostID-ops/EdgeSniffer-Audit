@@ -26,6 +26,7 @@ export type BondingCurveState = {
   realSolReserves: bigint;
   tokenTotalSupply: bigint;
   complete: boolean;
+  creator: PublicKey | null;
 };
 
 function readU64LE(buf: Buffer, offset: number): bigint {
@@ -42,6 +43,7 @@ export function decodeBondingCurve(data: Buffer): BondingCurveState | null {
     realSolReserves: readU64LE(data, 32),
     tokenTotalSupply: readU64LE(data, 40),
     complete: data[48] === 1,
+    creator: data.length >= 81 ? new PublicKey(data.subarray(49, 81)) : null,
   };
 }
 

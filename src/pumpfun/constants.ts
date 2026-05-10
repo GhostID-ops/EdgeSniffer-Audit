@@ -3,6 +3,9 @@ import { PublicKey } from "@solana/web3.js";
 /** Pump.fun bonding-curve program (mainnet). */
 export const PUMP_FUN_PROGRAM_ID = new PublicKey("6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P");
 
+/** Pump fee program used by current pump.fun trade instructions. */
+export const PUMP_FUN_FEE_PROGRAM_ID = new PublicKey("pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ");
+
 /** Trading-fee recipient. Read on-chain from the global account; this is the historical default. */
 export const PUMP_FUN_FEE_RECIPIENT = new PublicKey("CebN5WGQ4jvEPvsVU4EoHEpgzq1VV7AbicfhtW4xC9iM");
 
@@ -59,6 +62,38 @@ export function deriveEventAuthorityPda(): PublicKey {
   const [pda] = PublicKey.findProgramAddressSync(
     [Buffer.from("__event_authority")],
     PUMP_FUN_PROGRAM_ID
+  );
+  return pda;
+}
+
+export function deriveCreatorVaultPda(creator: PublicKey): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [Buffer.from("creator-vault"), creator.toBuffer()],
+    PUMP_FUN_PROGRAM_ID
+  );
+  return pda;
+}
+
+export function deriveGlobalVolumeAccumulatorPda(): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [Buffer.from("global_volume_accumulator")],
+    PUMP_FUN_PROGRAM_ID
+  );
+  return pda;
+}
+
+export function deriveUserVolumeAccumulatorPda(user: PublicKey): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [Buffer.from("user_volume_accumulator"), user.toBuffer()],
+    PUMP_FUN_PROGRAM_ID
+  );
+  return pda;
+}
+
+export function deriveFeeConfigPda(): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [Buffer.from("fee_config"), PUMP_FUN_PROGRAM_ID.toBuffer()],
+    PUMP_FUN_FEE_PROGRAM_ID
   );
   return pda;
 }

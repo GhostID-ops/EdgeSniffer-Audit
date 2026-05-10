@@ -326,10 +326,14 @@ export const jupiterQuoteRetries = Math.max(
 /** Simulation/dry-run mode: no transactions sent, only log what would be done. Set SIMULATION_MODE=true or DRY_RUN=true. */
 const SIMULATION_RAW =
   process.env.SIMULATION_MODE ?? process.env.DRY_RUN ?? "";
-export const simulationMode =
+export let simulationMode =
   SIMULATION_RAW === "true" ||
   SIMULATION_RAW === "1" ||
   SIMULATION_RAW.toLowerCase() === "yes";
+
+export function setSimulationMode(enabled: boolean): void {
+  simulationMode = enabled;
+}
 
 /** In simulation mode, use this as your starting SOL balance for display (e.g. 10 = 10 SOL). Set SIMULATION_SOL_BALANCE or STARTING_SOL_BALANCE. */
 const SIM_SOL_RAW =

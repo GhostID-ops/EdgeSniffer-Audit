@@ -10,6 +10,7 @@ import {
   resetTradingState,
   sellAllPositions,
   sellPositionByIndex,
+  setBotSimulationMode,
   toggleBuyOncePerToken,
   toggleMirrorSells,
   toggleShowMarketCap,
@@ -150,6 +151,7 @@ class TelegramBotHandler {
       { command: "sellall", description: "Sell every open position" },
       { command: "status", description: "Show bot status" },
       { command: "settings", description: "Show runtime settings" },
+      { command: "mode", description: "Switch simulation/live mode" },
     ];
 
     await Promise.all([
@@ -209,6 +211,9 @@ class TelegramBotHandler {
       case "/settings":
         await this.sendSettings(chatId);
         return;
+      case "/mode":
+        await this.sendModeMenu(chatId);
+        return;
       case "/sellall":
         await this.sendSellAllConfirmation(chatId);
         return;
@@ -258,6 +263,18 @@ class TelegramBotHandler {
         return;
       case "settings":
         await this.sendSettings(chatId);
+        return;
+      case "mode":
+        await this.sendModeMenu(chatId);
+        return;
+      case "set_mode_sim":
+        await this.executeSetMode(chatId, true);
+        return;
+      case "confirm_set_mode_live":
+        await this.sendLiveModeConfirmation(chatId);
+        return;
+      case "set_mode_live":
+        await this.executeSetMode(chatId, false);
         return;
       case "sell_all":
         await this.sendSellAllConfirmation(chatId);
@@ -311,6 +328,7 @@ class TelegramBotHandler {
               { text: "Sell All", callback_data: "sell_all" },
               { text: "Settings", callback_data: "settings" },
             ],
+            [{ text: "Mode", callback_data: "mode" }],
           ],
         },
       }
@@ -452,21 +470,24 @@ class TelegramBotHandler {
   }
 
   private async sendSettings(chatId: number): Promise<void> {
+    const state = getBotState();
     await this.sendMessage(
       chatId,
       [
         "<b>Runtime Settings</b>",
         "",
+        `Mode: ${state.simulationMode ? "SIMULATION" : "LIVE"}`,
         `Mirror sells: ${isMirrorSellsEnabled() ? "ON" : "OFF"}`,
         `Buy once/token: ${isBuyOncePerTokenEnabled() ? "ON" : "OFF"}`,
         `Market cap display: ${isShowMarketCapEnabled() ? "ON" : "OFF"}`,
-        `Risk exits: ${getBotState().riskControlsEnabled ? "ON" : "OFF"} (set STOP_LOSS_PCT / TAKE_PROFIT_PCT in .env)`,
+        `Risk exits: ${state.riskControlsEnabled ? "ON" : "OFF"} (set STOP_LOSS_PCT / TAKE_PROFIT_PCT in .env)`,
         "",
         "These toggles affect the current running session. Persistent defaults still come from .env.",
       ].join("\n"),
       {
         reply_markup: {
           inline_keyboard: [
+            [{ text: "Change Mode", callback_data: "mode" }],
             [{ text: "Toggle Mirror Sells", callback_data: "toggle_mirror_sells" }],
             [{ text: "Toggle Buy Once", callback_data: "toggle_buy_once" }],
             [{ text: "Toggle Market Cap", callback_data: "toggle_market_cap" }],
@@ -475,6 +496,66 @@ class TelegramBotHandler {
         },
       }
     );
+  }
+
+  private async sendModeMenu(chatId: number): Promise<void> {
+    const state = getBotState();
+    await this.sendMessage(
+      chatId,
+      [
+        "<b>Trading Mode</b>",
+        "",
+        `Current mode: <b>${state.simulationMode ? "SIMULATION" : "LIVE"}</b>`,
+        `Open positions: ${state.positions.filter((p) => p.heldRaw > 0).length}`,
+        "",
+        "Mode changes are blocked while positions are open.",
+      ].join("\n"),
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: state.simulationMode ? "Simulation Active" : "Switch to Simulation", callback_data: "set_mode_sim" },
+              { text: state.simulationMode ? "Switch to Live" : "Live Active", callback_data: "confirm_set_mode_live" },
+            ],
+            [{ text: "Back", callback_data: "menu" }],
+          ],
+        },
+      }
+    );
+  }
+
+  private async sendLiveModeConfirmation(chatId: number): Promise<void> {
+    const state = getBotState();
+    if (!state.simulationMode) {
+      await this.sendModeMenu(chatId);
+      return;
+    }
+
+    await this.sendMessage(
+      chatId,
+      [
+        "<b>Confirm LIVE Mode</b>",
+        "",
+        "LIVE mode sends real transactions from your configured wallet.",
+        `Open positions: ${state.positions.filter((p) => p.heldRaw > 0).length}`,
+      ].join("\n"),
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: "Confirm LIVE", callback_data: "set_mode_live" },
+              { text: "Cancel", callback_data: "mode" },
+            ],
+          ],
+        },
+      }
+    );
+  }
+
+  private async executeSetMode(chatId: number, simulationEnabled: boolean): Promise<void> {
+    const result = setBotSimulationMode(simulationEnabled);
+    await this.sendMessage(chatId, escapeHtml(result.message));
+    await this.sendModeMenu(chatId);
   }
 
   private async sendSellPositionConfirmation(chatId: number, index: number): Promise<void> {
@@ -599,6 +680,7 @@ class TelegramBotHandler {
         "/pnl - PnL report",
         "/status - Bot status",
         "/settings - Runtime toggles",
+        "/mode - Switch simulation/live mode",
         "/reset - Confirm session reset",
       ].join("\n")
     );

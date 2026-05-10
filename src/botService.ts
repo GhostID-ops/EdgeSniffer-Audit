@@ -2,6 +2,7 @@ import { Keypair, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import bs58 from "bs58";
 import {
   getPrivateKeyBase58,
+  setSimulationMode,
   trackedWallets,
   simulationMode,
   simulationSolBalance,
@@ -246,6 +247,45 @@ export function setShowMarketCapEnabled(enabled: boolean): void {
 
 export function toggleShowMarketCap(): void {
   setShowMarketCapEnabled(!showMarketCapEnabled);
+}
+
+export type ModeChangeResult = {
+  ok: boolean;
+  changed: boolean;
+  simulationMode: boolean;
+  message: string;
+};
+
+export function setBotSimulationMode(enabled: boolean): ModeChangeResult {
+  if (simulationMode === enabled) {
+    return {
+      ok: true,
+      changed: false,
+      simulationMode,
+      message: `Already in ${enabled ? "SIMULATION" : "LIVE"} mode.`,
+    };
+  }
+
+  const openPositions = getPositions().filter((p) => p.heldRaw > 0);
+  if (openPositions.length > 0) {
+    return {
+      ok: false,
+      changed: false,
+      simulationMode,
+      message:
+        `Cannot switch to ${enabled ? "SIMULATION" : "LIVE"} mode while ` +
+        `${openPositions.length} position(s) are open. Close positions first.`,
+    };
+  }
+
+  setSimulationMode(enabled);
+  console.log(`Mode changed to ${enabled ? "SIMULATION" : "LIVE"} from runtime controls.`);
+  return {
+    ok: true,
+    changed: true,
+    simulationMode,
+    message: `Mode changed to ${enabled ? "SIMULATION" : "LIVE"}.`,
+  };
 }
 
 type TradeLogExtras = {
@@ -1140,7 +1180,7 @@ export async function sellPositionByIndex(index: number): Promise<void> {
  * Sell all open positions (simulated or live based on mode)
  */
 async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<void> {
-  let liveHeldRaw: number;
+  let liveHeldRaw: number | null;
   try {
     // Fast path: direct ATA read. Falls back to scan-all on null (unusual token program / closed ATA).
     const fast = await getTokenBalanceFast(keypair!.publicKey, p.mint);
@@ -1148,13 +1188,22 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.warn(`Token balance lookup failed for $${p.symbol}: ${msg}; attempting tracked amount.`);
-    liveHeldRaw = p.heldRaw;
+    liveHeldRaw = null;
   }
-  if (liveHeldRaw <= 0 && p.heldRaw > 0) {
+  const sellRaw =
+    liveHeldRaw != null && liveHeldRaw > 0
+      ? Math.min(liveHeldRaw, p.heldRaw)
+      : p.heldRaw;
+  if ((liveHeldRaw == null || liveHeldRaw <= 0) && p.heldRaw > 0) {
     console.warn(`Live balance returned 0 for $${p.symbol}; attempting tracked amount.`);
-    liveHeldRaw = p.heldRaw;
   }
-  if (liveHeldRaw <= 0) {
+  if (liveHeldRaw != null && liveHeldRaw > p.heldRaw) {
+    console.warn(
+      `Live balance for $${p.symbol} exceeds tracked position; selling tracked amount only. ` +
+        `live=${formatTokenAmount(liveHeldRaw, p.decimals)}, tracked=${formatTokenAmount(p.heldRaw, p.decimals)}`
+    );
+  }
+  if (sellRaw <= 0) {
     throw new Error(`No token balance available for $${p.symbol}.`);
   }
 
@@ -1164,10 +1213,11 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
       wallet: "manual-sell",
       inputMint: p.mint,
       outputMint: WRAPPED_SOL_MINT,
-      amountRaw: liveHeldRaw,
+      amountRaw: sellRaw,
       isNativeInput: false,
     },
-    keypair!
+    keypair!,
+    { exactAmountRaw: sellRaw }
   );
   const soldRaw = result.input.amountRaw;
   const receivedLamports = result.output.amountRaw;
