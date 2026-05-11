@@ -173,6 +173,20 @@ export function heliusAddressTransactionsUrl(
 /** WebSocket endpoint for logsSubscribe push notifications. */
 export const websocketUrl = process.env.WEBSOCKET_URL ?? "";
 
+const SHYFT_GRPC_ENABLED_RAW = (process.env.SHYFT_GRPC_ENABLED ?? "false").toLowerCase();
+export const shyftGrpcEnabled =
+  SHYFT_GRPC_ENABLED_RAW === "true" ||
+  SHYFT_GRPC_ENABLED_RAW === "1" ||
+  SHYFT_GRPC_ENABLED_RAW === "yes";
+export const shyftGrpcUrl = process.env.SHYFT_GRPC_URL ?? "";
+export const shyftGrpcXToken = process.env.SHYFT_GRPC_X_TOKEN ?? process.env.SHYFT_GRPC_TOKEN ?? "";
+export const shyftGrpcCommitment = (process.env.SHYFT_GRPC_COMMITMENT ?? "processed").toLowerCase();
+export const shyftGrpcReconnectMs = Math.max(
+  250,
+  parseInt(process.env.SHYFT_GRPC_RECONNECT_MS ?? "1000", 10)
+);
+export const shyftRabbitStreamUrl = process.env.SHYFT_RABBITSTREAM_URL ?? "";
+
 /** When false, the bot ignores source-wallet sells (you exit manually via 'e' or 'a' keys). Default true. */
 const MIRROR_SELLS_RAW = (process.env.MIRROR_SELLS ?? "true").toLowerCase();
 export const mirrorSells =

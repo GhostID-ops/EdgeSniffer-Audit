@@ -31,6 +31,7 @@ import {
   trailingSteps,
   trailingEnabled,
   pumpfunDirectEnabled,
+  shyftGrpcEnabled,
 } from "./config.js";
 import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import {
@@ -38,6 +39,7 @@ import {
   subscribeWalletSwaps,
   type Unsubscribe,
 } from "./watcher.js";
+import { subscribeGrpcWalletSwaps, type GrpcUnsubscribe } from "./grpcWatcher.js";
 import {
   mirrorSwap,
   NoPositionError,
@@ -203,6 +205,7 @@ let keypair: Keypair | null = null;
 let lastBalanceLamports: number | null = null;
 let lastBalanceAt: number | null = null;
 let unsubscribeWs: Unsubscribe | null = null;
+let unsubscribeGrpc: GrpcUnsubscribe | null = null;
 let riskPositionCursor = 0;
 let mirrorSellsEnabled = mirrorSells; // initialized from MIRROR_SELLS env, runtime-toggleable
 let buyOncePerTokenEnabled = buyOncePerToken; // initialized from BUY_ONCE_PER_TOKEN env
@@ -953,6 +956,14 @@ async function loop(): Promise<void> {
     }
     unsubscribeWs = null;
   }
+  if (unsubscribeGrpc) {
+    try {
+      await unsubscribeGrpc();
+    } catch {
+      // best-effort
+    }
+    unsubscribeGrpc = null;
+  }
 
   running = false;
   startedAt = null;
@@ -1009,6 +1020,20 @@ export async function startBot(): Promise<void> {
   }
 
   const kp = keypair;
+  if (shyftGrpcEnabled) {
+    unsubscribeGrpc = await subscribeGrpcWalletSwaps(
+      trackedWallets,
+      processedSignatures,
+      (swap) => {
+        processSwap(swap, kp).catch((err) => {
+          console.error("gRPC processSwap error:", err);
+        });
+      }
+    );
+  } else {
+    console.log("gRPC watcher disabled (set SHYFT_GRPC_ENABLED=true to enable).");
+  }
+
   unsubscribeWs = await subscribeWalletSwaps(
     trackedWallets,
     processedSignatures,
