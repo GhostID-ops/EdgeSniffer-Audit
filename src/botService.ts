@@ -170,8 +170,11 @@ class BoundedSignatureSet {
 const processedSignatures = new BoundedSignatureSet();
 const buyMintsInFlight = new Set<string>();
 const boughtMintsThisSession = new Set<string>();
+const sourceBuySignatureByMint = new Map<string, string>();
 const openPositionBuyMintsInFlight = new Set<string>();
 const riskSellsInFlight = new Set<string>();
+const riskSellRetryAfterByMint = new Map<string, number>();
+const RISK_SELL_FAILURE_COOLDOWN_MS = 15_000;
 type RiskTracePoint = {
   ts: number;
   valueLamports: number;
@@ -475,6 +478,7 @@ function logTrade(
     const pos = recordBuy(result.output.meta, result.output.amountRaw, result.input.amountRaw);
     const tokenMint = result.output.meta.mint;
     boughtMintsThisSession.add(tokenMint);
+    sourceBuySignatureByMint.set(tokenMint, swap.signature);
     const sourceSol = formatSolAmount(swap.amountRaw);
     const mirroredSol = formatSolAmount(result.input.amountRaw);
     const clamped = swap.amountRaw !== result.input.amountRaw;
@@ -842,9 +846,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     // Send Telegram notification for general mirror errors
     const isSell = swap.inputMint !== WRAPPED_SOL_MINT;
     const action = isSell ? "sell" : "buy";
+    const tokenMint = isSell ? swap.inputMint : swap.outputMint;
     void telegram.notifyError(
       `❌ ${action.charAt(0).toUpperCase() + action.slice(1)} failed: ${msg}`,
-      `Token: ${swap.inputMint.slice(0, 8)}…\nWallet: ${swap.wallet}\nTx: ${swap.signature}`
+      `Token: ${tokenMint.slice(0, 8)}…\nWallet: ${swap.wallet}\nTx: ${swap.signature}`
     );
     
     pushSwap({
@@ -1039,8 +1044,10 @@ export function resetTradingState(): void {
   processedSignatures.clear();
   buyMintsInFlight.clear();
   boughtMintsThisSession.clear();
+  sourceBuySignatureByMint.clear();
   openPositionBuyMintsInFlight.clear();
   riskSellsInFlight.clear();
+  riskSellRetryAfterByMint.clear();
   riskTraceByMint.clear();
   riskQuoteStateByMint.clear();
   resetCircuitBreaker();
@@ -1209,7 +1216,7 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
 
   const result = await mirrorSwap(
     {
-      signature: `manual-sell-${p.mint}`,
+      signature: sourceBuySignatureByMint.get(p.mint) ?? `manual-sell-${p.mint}`,
       wallet: "manual-sell",
       inputMint: p.mint,
       outputMint: WRAPPED_SOL_MINT,
@@ -1404,6 +1411,7 @@ async function checkRiskExits(): Promise<void> {
   for (let i = 0; i < open.length; i++) {
     const p = open[(riskPositionCursor + i) % open.length]!;
     if (riskSellsInFlight.has(p.mint)) continue;
+    if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > now) continue;
     if (p.costBasisRemainingLamports <= 0) continue;
     const state = riskQuoteStateByMint.get(p.mint);
     const plan = planRiskTick(p, state, now);
@@ -1421,6 +1429,7 @@ async function checkRiskExits(): Promise<void> {
 
   for (const p of positionsToCheck) {
     if (riskSellsInFlight.has(p.mint)) continue;
+    if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > Date.now()) continue;
     if (p.costBasisRemainingLamports <= 0) continue;
 
     try {
@@ -1478,8 +1487,10 @@ async function checkRiskExits(): Promise<void> {
         } else {
           await sellLivePosition(p, reason);
         }
+        riskSellRetryAfterByMint.delete(p.mint);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
+        riskSellRetryAfterByMint.set(p.mint, Date.now() + RISK_SELL_FAILURE_COOLDOWN_MS);
         void telegram.notifyRiskExit({
           status: "failed",
           symbol: p.symbol,
@@ -1498,7 +1509,9 @@ async function checkRiskExits(): Promise<void> {
     } catch (err) {
       riskSellsInFlight.delete(p.mint);
       const msg = err instanceof Error ? err.message : String(err);
-      console.warn(`Risk check skipped $${p.symbol}: ${msg}`);
+      console.warn(
+        `Risk check skipped $${p.symbol}: ${msg}. Retrying after ${Math.round(RISK_SELL_FAILURE_COOLDOWN_MS / 1000)}s.`
+      );
       if (isJupiterRateLimitError(err)) break;
     }
   }

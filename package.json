@@ -8,7 +8,8 @@
     "bot": "tsx src/copytrade.ts",
     "dev": "tsx src/copytrade.ts",
     "web": "tsx src/web.ts",
-    "swap": "tsx src/swap.ts"
+    "swap": "tsx src/swap.ts",
+    "test:pumpswap": "tsx src/testPumpSwap.ts"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.0",

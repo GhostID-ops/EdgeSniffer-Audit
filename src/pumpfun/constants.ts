@@ -28,6 +28,7 @@ export const RENT_SYSVAR_ID = new PublicKey("SysvarRent1111111111111111111111111
 /** Anchor discriminators (sha256("global:<name>")[0..8]). */
 export const BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 235, 234]);
 export const SELL_DISCRIMINATOR = Buffer.from([51, 230, 133, 164, 1, 127, 131, 173]);
+export const SELL_V2_DISCRIMINATOR = Buffer.from([93, 246, 130, 60, 231, 233, 64, 178]);
 
 /** Pump.fun trading fee, in basis points (1% historically). */
 export const PUMP_FUN_TRADE_FEE_BPS = 100;
@@ -93,6 +94,14 @@ export function deriveUserVolumeAccumulatorPda(user: PublicKey): PublicKey {
 export function deriveFeeConfigPda(): PublicKey {
   const [pda] = PublicKey.findProgramAddressSync(
     [Buffer.from("fee_config"), PUMP_FUN_PROGRAM_ID.toBuffer()],
+    PUMP_FUN_FEE_PROGRAM_ID
+  );
+  return pda;
+}
+
+export function deriveSharingConfigPda(mint: PublicKey): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [Buffer.from("sharing-config"), mint.toBuffer()],
     PUMP_FUN_FEE_PROGRAM_ID
   );
   return pda;

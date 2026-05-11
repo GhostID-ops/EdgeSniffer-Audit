@@ -3,7 +3,10 @@ import { broadcastTransactionWithSender } from "../sender.js";
 import { confirmSignature } from "../confirm.js";
 import { fastMode, simulationMode, mirrorRetrySlippageBps, readConnection } from "../config.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
-import { PUMP_FUN_PROGRAM_ID } from "./constants.js";
+import {
+  PUMP_FUN_PROGRAM_ID,
+  TOKEN_2022_PROGRAM_ID,
+} from "./constants.js";
 import {
   getBondingCurveState,
   quoteBuyOnCurve,
@@ -28,6 +31,18 @@ export type PumpFunBuyOutcome =
 function isPumpFunRetryableBuyFailure(err: unknown): boolean {
   const msg = err instanceof Error ? err.message : String(err);
   return msg.includes("\"Custom\":6002") || msg.includes("Custom:6002");
+}
+
+function isPumpFunSellUnsupportedTokenProgram(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return (
+    msg.includes("\"Custom\":3008") ||
+    msg.includes("\"Custom\":6057") ||
+    msg.includes("Custom:3008") ||
+    msg.includes("Custom:6057") ||
+    msg.includes("BuybackFeeRecipientNotAuthorized") ||
+    msg.includes("InvalidProgramId")
+  );
 }
 
 async function getSourcePumpRemainingAccounts(
@@ -278,6 +293,14 @@ export async function tryPumpFunDirectSell(args: {
     };
   }
 
+  if (curve.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID)) {
+    return {
+      ok: false,
+      recoverable: true,
+      reason: "pump.fun Token-2022 direct sell_v2 requires an authorized buyback fee recipient; falling back to Jupiter",
+    };
+  }
+
   args.log("Building pump.fun sell tx...");
   const remainingAccounts = await getSourcePumpRemainingAccounts(args.sourceSignature, mintKey);
   if (remainingAccounts.length > 0) {
@@ -308,7 +331,18 @@ export async function tryPumpFunDirectSell(args: {
   if (fastMode) {
     args.log("Fast mode: broadcast sent; confirming before recording sell...");
   }
-  await confirmSignature(signature);
+  try {
+    await confirmSignature(signature);
+  } catch (err) {
+    if (isPumpFunSellUnsupportedTokenProgram(err)) {
+      return {
+        ok: false,
+        recoverable: true,
+        reason: "pump.fun direct sell rejected account layout/fee routing; falling back to Jupiter",
+      };
+    }
+    throw err;
+  }
   args.log(`Confirmed (${elapsed()})`);
 
   const mintMeta = await getTokenMeta(args.mint);

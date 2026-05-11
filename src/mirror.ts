@@ -22,6 +22,7 @@ import { getTokenMeta, WRAPPED_SOL_MINT, type TokenMeta } from "./tokenRegistry.
 import { getPosition, unrecordBuy } from "./pnl.js";
 import type { DetectedSwap } from "./types.js";
 import { tryPumpFunDirectBuy, tryPumpFunDirectSell } from "./pumpfun/route.js";
+import { tryPumpSwapDirectBuy } from "./pumpswap/route.js";
 
 export type Side = "buy" | "sell" | "swap";
 
@@ -304,6 +305,34 @@ export async function mirrorSwap(
     }
     // Recoverable: graduated token, not on curve, etc. — fall through to Jupiter below.
     console.log(`Pump.fun direct path skipped: ${direct.reason}; falling back to Jupiter.`);
+    if (direct.reason.includes("graduated")) {
+      const pumpSwap = await tryPumpSwapDirectBuy({
+        user: keypair,
+        mint: swap.outputMint,
+        sourceSignature: swap.signature,
+        sourceSolInLamports: swap.amountRaw,
+        sourceTokensOutRaw: swap.counterpartyAmountRaw,
+        solInLamports: initialAmountRaw,
+        slippageBps: mirrorSlippageBps,
+        startedAt,
+        log: (m) => console.log(m),
+      });
+      if (pumpSwap.ok) {
+        const solMeta = await getTokenMeta(WRAPPED_SOL_MINT);
+        console.log(`PumpSwap direct path complete (${elapsed()})`);
+        return {
+          signature: pumpSwap.signature,
+          isSimulated: pumpSwap.isSimulated,
+          side: "buy",
+          input: { meta: solMeta, amountRaw: Number(pumpSwap.quoteIn) },
+          output: { meta: pumpSwap.mintMeta, amountRaw: Number(pumpSwap.baseOut) },
+        };
+      }
+      if (!pumpSwap.recoverable) {
+        throw new Error(`PumpSwap direct buy failed: ${pumpSwap.reason}`);
+      }
+      console.log(`PumpSwap direct path skipped: ${pumpSwap.reason}; falling back to Jupiter.`);
+    }
   }
 
   // Phase 0 (sell): symmetric direct pump.fun sell path. Same accuracy/latency wins as buys —
