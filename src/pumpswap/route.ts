@@ -13,9 +13,8 @@ import {
   computeUnitLimit,
   readConnection,
   simulationMode,
-  TIP_ACCOUNTS,
-  tipLamports,
 } from "../config.js";
+import { buildTipInstructions } from "../tipBuilder.js";
 import { getDynamicPriorityFee } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
 import { broadcastTransactionWithSender } from "../sender.js";
@@ -338,12 +337,7 @@ export async function tryPumpSwapDirectBuy(args: {
   }
   computeIxs.push(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: getDynamicPriorityFee() }));
 
-  const tipAccount = TIP_ACCOUNTS[Math.floor(Math.random() * TIP_ACCOUNTS.length)]!;
-  const tipIx = SystemProgram.transfer({
-    fromPubkey: args.user.publicKey,
-    toPubkey: new PublicKey(tipAccount),
-    lamports: tipLamports,
-  });
+  const tipIxs = buildTipInstructions(args.user.publicKey);
 
   const swapIx = new TransactionInstruction({
     programId: PUMPSWAP_PROGRAM_ID,
@@ -385,7 +379,7 @@ export async function tryPumpSwapDirectBuy(args: {
       syncNativeIx(userQuoteAta),
       swapIx,
       closeTokenAccountIx(userQuoteAta, args.user.publicKey),
-      tipIx,
+      ...tipIxs,
     ],
   }).compileToV0Message();
   const tx = new VersionedTransaction(message);

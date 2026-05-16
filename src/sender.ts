@@ -12,8 +12,6 @@ import {
 import {
   readConnection,
   senderEndpointUrl,
-  TIP_ACCOUNTS,
-  tipLamports,
   computeUnitLimit,
   useJitoDirect,
   useJitoFallback,
@@ -21,6 +19,7 @@ import {
 import { getDynamicPriorityFee } from "./feeOracle.js";
 import { broadcastViaJito } from "./jitoSender.js";
 import { invalidateBlockhashCache } from "./blockhashCache.js";
+import { buildTipInstructions } from "./tipBuilder.js";
 
 export type SwapResponse = { swapTransaction: string; [key: string]: unknown };
 
@@ -102,16 +101,10 @@ export async function createSenderTransactionFromSwapResponse(
     (ix) => getComputeInstructionType(ix) === "RequestHeapFrame"
   );
 
-  const tipAccount =
-    TIP_ACCOUNTS[Math.floor(Math.random() * TIP_ACCOUNTS.length)]!;
   const priorityFeeIx = ComputeBudgetProgram.setComputeUnitPrice({
     microLamports: getDynamicPriorityFee(),
   });
-  const tipIx = SystemProgram.transfer({
-    fromPubkey: keypair.publicKey,
-    toPubkey: new PublicKey(tipAccount),
-    lamports: tipLamports,
-  });
+  const tipIxs = buildTipInstructions(keypair.publicKey);
 
   const computeInstructions: TransactionInstruction[] = [];
   if (computeUnitLimit > 0) {
@@ -131,7 +124,7 @@ export async function createSenderTransactionFromSwapResponse(
   decompiledMessage.instructions = [
     ...computeInstructions,
     ...nonComputeInstructions,
-    tipIx,
+    ...tipIxs,
   ];
 
   const v0Message = decompiledMessage.compileToV0Message(altAccounts);

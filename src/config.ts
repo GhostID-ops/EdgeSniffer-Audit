@@ -384,11 +384,12 @@ export const simulationSolBalance: number | undefined = SIM_SOL_RAW
     })()
   : undefined;
 
-/** Current Jito tip accounts (mainnet-beta). Verified via getTipAccounts on the NY block engine.
- * Jito rotates these — old list was completely stale, every "tip" was being burned to addresses
- * Jito no longer recognized, so bundles weren't getting priority. Refresh periodically if Jito
- * rejects bundles. */
-export const TIP_ACCOUNTS = [
+/**
+ * Jito tip accounts (mainnet-beta). Required by Jito's BlockEngine to give your bundle MEV
+ * priority. Verified via `getTipAccounts` on https://ny.mainnet.block-engine.jito.wtf —
+ * Jito rotates these, so refresh from that endpoint if Jito starts rejecting bundles.
+ */
+export const JITO_TIP_ACCOUNTS = [
   "96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5",
   "ADuUkR4vqLUMWXxW9gh6D6L8pMSawimctcNZ5pGwDcEt",
   "DfXygSm4jCyNCybVYYK6DwvWqjKee8pbDmJGcLWNDXjh",
@@ -398,6 +399,39 @@ export const TIP_ACCOUNTS = [
   "HFqU5x63VTqvQss8hp11i4wVV8bD44PvwucfZ2bU7gRe",
   "ADaUMid9yfUytqMBgopwjb2DTLSokTSzL1zt6iGPaS49",
 ];
+
+/**
+ * Helius Sender tip accounts. **Different from Jito's list — zero overlap.** Helius Sender
+ * rejects any tx that doesn't transfer >= HELIUS_TIP_MIN_LAMPORTS to one of these.
+ *
+ * Why both lists matter: with USE_JITO_DIRECT=true and USE_JITO_FALLBACK=true, the bot tries
+ * Jito first then falls back to Helius. The tx must satisfy BOTH validators' tip rules to be
+ * accepted by whichever path runs — so we include two tip transfers, one to each list.
+ *
+ * Source: rejection message from Helius Sender itself when tx omits a Helius tip.
+ */
+export const HELIUS_TIP_ACCOUNTS = [
+  "9bnz4RShgq1hAnLnZbP8kbgBg1kEmcJBYQq3gQbmnSta",
+  "3KCKozbAaF75qEU33jtzozcJ29yJuaLJTy2jFdzUY8bT",
+  "2q5pghRs6arqVjRvT5gfgWfWcHWmw1ZuCzphgd5KfWGJ",
+  "4TQLFNWK8AovT1gFvda5jfw2oJeRMKEmw7aH6MGBJ3or",
+  "5VY91ws6B2hMmBFRsXkoAAdsPHBJwRfBht4DXox3xkwn",
+  "2nyhqdwKcJZR2vcqCyrYsaPVdAnFoJjiksCXJ7hfEYgD",
+  "D1Mc6j9xQWgR1o1Z7yU5nVVXFQiAYx7FG9AW1aVfwrUM",
+  "4ACfpUFoaSD9bfPdeu6DBt89gB6ENTeHBXCAi87NhDEE",
+  "D2L6yPZ2FmmmTKPgzaMKdhu6EWZcTpLy1Vhx8uvZe7NZ",
+  "wyvPkWjVZz1M8fHQnMMCDTQDbkManefNNhweYk5WkcF",
+  "4vieeGHPYPG2MmyPRcYjdiDmmhN3ww7hsFNap8pVN3Ey",
+];
+
+/** Helius Sender's minimum tip in lamports. Anything less and Sender rejects the request. */
+export const HELIUS_TIP_MIN_LAMPORTS = 200_000;
+
+/**
+ * Legacy alias kept so existing callers compile. Resolves to the *active* primary list — Jito
+ * when USE_JITO_DIRECT is on, Helius otherwise — for code paths that only know about one tip.
+ */
+export const TIP_ACCOUNTS: readonly string[] = JITO_TIP_ACCOUNTS;
 
 /** Connection to Helius staked RPC. Use for getLatestBlockhash, getAddressLookupTable, and any read-only RPC. */
 export const readConnection = new Connection(readRpcUrl);

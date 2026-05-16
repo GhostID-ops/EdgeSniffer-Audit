@@ -10,10 +10,9 @@ import {
 } from "@solana/web3.js";
 import {
   readConnection,
-  TIP_ACCOUNTS,
-  tipLamports,
   computeUnitLimit,
 } from "../config.js";
+import { buildTipInstructions } from "../tipBuilder.js";
 import { getDynamicPriorityFee } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
 import {
@@ -183,12 +182,7 @@ export async function buildPumpFunBuyTransaction(args: {
   const maxSolCost =
     (args.solInLamports * BigInt(10_000 + args.slippageBps)) / 10_000n;
 
-  const tipAccount = TIP_ACCOUNTS[Math.floor(Math.random() * TIP_ACCOUNTS.length)]!;
-  const tipIx = SystemProgram.transfer({
-    fromPubkey: args.user.publicKey,
-    toPubkey: new PublicKey(tipAccount),
-    lamports: tipLamports,
-  });
+  const tipIxs = buildTipInstructions(args.user.publicKey);
 
   const computeIxs: TransactionInstruction[] = [];
   if (computeUnitLimit > 0) {
@@ -231,7 +225,7 @@ export async function buildPumpFunBuyTransaction(args: {
   const message = new TransactionMessage({
     payerKey: args.user.publicKey,
     recentBlockhash: blockhash,
-    instructions: [...computeIxs, ataIx, buyIx, tipIx],
+    instructions: [...computeIxs, ataIx, buyIx, ...tipIxs],
   }).compileToV0Message();
 
   const tx = new VersionedTransaction(message);
