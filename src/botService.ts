@@ -82,6 +82,7 @@ import {
   resetCircuitBreaker,
 } from "./circuitBreaker.js";
 import { startFeeOracle, stopFeeOracle } from "./feeOracle.js";
+import { startBlockhashCache, stopBlockhashCache } from "./blockhashCache.js";
 
 const WARM_INTERVAL_MS = 30_000;
 const BALANCE_LOG_INTERVAL_MS = 60_000;
@@ -969,6 +970,7 @@ async function loop(): Promise<void> {
   startedAt = null;
   stopRequested = false;
   stopFeeOracle();
+  stopBlockhashCache();
   console.log("Bot stopped.");
 }
 
@@ -983,6 +985,7 @@ export async function startBot(): Promise<void> {
   stopRequested = false;
   resetCircuitBreaker();
   startFeeOracle();
+  startBlockhashCache();
   console.log(
     "Copytrading bot started. Our wallet:",
     keypair.publicKey.toBase58()

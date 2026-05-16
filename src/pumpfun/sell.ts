@@ -15,6 +15,7 @@ import {
   computeUnitLimit,
 } from "../config.js";
 import { getDynamicPriorityFee } from "../feeOracle.js";
+import { getCachedBlockhash } from "../blockhashCache.js";
 import {
   PUMP_FUN_PROGRAM_ID,
   PUMP_FUN_FEE_PROGRAM_ID,
@@ -220,7 +221,7 @@ export async function buildPumpFunSellTransaction(args: {
     throw new Error(`Pump.fun sell instruction is stale: expected at least 16 accounts, got ${sellIx.keys.length}`);
   }
 
-  const { blockhash } = await readConnection.getLatestBlockhash("confirmed");
+  const { blockhash } = await getCachedBlockhash();
 
   const message = new TransactionMessage({
     payerKey: args.user.publicKey,

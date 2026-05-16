@@ -149,6 +149,31 @@ export const readRpcUrl =
 /** Sender endpoint URL for sendTransaction and confirmation polling. */
 export const senderEndpointUrl = SENDER_ENDPOINT;
 
+// --- Jito direct bundle submission ---
+// When enabled, broadcasts go straight to Jito's BlockEngine /api/v1/bundles endpoint instead
+// of Helius Sender (which forwards bundles to Jito with one extra hop). Saves ~50-100ms on the
+// hot path when Jito accepts the bundle. Falls back to Helius Sender on Jito error if
+// USE_JITO_FALLBACK=true.
+const USE_JITO_DIRECT_RAW = (process.env.USE_JITO_DIRECT ?? "false").toLowerCase();
+export const useJitoDirect =
+  USE_JITO_DIRECT_RAW === "true" || USE_JITO_DIRECT_RAW === "1" || USE_JITO_DIRECT_RAW === "yes";
+const USE_JITO_FALLBACK_RAW = (process.env.USE_JITO_FALLBACK ?? "true").toLowerCase();
+export const useJitoFallback =
+  USE_JITO_FALLBACK_RAW === "true" || USE_JITO_FALLBACK_RAW === "1" || USE_JITO_FALLBACK_RAW === "yes";
+const JITO_REGION = (process.env.JITO_REGION ?? "").toLowerCase().trim();
+// Jito's regional block engines. Each forwards to the same global validator set; the regional
+// hostname just gives you a closer edge ingress. Empty string = use the regionless global.
+const JITO_REGIONS: Record<string, string> = {
+  "": "https://mainnet.block-engine.jito.wtf",
+  ny: "https://ny.mainnet.block-engine.jito.wtf",
+  amsterdam: "https://amsterdam.mainnet.block-engine.jito.wtf",
+  frankfurt: "https://frankfurt.mainnet.block-engine.jito.wtf",
+  tokyo: "https://tokyo.mainnet.block-engine.jito.wtf",
+  "slc": "https://slc.mainnet.block-engine.jito.wtf",
+};
+export const jitoBundleUrl =
+  `${JITO_REGIONS[JITO_REGION] ?? JITO_REGIONS[""]}/api/v1/bundles`;
+
 /** Helius enhanced transactions API (parse transactions). POST with { transactions: [sigs] }. */
 export const heliusEnhancedTransactionsUrl =
   HELIUS_API_KEY.length > 0
@@ -359,18 +384,19 @@ export const simulationSolBalance: number | undefined = SIM_SOL_RAW
     })()
   : undefined;
 
-/** Designated Jito tip accounts (mainnet-beta). */
+/** Current Jito tip accounts (mainnet-beta). Verified via getTipAccounts on the NY block engine.
+ * Jito rotates these — old list was completely stale, every "tip" was being burned to addresses
+ * Jito no longer recognized, so bundles weren't getting priority. Refresh periodically if Jito
+ * rejects bundles. */
 export const TIP_ACCOUNTS = [
-  "4ACfpUFoaSD9bfPdeu6DBt89gB6ENTeHBXCAi87NhDEE",
-  "D2L6yPZ2FmmmTKPgzaMKdhu6EWZcTpLy1Vhx8uvZe7NZ",
-  "9bnz4RShgq1hAnLnZbP8kbgBg1kEmcJBYQq3gQbmnSta",
-  "5VY91ws6B2hMmBFRsXkoAAdsPHBJwRfBht4DXox3xkwn",
-  "2nyhqdwKcJZR2vcqCyrYsaPVdAnFoJjiksCXJ7hfEYgD",
-  "2q5pghRs6arqVjRvT5gfgWfWcHWmw1ZuCzphgd5KfWGJ",
-  "wyvPkWjVZz1M8fHQnMMCDTQDbkManefNNhweYk5WkcF",
-  "3KCKozbAaF75qEU33jtzozcJ29yJuaLJTy2jFdzUY8bT",
-  "4vieeGHPYPG2MmyPRcYjdiDmmhN3ww7hsFNap8pVN3Ey",
-  "4TQLFNWK8AovT1gFvda5jfw2oJeRMKEmw7aH6MGBJ3or",
+  "96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5",
+  "ADuUkR4vqLUMWXxW9gh6D6L8pMSawimctcNZ5pGwDcEt",
+  "DfXygSm4jCyNCybVYYK6DwvWqjKee8pbDmJGcLWNDXjh",
+  "DttWaMuVvTiduZRnguLF7jNxTgiMBZ1hyAumKUiL2KRL",
+  "Cw8CFyM9FkoMi7K7Crf6HNQqf4uEMzpKw6QNghXLvLkY",
+  "3AVi9Tg9Uo68tJfuvoKvqKNWKkC5wPdSSdeBnizKZ6jT",
+  "HFqU5x63VTqvQss8hp11i4wVV8bD44PvwucfZ2bU7gRe",
+  "ADaUMid9yfUytqMBgopwjb2DTLSokTSzL1zt6iGPaS49",
 ];
 
 /** Connection to Helius staked RPC. Use for getLatestBlockhash, getAddressLookupTable, and any read-only RPC. */

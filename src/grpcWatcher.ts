@@ -1,8 +1,9 @@
-import Client, {
+import * as YellowstoneGrpc from "@triton-one/yellowstone-grpc";
+import type {
+  SubscribeRequest,
+  SubscribeUpdate,
+  SubscribeUpdateTransactionInfo,
   CommitmentLevel,
-  type SubscribeRequest,
-  type SubscribeUpdate,
-  type SubscribeUpdateTransactionInfo,
 } from "@triton-one/yellowstone-grpc";
 import { PublicKey } from "@solana/web3.js";
 import bs58 from "bs58";
@@ -16,15 +17,61 @@ import type { DetectedSwap } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
+const PUMP_FUN_PROGRAM_ID_BASE58 = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P";
+
+/**
+ * Scan the source's tx (top-level + inner via CPI) for a pump.fun buy ix that matches `mint`,
+ * and return the full account list in order. Routers (term9YPb…, FLASHX8…) wrap pump.fun in
+ * a CPI, so we MUST walk inner instructions — the buy is usually not at the top level.
+ *
+ * The account list contains per-coin dynamic recipients (fix1 protocol fee, REM0/REM1
+ * buyback+creator share) that rotate per launch and aren't derivable; without them the buy
+ * fails with `BuybackFeeRecipientMissing` (6062). Returning these here lets the buy builder
+ * use the source's exact accounts instead of guessing.
+ */
+function extractPumpFunBuyIxAccounts(
+  info: SubscribeUpdateTransactionInfo,
+  allKeysBase58: string[],
+  mint: string
+): string[] | null {
+  const message = info.transaction?.message;
+  const meta = info.meta;
+  if (!message || !meta) return null;
+
+  const tryIx = (programIdIndex: number, accIndexes: Uint8Array | number[] | undefined): string[] | null => {
+    if (!accIndexes) return null;
+    const programId = allKeysBase58[programIdIndex];
+    if (programId !== PUMP_FUN_PROGRAM_ID_BASE58) return null;
+    const idxArr = accIndexes instanceof Uint8Array ? Array.from(accIndexes) : accIndexes;
+    if (idxArr.length < 16) return null;
+    const keys = idxArr.map((i) => allKeysBase58[i]!);
+    // Pump.fun buy ix layout: mint at slot 2, program self-ref at slot 11. Sells have <16 accounts.
+    if (keys[2] !== mint) return null;
+    if (keys[11] !== PUMP_FUN_PROGRAM_ID_BASE58) return null;
+    return keys;
+  };
+
+  for (const ix of message.instructions ?? []) {
+    const found = tryIx(ix.programIdIndex, ix.accounts);
+    if (found) return found;
+  }
+  for (const group of meta.innerInstructions ?? []) {
+    for (const ix of group.instructions ?? []) {
+      const found = tryIx(ix.programIdIndex, ix.accounts);
+      if (found) return found;
+    }
+  }
+  return null;
+}
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function commitmentFromConfig(): CommitmentLevel {
-  if (shyftGrpcCommitment === "confirmed") return CommitmentLevel.CONFIRMED;
-  if (shyftGrpcCommitment === "finalized") return CommitmentLevel.FINALIZED;
-  return CommitmentLevel.PROCESSED;
+  if (shyftGrpcCommitment === "confirmed") return 1 as CommitmentLevel;
+  if (shyftGrpcCommitment === "finalized") return 2 as CommitmentLevel;
+  return 0 as CommitmentLevel;
 }
 
 type YellowstoneClientConstructor = new (
@@ -34,6 +81,8 @@ type YellowstoneClientConstructor = new (
 ) => {
   subscribe(): Promise<YellowstoneStream>;
 };
+
+type MaybeWrappedDefault = { default?: unknown };
 
 type YellowstoneStream = {
   on(event: "data", listener: (update: SubscribeUpdate) => void): YellowstoneStream;
@@ -156,6 +205,11 @@ export function extractSwapFromGrpcTransaction(
     const amountRaw = numberFromBigint(-nativeNet);
     const counterpartyAmountRaw = numberFromBigint(best.net);
     if (amountRaw == null || counterpartyAmountRaw == null) return null;
+    // Only buys (SOL→token) need source ix extraction. If the source's tx routes through
+    // pump.fun (top-level or via router CPI), capture the account list so the buy builder
+    // can use the exact per-coin recipients pump.fun rotates per launch.
+    const sourceIxAccounts =
+      extractPumpFunBuyIxAccounts(info, accountKeys, best.mint) ?? undefined;
     return {
       signature,
       wallet,
@@ -165,6 +219,7 @@ export function extractSwapFromGrpcTransaction(
       isNativeInput: true,
       counterpartyAmountRaw,
       counterpartyDecimals: best.decimals,
+      sourceIxAccounts,
     };
   }
 
@@ -234,7 +289,13 @@ export async function subscribeGrpcWalletSwaps(
 
   let stopped = false;
   let activeStream: { destroy: () => void } | null = null;
-  const ClientCtor = Client as unknown as YellowstoneClientConstructor;
+  const clientExport = YellowstoneGrpc.default as unknown;
+  const ClientCtor = (
+    typeof clientExport === "function" ? clientExport : (clientExport as MaybeWrappedDefault).default
+  ) as YellowstoneClientConstructor | undefined;
+  if (typeof ClientCtor !== "function") {
+    throw new TypeError("gRPC: Yellowstone client constructor could not be loaded.");
+  }
   const client = new ClientCtor(shyftGrpcUrl, shyftGrpcXToken, undefined);
   const request = buildRequest(trackedWallets);
 

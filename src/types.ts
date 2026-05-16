@@ -18,4 +18,14 @@ export type DetectedSwap = {
   counterpartyAmountRaw?: number;
   /** Decimals of the counterparty token. Needed alongside counterpartyAmountRaw for ratio math. */
   counterpartyDecimals?: number;
+  /**
+   * Base58 pubkeys of the source's pump.fun buy ix accounts, in order. When present, the bot
+   * uses these directly (replacing only user-specific slots 5, 6, 13) instead of deriving and
+   * fetching them. This is critical for Token-2022 pump.fun launches because slots fix1 (protocol
+   * fee recipient) and REM0/REM1 (creator share + buyback recipient) rotate per-coin and aren't
+   * derivable — they must come from the source tx, which isn't yet confirmable on hot launches.
+   * Populated by the gRPC watcher when the source's tx contains a pump.fun buy ix. Undefined
+   * for swaps from other detectors (WS) or non-pump.fun sources.
+   */
+  sourceIxAccounts?: string[];
 };

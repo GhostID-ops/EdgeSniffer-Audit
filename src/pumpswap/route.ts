@@ -17,6 +17,7 @@ import {
   tipLamports,
 } from "../config.js";
 import { getDynamicPriorityFee } from "../feeOracle.js";
+import { getCachedBlockhash } from "../blockhashCache.js";
 import { broadcastTransactionWithSender } from "../sender.js";
 import { confirmSignature } from "../confirm.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
@@ -351,7 +352,7 @@ export async function tryPumpSwapDirectBuy(args: {
   });
 
   const [{ blockhash, lastValidBlockHeight }, currentBlockHeight] = await Promise.all([
-    readConnection.getLatestBlockhash("confirmed"),
+    getCachedBlockhash(),
     readConnection.getBlockHeight("confirmed").catch(() => null),
   ]);
   const validFor =

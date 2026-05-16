@@ -51,6 +51,9 @@ async function getSourcePumpRemainingAccounts(
 ): Promise<AccountMeta[]> {
   if (!sourceSignature || sourceSignature.startsWith("manual-")) return [];
   try {
+    // NOTE: getTransaction only supports confirmed/finalized — "processed" isn't allowed by
+    // the RPC spec. On hot launches gRPC arrives 1-2s ahead of confirmation, so this fetch
+    // routinely returns null. The hardcoded fallback in tryPumpFunDirectBuy covers that gap.
     const tx = await readConnection.getTransaction(sourceSignature, {
       commitment: "confirmed",
       maxSupportedTransactionVersion: 0,
@@ -63,13 +66,40 @@ async function getSourcePumpRemainingAccounts(
       : [];
     const allKeys = [...staticKeys, ...loaded];
 
+    // Normalize top-level + inner ixs into one shape. Routers (e.g. Photon, BananaGun,
+    // BullX, term9YPb…) wrap pump.fun in a CPI, so the buy is an inner instruction.
+    // The previous version only walked top-level ixs and silently returned [] for
+    // router-routed trades, causing 6062 BuybackFeeRecipientMissing on Token-2022.
+    type IxView = { programIdIndex: number; accountIndexes: number[] };
+    const candidates: IxView[] = [];
     for (const ix of message.compiledInstructions) {
-      const accountKeys = ix.accountKeyIndexes.map((idx) => allKeys[idx]);
+      candidates.push({
+        programIdIndex: ix.programIdIndex,
+        accountIndexes: [...ix.accountKeyIndexes],
+      });
+    }
+    for (const group of tx.meta?.innerInstructions ?? []) {
+      for (const ix of group.instructions) {
+        const innerIdxs =
+          (ix as { accounts?: number[] }).accounts ??
+          (ix as { accountKeyIndexes?: number[] }).accountKeyIndexes ??
+          [];
+        candidates.push({
+          programIdIndex: ix.programIdIndex,
+          accountIndexes: innerIdxs,
+        });
+      }
+    }
+
+    for (const ix of candidates) {
+      const programId = allKeys[ix.programIdIndex];
+      if (!programId?.equals(PUMP_FUN_PROGRAM_ID)) continue;
+      const accountKeys = ix.accountIndexes.map((idx) => allKeys[idx]);
       if (accountKeys.length < 18) continue;
       if (!accountKeys[2]?.equals(mint)) continue;
       if (!accountKeys[11]?.equals(PUMP_FUN_PROGRAM_ID)) continue;
 
-      const remaining = ix.accountKeyIndexes.slice(16).map((idx) => ({
+      const remaining = ix.accountIndexes.slice(16).map((idx) => ({
         pubkey: allKeys[idx]!,
         isSigner: message.isAccountSigner(idx),
         isWritable: message.isAccountWritable(idx),
@@ -105,12 +135,26 @@ export async function tryPumpFunDirectBuy(args: {
   startedAt: number;
   log: (msg: string) => void;
   sourceSignature?: string;
+  /**
+   * Full account list from the source's pump.fun buy ix (16-18 base58 pubkeys), extracted
+   * by the gRPC watcher from the live tx payload. When present, the buy builder uses these
+   * exact slots (with user-specific slots 5/6/13 swapped) instead of deriving — required
+   * for Token-2022 launches where slot 1 and slots 16+ rotate per-coin and aren't derivable.
+   */
+  sourceIxAccounts?: string[];
   onConfirmFailure?: (mint: string, tokensOutRaw: number, solInLamports: number, reason: string) => void;
 }): Promise<PumpFunBuyOutcome> {
   const elapsed = () => `${Date.now() - args.startedAt}ms`;
   const mintKey = new PublicKey(args.mint);
 
-  // 1. Detect: is this a pump.fun bonding-curve token, still pre-graduation?
+  // 1. Detect curve. Fire the getTransaction fallback for source accounts in parallel ONLY
+  // when gRPC didn't already provide them — otherwise it's a wasted RPC that competes with
+  // the curve fetch for Shyft bandwidth and adds nothing.
+  const haveGrpcAccounts =
+    args.sourceIxAccounts !== undefined && args.sourceIxAccounts.length >= 16;
+  const sourceAccountsPromise: Promise<AccountMeta[]> = haveGrpcAccounts
+    ? Promise.resolve([])
+    : getSourcePumpRemainingAccounts(args.sourceSignature, mintKey);
   const curve = await getBondingCurveState(mintKey);
   if (!curve) {
     return { ok: false, recoverable: true, reason: "not a pump.fun bonding-curve token" };
@@ -166,9 +210,16 @@ export async function tryPumpFunDirectBuy(args: {
 
   // 5. Build + sign + broadcast.
   args.log("Building pump.fun buy tx...");
-  const remainingAccounts = await getSourcePumpRemainingAccounts(args.sourceSignature, mintKey);
-  if (remainingAccounts.length > 0) {
-    args.log(`Using ${remainingAccounts.length} source pump.fun remaining account(s) for fee/buyback routing.`);
+  // Prefer source ix accounts from the gRPC payload (always fresh, never races confirmation).
+  // Fall back to the getTransaction-based extraction for non-gRPC source signals.
+  let sourceIxPubkeys: PublicKey[] | undefined;
+  if (args.sourceIxAccounts && args.sourceIxAccounts.length >= 16) {
+    sourceIxPubkeys = args.sourceIxAccounts.map((k) => new PublicKey(k));
+    args.log(`Using ${sourceIxPubkeys.length} source pump.fun account(s) from gRPC payload.`);
+  }
+  const remainingAccounts = sourceIxPubkeys ? [] : await sourceAccountsPromise;
+  if (!sourceIxPubkeys && remainingAccounts.length > 0) {
+    args.log(`Using ${remainingAccounts.length} source pump.fun remaining account(s) from getTransaction.`);
   }
   const tx = await buildPumpFunBuyTransaction({
     user: args.user,
@@ -180,6 +231,7 @@ export async function tryPumpFunDirectBuy(args: {
     solInLamports: quote.solIn,
     slippageBps: args.slippageBps,
     remainingAccounts,
+    sourceIxAccounts: sourceIxPubkeys,
   });
   args.log(`Tx built (${elapsed()})`);
 

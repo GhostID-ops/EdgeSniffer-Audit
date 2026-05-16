@@ -15,6 +15,15 @@ import {
 
 type Shortcut = { key: string; label: string; action: () => void };
 
+function runShortcut(action: () => void | Promise<void>): void {
+  void Promise.resolve()
+    .then(action)
+    .catch((err) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Shortcut failed: ${msg}`);
+    });
+}
+
 function printHelp(shortcuts: Shortcut[]): void {
   console.log("");
   console.log("⌨️  Shortcuts:");
@@ -46,10 +55,10 @@ export function registerKeyboardShortcuts(onQuit: () => void): void {
   }
 
   const shortcuts: Shortcut[] = [
-    { key: "1", label: "Sell Trade #1 position", action: () => void sellPositionByIndex(1) },
-    { key: "2", label: "Sell Trade #2 position", action: () => void sellPositionByIndex(2) },
-    { key: "a", label: "Sell ALL open positions (sim/live)", action: () => void sellAllPositions() },
-    { key: "e", label: "Close all open positions (sim) at market & report", action: () => void closeAllOpenPositionsSimulated() },
+    { key: "1", label: "Sell Trade #1 position", action: () => runShortcut(() => sellPositionByIndex(1)) },
+    { key: "2", label: "Sell Trade #2 position", action: () => runShortcut(() => sellPositionByIndex(2)) },
+    { key: "a", label: "Sell ALL open positions (sim/live)", action: () => runShortcut(sellAllPositions) },
+    { key: "e", label: "Close all open positions (sim) at market & report", action: () => runShortcut(closeAllOpenPositionsSimulated) },
     { key: "r", label: "Print PnL report", action: printPnlReport },
     { key: "x", label: "Clear all positions & history", action: resetTradingState },
     { key: "s", label: "Show bot status", action: printStatus },
@@ -73,10 +82,10 @@ export function registerKeyboardShortcuts(onQuit: () => void): void {
       onQuit();
       return;
     }
-    if (key === "1") void sellPositionByIndex(1);
-    else if (key === "2") void sellPositionByIndex(2);
-    else if (key === "a") void sellAllPositions();
-    else if (key === "e") void closeAllOpenPositionsSimulated();
+    if (key === "1") runShortcut(() => sellPositionByIndex(1));
+    else if (key === "2") runShortcut(() => sellPositionByIndex(2));
+    else if (key === "a") runShortcut(sellAllPositions);
+    else if (key === "e") runShortcut(closeAllOpenPositionsSimulated);
     else if (key === "r") printPnlReport();
     else if (key === "x") resetTradingState();
     else if (key === "s") printStatus();

@@ -9,6 +9,16 @@ export const PUMP_FUN_FEE_PROGRAM_ID = new PublicKey("pfeeUxB6jkeY1Hxd7CsFCAjcbH
 /** Trading-fee recipient. Read on-chain from the global account; this is the historical default. */
 export const PUMP_FUN_FEE_RECIPIENT = new PublicKey("CebN5WGQ4jvEPvsVU4EoHEpgzq1VV7AbicfhtW4xC9iM");
 
+/**
+ * Buyback fee recipient — required as a remaining account on Token-2022 pump.fun buys.
+ * Without it the program rejects with `BuybackFeeRecipientMissing` (custom error 6062).
+ * Constant across all pump.fun launches (verified by inspecting multiple source txs from
+ * different wallets/routers). Used as a fallback when source-tx fetch races confirmation.
+ */
+export const PUMP_FUN_BUYBACK_FEE_RECIPIENT = new PublicKey(
+  "5YxQFdt3Tr9zJLvkFccqXVUwhdTWJQc1fFg2YPbxvxeD"
+);
+
 /** SPL Token program (classic). Older pump.fun mints use this. */
 export const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 

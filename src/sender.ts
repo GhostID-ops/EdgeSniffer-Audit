@@ -15,8 +15,12 @@ import {
   TIP_ACCOUNTS,
   tipLamports,
   computeUnitLimit,
+  useJitoDirect,
+  useJitoFallback,
 } from "./config.js";
 import { getDynamicPriorityFee } from "./feeOracle.js";
+import { broadcastViaJito } from "./jitoSender.js";
+import { invalidateBlockhashCache } from "./blockhashCache.js";
 
 export type SwapResponse = { swapTransaction: string; [key: string]: unknown };
 
@@ -138,10 +142,38 @@ export async function createSenderTransactionFromSwapResponse(
 }
 
 /**
- * Send a serialized transaction to Helius Sender.
- * Uses skipPreflight: true and maxRetries: 0 as required.
+ * Send a signed transaction. Routes via Jito BlockEngine directly when USE_JITO_DIRECT=true
+ * (saves the Helius → Jito relay hop, ~50-100ms on hot launches), falling back to Helius
+ * Sender on Jito error if USE_JITO_FALLBACK=true. Otherwise sends straight to Helius Sender.
  */
 export async function broadcastTransactionWithSender(
+  transaction: VersionedTransaction
+): Promise<string> {
+  if (useJitoDirect) {
+    try {
+      return await broadcastViaJito(transaction);
+    } catch (jitoErr) {
+      if (!useJitoFallback) {
+        // Stale blockhash is the most common silent broadcast killer; force a refresh.
+        const msg = jitoErr instanceof Error ? jitoErr.message : String(jitoErr);
+        if (/blockhash|expired|block height/i.test(msg)) invalidateBlockhashCache();
+        throw jitoErr;
+      }
+      const msg = jitoErr instanceof Error ? jitoErr.message : String(jitoErr);
+      if (/blockhash|expired|block height/i.test(msg)) invalidateBlockhashCache();
+      console.warn(`Jito direct broadcast failed; falling back to Helius Sender: ${msg}`);
+    }
+  }
+  try {
+    return await broadcastViaHeliusSender(transaction);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (/blockhash|expired|block height/i.test(msg)) invalidateBlockhashCache();
+    throw err;
+  }
+}
+
+async function broadcastViaHeliusSender(
   transaction: VersionedTransaction
 ): Promise<string> {
   const body = JSON.stringify({

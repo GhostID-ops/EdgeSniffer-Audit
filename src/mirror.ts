@@ -268,6 +268,7 @@ export async function mirrorSwap(
       startedAt,
       log: (m) => console.log(m),
       sourceSignature: swap.signature,
+      sourceIxAccounts: swap.sourceIxAccounts,
       onConfirmFailure: (mint, tokensRaw, solLamports, reason) => {
         // Phantom-position cleanup: in fastMode we recorded the buy before confirmation.
         // If the tx failed on chain, roll back so the risk loop stops trying to sell
