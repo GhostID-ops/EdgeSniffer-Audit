@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../../../Trading/YellowstoneDevnetTest"
+		},
+		{
+			"path": "../../../../../Trading/FinalBot"
+		}
+	],
+	"settings": {}
+}

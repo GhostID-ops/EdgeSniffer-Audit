@@ -121,17 +121,49 @@ export async function createSenderTransactionFromSwapResponse(
     computeInstructions.push(existingHeapIx);
   }
 
-  decompiledMessage.instructions = [
-    ...computeInstructions,
-    ...nonComputeInstructions,
-    ...tipIxs,
-  ];
+  const baseInstructions = [...computeInstructions, ...nonComputeInstructions];
 
-  const v0Message = decompiledMessage.compileToV0Message(altAccounts);
-  const transaction = new VersionedTransaction(v0Message);
-  transaction.sign([keypair]);
+  const buildWithTips = (selectedTips: TransactionInstruction[]): VersionedTransaction => {
+    decompiledMessage.instructions = [...baseInstructions, ...selectedTips];
+    const v0Message = decompiledMessage.compileToV0Message(altAccounts);
+    const signed = new VersionedTransaction(v0Message);
+    signed.sign([keypair]);
+    return signed;
+  };
+
+  // Jupiter multi-hop routes (typically post-graduation tokens) can come back near the 1232-byte
+  // packet limit. Adding our compute-budget + dual tip (Jito + Helius) ixs on top can blow past
+  // it — manifesting either as web3.js "encoding overruns Uint8Array" at compile/sign, or as
+  // Helius's "base64 encoded too large" at broadcast. When we have a secondary tip to drop,
+  // fall back to primary-tip-only. Risk: if Jito errors and we fall back to Helius without a
+  // Helius tip, Helius rejects. Strictly better than failing the build entirely though.
+  let transaction: VersionedTransaction;
+  try {
+    transaction = buildWithTips(tipIxs);
+    if (tipIxs.length > 1) {
+      const wireSize = transaction.serialize().length;
+      if (wireSize > PACKET_DATA_SIZE) {
+        console.warn(
+          `Tx wire size ${wireSize}B > ${PACKET_DATA_SIZE}; rebuilding with primary tip only.`
+        );
+        transaction = buildWithTips([tipIxs[0]!]);
+      }
+    }
+  } catch (err) {
+    if (!isOversizeError(err) || tipIxs.length <= 1) throw err;
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`Tx oversize during build (${msg}); rebuilding with primary tip only.`);
+    transaction = buildWithTips([tipIxs[0]!]);
+  }
 
   return transaction;
+}
+
+const PACKET_DATA_SIZE = 1232;
+
+function isOversizeError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /encoding overruns|too large|exceeds.*size|packet/i.test(msg);
 }
 
 /**

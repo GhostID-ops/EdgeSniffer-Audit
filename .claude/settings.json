@@ -12,7 +12,14 @@
       "Bash(cp \"c:/Users/Cheet/OneDrive/Documents/FinalBot/src/pumpfun/curve.ts\" \"c:/Trading/FinalBot/src/pumpfun/curve.ts\")",
       "Bash(cp \"c:/Users/Cheet/OneDrive/Documents/FinalBot/src/pumpfun/buy.ts\" \"c:/Trading/FinalBot/src/pumpfun/buy.ts\")",
       "Bash(cp \"c:/Users/Cheet/OneDrive/Documents/FinalBot/src/pumpfun/sell.ts\" \"c:/Trading/FinalBot/src/pumpfun/sell.ts\")",
-      "Bash(cp \"c:/Users/Cheet/OneDrive/Documents/FinalBot/src/pumpfun/route.ts\" \"c:/Trading/FinalBot/src/pumpfun/route.ts\")"
+      "Bash(cp \"c:/Users/Cheet/OneDrive/Documents/FinalBot/src/pumpfun/route.ts\" \"c:/Trading/FinalBot/src/pumpfun/route.ts\")",
+      "Bash(node --input-type=module -e ' *)",
+      "Bash(node analyze_cya_winrate.mjs CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 1500)",
+      "WebSearch",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git ls-tree *)"
     ]
   }
 }

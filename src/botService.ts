@@ -1225,12 +1225,29 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
     console.warn(`Token balance lookup failed for $${p.symbol}: ${msg}; attempting tracked amount.`);
     liveHeldRaw = null;
   }
+  // Chain authoritatively says we hold 0 (read succeeded, value was 0). Typical causes: transfer-fee /
+  // honeypot mechanics drained the ATA, or an earlier sell landed but timed out before we recorded it.
+  // Falling back to the tracked amount here is what was burning gas on every 15s risk-exit retry —
+  // we'd broadcast a doomed swap that fails on-chain with Custom(6024) at the destination AMM.
+  // Close the ghost position locally instead so the risk loop drops it from the candidate pool.
+  if (liveHeldRaw === 0 && p.heldRaw > 0) {
+    console.warn(
+      `$${p.symbol}: wallet holds 0 on-chain but tracker shows ${formatTokenAmount(p.heldRaw, p.decimals)}. ` +
+        `Closing position locally — no broadcast (likely transfer-fee/honeypot token or earlier unrecorded sell).`
+    );
+    recordSell(
+      { mint: p.mint, symbol: p.symbol, name: p.symbol, decimals: p.decimals, isSol: false },
+      p.heldRaw,
+      0
+    );
+    return;
+  }
   const sellRaw =
     liveHeldRaw != null && liveHeldRaw > 0
       ? Math.min(liveHeldRaw, p.heldRaw)
       : p.heldRaw;
-  if ((liveHeldRaw == null || liveHeldRaw <= 0) && p.heldRaw > 0) {
-    console.warn(`Live balance returned 0 for $${p.symbol}; attempting tracked amount.`);
+  if (liveHeldRaw == null && p.heldRaw > 0) {
+    console.warn(`Token balance lookup failed for $${p.symbol}; attempting tracked amount.`);
   }
   if (liveHeldRaw != null && liveHeldRaw > p.heldRaw) {
     console.warn(
