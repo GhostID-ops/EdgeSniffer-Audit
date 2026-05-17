@@ -33,7 +33,6 @@ import {
   pumpfunDirectEnabled,
   shyftGrpcEnabled,
   shyftRabbitStreamEnabled,
-  shyftRabbitStreamUrl,
 } from "./config.js";
 import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import { estimatePumpSwapSellQuote } from "./pumpswap/route.js";
@@ -43,6 +42,7 @@ import {
   type Unsubscribe,
 } from "./watcher.js";
 import { subscribeGrpcWalletSwaps, type GrpcUnsubscribe } from "./grpcWatcher.js";
+import { subscribeRabbitWalletSwaps, type RabbitUnsubscribe } from "./rabbitWatcher.js";
 import {
   mirrorSwap,
   NoPositionError,
@@ -213,6 +213,7 @@ let lastBalanceLamports: number | null = null;
 let lastBalanceAt: number | null = null;
 let unsubscribeWs: Unsubscribe | null = null;
 let unsubscribeGrpc: GrpcUnsubscribe | null = null;
+let unsubscribeRabbit: RabbitUnsubscribe | null = null;
 let riskPositionCursor = 0;
 let mirrorSellsEnabled = mirrorSells; // initialized from MIRROR_SELLS env, runtime-toggleable
 let buyOncePerTokenEnabled = buyOncePerToken; // initialized from BUY_ONCE_PER_TOKEN env
@@ -994,6 +995,14 @@ async function loop(): Promise<void> {
     }
     unsubscribeGrpc = null;
   }
+  if (unsubscribeRabbit) {
+    try {
+      await unsubscribeRabbit();
+    } catch {
+      // best-effort
+    }
+    unsubscribeRabbit = null;
+  }
 
   running = false;
   startedAt = null;
@@ -1066,10 +1075,14 @@ export async function startBot(): Promise<void> {
     console.log("gRPC watcher disabled (set SHYFT_GRPC_ENABLED=true to enable).");
   }
   if (shyftRabbitStreamEnabled) {
-    console.warn(
-      `RabbitStream is configured (${shyftRabbitStreamUrl || "no URL"}) but not active yet: ` +
-        "this bot's current parser depends on execution metadata that RabbitStream does not provide. " +
-        "Using Yellowstone gRPC for live mirroring."
+    unsubscribeRabbit = await subscribeRabbitWalletSwaps(
+      trackedWallets,
+      processedSignatures,
+      (swap) => {
+        processSwap(swap, kp).catch((err) => {
+          console.error("RabbitStream processSwap error:", err);
+        });
+      }
     );
   }
 
