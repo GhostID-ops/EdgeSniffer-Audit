@@ -32,8 +32,11 @@ import {
   trailingEnabled,
   pumpfunDirectEnabled,
   shyftGrpcEnabled,
+  shyftRabbitStreamEnabled,
+  shyftRabbitStreamUrl,
 } from "./config.js";
 import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
+import { estimatePumpSwapSellQuote } from "./pumpswap/route.js";
 import {
   getNewSwaps,
   subscribeWalletSwaps,
@@ -172,12 +175,15 @@ class BoundedSignatureSet {
 }
 const processedSignatures = new BoundedSignatureSet();
 const buyMintsInFlight = new Set<string>();
+const pendingBuyRetryByMint = new Map<string, DetectedSwap>();
 const boughtMintsThisSession = new Set<string>();
 const sourceBuySignatureByMint = new Map<string, string>();
 const openPositionBuyMintsInFlight = new Set<string>();
 const riskSellsInFlight = new Set<string>();
 const riskSellRetryAfterByMint = new Map<string, number>();
 const RISK_SELL_FAILURE_COOLDOWN_MS = 15_000;
+const GRADUATION_TRANSIENT_FLOOR_MS = 2 * 60_000;
+const lastCurveRiskValueByMint = new Map<string, { outSolLamports: number; quotedAt: number }>();
 type RiskTracePoint = {
   ts: number;
   valueLamports: number;
@@ -499,6 +505,9 @@ function logTrade(
     console.log(`💹 Entry: ${formatPrice(entryPrice)} SOL per $${pos.symbol}${impactStr}`);
     console.log(`🔗 CA: ${tokenMint}`);
     if (mcLine) console.log(mcLine);
+    if (result.confirmationPending) {
+      console.log("Status: broadcast accepted, awaiting on-chain confirmation (fast mode optimistic record)");
+    }
     if (!result.isSimulated) console.log(`📝 Tx: ${result.signature}`);
     console.log(
       `📦 Position $${pos.symbol}: ${formatTokenAmount(pos.heldRaw, pos.decimals)} held, spent ${formatSolAmount(pos.totalSolSpentLamports)} SOL`
@@ -585,6 +594,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   const elapsed = () => `${Date.now() - processStartedAt}ms`;
   let lockedBuyMint: string | null = null;
   let lockedOpenPositionMint: string | null = null;
+  let retryPendingMint: string | null = null;
   const releaseBuyLocks = () => {
     if (lockedBuyMint) {
       buyMintsInFlight.delete(lockedBuyMint);
@@ -627,13 +637,16 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       return;
     }
     if (buyMintsInFlight.has(mint)) {
+      // Keep only the latest duplicate source buy so a dropped first broadcast can retry promptly.
+      pendingBuyRetryByMint.set(mint, swap);
       console.log(
-        `Skipping buy: ${mint.slice(0, 8)}... buy already in flight (buy-once ON).`
+        `Skipping buy: ${mint.slice(0, 8)}... buy already in flight (queued one retry signal).`
       );
       return;
     }
     buyMintsInFlight.add(mint);
     lockedBuyMint = mint;
+    retryPendingMint = mint;
   }
 
   if (maxOpenPositions != null && swap.inputMint === WRAPPED_SOL_MINT) {
@@ -888,7 +901,23 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       error: msg,
     });
   } finally {
+    const pendingMint = retryPendingMint;
     releaseBuyLocks();
+    if (pendingMint) {
+      const pending = pendingBuyRetryByMint.get(pendingMint);
+      const existing = getPosition(pendingMint);
+      if (pending && !boughtMintsThisSession.has(pendingMint) && !(existing && existing.buysCount > 0)) {
+        pendingBuyRetryByMint.delete(pendingMint);
+        // Replay one follow-on source signal after a dead/dropped attempt releases the mint lock.
+        setTimeout(() => {
+          processSwap(pending, kp).catch((err) => {
+            console.error("Queued buy retry failed:", err);
+          });
+        }, 0);
+      } else if (pending) {
+        pendingBuyRetryByMint.delete(pendingMint);
+      }
+    }
   }
 }
 
@@ -1036,6 +1065,13 @@ export async function startBot(): Promise<void> {
   } else {
     console.log("gRPC watcher disabled (set SHYFT_GRPC_ENABLED=true to enable).");
   }
+  if (shyftRabbitStreamEnabled) {
+    console.warn(
+      `RabbitStream is configured (${shyftRabbitStreamUrl || "no URL"}) but not active yet: ` +
+        "this bot's current parser depends on execution metadata that RabbitStream does not provide. " +
+        "Using Yellowstone gRPC for live mirroring."
+    );
+  }
 
   unsubscribeWs = await subscribeWalletSwaps(
     trackedWallets,
@@ -1071,6 +1107,7 @@ export function resetTradingState(): void {
   recentSwaps.length = 0;
   processedSignatures.clear();
   buyMintsInFlight.clear();
+  pendingBuyRetryByMint.clear();
   boughtMintsThisSession.clear();
   sourceBuySignatureByMint.clear();
   openPositionBuyMintsInFlight.clear();
@@ -1078,6 +1115,7 @@ export function resetTradingState(): void {
   riskSellRetryAfterByMint.clear();
   riskTraceByMint.clear();
   riskQuoteStateByMint.clear();
+  lastCurveRiskValueByMint.clear();
   resetCircuitBreaker();
   console.log("?? Cleared all positions, trade history, and signature cache.");
 }
@@ -1377,6 +1415,11 @@ function riskExitReason(
   return null;
 }
 
+function isJupiterNoRoutesError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /NO_ROUTES_FOUND|Could not find any route|no routes/i.test(msg);
+}
+
 type RiskBucket = "fast" | "near" | "normal";
 
 function bucketIntervalMs(bucket: RiskBucket): number {
@@ -1479,15 +1522,38 @@ async function checkRiskExits(): Promise<void> {
 
     try {
       // Curve-first valuation: pump.fun direct gives accurate, indexing-lag-free pricing.
-      // Falls back to Jupiter only if the token isn't on a curve or has graduated.
+      // Falls back through PumpSwap spot before Jupiter to cover the post-graduation indexing gap.
       let outSolLamports: number;
       if (pumpfunDirectEnabled) {
         const onCurve = await valueOnCurve(p.mint, p.heldRaw);
         if (onCurve != null) {
           outSolLamports = onCurve.solOut;
+          lastCurveRiskValueByMint.set(p.mint, {
+            outSolLamports,
+            quotedAt: Date.now(),
+          });
         } else {
-          const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);
-          outSolLamports = parseInt(quote.outAmount ?? "0", 10);
+          const pumpSwapQuote = await estimatePumpSwapSellQuote(p.mint, p.heldRaw);
+          if (pumpSwapQuote != null) {
+            outSolLamports = pumpSwapQuote;
+          } else {
+            try {
+              const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);
+              outSolLamports = parseInt(quote.outAmount ?? "0", 10);
+            } catch (err) {
+              const lastCurve = lastCurveRiskValueByMint.get(p.mint);
+              if (
+                isJupiterNoRoutesError(err) &&
+                lastCurve &&
+                Date.now() - lastCurve.quotedAt <= GRADUATION_TRANSIENT_FLOOR_MS
+              ) {
+                // A fresh curve quote is a bounded floor while Jupiter has not indexed the migrated pool yet.
+                outSolLamports = lastCurve.outSolLamports;
+              } else {
+                throw err;
+              }
+            }
+          }
         }
       } else {
         const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);

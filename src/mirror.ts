@@ -10,6 +10,7 @@ import {
   maxImpactReduceAttempts,
   maxSourceDriftPct,
   pumpfunDirectEnabled,
+  jupiterOversizeMaxAccounts,
 } from "./config.js";
 import { getQuote, getSwap, type QuoteResponse } from "./jupiter.js";
 import {
@@ -34,6 +35,8 @@ export type MirrorResult = {
   output: { meta: TokenMeta; amountRaw: number };
   /** Jupiter's reported price impact as a decimal string (e.g. "0.0234" = 2.34%). */
   priceImpactPct?: string;
+  /** Fast mode may return after broadcast before the signature lands on chain. */
+  confirmationPending?: boolean;
 };
 
 export type MirrorSwapOptions = {
@@ -187,6 +190,8 @@ function isTransientBroadcastFailure(err: unknown): boolean {
   const msg = err instanceof Error ? err.message : String(err);
   const lower = msg.toLowerCase();
   return (
+    lower.includes("suspected dropped transaction") ||
+    lower.includes("not found in status polling") ||
     lower.includes("blockhash not found") ||
     lower.includes("transaction expired") ||
     lower.includes("block height exceeded") ||
@@ -196,6 +201,11 @@ function isTransientBroadcastFailure(err: unknown): boolean {
     lower.includes("network") ||
     lower.includes("timeout")
   );
+}
+
+function isPacketSizeFailure(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /1232B packet limit|encoding overruns|too large|packet/i.test(msg);
 }
 
 async function getMirrorAmount(
@@ -298,6 +308,7 @@ export async function mirrorSwap(
         input: { meta: solMeta, amountRaw: Number(direct.solIn) },
         output: { meta: direct.mintMeta, amountRaw: Number(direct.tokensOut) },
         priceImpactPct: (direct.priceImpactPct / 100).toString(),
+        confirmationPending: direct.confirmationPending,
       };
     }
     if (!direct.recoverable) {
@@ -317,6 +328,16 @@ export async function mirrorSwap(
         slippageBps: mirrorSlippageBps,
         startedAt,
         log: (m) => console.log(m),
+        onConfirmFailure: (mint, tokensRaw, solLamports, reason) => {
+          const removed = unrecordBuy(mint, tokensRaw, solLamports);
+          options.onFastBuyConfirmFailure?.({
+            mint,
+            tokenAmountRaw: tokensRaw,
+            solLamports,
+            reason,
+            positionRemoved: removed,
+          });
+        },
       });
       if (pumpSwap.ok) {
         const solMeta = await getTokenMeta(WRAPPED_SOL_MINT);
@@ -327,6 +348,7 @@ export async function mirrorSwap(
           side: "buy",
           input: { meta: solMeta, amountRaw: Number(pumpSwap.quoteIn) },
           output: { meta: pumpSwap.mintMeta, amountRaw: Number(pumpSwap.baseOut) },
+          confirmationPending: pumpSwap.confirmationPending,
         };
       }
       if (!pumpSwap.recoverable) {
@@ -359,6 +381,7 @@ export async function mirrorSwap(
         input: { meta: direct.mintMeta, amountRaw: Number(direct.tokensIn) },
         output: { meta: solMeta, amountRaw: Number(direct.solOut) },
         priceImpactPct: (direct.priceImpactPct / 100).toString(),
+        confirmationPending: direct.confirmationPending,
       };
     }
     if (!direct.recoverable) {
@@ -418,6 +441,8 @@ export async function mirrorSwap(
     preFetchedQuote?: QuoteResponse;
     /** Marks attempts spawned by transient-broadcast-retry — caps recursion to one. */
     isBroadcastRetry?: boolean;
+    quoteMaxAccounts?: number;
+    onlyDirectRoutes?: boolean;
   }> = slippageAttempts.map((slippageBps, idx) => ({
     amountRaw,
     slippageBps,
@@ -456,7 +481,11 @@ export async function mirrorSwap(
           swap.inputMint,
           swap.outputMint,
           attempt.amountRaw,
-          attempt.slippageBps
+          attempt.slippageBps,
+          {
+            maxAccounts: attempt.quoteMaxAccounts,
+            onlyDirectRoutes: attempt.onlyDirectRoutes,
+          }
         );
         console.log(`Quote received: ${quote.outAmount} out amount (${elapsed()})`);
       }
@@ -497,16 +526,30 @@ export async function mirrorSwap(
       }
 
       console.log("Broadcasting transaction...");
-      const signature = await broadcastTransactionWithSender(transaction);
+      const signature = await broadcastTransactionWithSender(transaction, {
+        preferHelius: attempt.isBroadcastRetry === true,
+      });
       console.log(`Transaction broadcast: ${signature} (${elapsed()})`);
 
       if (fastMode) {
-        console.log("Fast mode: broadcast sent; confirming before recording trade.");
+        // Fast mode returns after broadcast; a dropped buy is cleaned up by the background confirmer.
+        confirmSignature(signature).catch((err) => {
+          if (side !== "buy") return;
+          const reason = err instanceof Error ? err.message : String(err);
+          const removed = unrecordBuy(swap.outputMint, outAmountRaw, inAmountRaw);
+          options.onFastBuyConfirmFailure?.({
+            mint: swap.outputMint,
+            tokenAmountRaw: outAmountRaw,
+            solLamports: inAmountRaw,
+            reason,
+            positionRemoved: removed,
+          });
+        });
       } else {
         console.log("Confirming transaction...");
+        await confirmSignature(signature);
+        console.log(`Transaction confirmed (${elapsed()})`);
       }
-      await confirmSignature(signature);
-      console.log(`Transaction confirmed (${elapsed()})`);
 
       console.log("Getting token metadata...");
       const [inputMeta, outputMeta] = await Promise.all([
@@ -522,6 +565,7 @@ export async function mirrorSwap(
         input: { meta: inputMeta, amountRaw: inAmountRaw },
         output: { meta: outputMeta, amountRaw: outAmountRaw },
         priceImpactPct: quote.priceImpactPct,
+        confirmationPending: fastMode,
       };
     } catch (err) {
       // Slippage-driven retry: walk down the ladder.
@@ -531,6 +575,32 @@ export async function mirrorSwap(
           `Slippage exceeded on ${attempt.reason}; retrying with ${attempts[i + 1]!.reason}...`
         );
         continue;
+      }
+      if (isPacketSizeFailure(err)) {
+        const msg = err instanceof Error ? err.message : String(err);
+        if (attempt.quoteMaxAccounts != null || attempt.onlyDirectRoutes) {
+          if (!isLastAttempt) {
+            console.warn(`Constrained Jupiter route still too large (${msg}); trying next route constraint...`);
+            continue;
+          }
+        } else if (!attempts.some((a) => a.onlyDirectRoutes || a.quoteMaxAccounts != null)) {
+          console.warn(`Jupiter route too large (${msg}); retrying with constrained routes...`);
+          for (const maxAccounts of jupiterOversizeMaxAccounts) {
+            attempts.push({
+              amountRaw: attempt.amountRaw,
+              slippageBps: attempt.slippageBps,
+              reason: `maxAccounts=${maxAccounts} route`,
+              quoteMaxAccounts: maxAccounts,
+            });
+          }
+          attempts.push({
+            amountRaw: attempt.amountRaw,
+            slippageBps: attempt.slippageBps,
+            reason: "direct Jupiter route",
+            onlyDirectRoutes: true,
+          });
+          continue;
+        }
       }
       // Transient broadcast retry: re-quote from scratch (fresh blockhash). Bounded to ONE
       // additional attempt past the slippage ladder so we don't add unbounded latency.

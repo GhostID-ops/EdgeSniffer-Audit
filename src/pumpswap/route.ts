@@ -10,7 +10,9 @@ import {
   type AccountInfo,
 } from "@solana/web3.js";
 import {
+  confirmationRebroadcastRetries,
   computeUnitLimit,
+  fastMode,
   readConnection,
   simulationMode,
 } from "../config.js";
@@ -18,7 +20,7 @@ import { buildTipInstructions } from "../tipBuilder.js";
 import { getDynamicPriorityFee } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
 import { broadcastTransactionWithSender } from "../sender.js";
-import { confirmSignature } from "../confirm.js";
+import { confirmSignature, isConfirmationTimeoutError } from "../confirm.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -57,6 +59,7 @@ export type PumpSwapOutcome =
       baseOut: bigint;
       quoteIn: bigint;
       mintMeta: TokenMeta;
+      confirmationPending?: boolean;
     }
   | { ok: false; reason: string; recoverable: boolean };
 
@@ -245,6 +248,82 @@ export function replacePumpSwapUserAccounts(args: {
   return { accounts, userBaseAta, userQuoteAta };
 }
 
+const POOL_BASE_MINT_OFFSET = 8 + 1 + 2 + 32;
+const POOL_QUOTE_MINT_OFFSET = POOL_BASE_MINT_OFFSET + 32;
+const POOL_BASE_TOKEN_ACCOUNT_OFFSET = POOL_QUOTE_MINT_OFFSET + 32 + 32;
+const POOL_QUOTE_TOKEN_ACCOUNT_OFFSET = POOL_BASE_TOKEN_ACCOUNT_OFFSET + 32;
+const POOL_INDEX_OFFSET = 8 + 1;
+const TOKEN_ACCOUNT_AMOUNT_OFFSET = 64;
+const PUMPSWAP_RISK_QUOTE_HAIRCUT_BPS = 100;
+const pumpSwapPoolCache = new Map<string, { pool: PublicKey; baseVault: PublicKey; quoteVault: PublicKey }>();
+
+function readPubkey(data: Buffer, offset: number): PublicKey {
+  return new PublicKey(data.subarray(offset, offset + 32));
+}
+
+function readTokenAccountAmount(info: AccountInfo<Buffer> | null): bigint | null {
+  if (!info || info.data.length < TOKEN_ACCOUNT_AMOUNT_OFFSET + 8) return null;
+  return info.data.readBigUInt64LE(TOKEN_ACCOUNT_AMOUNT_OFFSET);
+}
+
+async function findPumpSwapPoolForMint(mint: PublicKey): Promise<{
+  pool: PublicKey;
+  baseVault: PublicKey;
+  quoteVault: PublicKey;
+} | null> {
+  const cached = pumpSwapPoolCache.get(mint.toBase58());
+  if (cached) return cached;
+
+  const accounts = await readConnection.getProgramAccounts(PUMPSWAP_PROGRAM_ID, {
+    commitment: "confirmed",
+    filters: [
+      { memcmp: { offset: POOL_BASE_MINT_OFFSET, bytes: mint.toBase58() } },
+      { memcmp: { offset: POOL_QUOTE_MINT_OFFSET, bytes: WRAPPED_SOL_MINT } },
+    ],
+  });
+  if (accounts.length === 0) return null;
+
+  const usable = accounts.filter((a) => a.account.data.length >= POOL_QUOTE_TOKEN_ACCOUNT_OFFSET + 32);
+  if (usable.length === 0) return null;
+
+  const canonical =
+    usable.find((a) => a.account.data.readUInt16LE(POOL_INDEX_OFFSET) === 0) ?? usable[0]!;
+  const data = canonical.account.data;
+
+  const pool = {
+    pool: canonical.pubkey,
+    baseVault: readPubkey(data, POOL_BASE_TOKEN_ACCOUNT_OFFSET),
+    quoteVault: readPubkey(data, POOL_QUOTE_TOKEN_ACCOUNT_OFFSET),
+  };
+  pumpSwapPoolCache.set(mint.toBase58(), pool);
+  return pool;
+}
+
+export async function estimatePumpSwapSellQuote(
+  mint: string,
+  baseAmountRaw: number
+): Promise<number | null> {
+  if (!Number.isFinite(baseAmountRaw) || baseAmountRaw <= 0) return null;
+  const pool = await findPumpSwapPoolForMint(new PublicKey(mint));
+  if (!pool) return null;
+
+  const [baseInfo, quoteInfo] = await readConnection.getMultipleAccountsInfo(
+    [pool.baseVault, pool.quoteVault],
+    "confirmed"
+  );
+  const baseReserve = readTokenAccountAmount(baseInfo);
+  const quoteReserve = readTokenAccountAmount(quoteInfo);
+  if (!baseReserve || !quoteReserve || baseReserve <= 0n || quoteReserve <= 0n) return null;
+
+  const amountIn = BigInt(Math.floor(baseAmountRaw));
+  if (amountIn <= 0n) return null;
+  const rawOut = (quoteReserve * amountIn) / (baseReserve + amountIn);
+  // Risk checks need a usable valuation during Jupiter indexing lag; haircut avoids optimistic fee-free exits.
+  const conservativeOut = (rawOut * BigInt(10_000 - PUMPSWAP_RISK_QUOTE_HAIRCUT_BPS)) / 10_000n;
+  if (conservativeOut <= 0n || conservativeOut > BigInt(Number.MAX_SAFE_INTEGER)) return null;
+  return Number(conservativeOut);
+}
+
 export async function tryPumpSwapDirectBuy(args: {
   user: Keypair;
   mint: string;
@@ -255,6 +334,8 @@ export async function tryPumpSwapDirectBuy(args: {
   slippageBps: number;
   startedAt: number;
   log: (msg: string) => void;
+  rebroadcastAttempt?: number;
+  onConfirmFailure?: (mint: string, tokensOutRaw: number, solLamports: number, reason: string) => void;
 }): Promise<PumpSwapOutcome> {
   if (!args.sourceTokensOutRaw || args.sourceTokensOutRaw <= 0 || args.sourceSolInLamports <= 0) {
     return { ok: false, recoverable: true, reason: "source PumpSwap fill amounts unavailable" };
@@ -389,10 +470,31 @@ export async function tryPumpSwapDirectBuy(args: {
   args.log(`PumpSwap tx built (${elapsed()})`);
   let signature: string | null = null;
   try {
-    signature = await broadcastTransactionWithSender(tx);
+    signature = await broadcastTransactionWithSender(tx, {
+      preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
+    });
     args.log(`PumpSwap broadcast: ${signature} (${elapsed()})`);
-    await confirmSignature(signature);
+    if (fastMode) {
+      // PumpSwap is a hot post-graduation entry path; do not block recording on confirmation.
+      confirmSignature(signature).catch((err) => {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`PumpSwap confirmation failed after broadcast: ${msg}`);
+        args.onConfirmFailure?.(args.mint, Number(minBaseOut), args.solInLamports, msg);
+      });
+    } else {
+      await confirmSignature(signature);
+    }
   } catch (err) {
+    const rebroadcastAttempt = args.rebroadcastAttempt ?? 0;
+    if (isConfirmationTimeoutError(err) && rebroadcastAttempt < confirmationRebroadcastRetries) {
+      const msg = err instanceof Error ? err.message : String(err);
+      // PumpSwap direct bypasses Jupiter's retry ladder, so rebuild here on suspected bundle drops.
+      args.log(`PumpSwap buy suspected dropped (${msg}); rebuilding once with fresh blockhash...`);
+      return tryPumpSwapDirectBuy({
+        ...args,
+        rebroadcastAttempt: rebroadcastAttempt + 1,
+      });
+    }
     const msg = err instanceof Error ? err.message : String(err);
     const logs = signature ? await getTransactionFailureLogs(signature) : [];
     const logSummary = summarizeLogs(logs);
@@ -416,5 +518,6 @@ export async function tryPumpSwapDirectBuy(args: {
     baseOut: minBaseOut,
     quoteIn: BigInt(args.solInLamports),
     mintMeta,
+    confirmationPending: fastMode,
   };
 }

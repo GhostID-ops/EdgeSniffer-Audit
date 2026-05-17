@@ -22,6 +22,9 @@ import { invalidateBlockhashCache } from "./blockhashCache.js";
 import { buildTipInstructions } from "./tipBuilder.js";
 
 export type SwapResponse = { swapTransaction: string; [key: string]: unknown };
+export type BroadcastOptions = {
+  preferHelius?: boolean;
+};
 
 /**
  * Address-lookup-table cache. Jupiter reuses a small set of hot ALTs across thousands of swaps,
@@ -106,24 +109,27 @@ export async function createSenderTransactionFromSwapResponse(
   });
   const tipIxs = buildTipInstructions(keypair.publicKey);
 
-  const computeInstructions: TransactionInstruction[] = [];
+  const mandatoryComputeInstructions: TransactionInstruction[] = [];
   if (computeUnitLimit > 0) {
-    computeInstructions.push(
+    mandatoryComputeInstructions.push(
       ComputeBudgetProgram.setComputeUnitLimit({
         units: Math.min(computeUnitLimit, 1_400_000),
       })
     );
   } else if (existingLimitIx) {
-    computeInstructions.push(existingLimitIx);
+    mandatoryComputeInstructions.push(existingLimitIx);
   }
-  computeInstructions.push(priorityFeeIx);
-  if (existingHeapIx) {
-    computeInstructions.push(existingHeapIx);
-  }
+  mandatoryComputeInstructions.push(priorityFeeIx);
 
-  const baseInstructions = [...computeInstructions, ...nonComputeInstructions];
+  const baseInstructionsWithHeap = existingHeapIx
+    ? [...mandatoryComputeInstructions, existingHeapIx, ...nonComputeInstructions]
+    : [...mandatoryComputeInstructions, ...nonComputeInstructions];
+  const baseInstructionsWithoutHeap = [...mandatoryComputeInstructions, ...nonComputeInstructions];
 
-  const buildWithTips = (selectedTips: TransactionInstruction[]): VersionedTransaction => {
+  const buildWith = (
+    baseInstructions: TransactionInstruction[],
+    selectedTips: TransactionInstruction[]
+  ): VersionedTransaction => {
     decompiledMessage.instructions = [...baseInstructions, ...selectedTips];
     const v0Message = decompiledMessage.compileToV0Message(altAccounts);
     const signed = new VersionedTransaction(v0Message);
@@ -134,26 +140,37 @@ export async function createSenderTransactionFromSwapResponse(
   // Jupiter multi-hop routes (typically post-graduation tokens) can come back near the 1232-byte
   // packet limit. Adding our compute-budget + dual tip (Jito + Helius) ixs on top can blow past
   // it — manifesting either as web3.js "encoding overruns Uint8Array" at compile/sign, or as
-  // Helius's "base64 encoded too large" at broadcast. When we have a secondary tip to drop,
-  // fall back to primary-tip-only. Risk: if Jito errors and we fall back to Helius without a
-  // Helius tip, Helius rejects. Strictly better than failing the build entirely though.
-  let transaction: VersionedTransaction;
-  try {
-    transaction = buildWithTips(tipIxs);
-    if (tipIxs.length > 1) {
-      const wireSize = transaction.serialize().length;
-      if (wireSize > PACKET_DATA_SIZE) {
-        console.warn(
-          `Tx wire size ${wireSize}B > ${PACKET_DATA_SIZE}; rebuilding with primary tip only.`
-        );
-        transaction = buildWithTips([tipIxs[0]!]);
-      }
+  // Helius's "base64 encoded too large" at broadcast. Keep both tips when possible; if not,
+  // preserve the tip required by the sender path most likely to rescue this attempt.
+  const tryBuild = (
+    baseInstructions: TransactionInstruction[],
+    selectedTips: TransactionInstruction[]
+  ): VersionedTransaction | null => {
+    try {
+      const tx = buildWith(baseInstructions, selectedTips);
+      return tx.serialize().length <= PACKET_DATA_SIZE ? tx : null;
+    } catch (err) {
+      if (isOversizeError(err)) return null;
+      throw err;
     }
-  } catch (err) {
-    if (!isOversizeError(err) || tipIxs.length <= 1) throw err;
-    const msg = err instanceof Error ? err.message : String(err);
-    console.warn(`Tx oversize during build (${msg}); rebuilding with primary tip only.`);
-    transaction = buildWithTips([tipIxs[0]!]);
+  };
+
+  let transaction = tryBuild(baseInstructionsWithHeap, tipIxs);
+  if (!transaction && existingHeapIx) {
+    // Jupiter's heap frame is useful for some routes, but dual sender tips are more important in the Jito-to-Helius path.
+    console.warn("Tx oversize; dropping Jupiter heap frame and retrying with all configured tips.");
+    transaction = tryBuild(baseInstructionsWithoutHeap, tipIxs);
+  }
+  if (!transaction && tipIxs.length > 1) {
+    const fallbackTip =
+      useJitoDirect && useJitoFallback ? tipIxs[tipIxs.length - 1]! : tipIxs[0]!;
+    const fallbackName = useJitoDirect && useJitoFallback ? "Helius" : "primary";
+    // Last resort: if Jito may hand off to Helius, keep the Helius-required tip instead of stranding fallback.
+    console.warn(`Tx still exceeds ${PACKET_DATA_SIZE}B; rebuilding with ${fallbackName} tip only.`);
+    transaction = tryBuild(baseInstructionsWithoutHeap, [fallbackTip]);
+  }
+  if (!transaction) {
+    throw new Error(`Transaction exceeds ${PACKET_DATA_SIZE}B packet limit after size fallbacks`);
   }
 
   return transaction;
@@ -172,9 +189,15 @@ function isOversizeError(err: unknown): boolean {
  * Sender on Jito error if USE_JITO_FALLBACK=true. Otherwise sends straight to Helius Sender.
  */
 export async function broadcastTransactionWithSender(
-  transaction: VersionedTransaction
+  transaction: VersionedTransaction,
+  options: BroadcastOptions = {}
 ): Promise<string> {
-  if (useJitoDirect) {
+  const heliusPathPossible = !useJitoDirect || useJitoFallback;
+  if (options.preferHelius && heliusPathPossible) {
+    // Suspected Jito drops should retry through the alternate ingress when the tx carries a Helius tip.
+    console.warn("Broadcast retry: preferring Helius Sender path.");
+  }
+  if (useJitoDirect && !(options.preferHelius && heliusPathPossible)) {
     try {
       return await broadcastViaJito(transaction);
     } catch (jitoErr) {

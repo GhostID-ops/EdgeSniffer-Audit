@@ -63,6 +63,11 @@ export type SwapResponse = {
   [key: string]: unknown;
 };
 
+export type QuoteOptions = {
+  onlyDirectRoutes?: boolean;
+  maxAccounts?: number;
+};
+
 /**
  * Get a Jupiter quote for a swap.
  * @param inputMint - Input token mint address
@@ -74,9 +79,18 @@ export async function getQuote(
   inputMint: string,
   outputMint: string,
   amount: number,
-  slippageBps: number = 50
+  slippageBps: number = 50,
+  options: QuoteOptions = {}
 ): Promise<QuoteResponse> {
-  const url = `${JUPITER_LITE_QUOTE}?inputMint=${encodeURIComponent(inputMint)}&outputMint=${encodeURIComponent(outputMint)}&amount=${amount}&slippageBps=${slippageBps}`;
+  const params = new URLSearchParams({
+    inputMint,
+    outputMint,
+    amount: String(amount),
+    slippageBps: String(slippageBps),
+  });
+  if (options.onlyDirectRoutes) params.set("onlyDirectRoutes", "true");
+  if (options.maxAccounts != null) params.set("maxAccounts", String(options.maxAccounts));
+  const url = `${JUPITER_LITE_QUOTE}?${params.toString()}`;
 
   for (let attempt = 0; attempt <= jupiterQuoteRetries; attempt++) {
     await waitForQuoteSlot();

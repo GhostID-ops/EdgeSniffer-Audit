@@ -161,18 +161,33 @@ const USE_JITO_FALLBACK_RAW = (process.env.USE_JITO_FALLBACK ?? "true").toLowerC
 export const useJitoFallback =
   USE_JITO_FALLBACK_RAW === "true" || USE_JITO_FALLBACK_RAW === "1" || USE_JITO_FALLBACK_RAW === "yes";
 const JITO_REGION = (process.env.JITO_REGION ?? "").toLowerCase().trim();
+const JITO_REGIONS_RAW = process.env.JITO_REGIONS ?? "";
 // Jito's regional block engines. Each forwards to the same global validator set; the regional
 // hostname just gives you a closer edge ingress. Empty string = use the regionless global.
 const JITO_REGIONS: Record<string, string> = {
   "": "https://mainnet.block-engine.jito.wtf",
   ny: "https://ny.mainnet.block-engine.jito.wtf",
   amsterdam: "https://amsterdam.mainnet.block-engine.jito.wtf",
+  dublin: "https://dublin.mainnet.block-engine.jito.wtf",
   frankfurt: "https://frankfurt.mainnet.block-engine.jito.wtf",
+  london: "https://london.mainnet.block-engine.jito.wtf",
+  singapore: "https://singapore.mainnet.block-engine.jito.wtf",
   tokyo: "https://tokyo.mainnet.block-engine.jito.wtf",
   "slc": "https://slc.mainnet.block-engine.jito.wtf",
 };
-export const jitoBundleUrl =
-  `${JITO_REGIONS[JITO_REGION] ?? JITO_REGIONS[""]}/api/v1/bundles`;
+const configuredJitoRegions =
+  JITO_REGIONS_RAW.trim().length > 0
+    ? JITO_REGIONS_RAW.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean)
+    : [JITO_REGION];
+export const jitoBundleUrls = Array.from(
+  new Set(
+    configuredJitoRegions.map(
+      (region) => `${JITO_REGIONS[region] ?? JITO_REGIONS[""]}/api/v1/bundles`
+    )
+  )
+);
+export const jitoBundleUrl = jitoBundleUrls[0] ?? `${JITO_REGIONS[""]}/api/v1/bundles`;
+export const jitoAuthUuid = process.env.JITO_AUTH_UUID ?? "";
 
 /** Helius enhanced transactions API (parse transactions). POST with { transactions: [sigs] }. */
 export const heliusEnhancedTransactionsUrl =
@@ -210,6 +225,11 @@ export const shyftGrpcReconnectMs = Math.max(
   250,
   parseInt(process.env.SHYFT_GRPC_RECONNECT_MS ?? "1000", 10)
 );
+const SHYFT_RABBITSTREAM_ENABLED_RAW = (process.env.SHYFT_RABBITSTREAM_ENABLED ?? "false").toLowerCase();
+export const shyftRabbitStreamEnabled =
+  SHYFT_RABBITSTREAM_ENABLED_RAW === "true" ||
+  SHYFT_RABBITSTREAM_ENABLED_RAW === "1" ||
+  SHYFT_RABBITSTREAM_ENABLED_RAW === "yes";
 export const shyftRabbitStreamUrl = process.env.SHYFT_RABBITSTREAM_URL ?? "";
 
 /** When false, the bot ignores source-wallet sells (you exit manually via 'e' or 'a' keys). Default true. */
@@ -273,6 +293,22 @@ export const computeUnitLimit = COMPUTE_UNIT_LIMIT;
 /** Fast mode - skip transaction confirmation for maximum speed. Configurable via FAST_MODE. */
 const FAST_MODE_RAW = (process.env.FAST_MODE ?? "false").toLowerCase();
 export const fastMode = FAST_MODE_RAW === "true" || FAST_MODE_RAW === "1";
+
+/** Confirmation polling timeout. Hot mirror trades should fail fast enough to re-quote/rebroadcast. */
+export const confirmationTimeoutMs = Math.max(
+  1_000,
+  parseInt(process.env.CONFIRMATION_TIMEOUT_MS ?? "25000", 10)
+);
+/** If the signature never appears in status polling, treat it as dropped before the full timeout. */
+export const confirmationNullStatusTimeoutMs = Math.max(
+  1_000,
+  parseInt(process.env.CONFIRMATION_NULL_STATUS_TIMEOUT_MS ?? "10000", 10)
+);
+/** One-shot rebuild/rebroadcast count for direct routes after a suspected dropped tx. */
+export const confirmationRebroadcastRetries = Math.max(
+  0,
+  parseInt(process.env.CONFIRMATION_REBROADCAST_RETRIES ?? "1", 10)
+);
 
 /** Min buy in lamports (for copytrading: skip mirrors below this). */
 export const minBuyLamports = Math.round(MIN_BUY_SOL * LAMPORTS_PER_SOL);
@@ -361,6 +397,11 @@ export const jupiterQuoteRetries = Math.max(
   0,
   parseInt(process.env.JUPITER_QUOTE_RETRIES ?? "1", 10)
 );
+/** Fallback max account counts for Jupiter routes that exceed the Solana packet limit. */
+export const jupiterOversizeMaxAccounts = (process.env.JUPITER_OVERSIZE_MAX_ACCOUNTS ?? "48,40,32")
+  .split(",")
+  .map((v) => parseInt(v.trim(), 10))
+  .filter((v) => Number.isFinite(v) && v > 0);
 
 /** Simulation/dry-run mode: no transactions sent, only log what would be done. Set SIMULATION_MODE=true or DRY_RUN=true. */
 const SIMULATION_RAW =

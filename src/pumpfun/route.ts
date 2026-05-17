@@ -1,10 +1,17 @@
 import { Keypair, PublicKey, type AccountMeta } from "@solana/web3.js";
 import { broadcastTransactionWithSender } from "../sender.js";
-import { confirmSignature } from "../confirm.js";
-import { fastMode, simulationMode, mirrorRetrySlippageBps, readConnection } from "../config.js";
+import { confirmSignature, isConfirmationTimeoutError } from "../confirm.js";
+import {
+  confirmationRebroadcastRetries,
+  fastMode,
+  simulationMode,
+  mirrorRetrySlippageBps,
+  readConnection,
+} from "../config.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
 import {
   PUMP_FUN_PROGRAM_ID,
+  PUMP_FUN_BUYBACK_FEE_RECIPIENT,
   TOKEN_2022_PROGRAM_ID,
 } from "./constants.js";
 import {
@@ -25,6 +32,7 @@ export type PumpFunBuyOutcome =
       solIn: bigint;
       priceImpactPct: number;
       mintMeta: TokenMeta;
+      confirmationPending?: boolean;
     }
   | { ok: false; reason: string; recoverable: boolean };
 
@@ -143,6 +151,7 @@ export async function tryPumpFunDirectBuy(args: {
    */
   sourceIxAccounts?: string[];
   onConfirmFailure?: (mint: string, tokensOutRaw: number, solInLamports: number, reason: string) => void;
+  rebroadcastAttempt?: number;
 }): Promise<PumpFunBuyOutcome> {
   const elapsed = () => `${Date.now() - args.startedAt}ms`;
   const mintKey = new PublicKey(args.mint);
@@ -237,7 +246,9 @@ export async function tryPumpFunDirectBuy(args: {
 
   let signature: string;
   try {
-    signature = await broadcastTransactionWithSender(tx);
+    signature = await broadcastTransactionWithSender(tx, {
+      preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
+    });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return { ok: false, recoverable: false, reason: `broadcast failed: ${msg}` };
@@ -245,11 +256,36 @@ export async function tryPumpFunDirectBuy(args: {
   args.log(`Broadcast: ${signature} (${elapsed()})`);
 
   if (fastMode) {
-    args.log("Fast mode: broadcast sent; confirming before recording position...");
+    // Fast mode records after broadcast so snipes are not delayed by confirmation polling.
+    confirmSignature(signature).catch((err) => {
+      const reason = err instanceof Error ? err.message : String(err);
+      args.onConfirmFailure?.(args.mint, Number(quote.tokensOut), Number(quote.solIn), reason);
+    });
+    const mintMeta = await getTokenMeta(args.mint);
+    return {
+      ok: true,
+      signature,
+      isSimulated: false,
+      tokensOut: quote.tokensOut,
+      solIn: quote.solIn,
+      priceImpactPct: quote.priceImpactPct,
+      mintMeta,
+      confirmationPending: true,
+    };
   }
   try {
     await confirmSignature(signature);
   } catch (err) {
+    const rebroadcastAttempt = args.rebroadcastAttempt ?? 0;
+    if (isConfirmationTimeoutError(err) && rebroadcastAttempt < confirmationRebroadcastRetries) {
+      const msg = err instanceof Error ? err.message : String(err);
+      // A never-seen signature usually means the bundle was dropped; rebuild with fresh curve state/blockhash.
+      args.log(`Pump.fun buy suspected dropped (${msg}); rebuilding once with fresh blockhash...`);
+      return tryPumpFunDirectBuy({
+        ...args,
+        rebroadcastAttempt: rebroadcastAttempt + 1,
+      });
+    }
     if (isPumpFunRetryableBuyFailure(err) && mirrorRetrySlippageBps > args.slippageBps) {
       args.log(
         `Pump.fun buy exceeded slippage; retrying fresh quote at ${(mirrorRetrySlippageBps / 100).toFixed(2)}% slippage...`
@@ -292,6 +328,7 @@ export type PumpFunSellOutcome =
       solOut: bigint;
       priceImpactPct: number;
       mintMeta: TokenMeta;
+      confirmationPending?: boolean;
     }
   | { ok: false; reason: string; recoverable: boolean };
 
@@ -309,6 +346,7 @@ export async function tryPumpFunDirectSell(args: {
   startedAt: number;
   log: (msg: string) => void;
   sourceSignature?: string;
+  rebroadcastAttempt?: number;
 }): Promise<PumpFunSellOutcome> {
   const elapsed = () => `${Date.now() - args.startedAt}ms`;
   const mintKey = new PublicKey(args.mint);
@@ -345,17 +383,14 @@ export async function tryPumpFunDirectSell(args: {
     };
   }
 
-  if (curve.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID)) {
-    return {
-      ok: false,
-      recoverable: true,
-      reason: "pump.fun Token-2022 direct sell_v2 requires an authorized buyback fee recipient; falling back to Jupiter",
-    };
-  }
-
   args.log("Building pump.fun sell tx...");
-  const remainingAccounts = await getSourcePumpRemainingAccounts(args.sourceSignature, mintKey);
-  if (remainingAccounts.length > 0) {
+  const useSellV2 = curve.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
+  const remainingAccounts = useSellV2
+    ? []
+    : await getSourcePumpRemainingAccounts(args.sourceSignature, mintKey);
+  if (useSellV2) {
+    args.log("Using pump.fun sell_v2 for Token-2022 mint.");
+  } else if (remainingAccounts.length > 0) {
     args.log(`Using ${remainingAccounts.length} source pump.fun remaining account(s) for fee/buyback routing.`);
   }
   const tx = await buildPumpFunSellTransaction({
@@ -368,12 +403,16 @@ export async function tryPumpFunDirectSell(args: {
     expectedSolOut: quote.solOut,
     slippageBps: args.slippageBps,
     remainingAccounts,
+    useV2: useSellV2,
+    buybackFeeRecipient: useSellV2 ? PUMP_FUN_BUYBACK_FEE_RECIPIENT : undefined,
   });
   args.log(`Tx built (${elapsed()})`);
 
   let signature: string;
   try {
-    signature = await broadcastTransactionWithSender(tx);
+    signature = await broadcastTransactionWithSender(tx, {
+      preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
+    });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return { ok: false, recoverable: false, reason: `broadcast failed: ${msg}` };
@@ -381,16 +420,41 @@ export async function tryPumpFunDirectSell(args: {
   args.log(`Broadcast: ${signature} (${elapsed()})`);
 
   if (fastMode) {
-    args.log("Fast mode: broadcast sent; confirming before recording sell...");
+    // Fast mode keeps the manual/risk exit hot; any late failure is surfaced by the background poller.
+    confirmSignature(signature).catch((err) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Pump.fun direct sell confirmation failed after broadcast: ${msg}`);
+    });
+    const mintMeta = await getTokenMeta(args.mint);
+    return {
+      ok: true,
+      signature,
+      isSimulated: false,
+      tokensIn: quote.tokensIn,
+      solOut: quote.solOut,
+      priceImpactPct: quote.priceImpactPct,
+      mintMeta,
+      confirmationPending: true,
+    };
   }
   try {
     await confirmSignature(signature);
   } catch (err) {
+    const rebroadcastAttempt = args.rebroadcastAttempt ?? 0;
+    if (isConfirmationTimeoutError(err) && rebroadcastAttempt < confirmationRebroadcastRetries) {
+      const msg = err instanceof Error ? err.message : String(err);
+      // A dropped sell is worse than a delayed one; retry once with a fresh quote/blockhash.
+      args.log(`Pump.fun sell suspected dropped (${msg}); rebuilding once with fresh blockhash...`);
+      return tryPumpFunDirectSell({
+        ...args,
+        rebroadcastAttempt: rebroadcastAttempt + 1,
+      });
+    }
     if (isPumpFunSellUnsupportedTokenProgram(err)) {
       return {
         ok: false,
         recoverable: true,
-        reason: "pump.fun direct sell rejected account layout/fee routing; falling back to Jupiter",
+        reason: "pump.fun direct sell rejected account layout/fee routing",
       };
     }
     throw err;
