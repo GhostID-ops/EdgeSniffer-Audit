@@ -7,6 +7,7 @@ import {
   simulationMode,
   mirrorRetrySlippageBps,
   readConnection,
+  usePumpfunToken2022DirectSell,
 } from "../config.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
 import {
@@ -384,7 +385,15 @@ export async function tryPumpFunDirectSell(args: {
   }
 
   args.log("Building pump.fun sell tx...");
-  const useSellV2 = curve.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
+  const isToken2022 = curve.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
+  if (isToken2022 && !usePumpfunToken2022DirectSell) {
+    return {
+      ok: false,
+      recoverable: true,
+      reason: "Token-2022 direct sell disabled; falling back to Jupiter",
+    };
+  }
+  const useSellV2 = isToken2022;
   const remainingAccounts = useSellV2
     ? []
     : await getSourcePumpRemainingAccounts(args.sourceSignature, mintKey);

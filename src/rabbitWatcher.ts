@@ -14,8 +14,12 @@ import {
 } from "./config.js";
 import {
   BUY_DISCRIMINATOR,
+  BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR,
+  BUY_EXACT_SOL_IN_DISCRIMINATOR,
+  BUY_V2_DISCRIMINATOR,
   PUMP_FUN_PROGRAM_ID,
   SELL_DISCRIMINATOR,
+  SELL_V2_DISCRIMINATOR,
 } from "./pumpfun/constants.js";
 import type { DetectedSwap } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
@@ -125,17 +129,26 @@ function extractDirectPumpFunSwapFromRabbit(
     )
       .map((idx) => Number(idx))
       .filter((idx) => Number.isInteger(idx) && idx >= 0);
-    if (accountIndexes.length < 16) continue;
     const sourceIxAccounts = accountIndexes.map((idx) => accountKeys[idx]!).filter(Boolean);
-    const mint = sourceIxAccounts[2];
+    const isLegacyLayout =
+      sourceIxAccounts.length >= 16 &&
+      sourceIxAccounts[2] != null &&
+      sourceIxAccounts[11] === PUMP_FUN_PROGRAM_ID.toBase58();
+    const isV2Layout =
+      sourceIxAccounts.length >= 27 &&
+      sourceIxAccounts[1] != null &&
+      sourceIxAccounts[26] === PUMP_FUN_PROGRAM_ID.toBase58();
+    if (!isLegacyLayout && !isV2Layout) continue;
+    const mint = isV2Layout ? sourceIxAccounts[1] : sourceIxAccounts[2];
     if (!mint) continue;
 
     const data = ixDataToBuffer((ix as unknown as { data?: unknown }).data);
     const signature = signatureToBase58(info.signature);
 
-    if (discriminatorMatches(data, BUY_DISCRIMINATOR)) {
-      // Pump.fun buy args: discriminator, token amount u64, max SOL cost u64, track-volume option.
-      // RabbitStream arrives before execution metadata, so max SOL cost is the earliest safe size hint.
+    if (
+      discriminatorMatches(data, BUY_DISCRIMINATOR) ||
+      discriminatorMatches(data, BUY_V2_DISCRIMINATOR)
+    ) {
       if (data.length < 24) continue;
       const maxSolCost = Number(data.readBigUInt64LE(16));
       if (!Number.isSafeInteger(maxSolCost) || maxSolCost <= 0) continue;
@@ -150,7 +163,28 @@ function extractDirectPumpFunSwapFromRabbit(
       };
     }
 
-    if (discriminatorMatches(data, SELL_DISCRIMINATOR)) {
+    if (
+      discriminatorMatches(data, BUY_EXACT_SOL_IN_DISCRIMINATOR) ||
+      discriminatorMatches(data, BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR)
+    ) {
+      if (data.length < 16) continue;
+      const spendableSol = Number(data.readBigUInt64LE(8));
+      if (!Number.isSafeInteger(spendableSol) || spendableSol <= 0) continue;
+      return {
+        signature,
+        wallet,
+        inputMint: WRAPPED_SOL_MINT,
+        outputMint: mint,
+        amountRaw: spendableSol,
+        isNativeInput: true,
+        sourceIxAccounts,
+      };
+    }
+
+    if (
+      discriminatorMatches(data, SELL_DISCRIMINATOR) ||
+      discriminatorMatches(data, SELL_V2_DISCRIMINATOR)
+    ) {
       if (data.length < 16) continue;
       const tokenAmount = Number(data.readBigUInt64LE(8));
       if (!Number.isSafeInteger(tokenAmount) || tokenAmount <= 0) continue;

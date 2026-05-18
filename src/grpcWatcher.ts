@@ -45,9 +45,14 @@ function extractPumpFunBuyIxAccounts(
     const idxArr = accIndexes instanceof Uint8Array ? Array.from(accIndexes) : accIndexes;
     if (idxArr.length < 16) return null;
     const keys = idxArr.map((i) => allKeysBase58[i]!);
-    // Pump.fun buy ix layout: mint at slot 2, program self-ref at slot 11. Sells have <16 accounts.
-    if (keys[2] !== mint) return null;
-    if (keys[11] !== PUMP_FUN_PROGRAM_ID_BASE58) return null;
+    // Legacy buy layout: mint at slot 2, program self-ref at slot 11.
+    const isLegacyBuy = keys[2] === mint && keys[11] === PUMP_FUN_PROGRAM_ID_BASE58;
+    // V2 buy layout: base mint at slot 1, program self-ref at slot 26.
+    const isV2Buy =
+      idxArr.length >= 27 &&
+      keys[1] === mint &&
+      keys[26] === PUMP_FUN_PROGRAM_ID_BASE58;
+    if (!isLegacyBuy && !isV2Buy) return null;
     return keys;
   };
 

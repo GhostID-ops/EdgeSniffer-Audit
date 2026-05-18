@@ -66,7 +66,6 @@ export function buildPumpFunSellIx(args: {
   const associatedBondingCurve = deriveAta(args.bondingCurve, args.mint, args.tokenProgramId);
   const associatedUser = deriveAta(args.user, args.mint, args.tokenProgramId);
   const creatorVault = deriveCreatorVaultPda(args.creator);
-  const userVolumeAccumulator = deriveUserVolumeAccumulatorPda(args.user);
   const feeConfig = deriveFeeConfigPda();
 
   const keys = [
@@ -78,11 +77,10 @@ export function buildPumpFunSellIx(args: {
     { pubkey: associatedUser, isSigner: false, isWritable: true },
     { pubkey: args.user, isSigner: true, isWritable: true },
     { pubkey: SYSTEM_PROGRAM_ID, isSigner: false, isWritable: false },
-    { pubkey: args.tokenProgramId, isSigner: false, isWritable: false },
     { pubkey: creatorVault, isSigner: false, isWritable: true },
+    { pubkey: args.tokenProgramId, isSigner: false, isWritable: false },
     { pubkey: eventAuthority, isSigner: false, isWritable: false },
     { pubkey: PUMP_FUN_PROGRAM_ID, isSigner: false, isWritable: false },
-    { pubkey: userVolumeAccumulator, isSigner: false, isWritable: true },
     { pubkey: feeConfig, isSigner: false, isWritable: false },
     { pubkey: PUMP_FUN_FEE_PROGRAM_ID, isSigner: false, isWritable: false },
     ...(args.remainingAccounts ?? []),
@@ -211,8 +209,9 @@ export async function buildPumpFunSellTransaction(args: {
           minSolOutput,
           remainingAccounts: args.remainingAccounts,
         });
-  if (sellIx.keys.length < 16) {
-    throw new Error(`Pump.fun sell instruction is stale: expected at least 16 accounts, got ${sellIx.keys.length}`);
+  const minAccounts = args.useV2 ? 26 : 14;
+  if (sellIx.keys.length < minAccounts) {
+    throw new Error(`Pump.fun sell instruction is stale: expected at least ${minAccounts} accounts, got ${sellIx.keys.length}`);
   }
 
   const { blockhash } = await getCachedBlockhash();

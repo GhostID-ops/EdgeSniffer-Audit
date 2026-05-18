@@ -9,6 +9,8 @@
     "dev": "tsx src/copytrade.ts",
     "web": "tsx src/web.ts",
     "swap": "tsx src/swap.ts",
+    "profile-edge": "tsx src/profileSourceEdge.ts",
+    "edge-scout": "tsx src/edgeScout.ts",
     "test:pumpswap": "tsx src/testPumpSwap.ts"
   },
   "dependencies": {

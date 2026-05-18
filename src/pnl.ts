@@ -131,6 +131,25 @@ export function unrecordBuy(
   return true;
 }
 
+/**
+ * Remove a local zero-proceeds close that was created while a fast-mode optimistic buy was still
+ * unconfirmed. This prevents a later failed-buy rollback from leaving negative token holdings.
+ */
+export function unrecordZeroSell(
+  mint: string,
+  tokenAmountRaw: number
+): boolean {
+  const p = positions.get(mint);
+  if (!p) return false;
+  p.totalSoldRaw = Math.max(0, p.totalSoldRaw - tokenAmountRaw);
+  p.sellsCount = Math.max(0, p.sellsCount - 1);
+  p.lastTradeAt = Date.now();
+  if (p.buysCount === 0 && p.sellsCount === 0) {
+    positions.delete(mint);
+  }
+  return true;
+}
+
 export type PnlTotals = {
   buysCount: number;
   sellsCount: number;

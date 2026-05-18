@@ -124,6 +124,16 @@ export const trailingEnabled = trailingSteps.length > 0;
 const PUMPFUN_DIRECT_RAW = (process.env.PUMPFUN_DIRECT_ENABLED ?? "true").toLowerCase();
 export const pumpfunDirectEnabled =
   PUMPFUN_DIRECT_RAW !== "false" && PUMPFUN_DIRECT_RAW !== "0" && PUMPFUN_DIRECT_RAW !== "no";
+const MIRROR_GRADUATED_BUYS_RAW = (process.env.MIRROR_GRADUATED_BUYS ?? "false").toLowerCase();
+export const mirrorGraduatedBuys =
+  MIRROR_GRADUATED_BUYS_RAW === "true" ||
+  MIRROR_GRADUATED_BUYS_RAW === "1" ||
+  MIRROR_GRADUATED_BUYS_RAW === "yes";
+const PUMPFUN_EXACT_SOL_IN_BUYS_RAW = (process.env.PUMPFUN_EXACT_SOL_IN_BUYS ?? "true").toLowerCase();
+export const pumpfunExactSolInBuys =
+  PUMPFUN_EXACT_SOL_IN_BUYS_RAW !== "false" &&
+  PUMPFUN_EXACT_SOL_IN_BUYS_RAW !== "0" &&
+  PUMPFUN_EXACT_SOL_IN_BUYS_RAW !== "no";
 
 /**
  * Dynamic priority fees: background poll of getRecentPrioritizationFees on pump.fun program;
@@ -136,6 +146,9 @@ export const dynamicPriorityFeeEnabled =
 export const dynamicPriorityFeeRefreshMs = Math.max(
   1000,
   parseInt(process.env.DYNAMIC_PRIORITY_FEE_REFRESH_MS ?? "5000", 10)
+);
+export const dynamicPriorityFeeMaxMicroLamports = parseOptionalPositiveInteger(
+  process.env.DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS
 );
 
 /** Helius staked RPC URL for read-only operations (blockhash, ALTs). */
@@ -160,6 +173,11 @@ export const useJitoDirect =
 const USE_JITO_FALLBACK_RAW = (process.env.USE_JITO_FALLBACK ?? "true").toLowerCase();
 export const useJitoFallback =
   USE_JITO_FALLBACK_RAW === "true" || USE_JITO_FALLBACK_RAW === "1" || USE_JITO_FALLBACK_RAW === "yes";
+const BROADCAST_RACE_ENABLED_RAW = (process.env.BROADCAST_RACE_ENABLED ?? "false").toLowerCase();
+export const broadcastRaceEnabled =
+  BROADCAST_RACE_ENABLED_RAW === "true" ||
+  BROADCAST_RACE_ENABLED_RAW === "1" ||
+  BROADCAST_RACE_ENABLED_RAW === "yes";
 const JITO_REGION = (process.env.JITO_REGION ?? "").toLowerCase().trim();
 const JITO_REGIONS_RAW = process.env.JITO_REGIONS ?? "";
 // Jito's regional block engines. Each forwards to the same global validator set; the regional
@@ -263,6 +281,14 @@ export const blockPumpfunMayhem =
 const MAYHEM_STRICT_RAW = (process.env.PUMPFUN_MAYHEM_STRICT ?? "false").toLowerCase();
 export const pumpfunMayhemStrict =
   MAYHEM_STRICT_RAW === "true" || MAYHEM_STRICT_RAW === "1" || MAYHEM_STRICT_RAW === "yes";
+
+const USE_PUMPFUN_TOKEN2022_DIRECT_SELL_RAW = (
+  process.env.USE_PUMPFUN_TOKEN2022_DIRECT_SELL ?? "true"
+).toLowerCase();
+export const usePumpfunToken2022DirectSell =
+  USE_PUMPFUN_TOKEN2022_DIRECT_SELL_RAW !== "false" &&
+  USE_PUMPFUN_TOKEN2022_DIRECT_SELL_RAW !== "0" &&
+  USE_PUMPFUN_TOKEN2022_DIRECT_SELL_RAW !== "no";
 
 /** Telegram Bot Token for notifications. Get from @BotFather. */
 export const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN ?? "";

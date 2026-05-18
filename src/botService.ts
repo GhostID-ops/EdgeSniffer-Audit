@@ -33,6 +33,7 @@ import {
   pumpfunDirectEnabled,
   shyftGrpcEnabled,
   shyftRabbitStreamEnabled,
+  confirmationNullStatusTimeoutMs,
 } from "./config.js";
 import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import { estimatePumpSwapSellQuote } from "./pumpswap/route.js";
@@ -71,6 +72,7 @@ import {
 import {
   recordBuy,
   recordSell,
+  unrecordZeroSell,
   getPositions,
   getPosition,
   getTotals,
@@ -215,6 +217,38 @@ let unsubscribeWs: Unsubscribe | null = null;
 let unsubscribeGrpc: GrpcUnsubscribe | null = null;
 let unsubscribeRabbit: RabbitUnsubscribe | null = null;
 let riskPositionCursor = 0;
+
+async function quoteRiskExitLamports(mint: string, amountRaw: number): Promise<number> {
+  if (!Number.isFinite(amountRaw) || amountRaw <= 0) return 0;
+  if (pumpfunDirectEnabled) {
+    const onCurve = await valueOnCurve(mint, amountRaw);
+    if (onCurve != null) {
+      lastCurveRiskValueByMint.set(mint, {
+        outSolLamports: onCurve.solOut,
+        quotedAt: Date.now(),
+      });
+      return onCurve.solOut;
+    }
+
+    const pumpSwapQuote = await estimatePumpSwapSellQuote(mint, amountRaw);
+    if (pumpSwapQuote != null) return pumpSwapQuote;
+  }
+
+  try {
+    const quote = await getQuote(mint, WRAPPED_SOL_MINT, amountRaw, 80);
+    return parseInt(quote.outAmount ?? "0", 10);
+  } catch (err) {
+    const lastCurve = lastCurveRiskValueByMint.get(mint);
+    if (
+      isJupiterNoRoutesError(err) &&
+      lastCurve &&
+      Date.now() - lastCurve.quotedAt <= GRADUATION_TRANSIENT_FLOOR_MS
+    ) {
+      return lastCurve.outSolLamports;
+    }
+    throw err;
+  }
+}
 let mirrorSellsEnabled = mirrorSells; // initialized from MIRROR_SELLS env, runtime-toggleable
 let buyOncePerTokenEnabled = buyOncePerToken; // initialized from BUY_ONCE_PER_TOKEN env
 let showMarketCapEnabled = showMarketCap; // initialized from SHOW_MARKET_CAP env
@@ -732,11 +766,15 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   
   try {
     const result = await mirrorSwap(swap, kp, {
-      onFastBuyConfirmFailure: ({ mint }) => {
+      onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, sourceSwap }) => {
+        unrecordZeroSell(mint, tokenAmountRaw);
         if (boughtMintsThisSession.delete(mint)) {
           console.warn(
             `🧹 Buy-once marker cleared for ${mint.slice(0, 8)}… after failed fast-mode buy.`
           );
+        }
+        if (sourceSwap) {
+          pendingBuyRetryByMint.set(mint, sourceSwap);
         }
       },
     });
@@ -1266,6 +1304,7 @@ export async function sellPositionByIndex(index: number): Promise<void> {
  * Sell all open positions (simulated or live based on mode)
  */
 async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<void> {
+  let effectiveNote = note;
   let liveHeldRaw: number | null;
   try {
     // Fast path: direct ATA read. Falls back to scan-all on null (unusual token program / closed ATA).
@@ -1282,6 +1321,13 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
   // we'd broadcast a doomed swap that fails on-chain with Custom(6024) at the destination AMM.
   // Close the ghost position locally instead so the risk loop drops it from the candidate pool.
   if (liveHeldRaw === 0 && p.heldRaw > 0) {
+    if (p.sellsCount === 0 && Date.now() - p.lastTradeAt < confirmationNullStatusTimeoutMs) {
+      console.warn(
+        `$${p.symbol}: wallet holds 0 on-chain while fast-mode buy is still pending confirmation; ` +
+          "leaving optimistic position open for background confirmation cleanup."
+      );
+      return;
+    }
     console.warn(
       `$${p.symbol}: wallet holds 0 on-chain but tracker shows ${formatTokenAmount(p.heldRaw, p.decimals)}. ` +
         `Closing position locally — no broadcast (likely transfer-fee/honeypot token or earlier unrecorded sell).`
@@ -1310,6 +1356,36 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
     throw new Error(`No token balance available for $${p.symbol}.`);
   }
 
+  const avgEntry = p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
+  const sellCostBasisLamports = avgEntry * sellRaw;
+
+  if (effectiveNote) {
+    const freshOutLamports = await quoteRiskExitLamports(p.mint, sellRaw);
+    const tickAt = Date.now();
+    const freshPnlPct =
+      sellCostBasisLamports > 0
+        ? ((freshOutLamports - sellCostBasisLamports) / sellCostBasisLamports) * 100
+        : 0;
+    const prevPeak = riskQuoteStateByMint.get(p.mint)?.peakPnlPct ?? -Infinity;
+    const peakPnlPct = Math.max(prevPeak, freshPnlPct);
+    riskQuoteStateByMint.set(p.mint, {
+      lastPnlPct: freshPnlPct,
+      lastQuotedAt: tickAt,
+      lastTickedAt: tickAt,
+      peakPnlPct,
+    });
+
+    const freshReason = riskExitReason(freshPnlPct, tickAt - p.firstSeenAt, peakPnlPct);
+    if (!freshReason) {
+      console.log(
+        `Risk exit stale for $${p.symbol}; fresh quote is ${freshPnlPct >= 0 ? "+" : ""}${freshPnlPct.toFixed(1)}% ` +
+          "vs avg entry, so no sell was broadcast."
+      );
+      return;
+    }
+    effectiveNote = freshReason;
+  }
+
   const result = await mirrorSwap(
     {
       signature: sourceBuySignatureByMint.get(p.mint) ?? `manual-sell-${p.mint}`,
@@ -1328,12 +1404,16 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
   const marketCapUsd = await maybeGetMarketCap(p.mint);
   const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
   const exitPrice = tokenPriceInSol(receivedLamports, soldRaw, p.decimals);
-  const avgEntry = p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
   const exitPerRaw = soldRaw > 0 ? receivedLamports / soldRaw : 0;
   const pct = avgEntry > 0 ? (exitPerRaw / avgEntry - 1) * 100 : 0;
+  const filledCostBasisLamports = avgEntry * soldRaw;
+  const filledPnlPct =
+    filledCostBasisLamports > 0
+      ? ((receivedLamports - filledCostBasisLamports) / filledCostBasisLamports) * 100
+      : pct;
   const quotedPnlPct =
-    p.costBasisRemainingLamports > 0
-      ? `${((receivedLamports - p.costBasisRemainingLamports) / p.costBasisRemainingLamports * 100) >= 0 ? "+" : ""}${(((receivedLamports - p.costBasisRemainingLamports) / p.costBasisRemainingLamports) * 100).toFixed(1)}%`
+    filledCostBasisLamports > 0
+      ? `${filledPnlPct >= 0 ? "+" : ""}${filledPnlPct.toFixed(1)}%`
       : undefined;
 
   console.log(`Sell LIVE (manual): ${formatTokenAmount(soldRaw, p.decimals)} $${p.symbol}`);
@@ -1343,7 +1423,7 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
   if (marketCapUsd != null) console.log(`MC: ${formatMarketCap(marketCapUsd)}`);
   console.log(`Tx: ${result.signature}`);
   console.log(`Realized PnL on $${p.symbol}: ${formatPnl(snap.realizedPnlLamports)}`);
-  if (note) console.log(`Reason: ${note}`);
+  if (effectiveNote) console.log(`Reason: ${effectiveNote}`);
   console.log("");
 
   void telegram.notifyTrade({
@@ -1357,8 +1437,8 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
     wallet: "manual",
     tokenAddress: p.mint,
     pnl: formatPnl(snap.realizedPnlLamports),
-    note,
-    quotedPnlPct: note ? quotedPnlPct : undefined,
+    note: effectiveNote,
+    quotedPnlPct: effectiveNote ? quotedPnlPct : undefined,
     txSignature: result.signature,
   });
 
@@ -1366,7 +1446,7 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
     {
       ts: Date.now(),
       sourceSignature: `manual-sell-${p.mint}`,
-      wallet: note ? "risk-sell" : "manual-sell",
+      wallet: effectiveNote ? "risk-sell" : "manual-sell",
       side: "sell",
       input: toLegView(result.input),
       output: toLegView(result.output),
@@ -1377,8 +1457,8 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
     },
     {
       realizedPnlLamports: snap.realizedPnlLamports,
-      realizedPnlPct: pct,
-      exitReason: note,
+      realizedPnlPct: filledPnlPct,
+      exitReason: effectiveNote,
       priceImpactPct: result.priceImpactPct ? parseFloat(result.priceImpactPct) * 100 : null,
     }
   );
@@ -1534,44 +1614,7 @@ async function checkRiskExits(): Promise<void> {
     if (p.costBasisRemainingLamports <= 0) continue;
 
     try {
-      // Curve-first valuation: pump.fun direct gives accurate, indexing-lag-free pricing.
-      // Falls back through PumpSwap spot before Jupiter to cover the post-graduation indexing gap.
-      let outSolLamports: number;
-      if (pumpfunDirectEnabled) {
-        const onCurve = await valueOnCurve(p.mint, p.heldRaw);
-        if (onCurve != null) {
-          outSolLamports = onCurve.solOut;
-          lastCurveRiskValueByMint.set(p.mint, {
-            outSolLamports,
-            quotedAt: Date.now(),
-          });
-        } else {
-          const pumpSwapQuote = await estimatePumpSwapSellQuote(p.mint, p.heldRaw);
-          if (pumpSwapQuote != null) {
-            outSolLamports = pumpSwapQuote;
-          } else {
-            try {
-              const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);
-              outSolLamports = parseInt(quote.outAmount ?? "0", 10);
-            } catch (err) {
-              const lastCurve = lastCurveRiskValueByMint.get(p.mint);
-              if (
-                isJupiterNoRoutesError(err) &&
-                lastCurve &&
-                Date.now() - lastCurve.quotedAt <= GRADUATION_TRANSIENT_FLOOR_MS
-              ) {
-                // A fresh curve quote is a bounded floor while Jupiter has not indexed the migrated pool yet.
-                outSolLamports = lastCurve.outSolLamports;
-              } else {
-                throw err;
-              }
-            }
-          }
-        }
-      } else {
-        const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);
-        outSolLamports = parseInt(quote.outAmount ?? "0", 10);
-      }
+      const outSolLamports = await quoteRiskExitLamports(p.mint, p.heldRaw);
       const tickAt = Date.now();
       if (!Number.isFinite(outSolLamports) || outSolLamports <= 0) {
         const prev = riskQuoteStateByMint.get(p.mint);

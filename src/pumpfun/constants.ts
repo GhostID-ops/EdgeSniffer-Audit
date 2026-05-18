@@ -37,6 +37,9 @@ export const RENT_SYSVAR_ID = new PublicKey("SysvarRent1111111111111111111111111
 
 /** Anchor discriminators (sha256("global:<name>")[0..8]). */
 export const BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 235, 234]);
+export const BUY_EXACT_SOL_IN_DISCRIMINATOR = Buffer.from([56, 252, 116, 8, 158, 223, 205, 95]);
+export const BUY_V2_DISCRIMINATOR = Buffer.from([184, 23, 238, 97, 103, 197, 211, 61]);
+export const BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR = Buffer.from([194, 171, 28, 70, 104, 77, 91, 47]);
 export const SELL_DISCRIMINATOR = Buffer.from([51, 230, 133, 164, 1, 127, 131, 173]);
 export const SELL_V2_DISCRIMINATOR = Buffer.from([93, 246, 130, 60, 231, 233, 64, 178]);
 

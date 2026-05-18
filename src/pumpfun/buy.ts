@@ -11,6 +11,7 @@ import {
 import {
   readConnection,
   computeUnitLimit,
+  pumpfunExactSolInBuys,
 } from "../config.js";
 import { buildTipInstructions } from "../tipBuilder.js";
 import { getDynamicPriorityFee } from "../feeOracle.js";
@@ -21,7 +22,11 @@ import {
   PUMP_FUN_FEE_RECIPIENT,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
   BUY_DISCRIMINATOR,
+  BUY_EXACT_SOL_IN_DISCRIMINATOR,
+  BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR,
+  BUY_V2_DISCRIMINATOR,
   deriveAta,
   deriveCreatorVaultPda,
   deriveEventAuthorityPda,
@@ -31,12 +36,39 @@ import {
   deriveUserVolumeAccumulatorPda,
 } from "./constants.js";
 
+const WRAPPED_SOL_MINT = new PublicKey("So11111111111111111111111111111111111111112");
+
 function encodeBuyArgs(amount: bigint, maxSolCost: bigint): Buffer {
   const buf = Buffer.alloc(25);
   BUY_DISCRIMINATOR.copy(buf, 0);
   buf.writeBigUInt64LE(amount, 8);
   buf.writeBigUInt64LE(maxSolCost, 16);
   buf.writeUInt8(0, 24); // OptionBool::None for track_volume.
+  return buf;
+}
+
+function encodeBuyExactSolInArgs(spendableSolIn: bigint, minTokensOut: bigint): Buffer {
+  const buf = Buffer.alloc(25);
+  BUY_EXACT_SOL_IN_DISCRIMINATOR.copy(buf, 0);
+  buf.writeBigUInt64LE(spendableSolIn, 8);
+  buf.writeBigUInt64LE(minTokensOut, 16);
+  buf.writeUInt8(0, 24); // OptionBool::None for track_volume.
+  return buf;
+}
+
+function encodeBuyV2Args(amount: bigint, maxSolCost: bigint): Buffer {
+  const buf = Buffer.alloc(24);
+  BUY_V2_DISCRIMINATOR.copy(buf, 0);
+  buf.writeBigUInt64LE(amount, 8);
+  buf.writeBigUInt64LE(maxSolCost, 16);
+  return buf;
+}
+
+function encodeBuyExactQuoteInV2Args(spendableQuoteIn: bigint, minTokensOut: bigint): Buffer {
+  const buf = Buffer.alloc(24);
+  BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR.copy(buf, 0);
+  buf.writeBigUInt64LE(spendableQuoteIn, 8);
+  buf.writeBigUInt64LE(minTokensOut, 16);
   return buf;
 }
 
@@ -68,6 +100,25 @@ const PUMP_FUN_BUY_WRITABLE_FLAGS = [
   false, true, false, false, true, true, false, false,
 ];
 
+const PUMP_FUN_BUY_V2_WRITABLE_FLAGS = [
+  false, false, false, false, false, false, true, true, true,
+  true, true, true, true, true, true, true, true, true,
+  false, false, true, true, false, false, false, false, false,
+];
+const PUMP_FUN_BUY_V2_ACCOUNT_COUNT = PUMP_FUN_BUY_V2_WRITABLE_FLAGS.length;
+
+function isV2SourceIxAccounts(
+  sourceIxAccounts: PublicKey[] | undefined,
+  mint: PublicKey
+): boolean {
+  return (
+    sourceIxAccounts !== undefined &&
+    sourceIxAccounts.length >= 27 &&
+    sourceIxAccounts[1]?.equals(mint) === true &&
+    sourceIxAccounts[26]?.equals(PUMP_FUN_PROGRAM_ID) === true
+  );
+}
+
 export function buildPumpFunBuyIx(args: {
   user: PublicKey;
   mint: PublicKey;
@@ -76,6 +127,7 @@ export function buildPumpFunBuyIx(args: {
   tokenProgramId: PublicKey;
   amount: bigint;
   maxSolCost: bigint;
+  exactSolIn?: boolean;
   remainingAccounts?: AccountMeta[];
   /**
    * Source's exact pump.fun buy ix account list (16-18 entries). When provided, slots 0-15
@@ -89,9 +141,35 @@ export function buildPumpFunBuyIx(args: {
 }): TransactionInstruction {
   const associatedUser = deriveAta(args.user, args.mint, args.tokenProgramId);
   const userVolumeAccumulator = deriveUserVolumeAccumulatorPda(args.user);
+  const associatedQuoteUser = deriveAta(args.user, WRAPPED_SOL_MINT, TOKEN_PROGRAM_ID);
+  const associatedUserVolumeAccumulator = deriveAta(
+    userVolumeAccumulator,
+    WRAPPED_SOL_MINT,
+    TOKEN_PROGRAM_ID
+  );
 
   let keys: AccountMeta[];
-  if (args.sourceIxAccounts && args.sourceIxAccounts.length >= 16) {
+  const isV2 = isV2SourceIxAccounts(args.sourceIxAccounts, args.mint);
+  if (isV2 && args.sourceIxAccounts) {
+    // V2 buy layout has no optional accounts but includes multiple user-specific slots.
+    // Keep the 27 official Pump.fun accounts verbatim and replace only our wallet-owned
+    // accounts. Routers may pass extra CPI accounts after slot 26; forwarding those makes
+    // direct V2 buys exceed Solana's 1232-byte transaction cap.
+    const src = args.sourceIxAccounts.slice(0, PUMP_FUN_BUY_V2_ACCOUNT_COUNT);
+    keys = src.map((pubkey, i) => {
+      let actual = pubkey;
+      if (i === 13) actual = args.user;
+      else if (i === 14) actual = associatedUser;
+      else if (i === 15) actual = associatedQuoteUser;
+      else if (i === 20) actual = userVolumeAccumulator;
+      else if (i === 21) actual = associatedUserVolumeAccumulator;
+      return {
+        pubkey: actual,
+        isSigner: i === 13,
+        isWritable: PUMP_FUN_BUY_V2_WRITABLE_FLAGS[i] ?? true,
+      };
+    });
+  } else if (args.sourceIxAccounts && args.sourceIxAccounts.length >= 16) {
     // Source-extracted path: use source's exact slots 0-15, replace user-specific slots.
     // Slot 16+ are the per-coin remaining accounts (fee recipients) — keep verbatim.
     const src = args.sourceIxAccounts;
@@ -141,7 +219,13 @@ export function buildPumpFunBuyIx(args: {
   return new TransactionInstruction({
     keys,
     programId: PUMP_FUN_PROGRAM_ID,
-    data: encodeBuyArgs(args.amount, args.maxSolCost),
+    data: isV2
+      ? args.exactSolIn
+        ? encodeBuyExactQuoteInV2Args(args.maxSolCost, args.amount)
+        : encodeBuyV2Args(args.amount, args.maxSolCost)
+      : args.exactSolIn
+        ? encodeBuyExactSolInArgs(args.maxSolCost, args.amount)
+        : encodeBuyArgs(args.amount, args.maxSolCost),
   });
 }
 
@@ -181,6 +265,8 @@ export async function buildPumpFunBuyTransaction(args: {
 }): Promise<VersionedTransaction> {
   const maxSolCost =
     (args.solInLamports * BigInt(10_000 + args.slippageBps)) / 10_000n;
+  const minTokensOut =
+    (args.tokensOut * BigInt(Math.max(1, 10_000 - args.slippageBps))) / 10_000n;
 
   const tipIxs = buildTipInstructions(args.user.publicKey);
 
@@ -204,6 +290,7 @@ export async function buildPumpFunBuyTransaction(args: {
     mint: args.mint,
     tokenProgramId: args.tokenProgramId,
   });
+  const isV2 = isV2SourceIxAccounts(args.sourceIxAccounts, args.mint);
 
   const buyIx = buildPumpFunBuyIx({
     user: args.user.publicKey,
@@ -211,13 +298,15 @@ export async function buildPumpFunBuyTransaction(args: {
     bondingCurve: args.bondingCurve,
     creator: args.creator,
     tokenProgramId: args.tokenProgramId,
-    amount: args.tokensOut,
-    maxSolCost,
+    amount: pumpfunExactSolInBuys ? minTokensOut : args.tokensOut,
+    maxSolCost: pumpfunExactSolInBuys ? args.solInLamports : maxSolCost,
+    exactSolIn: pumpfunExactSolInBuys,
     remainingAccounts: args.remainingAccounts,
     sourceIxAccounts: args.sourceIxAccounts,
   });
-  if (buyIx.keys.length < 16) {
-    throw new Error(`Pump.fun buy instruction is stale: expected at least 16 accounts, got ${buyIx.keys.length}`);
+  const minAccounts = isV2 ? 27 : 16;
+  if (buyIx.keys.length < minAccounts) {
+    throw new Error(`Pump.fun buy instruction is stale: expected at least ${minAccounts} accounts, got ${buyIx.keys.length}`);
   }
 
   const { blockhash } = await getCachedBlockhash();

@@ -15,6 +15,7 @@ import {
   computeUnitLimit,
   useJitoDirect,
   useJitoFallback,
+  broadcastRaceEnabled,
 } from "./config.js";
 import { getDynamicPriorityFee } from "./feeOracle.js";
 import { broadcastViaJito } from "./jitoSender.js";
@@ -183,6 +184,37 @@ function isOversizeError(err: unknown): boolean {
   return /encoding overruns|too large|exceeds.*size|packet/i.test(msg);
 }
 
+function maybeInvalidateBlockhash(err: unknown): void {
+  const msg = err instanceof Error ? err.message : String(err);
+  if (/blockhash|expired|block height/i.test(msg)) invalidateBlockhashCache();
+}
+
+async function raceJitoAndHelius(transaction: VersionedTransaction): Promise<string> {
+  const errors: string[] = [];
+  const wrap = async (
+    name: string,
+    fn: () => Promise<string>
+  ): Promise<string> => {
+    try {
+      return await fn();
+    } catch (err) {
+      maybeInvalidateBlockhash(err);
+      const msg = err instanceof Error ? err.message : String(err);
+      errors.push(`${name}: ${msg}`);
+      throw err;
+    }
+  };
+
+  try {
+    return await Promise.any([
+      wrap("Jito", () => broadcastViaJito(transaction)),
+      wrap("Helius", () => broadcastViaHeliusSender(transaction)),
+    ]);
+  } catch {
+    throw new Error(`Parallel broadcast failed: ${errors.join(" | ")}`);
+  }
+}
+
 /**
  * Send a signed transaction. Routes via Jito BlockEngine directly when USE_JITO_DIRECT=true
  * (saves the Helius → Jito relay hop, ~50-100ms on hot launches), falling back to Helius
@@ -198,25 +230,25 @@ export async function broadcastTransactionWithSender(
     console.warn("Broadcast retry: preferring Helius Sender path.");
   }
   if (useJitoDirect && !(options.preferHelius && heliusPathPossible)) {
+    if (broadcastRaceEnabled && heliusPathPossible) {
+      return raceJitoAndHelius(transaction);
+    }
     try {
       return await broadcastViaJito(transaction);
     } catch (jitoErr) {
       if (!useJitoFallback) {
-        // Stale blockhash is the most common silent broadcast killer; force a refresh.
-        const msg = jitoErr instanceof Error ? jitoErr.message : String(jitoErr);
-        if (/blockhash|expired|block height/i.test(msg)) invalidateBlockhashCache();
+        maybeInvalidateBlockhash(jitoErr);
         throw jitoErr;
       }
       const msg = jitoErr instanceof Error ? jitoErr.message : String(jitoErr);
-      if (/blockhash|expired|block height/i.test(msg)) invalidateBlockhashCache();
+      maybeInvalidateBlockhash(jitoErr);
       console.warn(`Jito direct broadcast failed; falling back to Helius Sender: ${msg}`);
     }
   }
   try {
     return await broadcastViaHeliusSender(transaction);
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    if (/blockhash|expired|block height/i.test(msg)) invalidateBlockhashCache();
+    maybeInvalidateBlockhash(err);
     throw err;
   }
 }

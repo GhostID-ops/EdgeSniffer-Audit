@@ -48,6 +48,9 @@ type HeliusParsedTx = {
   timestamp?: number;
   type?: string;
   source?: string;
+  tokenTransfers?: unknown[];
+  nativeTransfers?: unknown[];
+  accountData?: AccountDataEntry[];
   events?: {
     swap?: {
       nativeInput?: { account: string; amount: number };
@@ -76,6 +79,11 @@ type AccountDataEntry = {
 };
 
 type TokenNet = { net: number; decimals: number };
+type NonSwapSummary = {
+  walletNativeChangeLamports: number;
+  walletTokenMints: string[];
+  walletTokenNet: Array<{ mint: string; net: number; decimals: number }>;
+};
 
 function addTokenNet(
   tokenNet: Map<string, TokenNet>,
@@ -108,6 +116,45 @@ function getBestTokenNet(tokenNet: Map<string, TokenNet>): {
     }
   }
   return { mint, net, abs };
+}
+
+function summarizeWalletActivity(tx: HeliusParsedTx, wallet: string): NonSwapSummary {
+  let walletNativeChangeLamports = 0;
+  const tokenNet = new Map<string, TokenNet>();
+
+  for (const entry of tx.accountData ?? []) {
+    if (entry.account !== wallet) continue;
+    walletNativeChangeLamports += entry.nativeBalanceChange ?? 0;
+    for (const change of entry.tokenBalanceChanges ?? []) {
+      const raw = Number(change.rawTokenAmount?.tokenAmount ?? "0");
+      addTokenNet(tokenNet, change.mint, raw, change.rawTokenAmount?.decimals);
+    }
+  }
+
+  const walletTokenNet = Array.from(tokenNet.entries())
+    .map(([mint, net]) => ({ mint, net: net.net, decimals: net.decimals }))
+    .sort((a, b) => Math.abs(b.net) - Math.abs(a.net));
+  return {
+    walletNativeChangeLamports,
+    walletTokenMints: walletTokenNet.map((t) => t.mint),
+    walletTokenNet,
+  };
+}
+
+function formatNonSwapSummary(tx: HeliusParsedTx, wallet: string): string | null {
+  if (tx.type !== "CREATE_POOL" && tx.source !== "PUMP_AMM") return null;
+  const summary = summarizeWalletActivity(tx, wallet);
+  const sol = summary.walletNativeChangeLamports / 1_000_000_000;
+  const solPart = `walletSOL=${sol >= 0 ? "+" : ""}${sol.toFixed(4)}`;
+  const mintPart =
+    summary.walletTokenNet.length > 0
+      ? `walletMints=${summary.walletTokenNet.map((t) => `${t.mint.slice(0, 6)}…${t.mint.slice(-4)}`).join(",")}`
+      : "walletMints=none";
+  const role =
+    Math.abs(summary.walletNativeChangeLamports) > 0 || summary.walletTokenNet.length > 0
+      ? "wallet balance changed"
+      : "wallet only referenced";
+  return `${role}; ${solPart}; ${mintPart}; sig=${tx.signature}`;
 }
 
 function isWalletTokenAccount(
@@ -714,6 +761,10 @@ export async function subscribeWalletSwaps(
                 `(type=${slowTx.type ?? "?"}, source=${slowTx.source ?? "?"}, ` +
                 `swapEvent=${hasSwapEvent}, tokenXfers=${tokenXfers}, nativeXfers=${nativeXfers}, accountData=${acctData})`
             );
+            const nonSwapSummary = formatNonSwapSummary(slowTx, wallet);
+            if (nonSwapSummary) {
+              console.log(`   ↳ ${nonSwapSummary}`);
+            }
           } catch (err) {
             const msg = err instanceof Error ? err.message : String(err);
             console.warn(`⚠️  WS parse skip ${sig.slice(0, 8)}…: ${msg}`);

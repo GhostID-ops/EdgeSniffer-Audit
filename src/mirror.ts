@@ -10,6 +10,7 @@ import {
   maxImpactReduceAttempts,
   maxSourceDriftPct,
   pumpfunDirectEnabled,
+  mirrorGraduatedBuys,
   jupiterOversizeMaxAccounts,
 } from "./config.js";
 import { getQuote, getSwap, type QuoteResponse } from "./jupiter.js";
@@ -47,6 +48,7 @@ export type MirrorSwapOptions = {
     solLamports: number;
     reason: string;
     positionRemoved: boolean;
+    sourceSwap?: DetectedSwap;
   }) => void;
 };
 
@@ -295,6 +297,7 @@ export async function mirrorSwap(
           solLamports,
           reason,
           positionRemoved: removed,
+          sourceSwap: swap,
         });
       },
     });
@@ -336,6 +339,7 @@ export async function mirrorSwap(
             solLamports,
             reason,
             positionRemoved: removed,
+            sourceSwap: swap,
           });
         },
       });
@@ -355,6 +359,11 @@ export async function mirrorSwap(
         throw new Error(`PumpSwap direct buy failed: ${pumpSwap.reason}`);
       }
       console.log(`PumpSwap direct path skipped: ${pumpSwap.reason}; falling back to Jupiter.`);
+      if (!mirrorGraduatedBuys) {
+        throw new Error(
+          "Skipping graduated buy: MIRROR_GRADUATED_BUYS is false and no direct PumpSwap route was available"
+        );
+      }
     }
   }
 
@@ -460,6 +469,24 @@ export async function mirrorSwap(
       });
     }
   }
+  const routeConstraintsQueued = () =>
+    attempts.some((a) => a.onlyDirectRoutes || a.quoteMaxAccounts != null);
+  const queueRouteConstraints = (fromAttempt: typeof attempts[number]) => {
+    for (const maxAccounts of jupiterOversizeMaxAccounts) {
+      attempts.push({
+        amountRaw: fromAttempt.amountRaw,
+        slippageBps: fromAttempt.slippageBps,
+        reason: `maxAccounts=${maxAccounts} route`,
+        quoteMaxAccounts: maxAccounts,
+      });
+    }
+    attempts.push({
+      amountRaw: fromAttempt.amountRaw,
+      slippageBps: fromAttempt.slippageBps,
+      reason: "direct Jupiter route",
+      onlyDirectRoutes: true,
+    });
+  };
   let lastSlippageError: unknown;
 
   for (let i = 0; i < attempts.length; i++) {
@@ -543,6 +570,7 @@ export async function mirrorSwap(
             solLamports: inAmountRaw,
             reason,
             positionRemoved: removed,
+            sourceSwap: swap,
           });
         });
       } else {
@@ -583,22 +611,12 @@ export async function mirrorSwap(
             console.warn(`Constrained Jupiter route still too large (${msg}); trying next route constraint...`);
             continue;
           }
-        } else if (!attempts.some((a) => a.onlyDirectRoutes || a.quoteMaxAccounts != null)) {
+        } else if (!routeConstraintsQueued()) {
           console.warn(`Jupiter route too large (${msg}); retrying with constrained routes...`);
-          for (const maxAccounts of jupiterOversizeMaxAccounts) {
-            attempts.push({
-              amountRaw: attempt.amountRaw,
-              slippageBps: attempt.slippageBps,
-              reason: `maxAccounts=${maxAccounts} route`,
-              quoteMaxAccounts: maxAccounts,
-            });
-          }
-          attempts.push({
-            amountRaw: attempt.amountRaw,
-            slippageBps: attempt.slippageBps,
-            reason: "direct Jupiter route",
-            onlyDirectRoutes: true,
-          });
+          queueRouteConstraints(attempt);
+          continue;
+        } else if (!isLastAttempt) {
+          console.warn(`Jupiter route still too large (${msg}); trying queued constrained route...`);
           continue;
         }
       }

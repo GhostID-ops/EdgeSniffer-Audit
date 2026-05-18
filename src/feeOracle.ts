@@ -4,6 +4,7 @@ import {
   priorityFeeMicroLamports,
   dynamicPriorityFeeEnabled,
   dynamicPriorityFeeRefreshMs,
+  dynamicPriorityFeeMaxMicroLamports,
 } from "./config.js";
 import { PUMP_FUN_PROGRAM_ID } from "./pumpfun/constants.js";
 
@@ -37,7 +38,11 @@ async function refreshFee(): Promise<void> {
     const samples = fees.map((f) => f.prioritizationFee).filter((v) => v > 0);
     if (samples.length === 0) return;
     const p75Fee = p75(samples);
-    cachedFee = Math.max(priorityFeeMicroLamports, p75Fee);
+    const uncapped = Math.max(priorityFeeMicroLamports, p75Fee);
+    cachedFee =
+      dynamicPriorityFeeMaxMicroLamports != null
+        ? Math.min(uncapped, dynamicPriorityFeeMaxMicroLamports)
+        : uncapped;
     lastFetchedAt = Date.now();
   } catch (err) {
     // Transient — keep the previous cached fee. Static floor still protects us.
@@ -78,11 +83,13 @@ export function getFeeOracleSnapshot(): {
   cachedFee: number;
   staticFloor: number;
   lastFetchedAt: number;
+  maxFee: number | null;
 } {
   return {
     enabled: dynamicPriorityFeeEnabled,
     cachedFee,
     staticFloor: priorityFeeMicroLamports,
     lastFetchedAt,
+    maxFee: dynamicPriorityFeeMaxMicroLamports,
   };
 }
