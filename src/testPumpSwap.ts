@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import { PublicKey, type AccountMeta } from "@solana/web3.js";
 import {
   PUMPSWAP_PROGRAM_ID,
+  PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR,
   derivePumpSwapUserVolumeAccumulatorPda,
+  encodeBuyExactQuoteIn,
   isRecoverablePumpSwapFailure,
   replacePumpSwapUserAccounts,
   validatePumpSwapPoolAccount,
@@ -108,11 +110,21 @@ function testPoolPrecheckSimulationCases(): void {
   assert.equal(validatePumpSwapPoolAccount(pool, okAccount), null);
 }
 
+function testBuyExactQuoteInEncoding(): void {
+  const data = encodeBuyExactQuoteIn(180_000_000n, 123_456_789n);
+  assert.equal(data.length, 25);
+  assert.deepEqual(data.subarray(0, 8), PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR);
+  assert.equal(data.readBigUInt64LE(8), 180_000_000n);
+  assert.equal(data.readBigUInt64LE(16), 123_456_789n);
+  assert.equal(data.readUInt8(24), 0, "track_volume is encoded as OptionBool::None");
+}
+
 function run(): void {
   testUserAccountReplacement();
   testPumpSwapPdaProgramOwner();
   testRecoverableFailureClassification();
   testPoolPrecheckSimulationCases();
+  testBuyExactQuoteInEncoding();
   console.log("PumpSwap tests passed");
 }
 

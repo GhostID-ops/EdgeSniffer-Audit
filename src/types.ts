@@ -28,4 +28,14 @@ export type DetectedSwap = {
    * for swaps from other detectors (WS) or non-pump.fun sources.
    */
   sourceIxAccounts?: string[];
+  /**
+   * Base58 pubkeys of the source's PumpSwap AMM buy ix accounts, in order. When present, the
+   * graduated-token direct path can reuse the source's exact pool/global/fee accounts without
+   * waiting for getTransaction to become available.
+   */
+  sourcePumpSwapAccounts?: string[];
+  /** Original quote mint used by the source wallet when it differs from the mirrored input. */
+  sourceQuoteMint?: string;
+  /** Original quote amount used by the source wallet, in raw units. */
+  sourceQuoteAmountRaw?: number;
 };

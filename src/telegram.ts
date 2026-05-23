@@ -69,6 +69,7 @@ export interface TradeNotification {
   wallet: string;
   tokenAddress: string;
   pnl?: string;
+  positionPnl?: string;
   note?: string;
   quotedPnlPct?: string;
   txSignature?: string;
@@ -195,11 +196,17 @@ class TelegramService {
     const sideIcon = trade.type === "buy" ? "🟢" : "🔴";
     const modeIcon = trade.isSimulated ? "🎭" : "💰";
     const riskKind = trade.type === "sell" ? riskExitKind(trade.note) : null;
+    const sourceLabel =
+      trade.wallet === "manual" || trade.wallet === "manual-sell" || trade.wallet === "risk" || trade.wallet === "risk-sell"
+        ? "Actor"
+        : "Copied from";
     const title =
       riskKind === "stopLoss"
         ? `🔴 <b>SELL EXECUTED — STOP LOSS</b> ${modeIcon} <b>${mode}</b>`
         : riskKind === "takeProfit"
         ? `🟢 <b>SELL EXECUTED — TAKE PROFIT</b> ${modeIcon} <b>${mode}</b>`
+        : trade.type === "buy"
+        ? `${sideIcon} <b>MIRROR BUY EXECUTED</b> ${modeIcon} <b>${mode}</b>`
         : `${sideIcon} <b>${sideLabel}</b> ${modeIcon} <b>${mode}</b>`;
     const symbol = escapeHtml(trade.symbol);
     const tokenAddress = escapeHtml(trade.tokenAddress);
@@ -218,7 +225,8 @@ class TelegramService {
       if (trade.quotedPnlPct) {
         lines.push(`📉 <b>Quoted PnL</b>: ${escapeHtml(trade.quotedPnlPct)}`);
       }
-      if (trade.pnl) lines.push(`💰 <b>Realized PnL</b>: ${escapeHtml(trade.pnl)}`);
+      if (trade.pnl) lines.push(`💰 <b>Fill PnL</b>: ${escapeHtml(trade.pnl)}`);
+      if (trade.positionPnl) lines.push(`📊 <b>Position PnL</b>: ${escapeHtml(trade.positionPnl)}`);
       lines.push(`💵 <b>${solLabel}</b>: ${escapeHtml(trade.solAmount)} SOL`);
       lines.push(`📦 <b>${amountLabel}</b>: <code>${escapeHtml(trade.amount)}</code>`);
       if (trade.note) lines.push(`🎯 <b>Reason</b>: ${escapeHtml(trade.note)}`);
@@ -238,7 +246,7 @@ class TelegramService {
     if (!riskKind && trade.note) lines.push(`📝 <b>Note</b>: ${escapeHtml(trade.note)}`);
 
     lines.push("");
-    lines.push(`👤 <b>Source</b>: <code>${wallet}</code>`);
+    lines.push(`👤 <b>${sourceLabel}</b>: <code>${wallet}</code>`);
     lines.push(`🔗 <b>CA</b>: <code>${tokenAddress}</code>`);
 
     if (trade.txSignature) {
@@ -334,6 +342,12 @@ class TelegramService {
 
     const message = "🤖 <b>FinalBot is online</b>\n\nReady to monitor trades.";
     return this.sendMessage({ text: message, parse_mode: "HTML" });
+  }
+
+  async notifyInfo(title: string, details?: string): Promise<boolean> {
+    const lines = [`ℹ️ <b>${escapeHtml(title)}</b>`];
+    if (details) lines.push("", escapeHtml(details));
+    return this.sendMessage({ text: lines.join("\n"), parse_mode: "HTML" });
   }
 }
 

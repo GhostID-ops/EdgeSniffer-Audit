@@ -45,8 +45,16 @@ export const trackedWallets: string[] = TRACKED_WALLETS_RAW
 const MIN_BUY_SOL = parseFloat(process.env.MIN_BUY_SOL ?? "0.01");
 /** Max buy size in SOL. Mirror trades are capped to this. Default 1 SOL. */
 const MAX_BUY_SOL = parseFloat(process.env.MAX_BUY_SOL ?? "1");
+const MIN_BUY_USDC = parseFloat(process.env.MIN_BUY_USDC ?? "50");
+const MAX_BUY_USDC = parseFloat(process.env.MAX_BUY_USDC ?? "60");
 /** SOL reserve amount to keep for gas fees. Prevents wallet from going to 0 SOL. Default 0.1 SOL. */
 const SOL_RESERVE = parseFloat(process.env.SOL_RESERVE ?? "0.1");
+const MIRROR_QUOTE_ASSET_RAW = (process.env.MIRROR_QUOTE_ASSET ?? "SOL").toUpperCase();
+export type MirrorQuoteAsset = "SOL" | "USDC" | "MATCH";
+export const mirrorQuoteAsset: MirrorQuoteAsset =
+  MIRROR_QUOTE_ASSET_RAW === "USDC" || MIRROR_QUOTE_ASSET_RAW === "MATCH"
+    ? MIRROR_QUOTE_ASSET_RAW
+    : "SOL";
 
 /**
  * Soft cap on entry price impact (percent). When a buy quote exceeds this, the bot reduces size
@@ -124,7 +132,11 @@ export const trailingEnabled = trailingSteps.length > 0;
 const PUMPFUN_DIRECT_RAW = (process.env.PUMPFUN_DIRECT_ENABLED ?? "true").toLowerCase();
 export const pumpfunDirectEnabled =
   PUMPFUN_DIRECT_RAW !== "false" && PUMPFUN_DIRECT_RAW !== "0" && PUMPFUN_DIRECT_RAW !== "no";
-const MIRROR_GRADUATED_BUYS_RAW = (process.env.MIRROR_GRADUATED_BUYS ?? "false").toLowerCase();
+const MIRROR_GRADUATED_BUYS_RAW = (
+  process.env.MIRROR_GRADUATED_BUYS ??
+  process.env.BUY_GRADUATED_TOKENS ??
+  "false"
+).toLowerCase();
 export const mirrorGraduatedBuys =
   MIRROR_GRADUATED_BUYS_RAW === "true" ||
   MIRROR_GRADUATED_BUYS_RAW === "1" ||
@@ -231,6 +243,23 @@ export function heliusAddressTransactionsUrl(
 /** WebSocket endpoint for logsSubscribe push notifications. */
 export const websocketUrl = process.env.WEBSOCKET_URL ?? "";
 
+const HELIUS_TX_SUBSCRIBE_ENABLED_RAW = (
+  process.env.HELIUS_TX_SUBSCRIBE_ENABLED ?? "false"
+).toLowerCase();
+export const heliusTxSubscribeEnabled =
+  HELIUS_TX_SUBSCRIBE_ENABLED_RAW === "true" ||
+  HELIUS_TX_SUBSCRIBE_ENABLED_RAW === "1" ||
+  HELIUS_TX_SUBSCRIBE_ENABLED_RAW === "yes";
+export const heliusTxSubscribeUrl =
+  process.env.HELIUS_TX_SUBSCRIBE_URL ??
+  (HELIUS_API_KEY.length > 0
+    ? `wss://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`
+    : "");
+export const heliusTxSubscribeCommitment =
+  (process.env.HELIUS_TX_SUBSCRIBE_COMMITMENT ?? "processed").toLowerCase();
+export const heliusTxSubscribeDetails =
+  (process.env.HELIUS_TX_SUBSCRIBE_DETAILS ?? "signatures").toLowerCase();
+
 const SHYFT_GRPC_ENABLED_RAW = (process.env.SHYFT_GRPC_ENABLED ?? "false").toLowerCase();
 export const shyftGrpcEnabled =
   SHYFT_GRPC_ENABLED_RAW === "true" ||
@@ -249,6 +278,16 @@ export const shyftRabbitStreamEnabled =
   SHYFT_RABBITSTREAM_ENABLED_RAW === "1" ||
   SHYFT_RABBITSTREAM_ENABLED_RAW === "yes";
 export const shyftRabbitStreamUrl = process.env.SHYFT_RABBITSTREAM_URL ?? "";
+
+const RUST_SIDECAR_ENABLED_RAW = (process.env.RUST_SIDECAR_ENABLED ?? "false").toLowerCase();
+export const rustSidecarEnabled =
+  RUST_SIDECAR_ENABLED_RAW === "true" ||
+  RUST_SIDECAR_ENABLED_RAW === "1" ||
+  RUST_SIDECAR_ENABLED_RAW === "yes";
+export const rustSidecarBin =
+  process.env.RUST_SIDECAR_BIN ?? "rust-sidecar\\target\\release\\pumpfun-sidecar.exe";
+export const rustSidecarUseCargo =
+  (process.env.RUST_SIDECAR_USE_CARGO ?? "false").toLowerCase() === "true";
 
 /** When false, the bot ignores source-wallet sells (you exit manually via 'e' or 'a' keys). Default true. */
 const MIRROR_SELLS_RAW = (process.env.MIRROR_SELLS ?? "true").toLowerCase();
@@ -340,6 +379,9 @@ export const confirmationRebroadcastRetries = Math.max(
 export const minBuyLamports = Math.round(MIN_BUY_SOL * LAMPORTS_PER_SOL);
 /** Max buy in lamports (for copytrading: cap mirror size to this). */
 export const maxBuyLamports = Math.round(MAX_BUY_SOL * LAMPORTS_PER_SOL);
+/** Min/max USDC buy size in raw units (USDC has 6 decimals). */
+export const minBuyUsdcRaw = Math.round(MIN_BUY_USDC * 1_000_000);
+export const maxBuyUsdcRaw = Math.round(MAX_BUY_USDC * 1_000_000);
 /** SOL reserve in lamports. Prevents wallet from going to 0 SOL. */
 export const solReserveLamports = Math.round(SOL_RESERVE * LAMPORTS_PER_SOL);
 

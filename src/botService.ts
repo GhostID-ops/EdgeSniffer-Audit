@@ -1,4 +1,4 @@
-import { Keypair, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { Keypair, PublicKey, LAMPORTS_PER_SOL, type VersionedTransactionResponse } from "@solana/web3.js";
 import bs58 from "bs58";
 import {
   getPrivateKeyBase58,
@@ -8,6 +8,9 @@ import {
   simulationSolBalance,
   minBuyLamports,
   maxBuyLamports,
+  minBuyUsdcRaw,
+  maxBuyUsdcRaw,
+  mirrorQuoteAsset,
   pollIntervalMs,
   blockPumpfunMayhem,
   riskCheckIntervalMs,
@@ -33,6 +36,8 @@ import {
   pumpfunDirectEnabled,
   shyftGrpcEnabled,
   shyftRabbitStreamEnabled,
+  rustSidecarEnabled,
+  heliusTxSubscribeEnabled,
   confirmationNullStatusTimeoutMs,
 } from "./config.js";
 import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
@@ -44,6 +49,8 @@ import {
 } from "./watcher.js";
 import { subscribeGrpcWalletSwaps, type GrpcUnsubscribe } from "./grpcWatcher.js";
 import { subscribeRabbitWalletSwaps, type RabbitUnsubscribe } from "./rabbitWatcher.js";
+import { subscribeHeliusTransactionSwaps, type HeliusTxUnsubscribe } from "./heliusTxWatcher.js";
+import { startRustPumpFunSidecar, type RustSidecarUnsubscribe } from "./rustSidecar.js";
 import {
   mirrorSwap,
   NoPositionError,
@@ -68,10 +75,15 @@ import {
   getTokenMarketCap,
   shortMint,
   WRAPPED_SOL_MINT,
+  USDC_MINT,
 } from "./tokenRegistry.js";
 import {
   recordBuy,
+  adjustBuyTokenAmount,
+  adjustBuySolCost,
+  adjustSellExecution,
   recordSell,
+  unrecordSell,
   unrecordZeroSell,
   getPositions,
   getPosition,
@@ -88,6 +100,7 @@ import {
 } from "./circuitBreaker.js";
 import { startFeeOracle, stopFeeOracle } from "./feeOracle.js";
 import { startBlockhashCache, stopBlockhashCache } from "./blockhashCache.js";
+import { validateLicense } from "./licenseClient.js";
 
 const WARM_INTERVAL_MS = 30_000;
 const BALANCE_LOG_INTERVAL_MS = 60_000;
@@ -180,6 +193,10 @@ const buyMintsInFlight = new Set<string>();
 const pendingBuyRetryByMint = new Map<string, DetectedSwap>();
 const boughtMintsThisSession = new Set<string>();
 const sourceBuySignatureByMint = new Map<string, string>();
+const mirrorBuySignatureByMint = new Map<string, string>();
+const confirmedFastBuyTokensByMint = new Map<string, number>();
+const fastSellConfirmPendingByMint = new Set<string>();
+const quarantinedBuyMints = new Map<string, string>();
 const openPositionBuyMintsInFlight = new Set<string>();
 const riskSellsInFlight = new Set<string>();
 const riskSellRetryAfterByMint = new Map<string, number>();
@@ -216,6 +233,8 @@ let lastBalanceAt: number | null = null;
 let unsubscribeWs: Unsubscribe | null = null;
 let unsubscribeGrpc: GrpcUnsubscribe | null = null;
 let unsubscribeRabbit: RabbitUnsubscribe | null = null;
+let unsubscribeRustSidecar: RustSidecarUnsubscribe | null = null;
+let unsubscribeHeliusTx: HeliusTxUnsubscribe | null = null;
 let riskPositionCursor = 0;
 
 async function quoteRiskExitLamports(mint: string, amountRaw: number): Promise<number> {
@@ -247,6 +266,187 @@ async function quoteRiskExitLamports(mint: string, amountRaw: number): Promise<n
       return lastCurve.outSolLamports;
     }
     throw err;
+  }
+}
+
+function resolveTxAccountKeys(tx: VersionedTransactionResponse): string[] {
+  const message = tx.transaction.message;
+  const staticKeys = (
+    "staticAccountKeys" in message
+      ? message.staticAccountKeys
+      : (message as unknown as { accountKeys: PublicKey[] }).accountKeys ?? []
+  ) as PublicKey[];
+  const loaded = tx.meta?.loadedAddresses;
+  const writable = loaded?.writable ?? [];
+  const readonly = loaded?.readonly ?? [];
+  return [...staticKeys, ...writable, ...readonly].map((k) =>
+    typeof k === "string" ? k : k.toBase58()
+  );
+}
+
+async function actualBuyExecutionFromTx(
+  signature: string,
+  mint: string
+): Promise<{ tokenAmountRaw: number; solSpentLamports: number | null } | null> {
+  if (!keypair) return null;
+  try {
+    const tx = await readConnection.getTransaction(signature, {
+      commitment: "confirmed",
+      maxSupportedTransactionVersion: 0,
+    });
+    if (!tx || tx.meta?.err) return null;
+    const owner = keypair.publicKey.toBase58();
+    const balances = tx?.meta?.postTokenBalances ?? [];
+    let best = 0;
+    for (const balance of balances) {
+      if (balance.mint !== mint || balance.owner !== owner) continue;
+      const raw = parseInt(balance.uiTokenAmount.amount ?? "0", 10);
+      if (Number.isFinite(raw) && raw > best) best = raw;
+    }
+    if (best <= 0) return null;
+    const accountKeys = resolveTxAccountKeys(tx);
+    const ownerIndex = accountKeys.indexOf(owner);
+    const pre = ownerIndex >= 0 ? tx.meta?.preBalances?.[ownerIndex] : undefined;
+    const post = ownerIndex >= 0 ? tx.meta?.postBalances?.[ownerIndex] : undefined;
+    const solSpentLamports =
+      typeof pre === "number" && typeof post === "number" && pre > post ? pre - post : null;
+    return { tokenAmountRaw: best, solSpentLamports };
+  } catch {
+    return null;
+  }
+}
+
+async function actualSellExecutionFromTx(
+  signature: string,
+  mint: string
+): Promise<{ tokenAmountRaw: number; solReceivedLamports: number | null } | null> {
+  if (!keypair) return null;
+  try {
+    const tx = await readConnection.getTransaction(signature, {
+      commitment: "confirmed",
+      maxSupportedTransactionVersion: 0,
+    });
+    if (!tx || tx.meta?.err) return null;
+    const owner = keypair.publicKey.toBase58();
+
+    const preByIndex = new Map<number, number>();
+    for (const balance of tx.meta?.preTokenBalances ?? []) {
+      if (balance.mint !== mint || balance.owner !== owner) continue;
+      const raw = parseInt(balance.uiTokenAmount.amount ?? "0", 10);
+      if (Number.isFinite(raw)) preByIndex.set(balance.accountIndex, raw);
+    }
+
+    const seen = new Set<number>();
+    let soldRaw = 0;
+    for (const balance of tx.meta?.postTokenBalances ?? []) {
+      if (balance.mint !== mint || balance.owner !== owner) continue;
+      seen.add(balance.accountIndex);
+      const pre = preByIndex.get(balance.accountIndex) ?? 0;
+      const post = parseInt(balance.uiTokenAmount.amount ?? "0", 10);
+      if (Number.isFinite(post) && pre > post) soldRaw += pre - post;
+    }
+    for (const [idx, pre] of preByIndex) {
+      if (!seen.has(idx)) soldRaw += pre;
+    }
+
+    const accountKeys = resolveTxAccountKeys(tx);
+    const ownerIndex = accountKeys.indexOf(owner);
+    const pre = ownerIndex >= 0 ? tx.meta?.preBalances?.[ownerIndex] : undefined;
+    const post = ownerIndex >= 0 ? tx.meta?.postBalances?.[ownerIndex] : undefined;
+    const solReceivedLamports =
+      typeof pre === "number" && typeof post === "number" && post > pre ? post - pre : null;
+
+    if (soldRaw <= 0 && (solReceivedLamports == null || solReceivedLamports <= 0)) return null;
+    return { tokenAmountRaw: soldRaw, solReceivedLamports };
+  } catch {
+    return null;
+  }
+}
+
+async function actualTokensReceivedFromTx(signature: string, mint: string): Promise<number | null> {
+  const execution = await actualBuyExecutionFromTx(signature, mint);
+  return execution?.tokenAmountRaw ?? null;
+}
+
+async function reconcileFastBuyTokens(args: {
+  mint: string;
+  expectedTokenAmountRaw: number;
+  expectedSolLamports: number;
+  quoteMint?: string;
+  signature: string;
+}): Promise<void> {
+  const execution = await actualBuyExecutionFromTx(args.signature, args.mint);
+  if (execution == null || execution.tokenAmountRaw <= 0) return;
+  const actualTokens = execution.tokenAmountRaw;
+  if (actualTokens !== args.expectedTokenAmountRaw && adjustBuyTokenAmount(args.mint, args.expectedTokenAmountRaw, actualTokens)) {
+    confirmedFastBuyTokensByMint.set(args.mint, actualTokens);
+    console.warn(
+      `🧮 Fast buy token amount corrected for ${args.mint.slice(0, 8)}…: ` +
+        `${formatTokenAmount(args.expectedTokenAmountRaw, 6)} quoted → ${formatTokenAmount(actualTokens, 6)} actual.`
+    );
+  }
+  if (
+    args.quoteMint !== USDC_MINT &&
+    execution.solSpentLamports != null &&
+    execution.solSpentLamports > 0 &&
+    execution.solSpentLamports !== args.expectedSolLamports &&
+    adjustBuySolCost(args.mint, args.expectedSolLamports, execution.solSpentLamports)
+  ) {
+    console.warn(
+      `🧾 Fast buy cost basis corrected for ${args.mint.slice(0, 8)}…: ` +
+        `${formatSolAmount(args.expectedSolLamports)} SOL trade → ${formatSolAmount(execution.solSpentLamports)} SOL wallet debit.`
+    );
+  }
+}
+
+async function reconcileFastSellExecution(args: {
+  mint: string;
+  expectedTokenAmountRaw: number;
+  expectedSolLamports: number;
+  signature: string;
+}): Promise<void> {
+  const execution = await actualSellExecutionFromTx(args.signature, args.mint);
+  if (execution == null) return;
+  const actualTokens =
+    execution.tokenAmountRaw > 0 ? execution.tokenAmountRaw : args.expectedTokenAmountRaw;
+  const actualSol =
+    execution.solReceivedLamports != null && execution.solReceivedLamports >= 0
+      ? execution.solReceivedLamports
+      : args.expectedSolLamports;
+  if (
+    actualTokens !== args.expectedTokenAmountRaw ||
+    actualSol !== args.expectedSolLamports
+  ) {
+    const adjusted = adjustSellExecution(
+      args.mint,
+      args.expectedTokenAmountRaw,
+      actualTokens,
+      args.expectedSolLamports,
+      actualSol
+    );
+    if (adjusted) {
+      console.warn(
+        `🧾 Fast sell corrected for ${args.mint.slice(0, 8)}…: ` +
+          `${formatTokenAmount(args.expectedTokenAmountRaw, 6)} / ${formatSolAmount(args.expectedSolLamports)} SOL quoted → ` +
+          `${formatTokenAmount(actualTokens, 6)} / ${formatSolAmount(actualSol)} SOL actual wallet delta.`
+      );
+      const pos = getPosition(args.mint);
+      const avgEntry = pos && pos.totalBoughtRaw > 0 ? pos.totalSolSpentLamports / pos.totalBoughtRaw : 0;
+      const fillPnl =
+        avgEntry > 0 ? actualSol - avgEntry * actualTokens : actualSol - args.expectedSolLamports;
+      void telegram.notifyInfo(
+        `Sell accounting corrected for $${pos?.symbol ?? shortMint(args.mint)}`,
+        [
+          `Tx: ${args.signature}`,
+          `Quoted: ${formatSolAmount(args.expectedSolLamports)} SOL`,
+          `Confirmed wallet delta: ${formatSolAmount(actualSol)} SOL`,
+          `Fill PnL now: ${formatPnl(fillPnl)}`,
+          pos ? `Position PnL now: ${formatPnl(pos.realizedPnlLamports)}` : undefined,
+        ]
+          .filter(Boolean)
+          .join("\n")
+      );
+    }
   }
 }
 let mirrorSellsEnabled = mirrorSells; // initialized from MIRROR_SELLS env, runtime-toggleable
@@ -456,6 +656,9 @@ function legDisplay(leg: {
   if (leg.meta.mint === WRAPPED_SOL_MINT) {
     return `${formatSolAmount(leg.amountRaw)} SOL`;
   }
+  if (leg.meta.mint === USDC_MINT) {
+    return `${(leg.amountRaw / 1_000_000).toFixed(2)} USDC`;
+  }
   return `${formatTokenAmount(leg.amountRaw, leg.meta.decimals)} $${leg.meta.symbol}`;
 }
 
@@ -476,10 +679,6 @@ function tokenSideMint(result: MirrorResult): string | null {
   return null;
 }
 
-function mirroredBuyAmountLamports(sourceAmountLamports: number): number {
-  return Math.max(minBuyLamports, Math.min(maxBuyLamports, sourceAmountLamports));
-}
-
 function pnlArrow(lamports: number): string {
   if (lamports > 0) return "+";
   if (lamports < 0) return "−";
@@ -489,6 +688,39 @@ function pnlArrow(lamports: number): string {
 export function formatPnl(lamports: number): string {
   const abs = Math.abs(lamports);
   return `${pnlArrow(lamports)}${formatSolAmount(abs)} SOL`;
+}
+
+function shouldQuarantineFailedBuy(reason: string): boolean {
+  return /Custom":(?:6023|6042)|Custom":\s*(?:6023|6042)|Custom\((?:6023|6042)\)/.test(reason);
+}
+
+function isBuySignal(swap: DetectedSwap): boolean {
+  return (
+    (swap.inputMint === WRAPPED_SOL_MINT || swap.inputMint === USDC_MINT) &&
+    swap.outputMint !== WRAPPED_SOL_MINT &&
+    swap.outputMint !== USDC_MINT
+  );
+}
+
+function isSellSignal(swap: DetectedSwap): boolean {
+  return swap.outputMint === WRAPPED_SOL_MINT || swap.outputMint === USDC_MINT;
+}
+
+function quoteAmountDisplay(raw: number, mint: string): string {
+  if (mint === USDC_MINT) return `${(raw / 1_000_000).toFixed(2)} USDC`;
+  return `${(raw / LAMPORTS_PER_SOL).toFixed(4)} SOL`;
+}
+
+function mirrorQuoteMintForBuy(swap: DetectedSwap): string {
+  if (mirrorQuoteAsset === "SOL") return WRAPPED_SOL_MINT;
+  if (mirrorQuoteAsset === "USDC") return USDC_MINT;
+  return swap.inputMint === USDC_MINT ? USDC_MINT : WRAPPED_SOL_MINT;
+}
+
+function mirroredBuyAmountRaw(swap: DetectedSwap): number {
+  const quoteMint = mirrorQuoteMintForBuy(swap);
+  if (quoteMint === USDC_MINT) return Math.max(minBuyUsdcRaw, Math.min(maxBuyUsdcRaw, swap.amountRaw));
+  return Math.max(minBuyLamports, Math.min(maxBuyLamports, swap.amountRaw));
 }
 
 /** SOL per token - simple price display */
@@ -520,22 +752,24 @@ function logTrade(
   const walletTag = `${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)}`;
 
   if (result.side === "buy") {
-    const pos = recordBuy(result.output.meta, result.output.amountRaw, result.input.amountRaw);
+    const costBasisLamports = result.costBasisLamports ?? result.input.amountRaw;
+    const pos = recordBuy(result.output.meta, result.output.amountRaw, costBasisLamports);
     const tokenMint = result.output.meta.mint;
     boughtMintsThisSession.add(tokenMint);
     sourceBuySignatureByMint.set(tokenMint, swap.signature);
-    const sourceSol = formatSolAmount(swap.amountRaw);
-    const mirroredSol = formatSolAmount(result.input.amountRaw);
+    if (!result.isSimulated) mirrorBuySignatureByMint.set(tokenMint, result.signature);
+    const sourceQuote = quoteAmountDisplay(swap.amountRaw, swap.inputMint);
+    const mirroredQuote = quoteAmountDisplay(result.input.amountRaw, result.input.meta.mint);
     const clamped = swap.amountRaw !== result.input.amountRaw;
     const entryPrice = tokenPriceInSol(
-      result.input.amountRaw,
+      costBasisLamports,
       result.output.amountRaw,
       result.output.meta.decimals
     );
     const impactStr = result.priceImpactPct
       ? ` · impact ${(parseFloat(result.priceImpactPct) * 100).toFixed(2)}%`
       : "";
-    console.log(`✅ Buy${simTag} (${walletTag}): ${mirroredSol} SOL${clamped ? ` (capped from ${sourceSol} SOL)` : ""}`);
+    console.log(`✅ Buy${simTag} (${walletTag}): ${mirroredQuote}${clamped ? ` (capped from ${sourceQuote})` : ""}`);
     console.log(`🪙 Tokens: ${outputDisplay}`);
     console.log(`💹 Entry: ${formatPrice(entryPrice)} SOL per $${pos.symbol}${impactStr}`);
     console.log(`🔗 CA: ${tokenMint}`);
@@ -554,7 +788,7 @@ function logTrade(
       type: "buy",
       symbol: pos.symbol,
       amount: outputDisplay,
-      solAmount: mirroredSol,
+      solAmount: result.input.meta.mint === USDC_MINT ? `${mirroredQuote} (~${formatSolAmount(costBasisLamports)} SOL)` : mirroredQuote,
       marketCap: mcDisplay,
       marketCapCheckedAt: marketCapCheckedAt ?? undefined,
       isSimulated: result.isSimulated,
@@ -629,6 +863,8 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   const elapsed = () => `${Date.now() - processStartedAt}ms`;
   let lockedBuyMint: string | null = null;
   let lockedOpenPositionMint: string | null = null;
+  let lockedFastSellMint: string | null = null;
+  let fastSellLockShouldPersist = false;
   let retryPendingMint: string | null = null;
   const releaseBuyLocks = () => {
     if (lockedBuyMint) {
@@ -641,11 +877,11 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
   };
   console.log(
-    `⚡ Processing ${swap.inputMint === WRAPPED_SOL_MINT ? "buy" : "sell"} from ${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)} (${swap.signature.slice(0, 8)}…)`
+    `⚡ Processing ${isBuySignal(swap) ? "buy" : "sell"} from ${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)} (${swap.signature.slice(0, 8)}…)`
   );
 
   // Skip mirroring source sells if mirror-sells is OFF. We still log it so user has a paper trail.
-  if (!mirrorSellsEnabled && swap.outputMint === WRAPPED_SOL_MINT) {
+  if (!mirrorSellsEnabled && isSellSignal(swap)) {
     console.log(
       `ℹ️  Source ${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)} sold ${swap.inputMint.slice(0, 6)}… — not mirroring (mirror-sells OFF). Press 'm' to enable, or 'e'/'a' to exit manually.`
     );
@@ -653,7 +889,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   }
 
   // Circuit breaker gate: only blocks BUYS, never sells. Existing positions can always exit.
-  if (swap.inputMint === WRAPPED_SOL_MINT) {
+  if (isBuySignal(swap)) {
     const blocked = shouldBlockNewBuys();
     if (blocked) {
       console.log(`⛔ Skipping buy: ${blocked}.`);
@@ -662,8 +898,15 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   }
 
   // Skip duplicate buys of the same token if buy-once is ON. Position lookup is in-memory (no API cost).
-  if (buyOncePerTokenEnabled && swap.inputMint === WRAPPED_SOL_MINT) {
+  if (buyOncePerTokenEnabled && isBuySignal(swap)) {
     const mint = swap.outputMint;
+    const quarantineReason = quarantinedBuyMints.get(mint);
+    if (quarantineReason) {
+      console.log(
+        `Skipping buy: ${mint.slice(0, 8)}... quarantined this session after failed on-chain buy (${quarantineReason}).`
+      );
+      return;
+    }
     const existing = getPosition(mint);
     if (boughtMintsThisSession.has(mint) || (existing && existing.buysCount > 0)) {
       console.log(
@@ -684,7 +927,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     retryPendingMint = mint;
   }
 
-  if (maxOpenPositions != null && swap.inputMint === WRAPPED_SOL_MINT) {
+  if (maxOpenPositions != null && isBuySignal(swap)) {
     const mint = swap.outputMint;
     const existing = getPosition(mint);
     const isNewOpenPosition = !(existing && existing.heldRaw > 0);
@@ -705,7 +948,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
   }
 
-  if (blockPumpfunMayhem && swap.inputMint === WRAPPED_SOL_MINT) {
+  if (blockPumpfunMayhem && isBuySignal(swap)) {
     const { isPumpfunMayhemToken } = await import("./pumpfunMayhem.js");
     const mayhem = await isPumpfunMayhemToken(swap.outputMint);
     if (mayhem === true) {
@@ -721,13 +964,14 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   }
 
   // Fast SOL reserve check - only for buys and only in LIVE mode (sells don't spend SOL)
-  if (swap.inputMint === WRAPPED_SOL_MINT && !simulationMode) {
-    const mirroredAmount = mirroredBuyAmountLamports(swap.amountRaw);
+  if (isBuySignal(swap) && !simulationMode) {
+    const quoteMint = mirrorQuoteMintForBuy(swap);
+    const mirroredAmount = mirroredBuyAmountRaw(swap);
     // Update balance cache (fast, cached)
     const currentBalance = await updateBalanceCache(readConnection, kp.publicKey);
     
     // Check if we have enough SOL after reserving gas fees
-    if (!hasEnoughSOLForTrade(mirroredAmount, currentBalance)) {
+    if (quoteMint === WRAPPED_SOL_MINT && !hasEnoughSOLForTrade(mirroredAmount, currentBalance)) {
       const balanceInfo = getBalanceInfo(currentBalance);
       console.log(`⛽ Insufficient SOL (reserve check):`);
       console.log(`   Total: ${balanceInfo.total} SOL`);
@@ -735,7 +979,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       console.log(`   Reserved: ${balanceInfo.reserved} SOL`);
       console.log(`   Required: ${(mirroredAmount / LAMPORTS_PER_SOL).toFixed(4)} SOL`);
       if (mirroredAmount !== swap.amountRaw) {
-        console.log(`   Source trade: ${(swap.amountRaw / LAMPORTS_PER_SOL).toFixed(4)} SOL`);
+        console.log(`   Source trade: ${quoteAmountDisplay(swap.amountRaw, swap.inputMint)}`);
       }
       console.log(`   ⚠️ Skipping trade to preserve gas fees`);
       
@@ -746,6 +990,28 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       );
       releaseBuyLocks();
       return;
+    }
+
+    if (quoteMint === USDC_MINT) {
+      const usdcBalance = (await getTokenBalanceFast(kp.publicKey, USDC_MINT)) ?? (await getTokenBalance(kp.publicKey, USDC_MINT));
+      if (usdcBalance < mirroredAmount) {
+        console.log(`Insufficient USDC:`);
+        console.log(`   Available: ${quoteAmountDisplay(usdcBalance, USDC_MINT)}`);
+        console.log(`   Required: ${quoteAmountDisplay(mirroredAmount, USDC_MINT)}`);
+        console.log(`   Source trade: ${quoteAmountDisplay(swap.amountRaw, swap.inputMint)}`);
+        void telegram.notifyError(
+          `Trade skipped: Insufficient USDC`,
+          `Available: ${quoteAmountDisplay(usdcBalance, USDC_MINT)} | Required: ${quoteAmountDisplay(mirroredAmount, USDC_MINT)}`
+        );
+        releaseBuyLocks();
+        return;
+      }
+      if (!hasEnoughSOLForTrade(0, currentBalance)) {
+        const balanceInfo = getBalanceInfo(currentBalance);
+        console.log(`Insufficient SOL reserve for USDC trade fees: available ${balanceInfo.available} SOL, reserve ${balanceInfo.reserved} SOL`);
+        releaseBuyLocks();
+        return;
+      }
     }
     
     // Warn if balance is getting low
@@ -760,21 +1026,74 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   }
   
   // Log simulation mode notice for clarity
-  if (simulationMode && swap.inputMint === WRAPPED_SOL_MINT) {
+  if (simulationMode && isBuySignal(swap)) {
     console.log(`🎭 Simulation Mode: SOL reserve check disabled (no real gas fees)`);
   }
   
   try {
+    if (isSellSignal(swap) && !simulationMode) {
+      const sellMint = swap.inputMint;
+      if (fastSellConfirmPendingByMint.has(sellMint)) {
+        console.log(`Skipping sell: ${sellMint.slice(0, 8)}... sell already awaiting confirmation.`);
+        return;
+      }
+      fastSellConfirmPendingByMint.add(sellMint);
+      lockedFastSellMint = sellMint;
+    }
+
     const result = await mirrorSwap(swap, kp, {
-      onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, sourceSwap }) => {
+      onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, reason, sourceSwap }) => {
         unrecordZeroSell(mint, tokenAmountRaw);
+        mirrorBuySignatureByMint.delete(mint);
+        confirmedFastBuyTokensByMint.delete(mint);
         if (boughtMintsThisSession.delete(mint)) {
           console.warn(
             `🧹 Buy-once marker cleared for ${mint.slice(0, 8)}… after failed fast-mode buy.`
           );
         }
+        if (shouldQuarantineFailedBuy(reason)) {
+          quarantinedBuyMints.set(mint, reason);
+          pendingBuyRetryByMint.delete(mint);
+          console.warn(
+            `🚧 Buy quarantine set for ${mint.slice(0, 8)}… after failed on-chain buy (${reason}). ` +
+              "No more retries for this mint this session."
+          );
+          return;
+        }
         if (sourceSwap) {
           pendingBuyRetryByMint.set(mint, sourceSwap);
+        }
+      },
+      onFastBuyConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature, sourceSwap }) => {
+        mirrorBuySignatureByMint.set(mint, signature);
+        void reconcileFastBuyTokens({
+          mint,
+          expectedTokenAmountRaw: tokenAmountRaw,
+          expectedSolLamports: solLamports,
+          quoteMint: sourceSwap?.inputMint,
+          signature,
+        });
+      },
+      onFastSellConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature }) => {
+        fastSellConfirmPendingByMint.delete(mint);
+        reconcileFastSellExecution({
+          mint,
+          expectedTokenAmountRaw: tokenAmountRaw,
+          expectedSolLamports: solLamports,
+          signature,
+        }).catch((err) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.warn(`Fast mirrored sell reconciliation failed for ${mint.slice(0, 8)}…: ${msg}`);
+        });
+      },
+      onFastSellConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason }) => {
+        fastSellConfirmPendingByMint.delete(mint);
+        const rolledBack = unrecordSell(mint, tokenAmountRaw, solLamports);
+        if (rolledBack) {
+          console.warn(
+            `🧹 Phantom mirrored sell cleaned up: ${mint.slice(0, 8)}… ` +
+              `(reason: ${reason}). Sell removed from tracking.`
+          );
         }
       },
     });
@@ -783,6 +1102,14 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     const marketCapUsd = tokenMint ? await maybeGetMarketCap(tokenMint) : null;
     const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
     logTrade(result, swap, marketCapUsd, marketCapCheckedAt);
+    if (result.side === "sell" && lockedFastSellMint) {
+      if (result.confirmationPending) {
+        fastSellLockShouldPersist = true;
+      } else {
+        fastSellConfirmPendingByMint.delete(lockedFastSellMint);
+        lockedFastSellMint = null;
+      }
+    }
     const impactPct = result.priceImpactPct ? parseFloat(result.priceImpactPct) * 100 : null;
     // For mirrored sells we have realized PnL on the position now that recordSell ran inside logTrade.
     let realizedPnlLamports: number | undefined;
@@ -855,7 +1182,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     const msg = err instanceof Error ? err.message : String(err);
     
     // Check if this is a sell failure that shouldn't count as PnL
-    const isSellFailure = swap.outputMint === WRAPPED_SOL_MINT && 
+    const isSellFailure = isSellSignal(swap) &&
       (msg.includes("NOT_TRADABLE") || msg.includes("TOKEN_NOT_TRADABLE") || 
        msg.includes("No liquidity") || msg.includes("Insufficient liquidity"));
     
@@ -900,7 +1227,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     console.error(`?? Mirror failed for ${swap.signature}: ${msg}`);
     
     // Send Telegram notification for general mirror errors
-    const isSell = swap.inputMint !== WRAPPED_SOL_MINT;
+    const isSell = isSellSignal(swap);
     const action = isSell ? "sell" : "buy";
     const tokenMint = isSell ? swap.inputMint : swap.outputMint;
     void telegram.notifyError(
@@ -913,26 +1240,22 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       sourceSignature: swap.signature,
       wallet: swap.wallet,
       side:
-        swap.inputMint === WRAPPED_SOL_MINT
-          ? "buy"
-          : swap.outputMint === WRAPPED_SOL_MINT
-          ? "sell"
-          : "swap",
+        isBuySignal(swap) ? "buy" : isSellSignal(swap) ? "sell" : "swap",
       input: {
         mint: swap.inputMint,
-        symbol: swap.inputMint === WRAPPED_SOL_MINT ? "SOL" : shortMint(swap.inputMint),
-        name: swap.inputMint === WRAPPED_SOL_MINT ? "Solana" : shortMint(swap.inputMint),
-        decimals: swap.inputMint === WRAPPED_SOL_MINT ? 9 : 0,
+        symbol: swap.inputMint === WRAPPED_SOL_MINT ? "SOL" : swap.inputMint === USDC_MINT ? "USDC" : shortMint(swap.inputMint),
+        name: swap.inputMint === WRAPPED_SOL_MINT ? "Solana" : swap.inputMint === USDC_MINT ? "USD Coin" : shortMint(swap.inputMint),
+        decimals: swap.inputMint === WRAPPED_SOL_MINT ? 9 : swap.inputMint === USDC_MINT ? 6 : 0,
         amountRaw: swap.amountRaw,
-        display: swap.inputMint === WRAPPED_SOL_MINT
-          ? `${formatSolAmount(swap.amountRaw)} SOL`
+        display: swap.inputMint === WRAPPED_SOL_MINT || swap.inputMint === USDC_MINT
+          ? quoteAmountDisplay(swap.amountRaw, swap.inputMint)
           : `${swap.amountRaw} raw`,
       },
       output: {
         mint: swap.outputMint,
-        symbol: swap.outputMint === WRAPPED_SOL_MINT ? "SOL" : shortMint(swap.outputMint),
-        name: swap.outputMint === WRAPPED_SOL_MINT ? "Solana" : shortMint(swap.outputMint),
-        decimals: swap.outputMint === WRAPPED_SOL_MINT ? 9 : 0,
+        symbol: swap.outputMint === WRAPPED_SOL_MINT ? "SOL" : swap.outputMint === USDC_MINT ? "USDC" : shortMint(swap.outputMint),
+        name: swap.outputMint === WRAPPED_SOL_MINT ? "Solana" : swap.outputMint === USDC_MINT ? "USD Coin" : shortMint(swap.outputMint),
+        decimals: swap.outputMint === WRAPPED_SOL_MINT ? 9 : swap.outputMint === USDC_MINT ? 6 : 0,
         amountRaw: 0,
         display: "—",
       },
@@ -942,6 +1265,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   } finally {
     const pendingMint = retryPendingMint;
     releaseBuyLocks();
+    if (lockedFastSellMint && !fastSellLockShouldPersist) {
+      fastSellConfirmPendingByMint.delete(lockedFastSellMint);
+      lockedFastSellMint = null;
+    }
     if (pendingMint) {
       const pending = pendingBuyRetryByMint.get(pendingMint);
       const existing = getPosition(pendingMint);
@@ -1041,6 +1368,22 @@ async function loop(): Promise<void> {
     }
     unsubscribeRabbit = null;
   }
+  if (unsubscribeRustSidecar) {
+    try {
+      await unsubscribeRustSidecar();
+    } catch {
+      // best-effort
+    }
+    unsubscribeRustSidecar = null;
+  }
+  if (unsubscribeHeliusTx) {
+    try {
+      await unsubscribeHeliusTx();
+    } catch {
+      // best-effort
+    }
+    unsubscribeHeliusTx = null;
+  }
 
   running = false;
   startedAt = null;
@@ -1052,6 +1395,7 @@ async function loop(): Promise<void> {
 
 export async function startBot(): Promise<void> {
   if (running) return;
+  await validateLicense();
   if (trackedWallets.length === 0) {
     throw new Error("No TRACKED_WALLETS set in .env.");
   }
@@ -1099,6 +1443,19 @@ export async function startBot(): Promise<void> {
   }
 
   const kp = keypair;
+  if (rustSidecarEnabled) {
+    unsubscribeRustSidecar = await startRustPumpFunSidecar(
+      processedSignatures,
+      (swap) => {
+        processSwap(swap, kp).catch((err) => {
+          console.error("Rust sidecar processSwap error:", err);
+        });
+      }
+    );
+  } else {
+    console.log("Rust sidecar disabled (set RUST_SIDECAR_ENABLED=true to enable).");
+  }
+
   if (shyftGrpcEnabled) {
     unsubscribeGrpc = await subscribeGrpcWalletSwaps(
       trackedWallets,
@@ -1122,6 +1479,20 @@ export async function startBot(): Promise<void> {
         });
       }
     );
+  }
+
+  if (heliusTxSubscribeEnabled) {
+    unsubscribeHeliusTx = await subscribeHeliusTransactionSwaps(
+      trackedWallets,
+      processedSignatures,
+      (swap) => {
+        processSwap(swap, kp).catch((err) => {
+          console.error("Helius transactionSubscribe processSwap error:", err);
+        });
+      }
+    );
+  } else {
+    console.log("Helius transactionSubscribe disabled (set HELIUS_TX_SUBSCRIBE_ENABLED=true to enable).");
   }
 
   unsubscribeWs = await subscribeWalletSwaps(
@@ -1160,6 +1531,7 @@ export function resetTradingState(): void {
   buyMintsInFlight.clear();
   pendingBuyRetryByMint.clear();
   boughtMintsThisSession.clear();
+  quarantinedBuyMints.clear();
   sourceBuySignatureByMint.clear();
   openPositionBuyMintsInFlight.clear();
   riskSellsInFlight.clear();
@@ -1195,6 +1567,7 @@ async function sellSimulatedPosition(
     isSol: false,
   };
   const snap = recordSell(meta, position.heldRaw, outSolLamports);
+  const fillPnlLamports = outSolLamports - position.costBasisRemainingLamports;
   const finalPnlPct =
     position.costBasisRemainingLamports > 0
       ? ((outSolLamports - position.costBasisRemainingLamports) /
@@ -1206,7 +1579,8 @@ async function sellSimulatedPosition(
 
   console.log(`Sold (simulated): ${formatTokenAmount(position.heldRaw, position.decimals)} $${position.symbol}`);
   console.log(`Received: ${formatSolAmount(outSolLamports)} SOL`);
-  console.log(`PnL: ${formatPnl(snap.realizedPnlLamports)}`);
+  console.log(`Fill PnL: ${formatPnl(fillPnlLamports)}`);
+  console.log(`Position PnL: ${formatPnl(snap.realizedPnlLamports)}`);
   if (note) console.log(`Reason: ${note}`);
   if (note) printRiskTrace(position, outSolLamports, finalPnlPct, note);
 
@@ -1237,12 +1611,12 @@ async function sellSimulatedPosition(
       marketCapCheckedAt,
     },
     {
-      realizedPnlLamports: snap.realizedPnlLamports,
+      realizedPnlLamports: fillPnlLamports,
       realizedPnlPct: finalPnlPct,
       exitReason: note,
     }
   );
-  recordTradeOutcome(snap.realizedPnlLamports);
+  recordTradeOutcome(fillPnlLamports);
 
   void telegram.notifyTrade({
     type: "sell",
@@ -1254,7 +1628,8 @@ async function sellSimulatedPosition(
     isSimulated: true,
     wallet: note ? "risk" : "manual",
     tokenAddress: position.mint,
-    pnl: formatPnl(snap.realizedPnlLamports),
+    pnl: formatPnl(fillPnlLamports),
+    positionPnl: formatPnl(snap.realizedPnlLamports),
     note,
     quotedPnlPct: note ? `${finalPnlPct >= 0 ? "+" : ""}${finalPnlPct.toFixed(1)}%` : undefined,
   });
@@ -1315,6 +1690,19 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
     console.warn(`Token balance lookup failed for $${p.symbol}: ${msg}; attempting tracked amount.`);
     liveHeldRaw = null;
   }
+  if (liveHeldRaw === 0 && p.sellsCount === 0 && Date.now() - p.firstSeenAt < 120_000) {
+    const confirmed = confirmedFastBuyTokensByMint.get(p.mint);
+    const signature = mirrorBuySignatureByMint.get(p.mint);
+    const recovered = confirmed ?? (signature ? await actualTokensReceivedFromTx(signature, p.mint) : null);
+    if (recovered != null && recovered > 0) {
+      liveHeldRaw = recovered;
+      confirmedFastBuyTokensByMint.set(p.mint, recovered);
+      console.warn(
+        `$${p.symbol}: token RPC balance read 0, but confirmed buy tx shows ` +
+          `${formatTokenAmount(recovered, p.decimals)} held; attempting sell with recovered balance.`
+      );
+    }
+  }
   // Chain authoritatively says we hold 0 (read succeeded, value was 0). Typical causes: transfer-fee /
   // honeypot mechanics drained the ATA, or an earlier sell landed but timed out before we recorded it.
   // Falling back to the tracked amount here is what was burning gas on every 15s risk-exit retry —
@@ -1355,6 +1743,10 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
   if (sellRaw <= 0) {
     throw new Error(`No token balance available for $${p.symbol}.`);
   }
+  if (fastSellConfirmPendingByMint.has(p.mint)) {
+    console.log(`Risk/manual sell skipped for $${p.symbol}: previous fast sell is still awaiting confirmation.`);
+    return;
+  }
 
   const avgEntry = p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
   const sellCostBasisLamports = avgEntry * sellRaw;
@@ -1386,18 +1778,52 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
     effectiveNote = freshReason;
   }
 
-  const result = await mirrorSwap(
-    {
-      signature: sourceBuySignatureByMint.get(p.mint) ?? `manual-sell-${p.mint}`,
-      wallet: "manual-sell",
-      inputMint: p.mint,
-      outputMint: WRAPPED_SOL_MINT,
-      amountRaw: sellRaw,
-      isNativeInput: false,
-    },
-    keypair!,
-    { exactAmountRaw: sellRaw }
-  );
+  let result: MirrorResult;
+  try {
+    fastSellConfirmPendingByMint.add(p.mint);
+    result = await mirrorSwap(
+      {
+        signature: sourceBuySignatureByMint.get(p.mint) ?? `manual-sell-${p.mint}`,
+        wallet: "manual-sell",
+        inputMint: p.mint,
+        outputMint: WRAPPED_SOL_MINT,
+        amountRaw: sellRaw,
+        isNativeInput: false,
+      },
+      keypair!,
+      {
+        exactAmountRaw: sellRaw,
+        onFastSellConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature }) => {
+          fastSellConfirmPendingByMint.delete(mint);
+          reconcileFastSellExecution({
+            mint,
+            expectedTokenAmountRaw: tokenAmountRaw,
+            expectedSolLamports: solLamports,
+            signature,
+          }).catch((err) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.warn(`Fast sell reconciliation failed for ${mint.slice(0, 8)}…: ${msg}`);
+          });
+        },
+        onFastSellConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason }) => {
+          fastSellConfirmPendingByMint.delete(mint);
+          const rolledBack = unrecordSell(mint, tokenAmountRaw, solLamports);
+          if (rolledBack) {
+            console.warn(
+              `🧹 Phantom sell cleaned up: ${mint.slice(0, 8)}… ` +
+                `(reason: ${reason}). Sell removed from tracking.`
+            );
+          }
+        },
+      }
+    );
+    if (!result.confirmationPending) {
+      fastSellConfirmPendingByMint.delete(p.mint);
+    }
+  } catch (err) {
+    fastSellConfirmPendingByMint.delete(p.mint);
+    throw err;
+  }
   const soldRaw = result.input.amountRaw;
   const receivedLamports = result.output.amountRaw;
   const snap = recordSell(result.input.meta, soldRaw, receivedLamports);
@@ -1411,6 +1837,7 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
     filledCostBasisLamports > 0
       ? ((receivedLamports - filledCostBasisLamports) / filledCostBasisLamports) * 100
       : pct;
+  const filledPnlLamports = receivedLamports - filledCostBasisLamports;
   const quotedPnlPct =
     filledCostBasisLamports > 0
       ? `${filledPnlPct >= 0 ? "+" : ""}${filledPnlPct.toFixed(1)}%`
@@ -1422,7 +1849,8 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
   console.log(`CA: ${p.mint}`);
   if (marketCapUsd != null) console.log(`MC: ${formatMarketCap(marketCapUsd)}`);
   console.log(`Tx: ${result.signature}`);
-  console.log(`Realized PnL on $${p.symbol}: ${formatPnl(snap.realizedPnlLamports)}`);
+  console.log(`Fill PnL on $${p.symbol}: ${formatPnl(filledPnlLamports)}`);
+  console.log(`Position PnL on $${p.symbol}: ${formatPnl(snap.realizedPnlLamports)}`);
   if (effectiveNote) console.log(`Reason: ${effectiveNote}`);
   console.log("");
 
@@ -1436,7 +1864,8 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
     isSimulated: false,
     wallet: "manual",
     tokenAddress: p.mint,
-    pnl: formatPnl(snap.realizedPnlLamports),
+    pnl: formatPnl(filledPnlLamports),
+    positionPnl: formatPnl(snap.realizedPnlLamports),
     note: effectiveNote,
     quotedPnlPct: effectiveNote ? quotedPnlPct : undefined,
     txSignature: result.signature,
@@ -1456,13 +1885,13 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
       mirrorSignature: result.signature,
     },
     {
-      realizedPnlLamports: snap.realizedPnlLamports,
+      realizedPnlLamports: filledPnlLamports,
       realizedPnlPct: filledPnlPct,
       exitReason: effectiveNote,
       priceImpactPct: result.priceImpactPct ? parseFloat(result.priceImpactPct) * 100 : null,
     }
   );
-  recordTradeOutcome(snap.realizedPnlLamports);
+  recordTradeOutcome(filledPnlLamports);
 }
 
 /**
@@ -1592,6 +2021,7 @@ async function checkRiskExits(): Promise<void> {
   for (let i = 0; i < open.length; i++) {
     const p = open[(riskPositionCursor + i) % open.length]!;
     if (riskSellsInFlight.has(p.mint)) continue;
+    if (fastSellConfirmPendingByMint.has(p.mint)) continue;
     if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > now) continue;
     if (p.costBasisRemainingLamports <= 0) continue;
     const state = riskQuoteStateByMint.get(p.mint);
@@ -1610,6 +2040,7 @@ async function checkRiskExits(): Promise<void> {
 
   for (const p of positionsToCheck) {
     if (riskSellsInFlight.has(p.mint)) continue;
+    if (fastSellConfirmPendingByMint.has(p.mint)) continue;
     if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > Date.now()) continue;
     if (p.costBasisRemainingLamports <= 0) continue;
 

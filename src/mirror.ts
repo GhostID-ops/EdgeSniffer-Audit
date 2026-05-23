@@ -2,6 +2,8 @@ import { Keypair } from "@solana/web3.js";
 import {
   minBuyLamports,
   maxBuyLamports,
+  minBuyUsdcRaw,
+  maxBuyUsdcRaw,
   simulationMode,
   fastMode,
   mirrorSlippageBps,
@@ -12,6 +14,7 @@ import {
   pumpfunDirectEnabled,
   mirrorGraduatedBuys,
   jupiterOversizeMaxAccounts,
+  mirrorQuoteAsset,
 } from "./config.js";
 import { getQuote, getSwap, type QuoteResponse } from "./jupiter.js";
 import {
@@ -20,7 +23,7 @@ import {
 } from "./sender.js";
 import { confirmSignature } from "./confirm.js";
 import { getTokenBalance, getTokenBalanceFast } from "./balance.js";
-import { getTokenMeta, WRAPPED_SOL_MINT, type TokenMeta } from "./tokenRegistry.js";
+import { getTokenMeta, WRAPPED_SOL_MINT, USDC_MINT, type TokenMeta } from "./tokenRegistry.js";
 import { getPosition, unrecordBuy } from "./pnl.js";
 import type { DetectedSwap } from "./types.js";
 import { tryPumpFunDirectBuy, tryPumpFunDirectSell } from "./pumpfun/route.js";
@@ -34,6 +37,8 @@ export type MirrorResult = {
   side: Side;
   input: { meta: TokenMeta; amountRaw: number };
   output: { meta: TokenMeta; amountRaw: number };
+  /** SOL-denominated cost basis for buys, even when the input asset is USDC. */
+  costBasisLamports?: number;
   /** Jupiter's reported price impact as a decimal string (e.g. "0.0234" = 2.34%). */
   priceImpactPct?: string;
   /** Fast mode may return after broadcast before the signature lands on chain. */
@@ -48,6 +53,27 @@ export type MirrorSwapOptions = {
     solLamports: number;
     reason: string;
     positionRemoved: boolean;
+    sourceSwap?: DetectedSwap;
+  }) => void;
+  onFastBuyConfirmSuccess?: (args: {
+    mint: string;
+    tokenAmountRaw: number;
+    solLamports: number;
+    signature: string;
+    sourceSwap?: DetectedSwap;
+  }) => void;
+  onFastSellConfirmFailure?: (args: {
+    mint: string;
+    tokenAmountRaw: number;
+    solLamports: number;
+    reason: string;
+    sourceSwap?: DetectedSwap;
+  }) => void;
+  onFastSellConfirmSuccess?: (args: {
+    mint: string;
+    tokenAmountRaw: number;
+    solLamports: number;
+    signature: string;
     sourceSwap?: DetectedSwap;
   }) => void;
 };
@@ -128,6 +154,7 @@ async function probeBuySizeForImpact(
   let probed = initialAmountRaw;
   let lastQuote: QuoteResponse | undefined;
   let lastImpactPct = 0;
+  const minAmountRaw = inputMint === USDC_MINT ? minBuyUsdcRaw : minBuyLamports;
 
   for (let attempt = 0; attempt <= maxImpactReduceAttempts; attempt++) {
     const quote = await getQuote(inputMint, outputMint, probed, mirrorSlippageBps);
@@ -141,18 +168,18 @@ async function probeBuySizeForImpact(
     }
 
     console.warn(
-      `Entry impact ${impactPct.toFixed(1)}% > cap ${maxEntryPriceImpactPct.toFixed(1)}% at ${(probed / 1e9).toFixed(4)} SOL`
+      `Entry impact ${impactPct.toFixed(1)}% > cap ${maxEntryPriceImpactPct.toFixed(1)}% at ${formatQuoteAmount(probed, inputMint)}`
     );
 
-    if (probed <= minBuyLamports || attempt === maxImpactReduceAttempts) break;
+    if (probed <= minAmountRaw || attempt === maxImpactReduceAttempts) break;
 
     // Reduce size proportional to overshoot, but never less than 0.25× and never more than 0.6× of current.
     // This avoids both "too small to matter" and "barely smaller, will probably fail again."
     const targetFraction = Math.max(0.25, Math.min(0.6, maxEntryPriceImpactPct / impactPct));
-    const next = Math.max(minBuyLamports, Math.floor(probed * targetFraction));
+    const next = Math.max(minAmountRaw, Math.floor(probed * targetFraction));
     if (next >= probed) break;
     console.log(
-      `Reducing buy size: ${(probed / 1e9).toFixed(4)} → ${(next / 1e9).toFixed(4)} SOL`
+      `Reducing buy size: ${formatQuoteAmount(probed, inputMint)} -> ${formatQuoteAmount(next, inputMint)}`
     );
     probed = next;
   }
@@ -165,13 +192,28 @@ async function probeBuySizeForImpact(
 }
 
 function classifySide(inputMint: string, outputMint: string): Side {
-  if (inputMint === WRAPPED_SOL_MINT) return "buy";
-  if (outputMint === WRAPPED_SOL_MINT) return "sell";
+  if ((inputMint === WRAPPED_SOL_MINT || inputMint === USDC_MINT) && outputMint !== WRAPPED_SOL_MINT && outputMint !== USDC_MINT) return "buy";
+  if (outputMint === WRAPPED_SOL_MINT || outputMint === USDC_MINT) return "sell";
   return "swap";
 }
 
-function clampBuy(amountRaw: number): number {
+function quoteMintForBuy(swap: DetectedSwap): string {
+  if (mirrorQuoteAsset === "SOL") return WRAPPED_SOL_MINT;
+  if (mirrorQuoteAsset === "USDC") return USDC_MINT;
+  return swap.inputMint === USDC_MINT ? USDC_MINT : WRAPPED_SOL_MINT;
+}
+
+function clampBuy(amountRaw: number, quoteMint: string): number {
+  if (quoteMint === USDC_MINT) {
+    return Math.max(minBuyUsdcRaw, Math.min(maxBuyUsdcRaw, amountRaw));
+  }
   return Math.max(minBuyLamports, Math.min(maxBuyLamports, amountRaw));
+}
+
+function formatQuoteAmount(raw: number, quoteMint: string): string {
+  return quoteMint === USDC_MINT
+    ? `${(raw / 1_000_000).toFixed(2)} USDC`
+    : `${(raw / 1_000_000_000).toFixed(4)} SOL`;
 }
 
 function isSlippageFailure(err: unknown): boolean {
@@ -210,6 +252,25 @@ function isPacketSizeFailure(err: unknown): boolean {
   return /1232B packet limit|encoding overruns|too large|packet/i.test(msg);
 }
 
+function isNoRouteFailure(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /NO_ROUTES_FOUND|No routes found/i.test(msg);
+}
+
+async function estimateCostBasisLamports(inputMint: string, inputAmountRaw: number): Promise<number> {
+  if (inputMint === WRAPPED_SOL_MINT) return inputAmountRaw;
+  if (inputMint !== USDC_MINT || inputAmountRaw <= 0) return inputAmountRaw;
+  try {
+    const quote = await getQuote(USDC_MINT, WRAPPED_SOL_MINT, inputAmountRaw, 50, {
+      onlyDirectRoutes: true,
+    });
+    const out = parseInt(quote.outAmount ?? "0", 10);
+    return Number.isFinite(out) && out > 0 ? out : inputAmountRaw;
+  } catch {
+    return inputAmountRaw;
+  }
+}
+
 async function getMirrorAmount(
   side: Side,
   swap: DetectedSwap,
@@ -217,15 +278,18 @@ async function getMirrorAmount(
   options: MirrorSwapOptions
 ): Promise<number> {
   if (side === "buy") {
-    const amountRaw = clampBuy(swap.amountRaw);
+    const quoteMint = quoteMintForBuy(swap);
+    const amountRaw = clampBuy(swap.amountRaw, quoteMint);
+    const maxRaw = quoteMint === USDC_MINT ? maxBuyUsdcRaw : maxBuyLamports;
+    const minRaw = quoteMint === USDC_MINT ? minBuyUsdcRaw : minBuyLamports;
 
-    if (swap.amountRaw > maxBuyLamports) {
+    if (swap.amountRaw > maxRaw) {
       console.log(
-        `Trade capped: ${(swap.amountRaw / 1_000_000_000).toFixed(4)} SOL -> ${(amountRaw / 1_000_000_000).toFixed(4)} SOL (max: ${maxBuyLamports / 1_000_000_000})`
+        `Trade capped: ${formatQuoteAmount(swap.amountRaw, quoteMint)} -> ${formatQuoteAmount(amountRaw, quoteMint)} (max: ${formatQuoteAmount(maxRaw, quoteMint)})`
       );
-    } else if (swap.amountRaw < minBuyLamports) {
+    } else if (swap.amountRaw < minRaw) {
       console.log(
-        `Trade raised to min buy: ${(swap.amountRaw / 1_000_000_000).toFixed(4)} SOL -> ${(amountRaw / 1_000_000_000).toFixed(4)} SOL`
+        `Trade raised to min buy: ${formatQuoteAmount(swap.amountRaw, quoteMint)} -> ${formatQuoteAmount(amountRaw, quoteMint)}`
       );
     }
 
@@ -264,12 +328,20 @@ export async function mirrorSwap(
   const startedAt = Date.now();
   const elapsed = () => `${Date.now() - startedAt}ms`;
   const side = classifySide(swap.inputMint, swap.outputMint);
+  const mirrorInputMint = side === "buy" ? quoteMintForBuy(swap) : swap.inputMint;
+  const mirrorOutputMint = side === "sell" ? WRAPPED_SOL_MINT : swap.outputMint;
+  const mirrorSwap = {
+    ...swap,
+    inputMint: mirrorInputMint,
+    outputMint: mirrorOutputMint,
+    isNativeInput: mirrorInputMint === WRAPPED_SOL_MINT,
+  };
   const initialAmountRaw = await getMirrorAmount(side, swap, keypair, options);
 
   // Phase 0: Direct pump.fun bonding-curve route. Bypasses Jupiter entirely for pre-graduation
   // pump.fun tokens — solves the "Jupiter says 100% impact" indexing-lag problem and shaves
   // 150-300ms off the entry path. Falls through to Jupiter on any non-recoverable signal.
-  if (side === "buy" && pumpfunDirectEnabled) {
+  if (side === "buy" && pumpfunDirectEnabled && mirrorInputMint === WRAPPED_SOL_MINT) {
     const direct = await tryPumpFunDirectBuy({
       user: keypair,
       mint: swap.outputMint,
@@ -300,6 +372,15 @@ export async function mirrorSwap(
           sourceSwap: swap,
         });
       },
+      onConfirmSuccess: (mint, tokensRaw, solLamports, signature) => {
+        options.onFastBuyConfirmSuccess?.({
+          mint,
+          tokenAmountRaw: tokensRaw,
+          solLamports,
+          signature,
+          sourceSwap: swap,
+        });
+      },
     });
     if (direct.ok) {
       const solMeta = await getTokenMeta(WRAPPED_SOL_MINT);
@@ -327,6 +408,7 @@ export async function mirrorSwap(
         sourceSignature: swap.signature,
         sourceSolInLamports: swap.amountRaw,
         sourceTokensOutRaw: swap.counterpartyAmountRaw,
+        sourcePumpSwapAccounts: swap.sourcePumpSwapAccounts,
         solInLamports: initialAmountRaw,
         slippageBps: mirrorSlippageBps,
         startedAt,
@@ -339,6 +421,15 @@ export async function mirrorSwap(
             solLamports,
             reason,
             positionRemoved: removed,
+            sourceSwap: swap,
+          });
+        },
+        onConfirmSuccess: (mint, tokensRaw, solLamports, signature) => {
+          options.onFastBuyConfirmSuccess?.({
+            mint,
+            tokenAmountRaw: tokensRaw,
+            solLamports,
+            signature,
             sourceSwap: swap,
           });
         },
@@ -379,6 +470,24 @@ export async function mirrorSwap(
       startedAt,
       log: (m) => console.log(m),
       sourceSignature: swap.signature,
+      onConfirmFailure: (mint, tokensInRaw, solOutLamports, reason) => {
+        options.onFastSellConfirmFailure?.({
+          mint,
+          tokenAmountRaw: tokensInRaw,
+          solLamports: solOutLamports,
+          reason,
+          sourceSwap: swap,
+        });
+      },
+      onConfirmSuccess: (mint, tokensInRaw, solOutLamports, signature) => {
+        options.onFastSellConfirmSuccess?.({
+          mint,
+          tokenAmountRaw: tokensInRaw,
+          solLamports: solOutLamports,
+          signature,
+          sourceSwap: swap,
+        });
+      },
     });
     if (direct.ok) {
       const solMeta = await getTokenMeta(WRAPPED_SOL_MINT);
@@ -404,12 +513,12 @@ export async function mirrorSwap(
   let amountRaw = initialAmountRaw;
   let preFetchedQuote: QuoteResponse | undefined;
   if (side === "buy" && maxEntryPriceImpactPct != null) {
-    const probed = await probeBuySizeForImpact(swap.inputMint, swap.outputMint, initialAmountRaw);
+    const probed = await probeBuySizeForImpact(mirrorSwap.inputMint, mirrorSwap.outputMint, initialAmountRaw);
     amountRaw = probed.amountRaw;
     preFetchedQuote = probed.quote;
     if (amountRaw !== initialAmountRaw) {
       console.log(
-        `Impact-aware sizing: ${(initialAmountRaw / 1e9).toFixed(4)} → ${(amountRaw / 1e9).toFixed(4)} SOL`
+        `Impact-aware sizing: ${formatQuoteAmount(initialAmountRaw, mirrorInputMint)} -> ${formatQuoteAmount(amountRaw, mirrorInputMint)}`
       );
     }
   }
@@ -420,6 +529,7 @@ export async function mirrorSwap(
     side === "buy" &&
     maxSourceDriftPct != null &&
     preFetchedQuote &&
+    swap.inputMint === mirrorInputMint &&
     swap.counterpartyAmountRaw != null &&
     swap.counterpartyAmountRaw > 0 &&
     swap.amountRaw > 0
@@ -430,7 +540,7 @@ export async function mirrorSwap(
       const ourPricePerRaw = amountRaw / ourOutAmount;
       const driftPct = (ourPricePerRaw / sourcePricePerRaw - 1) * 100;
       if (Number.isFinite(driftPct) && driftPct > maxSourceDriftPct) {
-        throw new SourceDriftError(swap.outputMint, driftPct, maxSourceDriftPct);
+        throw new SourceDriftError(mirrorSwap.outputMint, driftPct, maxSourceDriftPct);
       }
       if (Number.isFinite(driftPct)) {
         console.log(
@@ -459,13 +569,14 @@ export async function mirrorSwap(
     // Reuse probed quote only on the first attempt (which is at mirrorSlippageBps).
     preFetchedQuote: idx === 0 && slippageBps === mirrorSlippageBps ? preFetchedQuote : undefined,
   }));
-  if (side === "buy" && amountRaw > minBuyLamports) {
-    const reducedAmountRaw = Math.max(minBuyLamports, Math.floor(amountRaw / 2));
+  const minBuyForMirrorInput = mirrorInputMint === USDC_MINT ? minBuyUsdcRaw : minBuyLamports;
+  if (side === "buy" && amountRaw > minBuyForMirrorInput) {
+    const reducedAmountRaw = Math.max(minBuyForMirrorInput, Math.floor(amountRaw / 2));
     if (reducedAmountRaw < amountRaw) {
       attempts.push({
         amountRaw: reducedAmountRaw,
         slippageBps: mirrorRetrySlippageBps,
-        reason: `reduced size ${(reducedAmountRaw / 1_000_000_000).toFixed(4)} SOL + ${(mirrorRetrySlippageBps / 100).toFixed(2)}% slippage`,
+        reason: `reduced size ${formatQuoteAmount(reducedAmountRaw, mirrorInputMint)} + ${(mirrorRetrySlippageBps / 100).toFixed(2)}% slippage`,
       });
     }
   }
@@ -498,15 +609,15 @@ export async function mirrorSwap(
       if (attempt.preFetchedQuote) {
         quote = attempt.preFetchedQuote;
         console.log(
-          `Reusing probed quote for ${attempt.amountRaw / 1_000_000_000} SOL (${attempt.reason}); out=${quote.outAmount} (${elapsed()})`
+          `Reusing probed quote for ${formatQuoteAmount(attempt.amountRaw, mirrorInputMint)} (${attempt.reason}); out=${quote.outAmount} (${elapsed()})`
         );
       } else {
         console.log(
-          `Getting quote for ${attempt.amountRaw / 1_000_000_000} SOL (${attempt.reason})...`
+          `Getting quote for ${formatQuoteAmount(attempt.amountRaw, mirrorInputMint)} (${attempt.reason})...`
         );
         quote = await getQuote(
-          swap.inputMint,
-          swap.outputMint,
+          mirrorSwap.inputMint,
+          mirrorSwap.outputMint,
           attempt.amountRaw,
           attempt.slippageBps,
           {
@@ -517,7 +628,7 @@ export async function mirrorSwap(
         console.log(`Quote received: ${quote.outAmount} out amount (${elapsed()})`);
       }
       if (side === "buy") {
-        assertEntryImpactWithinCap(swap.outputMint, quote);
+        assertEntryImpactWithinCap(mirrorSwap.outputMint, quote);
       }
 
       const inAmountRaw = parseInt(quote.inAmount ?? String(attempt.amountRaw), 10);
@@ -537,8 +648,8 @@ export async function mirrorSwap(
       if (simulationMode) {
         console.log("Getting token metadata...");
         const [inputMeta, outputMeta] = await Promise.all([
-          getTokenMeta(swap.inputMint),
-          getTokenMeta(swap.outputMint),
+          getTokenMeta(mirrorSwap.inputMint),
+          getTokenMeta(mirrorSwap.outputMint),
         ]);
         console.log("Token metadata received");
         console.log("Simulation mode - returning simulated result");
@@ -549,6 +660,7 @@ export async function mirrorSwap(
           input: { meta: inputMeta, amountRaw: inAmountRaw },
           output: { meta: outputMeta, amountRaw: outAmountRaw },
           priceImpactPct: quote.priceImpactPct,
+          costBasisLamports: side === "buy" ? await estimateCostBasisLamports(mirrorSwap.inputMint, inAmountRaw) : undefined,
         };
       }
 
@@ -558,21 +670,57 @@ export async function mirrorSwap(
       });
       console.log(`Transaction broadcast: ${signature} (${elapsed()})`);
 
+      const buyCostBasisLamports =
+        side === "buy" ? await estimateCostBasisLamports(mirrorSwap.inputMint, inAmountRaw) : undefined;
+
       if (fastMode) {
-        // Fast mode returns after broadcast; a dropped buy is cleaned up by the background confirmer.
-        confirmSignature(signature).catch((err) => {
-          if (side !== "buy") return;
-          const reason = err instanceof Error ? err.message : String(err);
-          const removed = unrecordBuy(swap.outputMint, outAmountRaw, inAmountRaw);
-          options.onFastBuyConfirmFailure?.({
-            mint: swap.outputMint,
-            tokenAmountRaw: outAmountRaw,
-            solLamports: inAmountRaw,
-            reason,
-            positionRemoved: removed,
-            sourceSwap: swap,
+        // Fast mode returns after broadcast; dropped buys/sells are cleaned up by the background confirmer.
+        confirmSignature(signature)
+          .then(() => {
+            if (side === "buy") {
+              options.onFastBuyConfirmSuccess?.({
+                mint: mirrorSwap.outputMint,
+                tokenAmountRaw: outAmountRaw,
+                solLamports: buyCostBasisLamports ?? inAmountRaw,
+                signature,
+                sourceSwap: mirrorSwap,
+              });
+              return;
+            }
+            if (side === "sell") {
+              options.onFastSellConfirmSuccess?.({
+                mint: mirrorSwap.inputMint,
+                tokenAmountRaw: inAmountRaw,
+                solLamports: outAmountRaw,
+                signature,
+                sourceSwap: mirrorSwap,
+              });
+            }
+          })
+          .catch((err) => {
+            const reason = err instanceof Error ? err.message : String(err);
+            if (side === "buy") {
+              const removed = unrecordBuy(mirrorSwap.outputMint, outAmountRaw, buyCostBasisLamports ?? inAmountRaw);
+              options.onFastBuyConfirmFailure?.({
+                mint: mirrorSwap.outputMint,
+                tokenAmountRaw: outAmountRaw,
+                solLamports: buyCostBasisLamports ?? inAmountRaw,
+                reason,
+                positionRemoved: removed,
+                sourceSwap: mirrorSwap,
+              });
+              return;
+            }
+            if (side === "sell") {
+              options.onFastSellConfirmFailure?.({
+                mint: mirrorSwap.inputMint,
+                tokenAmountRaw: inAmountRaw,
+                solLamports: outAmountRaw,
+                reason,
+                sourceSwap: mirrorSwap,
+              });
+            }
           });
-        });
       } else {
         console.log("Confirming transaction...");
         await confirmSignature(signature);
@@ -581,8 +729,8 @@ export async function mirrorSwap(
 
       console.log("Getting token metadata...");
       const [inputMeta, outputMeta] = await Promise.all([
-        getTokenMeta(swap.inputMint),
-        getTokenMeta(swap.outputMint),
+        getTokenMeta(mirrorSwap.inputMint),
+        getTokenMeta(mirrorSwap.outputMint),
       ]);
       console.log("Token metadata received");
 
@@ -593,6 +741,7 @@ export async function mirrorSwap(
         input: { meta: inputMeta, amountRaw: inAmountRaw },
         output: { meta: outputMeta, amountRaw: outAmountRaw },
         priceImpactPct: quote.priceImpactPct,
+        costBasisLamports: buyCostBasisLamports,
         confirmationPending: fastMode,
       };
     } catch (err) {
@@ -619,6 +768,11 @@ export async function mirrorSwap(
           console.warn(`Jupiter route still too large (${msg}); trying queued constrained route...`);
           continue;
         }
+      }
+      if (isNoRouteFailure(err) && (attempt.quoteMaxAccounts != null || attempt.onlyDirectRoutes) && !isLastAttempt) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`Constrained Jupiter route unavailable (${msg}); trying next route constraint...`);
+        continue;
       }
       // Transient broadcast retry: re-quote from scratch (fresh blockhash). Bounded to ONE
       // additional attempt past the slippage ladder so we don't add unbounded latency.

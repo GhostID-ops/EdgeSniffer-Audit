@@ -1,4 +1,5 @@
 import { PublicKey, type VersionedTransactionResponse } from "@solana/web3.js";
+import bs58 from "bs58";
 import {
   wsConnection,
   readConnection,
@@ -10,6 +11,10 @@ import type { DetectedSwap } from "./types.js";
 import { getTokenMeta } from "./tokenRegistry.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
+const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+const PUMPSWAP_PROGRAM_ID_BASE58 = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
+const PUMPSWAP_BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 235, 234]);
+const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = Buffer.from([198, 46, 21, 82, 180, 217, 232, 112]);
 const JUPITER_SOURCE = "JUPITER";
 const SWAP_TYPES = new Set(["SWAP", "SWAP_EXACT_OUT", "SWAP_WITH_PRICE_IMPACT"]);
 const wsParseInFlight = new Set<string>();
@@ -85,13 +90,17 @@ type NonSwapSummary = {
   walletTokenNet: Array<{ mint: string; net: number; decimals: number }>;
 };
 
+function isMirrorQuoteMint(mint: string | undefined): boolean {
+  return mint === WRAPPED_SOL_MINT || mint === USDC_MINT;
+}
+
 function addTokenNet(
   tokenNet: Map<string, TokenNet>,
   mint: string | undefined,
   amountRaw: number,
   decimals: number | undefined
 ): void {
-  if (!mint || mint === WRAPPED_SOL_MINT) return;
+  if (!mint) return;
   if (!Number.isFinite(amountRaw) || amountRaw === 0) return;
   const entry = tokenNet.get(mint) ?? { net: 0, decimals: decimals ?? 0 };
   entry.decimals = decimals ?? entry.decimals;
@@ -99,7 +108,10 @@ function addTokenNet(
   tokenNet.set(mint, entry);
 }
 
-function getBestTokenNet(tokenNet: Map<string, TokenNet>): {
+function getBestTokenNet(
+  tokenNet: Map<string, TokenNet>,
+  options: { excludeQuoteMints?: boolean } = {}
+): {
   mint: string | null;
   net: number;
   abs: number;
@@ -108,11 +120,35 @@ function getBestTokenNet(tokenNet: Map<string, TokenNet>): {
   let net = 0;
   let abs = 0;
   for (const [candidateMint, candidate] of tokenNet) {
+    if (options.excludeQuoteMints && isMirrorQuoteMint(candidateMint)) continue;
     const candidateAbs = Math.abs(candidate.net);
     if (candidateAbs > abs) {
       abs = candidateAbs;
       mint = candidateMint;
       net = candidate.net;
+    }
+  }
+  return { mint, net, abs };
+}
+
+function getBestQuoteNet(tokenNet: Map<string, TokenNet>, wantPositive: boolean): {
+  mint: string | null;
+  net: number;
+  abs: number;
+} {
+  let mint: string | null = null;
+  let net = 0;
+  let abs = 0;
+  for (const candidateMint of [WRAPPED_SOL_MINT, USDC_MINT]) {
+    const candidate = tokenNet.get(candidateMint);
+    if (!candidate) continue;
+    if (wantPositive && candidate.net <= 0) continue;
+    if (!wantPositive && candidate.net >= 0) continue;
+    const candidateAbs = Math.abs(candidate.net);
+    if (candidateAbs > abs) {
+      mint = candidateMint;
+      net = candidate.net;
+      abs = candidateAbs;
     }
   }
   return { mint, net, abs };
@@ -404,18 +440,25 @@ function extractTransferSwap(tx: HeliusParsedTx, wallet: string): DetectedSwap |
   }
 
   // Pick the token with the largest |net| for this wallet.
-  const { mint: bestMint, net: bestNet, abs: bestAbs } = getBestTokenNet(tokenNet);
+  const { mint: bestMint, net: bestNet, abs: bestAbs } = getBestTokenNet(tokenNet, {
+    excludeQuoteMints: true,
+  });
   if (!bestMint || bestAbs === 0) return null;
 
   // BUY: SOL out, token in.
   if (nativeNet < 0 && bestNet > 0) {
+    const quote = getBestQuoteNet(tokenNet, false);
+    const inputMint = quote.mint ?? WRAPPED_SOL_MINT;
+    const amountRaw = quote.mint ? quote.abs : Math.abs(nativeNet);
     return {
       signature: tx.signature,
       wallet,
-      inputMint: WRAPPED_SOL_MINT,
+      inputMint,
       outputMint: bestMint,
-      amountRaw: Math.abs(nativeNet),
-      isNativeInput: true,
+      amountRaw,
+      isNativeInput: inputMint === WRAPPED_SOL_MINT,
+      sourceQuoteMint: inputMint,
+      sourceQuoteAmountRaw: amountRaw,
     };
   }
 
@@ -429,6 +472,38 @@ function extractTransferSwap(tx: HeliusParsedTx, wallet: string): DetectedSwap |
       amountRaw: Math.abs(bestNet),
       isNativeInput: false,
     };
+  }
+
+  if (nativeNet === 0 && bestNet > 0) {
+    const quote = getBestQuoteNet(tokenNet, false);
+    if (quote.mint) {
+      return {
+        signature: tx.signature,
+        wallet,
+        inputMint: quote.mint,
+        outputMint: bestMint,
+        amountRaw: Math.abs(quote.net),
+        isNativeInput: quote.mint === WRAPPED_SOL_MINT,
+        sourceQuoteMint: quote.mint,
+        sourceQuoteAmountRaw: Math.abs(quote.net),
+      };
+    }
+  }
+
+  if (nativeNet === 0 && bestNet < 0) {
+    const quote = getBestQuoteNet(tokenNet, true);
+    if (quote.mint) {
+      return {
+        signature: tx.signature,
+        wallet,
+        inputMint: bestMint,
+        outputMint: WRAPPED_SOL_MINT,
+        amountRaw: Math.abs(bestNet),
+        isNativeInput: false,
+        counterpartyAmountRaw: quote.net,
+        counterpartyDecimals: quote.mint === USDC_MINT ? 6 : 9,
+      };
+    }
   }
 
   return null;
@@ -467,21 +542,28 @@ function extractFromAccountData(tx: HeliusParsedTx, wallet: string): DetectedSwa
     }
   }
 
-  const { mint: bestMint, net: bestNet, abs: bestAbs } = getBestTokenNet(tokenNet);
+  const { mint: bestMint, net: bestNet, abs: bestAbs } = getBestTokenNet(tokenNet, {
+    excludeQuoteMints: true,
+  });
   if (!bestMint || bestAbs === 0) return null;
 
   // BUY: SOL decreased, token increased.
   if (nativeNet < 0 && bestNet > 0) {
     const decimals = tokenNet.get(bestMint)?.decimals ?? 0;
+    const quote = getBestQuoteNet(tokenNet, false);
+    const inputMint = quote.mint ?? WRAPPED_SOL_MINT;
+    const amountRaw = quote.mint ? quote.abs : Math.abs(nativeNet);
     return {
       signature: tx.signature,
       wallet,
-      inputMint: WRAPPED_SOL_MINT,
+      inputMint,
       outputMint: bestMint,
-      amountRaw: Math.abs(nativeNet),
-      isNativeInput: true,
+      amountRaw,
+      isNativeInput: inputMint === WRAPPED_SOL_MINT,
       counterpartyAmountRaw: bestNet,
       counterpartyDecimals: decimals,
+      sourceQuoteMint: inputMint,
+      sourceQuoteAmountRaw: amountRaw,
     };
   }
 
@@ -497,6 +579,38 @@ function extractFromAccountData(tx: HeliusParsedTx, wallet: string): DetectedSwa
       counterpartyAmountRaw: nativeNet,
       counterpartyDecimals: 9,
     };
+  }
+
+  if (nativeNet === 0 && bestNet > 0) {
+    const quote = getBestQuoteNet(tokenNet, false);
+    if (quote.mint) {
+      return {
+        signature: tx.signature,
+        wallet,
+        inputMint: quote.mint,
+        outputMint: bestMint,
+        amountRaw: Math.abs(quote.net),
+        isNativeInput: quote.mint === WRAPPED_SOL_MINT,
+        sourceQuoteMint: quote.mint,
+        sourceQuoteAmountRaw: Math.abs(quote.net),
+      };
+    }
+  }
+
+  if (nativeNet === 0 && bestNet < 0) {
+    const quote = getBestQuoteNet(tokenNet, true);
+    if (quote.mint) {
+      return {
+        signature: tx.signature,
+        wallet,
+        inputMint: bestMint,
+        outputMint: WRAPPED_SOL_MINT,
+        amountRaw: Math.abs(bestNet),
+        isNativeInput: false,
+        counterpartyAmountRaw: quote.net,
+        counterpartyDecimals: quote.mint === USDC_MINT ? 6 : 9,
+      };
+    }
   }
 
   return null;
@@ -529,6 +643,89 @@ function resolveAccountKeys(tx: VersionedTransactionResponse): string[] {
   );
 }
 
+function instructionDataToBuffer(data: unknown): Buffer {
+  if (data == null) return Buffer.alloc(0);
+  if (Buffer.isBuffer(data)) return data;
+  if (data instanceof Uint8Array) return Buffer.from(data);
+  if (Array.isArray(data)) return Buffer.from(data);
+  if (typeof data === "string") {
+    try {
+      return Buffer.from(bs58.decode(data));
+    } catch {
+      try {
+        return Buffer.from(data, "base64");
+      } catch {
+        return Buffer.alloc(0);
+      }
+    }
+  }
+  return Buffer.alloc(0);
+}
+
+function matchesDiscriminator(data: Buffer, discriminator: Buffer): boolean {
+  return data.length >= discriminator.length && data.subarray(0, discriminator.length).equals(discriminator);
+}
+
+function extractPumpSwapBuyAccountsFromRawTx(
+  tx: VersionedTransactionResponse,
+  accountKeys: string[],
+  mint: string
+): string[] | undefined {
+  const message = tx.transaction.message as unknown as {
+    compiledInstructions?: Array<{
+      programIdIndex: number;
+      accountKeyIndexes?: number[];
+      accounts?: number[] | Uint8Array;
+      data?: unknown;
+    }>;
+    instructions?: Array<{
+      programIdIndex: number;
+      accountKeyIndexes?: number[];
+      accounts?: number[] | Uint8Array;
+      data?: unknown;
+    }>;
+  };
+
+  const matchesPumpSwapBuy = (ix: {
+    programIdIndex: number;
+    accountKeyIndexes?: number[];
+    accounts?: number[] | Uint8Array;
+    data?: unknown;
+  }): string[] | undefined => {
+    if (accountKeys[ix.programIdIndex] !== PUMPSWAP_PROGRAM_ID_BASE58) return undefined;
+    const data = instructionDataToBuffer(ix.data);
+    if (
+      !matchesDiscriminator(data, PUMPSWAP_BUY_DISCRIMINATOR) &&
+      !matchesDiscriminator(data, PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR)
+    ) {
+      return undefined;
+    }
+    const indexes = ix.accountKeyIndexes ?? Array.from(ix.accounts ?? []);
+    const keys = indexes.map((idx) => accountKeys[idx]).filter((key): key is string => Boolean(key));
+    if (keys[3] !== mint) return undefined;
+    return keys;
+  };
+
+  const instructions = message.compiledInstructions ?? message.instructions ?? [];
+  for (const ix of instructions) {
+    const keys = matchesPumpSwapBuy(ix);
+    if (keys) return keys;
+  }
+
+  for (const group of tx.meta?.innerInstructions ?? []) {
+    for (const ix of group.instructions) {
+      const keys = matchesPumpSwapBuy(ix as unknown as {
+        programIdIndex: number;
+        accountKeyIndexes?: number[];
+        accounts?: number[] | Uint8Array;
+        data?: unknown;
+      });
+      if (keys) return keys;
+    }
+  }
+  return undefined;
+}
+
 /**
  * Direct extraction from a raw `getTransaction` response — uses balance deltas (preBalances/postBalances
  * and preTokenBalances/postTokenBalances) to classify a SOL↔memecoin swap. This is the fast path; it
@@ -558,7 +755,6 @@ function extractSwapFromRawTx(
   const preMap = new Map<number, TokenSnap>();
   for (const ptb of meta.preTokenBalances ?? []) {
     if (ptb.owner !== wallet) continue;
-    if (ptb.mint === WRAPPED_SOL_MINT) continue;
     preMap.set(ptb.accountIndex, {
       mint: ptb.mint,
       amount: BigInt(ptb.uiTokenAmount.amount),
@@ -570,7 +766,6 @@ function extractSwapFromRawTx(
   const handledIndices = new Set<number>();
   for (const ptb of meta.postTokenBalances ?? []) {
     if (ptb.owner !== wallet) continue;
-    if (ptb.mint === WRAPPED_SOL_MINT) continue;
     handledIndices.add(ptb.accountIndex);
     const pre = preMap.get(ptb.accountIndex);
     const preAmount = pre?.amount ?? 0n;
@@ -585,21 +780,30 @@ function extractSwapFromRawTx(
     addTokenNet(tokenNet, pre.mint, -Number(pre.amount), pre.decimals);
   }
 
-  const { mint: bestMint, net: bestNet, abs: bestAbs } = getBestTokenNet(tokenNet);
+  const { mint: bestMint, net: bestNet, abs: bestAbs } = getBestTokenNet(tokenNet, {
+    excludeQuoteMints: true,
+  });
   if (!bestMint || bestAbs === 0) return null;
 
   // BUY: SOL out, token in.
   if (nativeNet < 0 && bestNet > 0) {
     const decimals = tokenNet.get(bestMint)?.decimals ?? 0;
+    const quote = getBestQuoteNet(tokenNet, false);
+    const inputMint = quote.mint ?? WRAPPED_SOL_MINT;
+    const amountRaw = quote.mint ? quote.abs : Math.abs(nativeNet);
+    const sourcePumpSwapAccounts = extractPumpSwapBuyAccountsFromRawTx(tx, accountKeys, bestMint);
     return {
       signature,
       wallet,
-      inputMint: WRAPPED_SOL_MINT,
+      inputMint,
       outputMint: bestMint,
-      amountRaw: Math.abs(nativeNet),
-      isNativeInput: true,
+      amountRaw,
+      isNativeInput: inputMint === WRAPPED_SOL_MINT,
       counterpartyAmountRaw: bestNet, // tokens received
       counterpartyDecimals: decimals,
+      sourceQuoteMint: inputMint,
+      sourceQuoteAmountRaw: amountRaw,
+      sourcePumpSwapAccounts,
     };
   }
 
@@ -617,6 +821,43 @@ function extractSwapFromRawTx(
     };
   }
 
+  if (nativeNet === 0 && bestNet > 0) {
+    const quote = getBestQuoteNet(tokenNet, false);
+    if (quote.mint) {
+      const decimals = tokenNet.get(bestMint)?.decimals ?? 0;
+      const sourcePumpSwapAccounts = extractPumpSwapBuyAccountsFromRawTx(tx, accountKeys, bestMint);
+      return {
+        signature,
+        wallet,
+        inputMint: quote.mint,
+        outputMint: bestMint,
+        amountRaw: Math.abs(quote.net),
+        isNativeInput: quote.mint === WRAPPED_SOL_MINT,
+        counterpartyAmountRaw: bestNet,
+        counterpartyDecimals: decimals,
+        sourceQuoteMint: quote.mint,
+        sourceQuoteAmountRaw: Math.abs(quote.net),
+        sourcePumpSwapAccounts,
+      };
+    }
+  }
+
+  if (nativeNet === 0 && bestNet < 0) {
+    const quote = getBestQuoteNet(tokenNet, true);
+    if (quote.mint) {
+      return {
+        signature,
+        wallet,
+        inputMint: bestMint,
+        outputMint: WRAPPED_SOL_MINT,
+        amountRaw: Math.abs(bestNet),
+        isNativeInput: false,
+        counterpartyAmountRaw: quote.net,
+        counterpartyDecimals: quote.mint === USDC_MINT ? 6 : 9,
+      };
+    }
+  }
+
   return null;
 }
 
@@ -629,7 +870,7 @@ function extractSwapFromRawTx(
 const RAW_TX_ATTEMPTS = 6;
 const RAW_TX_RETRY_MS = 75;
 
-async function getRawTxSwap(
+export async function getRawTxSwap(
   signature: string,
   wallet: string
 ): Promise<DetectedSwap | null> {

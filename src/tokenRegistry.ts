@@ -10,6 +10,7 @@ export type TokenMeta = {
 };
 
 export const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
+export const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const FETCH_TIMEOUT_MS = 3000;
 
 const cache = new Map<string, TokenMeta>();
@@ -21,6 +22,13 @@ cache.set(WRAPPED_SOL_MINT, {
   name: "Solana",
   decimals: 9,
   isSol: true,
+});
+cache.set(USDC_MINT, {
+  mint: USDC_MINT,
+  symbol: "USDC",
+  name: "USD Coin",
+  decimals: 6,
+  isSol: false,
 });
 
 type Partial = { symbol?: string; name?: string; decimals?: number };

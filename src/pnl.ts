@@ -132,6 +132,46 @@ export function unrecordBuy(
 }
 
 /**
+ * Correct the token amount for an already-recorded buy without changing SOL cost. This is used
+ * after fast-mode confirmation when Token-2022 transfer-fee mints deliver fewer tokens than the
+ * curve quote predicted.
+ */
+export function adjustBuyTokenAmount(
+  mint: string,
+  expectedTokenAmountRaw: number,
+  actualTokenAmountRaw: number
+): boolean {
+  const p = positions.get(mint);
+  if (!p) return false;
+  const delta = actualTokenAmountRaw - expectedTokenAmountRaw;
+  if (!Number.isFinite(delta) || delta === 0) return false;
+  p.totalBoughtRaw = Math.max(0, p.totalBoughtRaw + delta);
+  p.lastTradeAt = Date.now();
+  if (p.buysCount === 0 && p.sellsCount === 0) {
+    positions.delete(mint);
+  }
+  return true;
+}
+
+/**
+ * Correct the SOL cost for an already-recorded buy after confirmation. Fast-mode initially records
+ * the swap input only; this lets us include the actual wallet debit, including tx fee/tip.
+ */
+export function adjustBuySolCost(
+  mint: string,
+  expectedSolLamports: number,
+  actualSolLamports: number
+): boolean {
+  const p = positions.get(mint);
+  if (!p) return false;
+  const delta = actualSolLamports - expectedSolLamports;
+  if (!Number.isFinite(delta) || delta === 0) return false;
+  p.totalSolSpentLamports = Math.max(0, p.totalSolSpentLamports + delta);
+  p.lastTradeAt = Date.now();
+  return true;
+}
+
+/**
  * Remove a local zero-proceeds close that was created while a fast-mode optimistic buy was still
  * unconfirmed. This prevents a later failed-buy rollback from leaving negative token holdings.
  */
@@ -148,6 +188,62 @@ export function unrecordZeroSell(
     positions.delete(mint);
   }
   return true;
+}
+
+/**
+ * Roll back a previously recorded sell when a fast-mode sell broadcast was accepted but later
+ * finalized failed on chain. Keeps the local position ledger aligned with wallet reality.
+ */
+export function unrecordSell(
+  mint: string,
+  tokenAmountRaw: number,
+  solLamports: number
+): boolean {
+  const p = positions.get(mint);
+  if (!p) return false;
+  p.totalSoldRaw = Math.max(0, p.totalSoldRaw - tokenAmountRaw);
+  p.totalSolReceivedLamports = Math.max(0, p.totalSolReceivedLamports - solLamports);
+  p.sellsCount = Math.max(0, p.sellsCount - 1);
+  p.lastTradeAt = Date.now();
+  if (p.buysCount === 0 && p.sellsCount === 0) {
+    positions.delete(mint);
+  }
+  return true;
+}
+
+/**
+ * Correct an already-recorded sell after fast-mode confirmation. The optimistic path records the
+ * route/curve quote immediately after broadcast; confirmation lets us replace it with actual wallet
+ * balance deltas from the landed transaction.
+ */
+export function adjustSellExecution(
+  mint: string,
+  expectedTokenAmountRaw: number,
+  actualTokenAmountRaw: number,
+  expectedSolLamports: number,
+  actualSolLamports: number
+): boolean {
+  const p = positions.get(mint);
+  if (!p) return false;
+  let changed = false;
+
+  const tokenDelta = actualTokenAmountRaw - expectedTokenAmountRaw;
+  if (Number.isFinite(tokenDelta) && tokenDelta !== 0) {
+    p.totalSoldRaw = Math.max(0, p.totalSoldRaw + tokenDelta);
+    changed = true;
+  }
+
+  const solDelta = actualSolLamports - expectedSolLamports;
+  if (Number.isFinite(solDelta) && solDelta !== 0) {
+    p.totalSolReceivedLamports = Math.max(0, p.totalSolReceivedLamports + solDelta);
+    changed = true;
+  }
+
+  if (changed) p.lastTradeAt = Date.now();
+  if (p.buysCount === 0 && p.sellsCount === 0) {
+    positions.delete(mint);
+  }
+  return changed;
 }
 
 export type PnlTotals = {

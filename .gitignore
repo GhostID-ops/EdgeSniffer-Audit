@@ -1,6 +1,9 @@
 .env
+.license-cache.json
 node_modules
 dist
+rust-sidecar/target
+snapshots/
 *.log
 data/*.jsonl
 .DS_Store

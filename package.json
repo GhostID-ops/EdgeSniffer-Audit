@@ -10,7 +10,16 @@
     "web": "tsx src/web.ts",
     "swap": "tsx src/swap.ts",
     "profile-edge": "tsx src/profileSourceEdge.ts",
+    "find-source-wallet": "tsx src/findSourceWallet.ts",
     "edge-scout": "tsx src/edgeScout.ts",
+    "license-api": "tsx src/licenseApi.ts",
+    "license:create": "tsx src/licenseAdmin.ts create",
+    "license:revoke": "tsx src/licenseAdmin.ts revoke",
+    "license:reset-machine": "tsx src/licenseAdmin.ts reset-machine",
+    "license:list": "tsx src/licenseAdmin.ts list",
+    "test:license": "tsx src/testLicense.ts",
+    "rust-sidecar": "cargo run --manifest-path rust-sidecar/Cargo.toml --release",
+    "rust-sidecar:build": "cargo build --manifest-path rust-sidecar/Cargo.toml --release",
     "test:pumpswap": "tsx src/testPumpSwap.ts"
   },
   "dependencies": {

@@ -152,6 +152,7 @@ export async function tryPumpFunDirectBuy(args: {
    */
   sourceIxAccounts?: string[];
   onConfirmFailure?: (mint: string, tokensOutRaw: number, solInLamports: number, reason: string) => void;
+  onConfirmSuccess?: (mint: string, tokensOutRaw: number, solInLamports: number, signature: string) => void;
   rebroadcastAttempt?: number;
 }): Promise<PumpFunBuyOutcome> {
   const elapsed = () => `${Date.now() - args.startedAt}ms`;
@@ -258,10 +259,14 @@ export async function tryPumpFunDirectBuy(args: {
 
   if (fastMode) {
     // Fast mode records after broadcast so snipes are not delayed by confirmation polling.
-    confirmSignature(signature).catch((err) => {
-      const reason = err instanceof Error ? err.message : String(err);
-      args.onConfirmFailure?.(args.mint, Number(quote.tokensOut), Number(quote.solIn), reason);
-    });
+    confirmSignature(signature)
+      .then(() => {
+        args.onConfirmSuccess?.(args.mint, Number(quote.tokensOut), Number(quote.solIn), signature);
+      })
+      .catch((err) => {
+        const reason = err instanceof Error ? err.message : String(err);
+        args.onConfirmFailure?.(args.mint, Number(quote.tokensOut), Number(quote.solIn), reason);
+      });
     const mintMeta = await getTokenMeta(args.mint);
     return {
       ok: true,
@@ -347,6 +352,8 @@ export async function tryPumpFunDirectSell(args: {
   startedAt: number;
   log: (msg: string) => void;
   sourceSignature?: string;
+  onConfirmFailure?: (mint: string, tokensInRaw: number, solOutLamports: number, reason: string) => void;
+  onConfirmSuccess?: (mint: string, tokensInRaw: number, solOutLamports: number, signature: string) => void;
   rebroadcastAttempt?: number;
 }): Promise<PumpFunSellOutcome> {
   const elapsed = () => `${Date.now() - args.startedAt}ms`;
@@ -430,10 +437,15 @@ export async function tryPumpFunDirectSell(args: {
 
   if (fastMode) {
     // Fast mode keeps the manual/risk exit hot; any late failure is surfaced by the background poller.
-    confirmSignature(signature).catch((err) => {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.warn(`Pump.fun direct sell confirmation failed after broadcast: ${msg}`);
-    });
+    confirmSignature(signature)
+      .then(() => {
+        args.onConfirmSuccess?.(args.mint, Number(quote.tokensIn), Number(quote.solOut), signature);
+      })
+      .catch((err) => {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`Pump.fun direct sell confirmation failed after broadcast: ${msg}`);
+        args.onConfirmFailure?.(args.mint, Number(quote.tokensIn), Number(quote.solOut), msg);
+      });
     const mintMeta = await getTokenMeta(args.mint);
     return {
       ok: true,

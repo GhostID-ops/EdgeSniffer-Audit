@@ -1,7 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 import { readConnection } from "./config.js";
 
-const TOKEN_2022_PROGRAM_ID = "TokenzQdBNbLqP5VEhdkAS6EPu8NQkMZ6H4hWzPvyxC";
+const TOKEN_2022_PROGRAM_ID = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
 const MAYHEM_SUPPLY_RAW = 2_000_000_000_000_000;
 const FETCH_TIMEOUT_MS = 2500;
 const cache = new Map<string, boolean | null>();

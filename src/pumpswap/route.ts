@@ -9,6 +9,7 @@ import {
   type AccountMeta,
   type AccountInfo,
 } from "@solana/web3.js";
+import bs58 from "bs58";
 import {
   confirmationRebroadcastRetries,
   computeUnitLimit,
@@ -30,7 +31,8 @@ import {
 } from "../pumpfun/constants.js";
 
 export const PUMPSWAP_PROGRAM_ID = new PublicKey("pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA");
-const BUY_EXACT_QUOTE_IN_DISCRIMINATOR = Buffer.from([198, 46, 21, 82, 180, 217, 232, 112]);
+export const PUMPSWAP_BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 235, 234]);
+export const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = Buffer.from([198, 46, 21, 82, 180, 217, 232, 112]);
 const SYNC_NATIVE_IX = Buffer.from([17]);
 const CLOSE_ACCOUNT_IX = Buffer.from([9]);
 
@@ -63,11 +65,21 @@ export type PumpSwapOutcome =
     }
   | { ok: false; reason: string; recoverable: boolean };
 
-function encodeBuyExactQuoteIn(spendableQuoteIn: bigint, minBaseOut: bigint): Buffer {
-  const buf = Buffer.alloc(24);
-  BUY_EXACT_QUOTE_IN_DISCRIMINATOR.copy(buf, 0);
-  buf.writeBigUInt64LE(spendableQuoteIn, 8);
-  buf.writeBigUInt64LE(minBaseOut, 16);
+function encodeBuy(baseAmountOut: bigint, maxQuoteAmountIn: bigint): Buffer {
+  const buf = Buffer.alloc(25);
+  PUMPSWAP_BUY_DISCRIMINATOR.copy(buf, 0);
+  buf.writeBigUInt64LE(baseAmountOut, 8);
+  buf.writeBigUInt64LE(maxQuoteAmountIn, 16);
+  buf.writeUInt8(0, 24); // OptionBool::None for volume tracking.
+  return buf;
+}
+
+export function encodeBuyExactQuoteIn(quoteAmountIn: bigint, minBaseAmountOut: bigint): Buffer {
+  const buf = Buffer.alloc(25);
+  PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR.copy(buf, 0);
+  buf.writeBigUInt64LE(quoteAmountIn, 8);
+  buf.writeBigUInt64LE(minBaseAmountOut, 16);
+  buf.writeUInt8(0, 24); // OptionBool::None for volume tracking.
   return buf;
 }
 
@@ -195,6 +207,25 @@ function closeTokenAccountIx(account: PublicKey, owner: PublicKey): TransactionI
   });
 }
 
+function compiledInstructionDataToBuffer(data: unknown): Buffer {
+  if (data == null) return Buffer.alloc(0);
+  if (Buffer.isBuffer(data)) return data;
+  if (data instanceof Uint8Array) return Buffer.from(data);
+  if (Array.isArray(data)) return Buffer.from(data);
+  if (typeof data === "string") {
+    try {
+      return Buffer.from(bs58.decode(data));
+    } catch {
+      try {
+        return Buffer.from(data, "base64");
+      } catch {
+        return Buffer.alloc(0);
+      }
+    }
+  }
+  return Buffer.alloc(0);
+}
+
 async function sourcePumpSwapAccounts(sourceSignature: string, mint: PublicKey): Promise<AccountMeta[] | null> {
   const tx = await readConnection.getTransaction(sourceSignature, {
     commitment: "confirmed",
@@ -209,17 +240,49 @@ async function sourcePumpSwapAccounts(sourceSignature: string, mint: PublicKey):
     : [];
   const allKeys = [...staticKeys, ...loaded];
 
-  for (const ix of message.compiledInstructions) {
-    if (!allKeys[ix.programIdIndex]?.equals(PUMPSWAP_PROGRAM_ID)) continue;
-    const data = Buffer.from(ix.data);
-    if (!data.subarray(0, 8).equals(BUY_EXACT_QUOTE_IN_DISCRIMINATOR)) continue;
-    const keys = ix.accountKeyIndexes.map((idx) => allKeys[idx]);
-    if (!keys[3]?.equals(mint)) continue;
-    return ix.accountKeyIndexes.map((idx) => ({
+  const toAccountMetas = (indexes: number[]): AccountMeta[] =>
+    indexes.map((idx) => ({
       pubkey: allKeys[idx]!,
       isSigner: message.isAccountSigner(idx),
       isWritable: message.isAccountWritable(idx),
     }));
+
+  const matchesPumpSwapBuy = (ix: {
+    programIdIndex: number;
+    accountKeyIndexes?: number[];
+    accounts?: number[] | Uint8Array;
+    data?: unknown;
+  }): number[] | null => {
+    if (!allKeys[ix.programIdIndex]?.equals(PUMPSWAP_PROGRAM_ID)) return null;
+    const data = compiledInstructionDataToBuffer(ix.data);
+    const discriminator = data.subarray(0, 8);
+    if (
+      !discriminator.equals(PUMPSWAP_BUY_DISCRIMINATOR) &&
+      !discriminator.equals(PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR)
+    ) {
+      return null;
+    }
+    const indexes = ix.accountKeyIndexes ?? Array.from(ix.accounts ?? []);
+    const keys = indexes.map((idx) => allKeys[idx]);
+    if (!keys[3]?.equals(mint)) return null;
+    return indexes;
+  };
+
+  for (const ix of message.compiledInstructions) {
+    const indexes = matchesPumpSwapBuy(ix);
+    if (indexes) return toAccountMetas(indexes);
+  }
+
+  for (const group of tx.meta?.innerInstructions ?? []) {
+    for (const ix of group.instructions) {
+      const indexes = matchesPumpSwapBuy(ix as unknown as {
+        programIdIndex: number;
+        accountKeyIndexes?: number[];
+        accounts?: number[] | Uint8Array;
+        data?: unknown;
+      });
+      if (indexes) return toAccountMetas(indexes);
+    }
   }
   return null;
 }
@@ -330,12 +393,14 @@ export async function tryPumpSwapDirectBuy(args: {
   sourceSignature: string;
   sourceSolInLamports: number;
   sourceTokensOutRaw?: number;
+  sourcePumpSwapAccounts?: string[];
   solInLamports: number;
   slippageBps: number;
   startedAt: number;
   log: (msg: string) => void;
   rebroadcastAttempt?: number;
   onConfirmFailure?: (mint: string, tokensOutRaw: number, solLamports: number, reason: string) => void;
+  onConfirmSuccess?: (mint: string, tokensOutRaw: number, solLamports: number, signature: string) => void;
 }): Promise<PumpSwapOutcome> {
   if (!args.sourceTokensOutRaw || args.sourceTokensOutRaw <= 0 || args.sourceSolInLamports <= 0) {
     return { ok: false, recoverable: true, reason: "source PumpSwap fill amounts unavailable" };
@@ -348,9 +413,15 @@ export async function tryPumpSwapDirectBuy(args: {
     return { ok: false, recoverable: true, reason: "PumpSwap base mint account not found" };
   }
   const baseTokenProgramId = mintAccount.owner;
-  const sourceAccounts = await sourcePumpSwapAccounts(args.sourceSignature, mintKey);
+  const sourceAccounts = args.sourcePumpSwapAccounts?.length
+    ? args.sourcePumpSwapAccounts.map((pubkey, idx) => ({
+        pubkey: new PublicKey(pubkey),
+        isSigner: idx === 1,
+        isWritable: [0, 1, 5, 6, 7, 8, 10, 17, 19, 25].includes(idx),
+      }))
+    : await sourcePumpSwapAccounts(args.sourceSignature, mintKey);
   if (!sourceAccounts) {
-    return { ok: false, recoverable: true, reason: "source tx has no PumpSwap buy_exact_quote_in instruction" };
+    return { ok: false, recoverable: true, reason: "source tx has no PumpSwap buy instruction" };
   }
 
   const expectedBaseOut =
@@ -476,13 +547,18 @@ export async function tryPumpSwapDirectBuy(args: {
     args.log(`PumpSwap broadcast: ${signature} (${elapsed()})`);
     if (fastMode) {
       // PumpSwap is a hot post-graduation entry path; do not block recording on confirmation.
-      confirmSignature(signature).catch((err) => {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.warn(`PumpSwap confirmation failed after broadcast: ${msg}`);
-        args.onConfirmFailure?.(args.mint, Number(minBaseOut), args.solInLamports, msg);
-      });
+      confirmSignature(signature)
+        .then(() => {
+          args.onConfirmSuccess?.(args.mint, Number(minBaseOut), args.solInLamports, signature!);
+        })
+        .catch((err) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.warn(`PumpSwap confirmation failed after broadcast: ${msg}`);
+          args.onConfirmFailure?.(args.mint, Number(minBaseOut), args.solInLamports, msg);
+        });
     } else {
       await confirmSignature(signature);
+      args.log(`PumpSwap confirmed (${elapsed()})`);
     }
   } catch (err) {
     const rebroadcastAttempt = args.rebroadcastAttempt ?? 0;
@@ -508,8 +584,6 @@ export async function tryPumpSwapDirectBuy(args: {
       .join(" | ");
     return { ok: false, recoverable: isRecoverablePumpSwapFailure(err), reason };
   }
-  args.log(`PumpSwap confirmed (${elapsed()})`);
-
   const mintMeta = await getTokenMeta(args.mint);
   return {
     ok: true,

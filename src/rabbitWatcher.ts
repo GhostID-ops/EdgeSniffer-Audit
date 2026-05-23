@@ -25,6 +25,10 @@ import type { DetectedSwap } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
+const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+const PUMPSWAP_PROGRAM_ID_BASE58 = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
+const PUMPSWAP_BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 235, 234]);
+const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = Buffer.from([198, 46, 21, 82, 180, 217, 232, 112]);
 
 type YellowstoneClientConstructor = new (
   endpoint: string,
@@ -63,9 +67,13 @@ function ixDataToBuffer(data: unknown): Buffer {
   if (Array.isArray(data)) return Buffer.from(data);
   if (typeof data === "string") {
     try {
-      return Buffer.from(data, "base64");
+      return Buffer.from(bs58.decode(data));
     } catch {
-      return Buffer.alloc(0);
+      try {
+        return Buffer.from(data, "base64");
+      } catch {
+        return Buffer.alloc(0);
+      }
     }
   }
   return Buffer.alloc(0);
@@ -73,6 +81,10 @@ function ixDataToBuffer(data: unknown): Buffer {
 
 function discriminatorMatches(data: Buffer, discriminator: Buffer): boolean {
   return data.length >= discriminator.length && data.subarray(0, discriminator.length).equals(discriminator);
+}
+
+function isMirrorQuoteMint(mint: string | undefined): boolean {
+  return mint === WRAPPED_SOL_MINT || mint === USDC_MINT;
 }
 
 function buildRequest(trackedWallets: string[]): SubscribeRequest {
@@ -202,6 +214,55 @@ function extractDirectPumpFunSwapFromRabbit(
   return null;
 }
 
+function extractTopLevelPumpSwapBuyFromRabbit(
+  info: SubscribeUpdateTransactionInfo,
+  wallet: string
+): DetectedSwap | null {
+  const message = info.transaction?.message;
+  if (!message) return null;
+
+  const accountKeys = (message.accountKeys ?? []).map(pubkeyToBase58);
+  if (!accountKeys.includes(wallet)) return null;
+
+  for (const ix of message.instructions ?? []) {
+    const programId = accountKeys[Number(ix.programIdIndex)];
+    if (programId !== PUMPSWAP_PROGRAM_ID_BASE58) continue;
+    const accountIndexes = (
+      ix.accounts instanceof Uint8Array ? Array.from(ix.accounts) : Array.from(ix.accounts ?? [])
+    )
+      .map((idx) => Number(idx))
+      .filter((idx) => Number.isInteger(idx) && idx >= 0);
+    if (accountIndexes.length < 17) continue;
+    const keys = accountIndexes.map((idx) => accountKeys[idx]!).filter(Boolean);
+    const baseMint = keys[3];
+    const quoteMint = keys[4];
+    if (!baseMint || !isMirrorQuoteMint(quoteMint)) continue;
+
+    const data = ixDataToBuffer((ix as unknown as { data?: unknown }).data);
+    const isBuy = discriminatorMatches(data, PUMPSWAP_BUY_DISCRIMINATOR);
+    const isExactQuoteIn = discriminatorMatches(data, PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR);
+    if ((!isBuy && !isExactQuoteIn) || data.length < 24) continue;
+    const quoteIn = Number(data.readBigUInt64LE(isExactQuoteIn ? 8 : 16));
+    const minOrBaseOut = Number(data.readBigUInt64LE(isExactQuoteIn ? 16 : 8));
+    if (!Number.isSafeInteger(quoteIn) || quoteIn <= 0) continue;
+
+    return {
+      signature: signatureToBase58(info.signature),
+      wallet,
+      inputMint: quoteMint,
+      outputMint: baseMint,
+      amountRaw: quoteIn,
+      isNativeInput: quoteMint === WRAPPED_SOL_MINT,
+      counterpartyAmountRaw: Number.isSafeInteger(minOrBaseOut) && minOrBaseOut > 0 ? minOrBaseOut : undefined,
+      sourceQuoteMint: quoteMint,
+      sourceQuoteAmountRaw: quoteIn,
+      sourcePumpSwapAccounts: keys,
+    };
+  }
+
+  return null;
+}
+
 export type RabbitUnsubscribe = () => Promise<void>;
 
 export async function subscribeRabbitWalletSwaps(
@@ -248,7 +309,9 @@ export async function subscribeRabbitWalletSwaps(
           if (processedSignatures.has(signature)) return;
 
           for (const wallet of trackedWallets) {
-            const swap = extractDirectPumpFunSwapFromRabbit(info, wallet);
+            const swap =
+              extractDirectPumpFunSwapFromRabbit(info, wallet) ??
+              extractTopLevelPumpSwapBuyFromRabbit(info, wallet);
             if (!swap) continue;
             processedSignatures.add(signature);
             const ageMs = update.createdAt ? Date.now() - update.createdAt.getTime() : null;
