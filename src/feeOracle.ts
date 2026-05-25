@@ -74,7 +74,7 @@ export function stopFeeOracle(): void {
 /** Synchronous accessor for the current priority fee. Always returns at least the static floor. */
 export function getDynamicPriorityFee(): number {
   if (!dynamicPriorityFeeEnabled) return priorityFeeMicroLamports;
-  return cachedFee;
+  return Math.max(cachedFee, priorityFeeMicroLamports);
 }
 
 /** Diagnostic snapshot for status displays. */

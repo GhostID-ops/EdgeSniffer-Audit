@@ -33,6 +33,18 @@ cache.set(USDC_MINT, {
 
 type Partial = { symbol?: string; name?: string; decimals?: number };
 
+export type TokenPairInfo = {
+  mint: string;
+  chainId: string;
+  dexId: string;
+  pairAddress: string;
+  url: string | null;
+  liquidityUsd: number | null;
+  marketCapUsd: number | null;
+  baseToken: { address: string; symbol: string; name: string };
+  quoteToken: { address: string; symbol: string; name: string };
+};
+
 async function fetchHeliusDAS(mint: string): Promise<Partial | null> {
   try {
     const res = await fetch(readRpcUrl, {
@@ -137,6 +149,57 @@ async function getDexScreenerMarketCap(mint: string): Promise<number | null> {
     );
     const mc = best.marketCap ?? best.fdv;
     return typeof mc === "number" && mc > 0 ? mc : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function getTokenPairInfo(mint: string): Promise<TokenPairInfo | null> {
+  try {
+    const res = await fetch(
+      `https://api.dexscreener.com/latest/dex/tokens/${mint}`,
+      { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }
+    );
+    if (!res.ok) return null;
+
+    const json = (await res.json()) as {
+      pairs?: Array<{
+        chainId?: string;
+        dexId?: string;
+        pairAddress?: string;
+        url?: string;
+        marketCap?: number;
+        fdv?: number;
+        liquidity?: { usd?: number };
+        baseToken?: { address?: string; symbol?: string; name?: string };
+        quoteToken?: { address?: string; symbol?: string; name?: string };
+      }>;
+    };
+    const pairs = (json.pairs ?? []).filter((p) => p.chainId === "solana" && p.pairAddress);
+    if (pairs.length === 0) return null;
+
+    const best = pairs.reduce((a, b) =>
+      (b.liquidity?.usd ?? 0) > (a.liquidity?.usd ?? 0) ? b : a
+    );
+    return {
+      mint,
+      chainId: best.chainId ?? "solana",
+      dexId: best.dexId ?? "unknown",
+      pairAddress: best.pairAddress!,
+      url: best.url ?? null,
+      liquidityUsd: typeof best.liquidity?.usd === "number" ? best.liquidity.usd : null,
+      marketCapUsd: typeof (best.marketCap ?? best.fdv) === "number" ? best.marketCap ?? best.fdv ?? null : null,
+      baseToken: {
+        address: best.baseToken?.address ?? "",
+        symbol: best.baseToken?.symbol ?? "",
+        name: best.baseToken?.name ?? "",
+      },
+      quoteToken: {
+        address: best.quoteToken?.address ?? "",
+        symbol: best.quoteToken?.symbol ?? "",
+        name: best.quoteToken?.name ?? "",
+      },
+    };
   } catch {
     return null;
   }

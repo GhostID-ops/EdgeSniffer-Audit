@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "tsx src/copytrade.ts",
+    "prebot": "tsx src/killOldProcesses.ts bot",
     "bot": "tsx src/copytrade.ts",
     "dev": "tsx src/copytrade.ts",
     "web": "tsx src/web.ts",

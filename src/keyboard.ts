@@ -5,6 +5,7 @@ import {
   getBotState,
   sellAllPositions,
   sellPositionByIndex,
+  sellPositionPercentByIndex,
   toggleMirrorSells,
   isMirrorSellsEnabled,
   toggleBuyOncePerToken,
@@ -57,6 +58,10 @@ export function registerKeyboardShortcuts(onQuit: () => void): void {
   const shortcuts: Shortcut[] = [
     { key: "1", label: "Sell Trade #1 position", action: () => runShortcut(() => sellPositionByIndex(1)) },
     { key: "2", label: "Sell Trade #2 position", action: () => runShortcut(() => sellPositionByIndex(2)) },
+    { key: "3", label: "Sell Trade #3 position", action: () => runShortcut(() => sellPositionByIndex(3)) },
+    { key: "!", label: "Sell 50% of Trade #1 position", action: () => runShortcut(() => sellPositionPercentByIndex(1, 0.5)) },
+    { key: "@", label: "Sell 50% of Trade #2 position", action: () => runShortcut(() => sellPositionPercentByIndex(2, 0.5)) },
+    { key: "#", label: "Sell 50% of Trade #3 position", action: () => runShortcut(() => sellPositionPercentByIndex(3, 0.5)) },
     { key: "a", label: "Sell ALL open positions (sim/live)", action: () => runShortcut(sellAllPositions) },
     { key: "e", label: "Close all open positions (sim) at market & report", action: () => runShortcut(closeAllOpenPositionsSimulated) },
     { key: "r", label: "Print PnL report", action: printPnlReport },
@@ -84,6 +89,10 @@ export function registerKeyboardShortcuts(onQuit: () => void): void {
     }
     if (key === "1") runShortcut(() => sellPositionByIndex(1));
     else if (key === "2") runShortcut(() => sellPositionByIndex(2));
+    else if (key === "3") runShortcut(() => sellPositionByIndex(3));
+    else if (key === "!") runShortcut(() => sellPositionPercentByIndex(1, 0.5));
+    else if (key === "@") runShortcut(() => sellPositionPercentByIndex(2, 0.5));
+    else if (key === "#") runShortcut(() => sellPositionPercentByIndex(3, 0.5));
     else if (key === "a") runShortcut(sellAllPositions);
     else if (key === "e") runShortcut(closeAllOpenPositionsSimulated);
     else if (key === "r") printPnlReport();

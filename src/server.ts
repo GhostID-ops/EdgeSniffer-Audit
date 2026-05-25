@@ -2,13 +2,44 @@ import { createServer, IncomingMessage, ServerResponse } from "node:http";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
-import { startBot, stopBot, getBotState } from "./botService.js";
+import {
+  startBot,
+  stopBot,
+  getBotState,
+  sellAllPositions,
+  sellPositionByIndex,
+  sellPositionPercentByIndex,
+  closeAllOpenPositionsSimulated,
+  resetTradingState,
+} from "./botService.js";
 import { getLogs } from "./logBuffer.js";
+import { getFriendBotSettings } from "./config.js";
+import { normalizeFriendSettings, persistFriendSettings } from "./settingsStore.js";
+import { getTokenPairInfo, WRAPPED_SOL_MINT } from "./tokenRegistry.js";
+import { getQuote } from "./jupiter.js";
 
 const PORT = parseInt(process.env.WEB_PORT ?? "3000", 10);
+const TOKEN_LIVE_CACHE_MS = Math.max(
+  5_000,
+  parseInt(process.env.UI_TOKEN_LIVE_CACHE_MS ?? "20000", 10)
+);
 
 const here = dirname(fileURLToPath(import.meta.url));
 const publicDir = resolve(here, "..", "public");
+
+type TokenLiveBody = {
+  pair: Awaited<ReturnType<typeof getTokenPairInfo>>;
+  quote: {
+    outSolLamports: number;
+    unrealizedPnlLamports: number | null;
+    unrealizedPnlPct: number | null;
+    priceImpactPct: number | null;
+  } | null;
+  checkedAt: number;
+  cached?: boolean;
+};
+
+const tokenLiveCache = new Map<string, TokenLiveBody>();
 
 function sendJson(res: ServerResponse, status: number, body: unknown): void {
   const text = JSON.stringify(body);
@@ -21,6 +52,34 @@ function sendJson(res: ServerResponse, status: number, body: unknown): void {
 
 function sendError(res: ServerResponse, status: number, message: string): void {
   sendJson(res, status, { error: message });
+}
+
+function readJsonBody(req: IncomingMessage): Promise<Record<string, unknown>> {
+  return new Promise((resolveBody, reject) => {
+    let raw = "";
+    req.setEncoding("utf8");
+    req.on("data", (chunk) => {
+      raw += chunk;
+      if (raw.length > 64_000) {
+        reject(new Error("Request body too large"));
+        req.destroy();
+      }
+    });
+    req.on("end", () => {
+      if (!raw.trim()) return resolveBody({});
+      try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+          reject(new Error("Expected a JSON object"));
+          return;
+        }
+        resolveBody(parsed as Record<string, unknown>);
+      } catch {
+        reject(new Error("Invalid JSON body"));
+      }
+    });
+    req.on("error", reject);
+  });
 }
 
 function serveIndex(res: ServerResponse): void {
@@ -37,6 +96,20 @@ function serveIndex(res: ServerResponse): void {
   }
 }
 
+function servePublicFile(res: ServerResponse, filename: string, contentType: string): void {
+  try {
+    const body = readFileSync(join(publicDir, filename));
+    res.writeHead(200, {
+      "Content-Type": contentType,
+      "Content-Length": body.length,
+    });
+    res.end(body);
+  } catch {
+    res.writeHead(404);
+    res.end("Not found");
+  }
+}
+
 async function handle(
   req: IncomingMessage,
   res: ServerResponse
@@ -47,8 +120,83 @@ async function handle(
     return serveIndex(res);
   }
 
+  if (req.method === "GET" && url === "/favicon.svg") {
+    return servePublicFile(res, "favicon.svg", "image/svg+xml; charset=utf-8");
+  }
+
   if (req.method === "GET" && url === "/api/state") {
     return sendJson(res, 200, getBotState());
+  }
+
+  if (req.method === "GET" && url === "/api/settings") {
+    return sendJson(res, 200, getFriendBotSettings());
+  }
+
+  if (req.method === "GET" && url.startsWith("/api/token-pair")) {
+    const u = new URL(url, "http://localhost");
+    const mint = (u.searchParams.get("mint") ?? "").trim();
+    if (!mint) return sendError(res, 400, "Missing mint");
+    return sendJson(res, 200, { pair: await getTokenPairInfo(mint) });
+  }
+
+  if (req.method === "GET" && url.startsWith("/api/token-live")) {
+    const u = new URL(url, "http://localhost");
+    const mint = (u.searchParams.get("mint") ?? "").trim();
+    const amountRaw = parseInt(u.searchParams.get("amountRaw") ?? "0", 10);
+    const costBasisLamports = parseFloat(u.searchParams.get("costBasisLamports") ?? "0");
+    if (!mint) return sendError(res, 400, "Missing mint");
+    const cacheKey = `${mint}:${amountRaw}:${costBasisLamports}`;
+    const cached = tokenLiveCache.get(cacheKey);
+    if (cached && Date.now() - cached.checkedAt < TOKEN_LIVE_CACHE_MS) {
+      return sendJson(res, 200, { ...cached, cached: true });
+    }
+    const pair = await getTokenPairInfo(mint);
+    let quote: {
+      outSolLamports: number;
+      unrealizedPnlLamports: number | null;
+      unrealizedPnlPct: number | null;
+      priceImpactPct: number | null;
+    } | null = null;
+    if (Number.isFinite(amountRaw) && amountRaw > 0) {
+      try {
+        const q = await getQuote(mint, WRAPPED_SOL_MINT, amountRaw, 80);
+        const outSolLamports = parseInt(q.outAmount ?? "0", 10);
+        const pnl =
+          Number.isFinite(costBasisLamports) && costBasisLamports > 0
+            ? outSolLamports - costBasisLamports
+            : null;
+        quote = {
+          outSolLamports,
+          unrealizedPnlLamports: pnl,
+          unrealizedPnlPct:
+            pnl != null && costBasisLamports > 0 ? (pnl / costBasisLamports) * 100 : null,
+          priceImpactPct: q.priceImpactPct ? parseFloat(q.priceImpactPct) * 100 : null,
+        };
+      } catch (err) {
+        console.warn(
+          `Live quote unavailable for ${mint.slice(0, 8)}: ${
+            err instanceof Error ? err.message : String(err)
+          }`
+        );
+      }
+    }
+    const body: TokenLiveBody = { pair, quote, checkedAt: Date.now() };
+    tokenLiveCache.set(cacheKey, body);
+    if (tokenLiveCache.size > 250) {
+      const oldest = tokenLiveCache.keys().next().value;
+      if (oldest) tokenLiveCache.delete(oldest);
+    }
+    return sendJson(res, 200, body);
+  }
+
+  if (req.method === "POST" && url === "/api/settings") {
+    try {
+      const body = await readJsonBody(req);
+      const settings = normalizeFriendSettings(body);
+      return sendJson(res, 200, { ok: true, settings: persistFriendSettings(settings) });
+    } catch (err) {
+      return sendError(res, 400, err instanceof Error ? err.message : String(err));
+    }
   }
 
   if (req.method === "GET" && url.startsWith("/api/logs")) {
@@ -61,8 +209,13 @@ async function handle(
 
   if (req.method === "POST" && url === "/api/start") {
     try {
+      const body = await readJsonBody(req);
+      let settings = getFriendBotSettings();
+      if (Object.keys(body).length > 0) {
+        settings = persistFriendSettings(normalizeFriendSettings(body));
+      }
       await startBot();
-      return sendJson(res, 200, { ok: true });
+      return sendJson(res, 200, { ok: true, settings });
     } catch (err) {
       return sendError(
         res,
@@ -75,6 +228,77 @@ async function handle(
   if (req.method === "POST" && url === "/api/stop") {
     stopBot();
     return sendJson(res, 200, { ok: true });
+  }
+
+  if (req.method === "POST" && url === "/api/actions/sell-all") {
+    try {
+      await sellAllPositions();
+      return sendJson(res, 200, { ok: true, state: getBotState() });
+    } catch (err) {
+      return sendError(res, 400, err instanceof Error ? err.message : String(err));
+    }
+  }
+
+  if (req.method === "POST" && url === "/api/actions/panic") {
+    try {
+      stopBot();
+      await sellAllPositions();
+      return sendJson(res, 200, { ok: true, state: getBotState() });
+    } catch (err) {
+      return sendError(res, 400, err instanceof Error ? err.message : String(err));
+    }
+  }
+
+  if (req.method === "POST" && url === "/api/actions/close-all-sim") {
+    try {
+      await closeAllOpenPositionsSimulated();
+      return sendJson(res, 200, { ok: true, state: getBotState() });
+    } catch (err) {
+      return sendError(res, 400, err instanceof Error ? err.message : String(err));
+    }
+  }
+
+  if (req.method === "POST" && url === "/api/actions/reset-session") {
+    resetTradingState();
+    return sendJson(res, 200, { ok: true });
+  }
+
+  if (req.method === "POST" && url.startsWith("/api/actions/sell-position/")) {
+    const index = parseInt(url.slice("/api/actions/sell-position/".length), 10);
+    if (!Number.isInteger(index) || index <= 0) return sendError(res, 400, "Invalid position index");
+    try {
+      await sellPositionByIndex(index);
+      return sendJson(res, 200, { ok: true, state: getBotState() });
+    } catch (err) {
+      return sendError(res, 400, err instanceof Error ? err.message : String(err));
+    }
+  }
+
+  if (req.method === "POST" && url.startsWith("/api/actions/sell-position-half/")) {
+    const index = parseInt(url.slice("/api/actions/sell-position-half/".length), 10);
+    if (!Number.isInteger(index) || index <= 0) return sendError(res, 400, "Invalid position index");
+    try {
+      await sellPositionPercentByIndex(index, 0.5);
+      return sendJson(res, 200, { ok: true, state: getBotState() });
+    } catch (err) {
+      return sendError(res, 400, err instanceof Error ? err.message : String(err));
+    }
+  }
+
+  if (req.method === "POST" && url.startsWith("/api/actions/sell-position-percent/")) {
+    const u = new URL(url, "http://localhost");
+    const index = parseInt(u.pathname.slice("/api/actions/sell-position-percent/".length), 10);
+    const fraction = parseFloat(u.searchParams.get("fraction") ?? "0");
+    if (!Number.isInteger(index) || index <= 0) return sendError(res, 400, "Invalid position index");
+    if (!Number.isFinite(fraction) || fraction <= 0 || fraction > 1) {
+      return sendError(res, 400, "Invalid sell fraction");
+    }
+    try {
+      await sellPositionPercentByIndex(index, fraction);
+      return sendJson(res, 200, { ok: true, state: getBotState() });
+    } catch (err) {
+      return sendError(res, 400, err instanceof Error ? err.message : String(err));
+    }
   }
 
   res.writeHead(404);

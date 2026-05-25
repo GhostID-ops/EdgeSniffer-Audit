@@ -8,8 +8,16 @@ import {
   simulationSolBalance,
   minBuyLamports,
   maxBuyLamports,
+  solReserveLamports,
+  computeUnitLimit,
+  useJitoDirect,
+  useJitoFallback,
+  HELIUS_TIP_MIN_LAMPORTS,
   minBuyUsdcRaw,
   maxBuyUsdcRaw,
+  tipLamports,
+  priorityFeeMicroLamports,
+  mirrorSlippageBps,
   mirrorQuoteAsset,
   pollIntervalMs,
   blockPumpfunMayhem,
@@ -137,6 +145,16 @@ export type BotState = {
   simulationMode: boolean;
   minBuySol: number;
   maxBuySol: number;
+  solReserveSol: number;
+  tipLamports: number;
+  priorityFeeMicroLamports: number;
+  mirrorSlippageBps: number;
+  feeGuide: {
+    computeUnitLimit: number;
+    useJitoDirect: boolean;
+    useJitoFallback: boolean;
+    heliusTipMinLamports: number;
+  };
   pollIntervalMs: number;
   riskControlsEnabled: boolean;
   riskCheckIntervalMs: number;
@@ -1546,12 +1564,17 @@ export function resetTradingState(): void {
 async function sellSimulatedPosition(
   position: PositionSnapshot,
   note?: string,
-  quotedOutSolLamports?: number
+  quotedOutSolLamports?: number,
+  amountRawOverride?: number
 ): Promise<void> {
+  const sellRaw = Math.max(
+    1,
+    Math.min(position.heldRaw, Math.floor(amountRawOverride ?? position.heldRaw))
+  );
   const outSolLamports =
     quotedOutSolLamports ??
     parseInt(
-      (await getQuote(position.mint, WRAPPED_SOL_MINT, position.heldRaw, 80))
+      (await getQuote(position.mint, WRAPPED_SOL_MINT, sellRaw, 80))
         .outAmount ?? "0",
       10
     );
@@ -1566,18 +1589,20 @@ async function sellSimulatedPosition(
     decimals: position.decimals,
     isSol: false,
   };
-  const snap = recordSell(meta, position.heldRaw, outSolLamports);
-  const fillPnlLamports = outSolLamports - position.costBasisRemainingLamports;
+  const snap = recordSell(meta, sellRaw, outSolLamports);
+  const avgEntry = position.totalBoughtRaw > 0 ? position.totalSolSpentLamports / position.totalBoughtRaw : 0;
+  const sellCostBasisLamports = avgEntry * sellRaw;
+  const fillPnlLamports = outSolLamports - sellCostBasisLamports;
   const finalPnlPct =
-    position.costBasisRemainingLamports > 0
-      ? ((outSolLamports - position.costBasisRemainingLamports) /
-          position.costBasisRemainingLamports) *
+    sellCostBasisLamports > 0
+      ? ((outSolLamports - sellCostBasisLamports) /
+          sellCostBasisLamports) *
         100
       : 0;
   const marketCapUsd = await maybeGetMarketCap(position.mint);
   const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
 
-  console.log(`Sold (simulated): ${formatTokenAmount(position.heldRaw, position.decimals)} $${position.symbol}`);
+  console.log(`Sold (simulated): ${formatTokenAmount(sellRaw, position.decimals)} $${position.symbol}`);
   console.log(`Received: ${formatSolAmount(outSolLamports)} SOL`);
   console.log(`Fill PnL: ${formatPnl(fillPnlLamports)}`);
   console.log(`Position PnL: ${formatPnl(snap.realizedPnlLamports)}`);
@@ -1595,8 +1620,8 @@ async function sellSimulatedPosition(
         symbol: position.symbol,
         name: position.symbol,
         decimals: position.decimals,
-        amountRaw: position.heldRaw,
-        display: `${formatTokenAmount(position.heldRaw, position.decimals)} $${position.symbol}`,
+        amountRaw: sellRaw,
+        display: `${formatTokenAmount(sellRaw, position.decimals)} $${position.symbol}`,
       },
       output: {
         mint: WRAPPED_SOL_MINT,
@@ -1621,7 +1646,7 @@ async function sellSimulatedPosition(
   void telegram.notifyTrade({
     type: "sell",
     symbol: position.symbol,
-    amount: formatTokenAmount(position.heldRaw, position.decimals),
+    amount: formatTokenAmount(sellRaw, position.decimals),
     solAmount: formatSolAmount(outSolLamports),
     marketCap: marketCapUsd != null ? formatMarketCap(marketCapUsd) : undefined,
     marketCapCheckedAt: marketCapCheckedAt ?? undefined,
@@ -1639,7 +1664,12 @@ async function sellSimulatedPosition(
  * Sell specific position by index (#1, #2, etc)
  */
 export async function sellPositionByIndex(index: number): Promise<void> {
+  await sellPositionPercentByIndex(index, 1);
+}
+
+export async function sellPositionPercentByIndex(index: number, fraction: number): Promise<void> {
   const open = getPositions().filter((p) => p.heldRaw > 0);
+  const clampedFraction = Math.min(1, Math.max(0.000001, fraction));
   
   if (open.length === 0) {
     console.log("?? No open positions to sell.");
@@ -1653,8 +1683,14 @@ export async function sellPositionByIndex(index: number): Promise<void> {
   }
   
   const position = open[index - 1]; // Convert to 0-based index
+  const targetRaw =
+    clampedFraction >= 0.999999
+      ? position.heldRaw
+      : Math.floor(position.totalBoughtRaw * clampedFraction);
+  const sellRaw = Math.min(position.heldRaw, Math.max(1, targetRaw));
+  const pctLabel = clampedFraction >= 0.999999 ? "100%" : `${Math.round(clampedFraction * 100)}%`;
   if (simulationMode) {
-    await sellSimulatedPosition(position);
+    await sellSimulatedPosition(position, clampedFraction >= 0.999999 ? undefined : `manual ${pctLabel} trim`, undefined, sellRaw);
     return;
   }
 
@@ -1663,10 +1699,10 @@ export async function sellPositionByIndex(index: number): Promise<void> {
   }
 
   try {
-    await sellLivePosition(position);
+    await sellLivePosition(position, undefined, sellRaw);
   } catch (error) {
     void telegram.notifyError(
-      `Failed to sell position #${index} ($${position.symbol})`,
+      `Failed to sell ${pctLabel} of position #${index} ($${position.symbol})`,
       error instanceof Error ? (error as Error).message : String(error)
     );
     throw error;
@@ -1678,7 +1714,7 @@ export async function sellPositionByIndex(index: number): Promise<void> {
 /**
  * Sell all open positions (simulated or live based on mode)
  */
-async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<void> {
+async function sellLivePosition(p: PositionSnapshot, note?: string, amountRawOverride?: number): Promise<void> {
   let effectiveNote = note;
   let liveHeldRaw: number | null;
   try {
@@ -1728,7 +1764,9 @@ async function sellLivePosition(p: PositionSnapshot, note?: string): Promise<voi
     return;
   }
   const sellRaw =
-    liveHeldRaw != null && liveHeldRaw > 0
+    amountRawOverride != null
+      ? Math.min(Math.max(1, Math.floor(amountRawOverride)), liveHeldRaw ?? p.heldRaw, p.heldRaw)
+      : liveHeldRaw != null && liveHeldRaw > 0
       ? Math.min(liveHeldRaw, p.heldRaw)
       : p.heldRaw;
   if (liveHeldRaw == null && p.heldRaw > 0) {
@@ -2500,6 +2538,16 @@ export function getBotState(): BotState {
     simulationMode,
     minBuySol: minBuyLamports / LAMPORTS_PER_SOL,
     maxBuySol: maxBuyLamports / LAMPORTS_PER_SOL,
+    solReserveSol: solReserveLamports / LAMPORTS_PER_SOL,
+    tipLamports,
+    priorityFeeMicroLamports,
+    mirrorSlippageBps,
+    feeGuide: {
+      computeUnitLimit,
+      useJitoDirect,
+      useJitoFallback,
+      heliusTipMinLamports: HELIUS_TIP_MIN_LAMPORTS,
+    },
     pollIntervalMs,
     riskControlsEnabled,
     riskCheckIntervalMs,
@@ -2513,7 +2561,7 @@ export function getBotState(): BotState {
         : null,
     lastBalanceAt,
     recentSwaps: recentSwaps.slice(),
-    positions: getPositions(),
+    positions: getPositions().filter((p) => p.heldRaw > 0),
     totals: getTotals(),
   };
 }

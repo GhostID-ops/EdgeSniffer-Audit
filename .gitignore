@@ -6,4 +6,5 @@ rust-sidecar/target
 snapshots/
 *.log
 data/*.jsonl
+data/*.lock
 .DS_Store

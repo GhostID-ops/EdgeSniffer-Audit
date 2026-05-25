@@ -32,6 +32,25 @@ If `winget` asks you to accept source agreements, type `Y` and press Enter.
 
 If `npm` is not recognized after installation, fully close Windsurf and open it again. If it still fails, restart Windows.
 
+If PowerShell says `npm.ps1` cannot be loaded because script execution is disabled, run this once:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+Type `Y` and press Enter when Windows asks for confirmation. Then close the terminal, open a new Windsurf terminal, and check again:
+
+```powershell
+npm --version
+```
+
+Quick temporary workaround if you do not want to change the policy yet:
+
+```powershell
+npm.cmd --version
+npm.cmd install
+```
+
 ## 3. Clone FinalBot
 
 Create a clean folder and clone the bot:
@@ -42,6 +61,32 @@ cd C:\Trading
 git clone --branch restore-version https://github.com/frankykas/TradingBot.git FinalBot
 cd C:\Trading\FinalBot
 ```
+
+If Git says `remote: Repository not found` or `fatal: repository not found`, check these first:
+
+1. Make sure the command is exactly:
+
+```powershell
+git clone --branch restore-version https://github.com/frankykas/TradingBot.git FinalBot
+```
+
+2. If the repo is private, the owner must invite your GitHub account:
+
+- Open the repo on GitHub.
+- Go to `Settings`.
+- Go to `Collaborators`.
+- Add your friend's GitHub username or email.
+- Your friend must accept the invite from GitHub.
+
+3. Before cloning again, your friend should open this link in a browser while signed in to GitHub:
+
+```text
+https://github.com/frankykas/TradingBot
+```
+
+If GitHub shows `404` in the browser, the friend does not have access yet.
+
+4. After access works in the browser, run the clone command again. Git may open a sign-in window. Sign in with the same GitHub account that was invited.
 
 Open the cloned folder in Windsurf:
 
@@ -81,6 +126,20 @@ LICENSE_KEY=your_license_key
 ```
 
 Keep `.env` private. Never send it to anyone and never commit it to GitHub.
+
+Important license API note:
+
+```env
+LICENSE_API_URL=https://your-public-license-api-url
+```
+
+Do not use this on a friend's computer:
+
+```env
+LICENSE_API_URL=http://127.0.0.1:8787
+```
+
+`127.0.0.1` means the license server is running on the same computer. Friends need a public HTTPS license API URL from the bot owner. If they use `127.0.0.1`, the bot will fail with `License validation failed and no fresh cache is available: fetch failed`.
 
 ## 6. Helius Setup
 
@@ -165,6 +224,18 @@ npm --version
 
 Then close and reopen Windsurf, or restart Windows.
 
+If PowerShell says script execution is disabled for `npm.ps1`:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+Then open a new terminal and run:
+
+```powershell
+npm --version
+```
+
 If dependencies are missing:
 
 ```powershell
@@ -187,5 +258,14 @@ SECURE_RPC_URL=
 WEBSOCKET_URL=
 SIMULATION_MODE=true
 ```
+
+If license validation fails with `fetch failed`, check:
+
+```env
+LICENSE_KEY=
+LICENSE_API_URL=
+```
+
+`LICENSE_API_URL` must be reachable from this computer in a browser. It should not be `http://127.0.0.1:8787` unless the license API is running on this same computer.
 
 Do not commit `.env`, `.license-cache.json`, `node_modules`, `dist`, logs, or `data/*.jsonl`.

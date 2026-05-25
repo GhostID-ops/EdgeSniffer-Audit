@@ -5,15 +5,15 @@ const HELIUS_API_KEY = process.env.HELIUS_API_KEY ?? "";
 const SENDER_ENDPOINT =
   process.env.SENDER_ENDPOINT ?? "http://ewr-sender.helius-rpc.com/fast";
 const SECURE_RPC_URL = process.env.SECURE_RPC_URL ?? "";
-const TIP_LAMPORTS = parseInt(
+let TIP_LAMPORTS = parseInt(
   process.env.TIP_LAMPORTS ?? "65000",
   10
 ) as number;
-const PRIORITY_FEE_MICRO_LAMPORTS = parseInt(
+let PRIORITY_FEE_MICRO_LAMPORTS = parseInt(
   process.env.PRIORITY_FEE_MICRO_LAMPORTS ?? "50000",
   10
 ) as number;
-const MIRROR_SLIPPAGE_BPS = parseInt(
+let MIRROR_SLIPPAGE_BPS = parseInt(
   process.env.MIRROR_SLIPPAGE_BPS ?? process.env.SWAP_SLIPPAGE_BPS ?? "500",
   10
 ) as number;
@@ -42,13 +42,13 @@ export const trackedWallets: string[] = TRACKED_WALLETS_RAW
   .filter(Boolean);
 
 /** Min buy size in SOL. Mirror trades below this are skipped. Default 0.01 SOL. */
-const MIN_BUY_SOL = parseFloat(process.env.MIN_BUY_SOL ?? "0.01");
+let MIN_BUY_SOL = parseFloat(process.env.MIN_BUY_SOL ?? "0.01");
 /** Max buy size in SOL. Mirror trades are capped to this. Default 1 SOL. */
-const MAX_BUY_SOL = parseFloat(process.env.MAX_BUY_SOL ?? "1");
+let MAX_BUY_SOL = parseFloat(process.env.MAX_BUY_SOL ?? "1");
 const MIN_BUY_USDC = parseFloat(process.env.MIN_BUY_USDC ?? "50");
 const MAX_BUY_USDC = parseFloat(process.env.MAX_BUY_USDC ?? "60");
 /** SOL reserve amount to keep for gas fees. Prevents wallet from going to 0 SOL. Default 0.1 SOL. */
-const SOL_RESERVE = parseFloat(process.env.SOL_RESERVE ?? "0.1");
+let SOL_RESERVE = parseFloat(process.env.SOL_RESERVE ?? "0.1");
 const MIRROR_QUOTE_ASSET_RAW = (process.env.MIRROR_QUOTE_ASSET ?? "SOL").toUpperCase();
 export type MirrorQuoteAsset = "SOL" | "USDC" | "MATCH";
 export const mirrorQuoteAsset: MirrorQuoteAsset =
@@ -340,13 +340,13 @@ export const TELEGRAM_BROADCAST_CHAT_ID =
   process.env.TELEGRAM_BROADCAST_CHAT_ID ?? "";
 
 /** Tip amount in lamports (default 65_000 = 0.000065 SOL). Configurable via TIP_LAMPORTS. */
-export const tipLamports = TIP_LAMPORTS;
+export let tipLamports = TIP_LAMPORTS;
 
 /** Priority fee in microLamports per CU (default 50_000). Configurable via PRIORITY_FEE_MICRO_LAMPORTS. */
-export const priorityFeeMicroLamports = PRIORITY_FEE_MICRO_LAMPORTS;
+export let priorityFeeMicroLamports = PRIORITY_FEE_MICRO_LAMPORTS;
 
 /** Mirror swap slippage in basis points. 500 = 5%. */
-export const mirrorSlippageBps = MIRROR_SLIPPAGE_BPS;
+export let mirrorSlippageBps = MIRROR_SLIPPAGE_BPS;
 
 /** One-time retry slippage for Jupiter 6001 slippage failures. 1500 = 15%. */
 export const mirrorRetrySlippageBps = MIRROR_RETRY_SLIPPAGE_BPS;
@@ -376,14 +376,82 @@ export const confirmationRebroadcastRetries = Math.max(
 );
 
 /** Min buy in lamports (for copytrading: skip mirrors below this). */
-export const minBuyLamports = Math.round(MIN_BUY_SOL * LAMPORTS_PER_SOL);
+export let minBuyLamports = Math.round(MIN_BUY_SOL * LAMPORTS_PER_SOL);
 /** Max buy in lamports (for copytrading: cap mirror size to this). */
-export const maxBuyLamports = Math.round(MAX_BUY_SOL * LAMPORTS_PER_SOL);
+export let maxBuyLamports = Math.round(MAX_BUY_SOL * LAMPORTS_PER_SOL);
 /** Min/max USDC buy size in raw units (USDC has 6 decimals). */
 export const minBuyUsdcRaw = Math.round(MIN_BUY_USDC * 1_000_000);
 export const maxBuyUsdcRaw = Math.round(MAX_BUY_USDC * 1_000_000);
 /** SOL reserve in lamports. Prevents wallet from going to 0 SOL. */
-export const solReserveLamports = Math.round(SOL_RESERVE * LAMPORTS_PER_SOL);
+export let solReserveLamports = Math.round(SOL_RESERVE * LAMPORTS_PER_SOL);
+
+export type FriendBotSettings = {
+  trackedWallets: string[];
+  minBuySol: number;
+  maxBuySol: number;
+  solReserveSol: number;
+  tipLamports: number;
+  priorityFeeMicroLamports: number;
+  mirrorSlippageBps: number;
+  simulationMode: boolean;
+};
+
+export function getFriendBotSettings(): FriendBotSettings {
+  return {
+    trackedWallets: trackedWallets.slice(),
+    minBuySol: minBuyLamports / LAMPORTS_PER_SOL,
+    maxBuySol: maxBuyLamports / LAMPORTS_PER_SOL,
+    solReserveSol: solReserveLamports / LAMPORTS_PER_SOL,
+    tipLamports,
+    priorityFeeMicroLamports,
+    mirrorSlippageBps,
+    simulationMode,
+  };
+}
+
+function positiveFinite(value: number, fallback: number): number {
+  return Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
+export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): FriendBotSettings {
+  if (settings.trackedWallets) {
+    trackedWallets.splice(
+      0,
+      trackedWallets.length,
+      ...settings.trackedWallets.map((w) => w.trim()).filter(Boolean)
+    );
+    process.env.TRACKED_WALLETS = trackedWallets.join(",");
+  }
+
+  MIN_BUY_SOL = positiveFinite(settings.minBuySol ?? MIN_BUY_SOL, MIN_BUY_SOL);
+  MAX_BUY_SOL = positiveFinite(settings.maxBuySol ?? MAX_BUY_SOL, MAX_BUY_SOL);
+  if (MAX_BUY_SOL < MIN_BUY_SOL) MAX_BUY_SOL = MIN_BUY_SOL;
+  SOL_RESERVE = Math.max(0, settings.solReserveSol ?? SOL_RESERVE);
+  TIP_LAMPORTS = Math.max(0, Math.round(settings.tipLamports ?? TIP_LAMPORTS));
+  PRIORITY_FEE_MICRO_LAMPORTS = Math.max(
+    0,
+    Math.round(settings.priorityFeeMicroLamports ?? PRIORITY_FEE_MICRO_LAMPORTS)
+  );
+  MIRROR_SLIPPAGE_BPS = Math.max(1, Math.round(settings.mirrorSlippageBps ?? MIRROR_SLIPPAGE_BPS));
+
+  tipLamports = TIP_LAMPORTS;
+  priorityFeeMicroLamports = PRIORITY_FEE_MICRO_LAMPORTS;
+  mirrorSlippageBps = MIRROR_SLIPPAGE_BPS;
+  minBuyLamports = Math.round(MIN_BUY_SOL * LAMPORTS_PER_SOL);
+  maxBuyLamports = Math.round(MAX_BUY_SOL * LAMPORTS_PER_SOL);
+  solReserveLamports = Math.round(SOL_RESERVE * LAMPORTS_PER_SOL);
+  if (typeof settings.simulationMode === "boolean") setSimulationMode(settings.simulationMode);
+
+  process.env.MIN_BUY_SOL = String(MIN_BUY_SOL);
+  process.env.MAX_BUY_SOL = String(MAX_BUY_SOL);
+  process.env.SOL_RESERVE = String(SOL_RESERVE);
+  process.env.TIP_LAMPORTS = String(TIP_LAMPORTS);
+  process.env.PRIORITY_FEE_MICRO_LAMPORTS = String(PRIORITY_FEE_MICRO_LAMPORTS);
+  process.env.MIRROR_SLIPPAGE_BPS = String(MIRROR_SLIPPAGE_BPS);
+  process.env.SIMULATION_MODE = simulationMode ? "true" : "false";
+
+  return getFriendBotSettings();
+}
 
 /** Poll interval in ms. Lower = faster detection, more RPC load. Default 2500. */
 export const pollIntervalMs = Math.max(

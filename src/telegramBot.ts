@@ -1,3 +1,5 @@
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID } from "./config.js";
 import { getPositions, getTotals } from "./pnl.js";
 import {
@@ -56,6 +58,7 @@ type SendOptions = {
 const POLL_TIMEOUT_SECONDS = 25;
 const POLL_RETRY_MS = 5_000;
 const MESSAGE_LIMIT = 3_900;
+const POLLING_LOCK_FILE = resolve("data", "telegram-polling.lock");
 
 function escapeHtml(value: unknown): string {
   return String(value)
@@ -75,9 +78,10 @@ function commandName(text: string): string {
 class TelegramBotHandler {
   private readonly botToken: string;
   private readonly chatId: string;
-  private readonly enabled: boolean;
+  private enabled: boolean;
   private offset = 0;
   private pollingStarted = false;
+  private lockAcquired = false;
 
   constructor() {
     this.botToken = TELEGRAM_BOT_TOKEN || "";
@@ -89,8 +93,49 @@ class TelegramBotHandler {
       return;
     }
 
+    if (!this.acquirePollingLock()) {
+      this.enabled = false;
+      return;
+    }
+
     console.log("Telegram command handlers enabled.");
     void this.startPolling();
+  }
+
+  private acquirePollingLock(): boolean {
+    mkdirSync(dirname(POLLING_LOCK_FILE), { recursive: true });
+
+    if (existsSync(POLLING_LOCK_FILE)) {
+      const ownerPid = Number(readFileSync(POLLING_LOCK_FILE, "utf8").trim());
+      if (Number.isInteger(ownerPid) && ownerPid > 0 && ownerPid !== process.pid) {
+        try {
+          process.kill(ownerPid, 0);
+          console.warn(
+            `Telegram command handlers disabled; process ${ownerPid} already owns polling.`
+          );
+          return false;
+        } catch {
+          // Stale lock from a crashed process; replace it below.
+        }
+      }
+    }
+
+    writeFileSync(POLLING_LOCK_FILE, String(process.pid));
+    this.lockAcquired = true;
+    process.once("exit", () => this.releasePollingLock());
+    return true;
+  }
+
+  private releasePollingLock(): void {
+    if (!this.lockAcquired) return;
+    try {
+      if (existsSync(POLLING_LOCK_FILE)) {
+        const ownerPid = Number(readFileSync(POLLING_LOCK_FILE, "utf8").trim());
+        if (ownerPid === process.pid) rmSync(POLLING_LOCK_FILE);
+      }
+    } catch {
+      // Best-effort cleanup only.
+    }
   }
 
   private async startPolling(): Promise<void> {
