@@ -132,11 +132,11 @@ export const trailingEnabled = trailingSteps.length > 0;
 const PUMPFUN_DIRECT_RAW = (process.env.PUMPFUN_DIRECT_ENABLED ?? "true").toLowerCase();
 export const pumpfunDirectEnabled =
   PUMPFUN_DIRECT_RAW !== "false" && PUMPFUN_DIRECT_RAW !== "0" && PUMPFUN_DIRECT_RAW !== "no";
-const PUMPSWAP_DIRECT_BUY_RAW = (process.env.PUMPSWAP_DIRECT_BUY_ENABLED ?? "false").toLowerCase();
+const PUMPSWAP_DIRECT_BUY_RAW = (process.env.PUMPSWAP_DIRECT_BUY_ENABLED ?? "true").toLowerCase();
 export const pumpSwapDirectBuyEnabled =
-  PUMPSWAP_DIRECT_BUY_RAW === "true" ||
-  PUMPSWAP_DIRECT_BUY_RAW === "1" ||
-  PUMPSWAP_DIRECT_BUY_RAW === "yes";
+  PUMPSWAP_DIRECT_BUY_RAW !== "false" &&
+  PUMPSWAP_DIRECT_BUY_RAW !== "0" &&
+  PUMPSWAP_DIRECT_BUY_RAW !== "no";
 export const pumpSwapDirectMinOutBps = Math.max(
   0,
   Math.min(10_000, parseInt(process.env.PUMPSWAP_DIRECT_MIN_OUT_BPS ?? "1", 10))
