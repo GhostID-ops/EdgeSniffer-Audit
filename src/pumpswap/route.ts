@@ -318,6 +318,7 @@ const POOL_QUOTE_TOKEN_ACCOUNT_OFFSET = POOL_BASE_TOKEN_ACCOUNT_OFFSET + 32;
 const POOL_INDEX_OFFSET = 8 + 1;
 const TOKEN_ACCOUNT_AMOUNT_OFFSET = 64;
 const PUMPSWAP_RISK_QUOTE_HAIRCUT_BPS = 100;
+const PUMPSWAP_DIRECT_BUY_QUOTE_HAIRCUT_BPS = 300;
 const pumpSwapPoolCache = new Map<string, { pool: PublicKey; baseVault: PublicKey; quoteVault: PublicKey }>();
 
 function readPubkey(data: Buffer, offset: number): PublicKey {
@@ -360,6 +361,44 @@ async function findPumpSwapPoolForMint(mint: PublicKey): Promise<{
   };
   pumpSwapPoolCache.set(mint.toBase58(), pool);
   return pool;
+}
+
+function readPoolVaultsFromAccount(
+  pool: PublicKey,
+  account: AccountInfo<Buffer> | null
+): { pool: PublicKey; baseVault: PublicKey; quoteVault: PublicKey } | null {
+  if (!account || account.data.length < POOL_QUOTE_TOKEN_ACCOUNT_OFFSET + 32) return null;
+  return {
+    pool,
+    baseVault: readPubkey(account.data, POOL_BASE_TOKEN_ACCOUNT_OFFSET),
+    quoteVault: readPubkey(account.data, POOL_QUOTE_TOKEN_ACCOUNT_OFFSET),
+  };
+}
+
+async function estimatePumpSwapBuyQuoteFromPool(args: {
+  pool: PublicKey;
+  poolAccount: AccountInfo<Buffer> | null;
+  quoteInRaw: number;
+}): Promise<bigint | null> {
+  if (!Number.isFinite(args.quoteInRaw) || args.quoteInRaw <= 0) return null;
+  const vaults = readPoolVaultsFromAccount(args.pool, args.poolAccount);
+  if (!vaults) return null;
+
+  const [baseInfo, quoteInfo] = await readConnection.getMultipleAccountsInfo(
+    [vaults.baseVault, vaults.quoteVault],
+    "processed"
+  );
+  const baseReserve = readTokenAccountAmount(baseInfo);
+  const quoteReserve = readTokenAccountAmount(quoteInfo);
+  if (!baseReserve || !quoteReserve || baseReserve <= 0n || quoteReserve <= 0n) return null;
+
+  const quoteIn = BigInt(Math.floor(args.quoteInRaw));
+  if (quoteIn <= 0n) return null;
+
+  const rawOut = (baseReserve * quoteIn) / (quoteReserve + quoteIn);
+  const conservativeOut =
+    (rawOut * BigInt(10_000 - PUMPSWAP_DIRECT_BUY_QUOTE_HAIRCUT_BPS)) / 10_000n;
+  return conservativeOut > 0n ? conservativeOut : null;
 }
 
 export async function estimatePumpSwapSellQuote(
@@ -424,20 +463,34 @@ export async function tryPumpSwapDirectBuy(args: {
     return { ok: false, recoverable: true, reason: "source tx has no PumpSwap buy instruction" };
   }
 
-  const expectedBaseOut =
-    (BigInt(Math.floor(args.sourceTokensOutRaw)) * BigInt(args.solInLamports)) /
-    BigInt(Math.floor(args.sourceSolInLamports));
-  const minBaseOut = (expectedBaseOut * BigInt(10_000 - args.slippageBps)) / 10_000n;
-  if (minBaseOut <= 0n) {
-    return { ok: false, recoverable: true, reason: "PumpSwap min output is zero" };
-  }
-
   const { accounts, userBaseAta, userQuoteAta } = replacePumpSwapUserAccounts({
     accounts: sourceAccounts,
     user: args.user.publicKey,
     baseMint: mintKey,
     baseTokenProgram: baseTokenProgramId,
   });
+
+  if (accounts.length < 17) {
+    return { ok: false, recoverable: true, reason: `PumpSwap account list too short: ${accounts.length}` };
+  }
+
+  const poolAccount = await readConnection.getAccountInfo(accounts[0]!.pubkey, "processed");
+  const poolError = validatePumpSwapPoolAccount(accounts[0]!.pubkey, poolAccount);
+  if (poolError) return { ok: false, recoverable: true, reason: poolError };
+
+  const sourceRatioOut =
+    (BigInt(Math.floor(args.sourceTokensOutRaw)) * BigInt(args.solInLamports)) /
+    BigInt(Math.floor(args.sourceSolInLamports));
+  const livePoolOut = await estimatePumpSwapBuyQuoteFromPool({
+    pool: accounts[0]!.pubkey,
+    poolAccount,
+    quoteInRaw: args.solInLamports,
+  });
+  const expectedBaseOut = livePoolOut ?? sourceRatioOut;
+  const minBaseOut = (expectedBaseOut * BigInt(10_000 - args.slippageBps)) / 10_000n;
+  if (minBaseOut <= 0n) {
+    return { ok: false, recoverable: true, reason: "PumpSwap min output is zero" };
+  }
 
   const ctx: PumpSwapBuildContext = {
     mint: args.mint,
@@ -457,14 +510,6 @@ export async function tryPumpSwapDirectBuy(args: {
   };
 
   args.log(`PumpSwap direct buy: ${formatContext(ctx)}`);
-
-  if (accounts.length < 17) {
-    return { ok: false, recoverable: true, reason: `PumpSwap account list too short: ${accounts.length}` };
-  }
-
-  const poolAccount = await readConnection.getAccountInfo(accounts[0]!.pubkey, "confirmed");
-  const poolError = validatePumpSwapPoolAccount(accounts[0]!.pubkey, poolAccount);
-  if (poolError) return { ok: false, recoverable: true, reason: poolError };
 
   if (simulationMode) {
     const mintMeta = await getTokenMeta(args.mint);
