@@ -28,6 +28,7 @@ import { getPosition, unrecordBuy } from "./pnl.js";
 import type { DetectedSwap } from "./types.js";
 import { tryPumpFunDirectBuy, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import { tryPumpSwapDirectBuy } from "./pumpswap/route.js";
+import { applyShadowExecution, shadowDelay, shadowSimulateTransaction } from "./shadowExecution.js";
 
 export type Side = "buy" | "sell" | "swap";
 
@@ -257,6 +258,16 @@ function isNoRouteFailure(err: unknown): boolean {
   return /NO_ROUTES_FOUND|No routes found/i.test(msg);
 }
 
+function shouldTryPumpSwapAfterPumpFunSkip(reason: string, swap: DetectedSwap): boolean {
+  const lower = reason.toLowerCase();
+  return (
+    lower.includes("graduated") ||
+    lower.includes("not a pump.fun bonding-curve token") ||
+    swap.sourcePumpSwapAccounts != null ||
+    swap.outputMint.endsWith("pump")
+  );
+}
+
 async function estimateCostBasisLamports(inputMint: string, inputAmountRaw: number): Promise<number> {
   if (inputMint === WRAPPED_SOL_MINT) return inputAmountRaw;
   if (inputMint !== USDC_MINT || inputAmountRaw <= 0) return inputAmountRaw;
@@ -341,7 +352,12 @@ export async function mirrorSwap(
   // Phase 0: Direct pump.fun bonding-curve route. Bypasses Jupiter entirely for pre-graduation
   // pump.fun tokens — solves the "Jupiter says 100% impact" indexing-lag problem and shaves
   // 150-300ms off the entry path. Falls through to Jupiter on any non-recoverable signal.
-  if (side === "buy" && pumpfunDirectEnabled && mirrorInputMint === WRAPPED_SOL_MINT) {
+  if (
+    side === "buy" &&
+    pumpfunDirectEnabled &&
+    mirrorInputMint === WRAPPED_SOL_MINT &&
+    !swap.skipDirectBuyRoutes
+  ) {
     const direct = await tryPumpFunDirectBuy({
       user: keypair,
       mint: swap.outputMint,
@@ -385,7 +401,8 @@ export async function mirrorSwap(
     if (direct.ok) {
       const solMeta = await getTokenMeta(WRAPPED_SOL_MINT);
       console.log(`Pump.fun direct path complete (${elapsed()})`);
-      return {
+      await shadowDelay();
+      return applyShadowExecution({
         signature: direct.signature,
         isSimulated: direct.isSimulated,
         side: "buy",
@@ -393,7 +410,7 @@ export async function mirrorSwap(
         output: { meta: direct.mintMeta, amountRaw: Number(direct.tokensOut) },
         priceImpactPct: (direct.priceImpactPct / 100).toString(),
         confirmationPending: direct.confirmationPending,
-      };
+      }, swap.signature);
     }
     if (!direct.recoverable) {
       // Hard fail (broadcast error, curve too thin) — surface it; don't try Jupiter for this trade.
@@ -401,7 +418,7 @@ export async function mirrorSwap(
     }
     // Recoverable: graduated token, not on curve, etc. — fall through to Jupiter below.
     console.log(`Pump.fun direct path skipped: ${direct.reason}; falling back to Jupiter.`);
-    if (direct.reason.includes("graduated")) {
+    if (shouldTryPumpSwapAfterPumpFunSkip(direct.reason, swap)) {
       const pumpSwap = await tryPumpSwapDirectBuy({
         user: keypair,
         mint: swap.outputMint,
@@ -437,14 +454,15 @@ export async function mirrorSwap(
       if (pumpSwap.ok) {
         const solMeta = await getTokenMeta(WRAPPED_SOL_MINT);
         console.log(`PumpSwap direct path complete (${elapsed()})`);
-        return {
+        await shadowDelay();
+        return applyShadowExecution({
           signature: pumpSwap.signature,
           isSimulated: pumpSwap.isSimulated,
           side: "buy",
           input: { meta: solMeta, amountRaw: Number(pumpSwap.quoteIn) },
           output: { meta: pumpSwap.mintMeta, amountRaw: Number(pumpSwap.baseOut) },
           confirmationPending: pumpSwap.confirmationPending,
-        };
+        }, swap.signature);
       }
       if (!pumpSwap.recoverable) {
         throw new Error(`PumpSwap direct buy failed: ${pumpSwap.reason}`);
@@ -492,7 +510,8 @@ export async function mirrorSwap(
     if (direct.ok) {
       const solMeta = await getTokenMeta(WRAPPED_SOL_MINT);
       console.log(`Pump.fun direct sell complete (${elapsed()})`);
-      return {
+      await shadowDelay();
+      return applyShadowExecution({
         signature: direct.signature,
         isSimulated: direct.isSimulated,
         side: "sell",
@@ -500,7 +519,7 @@ export async function mirrorSwap(
         output: { meta: solMeta, amountRaw: Number(direct.solOut) },
         priceImpactPct: (direct.priceImpactPct / 100).toString(),
         confirmationPending: direct.confirmationPending,
-      };
+      }, swap.signature);
     }
     if (!direct.recoverable) {
       throw new Error(`Pump.fun direct sell failed: ${direct.reason}`);
@@ -646,14 +665,16 @@ export async function mirrorSwap(
       console.log(`Transaction created (${elapsed()})`);
 
       if (simulationMode) {
+        await shadowSimulateTransaction(transaction, `${side} ${mirrorSwap.outputMint.slice(0, 8)}...`);
         console.log("Getting token metadata...");
         const [inputMeta, outputMeta] = await Promise.all([
           getTokenMeta(mirrorSwap.inputMint),
           getTokenMeta(mirrorSwap.outputMint),
         ]);
         console.log("Token metadata received");
-        console.log("Simulation mode - returning simulated result");
-        return {
+      console.log("Simulation mode - returning simulated result");
+        await shadowDelay();
+        return applyShadowExecution({
           signature: `sim-${swap.signature}-${Date.now()}`,
           isSimulated: true,
           side,
@@ -661,7 +682,7 @@ export async function mirrorSwap(
           output: { meta: outputMeta, amountRaw: outAmountRaw },
           priceImpactPct: quote.priceImpactPct,
           costBasisLamports: side === "buy" ? await estimateCostBasisLamports(mirrorSwap.inputMint, inAmountRaw) : undefined,
-        };
+        }, swap.signature);
       }
 
       console.log("Broadcasting transaction...");

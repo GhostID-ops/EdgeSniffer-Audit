@@ -20,6 +20,8 @@ const USDC_MINT: &str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const PUMP_FUN_PROGRAM_ID: &str = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P";
 const PUMPSWAP_PROGRAM_ID: &str = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
 const BUY_DISCRIMINATOR: [u8; 8] = [102, 6, 61, 18, 1, 218, 235, 234];
+const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR: [u8; 8] =
+    [198, 46, 21, 82, 180, 217, 232, 112];
 const BUY_EXACT_SOL_IN_DISCRIMINATOR: [u8; 8] = [56, 252, 116, 8, 158, 223, 205, 95];
 const BUY_V2_DISCRIMINATOR: [u8; 8] = [184, 23, 238, 97, 103, 197, 211, 61];
 const BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR: [u8; 8] = [194, 171, 28, 70, 104, 77, 91, 47];
@@ -46,7 +48,9 @@ struct DetectedSwapLine {
     output_mint: String,
     amount_raw: u64,
     is_native_input: bool,
+    counterparty_amount_raw: Option<u64>,
     source_ix_accounts: Option<Vec<String>>,
+    source_pump_swap_accounts: Option<Vec<String>>,
     source_quote_mint: Option<String>,
     source_quote_amount_raw: Option<u64>,
 }
@@ -236,7 +240,9 @@ fn extract_swap(
                 output_mint: mint,
                 amount_raw: max_sol_cost,
                 is_native_input: true,
+                counterparty_amount_raw: None,
                 source_ix_accounts: Some(source_ix_accounts),
+                source_pump_swap_accounts: None,
                 source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
                 source_quote_amount_raw: Some(max_sol_cost),
             });
@@ -259,7 +265,9 @@ fn extract_swap(
                 output_mint: mint,
                 amount_raw: spendable_sol,
                 is_native_input: true,
+                counterparty_amount_raw: None,
                 source_ix_accounts: Some(source_ix_accounts),
+                source_pump_swap_accounts: None,
                 source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
                 source_quote_amount_raw: Some(spendable_sol),
             });
@@ -280,7 +288,9 @@ fn extract_swap(
                 output_mint: WRAPPED_SOL_MINT.to_string(),
                 amount_raw: token_amount,
                 is_native_input: false,
+                counterparty_amount_raw: None,
                 source_ix_accounts: None,
+                source_pump_swap_accounts: None,
                 source_quote_mint: None,
                 source_quote_amount_raw: None,
             });
@@ -304,17 +314,22 @@ fn extract_top_level_pumpswap_buy(
     if keys.len() < 17 {
         return None;
     }
+    if keys.get(1)? != wallet {
+        return None;
+    }
     let base_mint = keys.get(3)?.clone();
-    let quote_mint = keys.get(4)?;
+    let quote_mint = keys.get(4)?.clone();
     if quote_mint != WRAPPED_SOL_MINT && quote_mint != USDC_MINT {
         return None;
     }
     let data = ix.data.as_slice();
-    if !starts_with(data, &BUY_DISCRIMINATOR) {
+    let is_exact_quote_in = starts_with(data, &PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR);
+    if !starts_with(data, &BUY_DISCRIMINATOR) && !is_exact_quote_in {
         return None;
     }
-    let max_quote_in = read_u64_le(data, 16)?;
-    if max_quote_in == 0 {
+    let quote_in = read_u64_le(data, if is_exact_quote_in { 8 } else { 16 })?;
+    let base_out = read_u64_le(data, if is_exact_quote_in { 16 } else { 8 })?;
+    if quote_in == 0 {
         return None;
     }
     Some(DetectedSwapLine {
@@ -323,13 +338,15 @@ fn extract_top_level_pumpswap_buy(
         detected_at_ms: now_ms(),
         signature: signature.to_string(),
         wallet: wallet.to_string(),
-        input_mint: quote_mint.to_string(),
+        input_mint: quote_mint.clone(),
         output_mint: base_mint,
-        amount_raw: max_quote_in,
+        amount_raw: quote_in,
         is_native_input: quote_mint == WRAPPED_SOL_MINT,
+        counterparty_amount_raw: if base_out > 0 { Some(base_out) } else { None },
         source_ix_accounts: None,
-        source_quote_mint: Some(quote_mint.to_string()),
-        source_quote_amount_raw: Some(max_quote_in),
+        source_pump_swap_accounts: Some(keys),
+        source_quote_mint: Some(quote_mint),
+        source_quote_amount_raw: Some(quote_in),
     })
 }
 

@@ -16,7 +16,9 @@ type RustSidecarEvent = {
   outputMint?: string;
   amountRaw?: number;
   isNativeInput?: boolean;
+  counterpartyAmountRaw?: number;
   sourceIxAccounts?: string[];
+  sourcePumpSwapAccounts?: string[];
   sourceQuoteMint?: string;
   sourceQuoteAmountRaw?: number;
 };
@@ -42,7 +44,12 @@ function toSwap(event: RustSidecarEvent): DetectedSwap | null {
     outputMint: event.outputMint,
     amountRaw: event.amountRaw,
     isNativeInput: event.isNativeInput,
+    counterpartyAmountRaw:
+      typeof event.counterpartyAmountRaw === "number" ? event.counterpartyAmountRaw : undefined,
     sourceIxAccounts: Array.isArray(event.sourceIxAccounts) ? event.sourceIxAccounts : undefined,
+    sourcePumpSwapAccounts: Array.isArray(event.sourcePumpSwapAccounts)
+      ? event.sourcePumpSwapAccounts
+      : undefined,
     sourceQuoteMint: typeof event.sourceQuoteMint === "string" ? event.sourceQuoteMint : undefined,
     sourceQuoteAmountRaw:
       typeof event.sourceQuoteAmountRaw === "number" ? event.sourceQuoteAmountRaw : undefined,

@@ -18,6 +18,8 @@ async function testTelegram() {
     symbol: "TEST",
     amount: "1,000,000 TEST",
     solAmount: "0.1 SOL",
+    sourceAmount: "2,500,000 TEST",
+    sourceSolAmount: "0.25 SOL",
     marketCap: "$50K",
     isSimulated: true,
     wallet: "abc…",

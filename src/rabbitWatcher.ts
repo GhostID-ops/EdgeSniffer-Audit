@@ -83,6 +83,12 @@ function discriminatorMatches(data: Buffer, discriminator: Buffer): boolean {
   return data.length >= discriminator.length && data.subarray(0, discriminator.length).equals(discriminator);
 }
 
+function isDirectPumpFunUser(keys: string[], isV2Layout: boolean, wallet: string): boolean {
+  // Legacy buy: slot 6 is the signer/user. V2 buy: slot 13 is the signer/user.
+  // A tracked wallet can appear elsewhere in aggregator/creator/fee txs; that is not a copy signal.
+  return (isV2Layout ? keys[13] : keys[6]) === wallet;
+}
+
 function isMirrorQuoteMint(mint: string | undefined): boolean {
   return mint === WRAPPED_SOL_MINT || mint === USDC_MINT;
 }
@@ -124,6 +130,7 @@ function extractDirectPumpFunSwapFromRabbit(
   info: SubscribeUpdateTransactionInfo,
   wallet: string
 ): DetectedSwap | null {
+  if (!info.meta || info.meta.err) return null;
   const message = info.transaction?.message;
   if (!message) return null;
 
@@ -151,6 +158,7 @@ function extractDirectPumpFunSwapFromRabbit(
       sourceIxAccounts[1] != null &&
       sourceIxAccounts[26] === PUMP_FUN_PROGRAM_ID.toBase58();
     if (!isLegacyLayout && !isV2Layout) continue;
+    if (!isDirectPumpFunUser(sourceIxAccounts, isV2Layout, wallet)) continue;
     const mint = isV2Layout ? sourceIxAccounts[1] : sourceIxAccounts[2];
     if (!mint) continue;
 
@@ -218,6 +226,7 @@ function extractTopLevelPumpSwapBuyFromRabbit(
   info: SubscribeUpdateTransactionInfo,
   wallet: string
 ): DetectedSwap | null {
+  if (!info.meta || info.meta.err) return null;
   const message = info.transaction?.message;
   if (!message) return null;
 
@@ -234,6 +243,8 @@ function extractTopLevelPumpSwapBuyFromRabbit(
       .filter((idx) => Number.isInteger(idx) && idx >= 0);
     if (accountIndexes.length < 17) continue;
     const keys = accountIndexes.map((idx) => accountKeys[idx]!).filter(Boolean);
+    // PumpSwap account slot 1 is the user signer. Do not treat tx-level account inclusion as a trade.
+    if (keys[1] !== wallet) continue;
     const baseMint = keys[3];
     const quoteMint = keys[4];
     if (!baseMint || !isMirrorQuoteMint(quoteMint)) continue;

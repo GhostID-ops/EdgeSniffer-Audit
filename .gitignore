@@ -3,8 +3,10 @@
 node_modules
 dist
 rust-sidecar/target
+rust-sidecar-target-*/
 snapshots/
 *.log
 data/*.jsonl
 data/*.lock
+data/*-cache/
 .DS_Store

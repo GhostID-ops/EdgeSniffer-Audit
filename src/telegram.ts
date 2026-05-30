@@ -63,6 +63,8 @@ export interface TradeNotification {
   symbol: string;
   amount: string;
   solAmount: string;
+  sourceAmount?: string;
+  sourceSolAmount?: string;
   marketCap?: string;
   marketCapCheckedAt?: number;
   isSimulated: boolean;
@@ -232,7 +234,13 @@ class TelegramService {
       if (trade.note) lines.push(`🎯 <b>Reason</b>: ${escapeHtml(trade.note)}`);
     } else {
       lines.push(`📦 <b>${amountLabel}</b>: ${escapeHtml(trade.amount)}`);
+      if (trade.type === "buy" && trade.sourceAmount && trade.sourceAmount !== trade.amount) {
+        lines.push(`👥 <b>Source tokens</b>: ${escapeHtml(trade.sourceAmount)}`);
+      }
       lines.push(`◎ <b>${solLabel}</b>: ${escapeHtml(trade.solAmount)} SOL`);
+      if (trade.type === "buy" && trade.sourceSolAmount && trade.sourceSolAmount !== trade.solAmount) {
+        lines.push(`👥 <b>Source spent</b>: ${escapeHtml(trade.sourceSolAmount)} SOL`);
+      }
     }
 
     if (trade.marketCap) {

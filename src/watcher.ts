@@ -274,6 +274,29 @@ async function parseAddressHistory(
 }
 
 /**
+ * Startup helper: collect mints this wallet already bought in recent parsed history. This is not
+ * used by live detection, so it can spend Helius API time without touching the mirror hot path.
+ */
+export async function getRecentWalletBuyMints(
+  wallet: string,
+  limit: number,
+  maxTimestampSec: number = 0
+): Promise<Set<string>> {
+  const mints = new Set<string>();
+  if (limit <= 0) return mints;
+  const parsedList = await parseAddressHistory(wallet, limit);
+  for (const tx of parsedList) {
+    if (maxTimestampSec > 0 && tx.timestamp != null && tx.timestamp >= maxTimestampSec) continue;
+    const swap = extractSwap(tx, wallet);
+    if (!swap) continue;
+    if (isMirrorQuoteMint(swap.inputMint) && !isMirrorQuoteMint(swap.outputMint)) {
+      mints.add(swap.outputMint);
+    }
+  }
+  return mints;
+}
+
+/**
  * Parse transaction signatures via Helius enhanced API, retrying on transient 5xx / network errors.
  */
 async function parseTransactions(signatures: string[]): Promise<HeliusParsedTx[]> {

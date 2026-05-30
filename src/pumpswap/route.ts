@@ -473,7 +473,7 @@ export async function tryPumpSwapDirectBuy(args: {
       ok: true,
       signature: `sim-pumpswap-${args.mint.slice(0, 8)}-${Date.now()}`,
       isSimulated: true,
-      baseOut: minBaseOut,
+      baseOut: expectedBaseOut,
       quoteIn: BigInt(args.solInLamports),
       mintMeta,
     };
@@ -549,12 +549,12 @@ export async function tryPumpSwapDirectBuy(args: {
       // PumpSwap is a hot post-graduation entry path; do not block recording on confirmation.
       confirmSignature(signature)
         .then(() => {
-          args.onConfirmSuccess?.(args.mint, Number(minBaseOut), args.solInLamports, signature!);
+          args.onConfirmSuccess?.(args.mint, Number(expectedBaseOut), args.solInLamports, signature!);
         })
         .catch((err) => {
           const msg = err instanceof Error ? err.message : String(err);
           console.warn(`PumpSwap confirmation failed after broadcast: ${msg}`);
-          args.onConfirmFailure?.(args.mint, Number(minBaseOut), args.solInLamports, msg);
+          args.onConfirmFailure?.(args.mint, Number(expectedBaseOut), args.solInLamports, msg);
         });
     } else {
       await confirmSignature(signature);
@@ -589,7 +589,7 @@ export async function tryPumpSwapDirectBuy(args: {
     ok: true,
     signature,
     isSimulated: false,
-    baseOut: minBaseOut,
+    baseOut: expectedBaseOut,
     quoteIn: BigInt(args.solInLamports),
     mintMeta,
     confirmationPending: fastMode,

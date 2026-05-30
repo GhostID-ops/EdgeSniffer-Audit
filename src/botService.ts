@@ -34,6 +34,9 @@ import {
   readConnection,
   mirrorSells,
   buyOncePerToken,
+  skipSourcePreexistingMints,
+  sourcePreexistingScanTxLimit,
+  failedBuyRecovery,
   maxOpenPositions,
   showMarketCap,
   stopLossPct,
@@ -47,11 +50,13 @@ import {
   rustSidecarEnabled,
   heliusTxSubscribeEnabled,
   confirmationNullStatusTimeoutMs,
+  prebuyMoralisFilterEnabled,
 } from "./config.js";
 import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import { estimatePumpSwapSellQuote } from "./pumpswap/route.js";
 import {
   getNewSwaps,
+  getRecentWalletBuyMints,
   subscribeWalletSwaps,
   type Unsubscribe,
 } from "./watcher.js";
@@ -109,10 +114,16 @@ import {
 import { startFeeOracle, stopFeeOracle } from "./feeOracle.js";
 import { startBlockhashCache, stopBlockhashCache } from "./blockhashCache.js";
 import { validateLicense } from "./licenseClient.js";
+import { checkPrebuyMoralisFilter } from "./prebuyMoralisFilter.js";
+import { applyShadowSellLamports, getShadowSolLamports, shadowCanSpend } from "./shadowExecution.js";
 
 const WARM_INTERVAL_MS = 30_000;
 const BALANCE_LOG_INTERVAL_MS = 60_000;
 const MAX_RECENT_SWAPS = 50;
+const TOKEN_PROGRAM_IDS = [
+  new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
+  new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"),
+];
 
 type LegView = {
   mint: string;
@@ -209,7 +220,9 @@ class BoundedSignatureSet {
 const processedSignatures = new BoundedSignatureSet();
 const buyMintsInFlight = new Set<string>();
 const pendingBuyRetryByMint = new Map<string, DetectedSwap>();
+const fastBuyConfirmRetryScheduledByMint = new Set<string>();
 const boughtMintsThisSession = new Set<string>();
+const sourcePreexistingBuyMints = new Set<string>();
 const sourceBuySignatureByMint = new Map<string, string>();
 const mirrorBuySignatureByMint = new Map<string, string>();
 const confirmedFastBuyTokensByMint = new Map<string, number>();
@@ -651,6 +664,13 @@ function interruptibleSleep(ms: number): Promise<void> {
 
 async function updateBalance(pubkey: PublicKey): Promise<void> {
   try {
+    const shadowLamports = getShadowSolLamports();
+    if (simulationMode && shadowLamports != null) {
+      lastBalanceLamports = shadowLamports;
+      lastBalanceAt = Date.now();
+      console.log("Balance:", formatSol(shadowLamports), "(shadow simulated)");
+      return;
+    }
     if (simulationMode && simulationSolBalance != null) {
       const lamports = Math.round(simulationSolBalance * LAMPORTS_PER_SOL);
       lastBalanceLamports = lamports;
@@ -741,6 +761,92 @@ function mirroredBuyAmountRaw(swap: DetectedSwap): number {
   return Math.max(minBuyLamports, Math.min(maxBuyLamports, swap.amountRaw));
 }
 
+async function getCurrentSourceHeldMints(wallet: string): Promise<Set<string>> {
+  const owner = new PublicKey(wallet);
+  const mints = new Set<string>();
+
+  for (const programId of TOKEN_PROGRAM_IDS) {
+    const resp = await readConnection.getParsedTokenAccountsByOwner(owner, { programId });
+    for (const item of resp.value) {
+      const info = item.account.data.parsed?.info as
+        | { mint?: string; tokenAmount?: { amount?: string } }
+        | undefined;
+      const mint = info?.mint;
+      const amount = info?.tokenAmount?.amount;
+      if (!mint || mint === WRAPPED_SOL_MINT || mint === USDC_MINT) continue;
+      if (amount && BigInt(amount) > 0n) mints.add(mint);
+    }
+  }
+
+  return mints;
+}
+
+async function warmSourcePreexistingBuyMints(startupCutoffSec: number): Promise<void> {
+  sourcePreexistingBuyMints.clear();
+  if (!skipSourcePreexistingMints) return;
+
+  const started = Date.now();
+  console.log(
+    `Preloading source preexisting mints: current holdings + ${sourcePreexistingScanTxLimit} recent tx(s)/wallet...`
+  );
+
+  for (const wallet of trackedWallets) {
+    try {
+      const [heldMints, recentBuyMints] = await Promise.all([
+        getCurrentSourceHeldMints(wallet),
+        getRecentWalletBuyMints(wallet, sourcePreexistingScanTxLimit, startupCutoffSec),
+      ]);
+
+      for (const mint of heldMints) sourcePreexistingBuyMints.add(mint);
+      for (const mint of recentBuyMints) sourcePreexistingBuyMints.add(mint);
+
+      console.log(
+        `  ${wallet.slice(0, 4)}...${wallet.slice(-4)}: ` +
+          `${heldMints.size} held, ${recentBuyMints.size} recent buy mint(s).`
+      );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Source preexisting preload skipped for ${wallet.slice(0, 6)}...: ${msg}`);
+    }
+  }
+
+  console.log(
+    `Source preexisting skip loaded ${sourcePreexistingBuyMints.size} mint(s) in ${Date.now() - started}ms.`
+  );
+}
+
+function shouldAttemptFailedBuyRecovery(sourceSwap: DetectedSwap | undefined): sourceSwap is DetectedSwap {
+  return (
+    failedBuyRecovery === "JUPITER_ONCE" &&
+    Boolean(sourceSwap) &&
+    !sourceSwap?.skipDirectBuyRoutes &&
+    (sourceSwap?.buyRecoveryAttempt ?? 0) < 1
+  );
+}
+
+function scheduleFailedBuyRecovery(
+  sourceSwap: DetectedSwap,
+  kp: Keypair,
+  reason: string
+): void {
+  const recoverySwap: DetectedSwap = {
+    ...sourceSwap,
+    skipDirectBuyRoutes: true,
+    buyRecoveryAttempt: (sourceSwap.buyRecoveryAttempt ?? 0) + 1,
+    buyRecoveryReason: reason,
+  };
+
+  console.warn(
+    `Scheduling Jupiter rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after direct buy failed.`
+  );
+  setTimeout(() => {
+    processSwap(recoverySwap, kp).catch((err) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error(`Jupiter rescue buy failed for ${sourceSwap.outputMint.slice(0, 8)}...: ${msg}`);
+    });
+  }, 0);
+}
+
 /** SOL per token - simple price display */
 function tokenPriceInSol(solLamports: number, tokensRaw: number, decimals: number): number {
   if (tokensRaw <= 0) return 0;
@@ -778,6 +884,10 @@ function logTrade(
     if (!result.isSimulated) mirrorBuySignatureByMint.set(tokenMint, result.signature);
     const sourceQuote = quoteAmountDisplay(swap.amountRaw, swap.inputMint);
     const mirroredQuote = quoteAmountDisplay(result.input.amountRaw, result.input.meta.mint);
+    const sourceTokenDisplay =
+      swap.counterpartyAmountRaw != null
+        ? `${formatTokenAmount(swap.counterpartyAmountRaw, result.output.meta.decimals)} $${result.output.meta.symbol}`
+        : undefined;
     const clamped = swap.amountRaw !== result.input.amountRaw;
     const entryPrice = tokenPriceInSol(
       costBasisLamports,
@@ -807,6 +917,8 @@ function logTrade(
       symbol: pos.symbol,
       amount: outputDisplay,
       solAmount: result.input.meta.mint === USDC_MINT ? `${mirroredQuote} (~${formatSolAmount(costBasisLamports)} SOL)` : mirroredQuote,
+      sourceAmount: sourceTokenDisplay,
+      sourceSolAmount: sourceQuote,
       marketCap: mcDisplay,
       marketCapCheckedAt: marketCapCheckedAt ?? undefined,
       isSimulated: result.isSimulated,
@@ -879,6 +991,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   const ts = Date.now();
   const processStartedAt = Date.now();
   const elapsed = () => `${Date.now() - processStartedAt}ms`;
+  if (!trackedWallets.includes(swap.wallet)) {
+    console.warn(
+      `Ignoring swap from untracked wallet ${swap.wallet.slice(0, 4)}...${swap.wallet.slice(-4)} ` +
+        `(tracked: ${trackedWallets.map((wallet) => `${wallet.slice(0, 4)}...${wallet.slice(-4)}`).join(", ")}).`
+    );
+    return;
+  }
   let lockedBuyMint: string | null = null;
   let lockedOpenPositionMint: string | null = null;
   let lockedFastSellMint: string | null = null;
@@ -911,6 +1030,16 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     const blocked = shouldBlockNewBuys();
     if (blocked) {
       console.log(`⛔ Skipping buy: ${blocked}.`);
+      return;
+    }
+  }
+
+  if (skipSourcePreexistingMints && isBuySignal(swap)) {
+    const mint = swap.outputMint;
+    if (sourcePreexistingBuyMints.has(mint)) {
+      console.log(
+        `Skipping buy: ${mint.slice(0, 8)}... was already held/bought by source before startup.`
+      );
       return;
     }
   }
@@ -966,6 +1095,16 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
   }
 
+  if (prebuyMoralisFilterEnabled && isBuySignal(swap)) {
+    const filter = await checkPrebuyMoralisFilter(swap.outputMint);
+    if (!filter.allowed) {
+      console.log(`Skipping buy: ${filter.reason}.`);
+      releaseBuyLocks();
+      return;
+    }
+    console.log(filter.reason);
+  }
+
   if (blockPumpfunMayhem && isBuySignal(swap)) {
     const { isPumpfunMayhemToken } = await import("./pumpfunMayhem.js");
     const mayhem = await isPumpfunMayhemToken(swap.outputMint);
@@ -979,6 +1118,25 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       releaseBuyLocks();
       return;
     }
+  }
+
+  if (isBuySignal(swap) && simulationMode) {
+    const quoteMint = mirrorQuoteMintForBuy(swap);
+    const mirroredAmount = mirroredBuyAmountRaw(swap);
+    const spendLamports = quoteMint === WRAPPED_SOL_MINT ? mirroredAmount : 0;
+    const shadow = shadowCanSpend(spendLamports);
+    if (!shadow.ok) {
+      console.log(`Shadow reserve check failed:`);
+      console.log(`   Available: ${formatSolAmount(shadow.available)} SOL`);
+      console.log(`   Required incl. shadow fee: ${formatSolAmount(shadow.required)} SOL`);
+      console.log(`   Source trade: ${quoteAmountDisplay(swap.amountRaw, swap.inputMint)}`);
+      releaseBuyLocks();
+      return;
+    }
+    console.log(
+      `Shadow reserve check OK: available ${formatSolAmount(shadow.available)} SOL, ` +
+        `required ${formatSolAmount(shadow.required)} SOL incl. estimated fees.`
+    );
   }
 
   // Fast SOL reserve check - only for buys and only in LIVE mode (sells don't spend SOL)
@@ -1044,7 +1202,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   }
   
   // Log simulation mode notice for clarity
-  if (simulationMode && isBuySignal(swap)) {
+  if (false && simulationMode && isBuySignal(swap)) {
     console.log(`🎭 Simulation Mode: SOL reserve check disabled (no real gas fees)`);
   }
   
@@ -1064,6 +1222,22 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         unrecordZeroSell(mint, tokenAmountRaw);
         mirrorBuySignatureByMint.delete(mint);
         confirmedFastBuyTokensByMint.delete(mint);
+        if (shouldAttemptFailedBuyRecovery(sourceSwap)) {
+          boughtMintsThisSession.delete(mint);
+          pendingBuyRetryByMint.delete(mint);
+          fastBuyConfirmRetryScheduledByMint.delete(mint);
+          scheduleFailedBuyRecovery(sourceSwap, kp, reason);
+          return;
+        }
+        quarantinedBuyMints.set(mint, reason);
+        pendingBuyRetryByMint.delete(mint);
+        fastBuyConfirmRetryScheduledByMint.delete(mint);
+        const hardFailTag = shouldQuarantineFailedBuy(reason) ? "hard-fail" : "failed";
+        console.warn(
+          `Buy quarantine set for ${mint.slice(0, 8)}... after ${hardFailTag} on-chain buy (${reason}). ` +
+            "No more retries for this mint this session."
+        );
+        return;
         if (boughtMintsThisSession.delete(mint)) {
           console.warn(
             `🧹 Buy-once marker cleared for ${mint.slice(0, 8)}… after failed fast-mode buy.`
@@ -1079,10 +1253,35 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           return;
         }
         if (sourceSwap) {
-          pendingBuyRetryByMint.set(mint, sourceSwap);
+          pendingBuyRetryByMint.set(mint, sourceSwap!);
+          if (!fastBuyConfirmRetryScheduledByMint.has(mint)) {
+            fastBuyConfirmRetryScheduledByMint.add(mint);
+            setTimeout(() => {
+              const pending = pendingBuyRetryByMint.get(mint);
+              const existing = getPosition(mint);
+              if (
+                !pending ||
+                boughtMintsThisSession.has(mint) ||
+                (existing && existing.buysCount > 0) ||
+                quarantinedBuyMints.has(mint)
+              ) {
+                fastBuyConfirmRetryScheduledByMint.delete(mint);
+                return;
+              }
+              pendingBuyRetryByMint.delete(mint);
+              processSwap(pending!, kp)
+                .catch((err) => {
+                  console.error("Fast-confirm buy retry failed:", err);
+                })
+                .finally(() => {
+                  fastBuyConfirmRetryScheduledByMint.delete(mint);
+                });
+            }, 0);
+          }
         }
       },
       onFastBuyConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature, sourceSwap }) => {
+        fastBuyConfirmRetryScheduledByMint.delete(mint);
         mirrorBuySignatureByMint.set(mint, signature);
         void reconcileFastBuyTokens({
           mint,
@@ -1419,7 +1618,7 @@ export async function startBot(): Promise<void> {
   }
   keypair = Keypair.fromSecretKey(bs58.decode(getPrivateKeyBase58()));
   running = true;
-  startedAt = Date.now();
+  startedAt = null;
   stopRequested = false;
   resetCircuitBreaker();
   startFeeOracle();
@@ -1429,6 +1628,7 @@ export async function startBot(): Promise<void> {
     keypair.publicKey.toBase58()
   );
   console.log("Tracked wallets:", trackedWallets.length);
+  console.log("Tracked wallet list:", trackedWallets.map((wallet) => `${wallet.slice(0, 4)}...${wallet.slice(-4)}`).join(", "));
   
   // Send Telegram notification
   void telegram.notifyBotStatus("started");
@@ -1440,8 +1640,6 @@ export async function startBot(): Promise<void> {
       "wallet(s); no transactions will be sent."
     );
   }
-
-  console.log("🧹 Fresh start — only trades from this moment onward will be mirrored.");
 
   if (riskControlsEnabled) {
     const trailDesc = trailingEnabled
@@ -1459,6 +1657,11 @@ export async function startBot(): Promise<void> {
   if (blockPumpfunMayhem) {
     console.log(`Pump.fun Mayhem Mode filter enabled${pumpfunMayhemStrict ? " (strict)" : ""}.`);
   }
+
+  const startupCutoffSec = Math.floor(Date.now() / 1000);
+  await warmSourcePreexistingBuyMints(startupCutoffSec);
+  startedAt = Date.now();
+  console.log("Fresh start - only trades from this moment onward will be mirrored.");
 
   const kp = keypair;
   if (rustSidecarEnabled) {
@@ -1548,6 +1751,7 @@ export function resetTradingState(): void {
   processedSignatures.clear();
   buyMintsInFlight.clear();
   pendingBuyRetryByMint.clear();
+  fastBuyConfirmRetryScheduledByMint.clear();
   boughtMintsThisSession.clear();
   quarantinedBuyMints.clear();
   sourceBuySignatureByMint.clear();
@@ -1571,13 +1775,10 @@ async function sellSimulatedPosition(
     1,
     Math.min(position.heldRaw, Math.floor(amountRawOverride ?? position.heldRaw))
   );
-  const outSolLamports =
+  let outSolLamports =
     quotedOutSolLamports ??
-    parseInt(
-      (await getQuote(position.mint, WRAPPED_SOL_MINT, sellRaw, 80))
-        .outAmount ?? "0",
-      10
-    );
+    (await quoteRiskExitLamports(position.mint, sellRaw));
+  outSolLamports = applyShadowSellLamports(outSolLamports, `sim-sell:${position.mint}:${Date.now()}`);
   if (!Number.isFinite(outSolLamports) || outSolLamports <= 0) {
     throw new Error(`No sell liquidity for $${position.symbol}`);
   }
@@ -2083,7 +2284,7 @@ async function checkRiskExits(): Promise<void> {
     if (p.costBasisRemainingLamports <= 0) continue;
 
     try {
-      const outSolLamports = await quoteRiskExitLamports(p.mint, p.heldRaw);
+      let outSolLamports = await quoteRiskExitLamports(p.mint, p.heldRaw);
       const tickAt = Date.now();
       if (!Number.isFinite(outSolLamports) || outSolLamports <= 0) {
         const prev = riskQuoteStateByMint.get(p.mint);
@@ -2182,16 +2383,15 @@ export async function sellAllPositions(): Promise<void> {
 
   for (const p of open) {
     try {
-      const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);
-      const outSolLamports = parseInt(quote.outAmount ?? "0", 10);
-      const sellImpactPctNum = quote.priceImpactPct ? parseFloat(quote.priceImpactPct) * 100 : null;
-      const sellImpactStr = sellImpactPctNum != null ? ` · impact ${sellImpactPctNum.toFixed(2)}%` : "";
+      let outSolLamports = await quoteRiskExitLamports(p.mint, p.heldRaw);
+      const sellImpactStr = "";
       if (!Number.isFinite(outSolLamports) || outSolLamports <= 0) {
         console.warn(`?? Skipped $${p.symbol}: no liquidity for quote.`);
         continue;
       }
 
       if (simulationMode) {
+        outSolLamports = applyShadowSellLamports(outSolLamports, `sim-sell-all:${p.mint}:${Date.now()}`);
         // Simulate the sell
         const meta = {
           mint: p.mint,
@@ -2248,6 +2448,7 @@ export async function sellAllPositions(): Promise<void> {
         });
       } else {
         // Live sell - create and execute the transaction
+        const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);
         const swapResponse = await getSwap(quote, keypair!.publicKey.toBase58());
         const transaction = await createSenderTransactionFromSwapResponse(
           swapResponse as { swapTransaction: string; [key: string]: unknown },
@@ -2360,10 +2561,8 @@ export async function closeAllOpenPositionsSimulated(): Promise<void> {
 
   for (const p of open) {
     try {
-      const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);
-      const outSolLamports = parseInt(quote.outAmount ?? "0", 10);
-      const sellImpactPctNum = quote.priceImpactPct ? parseFloat(quote.priceImpactPct) * 100 : null;
-      const sellImpactStr = sellImpactPctNum != null ? ` · impact ${sellImpactPctNum.toFixed(2)}%` : "";
+      let outSolLamports = await quoteRiskExitLamports(p.mint, p.heldRaw);
+      const sellImpactStr = "";
       if (!Number.isFinite(outSolLamports) || outSolLamports <= 0) {
         console.warn(`⚠️  Skipped $${p.symbol}: no liquidity for quote.`);
         continue;

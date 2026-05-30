@@ -203,6 +203,8 @@ npm run web
 
 Stop any running command with `Ctrl+C`.
 
+After install, use `BEGINNER_BOT_GUIDE.md` for the simple daily startup steps, web UI instructions, and plain-English `.env` explanations.
+
 ## 10. Pull Future Updates
 
 Stop the bot first, then run:

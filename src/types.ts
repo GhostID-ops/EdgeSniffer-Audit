@@ -38,4 +38,13 @@ export type DetectedSwap = {
   sourceQuoteMint?: string;
   /** Original quote amount used by the source wallet, in raw units. */
   sourceQuoteAmountRaw?: number;
+  /**
+   * Internal recovery flag. When true, buy mirroring skips direct pump.fun/PumpSwap routes and
+   * goes straight to the normal Jupiter path.
+   */
+  skipDirectBuyRoutes?: boolean;
+  /** Number of failed-buy recovery attempts already used for this source signal. */
+  buyRecoveryAttempt?: number;
+  /** Last failure that caused this recovery attempt. */
+  buyRecoveryReason?: string;
 };

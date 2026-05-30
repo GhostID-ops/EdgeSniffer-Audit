@@ -64,8 +64,8 @@ export async function getBondingCurveState(
   const pda = deriveBondingCurvePda(mint);
   // Fetch curve and mint in parallel — both reads cost ~80-150ms; serial would be wasteful.
   const [curveAcct, mintAcct] = await Promise.all([
-    readConnection.getAccountInfo(pda, "confirmed"),
-    readConnection.getAccountInfo(mint, "confirmed"),
+    readConnection.getAccountInfo(pda, "processed"),
+    readConnection.getAccountInfo(mint, "processed"),
   ]);
   if (!curveAcct || !curveAcct.owner.equals(PUMP_FUN_PROGRAM_ID)) return null;
   if (!mintAcct) return null;

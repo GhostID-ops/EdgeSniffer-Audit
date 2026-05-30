@@ -8,6 +8,8 @@ Solana copytrading bot that watches tracked wallets, detects SOL/token swaps, an
 npm run bot
 ```
 
+For a beginner-friendly daily use guide after install, read `BEGINNER_BOT_GUIDE.md`.
+
 These commands all run the same live source entrypoint:
 
 ```bash

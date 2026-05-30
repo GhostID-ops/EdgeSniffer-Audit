@@ -299,6 +299,59 @@ const BUY_ONCE_RAW = (process.env.BUY_ONCE_PER_TOKEN ?? "true").toLowerCase();
 export const buyOncePerToken =
   BUY_ONCE_RAW !== "false" && BUY_ONCE_RAW !== "0" && BUY_ONCE_RAW !== "no";
 
+/**
+ * Startup-only source wallet prefilter. When enabled, the bot builds an in-memory set of mints
+ * the tracked wallet already held or recently bought before live mirroring starts, then skips
+ * future buy signals for those mints. Hot path cost is one Set lookup.
+ */
+const SKIP_SOURCE_PREEXISTING_MINTS_RAW = (
+  process.env.SKIP_SOURCE_PREEXISTING_MINTS ?? "false"
+).toLowerCase();
+export const skipSourcePreexistingMints =
+  SKIP_SOURCE_PREEXISTING_MINTS_RAW === "true" ||
+  SKIP_SOURCE_PREEXISTING_MINTS_RAW === "1" ||
+  SKIP_SOURCE_PREEXISTING_MINTS_RAW === "yes";
+export const sourcePreexistingScanTxLimit = Math.max(
+  0,
+  parseInt(process.env.SOURCE_PREEXISTING_SCAN_TX_LIMIT ?? "100", 10)
+);
+
+const FAILED_BUY_RECOVERY_RAW = (process.env.FAILED_BUY_RECOVERY ?? "NONE").toUpperCase();
+export type FailedBuyRecovery = "NONE" | "JUPITER_ONCE";
+export const failedBuyRecovery: FailedBuyRecovery =
+  FAILED_BUY_RECOVERY_RAW === "JUPITER_ONCE" ? "JUPITER_ONCE" : "NONE";
+
+const PREBUY_MORALIS_FILTER_ENABLED_RAW = (
+  process.env.PREBUY_MORALIS_FILTER_ENABLED ?? "false"
+).toLowerCase();
+export const prebuyMoralisFilterEnabled =
+  PREBUY_MORALIS_FILTER_ENABLED_RAW === "true" ||
+  PREBUY_MORALIS_FILTER_ENABLED_RAW === "1" ||
+  PREBUY_MORALIS_FILTER_ENABLED_RAW === "yes";
+export const prebuyMoralisWindowMs = Math.max(
+  60_000,
+  parseInt(process.env.PREBUY_MORALIS_WINDOW_MS ?? "300000", 10)
+);
+export const prebuyMinVolumeUsd = Math.max(
+  0,
+  parseFloat(process.env.PREBUY_MIN_VOLUME_USD ?? "0")
+);
+export const prebuyMinMomentumPct = parseOptionalPositiveNumber(
+  process.env.PREBUY_MIN_MOMENTUM_PCT
+);
+export const prebuyMinLiquidityUsd = parseOptionalPositiveNumber(
+  process.env.PREBUY_MIN_LIQUIDITY_USD
+);
+export const prebuyMoralisTimeoutMs = Math.max(
+  250,
+  parseInt(process.env.PREBUY_MORALIS_TIMEOUT_MS ?? "1500", 10)
+);
+const PREBUY_FILTER_FAIL_OPEN_RAW = (process.env.PREBUY_FILTER_FAIL_OPEN ?? "false").toLowerCase();
+export const prebuyFilterFailOpen =
+  PREBUY_FILTER_FAIL_OPEN_RAW === "true" ||
+  PREBUY_FILTER_FAIL_OPEN_RAW === "1" ||
+  PREBUY_FILTER_FAIL_OPEN_RAW === "yes";
+
 /** Optional cap on simultaneously open token positions. Empty/0 = no cap. */
 export const maxOpenPositions = parseOptionalPositiveInteger(process.env.MAX_OPEN_POSITIONS);
 
@@ -560,6 +613,36 @@ export const simulationSolBalance: number | undefined = SIM_SOL_RAW
       return Number.isFinite(n) && n >= 0 ? n : undefined;
     })()
   : undefined;
+
+const SHADOW_EXECUTION_RAW = (process.env.SHADOW_EXECUTION_MODE ?? "true").toLowerCase();
+export const shadowExecutionMode =
+  SHADOW_EXECUTION_RAW !== "false" &&
+  SHADOW_EXECUTION_RAW !== "0" &&
+  SHADOW_EXECUTION_RAW !== "no";
+export const shadowLatencyMs = Math.max(0, parseInt(process.env.SHADOW_LATENCY_MS ?? "250", 10));
+export const shadowEntrySlippagePct = Math.max(
+  0,
+  parseFloat(process.env.SHADOW_ENTRY_SLIPPAGE_PCT ?? "3")
+);
+export const shadowExitSlippagePct = Math.max(
+  0,
+  parseFloat(process.env.SHADOW_EXIT_SLIPPAGE_PCT ?? "5")
+);
+export const shadowTxFeeSol = Math.max(0, parseFloat(process.env.SHADOW_TX_FEE_SOL ?? "0"));
+export const shadowFailureRatePct = Math.max(
+  0,
+  Math.min(100, parseFloat(process.env.SHADOW_FAILURE_RATE_PCT ?? "0"))
+);
+const SHADOW_RPC_SIM_RAW = (process.env.SHADOW_RPC_SIMULATE_TX ?? "true").toLowerCase();
+export const shadowRpcSimulateTx =
+  SHADOW_RPC_SIM_RAW !== "false" &&
+  SHADOW_RPC_SIM_RAW !== "0" &&
+  SHADOW_RPC_SIM_RAW !== "no";
+const SHADOW_RPC_FAIL_OPEN_RAW = (process.env.SHADOW_RPC_SIM_FAIL_OPEN ?? "true").toLowerCase();
+export const shadowRpcSimFailOpen =
+  SHADOW_RPC_FAIL_OPEN_RAW !== "false" &&
+  SHADOW_RPC_FAIL_OPEN_RAW !== "0" &&
+  SHADOW_RPC_FAIL_OPEN_RAW !== "no";
 
 /**
  * Jito tip accounts (mainnet-beta). Required by Jito's BlockEngine to give your bundle MEV
