@@ -221,6 +221,7 @@ const processedSignatures = new BoundedSignatureSet();
 const buyMintsInFlight = new Set<string>();
 const pendingBuyRetryByMint = new Map<string, DetectedSwap>();
 const fastBuyConfirmRetryScheduledByMint = new Set<string>();
+const failedBuyRecoveryInFlightMints = new Set<string>();
 const boughtMintsThisSession = new Set<string>();
 const sourcePreexistingBuyMints = new Set<string>();
 const sourceBuySignatureByMint = new Map<string, string>();
@@ -816,11 +817,23 @@ async function warmSourcePreexistingBuyMints(startupCutoffSec: number): Promise<
 }
 
 function shouldAttemptFailedBuyRecovery(sourceSwap: DetectedSwap | undefined): sourceSwap is DetectedSwap {
+  const mint = sourceSwap?.outputMint;
   return (
     failedBuyRecovery === "JUPITER_ONCE" &&
     Boolean(sourceSwap) &&
+    Boolean(mint) &&
+    !failedBuyRecoveryInFlightMints.has(mint!) &&
     !sourceSwap?.skipDirectBuyRoutes &&
     (sourceSwap?.buyRecoveryAttempt ?? 0) < 1
+  );
+}
+
+function isTerminalBuyFailure(message: string): boolean {
+  return (
+    message.includes("Transaction exceeds 1232B") ||
+    message.includes("TOKEN_NOT_TRADABLE") ||
+    message.includes("not tradable") ||
+    message.includes("NO_ROUTES_FOUND")
   );
 }
 
@@ -829,6 +842,7 @@ function scheduleFailedBuyRecovery(
   kp: Keypair,
   reason: string
 ): void {
+  failedBuyRecoveryInFlightMints.add(sourceSwap.outputMint);
   const recoverySwap: DetectedSwap = {
     ...sourceSwap,
     skipDirectBuyRoutes: true,
@@ -843,6 +857,9 @@ function scheduleFailedBuyRecovery(
     processSwap(recoverySwap, kp).catch((err) => {
       const msg = err instanceof Error ? err.message : String(err);
       console.error(`Jupiter rescue buy failed for ${sourceSwap.outputMint.slice(0, 8)}...: ${msg}`);
+      quarantinedBuyMints.set(sourceSwap.outputMint, `Jupiter rescue threw: ${msg}`);
+    }).finally(() => {
+      failedBuyRecoveryInFlightMints.delete(sourceSwap.outputMint);
     });
   }, 0);
 }
@@ -1054,6 +1071,12 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       );
       return;
     }
+    if (!swap.skipDirectBuyRoutes && failedBuyRecoveryInFlightMints.has(mint)) {
+      console.log(
+        `Skipping buy: ${mint.slice(0, 8)}... failed direct buy is already waiting on one Jupiter rescue.`
+      );
+      return;
+    }
     const existing = getPosition(mint);
     if (boughtMintsThisSession.has(mint) || (existing && existing.buysCount > 0)) {
       console.log(
@@ -1063,9 +1086,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
     if (buyMintsInFlight.has(mint)) {
       // Keep only the latest duplicate source buy so a dropped first broadcast can retry promptly.
-      pendingBuyRetryByMint.set(mint, swap);
+      if (!failedBuyRecoveryInFlightMints.has(mint)) {
+        pendingBuyRetryByMint.set(mint, swap);
+      }
       console.log(
-        `Skipping buy: ${mint.slice(0, 8)}... buy already in flight (queued one retry signal).`
+        failedBuyRecoveryInFlightMints.has(mint)
+          ? `Skipping buy: ${mint.slice(0, 8)}... buy already in flight and rescue pending.`
+          : `Skipping buy: ${mint.slice(0, 8)}... buy already in flight (queued one retry signal).`
       );
       return;
     }
@@ -1282,6 +1309,8 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       },
       onFastBuyConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature, sourceSwap }) => {
         fastBuyConfirmRetryScheduledByMint.delete(mint);
+        failedBuyRecoveryInFlightMints.delete(mint);
+        pendingBuyRetryByMint.delete(mint);
         mirrorBuySignatureByMint.set(mint, signature);
         void reconcileFastBuyTokens({
           mint,
@@ -1316,6 +1345,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     });
     console.log(`⚡ Mirror path completed in ${elapsed()}`);
     const tokenMint = tokenSideMint(result);
+    if (result.side === "buy" && tokenMint) {
+      failedBuyRecoveryInFlightMints.delete(tokenMint);
+      pendingBuyRetryByMint.delete(tokenMint);
+    }
     const marketCapUsd = tokenMint ? await maybeGetMarketCap(tokenMint) : null;
     const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
     logTrade(result, swap, marketCapUsd, marketCapCheckedAt);
@@ -1380,6 +1413,11 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       console.log(
         `🚫 Skipping buy: ${err.mint.slice(0, 8)}… impact ${err.impactPct.toFixed(1)}% > cap ${err.capPct.toFixed(1)}% even at MIN_BUY_SOL.`
       );
+      if (isBuySignal(swap) && swap.skipDirectBuyRoutes) {
+        quarantinedBuyMints.set(err.mint, `Jupiter rescue impact too high: ${err.impactPct.toFixed(1)}%`);
+        pendingBuyRetryByMint.delete(err.mint);
+        failedBuyRecoveryInFlightMints.delete(err.mint);
+      }
       void telegram.notifyError(
         `🚫 Buy skipped: impact too high`,
         `Token: ${err.mint.slice(0, 8)}… · impact ${err.impactPct.toFixed(1)}% > cap ${err.capPct.toFixed(1)}%`
@@ -1442,6 +1480,20 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
     
     console.error(`?? Mirror failed for ${swap.signature}: ${msg}`);
+    if (isBuySignal(swap) && (swap.skipDirectBuyRoutes || isTerminalBuyFailure(msg))) {
+      const failedMint = swap.outputMint;
+      quarantinedBuyMints.set(
+        failedMint,
+        `${swap.skipDirectBuyRoutes ? "Jupiter rescue failed" : "buy failed"}: ${msg}`
+      );
+      pendingBuyRetryByMint.delete(failedMint);
+      fastBuyConfirmRetryScheduledByMint.delete(failedMint);
+      failedBuyRecoveryInFlightMints.delete(failedMint);
+      console.warn(
+        `Buy quarantine set for ${failedMint.slice(0, 8)}... after terminal buy failure. ` +
+          "No more retries for this mint this session."
+      );
+    }
     
     // Send Telegram notification for general mirror errors
     const isSell = isSellSignal(swap);
@@ -1489,7 +1541,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     if (pendingMint) {
       const pending = pendingBuyRetryByMint.get(pendingMint);
       const existing = getPosition(pendingMint);
-      if (pending && !boughtMintsThisSession.has(pendingMint) && !(existing && existing.buysCount > 0)) {
+      if (
+        pending &&
+        !failedBuyRecoveryInFlightMints.has(pendingMint) &&
+        !quarantinedBuyMints.has(pendingMint) &&
+        !boughtMintsThisSession.has(pendingMint) &&
+        !(existing && existing.buysCount > 0)
+      ) {
         pendingBuyRetryByMint.delete(pendingMint);
         // Replay one follow-on source signal after a dead/dropped attempt releases the mint lock.
         setTimeout(() => {
@@ -1752,6 +1810,7 @@ export function resetTradingState(): void {
   buyMintsInFlight.clear();
   pendingBuyRetryByMint.clear();
   fastBuyConfirmRetryScheduledByMint.clear();
+  failedBuyRecoveryInFlightMints.clear();
   boughtMintsThisSession.clear();
   quarantinedBuyMints.clear();
   sourceBuySignatureByMint.clear();
