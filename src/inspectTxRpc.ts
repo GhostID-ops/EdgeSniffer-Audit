@@ -1,5 +1,6 @@
 import "dotenv/config";
-import { Connection } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
+import bs58 from "bs58";
 
 const signature = process.argv[2];
 const wallet = process.argv[3];
@@ -12,6 +13,7 @@ const rpcUrl = process.env.SECURE_RPC_URL || process.env.RPC_URL;
 if (!rpcUrl) throw new Error("SECURE_RPC_URL is not set.");
 
 const connection = new Connection(rpcUrl, "confirmed");
+const PUMPSWAP_PROGRAM_ID = new PublicKey("pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA");
 
 const tx = await connection.getParsedTransaction(signature, {
   commitment: "confirmed",
@@ -63,4 +65,52 @@ for (const bal of tx.meta?.postTokenBalances ?? []) {
   console.log(
     `  mint=${bal.mint} decimals=${bal.uiTokenAmount.decimals} pre=${before.amount} post=${after} delta=${delta}`
   );
+}
+
+console.log("logs:");
+for (const line of tx.meta?.logMessages ?? []) {
+  console.log(`  ${line}`);
+}
+
+const raw = await connection.getTransaction(signature, {
+  commitment: "confirmed",
+  maxSupportedTransactionVersion: 0,
+});
+if (raw) {
+  const staticKeys = raw.transaction.message.staticAccountKeys;
+  const loaded = raw.meta?.loadedAddresses
+    ? [...raw.meta.loadedAddresses.writable, ...raw.meta.loadedAddresses.readonly]
+    : [];
+  const allKeys = [...staticKeys, ...loaded];
+  console.log("pumpswap instructions:");
+  const printIx = (label: string, ix: { programIdIndex: number; accounts?: number[] | Uint8Array; accountKeyIndexes?: number[]; data?: unknown }) => {
+    if (!allKeys[ix.programIdIndex]?.equals(PUMPSWAP_PROGRAM_ID)) return;
+    const accounts = ix.accountKeyIndexes ?? Array.from(ix.accounts ?? []);
+    let data = "";
+    if (typeof ix.data === "string") {
+      try {
+        data = Buffer.from(bs58.decode(ix.data)).toString("hex");
+      } catch {
+        data = ix.data;
+      }
+    } else if (ix.data instanceof Uint8Array || Array.isArray(ix.data)) {
+      data = Buffer.from(ix.data).toString("hex");
+    }
+    console.log(`  ${label}: accountCount=${accounts.length} data=${data}`);
+    accounts.forEach((idx, accountIdx) => {
+      const key = allKeys[idx];
+      console.log(`    [${accountIdx}] txIdx=${idx} ${key?.toBase58() ?? "-"}`);
+    });
+  };
+  raw.transaction.message.compiledInstructions.forEach((ix, idx) => printIx(`top[${idx}]`, ix));
+  for (const group of raw.meta?.innerInstructions ?? []) {
+    group.instructions.forEach((ix, idx) =>
+      printIx(`inner[parent=${group.index} ix=${idx}]`, ix as unknown as {
+        programIdIndex: number;
+        accounts?: number[] | Uint8Array;
+        accountKeyIndexes?: number[];
+        data?: unknown;
+      })
+    );
+  }
 }

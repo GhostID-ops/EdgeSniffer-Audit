@@ -12,6 +12,7 @@ import {
   maxImpactReduceAttempts,
   maxSourceDriftPct,
   pumpfunDirectEnabled,
+  pumpSwapDirectBuyEnabled,
   mirrorGraduatedBuys,
   jupiterOversizeMaxAccounts,
   mirrorQuoteAsset,
@@ -418,7 +419,7 @@ export async function mirrorSwap(
     }
     // Recoverable: graduated token, not on curve, etc. — fall through to Jupiter below.
     console.log(`Pump.fun direct path skipped: ${direct.reason}; falling back to Jupiter.`);
-    if (shouldTryPumpSwapAfterPumpFunSkip(direct.reason, swap)) {
+    if (pumpSwapDirectBuyEnabled && shouldTryPumpSwapAfterPumpFunSkip(direct.reason, swap)) {
       const pumpSwap = await tryPumpSwapDirectBuy({
         user: keypair,
         mint: swap.outputMint,
@@ -473,6 +474,8 @@ export async function mirrorSwap(
           "Skipping graduated buy: MIRROR_GRADUATED_BUYS is false and no direct PumpSwap route was available"
         );
       }
+    } else if (shouldTryPumpSwapAfterPumpFunSkip(direct.reason, swap)) {
+      console.log("PumpSwap direct path disabled; falling back to Jupiter.");
     }
   }
 

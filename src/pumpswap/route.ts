@@ -14,6 +14,8 @@ import {
   confirmationRebroadcastRetries,
   computeUnitLimit,
   fastMode,
+  pumpSwapDirectMinOutBps,
+  pumpSwapDirectPreflight,
   readConnection,
   simulationMode,
 } from "../config.js";
@@ -487,7 +489,9 @@ export async function tryPumpSwapDirectBuy(args: {
     quoteInRaw: args.solInLamports,
   });
   const expectedBaseOut = livePoolOut ?? sourceRatioOut;
-  const minBaseOut = (expectedBaseOut * BigInt(10_000 - args.slippageBps)) / 10_000n;
+  const minBaseOut = pumpSwapDirectMinOutBps <= 0
+    ? 1n
+    : (expectedBaseOut * BigInt(pumpSwapDirectMinOutBps)) / 10_000n;
   if (minBaseOut <= 0n) {
     return { ok: false, recoverable: true, reason: "PumpSwap min output is zero" };
   }
@@ -584,6 +588,26 @@ export async function tryPumpSwapDirectBuy(args: {
 
   if (args.log && false) args.log(userBaseAta.toBase58());
   args.log(`PumpSwap tx built (${elapsed()})`);
+  if (pumpSwapDirectPreflight) {
+    const sim = await readConnection.simulateTransaction(tx, {
+      commitment: "processed",
+      sigVerify: false,
+      replaceRecentBlockhash: true,
+    });
+    if (sim.value.err) {
+      const logSummary = summarizeLogs(sim.value.logs ?? []);
+      return {
+        ok: false,
+        recoverable: true,
+        reason: [
+          `PumpSwap preflight failed: ${JSON.stringify(sim.value.err)}`,
+          formatContext(ctx),
+          logSummary ? `logs=${logSummary}` : "",
+        ].filter(Boolean).join(" | "),
+      };
+    }
+    args.log(`PumpSwap preflight ok (${elapsed()})`);
+  }
   let signature: string | null = null;
   try {
     signature = await broadcastTransactionWithSender(tx, {

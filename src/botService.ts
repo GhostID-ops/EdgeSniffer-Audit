@@ -854,6 +854,7 @@ function scheduleFailedBuyRecovery(
     `Scheduling Jupiter rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after direct buy failed.`
   );
   setTimeout(() => {
+    if (stopRequested || !failedBuyRecoveryInFlightMints.has(sourceSwap.outputMint)) return;
     processSwap(recoverySwap, kp).catch((err) => {
       const msg = err instanceof Error ? err.message : String(err);
       console.error(`Jupiter rescue buy failed for ${sourceSwap.outputMint.slice(0, 8)}...: ${msg}`);
@@ -1005,6 +1006,7 @@ function logTrade(
 }
 
 async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
+  if (stopRequested) return;
   const ts = Date.now();
   const processStartedAt = Date.now();
   const elapsed = () => `${Date.now() - processStartedAt}ms`;
@@ -1033,6 +1035,23 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   console.log(
     `⚡ Processing ${isBuySignal(swap) ? "buy" : "sell"} from ${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)} (${swap.signature.slice(0, 8)}…)`
   );
+
+  if (isSellSignal(swap)) {
+    const mint = swap.inputMint;
+    if (
+      buyMintsInFlight.has(mint) ||
+      pendingBuyRetryByMint.has(mint) ||
+      failedBuyRecoveryInFlightMints.has(mint)
+    ) {
+      pendingBuyRetryByMint.delete(mint);
+      failedBuyRecoveryInFlightMints.delete(mint);
+      fastBuyConfirmRetryScheduledByMint.delete(mint);
+      quarantinedBuyMints.set(mint, "source sold while buy was pending");
+      console.warn(
+        `Canceled pending buy for ${mint.slice(0, 8)}... because the source wallet already sold it.`
+      );
+    }
+  }
 
   // Skip mirroring source sells if mirror-sells is OFF. We still log it so user has a paper trail.
   if (!mirrorSellsEnabled && isSellSignal(swap)) {
@@ -1284,6 +1303,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           if (!fastBuyConfirmRetryScheduledByMint.has(mint)) {
             fastBuyConfirmRetryScheduledByMint.add(mint);
             setTimeout(() => {
+              if (stopRequested) {
+                fastBuyConfirmRetryScheduledByMint.delete(mint);
+                return;
+              }
               const pending = pendingBuyRetryByMint.get(mint);
               const existing = getPosition(mint);
               if (
@@ -1551,6 +1574,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         pendingBuyRetryByMint.delete(pendingMint);
         // Replay one follow-on source signal after a dead/dropped attempt releases the mint lock.
         setTimeout(() => {
+          if (stopRequested || quarantinedBuyMints.has(pendingMint)) return;
           processSwap(pending, kp).catch((err) => {
             console.error("Queued buy retry failed:", err);
           });
