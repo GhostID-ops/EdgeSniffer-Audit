@@ -402,6 +402,10 @@ async function main(): Promise<void> {
   const maxTxs = Number(process.argv[5] ?? "2500");
   const entryLimit = Number(process.argv[6] ?? "80");
   const horizonMinutes = Number(process.argv[7] ?? "180");
+  const entryMode = (process.argv[8] ?? "all").toLowerCase();
+  if (entryMode !== "all" && entryMode !== "first") {
+    throw new Error("entryMode must be 'all' or 'first'");
+  }
   if (!wallet) throw new Error("Pass wallet arg or set TRACKED_WALLETS");
 
   const nowTs = Math.floor(Date.now() / 1000);
@@ -409,7 +413,7 @@ async function main(): Promise<void> {
   const warmupTs = nowTs - Math.round(warmupHours * 3600);
   console.log(
     `Copyability lab wallet=${short(wallet)} window=${analysisHours}h warmup=${warmupHours}h ` +
-      `maxTxs=${maxTxs} entries=${entryLimit}`
+      `maxTxs=${maxTxs} entries=${entryLimit} entryMode=${entryMode}`
   );
 
   const txs = await fetchWalletTxsUntil(wallet, warmupTs, maxTxs);
@@ -425,8 +429,9 @@ async function main(): Promise<void> {
   for (const swap of swaps) {
     const pos = positionFor(positions, swap.mint);
     const inWindow = swap.timestamp >= sinceTs;
+    const isOpeningBuy = swap.side === "buy" && pos.heldRaw <= 0;
     const pnl = applySwap(pos, swap, inWindow);
-    if (inWindow && swap.side === "buy") {
+    if (inWindow && swap.side === "buy" && (entryMode === "all" || isOpeningBuy)) {
       entries.push({
         mint: swap.mint,
         timestamp: swap.timestamp,

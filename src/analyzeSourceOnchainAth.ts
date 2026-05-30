@@ -277,21 +277,64 @@ async function main(): Promise<void> {
   for (const campaign of campaigns) {
     try {
       const entryPrice = campaign.spentLamports / campaign.boughtRaw;
+      const firstBuyEntryPrice = campaign.firstBuy.solLamports / campaign.firstBuy.tokenRaw;
       const txs = await fetchMintTxsSince(campaign.mint, campaign.firstBuy.timestamp, mintTxLimit);
       const points = txs
         .flatMap((tx) => extractMintPricePoints(tx, campaign.mint))
-        .filter((point) => point.side === "buy" && point.solLamports >= minPointLamports);
-      const peak = points.reduce<PricePoint | null>(
+        .filter((point) => point.solLamports >= minPointLamports);
+      const buys = points.filter((point) => point.side === "buy");
+      const peak = buys.reduce<PricePoint | null>(
         (best, point) => (!best || point.priceLamportsPerRaw > best.priceLamportsPerRaw ? point : best),
         null
       );
-      const athPct = peak ? ((peak.priceLamportsPerRaw - entryPrice) / entryPrice) * 100 : null;
+      const trough = points.reduce<PricePoint | null>(
+        (best, point) => (!best || point.priceLamportsPerRaw < best.priceLamportsPerRaw ? point : best),
+        null
+      );
+      const hit30Point = buys
+        .sort((a, b) => a.timestamp - b.timestamp)
+        .find((point) => ((point.priceLamportsPerRaw - firstBuyEntryPrice) / firstBuyEntryPrice) * 100 >= 30);
+      const before30 = hit30Point
+        ? points.filter((point) => point.timestamp <= hit30Point.timestamp)
+        : points;
+      const troughBefore30 = before30.reduce<PricePoint | null>(
+        (best, point) => (!best || point.priceLamportsPerRaw < best.priceLamportsPerRaw ? point : best),
+        null
+      );
+      const athPct = peak ? ((peak.priceLamportsPerRaw - firstBuyEntryPrice) / firstBuyEntryPrice) * 100 : null;
+      const maePct = trough ? ((trough.priceLamportsPerRaw - firstBuyEntryPrice) / firstBuyEntryPrice) * 100 : null;
+      const drawdownBefore30Pct = troughBefore30
+        ? ((troughBefore30.priceLamportsPerRaw - firstBuyEntryPrice) / firstBuyEntryPrice) * 100
+        : null;
+      const timeTo30Sec = hit30Point ? hit30Point.timestamp - campaign.firstBuy.timestamp : null;
       const exitPrice = campaign.soldRaw > 0 ? campaign.receivedLamports / Math.min(campaign.soldRaw, campaign.boughtRaw) : null;
-      const sourceExitPct = exitPrice != null ? ((exitPrice - entryPrice) / entryPrice) * 100 : null;
-      rows.push({ campaign, athPct, peak, sourceExitPct, points: points.length, error: null as string | null });
+      const sourceExitPct = exitPrice != null ? ((exitPrice - firstBuyEntryPrice) / firstBuyEntryPrice) * 100 : null;
+      rows.push({
+        campaign,
+        athPct,
+        maePct,
+        drawdownBefore30Pct,
+        timeTo30Sec,
+        peak,
+        trough,
+        sourceExitPct,
+        points: points.length,
+        error: null as string | null,
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      rows.push({ campaign, athPct: null, peak: null, sourceExitPct: null, points: 0, error: msg });
+      rows.push({
+        campaign,
+        athPct: null,
+        maePct: null,
+        drawdownBefore30Pct: null,
+        timeTo30Sec: null,
+        peak: null,
+        trough: null,
+        sourceExitPct: null,
+        points: 0,
+        error: msg,
+      });
     }
     await sleep(700);
   }
@@ -301,6 +344,9 @@ async function main(): Promise<void> {
   const hit30 = measured.filter((row) => (row.athPct ?? 0) >= 30);
   const hit50 = measured.filter((row) => (row.athPct ?? 0) >= 50);
   const hit100 = measured.filter((row) => (row.athPct ?? 0) >= 100);
+  const hit30Times = measured.map((row) => row.timeTo30Sec).filter((value): value is number => value != null);
+  const maes = measured.map((row) => row.maePct).filter((value): value is number => value != null);
+  const ddTo30 = measured.map((row) => row.drawdownBefore30Pct).filter((value): value is number => value != null);
 
   console.log("");
   console.log("Summary");
@@ -310,6 +356,9 @@ async function main(): Promise<void> {
   console.log(`  Hit +100%: ${hit100.length}/${measured.length} (${measured.length ? ((hit100.length / measured.length) * 100).toFixed(1) : "0.0"}%)`);
   console.log(`  Avg observed post-entry high: ${fmtPct(pcts.reduce((a, b) => a + b, 0) / Math.max(1, pcts.length))}`);
   console.log(`  Median observed post-entry high: ${fmtPct(median(pcts))}`);
+  console.log(`  Median observed post-entry low: ${fmtPct(median(maes))}`);
+  console.log(`  Median drawdown before +30: ${fmtPct(median(ddTo30))}`);
+  console.log(`  Median time to +30: ${hit30Times.length ? `${Math.round(median(hit30Times)!)}s` : "-"}`);
   console.log("");
   console.log("Rows");
   for (const row of rows) {
@@ -321,7 +370,10 @@ async function main(): Promise<void> {
         `buy=${fmtSol(row.campaign.spentLamports)} (${row.campaign.buys}x)`,
         `sourceExit=${fmtPct(row.sourceExitPct)}`,
         `observedHigh=${fmtPct(row.athPct)}`,
+        `observedLow=${fmtPct(row.maePct)}`,
         `hit30=${(row.athPct ?? -Infinity) >= 30 ? "yes" : "no"}`,
+        `t30=${row.timeTo30Sec == null ? "-" : `${row.timeTo30Sec}s`}`,
+        `ddTo30=${fmtPct(row.drawdownBefore30Pct)}`,
         `points=${row.points}`,
         `buyAt=${buyAt}`,
         `peakAt=${peakAt}`,
