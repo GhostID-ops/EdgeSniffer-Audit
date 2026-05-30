@@ -328,12 +328,20 @@ async function actualBuyExecutionFromTx(
     });
     if (!tx || tx.meta?.err) return null;
     const owner = keypair.publicKey.toBase58();
-    const balances = tx?.meta?.postTokenBalances ?? [];
-    let best = 0;
-    for (const balance of balances) {
+    const preByIndex = new Map<number, number>();
+    for (const balance of tx.meta?.preTokenBalances ?? []) {
       if (balance.mint !== mint || balance.owner !== owner) continue;
       const raw = parseInt(balance.uiTokenAmount.amount ?? "0", 10);
-      if (Number.isFinite(raw) && raw > best) best = raw;
+      if (Number.isFinite(raw)) preByIndex.set(balance.accountIndex, raw);
+    }
+
+    let best = 0;
+    for (const balance of tx.meta?.postTokenBalances ?? []) {
+      if (balance.mint !== mint || balance.owner !== owner) continue;
+      const raw = parseInt(balance.uiTokenAmount.amount ?? "0", 10);
+      const pre = preByIndex.get(balance.accountIndex) ?? 0;
+      const delta = raw - pre;
+      if (Number.isFinite(delta) && delta > best) best = delta;
     }
     if (best <= 0) return null;
     const accountKeys = resolveTxAccountKeys(tx);
@@ -429,6 +437,46 @@ async function reconcileFastBuyTokens(args: {
         `${formatSolAmount(args.expectedSolLamports)} SOL trade → ${formatSolAmount(execution.solSpentLamports)} SOL wallet debit.`
     );
   }
+}
+
+async function reconcileOpenPositionWithConfirmedBuy(
+  position: PositionSnapshot
+): Promise<PositionSnapshot> {
+  const signature = mirrorBuySignatureByMint.get(position.mint);
+  if (!signature || position.buysCount <= 0) return position;
+
+  const execution = await actualBuyExecutionFromTx(signature, position.mint);
+  if (execution == null || execution.tokenAmountRaw <= 0) return position;
+
+  let changed = false;
+  if (
+    execution.tokenAmountRaw !== position.totalBoughtRaw &&
+    adjustBuyTokenAmount(position.mint, position.totalBoughtRaw, execution.tokenAmountRaw)
+  ) {
+    confirmedFastBuyTokensByMint.set(position.mint, execution.tokenAmountRaw);
+    changed = true;
+    console.warn(
+      `Fast buy reconciled before risk/sell for ${position.mint.slice(0, 8)}...: ` +
+        `${formatTokenAmount(position.totalBoughtRaw, position.decimals)} tracked -> ` +
+        `${formatTokenAmount(execution.tokenAmountRaw, position.decimals)} actual.`
+    );
+  }
+
+  if (
+    execution.solSpentLamports != null &&
+    execution.solSpentLamports > 0 &&
+    execution.solSpentLamports !== position.totalSolSpentLamports &&
+    adjustBuySolCost(position.mint, position.totalSolSpentLamports, execution.solSpentLamports)
+  ) {
+    changed = true;
+    console.warn(
+      `Fast buy cost reconciled before risk/sell for ${position.mint.slice(0, 8)}...: ` +
+        `${formatSolAmount(position.totalSolSpentLamports)} SOL tracked -> ` +
+        `${formatSolAmount(execution.solSpentLamports)} SOL wallet debit.`
+    );
+  }
+
+  return changed ? getPosition(position.mint) ?? position : position;
 }
 
 async function reconcileFastSellExecution(args: {
@@ -1999,6 +2047,7 @@ export async function sellPositionPercentByIndex(index: number, fraction: number
  * Sell all open positions (simulated or live based on mode)
  */
 async function sellLivePosition(p: PositionSnapshot, note?: string, amountRawOverride?: number): Promise<void> {
+  p = await reconcileOpenPositionWithConfirmedBuy(p);
   let effectiveNote = note;
   let liveHeldRaw: number | null;
   try {
@@ -2011,10 +2060,13 @@ async function sellLivePosition(p: PositionSnapshot, note?: string, amountRawOve
     liveHeldRaw = null;
   }
   if (liveHeldRaw === 0 && p.sellsCount === 0 && Date.now() - p.firstSeenAt < 120_000) {
-    const confirmed = confirmedFastBuyTokensByMint.get(p.mint);
     const signature = mirrorBuySignatureByMint.get(p.mint);
-    const recovered = confirmed ?? (signature ? await actualTokensReceivedFromTx(signature, p.mint) : null);
+    const execution = signature ? await actualBuyExecutionFromTx(signature, p.mint) : null;
+    const recovered = confirmedFastBuyTokensByMint.get(p.mint) ?? execution?.tokenAmountRaw ?? null;
     if (recovered != null && recovered > 0) {
+      if (execution) {
+        p = await reconcileOpenPositionWithConfirmedBuy(p);
+      }
       liveHeldRaw = recovered;
       confirmedFastBuyTokensByMint.set(p.mint, recovered);
       console.warn(
@@ -2360,10 +2412,11 @@ async function checkRiskExits(): Promise<void> {
     .map((c) => c.p);
   riskPositionCursor = (riskPositionCursor + 1) % open.length;
 
-  for (const p of positionsToCheck) {
+  for (let p of positionsToCheck) {
     if (riskSellsInFlight.has(p.mint)) continue;
     if (fastSellConfirmPendingByMint.has(p.mint)) continue;
     if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > Date.now()) continue;
+    p = await reconcileOpenPositionWithConfirmedBuy(p);
     if (p.costBasisRemainingLamports <= 0) continue;
 
     try {
