@@ -893,20 +893,20 @@ function scheduleFailedBuyRecovery(
   failedBuyRecoveryInFlightMints.add(sourceSwap.outputMint);
   const recoverySwap: DetectedSwap = {
     ...sourceSwap,
-    skipDirectBuyRoutes: true,
+    skipDirectBuyRoutes: false,
     buyRecoveryAttempt: (sourceSwap.buyRecoveryAttempt ?? 0) + 1,
     buyRecoveryReason: reason,
   };
 
   console.warn(
-    `Scheduling Jupiter rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after direct buy failed.`
+    `Scheduling direct rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after direct buy failed.`
   );
   setTimeout(() => {
     if (stopRequested || !failedBuyRecoveryInFlightMints.has(sourceSwap.outputMint)) return;
     processSwap(recoverySwap, kp).catch((err) => {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`Jupiter rescue buy failed for ${sourceSwap.outputMint.slice(0, 8)}...: ${msg}`);
-      quarantinedBuyMints.set(sourceSwap.outputMint, `Jupiter rescue threw: ${msg}`);
+      console.error(`Direct rescue buy failed for ${sourceSwap.outputMint.slice(0, 8)}...: ${msg}`);
+      quarantinedBuyMints.set(sourceSwap.outputMint, `direct rescue threw: ${msg}`);
     }).finally(() => {
       failedBuyRecoveryInFlightMints.delete(sourceSwap.outputMint);
     });
@@ -1138,9 +1138,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       );
       return;
     }
-    if (!swap.skipDirectBuyRoutes && failedBuyRecoveryInFlightMints.has(mint)) {
+    if (
+      !swap.skipDirectBuyRoutes &&
+      failedBuyRecoveryInFlightMints.has(mint) &&
+      (swap.buyRecoveryAttempt ?? 0) === 0
+    ) {
       console.log(
-        `Skipping buy: ${mint.slice(0, 8)}... failed direct buy is already waiting on one Jupiter rescue.`
+        `Skipping buy: ${mint.slice(0, 8)}... failed direct buy is already waiting on one direct rescue.`
       );
       return;
     }

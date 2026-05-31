@@ -320,6 +320,21 @@ async function getMirrorAmount(
       // Fast path: direct ATA read. Falls back to scan-all on null (e.g., unusual token program).
       const fast = await getTokenBalanceFast(keypair.publicKey, swap.inputMint);
       amountRaw = fast ?? (await getTokenBalance(keypair.publicKey, swap.inputMint));
+      if (amountRaw <= 0) {
+        const tracked = getPosition(swap.inputMint);
+        if (
+          tracked &&
+          tracked.heldRaw > 0 &&
+          tracked.sellsCount === 0 &&
+          Date.now() - tracked.firstSeenAt < 120_000
+        ) {
+          console.warn(
+            `Mirror sell balance read 0 for ${swap.inputMint.slice(0, 8)}...; ` +
+              `using recent tracked fast-buy amount ${tracked.heldRaw}.`
+          );
+          amountRaw = tracked.heldRaw;
+        }
+      }
     }
 
     if (amountRaw <= 0) {
