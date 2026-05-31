@@ -1,6 +1,7 @@
 use std::{collections::HashMap, env, time::Duration};
 
 use anyhow::{bail, Context, Result};
+use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine as _};
 use futures::{stream, StreamExt};
 use serde::Serialize;
 use tokio::time::sleep;
@@ -50,6 +51,7 @@ struct DetectedSwapLine {
     is_native_input: bool,
     counterparty_amount_raw: Option<u64>,
     source_ix_accounts: Option<Vec<String>>,
+    source_ix_data_base64: Option<String>,
     source_pump_swap_accounts: Option<Vec<String>>,
     source_quote_mint: Option<String>,
     source_quote_amount_raw: Option<u64>,
@@ -242,6 +244,7 @@ fn extract_swap(
                 is_native_input: true,
                 counterparty_amount_raw: None,
                 source_ix_accounts: Some(source_ix_accounts),
+                source_ix_data_base64: Some(BASE64_STANDARD.encode(data)),
                 source_pump_swap_accounts: None,
                 source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
                 source_quote_amount_raw: Some(max_sol_cost),
@@ -267,6 +270,7 @@ fn extract_swap(
                 is_native_input: true,
                 counterparty_amount_raw: None,
                 source_ix_accounts: Some(source_ix_accounts),
+                source_ix_data_base64: Some(BASE64_STANDARD.encode(data)),
                 source_pump_swap_accounts: None,
                 source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
                 source_quote_amount_raw: Some(spendable_sol),
@@ -290,6 +294,7 @@ fn extract_swap(
                 is_native_input: false,
                 counterparty_amount_raw: None,
                 source_ix_accounts: None,
+                source_ix_data_base64: None,
                 source_pump_swap_accounts: None,
                 source_quote_mint: None,
                 source_quote_amount_raw: None,
@@ -344,6 +349,7 @@ fn extract_top_level_pumpswap_buy(
         is_native_input: quote_mint == WRAPPED_SOL_MINT,
         counterparty_amount_raw: if base_out > 0 { Some(base_out) } else { None },
         source_ix_accounts: None,
+        source_ix_data_base64: None,
         source_pump_swap_accounts: Some(keys),
         source_quote_mint: Some(quote_mint),
         source_quote_amount_raw: Some(quote_in),

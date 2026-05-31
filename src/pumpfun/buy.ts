@@ -72,6 +72,64 @@ function encodeBuyExactQuoteInV2Args(spendableQuoteIn: bigint, minTokensOut: big
   return buf;
 }
 
+function dataMatches(data: Buffer, discriminator: Buffer): boolean {
+  return data.length >= discriminator.length && data.subarray(0, discriminator.length).equals(discriminator);
+}
+
+function scaleU64(value: bigint, numerator: bigint, denominator: bigint): bigint {
+  if (denominator <= 0n) throw new Error("Cannot scale source pump.fun instruction with zero source amount");
+  const scaled = (value * numerator) / denominator;
+  return scaled > 0n ? scaled : 1n;
+}
+
+function tokenProgramFromSourceIx(sourceIxAccounts: PublicKey[], mint: PublicKey): PublicKey {
+  if (isV2SourceIxAccounts(sourceIxAccounts, mint)) {
+    const tokenProgram = sourceIxAccounts[3];
+    if (!tokenProgram) throw new Error("Pump.fun source V2 ix missing base token program account");
+    return tokenProgram;
+  }
+  const tokenProgram = sourceIxAccounts[8];
+  if (!tokenProgram) throw new Error("Pump.fun source legacy ix missing token program account");
+  return tokenProgram;
+}
+
+export function scalePumpFunSourceBuyData(args: {
+  sourceIxData: Buffer;
+  solInLamports: bigint;
+  slippageBps: number;
+}): { exactSolIn: boolean; amount: bigint; maxSolCost: bigint; estimatedTokensOut: bigint } {
+  const data = args.sourceIxData;
+  const slippageBps = BigInt(Math.max(0, Math.min(10_000, args.slippageBps)));
+
+  if (dataMatches(data, BUY_DISCRIMINATOR) || dataMatches(data, BUY_V2_DISCRIMINATOR)) {
+    if (data.length < 24) throw new Error("Source pump.fun buy data is too short");
+    const sourceTokensOut = data.readBigUInt64LE(8);
+    const sourceMaxSol = data.readBigUInt64LE(16);
+    const amount = scaleU64(sourceTokensOut, args.solInLamports, sourceMaxSol);
+    const maxSolCost = (args.solInLamports * (10_000n + slippageBps)) / 10_000n;
+    return { exactSolIn: false, amount, maxSolCost, estimatedTokensOut: amount };
+  }
+
+  if (
+    dataMatches(data, BUY_EXACT_SOL_IN_DISCRIMINATOR) ||
+    dataMatches(data, BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR)
+  ) {
+    if (data.length < 24) throw new Error("Source pump.fun exact-in data is too short");
+    const sourceSpend = data.readBigUInt64LE(8);
+    const sourceMinTokensOut = data.readBigUInt64LE(16);
+    const scaledMin = scaleU64(sourceMinTokensOut, args.solInLamports, sourceSpend);
+    const minTokensOut = (scaledMin * (10_000n - slippageBps)) / 10_000n;
+    return {
+      exactSolIn: true,
+      amount: minTokensOut > 0n ? minTokensOut : 1n,
+      maxSolCost: args.solInLamports,
+      estimatedTokensOut: minTokensOut > 0n ? minTokensOut : 1n,
+    };
+  }
+
+  throw new Error("Source pump.fun instruction is not a supported buy layout");
+}
+
 /**
  * Standard pump.fun buy ix writable-flag map. Hardcoded because flags from a source CPI
  * reflect the caller's permission grant, not the program's actual requirements — we always
@@ -320,4 +378,69 @@ export async function buildPumpFunBuyTransaction(args: {
   const tx = new VersionedTransaction(message);
   tx.sign([args.user]);
   return tx;
+}
+
+export async function buildPumpFunBuyReplayTransaction(args: {
+  user: Keypair;
+  mint: PublicKey;
+  solInLamports: bigint;
+  slippageBps: number;
+  sourceIxAccounts: PublicKey[];
+  sourceIxData: Buffer;
+}): Promise<{ tx: VersionedTransaction; estimatedTokensOut: bigint }> {
+  if (args.sourceIxAccounts.length < 16) {
+    throw new Error("Pump.fun source replay requires source instruction accounts");
+  }
+  const tokenProgramId = tokenProgramFromSourceIx(args.sourceIxAccounts, args.mint);
+  const scaled = scalePumpFunSourceBuyData({
+    sourceIxData: args.sourceIxData,
+    solInLamports: args.solInLamports,
+    slippageBps: args.slippageBps,
+  });
+
+  const tipIxs = buildTipInstructions(args.user.publicKey);
+
+  const computeIxs: TransactionInstruction[] = [];
+  if (computeUnitLimit > 0) {
+    computeIxs.push(
+      ComputeBudgetProgram.setComputeUnitLimit({
+        units: Math.min(computeUnitLimit, 1_400_000),
+      })
+    );
+  }
+  computeIxs.push(
+    ComputeBudgetProgram.setComputeUnitPrice({
+      microLamports: getDynamicPriorityFee(),
+    })
+  );
+
+  const ataIx = buildCreateAtaIdempotentIx({
+    payer: args.user.publicKey,
+    owner: args.user.publicKey,
+    mint: args.mint,
+    tokenProgramId,
+  });
+
+  const buyIx = buildPumpFunBuyIx({
+    user: args.user.publicKey,
+    mint: args.mint,
+    bondingCurve: args.sourceIxAccounts[10] ?? args.sourceIxAccounts[3] ?? args.mint,
+    creator: args.sourceIxAccounts[16] ?? args.user.publicKey,
+    tokenProgramId,
+    amount: scaled.amount,
+    maxSolCost: scaled.maxSolCost,
+    exactSolIn: scaled.exactSolIn,
+    sourceIxAccounts: args.sourceIxAccounts,
+  });
+
+  const { blockhash } = await getCachedBlockhash();
+  const message = new TransactionMessage({
+    payerKey: args.user.publicKey,
+    recentBlockhash: blockhash,
+    instructions: [...computeIxs, ataIx, buyIx, ...tipIxs],
+  }).compileToV0Message();
+
+  const tx = new VersionedTransaction(message);
+  tx.sign([args.user]);
+  return { tx, estimatedTokensOut: scaled.estimatedTokensOut };
 }

@@ -180,6 +180,7 @@ function extractDirectPumpFunSwapFromRabbit(
         amountRaw: maxSolCost,
         isNativeInput: true,
         sourceIxAccounts,
+        sourceIxDataBase64: data.toString("base64"),
       };
     }
 
@@ -198,6 +199,7 @@ function extractDirectPumpFunSwapFromRabbit(
         amountRaw: spendableSol,
         isNativeInput: true,
         sourceIxAccounts,
+        sourceIxDataBase64: data.toString("base64"),
       };
     }
 

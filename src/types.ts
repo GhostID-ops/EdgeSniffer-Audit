@@ -29,6 +29,12 @@ export type DetectedSwap = {
    */
   sourceIxAccounts?: string[];
   /**
+   * Raw source pump.fun instruction data, base64 encoded. When present with
+   * sourceIxAccounts, the bot can scale/replay the same Pump instruction layout
+   * without waiting on a live bonding-curve RPC read.
+   */
+  sourceIxDataBase64?: string;
+  /**
    * Base58 pubkeys of the source's PumpSwap AMM buy ix accounts, in order. When present, the
    * graduated-token direct path can reuse the source's exact pool/global/fee accounts without
    * waiting for getTransaction to become available.

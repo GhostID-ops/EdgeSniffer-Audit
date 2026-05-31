@@ -37,15 +37,21 @@ function extractPumpFunBuyIxAccounts(
   info: SubscribeUpdateTransactionInfo,
   allKeysBase58: string[],
   mint: string
-): string[] | null {
+): { accounts: string[]; dataBase64: string } | null {
   const message = info.transaction?.message;
   const meta = info.meta;
   if (!message || !meta) return null;
 
-  const tryIx = (programIdIndex: number, accIndexes: Uint8Array | number[] | undefined): string[] | null => {
+  const tryIx = (
+    programIdIndex: number,
+    accIndexes: Uint8Array | number[] | undefined,
+    dataRaw: unknown
+  ): { accounts: string[]; dataBase64: string } | null => {
     if (!accIndexes) return null;
     const programId = allKeysBase58[programIdIndex];
     if (programId !== PUMP_FUN_PROGRAM_ID_BASE58) return null;
+    const data = ixDataToBuffer(dataRaw);
+    if (data.length < 8) return null;
     const idxArr = accIndexes instanceof Uint8Array ? Array.from(accIndexes) : accIndexes;
     if (idxArr.length < 16) return null;
     const keys = idxArr.map((i) => allKeysBase58[i]!);
@@ -57,16 +63,16 @@ function extractPumpFunBuyIxAccounts(
       keys[1] === mint &&
       keys[26] === PUMP_FUN_PROGRAM_ID_BASE58;
     if (!isLegacyBuy && !isV2Buy) return null;
-    return keys;
+    return { accounts: keys, dataBase64: data.toString("base64") };
   };
 
   for (const ix of message.instructions ?? []) {
-    const found = tryIx(ix.programIdIndex, ix.accounts);
+    const found = tryIx(ix.programIdIndex, ix.accounts, (ix as unknown as { data?: unknown }).data);
     if (found) return found;
   }
   for (const group of meta.innerInstructions ?? []) {
     for (const ix of group.instructions ?? []) {
-      const found = tryIx(ix.programIdIndex, ix.accounts);
+      const found = tryIx(ix.programIdIndex, ix.accounts, (ix as unknown as { data?: unknown }).data);
       if (found) return found;
     }
   }
@@ -308,7 +314,7 @@ export function extractSwapFromGrpcTransaction(
     // Only buys (SOL→token) need source ix extraction. If the source's tx routes through
     // pump.fun (top-level or via router CPI), capture the account list so the buy builder
     // can use the exact per-coin recipients pump.fun rotates per launch.
-    const sourceIxAccounts =
+    const sourcePumpFunIx =
       extractPumpFunBuyIxAccounts(info, accountKeys, best.mint) ?? undefined;
     const sourcePumpSwapAccounts =
       extractPumpSwapBuyIxAccounts(info, accountKeys, best.mint) ?? undefined;
@@ -321,7 +327,8 @@ export function extractSwapFromGrpcTransaction(
       isNativeInput: (quote.mint ?? WRAPPED_SOL_MINT) === WRAPPED_SOL_MINT,
       counterpartyAmountRaw,
       counterpartyDecimals: best.decimals,
-      sourceIxAccounts,
+      sourceIxAccounts: sourcePumpFunIx?.accounts,
+      sourceIxDataBase64: sourcePumpFunIx?.dataBase64,
       sourcePumpSwapAccounts,
       sourceQuoteMint: quote.mint ?? WRAPPED_SOL_MINT,
       sourceQuoteAmountRaw: amountRaw,

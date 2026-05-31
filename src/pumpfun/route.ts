@@ -21,7 +21,7 @@ import {
   quoteSellOnCurve,
   maxSolForImpact,
 } from "./curve.js";
-import { buildPumpFunBuyTransaction } from "./buy.js";
+import { buildPumpFunBuyReplayTransaction, buildPumpFunBuyTransaction } from "./buy.js";
 import { buildPumpFunSellTransaction } from "./sell.js";
 
 export type PumpFunBuyOutcome =
@@ -151,6 +151,7 @@ export async function tryPumpFunDirectBuy(args: {
    * for Token-2022 launches where slot 1 and slots 16+ rotate per-coin and aren't derivable.
    */
   sourceIxAccounts?: string[];
+  sourceIxDataBase64?: string;
   onConfirmFailure?: (mint: string, tokensOutRaw: number, solInLamports: number, reason: string) => void;
   onConfirmSuccess?: (mint: string, tokensOutRaw: number, solInLamports: number, signature: string) => void;
   rebroadcastAttempt?: number;
@@ -168,6 +169,78 @@ export async function tryPumpFunDirectBuy(args: {
     : getSourcePumpRemainingAccounts(args.sourceSignature, mintKey);
   const curve = await getBondingCurveState(mintKey);
   if (!curve) {
+    if (args.sourceIxAccounts && args.sourceIxAccounts.length >= 16 && args.sourceIxDataBase64) {
+      args.log("Pump.fun curve RPC unavailable; replaying scaled source Pump.fun ix.");
+      const sourceIxPubkeys = args.sourceIxAccounts.map((k) => new PublicKey(k));
+      const sourceIxData = Buffer.from(args.sourceIxDataBase64, "base64");
+      const solIn = BigInt(args.solInLamports);
+      if (simulationMode) {
+        const mintMeta = await getTokenMeta(args.mint);
+        return {
+          ok: true,
+          signature: `sim-pumpfun-replay-${args.mint.slice(0, 8)}-${Date.now()}`,
+          isSimulated: true,
+          tokensOut: 1n,
+          solIn,
+          priceImpactPct: 0,
+          mintMeta,
+        };
+      }
+      args.log("Building pump.fun source-replay buy tx...");
+      let signature: string;
+      let estimatedTokensOut: bigint;
+      try {
+        const replay = await buildPumpFunBuyReplayTransaction({
+          user: args.user,
+          mint: mintKey,
+          solInLamports: solIn,
+          slippageBps: args.slippageBps,
+          sourceIxAccounts: sourceIxPubkeys,
+          sourceIxData,
+        });
+        estimatedTokensOut = replay.estimatedTokensOut;
+        args.log(`Tx built (${elapsed()})`);
+        signature = await broadcastTransactionWithSender(replay.tx, {
+          preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
+        });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        return { ok: false, recoverable: false, reason: `source-replay failed: ${msg}` };
+      }
+      args.log(`Broadcast: ${signature} (${elapsed()})`);
+      if (fastMode) {
+        confirmSignature(signature)
+          .then(() => {
+            args.onConfirmSuccess?.(args.mint, Number(estimatedTokensOut), Number(solIn), signature);
+          })
+          .catch((err) => {
+            const reason = err instanceof Error ? err.message : String(err);
+            args.onConfirmFailure?.(args.mint, Number(estimatedTokensOut), Number(solIn), reason);
+          });
+        const mintMeta = await getTokenMeta(args.mint);
+        return {
+          ok: true,
+          signature,
+          isSimulated: false,
+          tokensOut: estimatedTokensOut,
+          solIn,
+          priceImpactPct: 0,
+          mintMeta,
+          confirmationPending: true,
+        };
+      }
+      await confirmSignature(signature);
+      const mintMeta = await getTokenMeta(args.mint);
+      return {
+        ok: true,
+        signature,
+        isSimulated: false,
+        tokensOut: estimatedTokensOut,
+        solIn,
+        priceImpactPct: 0,
+        mintMeta,
+      };
+    }
     return { ok: false, recoverable: true, reason: "not a pump.fun bonding-curve token" };
   }
   if (curve.state.complete) {
