@@ -46,7 +46,7 @@ export type PumpSwapBuildContext = {
   userQuoteAta: string;
   sourceSignature: string;
   sourceSolInLamports: number;
-  sourceTokensOutRaw: number;
+  sourceTokensOutRaw: number | null;
   solInLamports: number;
   expectedBaseOut: bigint;
   minBaseOut: bigint;
@@ -443,8 +443,8 @@ export async function tryPumpSwapDirectBuy(args: {
   onConfirmFailure?: (mint: string, tokensOutRaw: number, solLamports: number, reason: string) => void;
   onConfirmSuccess?: (mint: string, tokensOutRaw: number, solLamports: number, signature: string) => void;
 }): Promise<PumpSwapOutcome> {
-  if (!args.sourceTokensOutRaw || args.sourceTokensOutRaw <= 0 || args.sourceSolInLamports <= 0) {
-    return { ok: false, recoverable: true, reason: "source PumpSwap fill amounts unavailable" };
+  if (args.sourceSolInLamports <= 0) {
+    return { ok: false, recoverable: true, reason: "source PumpSwap spend unavailable" };
   }
 
   const elapsed = () => `${Date.now() - args.startedAt}ms`;
@@ -481,14 +481,19 @@ export async function tryPumpSwapDirectBuy(args: {
   if (poolError) return { ok: false, recoverable: true, reason: poolError };
 
   const sourceRatioOut =
-    (BigInt(Math.floor(args.sourceTokensOutRaw)) * BigInt(args.solInLamports)) /
-    BigInt(Math.floor(args.sourceSolInLamports));
+    args.sourceTokensOutRaw && args.sourceTokensOutRaw > 0
+      ? (BigInt(Math.floor(args.sourceTokensOutRaw)) * BigInt(args.solInLamports)) /
+        BigInt(Math.floor(args.sourceSolInLamports))
+      : null;
   const livePoolOut = await estimatePumpSwapBuyQuoteFromPool({
     pool: accounts[0]!.pubkey,
     poolAccount,
     quoteInRaw: args.solInLamports,
   });
   const expectedBaseOut = livePoolOut ?? sourceRatioOut;
+  if (expectedBaseOut == null || expectedBaseOut <= 0n) {
+    return { ok: false, recoverable: true, reason: "PumpSwap output quote unavailable" };
+  }
   const minBaseOut = pumpSwapDirectMinOutBps <= 0
     ? 1n
     : (expectedBaseOut * BigInt(pumpSwapDirectMinOutBps)) / 10_000n;
@@ -504,7 +509,10 @@ export async function tryPumpSwapDirectBuy(args: {
     userQuoteAta: userQuoteAta.toBase58(),
     sourceSignature: args.sourceSignature,
     sourceSolInLamports: args.sourceSolInLamports,
-    sourceTokensOutRaw: Math.floor(args.sourceTokensOutRaw),
+    sourceTokensOutRaw:
+      args.sourceTokensOutRaw && args.sourceTokensOutRaw > 0
+        ? Math.floor(args.sourceTokensOutRaw)
+        : null,
     solInLamports: args.solInLamports,
     expectedBaseOut,
     minBaseOut,
