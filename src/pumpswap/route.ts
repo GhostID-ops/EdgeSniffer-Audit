@@ -304,6 +304,18 @@ async function sourcePumpSwapAccounts(sourceSignature: string, mint: PublicKey):
   return null;
 }
 
+async function sourcePumpSwapAccountsWithShortRetry(
+  sourceSignature: string,
+  mint: PublicKey
+): Promise<AccountMeta[] | null> {
+  for (let attempt = 0; attempt < PUMPSWAP_SOURCE_META_ATTEMPTS; attempt++) {
+    const accounts = await sourcePumpSwapAccounts(sourceSignature, mint).catch(() => null);
+    if (accounts) return accounts;
+    if (attempt < PUMPSWAP_SOURCE_META_ATTEMPTS - 1) await sleep(PUMPSWAP_SOURCE_META_RETRY_MS);
+  }
+  return null;
+}
+
 export function replacePumpSwapUserAccounts(args: {
   accounts: AccountMeta[];
   user: PublicKey;
@@ -337,6 +349,8 @@ const TOKEN_ACCOUNT_AMOUNT_OFFSET = 64;
 const PUMPSWAP_RISK_QUOTE_HAIRCUT_BPS = 100;
 const PUMPSWAP_DIRECT_BUY_QUOTE_HAIRCUT_BPS = 300;
 const PUMPSWAP_ACCOUNT_CACHE_TTL_MS = 30_000;
+const PUMPSWAP_SOURCE_META_ATTEMPTS = 3;
+const PUMPSWAP_SOURCE_META_RETRY_MS = 35;
 const pumpSwapPoolCache = new Map<string, { pool: PublicKey; baseVault: PublicKey; quoteVault: PublicKey }>();
 const pumpSwapMintOwnerCache = new Map<string, { owner: PublicKey; cachedAt: number }>();
 const pumpSwapPoolAccountCache = new Map<string, { account: AccountInfo<Buffer>; cachedAt: number }>();
@@ -508,11 +522,13 @@ export async function tryPumpSwapDirectBuy(args: {
   if (!baseTokenProgramId) {
     return { ok: false, recoverable: true, reason: "PumpSwap base mint account not found" };
   }
-  const sourceAccounts = args.sourcePumpSwapAccounts?.length
-    ? args.sourcePumpSwapAccounts.map((pubkey, idx) =>
-        pumpSwapMetaFromSourceKey(new PublicKey(pubkey), idx)
-      )
-    : await sourcePumpSwapAccounts(args.sourceSignature, mintKey);
+  const exactSourceAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, mintKey);
+  const sourceAccounts = exactSourceAccounts ??
+    (args.sourcePumpSwapAccounts?.length
+      ? args.sourcePumpSwapAccounts.map((pubkey, idx) =>
+          pumpSwapMetaFromSourceKey(new PublicKey(pubkey), idx)
+        )
+      : null);
   if (!sourceAccounts) {
     return { ok: false, recoverable: true, reason: "source tx has no PumpSwap buy instruction" };
   }
