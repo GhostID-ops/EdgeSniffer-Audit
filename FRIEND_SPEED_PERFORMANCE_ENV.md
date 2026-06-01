@@ -16,7 +16,7 @@ npm run env:free-helius
 npm run build
 ```
 
-That command updates only the shared speed/performance keys from `.env.performance` and preserves private keys/API keys in each friend's existing `.env`. It also writes a backup under `.restore-backups/`.
+That command updates only the shared speed/performance keys from `.env.performance` and preserves private keys/API keys in each friend's existing `.env`. It also writes a backup under `.restore-backups/`. The free-Helius preset disables recent-history preload and slows the Helius polling fallback, while keeping Shyft gRPC/Rabbit as the live fast path.
 
 Copy these into your own `.env` after you have your own wallet/private-key and API-key settings.
 Do not share private keys, wallet secrets, Helius keys, Shyft tokens, Moralis keys, or Jito auth UUIDs.
