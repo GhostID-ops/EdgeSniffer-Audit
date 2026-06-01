@@ -35,7 +35,7 @@ function testUserAccountReplacement(): void {
   const baseMint = key("base-mint");
   const accounts = metas(27);
   accounts[1] = { pubkey: key("source-user"), isSigner: true, isWritable: true };
-  accounts[14] = { pubkey: key("source-volume"), isSigner: false, isWritable: true };
+  accounts[14] = { pubkey: new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"), isSigner: false, isWritable: false };
   accounts[20] = { pubkey: key("source-support-program"), isSigner: false, isWritable: false };
 
   const { accounts: replaced, userBaseAta, userQuoteAta } = replacePumpSwapUserAccounts({
@@ -54,10 +54,9 @@ function testUserAccountReplacement(): void {
   assert.equal(replaced[6]!.pubkey.toBase58(), userQuoteAta.toBase58(), "quote ATA is replaced");
   assert.equal(
     replaced[14]!.pubkey.toBase58(),
-    derivePumpSwapUserVolumeAccumulatorPda(user).toBase58(),
-    "PumpSwap user volume PDA is replaced"
+    accounts[14]!.pubkey.toBase58(),
+    "PumpSwap associated token program is preserved"
   );
-  assert.notEqual(replaced[14]!.pubkey.toBase58(), accounts[14]!.pubkey.toBase58());
   assert.equal(
     replaced[20]!.pubkey.toBase58(),
     accounts[20]!.pubkey.toBase58(),

@@ -8,6 +8,14 @@ npm run env:performance
 npm run build
 ```
 
+For friends on free Helius plans, use this instead:
+
+```powershell
+git pull --ff-only origin restore-version
+npm run env:free-helius
+npm run build
+```
+
 That command updates only the shared speed/performance keys from `.env.performance` and preserves private keys/API keys in each friend's existing `.env`. It also writes a backup under `.restore-backups/`.
 
 Copy these into your own `.env` after you have your own wallet/private-key and API-key settings.

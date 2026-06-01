@@ -3,8 +3,10 @@ import path from "node:path";
 
 const root = process.cwd();
 const envPath = path.join(root, ".env");
-const presetPath = path.join(root, ".env.performance");
+const presetArg = process.argv[2] ?? ".env.performance";
+const presetPath = path.resolve(root, presetArg);
 const backupDir = path.join(root, ".restore-backups");
+const presetName = path.relative(root, presetPath);
 
 function parseEnvLines(text) {
   const values = new Map();
@@ -54,10 +56,10 @@ for (const [key, value] of preset.entries()) {
 
 mkdirSync(backupDir, { recursive: true });
 const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-const backupPath = path.join(backupDir, `.env.before-performance-${stamp}`);
+const backupPath = path.join(backupDir, `.env.before-${path.basename(presetPath)}-${stamp}`);
 copyFileSync(envPath, backupPath);
 writeFileSync(envPath, merged.join("\n").replace(/\n*$/, "\n"));
 
-console.log(`Updated .env from .env.performance (${updated} changed, ${added} added).`);
+console.log(`Updated .env from ${presetName} (${updated} changed, ${added} added).`);
 console.log(`Backup saved to ${path.relative(root, backupPath)}`);
-console.log("Private keys/API keys were preserved unless you explicitly put them in .env.performance.");
+console.log(`Private keys/API keys were preserved unless you explicitly put them in ${presetName}.`);

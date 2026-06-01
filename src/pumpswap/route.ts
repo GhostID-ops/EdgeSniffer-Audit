@@ -42,8 +42,7 @@ const PUMPSWAP_BASE_MINT_INDEX = 3;
 const PUMPSWAP_QUOTE_MINT_INDEX = 4;
 const PUMPSWAP_USER_BASE_ATA_INDEX = 5;
 const PUMPSWAP_USER_QUOTE_ATA_INDEX = 6;
-const PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX = 14;
-const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 11, 14]);
+const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 11]);
 
 export type PumpSwapBuildContext = {
   mint: string;
@@ -317,13 +316,6 @@ export function replacePumpSwapUserAccounts(args: {
   accounts[PUMPSWAP_USER_INDEX] = { pubkey: args.user, isSigner: true, isWritable: true };
   accounts[PUMPSWAP_USER_BASE_ATA_INDEX] = { pubkey: userBaseAta, isSigner: false, isWritable: true };
   accounts[PUMPSWAP_USER_QUOTE_ATA_INDEX] = { pubkey: userQuoteAta, isSigner: false, isWritable: true };
-  if (accounts.length > PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX) {
-    accounts[PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX] = {
-      pubkey: derivePumpSwapUserVolumeAccumulatorPda(args.user),
-      isSigner: false,
-      isWritable: true,
-    };
-  }
 
   return { accounts, userBaseAta, userQuoteAta };
 }
