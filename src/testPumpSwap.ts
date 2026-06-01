@@ -35,7 +35,8 @@ function testUserAccountReplacement(): void {
   const baseMint = key("base-mint");
   const accounts = metas(27);
   accounts[1] = { pubkey: key("source-user"), isSigner: true, isWritable: true };
-  accounts[20] = { pubkey: key("source-volume"), isSigner: false, isWritable: true };
+  accounts[14] = { pubkey: key("source-volume"), isSigner: false, isWritable: true };
+  accounts[20] = { pubkey: key("source-support-program"), isSigner: false, isWritable: false };
 
   const { accounts: replaced, userBaseAta, userQuoteAta } = replacePumpSwapUserAccounts({
     accounts,
@@ -52,11 +53,16 @@ function testUserAccountReplacement(): void {
   assert.equal(replaced[5]!.pubkey.toBase58(), userBaseAta.toBase58(), "base ATA is replaced");
   assert.equal(replaced[6]!.pubkey.toBase58(), userQuoteAta.toBase58(), "quote ATA is replaced");
   assert.equal(
-    replaced[20]!.pubkey.toBase58(),
+    replaced[14]!.pubkey.toBase58(),
     derivePumpSwapUserVolumeAccumulatorPda(user).toBase58(),
     "PumpSwap user volume PDA is replaced"
   );
-  assert.notEqual(replaced[20]!.pubkey.toBase58(), accounts[20]!.pubkey.toBase58());
+  assert.notEqual(replaced[14]!.pubkey.toBase58(), accounts[14]!.pubkey.toBase58());
+  assert.equal(
+    replaced[20]!.pubkey.toBase58(),
+    accounts[20]!.pubkey.toBase58(),
+    "non-user PumpSwap support accounts are preserved"
+  );
 }
 
 function testPumpSwapPdaProgramOwner(): void {

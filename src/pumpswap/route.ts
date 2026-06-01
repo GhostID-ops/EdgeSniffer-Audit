@@ -37,6 +37,13 @@ export const PUMPSWAP_BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 2
 export const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = Buffer.from([198, 46, 21, 82, 180, 217, 232, 112]);
 const SYNC_NATIVE_IX = Buffer.from([17]);
 const CLOSE_ACCOUNT_IX = Buffer.from([9]);
+const PUMPSWAP_USER_INDEX = 1;
+const PUMPSWAP_BASE_MINT_INDEX = 3;
+const PUMPSWAP_QUOTE_MINT_INDEX = 4;
+const PUMPSWAP_USER_BASE_ATA_INDEX = 5;
+const PUMPSWAP_USER_QUOTE_ATA_INDEX = 6;
+const PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX = 14;
+const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 11, 14]);
 
 export type PumpSwapBuildContext = {
   mint: string;
@@ -209,6 +216,14 @@ function closeTokenAccountIx(account: PublicKey, owner: PublicKey): TransactionI
   });
 }
 
+function pumpSwapMetaFromSourceKey(pubkey: PublicKey, idx: number): AccountMeta {
+  return {
+    pubkey,
+    isSigner: idx === PUMPSWAP_USER_INDEX,
+    isWritable: PUMPSWAP_CANONICAL_WRITABLE_INDEXES.has(idx),
+  };
+}
+
 function compiledInstructionDataToBuffer(data: unknown): Buffer {
   if (data == null) return Buffer.alloc(0);
   if (Buffer.isBuffer(data)) return data;
@@ -266,7 +281,7 @@ async function sourcePumpSwapAccounts(sourceSignature: string, mint: PublicKey):
     }
     const indexes = ix.accountKeyIndexes ?? Array.from(ix.accounts ?? []);
     const keys = indexes.map((idx) => allKeys[idx]);
-    if (!keys[3]?.equals(mint)) return null;
+    if (!keys[PUMPSWAP_BASE_MINT_INDEX]?.equals(mint)) return null;
     return indexes;
   };
 
@@ -299,11 +314,11 @@ export function replacePumpSwapUserAccounts(args: {
   const userBaseAta = deriveAta(args.user, args.baseMint, args.baseTokenProgram);
   const userQuoteAta = deriveAta(args.user, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID);
 
-  accounts[1] = { pubkey: args.user, isSigner: true, isWritable: true };
-  accounts[5] = { pubkey: userBaseAta, isSigner: false, isWritable: true };
-  accounts[6] = { pubkey: userQuoteAta, isSigner: false, isWritable: true };
-  if (accounts.length > 20) {
-    accounts[20] = {
+  accounts[PUMPSWAP_USER_INDEX] = { pubkey: args.user, isSigner: true, isWritable: true };
+  accounts[PUMPSWAP_USER_BASE_ATA_INDEX] = { pubkey: userBaseAta, isSigner: false, isWritable: true };
+  accounts[PUMPSWAP_USER_QUOTE_ATA_INDEX] = { pubkey: userQuoteAta, isSigner: false, isWritable: true };
+  if (accounts.length > PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX) {
+    accounts[PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX] = {
       pubkey: derivePumpSwapUserVolumeAccumulatorPda(args.user),
       isSigner: false,
       isWritable: true,
@@ -321,7 +336,14 @@ const POOL_INDEX_OFFSET = 8 + 1;
 const TOKEN_ACCOUNT_AMOUNT_OFFSET = 64;
 const PUMPSWAP_RISK_QUOTE_HAIRCUT_BPS = 100;
 const PUMPSWAP_DIRECT_BUY_QUOTE_HAIRCUT_BPS = 300;
+const PUMPSWAP_ACCOUNT_CACHE_TTL_MS = 30_000;
 const pumpSwapPoolCache = new Map<string, { pool: PublicKey; baseVault: PublicKey; quoteVault: PublicKey }>();
+const pumpSwapMintOwnerCache = new Map<string, { owner: PublicKey; cachedAt: number }>();
+const pumpSwapPoolAccountCache = new Map<string, { account: AccountInfo<Buffer>; cachedAt: number }>();
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function readPubkey(data: Buffer, offset: number): PublicKey {
   return new PublicKey(data.subarray(offset, offset + 32));
@@ -330,6 +352,39 @@ function readPubkey(data: Buffer, offset: number): PublicKey {
 function readTokenAccountAmount(info: AccountInfo<Buffer> | null): bigint | null {
   if (!info || info.data.length < TOKEN_ACCOUNT_AMOUNT_OFFSET + 8) return null;
   return info.data.readBigUInt64LE(TOKEN_ACCOUNT_AMOUNT_OFFSET);
+}
+
+async function getCachedMintOwner(mint: PublicKey): Promise<PublicKey | null> {
+  const key = mint.toBase58();
+  const cached = pumpSwapMintOwnerCache.get(key);
+  const now = Date.now();
+  if (cached && now - cached.cachedAt < PUMPSWAP_ACCOUNT_CACHE_TTL_MS) return cached.owner;
+
+  for (const attempt of [
+    { commitment: "processed" as const, delayMs: 0 },
+    { commitment: "confirmed" as const, delayMs: 0 },
+    { commitment: "processed" as const, delayMs: 40 },
+    { commitment: "processed" as const, delayMs: 80 },
+  ]) {
+    if (attempt.delayMs > 0) await sleep(attempt.delayMs);
+    const account = await readConnection.getAccountInfo(mint, attempt.commitment);
+    if (!account) continue;
+    pumpSwapMintOwnerCache.set(key, { owner: account.owner, cachedAt: Date.now() });
+    return account.owner;
+  }
+
+  return null;
+}
+
+async function getCachedPumpSwapPoolAccount(pool: PublicKey): Promise<AccountInfo<Buffer> | null> {
+  const key = pool.toBase58();
+  const cached = pumpSwapPoolAccountCache.get(key);
+  const now = Date.now();
+  if (cached && now - cached.cachedAt < PUMPSWAP_ACCOUNT_CACHE_TTL_MS) return cached.account;
+
+  const account = await readConnection.getAccountInfo(pool, "processed");
+  if (account) pumpSwapPoolAccountCache.set(key, { account, cachedAt: now });
+  return account;
 }
 
 async function findPumpSwapPoolForMint(mint: PublicKey): Promise<{
@@ -449,20 +504,23 @@ export async function tryPumpSwapDirectBuy(args: {
 
   const elapsed = () => `${Date.now() - args.startedAt}ms`;
   const mintKey = new PublicKey(args.mint);
-  const mintAccount = await readConnection.getAccountInfo(mintKey, "confirmed");
-  if (!mintAccount) {
+  const baseTokenProgramId = await getCachedMintOwner(mintKey);
+  if (!baseTokenProgramId) {
     return { ok: false, recoverable: true, reason: "PumpSwap base mint account not found" };
   }
-  const baseTokenProgramId = mintAccount.owner;
   const sourceAccounts = args.sourcePumpSwapAccounts?.length
-    ? args.sourcePumpSwapAccounts.map((pubkey, idx) => ({
-        pubkey: new PublicKey(pubkey),
-        isSigner: idx === 1,
-        isWritable: [0, 1, 5, 6, 7, 8, 10, 17, 19, 25].includes(idx),
-      }))
+    ? args.sourcePumpSwapAccounts.map((pubkey, idx) =>
+        pumpSwapMetaFromSourceKey(new PublicKey(pubkey), idx)
+      )
     : await sourcePumpSwapAccounts(args.sourceSignature, mintKey);
   if (!sourceAccounts) {
     return { ok: false, recoverable: true, reason: "source tx has no PumpSwap buy instruction" };
+  }
+  if (
+    !sourceAccounts[PUMPSWAP_BASE_MINT_INDEX]?.pubkey.equals(mintKey) ||
+    sourceAccounts[PUMPSWAP_QUOTE_MINT_INDEX]?.pubkey.toBase58() !== WRAPPED_SOL_MINT
+  ) {
+    return { ok: false, recoverable: true, reason: "source PumpSwap accounts do not match SOL->mint buy layout" };
   }
 
   const { accounts, userBaseAta, userQuoteAta } = replacePumpSwapUserAccounts({
@@ -476,7 +534,7 @@ export async function tryPumpSwapDirectBuy(args: {
     return { ok: false, recoverable: true, reason: `PumpSwap account list too short: ${accounts.length}` };
   }
 
-  const poolAccount = await readConnection.getAccountInfo(accounts[0]!.pubkey, "processed");
+  const poolAccount = await getCachedPumpSwapPoolAccount(accounts[0]!.pubkey);
   const poolError = validatePumpSwapPoolAccount(accounts[0]!.pubkey, poolAccount);
   if (poolError) return { ok: false, recoverable: true, reason: poolError };
 
@@ -494,9 +552,11 @@ export async function tryPumpSwapDirectBuy(args: {
   if (expectedBaseOut == null || expectedBaseOut <= 0n) {
     return { ok: false, recoverable: true, reason: "PumpSwap output quote unavailable" };
   }
-  const minBaseOut = pumpSwapDirectMinOutBps <= 0
-    ? 1n
-    : (expectedBaseOut * BigInt(pumpSwapDirectMinOutBps)) / 10_000n;
+  const minOutBps =
+    pumpSwapDirectMinOutBps > 0
+      ? pumpSwapDirectMinOutBps
+      : Math.max(1, 10_000 - Math.min(9_999, Math.max(0, args.slippageBps)));
+  const minBaseOut = (expectedBaseOut * BigInt(minOutBps)) / 10_000n;
   if (minBaseOut <= 0n) {
     return { ok: false, recoverable: true, reason: "PumpSwap min output is zero" };
   }
@@ -554,15 +614,8 @@ export async function tryPumpSwapDirectBuy(args: {
     data: encodeBuyExactQuoteIn(BigInt(args.solInLamports), minBaseOut),
   });
 
-  const [{ blockhash, lastValidBlockHeight }, currentBlockHeight] = await Promise.all([
-    getCachedBlockhash(),
-    readConnection.getBlockHeight("confirmed").catch(() => null),
-  ]);
-  const validFor =
-    currentBlockHeight == null ? "unknown" : `${lastValidBlockHeight - currentBlockHeight} block(s)`;
-  args.log(
-    `PumpSwap blockhash ready: lastValidBlockHeight=${lastValidBlockHeight} validFor=${validFor}`
-  );
+  const { blockhash, lastValidBlockHeight } = await getCachedBlockhash();
+  args.log(`PumpSwap blockhash ready: lastValidBlockHeight=${lastValidBlockHeight}`);
   const message = new TransactionMessage({
     payerKey: args.user.publicKey,
     recentBlockhash: blockhash,

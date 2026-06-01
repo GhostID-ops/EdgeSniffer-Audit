@@ -269,6 +269,12 @@ function shouldTryPumpSwapAfterPumpFunSkip(reason: string, swap: DetectedSwap): 
   );
 }
 
+function shouldAllowJupiterAfterPumpSwapFailure(swap: DetectedSwap): boolean {
+  // Pump.fun mints that have graduated should still be copied through PumpSwap. Jupiter often
+  // has no route yet, and the constrained-route ladder adds seconds of dead latency on hot coins.
+  return !swap.outputMint.endsWith("pump");
+}
+
 async function estimateCostBasisLamports(inputMint: string, inputAmountRaw: number): Promise<number> {
   if (inputMint === WRAPPED_SOL_MINT) return inputAmountRaw;
   if (inputMint !== USDC_MINT || inputAmountRaw <= 0) return inputAmountRaw;
@@ -483,6 +489,9 @@ export async function mirrorSwap(
       }
       if (!pumpSwap.recoverable) {
         throw new Error(`PumpSwap direct buy failed: ${pumpSwap.reason}`);
+      }
+      if (!shouldAllowJupiterAfterPumpSwapFailure(swap)) {
+        throw new Error(`PumpSwap direct buy failed for pump mint; not using slow Jupiter fallback: ${pumpSwap.reason}`);
       }
       console.log(`PumpSwap direct path skipped: ${pumpSwap.reason}; falling back to Jupiter.`);
       if (!mirrorGraduatedBuys) {

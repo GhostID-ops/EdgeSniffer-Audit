@@ -9,6 +9,32 @@ let cachedBalance: number = 0;
 let lastBalanceCheck: number = 0;
 const BALANCE_CACHE_MS = 10000; // 10 seconds
 
+export function setBalanceCache(lamports: number): void {
+  if (!Number.isFinite(lamports) || lamports < 0) return;
+  cachedBalance = Math.floor(lamports);
+  lastBalanceCheck = Date.now();
+}
+
+export function getCachedBalance(): number | null {
+  return cachedBalance > 0 ? cachedBalance : null;
+}
+
+export function getCachedBalanceAgeMs(): number | null {
+  return cachedBalance > 0 ? Date.now() - lastBalanceCheck : null;
+}
+
+export function noteLocalSolDebit(lamports: number): void {
+  if (cachedBalance <= 0 || !Number.isFinite(lamports) || lamports <= 0) return;
+  cachedBalance = Math.max(0, cachedBalance - Math.floor(lamports));
+  lastBalanceCheck = Date.now();
+}
+
+export function noteLocalSolCredit(lamports: number): void {
+  if (cachedBalance <= 0 || !Number.isFinite(lamports) || lamports <= 0) return;
+  cachedBalance += Math.floor(lamports);
+  lastBalanceCheck = Date.now();
+}
+
 /**
  * Fast check if wallet has enough SOL after reserving gas fees
  * Uses cached balance for speed, only fetches fresh balance if cache is stale
@@ -51,9 +77,7 @@ export async function updateBalanceCache(
     // Fetch fresh balance
     const freshBalance = await connection.getBalance(walletPublicKey, { commitment: "confirmed" });
     
-    // Update cache
-    cachedBalance = freshBalance;
-    lastBalanceCheck = now;
+    setBalanceCache(freshBalance);
     
     return freshBalance;
   } catch (error) {

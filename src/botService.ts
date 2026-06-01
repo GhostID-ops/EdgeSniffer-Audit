@@ -80,7 +80,17 @@ import { confirmSignature } from "./confirm.js";
 import { getSolBalance, formatSol, getTokenBalance, getTokenBalanceFast } from "./balance.js";
 import { telegram, type TradeNotification, type PnlNotification, formatPnlForTelegram } from "./telegram.js";
 import "./telegramBot.js"; // Initialize Telegram bot handler
-import { hasEnoughSOLForTrade, updateBalanceCache, getBalanceInfo, isBalanceCriticallyLow } from "./solReserve.js";
+import {
+  getCachedBalance,
+  getCachedBalanceAgeMs,
+  getBalanceInfo,
+  hasEnoughSOLForTrade,
+  isBalanceCriticallyLow,
+  noteLocalSolCredit,
+  noteLocalSolDebit,
+  setBalanceCache,
+  updateBalanceCache,
+} from "./solReserve.js";
 import {
   formatSolAmount,
   formatTokenAmount,
@@ -221,6 +231,7 @@ const processedSignatures = new BoundedSignatureSet();
 const buyMintsInFlight = new Set<string>();
 const pendingBuyRetryByMint = new Map<string, DetectedSwap>();
 const fastBuyConfirmRetryScheduledByMint = new Set<string>();
+const fastSellConfirmRetryScheduledByMint = new Set<string>();
 const failedBuyRecoveryInFlightMints = new Set<string>();
 const boughtMintsThisSession = new Set<string>();
 const sourcePreexistingBuyMints = new Set<string>();
@@ -730,6 +741,7 @@ async function updateBalance(pubkey: PublicKey): Promise<void> {
     const { lamports } = await getSolBalance(pubkey);
     lastBalanceLamports = lamports;
     lastBalanceAt = Date.now();
+    setBalanceCache(lamports);
     console.log("Balance:", formatSol(lamports));
   } catch (err) {
     console.warn("Failed to fetch balance:", err);
@@ -1241,8 +1253,12 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   if (isBuySignal(swap) && !simulationMode) {
     const quoteMint = mirrorQuoteMintForBuy(swap);
     const mirroredAmount = mirroredBuyAmountRaw(swap);
-    // Update balance cache (fast, cached)
-    const currentBalance = await updateBalanceCache(readConnection, kp.publicKey);
+    let currentBalance = getCachedBalance() ?? lastBalanceLamports ?? 0;
+    if (currentBalance <= 0) {
+      currentBalance = await updateBalanceCache(readConnection, kp.publicKey);
+    } else if ((getCachedBalanceAgeMs() ?? 0) > 30_000) {
+      void updateBalanceCache(readConnection, kp.publicKey, true);
+    }
     
     // Check if we have enough SOL after reserving gas fees
     if (quoteMint === WRAPPED_SOL_MINT && !hasEnoughSOLForTrade(mirroredAmount, currentBalance)) {
@@ -1307,6 +1323,15 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   try {
     if (isSellSignal(swap) && !simulationMode) {
       const sellMint = swap.inputMint;
+      const currentPosition = getPosition(sellMint);
+      if (
+        currentPosition &&
+        mirrorBuySignatureByMint.has(sellMint) &&
+        currentPosition.sellsCount === 0 &&
+        Date.now() - currentPosition.firstSeenAt < 120_000
+      ) {
+        await reconcileOpenPositionWithConfirmedBuy(currentPosition);
+      }
       if (fastSellConfirmPendingByMint.has(sellMint)) {
         console.log(`Skipping sell: ${sellMint.slice(0, 8)}... sell already awaiting confirmation.`);
         return;
@@ -1416,6 +1441,31 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
               `(reason: ${reason}). Sell removed from tracking.`
           );
         }
+        const retryPosition = getPosition(mint);
+        if (
+          retryPosition &&
+          retryPosition.heldRaw > 0 &&
+          keypair &&
+          !stopRequested &&
+          !fastSellConfirmRetryScheduledByMint.has(mint)
+        ) {
+          fastSellConfirmRetryScheduledByMint.add(mint);
+          setTimeout(() => {
+            const position = getPosition(mint);
+            if (!position || position.heldRaw <= 0 || !keypair || stopRequested) {
+              fastSellConfirmRetryScheduledByMint.delete(mint);
+              return;
+            }
+            sellLivePosition(position, "retry after failed mirror sell")
+              .catch((err) => {
+                const msg = err instanceof Error ? err.message : String(err);
+                console.warn(`Fast mirrored sell retry failed for ${mint.slice(0, 8)}…: ${msg}`);
+              })
+              .finally(() => {
+                fastSellConfirmRetryScheduledByMint.delete(mint);
+              });
+          }, 50);
+        }
       },
     });
     console.log(`⚡ Mirror path completed in ${elapsed()}`);
@@ -1427,6 +1477,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     const marketCapUsd = tokenMint ? await maybeGetMarketCap(tokenMint) : null;
     const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
     logTrade(result, swap, marketCapUsd, marketCapCheckedAt);
+    if (!simulationMode) {
+      if (result.side === "buy" && result.input.meta.mint === WRAPPED_SOL_MINT) {
+        noteLocalSolDebit(result.input.amountRaw);
+      } else if (result.side === "sell" && result.output.meta.mint === WRAPPED_SOL_MINT) {
+        noteLocalSolCredit(result.output.amountRaw);
+      }
+    }
     if (result.side === "sell" && lockedFastSellMint) {
       if (result.confirmationPending) {
         fastSellLockShouldPersist = true;
