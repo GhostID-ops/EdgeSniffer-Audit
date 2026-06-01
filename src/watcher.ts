@@ -22,8 +22,12 @@ const WS_PARSE_ATTEMPTS = 12;
 const WS_PARSE_RETRY_MS = 250;
 const HELIUS_MIN_REQUEST_GAP_MS = 600;
 const HELIUS_RATE_LIMIT_COOLDOWN_MS = 60_000;
+const HELIUS_FETCH_TIMEOUT_MS = 12_000;
+const WATCHER_TIMEOUT_WARNING_GAP_MS = 60_000;
 let heliusNextRequestAt = 0;
 let heliusCooldownUntil = 0;
+let lastWatcherTimeoutWarningAt = 0;
+let suppressedWatcherTimeoutWarnings = 0;
 const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
 );
@@ -223,7 +227,7 @@ async function fetchWithRetry(url: string, init?: RequestInit): Promise<Response
       await waitForHeliusSlot();
       const response = await fetch(url, {
         ...init,
-        signal: AbortSignal.timeout(8000),
+        signal: AbortSignal.timeout(HELIUS_FETCH_TIMEOUT_MS),
       });
       if (!response.ok) {
         if (response.status === 429 && attempt < MAX_ATTEMPTS) {
@@ -312,7 +316,7 @@ async function parseTransactions(signatures: string[]): Promise<HeliusParsedTx[]
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ transactions: signatures }),
-        signal: AbortSignal.timeout(8000),
+        signal: AbortSignal.timeout(HELIUS_FETCH_TIMEOUT_MS),
       });
       if (!response.ok) {
         const text = await response.text();
@@ -943,7 +947,26 @@ export async function getNewSwaps(
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.warn(`Watcher skip ${wallet.slice(0, 6)}...: ${msg}`);
+      const isTimeout =
+        err instanceof Error &&
+        (err.name === "TimeoutError" || err.name === "AbortError" || msg.toLowerCase().includes("aborted"));
+      if (isTimeout) {
+        suppressedWatcherTimeoutWarnings += 1;
+        const now = Date.now();
+        if (now - lastWatcherTimeoutWarningAt >= WATCHER_TIMEOUT_WARNING_GAP_MS) {
+          const suffix =
+            suppressedWatcherTimeoutWarnings > 1
+              ? ` (${suppressedWatcherTimeoutWarnings - 1} similar timeout(s) suppressed)`
+              : "";
+          console.warn(
+            `Watcher poll fallback timeout for ${wallet.slice(0, 6)}...; gRPC/Rabbit/WS remain active${suffix}`
+          );
+          lastWatcherTimeoutWarningAt = now;
+          suppressedWatcherTimeoutWarnings = 0;
+        }
+      } else {
+        console.warn(`Watcher skip ${wallet.slice(0, 6)}...: ${msg}`);
+      }
     }
   }
 

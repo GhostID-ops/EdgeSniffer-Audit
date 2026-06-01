@@ -1,5 +1,15 @@
 # Friend Speed/Performance `.env` Settings
 
+Fastest update path:
+
+```powershell
+git pull --ff-only origin restore-version
+npm run env:performance
+npm run build
+```
+
+That command updates only the shared speed/performance keys from `.env.performance` and preserves private keys/API keys in each friend's existing `.env`. It also writes a backup under `.restore-backups/`.
+
 Copy these into your own `.env` after you have your own wallet/private-key and API-key settings.
 Do not share private keys, wallet secrets, Helius keys, Shyft tokens, Moralis keys, or Jito auth UUIDs.
 

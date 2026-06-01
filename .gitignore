@@ -5,6 +5,7 @@ dist
 rust-sidecar/target
 rust-sidecar-target-*/
 snapshots/
+.restore-backups/
 *.log
 data/*.jsonl
 data/*.lock

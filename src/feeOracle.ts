@@ -21,6 +21,9 @@ let cachedFee = priorityFeeMicroLamports;
 let lastFetchedAt = 0;
 let pollerStarted = false;
 let pollerHandle: NodeJS.Timeout | null = null;
+let lastRefreshWarningAt = 0;
+let suppressedRefreshWarnings = 0;
+const FEE_ORACLE_WARNING_GAP_MS = 60_000;
 
 function p75(values: number[]): number {
   if (values.length === 0) return 0;
@@ -47,7 +50,15 @@ async function refreshFee(): Promise<void> {
   } catch (err) {
     // Transient — keep the previous cached fee. Static floor still protects us.
     const msg = err instanceof Error ? err.message : String(err);
-    console.warn(`Fee oracle refresh failed (suppressed, using cached): ${msg}`);
+    const now = Date.now();
+    suppressedRefreshWarnings += 1;
+    if (now - lastRefreshWarningAt >= FEE_ORACLE_WARNING_GAP_MS) {
+      const suffix =
+        suppressedRefreshWarnings > 1 ? ` (${suppressedRefreshWarnings - 1} similar warning(s) suppressed)` : "";
+      console.warn(`Fee oracle refresh failed (using cached ${cachedFee} microLamports/CU): ${msg}${suffix}`);
+      lastRefreshWarningAt = now;
+      suppressedRefreshWarnings = 0;
+    }
   }
 }
 
