@@ -36,7 +36,9 @@ function testUserAccountReplacement(): void {
   const accounts = metas(27);
   accounts[1] = { pubkey: key("source-user"), isSigner: true, isWritable: true };
   accounts[14] = { pubkey: new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"), isSigner: false, isWritable: false };
-  accounts[20] = { pubkey: key("source-support-program"), isSigner: false, isWritable: false };
+  accounts[20] = { pubkey: key("source-volume-accumulator"), isSigner: false, isWritable: true };
+  accounts[23] = { pubkey: key("creator-vault-ata"), isSigner: false, isWritable: true };
+  accounts[11] = { pubkey: TOKEN_2022_PROGRAM_ID, isSigner: false, isWritable: false };
 
   const { accounts: replaced, userBaseAta, userQuoteAta } = replacePumpSwapUserAccounts({
     accounts,
@@ -59,9 +61,13 @@ function testUserAccountReplacement(): void {
   );
   assert.equal(
     replaced[20]!.pubkey.toBase58(),
-    accounts[20]!.pubkey.toBase58(),
-    "non-user PumpSwap support accounts are preserved"
+    derivePumpSwapUserVolumeAccumulatorPda(user).toBase58(),
+    "PumpSwap user volume PDA is replaced"
   );
+  assert.notEqual(replaced[20]!.pubkey.toBase58(), accounts[20]!.pubkey.toBase58());
+  assert.equal(replaced[20]!.isWritable, true, "PumpSwap user volume PDA is writable");
+  assert.equal(replaced[11]!.isWritable, false, "base token program remains read-only");
+  assert.equal(replaced[23]!.isWritable, true, "coin creator vault ATA remains writable");
 }
 
 function testPumpSwapPdaProgramOwner(): void {
