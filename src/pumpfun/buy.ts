@@ -179,6 +179,16 @@ function isV2SourceIxAccounts(
   );
 }
 
+function shouldUseV2BuyLayout(args: {
+  sourceIxAccounts?: PublicKey[];
+  mint: PublicKey;
+  tokenProgramId: PublicKey;
+}): boolean {
+  if (isV2SourceIxAccounts(args.sourceIxAccounts, args.mint)) return true;
+  if (args.sourceIxAccounts && args.sourceIxAccounts.length >= 16) return false;
+  return args.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
+}
+
 export function buildPumpFunBuyIx(args: {
   user: PublicKey;
   mint: PublicKey;
@@ -209,15 +219,13 @@ export function buildPumpFunBuyIx(args: {
   );
 
   let keys: AccountMeta[];
-  const isV2 =
-    isV2SourceIxAccounts(args.sourceIxAccounts, args.mint) ||
-    args.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
-  if (isV2 && args.sourceIxAccounts) {
+  const isV2 = shouldUseV2BuyLayout(args);
+  if (isV2SourceIxAccounts(args.sourceIxAccounts, args.mint)) {
     // V2 buy layout has no optional accounts but includes multiple user-specific slots.
     // Keep the 27 official Pump.fun accounts verbatim and replace only our wallet-owned
     // accounts. Routers may pass extra CPI accounts after slot 26; forwarding those makes
     // direct V2 buys exceed Solana's 1232-byte transaction cap.
-    const src = args.sourceIxAccounts.slice(0, PUMP_FUN_BUY_V2_ACCOUNT_COUNT);
+    const src = args.sourceIxAccounts!.slice(0, PUMP_FUN_BUY_V2_ACCOUNT_COUNT);
     keys = src.map((pubkey, i) => {
       let actual = pubkey;
       if (i === 13) actual = args.user;
@@ -395,9 +403,7 @@ export async function buildPumpFunBuyTransaction(args: {
     mint: args.mint,
     tokenProgramId: args.tokenProgramId,
   });
-  const isV2 =
-    isV2SourceIxAccounts(args.sourceIxAccounts, args.mint) ||
-    args.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
+  const isV2 = shouldUseV2BuyLayout(args);
 
   const buyIx = buildPumpFunBuyIx({
     user: args.user.publicKey,
