@@ -796,8 +796,8 @@ function shouldQuarantineFailedBuy(reason: string): boolean {
   return /Custom":(?:6023|6042)|Custom":\s*(?:6023|6042)|Custom\((?:6023|6042)\)/.test(reason);
 }
 
-function isPumpFunAccountSeedFailure(reason: string): boolean {
-  return /Custom":\s*2006|Custom\(?2006\)?/.test(reason);
+function isPumpFunAccountLayoutFailure(reason: string): boolean {
+  return /Custom":\s*(?:2006|6004)|Custom\(?\s*(?:2006|6004)\)?/.test(reason);
 }
 
 function isBuySignal(swap: DetectedSwap): boolean {
@@ -899,7 +899,7 @@ function shouldAttemptFailedBuyRecovery(
     !failedBuyRecoveryInFlightMints.has(mint!) &&
     !sourceSwap?.skipDirectBuyRoutes &&
     !sourceSwap?.forceDerivedPumpFunBuy &&
-    isPumpFunAccountSeedFailure(reason) &&
+    isPumpFunAccountLayoutFailure(reason) &&
     (sourceSwap?.buyRecoveryAttempt ?? 0) < 1
   ) {
     return true;
@@ -929,7 +929,7 @@ function scheduleFailedBuyRecovery(
   reason: string
 ): void {
   failedBuyRecoveryInFlightMints.add(sourceSwap.outputMint);
-  const useDerivedPumpFunRescue = isPumpFunAccountSeedFailure(reason) && !sourceSwap.forceDerivedPumpFunBuy;
+  const useDerivedPumpFunRescue = isPumpFunAccountLayoutFailure(reason) && !sourceSwap.forceDerivedPumpFunBuy;
   const recoverySwap: DetectedSwap = {
     ...sourceSwap,
     skipDirectBuyRoutes: false,
@@ -940,7 +940,7 @@ function scheduleFailedBuyRecovery(
 
   console.warn(
     useDerivedPumpFunRescue
-      ? `Scheduling derived-account pump.fun rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after Custom:2006.`
+      ? `Scheduling derived-account pump.fun rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after pump.fun account-layout failure.`
       : `Scheduling direct rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after direct buy failed.`
   );
   setTimeout(() => {
@@ -1398,13 +1398,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           scheduleFailedBuyRecovery(sourceSwap, kp, reason);
           return;
         }
-        if (isPumpFunAccountSeedFailure(reason)) {
+        if (isPumpFunAccountLayoutFailure(reason)) {
           boughtMintsThisSession.delete(mint);
           pendingBuyRetryByMint.delete(mint);
           fastBuyConfirmRetryScheduledByMint.delete(mint);
           failedBuyRecoveryInFlightMints.delete(mint);
           console.warn(
-            `Buy failed for ${mint.slice(0, 8)}... with Custom:2006 after rescue; ` +
+            `Buy failed for ${mint.slice(0, 8)}... with pump.fun account-layout error after rescue; ` +
               "not session-quarantining so a later source buy can retry."
           );
           return;
