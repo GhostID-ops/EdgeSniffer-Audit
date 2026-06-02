@@ -3,8 +3,10 @@ import { PublicKey, type AccountMeta } from "@solana/web3.js";
 import {
   PUMPSWAP_PROGRAM_ID,
   PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR,
+  PUMPSWAP_SELL_DISCRIMINATOR,
   derivePumpSwapUserVolumeAccumulatorPda,
   encodeBuyExactQuoteIn,
+  encodeSell,
   isRecoverablePumpSwapFailure,
   pumpSwapPubkeyHintsToMetas,
   replacePumpSwapUserAccounts,
@@ -146,6 +148,14 @@ function testBuyExactQuoteInEncoding(): void {
   assert.equal(data.readUInt8(24), 0, "track_volume is encoded as OptionBool::None");
 }
 
+function testSellEncoding(): void {
+  const data = encodeSell(123_456_789n, 180_000_000n);
+  assert.equal(data.length, 24);
+  assert.deepEqual(data.subarray(0, 8), PUMPSWAP_SELL_DISCRIMINATOR);
+  assert.equal(data.readBigUInt64LE(8), 123_456_789n);
+  assert.equal(data.readBigUInt64LE(16), 180_000_000n);
+}
+
 function run(): void {
   testUserAccountReplacement();
   testPumpSwapHintAccountFlags();
@@ -153,6 +163,7 @@ function run(): void {
   testRecoverableFailureClassification();
   testPoolPrecheckSimulationCases();
   testBuyExactQuoteInEncoding();
+  testSellEncoding();
   console.log("PumpSwap tests passed");
 }
 

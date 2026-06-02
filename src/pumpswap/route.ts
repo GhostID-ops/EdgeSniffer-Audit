@@ -35,6 +35,7 @@ export const PUMPSWAP_PROGRAM_ID = new PublicKey("pAMMBay6oceH9fJKBRHGP5D4bD4sWp
 export const PUMPSWAP_GLOBAL_CONFIG = new PublicKey("ADyA8hBd1ckwkgdC5fC4bKBS32sNeuHuJecF8GWqV7Zb");
 export const PUMPSWAP_BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 235, 234]);
 export const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = Buffer.from([198, 46, 21, 82, 180, 217, 232, 112]);
+export const PUMPSWAP_SELL_DISCRIMINATOR = Buffer.from([51, 230, 133, 164, 1, 127, 131, 173]);
 const SYNC_NATIVE_IX = Buffer.from([17]);
 const CLOSE_ACCOUNT_IX = Buffer.from([9]);
 const PUMPSWAP_USER_INDEX = 1;
@@ -80,6 +81,18 @@ export type PumpSwapOutcome =
     }
   | { ok: false; reason: string; recoverable: boolean };
 
+export type PumpSwapSellOutcome =
+  | {
+      ok: true;
+      signature: string;
+      isSimulated: boolean;
+      baseIn: bigint;
+      quoteOut: bigint;
+      mintMeta: TokenMeta;
+      confirmationPending?: boolean;
+    }
+  | { ok: false; reason: string; recoverable: boolean };
+
 function encodeBuy(baseAmountOut: bigint, maxQuoteAmountIn: bigint): Buffer {
   const buf = Buffer.alloc(25);
   PUMPSWAP_BUY_DISCRIMINATOR.copy(buf, 0);
@@ -95,6 +108,14 @@ export function encodeBuyExactQuoteIn(quoteAmountIn: bigint, minBaseAmountOut: b
   buf.writeBigUInt64LE(quoteAmountIn, 8);
   buf.writeBigUInt64LE(minBaseAmountOut, 16);
   buf.writeUInt8(0, 24); // OptionBool::None for volume tracking.
+  return buf;
+}
+
+export function encodeSell(baseAmountIn: bigint, minQuoteAmountOut: bigint): Buffer {
+  const buf = Buffer.alloc(24);
+  PUMPSWAP_SELL_DISCRIMINATOR.copy(buf, 0);
+  buf.writeBigUInt64LE(baseAmountIn, 8);
+  buf.writeBigUInt64LE(minQuoteAmountOut, 16);
   return buf;
 }
 
@@ -661,6 +682,62 @@ export async function buildCanonicalPumpSwapBuyAccounts(args: {
   ];
 }
 
+export async function buildCanonicalPumpSwapSellAccounts(args: {
+  user: PublicKey;
+  mint: PublicKey;
+  baseTokenProgram: PublicKey;
+}): Promise<AccountMeta[] | null> {
+  const pool = await findPumpSwapPoolForMint(args.mint);
+  if (!pool) return null;
+
+  const [poolAccount, globalConfigAccount] = await Promise.all([
+    getCachedPumpSwapPoolAccount(pool.pool),
+    getCachedPumpSwapGlobalConfigAccount(),
+  ]);
+  if (validatePumpSwapPoolAccount(pool.pool, poolAccount)) return null;
+
+  const poolState = readPoolStateFromAccount(pool.pool, poolAccount);
+  if (!poolState) return null;
+  if (!poolState.baseMint.equals(args.mint) || poolState.quoteMint.toBase58() !== WRAPPED_SOL_MINT) {
+    return null;
+  }
+
+  const protocolFeeRecipient = readProtocolFeeRecipientFromGlobalConfig(globalConfigAccount);
+  if (!protocolFeeRecipient) return null;
+
+  const quoteMint = new PublicKey(WRAPPED_SOL_MINT);
+  const quoteTokenProgram = TOKEN_PROGRAM_ID;
+  const userBaseAta = deriveAta(args.user, args.mint, args.baseTokenProgram);
+  const userQuoteAta = deriveAta(args.user, quoteMint, quoteTokenProgram);
+  const protocolFeeRecipientAta = deriveAta(protocolFeeRecipient, quoteMint, quoteTokenProgram);
+  const coinCreatorVaultAuthority = derivePumpSwapCoinCreatorVaultAuthorityPda(poolState.coinCreator);
+  const coinCreatorVaultAta = deriveAta(coinCreatorVaultAuthority, quoteMint, quoteTokenProgram);
+
+  return [
+    { pubkey: poolState.pool, isSigner: false, isWritable: true },
+    { pubkey: args.user, isSigner: true, isWritable: true },
+    { pubkey: PUMPSWAP_GLOBAL_CONFIG, isSigner: false, isWritable: false },
+    { pubkey: args.mint, isSigner: false, isWritable: false },
+    { pubkey: quoteMint, isSigner: false, isWritable: false },
+    { pubkey: userBaseAta, isSigner: false, isWritable: true },
+    { pubkey: userQuoteAta, isSigner: false, isWritable: true },
+    { pubkey: poolState.baseVault, isSigner: false, isWritable: true },
+    { pubkey: poolState.quoteVault, isSigner: false, isWritable: true },
+    { pubkey: protocolFeeRecipient, isSigner: false, isWritable: false },
+    { pubkey: protocolFeeRecipientAta, isSigner: false, isWritable: true },
+    { pubkey: args.baseTokenProgram, isSigner: false, isWritable: false },
+    { pubkey: quoteTokenProgram, isSigner: false, isWritable: false },
+    { pubkey: SYSTEM_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: derivePumpSwapEventAuthorityPda(), isSigner: false, isWritable: false },
+    { pubkey: PUMPSWAP_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: coinCreatorVaultAta, isSigner: false, isWritable: true },
+    { pubkey: coinCreatorVaultAuthority, isSigner: false, isWritable: false },
+    { pubkey: derivePumpSwapFeeConfigPda(), isSigner: false, isWritable: false },
+    { pubkey: PUMP_FUN_FEE_PROGRAM_ID, isSigner: false, isWritable: false },
+  ];
+}
+
 async function estimatePumpSwapBuyQuoteFromPool(args: {
   pool: PublicKey;
   poolAccount: AccountInfo<Buffer> | null;
@@ -687,6 +764,29 @@ async function estimatePumpSwapBuyQuoteFromPool(args: {
   return conservativeOut > 0n ? conservativeOut : null;
 }
 
+async function estimatePumpSwapSellQuoteFromPool(args: {
+  pool: PublicKey;
+  poolAccount: AccountInfo<Buffer> | null;
+  baseAmountRaw: number;
+}): Promise<bigint | null> {
+  if (!Number.isFinite(args.baseAmountRaw) || args.baseAmountRaw <= 0) return null;
+  const vaults = readPoolVaultsFromAccount(args.pool, args.poolAccount);
+  if (!vaults) return null;
+
+  const [baseInfo, quoteInfo] = await readConnection.getMultipleAccountsInfo(
+    [vaults.baseVault, vaults.quoteVault],
+    "processed"
+  );
+  const baseReserve = readTokenAccountAmount(baseInfo);
+  const quoteReserve = readTokenAccountAmount(quoteInfo);
+  if (!baseReserve || !quoteReserve || baseReserve <= 0n || quoteReserve <= 0n) return null;
+
+  const baseIn = BigInt(Math.floor(args.baseAmountRaw));
+  if (baseIn <= 0n) return null;
+  const rawOut = (quoteReserve * baseIn) / (baseReserve + baseIn);
+  return rawOut > 0n ? rawOut : null;
+}
+
 export async function estimatePumpSwapSellQuote(
   mint: string,
   baseAmountRaw: number
@@ -695,17 +795,12 @@ export async function estimatePumpSwapSellQuote(
   const pool = await findPumpSwapPoolForMint(new PublicKey(mint));
   if (!pool) return null;
 
-  const [baseInfo, quoteInfo] = await readConnection.getMultipleAccountsInfo(
-    [pool.baseVault, pool.quoteVault],
-    "confirmed"
-  );
-  const baseReserve = readTokenAccountAmount(baseInfo);
-  const quoteReserve = readTokenAccountAmount(quoteInfo);
-  if (!baseReserve || !quoteReserve || baseReserve <= 0n || quoteReserve <= 0n) return null;
-
-  const amountIn = BigInt(Math.floor(baseAmountRaw));
-  if (amountIn <= 0n) return null;
-  const rawOut = (quoteReserve * amountIn) / (baseReserve + amountIn);
+  const rawOut = await estimatePumpSwapSellQuoteFromPool({
+    pool: pool.pool,
+    poolAccount: await getCachedPumpSwapPoolAccount(pool.pool),
+    baseAmountRaw,
+  });
+  if (rawOut == null) return null;
   // Risk checks need a usable valuation during Jupiter indexing lag; haircut avoids optimistic fee-free exits.
   const conservativeOut = (rawOut * BigInt(10_000 - PUMPSWAP_RISK_QUOTE_HAIRCUT_BPS)) / 10_000n;
   if (conservativeOut <= 0n || conservativeOut > BigInt(Number.MAX_SAFE_INTEGER)) return null;
@@ -949,6 +1044,188 @@ export async function tryPumpSwapDirectBuy(args: {
     isSimulated: false,
     baseOut: expectedBaseOut,
     quoteIn: BigInt(args.solInLamports),
+    mintMeta,
+    confirmationPending: fastMode,
+  };
+}
+
+export async function tryPumpSwapDirectSell(args: {
+  user: Keypair;
+  mint: string;
+  tokensInRaw: number | bigint;
+  slippageBps: number;
+  startedAt: number;
+  log: (msg: string) => void;
+  rebroadcastAttempt?: number;
+  onConfirmFailure?: (mint: string, tokensInRaw: number, solOutLamports: number, reason: string) => void;
+  onConfirmSuccess?: (mint: string, tokensInRaw: number, solOutLamports: number, signature: string) => void;
+}): Promise<PumpSwapSellOutcome> {
+  const elapsed = () => `${Date.now() - args.startedAt}ms`;
+  const mintKey = new PublicKey(args.mint);
+  const baseTokenProgramId = await getCachedMintOwner(mintKey);
+  if (!baseTokenProgramId) {
+    return { ok: false, recoverable: true, reason: "PumpSwap base mint account not found" };
+  }
+
+  const accounts = await buildCanonicalPumpSwapSellAccounts({
+    user: args.user.publicKey,
+    mint: mintKey,
+    baseTokenProgram: baseTokenProgramId,
+  });
+  if (!accounts) {
+    return { ok: false, recoverable: true, reason: "canonical PumpSwap sell accounts unavailable" };
+  }
+
+  const poolAccount = await getCachedPumpSwapPoolAccount(accounts[0]!.pubkey);
+  const poolError = validatePumpSwapPoolAccount(accounts[0]!.pubkey, poolAccount);
+  if (poolError) return { ok: false, recoverable: true, reason: poolError };
+
+  const tokensIn =
+    typeof args.tokensInRaw === "bigint" ? args.tokensInRaw : BigInt(Math.floor(args.tokensInRaw));
+  if (tokensIn <= 0n) {
+    return { ok: false, recoverable: true, reason: "PumpSwap sell amount is zero" };
+  }
+
+  const expectedQuoteOut = await estimatePumpSwapSellQuoteFromPool({
+    pool: accounts[0]!.pubkey,
+    poolAccount,
+    baseAmountRaw: Number(tokensIn),
+  });
+  if (expectedQuoteOut == null || expectedQuoteOut <= 0n) {
+    return { ok: false, recoverable: true, reason: "PumpSwap sell quote unavailable" };
+  }
+  const minOutBps = Math.max(1, 10_000 - Math.min(9_999, Math.max(0, args.slippageBps)));
+  const minQuoteOut = (expectedQuoteOut * BigInt(minOutBps)) / 10_000n;
+  if (minQuoteOut <= 0n) {
+    return { ok: false, recoverable: true, reason: "PumpSwap sell min output is zero" };
+  }
+
+  const userQuoteAta = deriveAta(args.user.publicKey, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID);
+  args.log(
+    `PumpSwap direct sell: mint=${args.mint} pool=${accounts[0]!.pubkey.toBase58()} ` +
+      `user=${args.user.publicKey.toBase58()} tokensIn=${tokensIn} expectedOut=${expectedQuoteOut} ` +
+      `minOut=${minQuoteOut} slippage=${(args.slippageBps / 100).toFixed(2)}% ` +
+      `accounts=${accounts.length} baseTokenProgram=${baseTokenProgramId.toBase58()}`
+  );
+
+  if (simulationMode) {
+    const mintMeta = await getTokenMeta(args.mint);
+    args.log("PumpSwap sell simulation mode: not sending tx");
+    return {
+      ok: true,
+      signature: `sim-pumpswap-sell-${args.mint.slice(0, 8)}-${Date.now()}`,
+      isSimulated: true,
+      baseIn: tokensIn,
+      quoteOut: expectedQuoteOut,
+      mintMeta,
+    };
+  }
+
+  const computeIxs: TransactionInstruction[] = [];
+  if (computeUnitLimit > 0) {
+    computeIxs.push(
+      ComputeBudgetProgram.setComputeUnitLimit({
+        units: Math.min(computeUnitLimit, 1_400_000),
+      })
+    );
+  }
+  computeIxs.push(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: getDynamicPriorityFee() }));
+
+  const swapIx = new TransactionInstruction({
+    programId: PUMPSWAP_PROGRAM_ID,
+    keys: accounts,
+    data: encodeSell(tokensIn, minQuoteOut),
+  });
+
+  const { blockhash, lastValidBlockHeight } = await getCachedBlockhash();
+  args.log(`PumpSwap sell blockhash ready: lastValidBlockHeight=${lastValidBlockHeight}`);
+  const tx = buildCompactV0Transaction({
+    payer: args.user.publicKey,
+    blockhash,
+    instructions: [
+      ...computeIxs,
+      createAtaIdempotentIx({
+        payer: args.user.publicKey,
+        owner: args.user.publicKey,
+        mint: new PublicKey(WRAPPED_SOL_MINT),
+        tokenProgramId: TOKEN_PROGRAM_ID,
+      }),
+      swapIx,
+      closeTokenAccountIx(userQuoteAta, args.user.publicKey),
+    ],
+    signer: args.user,
+    log: args.log,
+  });
+
+  args.log(`PumpSwap sell tx built (${elapsed()})`);
+  if (pumpSwapDirectPreflight) {
+    const sim = await readConnection.simulateTransaction(tx, {
+      commitment: "processed",
+      sigVerify: false,
+      replaceRecentBlockhash: true,
+    });
+    if (sim.value.err) {
+      const logSummary = summarizeLogs(sim.value.logs ?? []);
+      return {
+        ok: false,
+        recoverable: true,
+        reason: [
+          `PumpSwap sell preflight failed: ${JSON.stringify(sim.value.err)}`,
+          logSummary ? `logs=${logSummary}` : "",
+        ].filter(Boolean).join(" | "),
+      };
+    }
+    args.log(`PumpSwap sell preflight ok (${elapsed()})`);
+  }
+
+  let signature: string | null = null;
+  try {
+    signature = await broadcastTransactionWithSender(tx, {
+      preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
+    });
+    args.log(`PumpSwap sell broadcast: ${signature} (${elapsed()})`);
+    if (fastMode) {
+      confirmSignature(signature)
+        .then(() => {
+          args.onConfirmSuccess?.(args.mint, Number(tokensIn), Number(expectedQuoteOut), signature!);
+        })
+        .catch((err) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.warn(`PumpSwap sell confirmation failed after broadcast: ${msg}`);
+          args.onConfirmFailure?.(args.mint, Number(tokensIn), Number(expectedQuoteOut), msg);
+        });
+    } else {
+      await confirmSignature(signature);
+      args.log(`PumpSwap sell confirmed (${elapsed()})`);
+    }
+  } catch (err) {
+    const rebroadcastAttempt = args.rebroadcastAttempt ?? 0;
+    if (isConfirmationTimeoutError(err) && rebroadcastAttempt < confirmationRebroadcastRetries) {
+      const msg = err instanceof Error ? err.message : String(err);
+      args.log(`PumpSwap sell suspected dropped (${msg}); rebuilding once with fresh blockhash...`);
+      return tryPumpSwapDirectSell({
+        ...args,
+        rebroadcastAttempt: rebroadcastAttempt + 1,
+      });
+    }
+    const msg = err instanceof Error ? err.message : String(err);
+    const logs = signature ? await getTransactionFailureLogs(signature) : [];
+    const logSummary = summarizeLogs(logs);
+    const reason = [
+      `PumpSwap sell send/confirm failed: ${msg}`,
+      signature ? `signature=${signature}` : "",
+      logSummary ? `logs=${logSummary}` : "",
+    ].filter(Boolean).join(" | ");
+    return { ok: false, recoverable: isRecoverablePumpSwapFailure(err), reason };
+  }
+
+  const mintMeta = await getTokenMeta(args.mint);
+  return {
+    ok: true,
+    signature,
+    isSimulated: false,
+    baseIn: tokensIn,
+    quoteOut: expectedQuoteOut,
     mintMeta,
     confirmationPending: fastMode,
   };

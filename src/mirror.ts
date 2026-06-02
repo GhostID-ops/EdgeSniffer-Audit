@@ -29,7 +29,7 @@ import { getTokenMeta, WRAPPED_SOL_MINT, USDC_MINT, type TokenMeta } from "./tok
 import { getPosition, unrecordBuy } from "./pnl.js";
 import type { DetectedSwap } from "./types.js";
 import { tryPumpFunDirectBuy, tryPumpFunDirectSell } from "./pumpfun/route.js";
-import { tryPumpSwapDirectBuy } from "./pumpswap/route.js";
+import { tryPumpSwapDirectBuy, tryPumpSwapDirectSell } from "./pumpswap/route.js";
 import { applyShadowExecution, shadowDelay, shadowSimulateTransaction } from "./shadowExecution.js";
 
 export type Side = "buy" | "sell" | "swap";
@@ -575,6 +575,57 @@ export async function mirrorSwap(
       throw new Error(`Pump.fun direct sell failed: ${direct.reason}`);
     }
     console.log(`Pump.fun direct sell skipped: ${direct.reason}; falling back to Jupiter.`);
+    if (
+      pumpSwapDirectBuyEnabled &&
+      mirrorOutputMint === WRAPPED_SOL_MINT &&
+      (direct.reason.toLowerCase().includes("graduated") ||
+        direct.reason.toLowerCase().includes("not a pump.fun bonding-curve token") ||
+        swap.inputMint.endsWith("pump"))
+    ) {
+      const pumpSwap = await tryPumpSwapDirectSell({
+        user: keypair,
+        mint: swap.inputMint,
+        tokensInRaw: initialAmountRaw,
+        slippageBps: mirrorSlippageBps,
+        startedAt,
+        log: (m) => console.log(m),
+        onConfirmFailure: (mint, tokensRaw, solLamports, reason) => {
+          options.onFastSellConfirmFailure?.({
+            mint,
+            tokenAmountRaw: tokensRaw,
+            solLamports,
+            reason,
+            sourceSwap: swap,
+          });
+        },
+        onConfirmSuccess: (mint, tokensRaw, solLamports, signature) => {
+          options.onFastSellConfirmSuccess?.({
+            mint,
+            tokenAmountRaw: tokensRaw,
+            solLamports,
+            signature,
+            sourceSwap: swap,
+          });
+        },
+      });
+      if (pumpSwap.ok) {
+        const solMeta = await getTokenMeta(WRAPPED_SOL_MINT);
+        console.log(`PumpSwap direct sell complete (${elapsed()})`);
+        await shadowDelay();
+        return applyShadowExecution({
+          signature: pumpSwap.signature,
+          isSimulated: pumpSwap.isSimulated,
+          side: "sell",
+          input: { meta: pumpSwap.mintMeta, amountRaw: Number(pumpSwap.baseIn) },
+          output: { meta: solMeta, amountRaw: Number(pumpSwap.quoteOut) },
+          confirmationPending: pumpSwap.confirmationPending,
+        }, swap.signature);
+      }
+      if (!pumpSwap.recoverable) {
+        throw new Error(`PumpSwap direct sell failed: ${pumpSwap.reason}`);
+      }
+      console.log(`PumpSwap direct sell skipped: ${pumpSwap.reason}; falling back to Jupiter.`);
+    }
   }
 
   // Phase 1: probe-and-shrink for buys when an impact cap is configured. Throws ImpactTooHighError
