@@ -25,12 +25,14 @@ import { confirmSignature, isConfirmationTimeoutError } from "../confirm.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
+  PUMP_FUN_FEE_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
   deriveAta,
 } from "../pumpfun/constants.js";
 
 export const PUMPSWAP_PROGRAM_ID = new PublicKey("pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA");
+export const PUMPSWAP_GLOBAL_CONFIG = new PublicKey("ADyA8hBd1ckwkgdC5fC4bKBS32sNeuHuJecF8GWqV7Zb");
 export const PUMPSWAP_BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 235, 234]);
 export const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = Buffer.from([198, 46, 21, 82, 180, 217, 232, 112]);
 const SYNC_NATIVE_IX = Buffer.from([17]);
@@ -41,12 +43,12 @@ const PUMPSWAP_QUOTE_MINT_INDEX = 4;
 const PUMPSWAP_USER_BASE_ATA_INDEX = 5;
 const PUMPSWAP_USER_QUOTE_ATA_INDEX = 6;
 const PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX = 20;
-const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT = 17;
+const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT = 23;
 const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 17, 20, 23]);
 
 type PumpSwapAccountPlan = {
   accounts: AccountMeta[];
-  source: "confirmed-source-metas" | "detector-pubkey-hints";
+  source: "confirmed-source-metas" | "detector-pubkey-hints" | "canonical-pool-state";
 };
 
 export type PumpSwapBuildContext = {
@@ -100,6 +102,38 @@ export function derivePumpSwapUserVolumeAccumulatorPda(user: PublicKey): PublicK
   const [pda] = PublicKey.findProgramAddressSync(
     [Buffer.from("user_volume_accumulator"), user.toBuffer()],
     PUMPSWAP_PROGRAM_ID
+  );
+  return pda;
+}
+
+export function derivePumpSwapEventAuthorityPda(): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [Buffer.from("__event_authority")],
+    PUMPSWAP_PROGRAM_ID
+  );
+  return pda;
+}
+
+export function derivePumpSwapGlobalVolumeAccumulatorPda(): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [Buffer.from("global_volume_accumulator")],
+    PUMPSWAP_PROGRAM_ID
+  );
+  return pda;
+}
+
+export function derivePumpSwapCoinCreatorVaultAuthorityPda(coinCreator: PublicKey): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [Buffer.from("creator_vault"), coinCreator.toBuffer()],
+    PUMPSWAP_PROGRAM_ID
+  );
+  return pda;
+}
+
+export function derivePumpSwapFeeConfigPda(): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [Buffer.from("fee_config"), PUMPSWAP_PROGRAM_ID.toBuffer()],
+    PUMP_FUN_FEE_PROGRAM_ID
   );
   return pda;
 }
@@ -340,6 +374,8 @@ async function sourcePumpSwapAccountsWithShortRetry(
 async function resolvePumpSwapBuyAccountPlan(args: {
   sourceSignature: string;
   mint: PublicKey;
+  user: PublicKey;
+  baseTokenProgram: PublicKey;
   sourcePumpSwapAccounts?: string[];
 }): Promise<PumpSwapAccountPlan | null> {
   const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
@@ -357,11 +393,21 @@ async function resolvePumpSwapBuyAccountPlan(args: {
     })
     .filter((value): value is PublicKey => value != null);
 
-  if (!hintedPubkeys?.length) return null;
+  if (hintedPubkeys?.length) {
+    const hintedAccounts = pumpSwapPubkeyHintsToMetas(hintedPubkeys);
+    if (!validatePumpSwapBuyAccountLayout(hintedAccounts, args.mint)) {
+      return { accounts: hintedAccounts, source: "detector-pubkey-hints" };
+    }
+  }
 
-  const hintedAccounts = pumpSwapPubkeyHintsToMetas(hintedPubkeys);
-  if (validatePumpSwapBuyAccountLayout(hintedAccounts, args.mint)) return null;
-  return { accounts: hintedAccounts, source: "detector-pubkey-hints" };
+  const canonicalAccounts = await buildCanonicalPumpSwapBuyAccounts({
+    user: args.user,
+    mint: args.mint,
+    baseTokenProgram: args.baseTokenProgram,
+  });
+  return canonicalAccounts
+    ? { accounts: canonicalAccounts, source: "canonical-pool-state" }
+    : null;
 }
 
 export function replacePumpSwapUserAccounts(args: {
@@ -392,7 +438,10 @@ const POOL_BASE_MINT_OFFSET = 8 + 1 + 2 + 32;
 const POOL_QUOTE_MINT_OFFSET = POOL_BASE_MINT_OFFSET + 32;
 const POOL_BASE_TOKEN_ACCOUNT_OFFSET = POOL_QUOTE_MINT_OFFSET + 32 + 32;
 const POOL_QUOTE_TOKEN_ACCOUNT_OFFSET = POOL_BASE_TOKEN_ACCOUNT_OFFSET + 32;
+const POOL_COIN_CREATOR_OFFSET = POOL_QUOTE_TOKEN_ACCOUNT_OFFSET + 32 + 8;
 const POOL_INDEX_OFFSET = 8 + 1;
+const GLOBAL_CONFIG_PROTOCOL_FEE_RECIPIENTS_OFFSET = 8 + 32 + 8 + 8 + 8;
+const GLOBAL_CONFIG_PROTOCOL_FEE_RECIPIENT_COUNT = 8;
 const TOKEN_ACCOUNT_AMOUNT_OFFSET = 64;
 const PUMPSWAP_RISK_QUOTE_HAIRCUT_BPS = 100;
 const PUMPSWAP_DIRECT_BUY_QUOTE_HAIRCUT_BPS = 300;
@@ -402,6 +451,7 @@ const PUMPSWAP_SOURCE_META_RETRY_MS = 35;
 const pumpSwapPoolCache = new Map<string, { pool: PublicKey; baseVault: PublicKey; quoteVault: PublicKey }>();
 const pumpSwapMintOwnerCache = new Map<string, { owner: PublicKey; cachedAt: number }>();
 const pumpSwapPoolAccountCache = new Map<string, { account: AccountInfo<Buffer>; cachedAt: number }>();
+let pumpSwapGlobalConfigCache: { account: AccountInfo<Buffer>; cachedAt: number } | null = null;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -411,9 +461,46 @@ function readPubkey(data: Buffer, offset: number): PublicKey {
   return new PublicKey(data.subarray(offset, offset + 32));
 }
 
+function isDefaultPubkey(pubkey: PublicKey): boolean {
+  return pubkey.equals(PublicKey.default);
+}
+
 function readTokenAccountAmount(info: AccountInfo<Buffer> | null): bigint | null {
   if (!info || info.data.length < TOKEN_ACCOUNT_AMOUNT_OFFSET + 8) return null;
   return info.data.readBigUInt64LE(TOKEN_ACCOUNT_AMOUNT_OFFSET);
+}
+
+async function getCachedPumpSwapGlobalConfigAccount(): Promise<AccountInfo<Buffer> | null> {
+  const now = Date.now();
+  if (
+    pumpSwapGlobalConfigCache &&
+    now - pumpSwapGlobalConfigCache.cachedAt < PUMPSWAP_ACCOUNT_CACHE_TTL_MS
+  ) {
+    return pumpSwapGlobalConfigCache.account;
+  }
+
+  const account = await readConnection.getAccountInfo(PUMPSWAP_GLOBAL_CONFIG, "processed");
+  if (account) pumpSwapGlobalConfigCache = { account, cachedAt: now };
+  return account;
+}
+
+function readProtocolFeeRecipientFromGlobalConfig(account: AccountInfo<Buffer> | null): PublicKey | null {
+  if (
+    !account ||
+    account.data.length <
+      GLOBAL_CONFIG_PROTOCOL_FEE_RECIPIENTS_OFFSET + GLOBAL_CONFIG_PROTOCOL_FEE_RECIPIENT_COUNT * 32
+  ) {
+    return null;
+  }
+
+  for (let i = 0; i < GLOBAL_CONFIG_PROTOCOL_FEE_RECIPIENT_COUNT; i++) {
+    const recipient = readPubkey(
+      account.data,
+      GLOBAL_CONFIG_PROTOCOL_FEE_RECIPIENTS_OFFSET + i * 32
+    );
+    if (!isDefaultPubkey(recipient)) return recipient;
+  }
+  return null;
 }
 
 async function getCachedMintOwner(mint: PublicKey): Promise<PublicKey | null> {
@@ -492,6 +579,86 @@ function readPoolVaultsFromAccount(
     baseVault: readPubkey(account.data, POOL_BASE_TOKEN_ACCOUNT_OFFSET),
     quoteVault: readPubkey(account.data, POOL_QUOTE_TOKEN_ACCOUNT_OFFSET),
   };
+}
+
+function readPoolStateFromAccount(
+  pool: PublicKey,
+  account: AccountInfo<Buffer> | null
+): {
+  pool: PublicKey;
+  baseMint: PublicKey;
+  quoteMint: PublicKey;
+  baseVault: PublicKey;
+  quoteVault: PublicKey;
+  coinCreator: PublicKey;
+} | null {
+  if (!account || account.data.length < POOL_COIN_CREATOR_OFFSET + 32) return null;
+  return {
+    pool,
+    baseMint: readPubkey(account.data, POOL_BASE_MINT_OFFSET),
+    quoteMint: readPubkey(account.data, POOL_QUOTE_MINT_OFFSET),
+    baseVault: readPubkey(account.data, POOL_BASE_TOKEN_ACCOUNT_OFFSET),
+    quoteVault: readPubkey(account.data, POOL_QUOTE_TOKEN_ACCOUNT_OFFSET),
+    coinCreator: readPubkey(account.data, POOL_COIN_CREATOR_OFFSET),
+  };
+}
+
+export async function buildCanonicalPumpSwapBuyAccounts(args: {
+  user: PublicKey;
+  mint: PublicKey;
+  baseTokenProgram: PublicKey;
+}): Promise<AccountMeta[] | null> {
+  const pool = await findPumpSwapPoolForMint(args.mint);
+  if (!pool) return null;
+
+  const [poolAccount, globalConfigAccount] = await Promise.all([
+    getCachedPumpSwapPoolAccount(pool.pool),
+    getCachedPumpSwapGlobalConfigAccount(),
+  ]);
+  if (validatePumpSwapPoolAccount(pool.pool, poolAccount)) return null;
+
+  const poolState = readPoolStateFromAccount(pool.pool, poolAccount);
+  if (!poolState) return null;
+  if (!poolState.baseMint.equals(args.mint) || poolState.quoteMint.toBase58() !== WRAPPED_SOL_MINT) {
+    return null;
+  }
+
+  const protocolFeeRecipient = readProtocolFeeRecipientFromGlobalConfig(globalConfigAccount);
+  if (!protocolFeeRecipient) return null;
+
+  const quoteMint = new PublicKey(WRAPPED_SOL_MINT);
+  const quoteTokenProgram = TOKEN_PROGRAM_ID;
+  const userBaseAta = deriveAta(args.user, args.mint, args.baseTokenProgram);
+  const userQuoteAta = deriveAta(args.user, quoteMint, quoteTokenProgram);
+  const protocolFeeRecipientAta = deriveAta(protocolFeeRecipient, quoteMint, quoteTokenProgram);
+  const coinCreatorVaultAuthority = derivePumpSwapCoinCreatorVaultAuthorityPda(poolState.coinCreator);
+  const coinCreatorVaultAta = deriveAta(coinCreatorVaultAuthority, quoteMint, quoteTokenProgram);
+
+  return [
+    { pubkey: poolState.pool, isSigner: false, isWritable: true },
+    { pubkey: args.user, isSigner: true, isWritable: true },
+    { pubkey: PUMPSWAP_GLOBAL_CONFIG, isSigner: false, isWritable: false },
+    { pubkey: args.mint, isSigner: false, isWritable: false },
+    { pubkey: quoteMint, isSigner: false, isWritable: false },
+    { pubkey: userBaseAta, isSigner: false, isWritable: true },
+    { pubkey: userQuoteAta, isSigner: false, isWritable: true },
+    { pubkey: poolState.baseVault, isSigner: false, isWritable: true },
+    { pubkey: poolState.quoteVault, isSigner: false, isWritable: true },
+    { pubkey: protocolFeeRecipient, isSigner: false, isWritable: false },
+    { pubkey: protocolFeeRecipientAta, isSigner: false, isWritable: true },
+    { pubkey: args.baseTokenProgram, isSigner: false, isWritable: false },
+    { pubkey: quoteTokenProgram, isSigner: false, isWritable: false },
+    { pubkey: SYSTEM_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: derivePumpSwapEventAuthorityPda(), isSigner: false, isWritable: false },
+    { pubkey: PUMPSWAP_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: coinCreatorVaultAta, isSigner: false, isWritable: true },
+    { pubkey: coinCreatorVaultAuthority, isSigner: false, isWritable: false },
+    { pubkey: derivePumpSwapGlobalVolumeAccumulatorPda(), isSigner: false, isWritable: false },
+    { pubkey: derivePumpSwapUserVolumeAccumulatorPda(args.user), isSigner: false, isWritable: true },
+    { pubkey: derivePumpSwapFeeConfigPda(), isSigner: false, isWritable: false },
+    { pubkey: PUMP_FUN_FEE_PROGRAM_ID, isSigner: false, isWritable: false },
+  ];
 }
 
 async function estimatePumpSwapBuyQuoteFromPool(args: {
@@ -573,6 +740,8 @@ export async function tryPumpSwapDirectBuy(args: {
   const accountPlan = await resolvePumpSwapBuyAccountPlan({
     sourceSignature: args.sourceSignature,
     mint: mintKey,
+    user: args.user.publicKey,
+    baseTokenProgram: baseTokenProgramId,
     sourcePumpSwapAccounts: args.sourcePumpSwapAccounts,
   });
   if (!accountPlan) {
