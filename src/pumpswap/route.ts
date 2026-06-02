@@ -522,15 +522,14 @@ export async function tryPumpSwapDirectBuy(args: {
   if (!baseTokenProgramId) {
     return { ok: false, recoverable: true, reason: "PumpSwap base mint account not found" };
   }
-  const exactSourceAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, mintKey);
-  const sourceAccounts = exactSourceAccounts ??
-    (args.sourcePumpSwapAccounts?.length
-      ? args.sourcePumpSwapAccounts.map((pubkey, idx) =>
-          pumpSwapMetaFromSourceKey(new PublicKey(pubkey), idx)
-        )
-      : null);
+  const sourceAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, mintKey);
   if (!sourceAccounts) {
-    return { ok: false, recoverable: true, reason: "source tx has no PumpSwap buy instruction" };
+    return {
+      ok: false,
+      recoverable: true,
+      reason:
+        "exact source PumpSwap account metas unavailable; skipping inferred account fallback to avoid PrivilegeEscalation",
+    };
   }
   if (
     !sourceAccounts[PUMPSWAP_BASE_MINT_INDEX]?.pubkey.equals(mintKey) ||

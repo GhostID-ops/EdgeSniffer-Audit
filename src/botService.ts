@@ -51,6 +51,7 @@ import {
   heliusTxSubscribeEnabled,
   confirmationNullStatusTimeoutMs,
   prebuyMoralisFilterEnabled,
+  copyBuyPercentage,
 } from "./config.js";
 import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import { estimatePumpSwapSellQuote } from "./pumpswap/route.js";
@@ -70,6 +71,7 @@ import {
   AlreadyBoughtError,
   ImpactTooHighError,
   SourceDriftError,
+  BuyAmountBelowMinimumError,
   type Side,
   type MirrorResult,
 } from "./mirror.js";
@@ -166,6 +168,7 @@ export type BotState = {
   simulationMode: boolean;
   minBuySol: number;
   maxBuySol: number;
+  copyBuyPercentage: number;
   solReserveSol: number;
   tipLamports: number;
   priorityFeeMicroLamports: number;
@@ -816,10 +819,15 @@ function mirrorQuoteMintForBuy(swap: DetectedSwap): string {
   return swap.inputMint === USDC_MINT ? USDC_MINT : WRAPPED_SOL_MINT;
 }
 
-function mirroredBuyAmountRaw(swap: DetectedSwap): number {
+function mirroredBuyAmountRaw(swap: DetectedSwap): number | null {
   const quoteMint = mirrorQuoteMintForBuy(swap);
-  if (quoteMint === USDC_MINT) return Math.max(minBuyUsdcRaw, Math.min(maxBuyUsdcRaw, swap.amountRaw));
-  return Math.max(minBuyLamports, Math.min(maxBuyLamports, swap.amountRaw));
+  const calculatedRaw = Math.floor(swap.amountRaw * (copyBuyPercentage / 100));
+  if (quoteMint === USDC_MINT) {
+    if (calculatedRaw < minBuyUsdcRaw) return null;
+    return Math.min(maxBuyUsdcRaw, calculatedRaw);
+  }
+  if (calculatedRaw < minBuyLamports) return null;
+  return Math.min(maxBuyLamports, calculatedRaw);
 }
 
 async function getCurrentSourceHeldMints(wallet: string): Promise<Set<string>> {
@@ -1233,6 +1241,14 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   if (isBuySignal(swap) && simulationMode) {
     const quoteMint = mirrorQuoteMintForBuy(swap);
     const mirroredAmount = mirroredBuyAmountRaw(swap);
+    if (mirroredAmount == null) {
+      console.log(
+        `Skipping buy: copy-sized amount for ${swap.outputMint.slice(0, 8)}... is below configured minimum ` +
+          `(${copyBuyPercentage}% of ${quoteAmountDisplay(swap.amountRaw, quoteMint)}).`
+      );
+      releaseBuyLocks();
+      return;
+    }
     const spendLamports = quoteMint === WRAPPED_SOL_MINT ? mirroredAmount : 0;
     const shadow = shadowCanSpend(spendLamports);
     if (!shadow.ok) {
@@ -1253,6 +1269,14 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   if (isBuySignal(swap) && !simulationMode) {
     const quoteMint = mirrorQuoteMintForBuy(swap);
     const mirroredAmount = mirroredBuyAmountRaw(swap);
+    if (mirroredAmount == null) {
+      console.log(
+        `Skipping buy: copy-sized amount for ${swap.outputMint.slice(0, 8)}... is below configured minimum ` +
+          `(${copyBuyPercentage}% of ${quoteAmountDisplay(swap.amountRaw, quoteMint)}).`
+      );
+      releaseBuyLocks();
+      return;
+    }
     let currentBalance = getCachedBalance() ?? lastBalanceLamports ?? 0;
     if (currentBalance <= 0) {
       currentBalance = await updateBalanceCache(readConnection, kp.publicKey);
@@ -1566,8 +1590,16 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       );
       return;
     }
+    if (err instanceof BuyAmountBelowMinimumError) {
+      console.log(
+        `Skipping buy: ${err.mint.slice(0, 8)}... copy-sized amount ` +
+          `${quoteAmountDisplay(err.calculatedRaw, err.quoteMint)} is below configured minimum ` +
+          `${quoteAmountDisplay(err.minRaw, err.quoteMint)}.`
+      );
+      return;
+    }
     const msg = err instanceof Error ? err.message : String(err);
-    
+
     // Check if this is a sell failure that shouldn't count as PnL
     const isSellFailure = isSellSignal(swap) &&
       (msg.includes("NOT_TRADABLE") || msg.includes("TOKEN_NOT_TRADABLE") || 
@@ -2934,6 +2966,7 @@ export function getBotState(): BotState {
     simulationMode,
     minBuySol: minBuyLamports / LAMPORTS_PER_SOL,
     maxBuySol: maxBuyLamports / LAMPORTS_PER_SOL,
+    copyBuyPercentage,
     solReserveSol: solReserveLamports / LAMPORTS_PER_SOL,
     tipLamports,
     priorityFeeMicroLamports,

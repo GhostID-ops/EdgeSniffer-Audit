@@ -45,6 +45,17 @@ export const trackedWallets: string[] = TRACKED_WALLETS_RAW
 let MIN_BUY_SOL = parseFloat(process.env.MIN_BUY_SOL ?? "0.01");
 /** Max buy size in SOL. Mirror trades are capped to this. Default 1 SOL. */
 let MAX_BUY_SOL = parseFloat(process.env.MAX_BUY_SOL ?? "1");
+const COPY_BUY_PERCENTAGE_RAW = process.env.COPY_BUY_PERCENTAGE ?? "100";
+const COPY_BUY_PERCENTAGE_PARSED = parseFloat(COPY_BUY_PERCENTAGE_RAW);
+if (!Number.isFinite(COPY_BUY_PERCENTAGE_PARSED)) {
+  throw new Error(`COPY_BUY_PERCENTAGE must be a number between 0 and 100, got ${COPY_BUY_PERCENTAGE_RAW}`);
+}
+if (COPY_BUY_PERCENTAGE_PARSED < 0) {
+  throw new Error(`COPY_BUY_PERCENTAGE cannot be negative, got ${COPY_BUY_PERCENTAGE_RAW}`);
+}
+/** Percentage of source wallet buy size to copy. Values above 100 are clamped to 100. */
+let COPY_BUY_PERCENTAGE = Math.min(100, COPY_BUY_PERCENTAGE_PARSED);
+export let copyBuyPercentage = COPY_BUY_PERCENTAGE;
 const MIN_BUY_USDC = parseFloat(process.env.MIN_BUY_USDC ?? "50");
 const MAX_BUY_USDC = parseFloat(process.env.MAX_BUY_USDC ?? "60");
 /** SOL reserve amount to keep for gas fees. Prevents wallet from going to 0 SOL. Default 0.1 SOL. */
@@ -456,6 +467,7 @@ export type FriendBotSettings = {
   trackedWallets: string[];
   minBuySol: number;
   maxBuySol: number;
+  copyBuyPercentage: number;
   solReserveSol: number;
   tipLamports: number;
   priorityFeeMicroLamports: number;
@@ -468,6 +480,7 @@ export function getFriendBotSettings(): FriendBotSettings {
     trackedWallets: trackedWallets.slice(),
     minBuySol: minBuyLamports / LAMPORTS_PER_SOL,
     maxBuySol: maxBuyLamports / LAMPORTS_PER_SOL,
+    copyBuyPercentage,
     solReserveSol: solReserveLamports / LAMPORTS_PER_SOL,
     tipLamports,
     priorityFeeMicroLamports,
@@ -493,6 +506,14 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
   MIN_BUY_SOL = positiveFinite(settings.minBuySol ?? MIN_BUY_SOL, MIN_BUY_SOL);
   MAX_BUY_SOL = positiveFinite(settings.maxBuySol ?? MAX_BUY_SOL, MAX_BUY_SOL);
   if (MAX_BUY_SOL < MIN_BUY_SOL) MAX_BUY_SOL = MIN_BUY_SOL;
+  const nextCopyBuyPercentage = settings.copyBuyPercentage ?? COPY_BUY_PERCENTAGE;
+  if (!Number.isFinite(nextCopyBuyPercentage)) {
+    throw new Error("copyBuyPercentage must be a finite number");
+  }
+  if (nextCopyBuyPercentage < 0) {
+    throw new Error("copyBuyPercentage cannot be negative");
+  }
+  COPY_BUY_PERCENTAGE = Math.min(100, nextCopyBuyPercentage);
   SOL_RESERVE = Math.max(0, settings.solReserveSol ?? SOL_RESERVE);
   TIP_LAMPORTS = Math.max(0, Math.round(settings.tipLamports ?? TIP_LAMPORTS));
   PRIORITY_FEE_MICRO_LAMPORTS = Math.max(
@@ -504,6 +525,7 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
   tipLamports = TIP_LAMPORTS;
   priorityFeeMicroLamports = PRIORITY_FEE_MICRO_LAMPORTS;
   mirrorSlippageBps = MIRROR_SLIPPAGE_BPS;
+  copyBuyPercentage = COPY_BUY_PERCENTAGE;
   minBuyLamports = Math.round(MIN_BUY_SOL * LAMPORTS_PER_SOL);
   maxBuyLamports = Math.round(MAX_BUY_SOL * LAMPORTS_PER_SOL);
   solReserveLamports = Math.round(SOL_RESERVE * LAMPORTS_PER_SOL);
@@ -511,6 +533,7 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
 
   process.env.MIN_BUY_SOL = String(MIN_BUY_SOL);
   process.env.MAX_BUY_SOL = String(MAX_BUY_SOL);
+  process.env.COPY_BUY_PERCENTAGE = String(COPY_BUY_PERCENTAGE);
   process.env.SOL_RESERVE = String(SOL_RESERVE);
   process.env.TIP_LAMPORTS = String(TIP_LAMPORTS);
   process.env.PRIORITY_FEE_MICRO_LAMPORTS = String(PRIORITY_FEE_MICRO_LAMPORTS);

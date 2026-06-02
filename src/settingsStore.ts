@@ -13,6 +13,7 @@ const SETTINGS_KEYS = [
   "TRACKED_WALLETS",
   "MIN_BUY_SOL",
   "MAX_BUY_SOL",
+  "COPY_BUY_PERCENTAGE",
   "SOL_RESERVE",
   "TIP_LAMPORTS",
   "PRIORITY_FEE_MICRO_LAMPORTS",
@@ -60,6 +61,7 @@ export function normalizeFriendSettings(body: Record<string, unknown>): FriendBo
     trackedWallets: wallets,
     minBuySol: numberFromBody(body, "minBuySol", current.minBuySol),
     maxBuySol: numberFromBody(body, "maxBuySol", current.maxBuySol),
+    copyBuyPercentage: numberFromBody(body, "copyBuyPercentage", current.copyBuyPercentage),
     solReserveSol: numberFromBody(body, "solReserveSol", current.solReserveSol),
     tipLamports: Math.round(numberFromBody(body, "tipLamports", current.tipLamports)),
     priorityFeeMicroLamports: Math.round(
@@ -73,6 +75,8 @@ export function normalizeFriendSettings(body: Record<string, unknown>): FriendBo
   if (settings.maxBuySol < settings.minBuySol) {
     throw new Error("Maximum buy must be greater than or equal to minimum buy");
   }
+  if (settings.copyBuyPercentage < 0) throw new Error("Copy buy percentage cannot be negative");
+  if (settings.copyBuyPercentage > 100) settings.copyBuyPercentage = 100;
   if (settings.solReserveSol < 0) throw new Error("SOL reserve cannot be negative");
   if (settings.tipLamports < 0) throw new Error("Tip cannot be negative");
   if (settings.priorityFeeMicroLamports < 0) throw new Error("Priority fee cannot be negative");
@@ -104,6 +108,7 @@ export function persistFriendSettings(settings: FriendBotSettings): FriendBotSet
     TRACKED_WALLETS: applied.trackedWallets.join(","),
     MIN_BUY_SOL: String(applied.minBuySol),
     MAX_BUY_SOL: String(applied.maxBuySol),
+    COPY_BUY_PERCENTAGE: String(applied.copyBuyPercentage),
     SOL_RESERVE: String(applied.solReserveSol),
     TIP_LAMPORTS: String(applied.tipLamports),
     PRIORITY_FEE_MICRO_LAMPORTS: String(applied.priorityFeeMicroLamports),

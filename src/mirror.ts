@@ -16,6 +16,7 @@ import {
   mirrorGraduatedBuys,
   jupiterOversizeMaxAccounts,
   mirrorQuoteAsset,
+  copyBuyPercentage,
 } from "./config.js";
 import { getQuote, getSwap, type QuoteResponse } from "./jupiter.js";
 import {
@@ -205,17 +206,14 @@ function quoteMintForBuy(swap: DetectedSwap): string {
   return swap.inputMint === USDC_MINT ? USDC_MINT : WRAPPED_SOL_MINT;
 }
 
-function clampBuy(amountRaw: number, quoteMint: string): number {
-  if (quoteMint === USDC_MINT) {
-    return Math.max(minBuyUsdcRaw, Math.min(maxBuyUsdcRaw, amountRaw));
-  }
-  return Math.max(minBuyLamports, Math.min(maxBuyLamports, amountRaw));
-}
-
 function formatQuoteAmount(raw: number, quoteMint: string): string {
   return quoteMint === USDC_MINT
     ? `${(raw / 1_000_000).toFixed(2)} USDC`
     : `${(raw / 1_000_000_000).toFixed(4)} SOL`;
+}
+
+function applyCopyBuyPercentage(amountRaw: number): number {
+  return Math.floor(amountRaw * (copyBuyPercentage / 100));
 }
 
 function isSlippageFailure(err: unknown): boolean {
@@ -289,6 +287,21 @@ async function estimateCostBasisLamports(inputMint: string, inputAmountRaw: numb
   }
 }
 
+export class BuyAmountBelowMinimumError extends Error {
+  readonly mint: string;
+  readonly calculatedRaw: number;
+  readonly minRaw: number;
+  readonly quoteMint: string;
+  constructor(mint: string, calculatedRaw: number, minRaw: number, quoteMint: string) {
+    super(`Copy buy amount below configured minimum for ${mint}`);
+    this.mint = mint;
+    this.calculatedRaw = calculatedRaw;
+    this.minRaw = minRaw;
+    this.quoteMint = quoteMint;
+    this.name = "BuyAmountBelowMinimumError";
+  }
+}
+
 async function getMirrorAmount(
   side: Side,
   swap: DetectedSwap,
@@ -297,17 +310,26 @@ async function getMirrorAmount(
 ): Promise<number> {
   if (side === "buy") {
     const quoteMint = quoteMintForBuy(swap);
-    const amountRaw = clampBuy(swap.amountRaw, quoteMint);
     const maxRaw = quoteMint === USDC_MINT ? maxBuyUsdcRaw : maxBuyLamports;
     const minRaw = quoteMint === USDC_MINT ? minBuyUsdcRaw : minBuyLamports;
+    const calculatedRaw = applyCopyBuyPercentage(swap.amountRaw);
 
-    if (swap.amountRaw > maxRaw) {
+    console.log("[CopyTrade]");
+    console.log("Tracked Wallet Buy Detected");
+    console.log(`Token: ${swap.outputMint}`);
+    console.log(`Tracked Wallet Amount: ${formatQuoteAmount(swap.amountRaw, quoteMint)}`);
+    console.log(`Copy Percentage: ${copyBuyPercentage}%`);
+    console.log(`Bot Buy Amount: ${formatQuoteAmount(calculatedRaw, quoteMint)}`);
+
+    if (calculatedRaw < minRaw) {
+      throw new BuyAmountBelowMinimumError(swap.outputMint, calculatedRaw, minRaw, quoteMint);
+    }
+
+    const amountRaw = Math.min(maxRaw, calculatedRaw);
+
+    if (calculatedRaw > maxRaw) {
       console.log(
-        `Trade capped: ${formatQuoteAmount(swap.amountRaw, quoteMint)} -> ${formatQuoteAmount(amountRaw, quoteMint)} (max: ${formatQuoteAmount(maxRaw, quoteMint)})`
-      );
-    } else if (swap.amountRaw < minRaw) {
-      console.log(
-        `Trade raised to min buy: ${formatQuoteAmount(swap.amountRaw, quoteMint)} -> ${formatQuoteAmount(amountRaw, quoteMint)}`
+        `Trade capped: ${formatQuoteAmount(calculatedRaw, quoteMint)} -> ${formatQuoteAmount(amountRaw, quoteMint)} (max: ${formatQuoteAmount(maxRaw, quoteMint)})`
       );
     }
 
