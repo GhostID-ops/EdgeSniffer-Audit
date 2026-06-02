@@ -20,9 +20,11 @@ import {
   PUMP_FUN_PROGRAM_ID,
   PUMP_FUN_FEE_PROGRAM_ID,
   PUMP_FUN_FEE_RECIPIENT,
+  PUMP_FUN_BUYBACK_FEE_RECIPIENT,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
+  TOKEN_2022_PROGRAM_ID,
   BUY_DISCRIMINATOR,
   BUY_EXACT_SOL_IN_DISCRIMINATOR,
   BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR,
@@ -34,6 +36,7 @@ import {
   deriveGlobalPda,
   deriveGlobalVolumeAccumulatorPda,
   deriveUserVolumeAccumulatorPda,
+  deriveSharingConfigPda,
 } from "./constants.js";
 
 const WRAPPED_SOL_MINT = new PublicKey("So11111111111111111111111111111111111111112");
@@ -207,7 +210,9 @@ export function buildPumpFunBuyIx(args: {
   );
 
   let keys: AccountMeta[];
-  const isV2 = isV2SourceIxAccounts(args.sourceIxAccounts, args.mint);
+  const isV2 =
+    isV2SourceIxAccounts(args.sourceIxAccounts, args.mint) ||
+    args.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
   if (isV2 && args.sourceIxAccounts) {
     // V2 buy layout has no optional accounts but includes multiple user-specific slots.
     // Keep the 27 official Pump.fun accounts verbatim and replace only our wallet-owned
@@ -245,6 +250,51 @@ export function buildPumpFunBuyIx(args: {
     for (let i = 16; i < src.length; i++) {
       keys.push({ pubkey: src[i]!, isSigner: false, isWritable: true });
     }
+  } else if (isV2) {
+    const global = deriveGlobalPda();
+    const eventAuthority = deriveEventAuthorityPda();
+    const associatedBaseBondingCurve = deriveAta(args.bondingCurve, args.mint, args.tokenProgramId);
+    const associatedQuoteBondingCurve = deriveAta(args.bondingCurve, WRAPPED_SOL_MINT, TOKEN_PROGRAM_ID);
+    const creatorVault = deriveCreatorVaultPda(args.creator);
+    const associatedCreatorVault = deriveAta(creatorVault, WRAPPED_SOL_MINT, TOKEN_PROGRAM_ID);
+    const associatedQuoteFeeRecipient = deriveAta(PUMP_FUN_FEE_RECIPIENT, WRAPPED_SOL_MINT, TOKEN_PROGRAM_ID);
+    const associatedQuoteBuybackFeeRecipient = deriveAta(
+      PUMP_FUN_BUYBACK_FEE_RECIPIENT,
+      WRAPPED_SOL_MINT,
+      TOKEN_PROGRAM_ID
+    );
+    const sharingConfig = deriveSharingConfigPda(args.mint);
+    const globalVolumeAccumulator = deriveGlobalVolumeAccumulatorPda();
+    const feeConfig = deriveFeeConfigPda();
+    keys = [
+      { pubkey: global, isSigner: false, isWritable: false },
+      { pubkey: args.mint, isSigner: false, isWritable: false },
+      { pubkey: WRAPPED_SOL_MINT, isSigner: false, isWritable: false },
+      { pubkey: args.tokenProgramId, isSigner: false, isWritable: false },
+      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+      { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+      { pubkey: PUMP_FUN_FEE_RECIPIENT, isSigner: false, isWritable: true },
+      { pubkey: associatedQuoteFeeRecipient, isSigner: false, isWritable: true },
+      { pubkey: PUMP_FUN_BUYBACK_FEE_RECIPIENT, isSigner: false, isWritable: true },
+      { pubkey: associatedQuoteBuybackFeeRecipient, isSigner: false, isWritable: true },
+      { pubkey: args.bondingCurve, isSigner: false, isWritable: true },
+      { pubkey: associatedBaseBondingCurve, isSigner: false, isWritable: true },
+      { pubkey: associatedQuoteBondingCurve, isSigner: false, isWritable: true },
+      { pubkey: args.user, isSigner: true, isWritable: true },
+      { pubkey: associatedUser, isSigner: false, isWritable: true },
+      { pubkey: associatedQuoteUser, isSigner: false, isWritable: true },
+      { pubkey: creatorVault, isSigner: false, isWritable: true },
+      { pubkey: associatedCreatorVault, isSigner: false, isWritable: true },
+      { pubkey: sharingConfig, isSigner: false, isWritable: false },
+      { pubkey: globalVolumeAccumulator, isSigner: false, isWritable: false },
+      { pubkey: userVolumeAccumulator, isSigner: false, isWritable: true },
+      { pubkey: associatedUserVolumeAccumulator, isSigner: false, isWritable: true },
+      { pubkey: feeConfig, isSigner: false, isWritable: false },
+      { pubkey: PUMP_FUN_FEE_PROGRAM_ID, isSigner: false, isWritable: false },
+      { pubkey: SYSTEM_PROGRAM_ID, isSigner: false, isWritable: false },
+      { pubkey: eventAuthority, isSigner: false, isWritable: false },
+      { pubkey: PUMP_FUN_PROGRAM_ID, isSigner: false, isWritable: false },
+    ];
   } else {
     // Legacy derived path — works for classic SPL pump.fun where slots are all constants/PDAs.
     const global = deriveGlobalPda();
@@ -348,7 +398,9 @@ export async function buildPumpFunBuyTransaction(args: {
     mint: args.mint,
     tokenProgramId: args.tokenProgramId,
   });
-  const isV2 = isV2SourceIxAccounts(args.sourceIxAccounts, args.mint);
+  const isV2 =
+    isV2SourceIxAccounts(args.sourceIxAccounts, args.mint) ||
+    args.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
 
   const buyIx = buildPumpFunBuyIx({
     user: args.user.publicKey,

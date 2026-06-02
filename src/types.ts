@@ -53,4 +53,9 @@ export type DetectedSwap = {
   buyRecoveryAttempt?: number;
   /** Last failure that caused this recovery attempt. */
   buyRecoveryReason?: string;
+  /**
+   * Internal recovery flag for pump.fun bonding-curve buys. When true, the direct buy path ignores
+   * source ix account metas and rebuilds from fresh curve-derived accounts.
+   */
+  forceDerivedPumpFunBuy?: boolean;
 };
