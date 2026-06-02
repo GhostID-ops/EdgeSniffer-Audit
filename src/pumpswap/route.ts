@@ -41,7 +41,13 @@ const PUMPSWAP_QUOTE_MINT_INDEX = 4;
 const PUMPSWAP_USER_BASE_ATA_INDEX = 5;
 const PUMPSWAP_USER_QUOTE_ATA_INDEX = 6;
 const PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX = 20;
-const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 17, 20]);
+const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT = 17;
+const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 17, 20, 23]);
+
+type PumpSwapAccountPlan = {
+  accounts: AccountMeta[];
+  source: "confirmed-source-metas" | "detector-pubkey-hints";
+};
 
 export type PumpSwapBuildContext = {
   mint: string;
@@ -222,6 +228,23 @@ function pumpSwapMetaFromSourceKey(pubkey: PublicKey, idx: number): AccountMeta 
   };
 }
 
+export function pumpSwapPubkeyHintsToMetas(pubkeys: PublicKey[]): AccountMeta[] {
+  return pubkeys.map((pubkey, idx) => pumpSwapMetaFromSourceKey(pubkey, idx));
+}
+
+function validatePumpSwapBuyAccountLayout(accounts: AccountMeta[], mint: PublicKey): string | null {
+  if (accounts.length < PUMPSWAP_MIN_BUY_ACCOUNT_COUNT) {
+    return `PumpSwap account list too short: ${accounts.length}`;
+  }
+  if (!accounts[PUMPSWAP_BASE_MINT_INDEX]?.pubkey.equals(mint)) {
+    return "source PumpSwap accounts do not match target base mint";
+  }
+  if (accounts[PUMPSWAP_QUOTE_MINT_INDEX]?.pubkey.toBase58() !== WRAPPED_SOL_MINT) {
+    return "source PumpSwap accounts do not match SOL quote mint";
+  }
+  return null;
+}
+
 function compiledInstructionDataToBuffer(data: unknown): Buffer {
   if (data == null) return Buffer.alloc(0);
   if (Buffer.isBuffer(data)) return data;
@@ -312,6 +335,33 @@ async function sourcePumpSwapAccountsWithShortRetry(
     if (attempt < PUMPSWAP_SOURCE_META_ATTEMPTS - 1) await sleep(PUMPSWAP_SOURCE_META_RETRY_MS);
   }
   return null;
+}
+
+async function resolvePumpSwapBuyAccountPlan(args: {
+  sourceSignature: string;
+  mint: PublicKey;
+  sourcePumpSwapAccounts?: string[];
+}): Promise<PumpSwapAccountPlan | null> {
+  const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
+  if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint)) {
+    return { accounts: confirmedAccounts, source: "confirmed-source-metas" };
+  }
+
+  const hintedPubkeys = args.sourcePumpSwapAccounts
+    ?.map((value) => {
+      try {
+        return new PublicKey(value);
+      } catch {
+        return null;
+      }
+    })
+    .filter((value): value is PublicKey => value != null);
+
+  if (!hintedPubkeys?.length) return null;
+
+  const hintedAccounts = pumpSwapPubkeyHintsToMetas(hintedPubkeys);
+  if (validatePumpSwapBuyAccountLayout(hintedAccounts, args.mint)) return null;
+  return { accounts: hintedAccounts, source: "detector-pubkey-hints" };
 }
 
 export function replacePumpSwapUserAccounts(args: {
@@ -520,30 +570,29 @@ export async function tryPumpSwapDirectBuy(args: {
   if (!baseTokenProgramId) {
     return { ok: false, recoverable: true, reason: "PumpSwap base mint account not found" };
   }
-  const sourceAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, mintKey);
-  if (!sourceAccounts) {
+  const accountPlan = await resolvePumpSwapBuyAccountPlan({
+    sourceSignature: args.sourceSignature,
+    mint: mintKey,
+    sourcePumpSwapAccounts: args.sourcePumpSwapAccounts,
+  });
+  if (!accountPlan) {
     return {
       ok: false,
       recoverable: true,
       reason:
-        "exact source PumpSwap account metas unavailable; skipping inferred account fallback to avoid PrivilegeEscalation",
+        "PumpSwap account plan unavailable; exact source metas and detector hints missing or invalid",
     };
   }
-  if (
-    !sourceAccounts[PUMPSWAP_BASE_MINT_INDEX]?.pubkey.equals(mintKey) ||
-    sourceAccounts[PUMPSWAP_QUOTE_MINT_INDEX]?.pubkey.toBase58() !== WRAPPED_SOL_MINT
-  ) {
-    return { ok: false, recoverable: true, reason: "source PumpSwap accounts do not match SOL->mint buy layout" };
-  }
+  args.log(`PumpSwap account plan: ${accountPlan.source}`);
 
   const { accounts, userBaseAta, userQuoteAta } = replacePumpSwapUserAccounts({
-    accounts: sourceAccounts,
+    accounts: accountPlan.accounts,
     user: args.user.publicKey,
     baseMint: mintKey,
     baseTokenProgram: baseTokenProgramId,
   });
 
-  if (accounts.length < 17) {
+  if (accounts.length < PUMPSWAP_MIN_BUY_ACCOUNT_COUNT) {
     return { ok: false, recoverable: true, reason: `PumpSwap account list too short: ${accounts.length}` };
   }
 

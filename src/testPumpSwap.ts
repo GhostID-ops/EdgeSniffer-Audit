@@ -6,6 +6,7 @@ import {
   derivePumpSwapUserVolumeAccumulatorPda,
   encodeBuyExactQuoteIn,
   isRecoverablePumpSwapFailure,
+  pumpSwapPubkeyHintsToMetas,
   replacePumpSwapUserAccounts,
   validatePumpSwapPoolAccount,
 } from "./pumpswap/route.js";
@@ -70,6 +71,21 @@ function testUserAccountReplacement(): void {
   assert.equal(replaced[23]!.isWritable, true, "coin creator vault ATA remains writable");
 }
 
+function testPumpSwapHintAccountFlags(): void {
+  const pubkeys = Array.from({ length: 27 }, (_, i) => key(`hint-${i}`));
+  const hinted = pumpSwapPubkeyHintsToMetas(pubkeys);
+
+  assert.equal(hinted[1]!.isSigner, true, "hinted user account is the only signer");
+  assert.equal(hinted[1]!.isWritable, true, "hinted user account is writable");
+  assert.equal(hinted[14]!.isWritable, false, "associated token program remains read-only");
+  assert.equal(hinted[20]!.isWritable, true, "user volume accumulator is writable");
+  assert.equal(hinted[23]!.isWritable, true, "coin creator vault ATA is writable");
+
+  for (const [idx, meta] of hinted.entries()) {
+    if (idx !== 1) assert.equal(meta.isSigner, false, `hinted account ${idx} must not be a signer`);
+  }
+}
+
 function testPumpSwapPdaProgramOwner(): void {
   const user = new PublicKey("3EhSTyGTL2RyNKNoip5qpvJnH5YJ4pijn9nQgetXjSms");
   const [expected] = PublicKey.findProgramAddressSync(
@@ -132,6 +148,7 @@ function testBuyExactQuoteInEncoding(): void {
 
 function run(): void {
   testUserAccountReplacement();
+  testPumpSwapHintAccountFlags();
   testPumpSwapPdaProgramOwner();
   testRecoverableFailureClassification();
   testPoolPrecheckSimulationCases();
