@@ -4,8 +4,6 @@ import {
   PublicKey,
   SystemProgram,
   TransactionInstruction,
-  TransactionMessage,
-  VersionedTransaction,
   type AccountMeta,
   type AccountInfo,
 } from "@solana/web3.js";
@@ -19,10 +17,10 @@ import {
   readConnection,
   simulationMode,
 } from "../config.js";
-import { buildTipInstructions } from "../tipBuilder.js";
 import { getDynamicPriorityFee } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
 import { broadcastTransactionWithSender } from "../sender.js";
+import { buildCompactV0Transaction } from "../transactionSize.js";
 import { confirmSignature, isConfirmationTimeoutError } from "../confirm.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
 import {
@@ -621,8 +619,6 @@ export async function tryPumpSwapDirectBuy(args: {
   }
   computeIxs.push(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: getDynamicPriorityFee() }));
 
-  const tipIxs = buildTipInstructions(args.user.publicKey);
-
   const swapIx = new TransactionInstruction({
     programId: PUMPSWAP_PROGRAM_ID,
     keys: accounts,
@@ -631,9 +627,9 @@ export async function tryPumpSwapDirectBuy(args: {
 
   const { blockhash, lastValidBlockHeight } = await getCachedBlockhash();
   args.log(`PumpSwap blockhash ready: lastValidBlockHeight=${lastValidBlockHeight}`);
-  const message = new TransactionMessage({
-    payerKey: args.user.publicKey,
-    recentBlockhash: blockhash,
+  const tx = buildCompactV0Transaction({
+    payer: args.user.publicKey,
+    blockhash,
     instructions: [
       ...computeIxs,
       createAtaIdempotentIx({
@@ -656,11 +652,10 @@ export async function tryPumpSwapDirectBuy(args: {
       syncNativeIx(userQuoteAta),
       swapIx,
       closeTokenAccountIx(userQuoteAta, args.user.publicKey),
-      ...tipIxs,
     ],
-  }).compileToV0Message();
-  const tx = new VersionedTransaction(message);
-  tx.sign([args.user]);
+    signer: args.user,
+    log: args.log,
+  });
 
   if (args.log && false) args.log(userBaseAta.toBase58());
   args.log(`PumpSwap tx built (${elapsed()})`);

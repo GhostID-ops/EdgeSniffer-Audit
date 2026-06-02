@@ -2,7 +2,6 @@ import {
   PublicKey,
   Keypair,
   TransactionInstruction,
-  TransactionMessage,
   VersionedTransaction,
   SystemProgram,
   ComputeBudgetProgram,
@@ -13,9 +12,9 @@ import {
   computeUnitLimit,
   pumpfunExactSolInBuys,
 } from "../config.js";
-import { buildTipInstructions } from "../tipBuilder.js";
 import { getDynamicPriorityFee } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
+import { buildCompactV0Transaction } from "../transactionSize.js";
 import {
   PUMP_FUN_PROGRAM_ID,
   PUMP_FUN_FEE_PROGRAM_ID,
@@ -376,8 +375,6 @@ export async function buildPumpFunBuyTransaction(args: {
   const minTokensOut =
     (args.tokensOut * BigInt(Math.max(1, 10_000 - args.slippageBps))) / 10_000n;
 
-  const tipIxs = buildTipInstructions(args.user.publicKey);
-
   const computeIxs: TransactionInstruction[] = [];
   if (computeUnitLimit > 0) {
     computeIxs.push(
@@ -420,16 +417,12 @@ export async function buildPumpFunBuyTransaction(args: {
   }
 
   const { blockhash } = await getCachedBlockhash();
-
-  const message = new TransactionMessage({
-    payerKey: args.user.publicKey,
-    recentBlockhash: blockhash,
-    instructions: [...computeIxs, ataIx, buyIx, ...tipIxs],
-  }).compileToV0Message();
-
-  const tx = new VersionedTransaction(message);
-  tx.sign([args.user]);
-  return tx;
+  return buildCompactV0Transaction({
+    payer: args.user.publicKey,
+    blockhash,
+    instructions: [...computeIxs, ataIx, buyIx],
+    signer: args.user,
+  });
 }
 
 export async function buildPumpFunBuyReplayTransaction(args: {
@@ -449,8 +442,6 @@ export async function buildPumpFunBuyReplayTransaction(args: {
     solInLamports: args.solInLamports,
     slippageBps: args.slippageBps,
   });
-
-  const tipIxs = buildTipInstructions(args.user.publicKey);
 
   const computeIxs: TransactionInstruction[] = [];
   if (computeUnitLimit > 0) {
@@ -486,13 +477,11 @@ export async function buildPumpFunBuyReplayTransaction(args: {
   });
 
   const { blockhash } = await getCachedBlockhash();
-  const message = new TransactionMessage({
-    payerKey: args.user.publicKey,
-    recentBlockhash: blockhash,
-    instructions: [...computeIxs, ataIx, buyIx, ...tipIxs],
-  }).compileToV0Message();
-
-  const tx = new VersionedTransaction(message);
-  tx.sign([args.user]);
+  const tx = buildCompactV0Transaction({
+    payer: args.user.publicKey,
+    blockhash,
+    instructions: [...computeIxs, ataIx, buyIx],
+    signer: args.user,
+  });
   return { tx, estimatedTokensOut: scaled.estimatedTokensOut };
 }
