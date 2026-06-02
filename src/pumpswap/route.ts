@@ -404,6 +404,15 @@ async function resolvePumpSwapBuyAccountPlan(args: {
     return { accounts: confirmedAccounts, source: "confirmed-source-metas" };
   }
 
+  const canonicalAccounts = await buildCanonicalPumpSwapBuyAccounts({
+    user: args.user,
+    mint: args.mint,
+    baseTokenProgram: args.baseTokenProgram,
+  });
+  if (canonicalAccounts) {
+    return { accounts: canonicalAccounts, source: "canonical-pool-state" };
+  }
+
   const hintedPubkeys = args.sourcePumpSwapAccounts
     ?.map((value) => {
       try {
@@ -420,15 +429,7 @@ async function resolvePumpSwapBuyAccountPlan(args: {
       return { accounts: hintedAccounts, source: "detector-pubkey-hints" };
     }
   }
-
-  const canonicalAccounts = await buildCanonicalPumpSwapBuyAccounts({
-    user: args.user,
-    mint: args.mint,
-    baseTokenProgram: args.baseTokenProgram,
-  });
-  return canonicalAccounts
-    ? { accounts: canonicalAccounts, source: "canonical-pool-state" }
-    : null;
+  return null;
 }
 
 export function replacePumpSwapUserAccounts(args: {
