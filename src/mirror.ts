@@ -789,6 +789,10 @@ export async function mirrorSwap(
       console.log("Broadcasting transaction...");
       const signature = await broadcastTransactionWithSender(transaction, {
         preferHelius: attempt.isBroadcastRetry === true,
+        route: `jupiter-${side}`,
+        side,
+        mint: side === "buy" ? mirrorSwap.outputMint : mirrorSwap.inputMint,
+        sourceSignature: swap.signature,
       });
       console.log(`Transaction broadcast: ${signature} (${elapsed()})`);
 

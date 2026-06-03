@@ -739,6 +739,13 @@ export async function buildCanonicalPumpSwapSellAccounts(args: {
   ];
 }
 
+export async function warmPumpSwapStaticAccounts(): Promise<void> {
+  await getCachedPumpSwapGlobalConfigAccount();
+  derivePumpSwapEventAuthorityPda();
+  derivePumpSwapGlobalVolumeAccumulatorPda();
+  derivePumpSwapFeeConfigPda();
+}
+
 async function estimatePumpSwapBuyQuoteFromPool(args: {
   pool: PublicKey;
   poolAccount: AccountInfo<Buffer> | null;
@@ -997,6 +1004,10 @@ export async function tryPumpSwapDirectBuy(args: {
   try {
     signature = await broadcastTransactionWithSender(tx, {
       preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
+      route: "pumpswap-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
     });
     args.log(`PumpSwap broadcast: ${signature} (${elapsed()})`);
     if (fastMode) {
@@ -1183,6 +1194,9 @@ export async function tryPumpSwapDirectSell(args: {
   try {
     signature = await broadcastTransactionWithSender(tx, {
       preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
+      route: "pumpswap-direct-sell",
+      side: "sell",
+      mint: args.mint,
     });
     args.log(`PumpSwap sell broadcast: ${signature} (${elapsed()})`);
     if (fastMode) {

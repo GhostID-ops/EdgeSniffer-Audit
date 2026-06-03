@@ -16,15 +16,22 @@ import {
   useJitoDirect,
   useJitoFallback,
   broadcastRaceEnabled,
+  senderRpcFallbackEnabled,
 } from "./config.js";
 import { getDynamicPriorityFee } from "./feeOracle.js";
 import { broadcastViaJito } from "./jitoSender.js";
 import { invalidateBlockhashCache } from "./blockhashCache.js";
 import { buildTipInstructions } from "./tipBuilder.js";
+import { classifyExecutionError } from "./errorClassifier.js";
+import { recordExecutionTelemetrySync } from "./executionTelemetry.js";
 
 export type SwapResponse = { swapTransaction: string; [key: string]: unknown };
 export type BroadcastOptions = {
   preferHelius?: boolean;
+  route?: string;
+  mint?: string;
+  side?: "buy" | "sell" | "swap";
+  sourceSignature?: string;
 };
 
 /**
@@ -215,6 +222,13 @@ async function raceJitoAndHelius(transaction: VersionedTransaction): Promise<str
   }
 }
 
+async function broadcastViaRpcFallback(transaction: VersionedTransaction): Promise<string> {
+  return readConnection.sendRawTransaction(transaction.serialize(), {
+    skipPreflight: true,
+    maxRetries: 0,
+  });
+}
+
 /**
  * Send a signed transaction. Routes via Jito BlockEngine directly when USE_JITO_DIRECT=true
  * (saves the Helius → Jito relay hop, ~50-100ms on hot launches), falling back to Helius
@@ -224,6 +238,34 @@ export async function broadcastTransactionWithSender(
   transaction: VersionedTransaction,
   options: BroadcastOptions = {}
 ): Promise<string> {
+  const startedAt = Date.now();
+  const attempted: string[] = [];
+  const failureDetails: string[] = [];
+  const emit = (event: {
+    path: string;
+    success: boolean;
+    signature?: string;
+    error?: unknown;
+  }): void => {
+    const msg = event.error == null ? undefined : event.error instanceof Error ? event.error.message : String(event.error);
+    const classified = msg ? classifyExecutionError(msg) : null;
+    recordExecutionTelemetrySync({
+      kind: "broadcast",
+      route: options.route,
+      side: options.side,
+      mint: options.mint,
+      sourceSignature: options.sourceSignature,
+      signature: event.signature,
+      elapsedMs: Date.now() - startedAt,
+      success: event.success,
+      error: msg,
+      errorClass: classified?.category,
+      errorCode: classified?.code,
+      recoverable: classified?.recoverable,
+      details: { path: event.path, attempted },
+    });
+  };
+
   const heliusPathPossible = !useJitoDirect || useJitoFallback;
   if (options.preferHelius && heliusPathPossible) {
     // Suspected Jito drops should retry through the alternate ingress when the tx carries a Helius tip.
@@ -231,25 +273,59 @@ export async function broadcastTransactionWithSender(
   }
   if (useJitoDirect && !(options.preferHelius && heliusPathPossible)) {
     if (broadcastRaceEnabled && heliusPathPossible) {
-      return raceJitoAndHelius(transaction);
+      attempted.push("race:jito+helius");
+      try {
+        const signature = await raceJitoAndHelius(transaction);
+        emit({ path: "race:jito+helius", success: true, signature });
+        return signature;
+      } catch (err) {
+        failureDetails.push(`race:jito+helius: ${err instanceof Error ? err.message : String(err)}`);
+        emit({ path: "race:jito+helius", success: false, error: err });
+      }
     }
     try {
-      return await broadcastViaJito(transaction);
+      attempted.push("jito");
+      const signature = await broadcastViaJito(transaction);
+      emit({ path: "jito", success: true, signature });
+      return signature;
     } catch (jitoErr) {
       if (!useJitoFallback) {
         maybeInvalidateBlockhash(jitoErr);
-        throw jitoErr;
+        emit({ path: "jito", success: false, error: jitoErr });
+        if (!senderRpcFallbackEnabled) throw jitoErr;
+        failureDetails.push(`jito: ${jitoErr instanceof Error ? jitoErr.message : String(jitoErr)}`);
+      } else {
+        const msg = jitoErr instanceof Error ? jitoErr.message : String(jitoErr);
+        maybeInvalidateBlockhash(jitoErr);
+        failureDetails.push(`jito: ${msg}`);
+        emit({ path: "jito", success: false, error: jitoErr });
+        console.warn(`Jito direct broadcast failed; falling back to Helius Sender: ${msg}`);
       }
-      const msg = jitoErr instanceof Error ? jitoErr.message : String(jitoErr);
-      maybeInvalidateBlockhash(jitoErr);
-      console.warn(`Jito direct broadcast failed; falling back to Helius Sender: ${msg}`);
     }
   }
   try {
-    return await broadcastViaHeliusSender(transaction);
+    attempted.push("helius-sender");
+    const signature = await broadcastViaHeliusSender(transaction);
+    emit({ path: "helius-sender", success: true, signature });
+    return signature;
   } catch (err) {
     maybeInvalidateBlockhash(err);
-    throw err;
+    failureDetails.push(`helius-sender: ${err instanceof Error ? err.message : String(err)}`);
+    emit({ path: "helius-sender", success: false, error: err });
+    if (!senderRpcFallbackEnabled) throw err;
+  }
+
+  try {
+    attempted.push("rpc-sendRawTransaction");
+    console.warn("Sender paths failed; falling back to RPC sendRawTransaction.");
+    const signature = await broadcastViaRpcFallback(transaction);
+    emit({ path: "rpc-sendRawTransaction", success: true, signature });
+    return signature;
+  } catch (err) {
+    maybeInvalidateBlockhash(err);
+    emit({ path: "rpc-sendRawTransaction", success: false, error: err });
+    failureDetails.push(`rpc-sendRawTransaction: ${err instanceof Error ? err.message : String(err)}`);
+    throw new Error(`All broadcast paths failed: ${failureDetails.join(" | ")}`);
   }
 }
 

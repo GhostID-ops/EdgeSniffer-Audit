@@ -199,6 +199,18 @@ export const readRpcUrl =
 /** Sender endpoint URL for sendTransaction and confirmation polling. */
 export const senderEndpointUrl = SENDER_ENDPOINT;
 
+const EXECUTION_TELEMETRY_ENABLED_RAW = (process.env.EXECUTION_TELEMETRY_ENABLED ?? "true").toLowerCase();
+export const executionTelemetryEnabled =
+  EXECUTION_TELEMETRY_ENABLED_RAW !== "false" &&
+  EXECUTION_TELEMETRY_ENABLED_RAW !== "0" &&
+  EXECUTION_TELEMETRY_ENABLED_RAW !== "no";
+export const executionTelemetryPath = process.env.EXECUTION_TELEMETRY_PATH ?? "data/execution-telemetry.jsonl";
+const SENDER_RPC_FALLBACK_ENABLED_RAW = (process.env.SENDER_RPC_FALLBACK_ENABLED ?? "true").toLowerCase();
+export const senderRpcFallbackEnabled =
+  SENDER_RPC_FALLBACK_ENABLED_RAW !== "false" &&
+  SENDER_RPC_FALLBACK_ENABLED_RAW !== "0" &&
+  SENDER_RPC_FALLBACK_ENABLED_RAW !== "no";
+
 // --- Jito direct bundle submission ---
 // When enabled, broadcasts go straight to Jito's BlockEngine /api/v1/bundles endpoint instead
 // of Helius Sender (which forwards bundles to Jito with one extra hop). Saves ~50-100ms on the

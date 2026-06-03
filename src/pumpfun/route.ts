@@ -202,6 +202,10 @@ export async function tryPumpFunDirectBuy(args: {
         args.log(`Tx built (${elapsed()})`);
         signature = await broadcastTransactionWithSender(replay.tx, {
           preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
+          route: "pumpfun-source-replay-buy",
+          side: "buy",
+          mint: args.mint,
+          sourceSignature: args.sourceSignature,
         });
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
@@ -323,6 +327,10 @@ export async function tryPumpFunDirectBuy(args: {
   try {
     signature = await broadcastTransactionWithSender(tx, {
       preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
+      route: "pumpfun-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -501,6 +509,10 @@ export async function tryPumpFunDirectSell(args: {
   try {
     signature = await broadcastTransactionWithSender(tx, {
       preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
+      route: "pumpfun-direct-sell",
+      side: "sell",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

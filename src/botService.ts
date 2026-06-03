@@ -54,7 +54,7 @@ import {
   copyBuyPercentage,
 } from "./config.js";
 import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
-import { estimatePumpSwapSellQuote } from "./pumpswap/route.js";
+import { estimatePumpSwapSellQuote, warmPumpSwapStaticAccounts } from "./pumpswap/route.js";
 import {
   getNewSwaps,
   getRecentWalletBuyMints,
@@ -124,6 +124,8 @@ import {
   resetCircuitBreaker,
 } from "./circuitBreaker.js";
 import { startFeeOracle, stopFeeOracle } from "./feeOracle.js";
+import { classifyExecutionError } from "./errorClassifier.js";
+import { recordExecutionTelemetrySync } from "./executionTelemetry.js";
 import { startBlockhashCache, stopBlockhashCache } from "./blockhashCache.js";
 import { validateLicense } from "./licenseClient.js";
 import { checkPrebuyMoralisFilter } from "./prebuyMoralisFilter.js";
@@ -793,11 +795,12 @@ export function formatPnl(lamports: number): string {
 }
 
 function shouldQuarantineFailedBuy(reason: string): boolean {
-  return /Custom":(?:6023|6042)|Custom":\s*(?:6023|6042)|Custom\((?:6023|6042)\)/.test(reason);
+  const classified = classifyExecutionError(reason);
+  return classified.recoverable === false;
 }
 
 function isPumpFunAccountLayoutFailure(reason: string): boolean {
-  return /Custom":\s*(?:2006|6004)|Custom\(?\s*(?:2006|6004)\)?/.test(reason);
+  return classifyExecutionError(reason).category === "account-layout";
 }
 
 function isBuySignal(swap: DetectedSwap): boolean {
@@ -915,12 +918,7 @@ function shouldAttemptFailedBuyRecovery(
 }
 
 function isTerminalBuyFailure(message: string): boolean {
-  return (
-    message.includes("Transaction exceeds 1232B") ||
-    message.includes("TOKEN_NOT_TRADABLE") ||
-    message.includes("not tradable") ||
-    message.includes("NO_ROUTES_FOUND")
-  );
+  return classifyExecutionError(message).recoverable === false;
 }
 
 function scheduleFailedBuyRecovery(
@@ -1676,6 +1674,22 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       return;
     }
     
+    const failureClass = classifyExecutionError(msg);
+    const isSellForTelemetry = isSellSignal(swap);
+    recordExecutionTelemetrySync({
+      kind: "mirror-failure",
+      route: isSellForTelemetry ? "sell" : "buy",
+      side: isSellForTelemetry ? "sell" : "buy",
+      mint: isSellForTelemetry ? swap.inputMint : swap.outputMint,
+      sourceSignature: swap.signature,
+      wallet: swap.wallet,
+      elapsedMs: Date.now() - ts,
+      success: false,
+      error: msg,
+      errorClass: failureClass.category,
+      errorCode: failureClass.code,
+      recoverable: failureClass.recoverable,
+    });
     console.error(`?? Mirror failed for ${swap.signature}: ${msg}`);
     if (isBuySignal(swap) && (swap.skipDirectBuyRoutes || isTerminalBuyFailure(msg))) {
       const failedMint = swap.outputMint;
@@ -1916,6 +1930,7 @@ export async function startBot(): Promise<void> {
 
   const startupCutoffSec = Math.floor(Date.now() / 1000);
   await warmSourcePreexistingBuyMints(startupCutoffSec);
+  await Promise.allSettled([warmConnection(), warmPumpSwapStaticAccounts()]);
   startedAt = Date.now();
   console.log("Fresh start - only trades from this moment onward will be mirrored.");
 
