@@ -1,0 +1,62 @@
+import { classifyExecutionError, type ClassifiedExecutionError } from "./errorClassifier.js";
+
+export type RetryAction =
+  | "rebuild-derived-accounts"
+  | "compact-transaction"
+  | "fresh-blockhash-rebroadcast"
+  | "fresh-quote"
+  | "rebuild-pool-state"
+  | "skip"
+  | "retry";
+
+export type RetryDecision = ClassifiedExecutionError & {
+  action: RetryAction;
+  shouldQuarantine: boolean;
+};
+
+export function decideRetryAction(err: unknown): RetryDecision {
+  const classified = classifyExecutionError(err);
+  switch (classified.category) {
+    case "account-layout":
+      return {
+        ...classified,
+        action: "rebuild-derived-accounts",
+        shouldQuarantine: false,
+      };
+    case "oversize":
+      return {
+        ...classified,
+        action: "compact-transaction",
+        shouldQuarantine: false,
+      };
+    case "dropped-or-expired":
+    case "sender":
+    case "network":
+      return {
+        ...classified,
+        action: "fresh-blockhash-rebroadcast",
+        shouldQuarantine: false,
+      };
+    case "slippage":
+      return {
+        ...classified,
+        action: "fresh-quote",
+        shouldQuarantine: false,
+      };
+    case "liquidity":
+    case "not-tradable":
+    case "no-route":
+      return {
+        ...classified,
+        action: "skip",
+        shouldQuarantine: true,
+      };
+    default:
+      return {
+        ...classified,
+        action: classified.recoverable ? "retry" : "skip",
+        shouldQuarantine: classified.recoverable === false,
+      };
+  }
+}
+

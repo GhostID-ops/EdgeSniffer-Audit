@@ -12,10 +12,12 @@ import {
   confirmationRebroadcastRetries,
   computeUnitLimit,
   fastMode,
+  keepWsolAtaOpen,
   pumpSwapDirectMinOutBps,
   pumpSwapDirectPreflight,
   readConnection,
   simulationMode,
+  warmWalletMode,
 } from "../config.js";
 import { getDynamicPriorityFee } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
@@ -23,6 +25,7 @@ import { broadcastTransactionWithSender } from "../sender.js";
 import { buildCompactV0Transaction } from "../transactionSize.js";
 import { confirmSignature, isConfirmationTimeoutError } from "../confirm.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
+import { accountExistsCached, knownAccountExists } from "../walletWarmup.js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   PUMP_FUN_FEE_PROGRAM_ID,
@@ -948,23 +951,36 @@ export async function tryPumpSwapDirectBuy(args: {
 
   const { blockhash, lastValidBlockHeight } = await getCachedBlockhash();
   args.log(`PumpSwap blockhash ready: lastValidBlockHeight=${lastValidBlockHeight}`);
-  const tx = buildCompactV0Transaction({
-    payer: args.user.publicKey,
-    blockhash,
-    instructions: [
-      ...computeIxs,
+  const userBaseAtaExists = knownAccountExists(userBaseAta);
+  const userQuoteAtaExists = warmWalletMode ? await accountExistsCached(userQuoteAta) : false;
+  const setupIxs: TransactionInstruction[] = [];
+  if (!userBaseAtaExists) {
+    setupIxs.push(
       createAtaIdempotentIx({
         payer: args.user.publicKey,
         owner: args.user.publicKey,
         mint: mintKey,
         tokenProgramId: baseTokenProgramId,
-      }),
+      })
+    );
+  }
+  if (!userQuoteAtaExists) {
+    setupIxs.push(
       createAtaIdempotentIx({
         payer: args.user.publicKey,
         owner: args.user.publicKey,
         mint: new PublicKey(WRAPPED_SOL_MINT),
         tokenProgramId: TOKEN_PROGRAM_ID,
-      }),
+      })
+    );
+  }
+  const closeIxs = keepWsolAtaOpen ? [] : [closeTokenAccountIx(userQuoteAta, args.user.publicKey)];
+  const tx = buildCompactV0Transaction({
+    payer: args.user.publicKey,
+    blockhash,
+    instructions: [
+      ...computeIxs,
+      ...setupIxs,
       SystemProgram.transfer({
         fromPubkey: args.user.publicKey,
         toPubkey: userQuoteAta,
@@ -972,7 +988,7 @@ export async function tryPumpSwapDirectBuy(args: {
       }),
       syncNativeIx(userQuoteAta),
       swapIx,
-      closeTokenAccountIx(userQuoteAta, args.user.publicKey),
+      ...closeIxs,
     ],
     signer: args.user,
     log: args.log,
@@ -1151,19 +1167,27 @@ export async function tryPumpSwapDirectSell(args: {
 
   const { blockhash, lastValidBlockHeight } = await getCachedBlockhash();
   args.log(`PumpSwap sell blockhash ready: lastValidBlockHeight=${lastValidBlockHeight}`);
+  const userQuoteAtaExists = warmWalletMode ? await accountExistsCached(userQuoteAta) : false;
+  const setupIxs: TransactionInstruction[] = userQuoteAtaExists
+    ? []
+    : [
+        createAtaIdempotentIx({
+          payer: args.user.publicKey,
+          owner: args.user.publicKey,
+          mint: new PublicKey(WRAPPED_SOL_MINT),
+          tokenProgramId: TOKEN_PROGRAM_ID,
+        }),
+      ];
+  // Sells must unwrap WSOL back to native SOL so wallet balance and PnL accounting stay correct.
+  const closeIxs = [closeTokenAccountIx(userQuoteAta, args.user.publicKey)];
   const tx = buildCompactV0Transaction({
     payer: args.user.publicKey,
     blockhash,
     instructions: [
       ...computeIxs,
-      createAtaIdempotentIx({
-        payer: args.user.publicKey,
-        owner: args.user.publicKey,
-        mint: new PublicKey(WRAPPED_SOL_MINT),
-        tokenProgramId: TOKEN_PROGRAM_ID,
-      }),
+      ...setupIxs,
       swapIx,
-      closeTokenAccountIx(userQuoteAta, args.user.publicKey),
+      ...closeIxs,
     ],
     signer: args.user,
     log: args.log,

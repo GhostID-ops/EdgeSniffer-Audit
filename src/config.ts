@@ -210,6 +210,29 @@ export const senderRpcFallbackEnabled =
   SENDER_RPC_FALLBACK_ENABLED_RAW !== "false" &&
   SENDER_RPC_FALLBACK_ENABLED_RAW !== "0" &&
   SENDER_RPC_FALLBACK_ENABLED_RAW !== "no";
+const EXECUTION_MULTI_SEND_ENABLED_RAW = (process.env.EXECUTION_MULTI_SEND_ENABLED ?? "false").toLowerCase();
+export const executionMultiSendEnabled =
+  EXECUTION_MULTI_SEND_ENABLED_RAW === "true" ||
+  EXECUTION_MULTI_SEND_ENABLED_RAW === "1" ||
+  EXECUTION_MULTI_SEND_ENABLED_RAW === "yes";
+export const executionRescueRetries = Math.max(
+  0,
+  parseInt(process.env.EXECUTION_RESCUE_RETRIES ?? "2", 10)
+);
+export const executionRescueDelayMs = Math.max(
+  0,
+  parseInt(process.env.EXECUTION_RESCUE_DELAY_MS ?? "25", 10)
+);
+const WARM_WALLET_MODE_RAW = (process.env.WARM_WALLET_MODE ?? "true").toLowerCase();
+export const warmWalletMode =
+  WARM_WALLET_MODE_RAW !== "false" &&
+  WARM_WALLET_MODE_RAW !== "0" &&
+  WARM_WALLET_MODE_RAW !== "no";
+const KEEP_WSOL_ATA_OPEN_RAW = (process.env.KEEP_WSOL_ATA_OPEN ?? "true").toLowerCase();
+export const keepWsolAtaOpen =
+  KEEP_WSOL_ATA_OPEN_RAW !== "false" &&
+  KEEP_WSOL_ATA_OPEN_RAW !== "0" &&
+  KEEP_WSOL_ATA_OPEN_RAW !== "no";
 
 // --- Jito direct bundle submission ---
 // When enabled, broadcasts go straight to Jito's BlockEngine /api/v1/bundles endpoint instead

@@ -15,6 +15,7 @@ import {
 import { getDynamicPriorityFee } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
 import { buildCompactV0Transaction } from "../transactionSize.js";
+import { knownAccountExists } from "../walletWarmup.js";
 import {
   PUMP_FUN_PROGRAM_ID,
   PUMP_FUN_FEE_PROGRAM_ID,
@@ -397,12 +398,17 @@ export async function buildPumpFunBuyTransaction(args: {
     })
   );
 
-  const ataIx = buildCreateAtaIdempotentIx({
-    payer: args.user.publicKey,
-    owner: args.user.publicKey,
-    mint: args.mint,
-    tokenProgramId: args.tokenProgramId,
-  });
+  const associatedUser = deriveAta(args.user.publicKey, args.mint, args.tokenProgramId);
+  const setupIxs = knownAccountExists(associatedUser)
+    ? []
+    : [
+        buildCreateAtaIdempotentIx({
+          payer: args.user.publicKey,
+          owner: args.user.publicKey,
+          mint: args.mint,
+          tokenProgramId: args.tokenProgramId,
+        }),
+      ];
   const isV2 = shouldUseV2BuyLayout(args);
 
   const buyIx = buildPumpFunBuyIx({
@@ -423,12 +429,13 @@ export async function buildPumpFunBuyTransaction(args: {
   }
 
   const { blockhash } = await getCachedBlockhash();
-  return buildCompactV0Transaction({
+  const tx = buildCompactV0Transaction({
     payer: args.user.publicKey,
     blockhash,
-    instructions: [...computeIxs, ataIx, buyIx],
+    instructions: [...computeIxs, ...setupIxs, buyIx],
     signer: args.user,
   });
+  return tx;
 }
 
 export async function buildPumpFunBuyReplayTransaction(args: {
@@ -463,12 +470,17 @@ export async function buildPumpFunBuyReplayTransaction(args: {
     })
   );
 
-  const ataIx = buildCreateAtaIdempotentIx({
-    payer: args.user.publicKey,
-    owner: args.user.publicKey,
-    mint: args.mint,
-    tokenProgramId,
-  });
+  const associatedUser = deriveAta(args.user.publicKey, args.mint, tokenProgramId);
+  const setupIxs = knownAccountExists(associatedUser)
+    ? []
+    : [
+        buildCreateAtaIdempotentIx({
+          payer: args.user.publicKey,
+          owner: args.user.publicKey,
+          mint: args.mint,
+          tokenProgramId,
+        }),
+      ];
 
   const buyIx = buildPumpFunBuyIx({
     user: args.user.publicKey,
@@ -486,7 +498,7 @@ export async function buildPumpFunBuyReplayTransaction(args: {
   const tx = buildCompactV0Transaction({
     payer: args.user.publicKey,
     blockhash,
-    instructions: [...computeIxs, ataIx, buyIx],
+    instructions: [...computeIxs, ...setupIxs, buyIx],
     signer: args.user,
   });
   return { tx, estimatedTokensOut: scaled.estimatedTokensOut };

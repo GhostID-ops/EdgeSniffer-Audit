@@ -17,6 +17,7 @@ import {
   useJitoFallback,
   broadcastRaceEnabled,
   senderRpcFallbackEnabled,
+  executionMultiSendEnabled,
 } from "./config.js";
 import { getDynamicPriorityFee } from "./feeOracle.js";
 import { broadcastViaJito } from "./jitoSender.js";
@@ -229,6 +230,36 @@ async function broadcastViaRpcFallback(transaction: VersionedTransaction): Promi
   });
 }
 
+async function raceLandingPaths(transaction: VersionedTransaction): Promise<string> {
+  const errors: string[] = [];
+  const paths: Array<{ name: string; fn: () => Promise<string> }> = [];
+  if (useJitoDirect) paths.push({ name: "Jito", fn: () => broadcastViaJito(transaction) });
+  if (!useJitoDirect || useJitoFallback) {
+    paths.push({ name: "Helius", fn: () => broadcastViaHeliusSender(transaction) });
+  }
+  if (senderRpcFallbackEnabled) {
+    paths.push({ name: "RPC", fn: () => broadcastViaRpcFallback(transaction) });
+  }
+  if (paths.length === 0) throw new Error("No landing paths configured");
+
+  const wrap = async (path: { name: string; fn: () => Promise<string> }): Promise<string> => {
+    try {
+      return await path.fn();
+    } catch (err) {
+      maybeInvalidateBlockhash(err);
+      const msg = err instanceof Error ? err.message : String(err);
+      errors.push(`${path.name}: ${msg}`);
+      throw err;
+    }
+  };
+
+  try {
+    return await Promise.any(paths.map((path) => wrap(path)));
+  } catch {
+    throw new Error(`Multi-send broadcast failed: ${errors.join(" | ")}`);
+  }
+}
+
 /**
  * Send a signed transaction. Routes via Jito BlockEngine directly when USE_JITO_DIRECT=true
  * (saves the Helius → Jito relay hop, ~50-100ms on hot launches), falling back to Helius
@@ -270,6 +301,17 @@ export async function broadcastTransactionWithSender(
   if (options.preferHelius && heliusPathPossible) {
     // Suspected Jito drops should retry through the alternate ingress when the tx carries a Helius tip.
     console.warn("Broadcast retry: preferring Helius Sender path.");
+  }
+  if (executionMultiSendEnabled && !(options.preferHelius && heliusPathPossible)) {
+    attempted.push("multi-send");
+    try {
+      const signature = await raceLandingPaths(transaction);
+      emit({ path: "multi-send", success: true, signature });
+      return signature;
+    } catch (err) {
+      failureDetails.push(`multi-send: ${err instanceof Error ? err.message : String(err)}`);
+      emit({ path: "multi-send", success: false, error: err });
+    }
   }
   if (useJitoDirect && !(options.preferHelius && heliusPathPossible)) {
     if (broadcastRaceEnabled && heliusPathPossible) {

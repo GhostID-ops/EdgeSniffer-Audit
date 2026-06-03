@@ -52,6 +52,8 @@ import {
   confirmationNullStatusTimeoutMs,
   prebuyMoralisFilterEnabled,
   copyBuyPercentage,
+  executionRescueRetries,
+  executionRescueDelayMs,
 } from "./config.js";
 import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import { estimatePumpSwapSellQuote, warmPumpSwapStaticAccounts } from "./pumpswap/route.js";
@@ -125,7 +127,10 @@ import {
 } from "./circuitBreaker.js";
 import { startFeeOracle, stopFeeOracle } from "./feeOracle.js";
 import { classifyExecutionError } from "./errorClassifier.js";
+import { decideRetryAction } from "./executionRetry.js";
+import { planExecution } from "./executionPlanner.js";
 import { recordExecutionTelemetrySync } from "./executionTelemetry.js";
+import { warmWalletAccounts } from "./walletWarmup.js";
 import { startBlockhashCache, stopBlockhashCache } from "./blockhashCache.js";
 import { validateLicense } from "./licenseClient.js";
 import { checkPrebuyMoralisFilter } from "./prebuyMoralisFilter.js";
@@ -795,8 +800,7 @@ export function formatPnl(lamports: number): string {
 }
 
 function shouldQuarantineFailedBuy(reason: string): boolean {
-  const classified = classifyExecutionError(reason);
-  return classified.recoverable === false;
+  return decideRetryAction(reason).shouldQuarantine;
 }
 
 function isPumpFunAccountLayoutFailure(reason: string): boolean {
@@ -903,7 +907,7 @@ function shouldAttemptFailedBuyRecovery(
     !sourceSwap?.skipDirectBuyRoutes &&
     !sourceSwap?.forceDerivedPumpFunBuy &&
     isPumpFunAccountLayoutFailure(reason) &&
-    (sourceSwap?.buyRecoveryAttempt ?? 0) < 1
+    (sourceSwap?.buyRecoveryAttempt ?? 0) < executionRescueRetries
   ) {
     return true;
   }
@@ -913,7 +917,7 @@ function shouldAttemptFailedBuyRecovery(
     Boolean(mint) &&
     !failedBuyRecoveryInFlightMints.has(mint!) &&
     !sourceSwap?.skipDirectBuyRoutes &&
-    (sourceSwap?.buyRecoveryAttempt ?? 0) < 1
+    (sourceSwap?.buyRecoveryAttempt ?? 0) < executionRescueRetries
   );
 }
 
@@ -945,12 +949,22 @@ function scheduleFailedBuyRecovery(
     if (stopRequested || !failedBuyRecoveryInFlightMints.has(sourceSwap.outputMint)) return;
     processSwap(recoverySwap, kp).catch((err) => {
       const msg = err instanceof Error ? err.message : String(err);
+      const decision = decideRetryAction(msg);
       console.error(`Direct rescue buy failed for ${sourceSwap.outputMint.slice(0, 8)}...: ${msg}`);
-      quarantinedBuyMints.set(sourceSwap.outputMint, `direct rescue threw: ${msg}`);
+      if (decision.shouldQuarantine) {
+        quarantinedBuyMints.set(sourceSwap.outputMint, `direct rescue ${decision.action}: ${msg}`);
+      } else {
+        boughtMintsThisSession.delete(sourceSwap.outputMint);
+        pendingBuyRetryByMint.delete(sourceSwap.outputMint);
+        console.warn(
+          `Direct rescue failure for ${sourceSwap.outputMint.slice(0, 8)}... is recoverable ` +
+            `(${decision.action}); not quarantining this mint.`
+        );
+      }
     }).finally(() => {
       failedBuyRecoveryInFlightMints.delete(sourceSwap.outputMint);
     });
-  }, 0);
+  }, executionRescueDelayMs);
 }
 
 /** SOL per token - simple price display */
@@ -1123,6 +1137,21 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   console.log(
     `⚡ Processing ${isBuySignal(swap) ? "buy" : "sell"} from ${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)} (${swap.signature.slice(0, 8)}…)`
   );
+
+  const executionPlan = planExecution(swap);
+  console.log(
+    `Execution plan: ${executionPlan.route} (${executionPlan.reason}) for ${executionPlan.mint.slice(0, 8)}...`
+  );
+  recordExecutionTelemetrySync({
+    kind: "execution-plan",
+    route: executionPlan.route,
+    side: executionPlan.side,
+    mint: executionPlan.mint,
+    sourceSignature: swap.signature,
+    wallet: swap.wallet,
+    success: true,
+    details: { reason: executionPlan.reason },
+  });
 
   if (isSellSignal(swap)) {
     const mint = swap.inputMint;
@@ -1407,14 +1436,23 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           );
           return;
         }
-        quarantinedBuyMints.set(mint, reason);
+        const decision = decideRetryAction(reason);
         pendingBuyRetryByMint.delete(mint);
         fastBuyConfirmRetryScheduledByMint.delete(mint);
-        const hardFailTag = shouldQuarantineFailedBuy(reason) ? "hard-fail" : "failed";
-        console.warn(
-          `Buy quarantine set for ${mint.slice(0, 8)}... after ${hardFailTag} on-chain buy (${reason}). ` +
-            "No more retries for this mint this session."
-        );
+        if (decision.shouldQuarantine) {
+          quarantinedBuyMints.set(mint, reason);
+          console.warn(
+            `Buy quarantine set for ${mint.slice(0, 8)}... after terminal ${decision.category} failure (${reason}). ` +
+              "No more retries for this mint this session."
+          );
+        } else {
+          boughtMintsThisSession.delete(mint);
+          failedBuyRecoveryInFlightMints.delete(mint);
+          console.warn(
+            `Buy failed for ${mint.slice(0, 8)}... with recoverable ${decision.category} failure; ` +
+              `retry action=${decision.action}. Not quarantining this mint.`
+          );
+        }
         return;
         if (boughtMintsThisSession.delete(mint)) {
           console.warn(
@@ -1675,6 +1713,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
     
     const failureClass = classifyExecutionError(msg);
+    const retryDecision = decideRetryAction(msg);
     const isSellForTelemetry = isSellSignal(swap);
     recordExecutionTelemetrySync({
       kind: "mirror-failure",
@@ -1689,13 +1728,14 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       errorClass: failureClass.category,
       errorCode: failureClass.code,
       recoverable: failureClass.recoverable,
+      details: { retryAction: retryDecision.action, shouldQuarantine: retryDecision.shouldQuarantine },
     });
     console.error(`?? Mirror failed for ${swap.signature}: ${msg}`);
-    if (isBuySignal(swap) && (swap.skipDirectBuyRoutes || isTerminalBuyFailure(msg))) {
+    if (isBuySignal(swap) && (swap.skipDirectBuyRoutes || retryDecision.shouldQuarantine || isTerminalBuyFailure(msg))) {
       const failedMint = swap.outputMint;
       quarantinedBuyMints.set(
         failedMint,
-        `${swap.skipDirectBuyRoutes ? "Jupiter rescue failed" : "buy failed"}: ${msg}`
+        `${swap.skipDirectBuyRoutes ? "Jupiter rescue failed" : retryDecision.action}: ${msg}`
       );
       pendingBuyRetryByMint.delete(failedMint);
       fastBuyConfirmRetryScheduledByMint.delete(failedMint);
@@ -1703,6 +1743,15 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       console.warn(
         `Buy quarantine set for ${failedMint.slice(0, 8)}... after terminal buy failure. ` +
           "No more retries for this mint this session."
+      );
+    } else if (isBuySignal(swap) && !retryDecision.shouldQuarantine) {
+      const failedMint = swap.outputMint;
+      boughtMintsThisSession.delete(failedMint);
+      pendingBuyRetryByMint.delete(failedMint);
+      failedBuyRecoveryInFlightMints.delete(failedMint);
+      console.warn(
+        `Buy failure for ${failedMint.slice(0, 8)}... is recoverable (${retryDecision.action}); ` +
+          "not quarantining so a later source signal can retry."
       );
     }
     
@@ -1930,7 +1979,11 @@ export async function startBot(): Promise<void> {
 
   const startupCutoffSec = Math.floor(Date.now() / 1000);
   await warmSourcePreexistingBuyMints(startupCutoffSec);
-  await Promise.allSettled([warmConnection(), warmPumpSwapStaticAccounts()]);
+  await Promise.allSettled([
+    warmConnection(),
+    warmPumpSwapStaticAccounts(),
+    warmWalletAccounts(keypair.publicKey),
+  ]);
   startedAt = Date.now();
   console.log("Fresh start - only trades from this moment onward will be mirrored.");
 
