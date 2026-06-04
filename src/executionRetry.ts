@@ -17,6 +17,11 @@ export type RetryDecision = ClassifiedExecutionError & {
 export function decideRetryAction(err: unknown): RetryDecision {
   const classified = classifyExecutionError(err);
   switch (classified.category) {
+    case "account-constraint-seeds":
+    case "account-constraint-mut":
+    case "account-invalid-program":
+    case "account-privilege":
+    case "account-stale-source":
     case "account-layout":
       return {
         ...classified,
@@ -31,7 +36,11 @@ export function decideRetryAction(err: unknown): RetryDecision {
       };
     case "dropped-or-expired":
     case "sender":
+    case "sender-jito":
+    case "sender-helius":
+    case "sender-rpc":
     case "network":
+    case "rate-limit":
       return {
         ...classified,
         action: "fresh-blockhash-rebroadcast",
@@ -43,9 +52,12 @@ export function decideRetryAction(err: unknown): RetryDecision {
         action: "fresh-quote",
         shouldQuarantine: false,
       };
+    case "liquidity-overflow":
+    case "liquidity-no-liquidity":
     case "liquidity":
     case "not-tradable":
     case "no-route":
+    case "insufficient-funds":
       return {
         ...classified,
         action: "skip",
@@ -59,4 +71,3 @@ export function decideRetryAction(err: unknown): RetryDecision {
       };
   }
 }
-

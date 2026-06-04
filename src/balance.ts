@@ -9,6 +9,12 @@ const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
 );
 
+export type WalletTokenBalance = {
+  mint: string;
+  amountRaw: number;
+  tokenProgram: string;
+};
+
 /** Derive the ATA for (owner, mint, tokenProgram). Returns null on derivation failure. */
 function deriveAta(owner: PublicKey, mint: string, tokenProgramId: PublicKey): PublicKey | null {
   try {
@@ -131,6 +137,49 @@ export async function getTokenBalance(
   }
 
   return total;
+}
+
+/**
+ * List all nonzero token mint balances held by owner, summed across token programs/accounts.
+ */
+export async function getWalletTokenBalances(owner: PublicKey): Promise<WalletTokenBalance[]> {
+  const byMint = new Map<string, WalletTokenBalance>();
+
+  for (const programId of TOKEN_PROGRAM_IDS) {
+    const resp = await readConnection.getParsedTokenAccountsByOwner(owner, {
+      programId,
+    });
+    for (const acct of resp.value) {
+      const parsed = acct.account.data as
+        | {
+            parsed?: {
+              info?: {
+                mint?: string;
+                tokenAmount?: { amount?: string };
+              };
+            };
+          }
+        | undefined;
+      const info = parsed?.parsed?.info;
+      const mint = info?.mint;
+      const amountStr = info?.tokenAmount?.amount;
+      if (!mint || typeof amountStr !== "string") continue;
+      const amountRaw = parseInt(amountStr, 10);
+      if (!Number.isFinite(amountRaw) || amountRaw <= 0) continue;
+      const existing = byMint.get(mint);
+      if (existing) {
+        existing.amountRaw += amountRaw;
+      } else {
+        byMint.set(mint, {
+          mint,
+          amountRaw,
+          tokenProgram: programId.toBase58(),
+        });
+      }
+    }
+  }
+
+  return [...byMint.values()].sort((a, b) => b.amountRaw - a.amountRaw);
 }
 
 /**

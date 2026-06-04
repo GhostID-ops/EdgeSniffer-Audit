@@ -28,6 +28,7 @@ import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry
 import { accountExistsCached, knownAccountExists } from "../walletWarmup.js";
 import { getNativeIdlDiscriminator } from "../idlNativeBuilder.js";
 import { recordExecutionStage } from "../executionTelemetry.js";
+import { classifyExecutionError } from "../errorClassifier.js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   PUMP_FUN_FEE_PROGRAM_ID,
@@ -403,12 +404,8 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   user: PublicKey;
   baseTokenProgram: PublicKey;
   sourcePumpSwapAccounts?: string[];
+  canonicalOnly?: boolean;
 }): Promise<PumpSwapAccountPlan | null> {
-  const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
-  if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint)) {
-    return { accounts: confirmedAccounts, source: "confirmed-source-metas" };
-  }
-
   const canonicalAccounts = await buildCanonicalPumpSwapBuyAccounts({
     user: args.user,
     mint: args.mint,
@@ -416,6 +413,13 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   });
   if (canonicalAccounts) {
     return { accounts: canonicalAccounts, source: "canonical-pool-state" };
+  }
+
+  if (args.canonicalOnly) return null;
+
+  const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
+  if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint)) {
+    return { accounts: confirmedAccounts, source: "confirmed-source-metas" };
   }
 
   const hintedPubkeys = args.sourcePumpSwapAccounts
@@ -552,11 +556,22 @@ async function getCachedMintOwner(mint: PublicKey): Promise<PublicKey | null> {
   return null;
 }
 
-async function getCachedPumpSwapPoolAccount(pool: PublicKey): Promise<AccountInfo<Buffer> | null> {
+function invalidatePumpSwapPoolState(pool?: PublicKey): void {
+  if (pool) {
+    pumpSwapPoolAccountCache.delete(pool.toBase58());
+    return;
+  }
+  pumpSwapPoolAccountCache.clear();
+}
+
+async function getCachedPumpSwapPoolAccount(
+  pool: PublicKey,
+  forceRefresh = false
+): Promise<AccountInfo<Buffer> | null> {
   const key = pool.toBase58();
   const cached = pumpSwapPoolAccountCache.get(key);
   const now = Date.now();
-  if (cached && now - cached.cachedAt < PUMPSWAP_ACCOUNT_CACHE_TTL_MS) return cached.account;
+  if (!forceRefresh && cached && now - cached.cachedAt < PUMPSWAP_ACCOUNT_CACHE_TTL_MS) return cached.account;
 
   const account = await readConnection.getAccountInfo(pool, "processed");
   if (account) pumpSwapPoolAccountCache.set(key, { account, cachedAt: now });
@@ -686,6 +701,23 @@ export async function buildCanonicalPumpSwapBuyAccounts(args: {
     { pubkey: derivePumpSwapFeeConfigPda(), isSigner: false, isWritable: false },
     { pubkey: PUMP_FUN_FEE_PROGRAM_ID, isSigner: false, isWritable: false },
   ];
+}
+
+function isPumpSwapAccountPlanError(err: unknown): boolean {
+  const category = classifyExecutionError(err).category;
+  return (
+    category === "account-constraint-seeds" ||
+    category === "account-constraint-mut" ||
+    category === "account-invalid-program" ||
+    category === "account-privilege" ||
+    category === "account-stale-source" ||
+    category === "account-layout"
+  );
+}
+
+function isPumpSwapOverflowError(err: unknown): boolean {
+  const classified = classifyExecutionError(err);
+  return classified.category === "liquidity-overflow" || classified.code === "6023";
 }
 
 export async function buildCanonicalPumpSwapSellAccounts(args: {
@@ -832,6 +864,8 @@ export async function tryPumpSwapDirectBuy(args: {
   startedAt: number;
   log: (msg: string) => void;
   rebroadcastAttempt?: number;
+  canonicalRetryAttempt?: number;
+  poolRefreshAttempt?: number;
   onConfirmFailure?: (mint: string, tokensOutRaw: number, solLamports: number, reason: string) => void;
   onConfirmSuccess?: (mint: string, tokensOutRaw: number, solLamports: number, signature: string) => void;
 }): Promise<PumpSwapOutcome> {
@@ -851,6 +885,7 @@ export async function tryPumpSwapDirectBuy(args: {
     user: args.user.publicKey,
     baseTokenProgram: baseTokenProgramId,
     sourcePumpSwapAccounts: args.sourcePumpSwapAccounts,
+    canonicalOnly: (args.canonicalRetryAttempt ?? 0) > 0,
   });
   if (!accountPlan) {
     return {
@@ -873,7 +908,10 @@ export async function tryPumpSwapDirectBuy(args: {
     return { ok: false, recoverable: true, reason: `PumpSwap account list too short: ${accounts.length}` };
   }
 
-  const poolAccount = await getCachedPumpSwapPoolAccount(accounts[0]!.pubkey);
+  const poolAccount = await getCachedPumpSwapPoolAccount(
+    accounts[0]!.pubkey,
+    (args.poolRefreshAttempt ?? 0) > 0
+  );
   const poolError = validatePumpSwapPoolAccount(accounts[0]!.pubkey, poolAccount);
   if (poolError) return { ok: false, recoverable: true, reason: poolError };
 
@@ -1036,14 +1074,49 @@ export async function tryPumpSwapDirectBuy(args: {
     });
     if (sim.value.err) {
       const logSummary = summarizeLogs(sim.value.logs ?? []);
+      const reason = [
+        `PumpSwap preflight failed: ${JSON.stringify(sim.value.err)}`,
+        formatContext(ctx),
+        logSummary ? `logs=${logSummary}` : "",
+      ].filter(Boolean).join(" | ");
+      recordExecutionStage({
+        stage: "preflight",
+        route: "pumpswap-direct-buy",
+        side: "buy",
+        mint: args.mint,
+        sourceSignature: args.sourceSignature,
+        elapsedMs: Date.now() - preflightStartedAt,
+        success: false,
+        error: reason,
+        details: { accountPlan: accountPlan.source },
+      });
+      if (
+        accountPlan.source !== "canonical-pool-state" &&
+        isPumpSwapAccountPlanError(reason) &&
+        (args.canonicalRetryAttempt ?? 0) < 1
+      ) {
+        args.log(
+          `PumpSwap account-plan preflight failure (${classifyExecutionError(reason).category}); ` +
+            "retrying with canonical pool-state accounts."
+        );
+        return tryPumpSwapDirectBuy({
+          ...args,
+          sourcePumpSwapAccounts: undefined,
+          canonicalRetryAttempt: (args.canonicalRetryAttempt ?? 0) + 1,
+        });
+      }
+      if (isPumpSwapOverflowError(reason) && (args.poolRefreshAttempt ?? 0) < 1) {
+        args.log("PumpSwap overflow preflight failure; refreshing pool state and requoting once.");
+        invalidatePumpSwapPoolState(accounts[0]!.pubkey);
+        return tryPumpSwapDirectBuy({
+          ...args,
+          poolRefreshAttempt: (args.poolRefreshAttempt ?? 0) + 1,
+        });
+      }
       return {
         ok: false,
-        recoverable: true,
-        reason: [
-          `PumpSwap preflight failed: ${JSON.stringify(sim.value.err)}`,
-          formatContext(ctx),
-          logSummary ? `logs=${logSummary}` : "",
-        ].filter(Boolean).join(" | "),
+        recoverable: isRecoverablePumpSwapFailure(reason),
+        reason,
       };
     }
     recordExecutionStage({

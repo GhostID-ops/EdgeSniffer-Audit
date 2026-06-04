@@ -31,6 +31,7 @@ import type { DetectedSwap } from "./types.js";
 import { tryPumpFunDirectBuy, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import { tryPumpSwapDirectBuy, tryPumpSwapDirectSell } from "./pumpswap/route.js";
 import { applyShadowExecution, shadowDelay, shadowSimulateTransaction } from "./shadowExecution.js";
+import { recordExecutionStage } from "./executionTelemetry.js";
 
 export type Side = "buy" | "sell" | "swap";
 
@@ -723,10 +724,14 @@ export async function mirrorSwap(
   for (let i = 0; i < attempts.length; i++) {
     const attempt = attempts[i]!;
     const isLastAttempt = i === attempts.length - 1;
+    let activeStage: "quote" | "swap-response" | "build" | "broadcast" | "confirm" | "metadata" = "quote";
+    let activeStageStartedAt = Date.now();
 
     try {
       let quote: QuoteResponse;
       if (attempt.preFetchedQuote) {
+        activeStage = "quote";
+        activeStageStartedAt = Date.now();
         quote = attempt.preFetchedQuote;
         console.log(
           `Reusing probed quote for ${formatQuoteAmount(attempt.amountRaw, mirrorInputMint)} (${attempt.reason}); out=${quote.outAmount} (${elapsed()})`
@@ -735,6 +740,9 @@ export async function mirrorSwap(
         console.log(
           `Getting quote for ${formatQuoteAmount(attempt.amountRaw, mirrorInputMint)} (${attempt.reason})...`
         );
+        activeStage = "quote";
+        const quoteStartedAt = Date.now();
+        activeStageStartedAt = quoteStartedAt;
         quote = await getQuote(
           mirrorSwap.inputMint,
           mirrorSwap.outputMint,
@@ -745,6 +753,25 @@ export async function mirrorSwap(
             onlyDirectRoutes: attempt.onlyDirectRoutes,
           }
         );
+        recordExecutionStage({
+          stage: "quote",
+          route: `jupiter-${side}`,
+          side,
+          mint: side === "buy" ? mirrorSwap.outputMint : mirrorSwap.inputMint,
+          sourceSignature: swap.signature,
+          elapsedMs: Date.now() - quoteStartedAt,
+          success: true,
+          details: {
+            attempt: i + 1,
+            reason: attempt.reason,
+            slippageBps: attempt.slippageBps,
+            amountRaw: attempt.amountRaw,
+            maxAccounts: attempt.quoteMaxAccounts,
+            onlyDirectRoutes: attempt.onlyDirectRoutes,
+            outAmount: quote.outAmount,
+            priceImpactPct: quote.priceImpactPct,
+          },
+        });
         console.log(`Quote received: ${quote.outAmount} out amount (${elapsed()})`);
       }
       if (side === "buy") {
@@ -755,16 +782,46 @@ export async function mirrorSwap(
       const outAmountRaw = parseInt(quote.outAmount ?? "0", 10);
 
       console.log("Getting swap response...");
+      activeStage = "swap-response";
+      const swapResponseStartedAt = Date.now();
+      activeStageStartedAt = swapResponseStartedAt;
       const swapResponse = await getSwap(quote, keypair.publicKey.toBase58());
+      recordExecutionStage({
+        stage: "swap-response",
+        route: `jupiter-${side}`,
+        side,
+        mint: side === "buy" ? mirrorSwap.outputMint : mirrorSwap.inputMint,
+        sourceSignature: swap.signature,
+        elapsedMs: Date.now() - swapResponseStartedAt,
+        success: true,
+        details: { attempt: i + 1, reason: attempt.reason },
+      });
       console.log(`Swap response received (${elapsed()})`);
 
       console.log("Creating transaction...");
       const jupiterRoute = `jupiter-${side}`;
+      activeStage = "build";
+      const buildStartedAt = Date.now();
+      activeStageStartedAt = buildStartedAt;
       const transaction = await createSenderTransactionFromSwapResponse(
         swapResponse as { swapTransaction: string; [key: string]: unknown },
         keypair,
         { route: jupiterRoute }
       );
+      recordExecutionStage({
+        stage: "build",
+        route: jupiterRoute,
+        side,
+        mint: side === "buy" ? mirrorSwap.outputMint : mirrorSwap.inputMint,
+        sourceSignature: swap.signature,
+        elapsedMs: Date.now() - buildStartedAt,
+        success: true,
+        details: {
+          attempt: i + 1,
+          reason: attempt.reason,
+          packetBytes: transaction.serialize().length,
+        },
+      });
       console.log(`Transaction created (${elapsed()})`);
 
       if (simulationMode) {
@@ -789,6 +846,8 @@ export async function mirrorSwap(
       }
 
       console.log("Broadcasting transaction...");
+      activeStage = "broadcast";
+      activeStageStartedAt = Date.now();
       const signature = await broadcastTransactionWithSender(transaction, {
         preferHelius: attempt.isBroadcastRetry === true,
         route: jupiterRoute,
@@ -851,15 +910,42 @@ export async function mirrorSwap(
           });
       } else {
         console.log("Confirming transaction...");
+        activeStage = "confirm";
+        const confirmStartedAt = Date.now();
+        activeStageStartedAt = confirmStartedAt;
         await confirmSignature(signature);
+        recordExecutionStage({
+          stage: "confirm",
+          route: jupiterRoute,
+          side,
+          mint: side === "buy" ? mirrorSwap.outputMint : mirrorSwap.inputMint,
+          sourceSignature: swap.signature,
+          signature,
+          elapsedMs: Date.now() - confirmStartedAt,
+          success: true,
+          details: { attempt: i + 1, reason: attempt.reason },
+        });
         console.log(`Transaction confirmed (${elapsed()})`);
       }
 
       console.log("Getting token metadata...");
+      activeStage = "metadata";
+      const metadataStartedAt = Date.now();
+      activeStageStartedAt = metadataStartedAt;
       const [inputMeta, outputMeta] = await Promise.all([
         getTokenMeta(mirrorSwap.inputMint),
         getTokenMeta(mirrorSwap.outputMint),
       ]);
+      recordExecutionStage({
+        stage: "metadata",
+        route: jupiterRoute,
+        side,
+        mint: side === "buy" ? mirrorSwap.outputMint : mirrorSwap.inputMint,
+        sourceSignature: swap.signature,
+        signature,
+        elapsedMs: Date.now() - metadataStartedAt,
+        success: true,
+      });
       console.log("Token metadata received");
 
       return {
@@ -873,6 +959,24 @@ export async function mirrorSwap(
         confirmationPending: fastMode,
       };
     } catch (err) {
+      recordExecutionStage({
+        stage: activeStage,
+        route: `jupiter-${side}`,
+        side,
+        mint: side === "buy" ? mirrorSwap.outputMint : mirrorSwap.inputMint,
+        sourceSignature: swap.signature,
+        elapsedMs: Date.now() - activeStageStartedAt,
+        success: false,
+        error: err instanceof Error ? err.message : String(err),
+        details: {
+          attempt: i + 1,
+          reason: attempt.reason,
+          slippageBps: attempt.slippageBps,
+          amountRaw: attempt.amountRaw,
+          maxAccounts: attempt.quoteMaxAccounts,
+          onlyDirectRoutes: attempt.onlyDirectRoutes,
+        },
+      });
       // Slippage-driven retry: walk down the ladder.
       if (isSlippageFailure(err) && !isLastAttempt) {
         lastSlippageError = err;

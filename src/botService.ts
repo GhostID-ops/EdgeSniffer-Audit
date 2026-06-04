@@ -81,7 +81,7 @@ import { getQuote, getSwap, isJupiterRateLimitError } from "./jupiter.js";
 import type { DetectedSwap } from "./types.js";
 import { warmConnection, createSenderTransactionFromSwapResponse, broadcastTransactionWithSender } from "./sender.js";
 import { confirmSignature } from "./confirm.js";
-import { getSolBalance, formatSol, getTokenBalance, getTokenBalanceFast } from "./balance.js";
+import { getSolBalance, formatSol, getTokenBalance, getTokenBalanceFast, getWalletTokenBalances } from "./balance.js";
 import { telegram, type TradeNotification, type PnlNotification, formatPnlForTelegram } from "./telegram.js";
 import "./telegramBot.js"; // Initialize Telegram bot handler
 import {
@@ -100,6 +100,7 @@ import {
   formatTokenAmount,
   formatMarketCap,
   getTokenMarketCap,
+  getTokenMeta,
   shortMint,
   WRAPPED_SOL_MINT,
   USDC_MINT,
@@ -804,7 +805,15 @@ function shouldQuarantineFailedBuy(reason: string): boolean {
 }
 
 function isPumpFunAccountLayoutFailure(reason: string): boolean {
-  return classifyExecutionError(reason).category === "account-layout";
+  const category = classifyExecutionError(reason).category;
+  return (
+    category === "account-layout" ||
+    category === "account-constraint-seeds" ||
+    category === "account-constraint-mut" ||
+    category === "account-invalid-program" ||
+    category === "account-privilege" ||
+    category === "account-stale-source"
+  );
 }
 
 function isBuySignal(swap: DetectedSwap): boolean {
@@ -2460,6 +2469,111 @@ async function sellLivePosition(p: PositionSnapshot, note?: string, amountRawOve
     }
   );
   recordTradeOutcome(filledPnlLamports);
+}
+
+async function sellLiveWalletTokenBalance(mint: string, amountRaw: number): Promise<void> {
+  if (!keypair) {
+    throw new Error("Wallet is not loaded yet. Start the bot before selling wallet dust.");
+  }
+  const meta = await getTokenMeta(mint);
+  const tracked = getPosition(mint);
+  console.log(`Dust sell: ${formatTokenAmount(amountRaw, meta.decimals)} $${meta.symbol} (${mint})`);
+
+  const result = await mirrorSwap(
+    {
+      signature: `manual-dust-sell-${mint}`,
+      wallet: "manual-dust-sell",
+      inputMint: mint,
+      outputMint: WRAPPED_SOL_MINT,
+      amountRaw,
+      isNativeInput: false,
+    },
+    keypair,
+    { exactAmountRaw: amountRaw }
+  );
+
+  const soldRaw = result.input.amountRaw;
+  const receivedLamports = result.output.amountRaw;
+  const trackedSellRaw = tracked ? Math.min(soldRaw, Math.max(0, tracked.heldRaw)) : 0;
+  let realizedPnlLamports: number | undefined;
+  let realizedPnlPct: number | undefined;
+
+  if (tracked && trackedSellRaw > 0) {
+    const avgEntry = tracked.totalBoughtRaw > 0 ? tracked.totalSolSpentLamports / tracked.totalBoughtRaw : 0;
+    const allocatedSol = soldRaw > 0 ? Math.floor((receivedLamports * trackedSellRaw) / soldRaw) : 0;
+    const snap = recordSell(result.input.meta, trackedSellRaw, allocatedSol);
+    const costBasis = avgEntry * trackedSellRaw;
+    realizedPnlLamports = allocatedSol - costBasis;
+    realizedPnlPct = costBasis > 0 ? (realizedPnlLamports / costBasis) * 100 : undefined;
+    console.log(
+      `Tracked close: ${formatTokenAmount(trackedSellRaw, meta.decimals)} $${meta.symbol}; ` +
+        `Position PnL ${formatPnl(snap.realizedPnlLamports)}`
+    );
+  } else {
+    console.log("Dust was not an open tracked position; PnL tracker left unchanged.");
+  }
+
+  console.log(`Dust sell received: ${formatSolAmount(receivedLamports)} SOL`);
+  console.log(`Tx: ${result.signature}`);
+  console.log("");
+
+  pushSwap(
+    {
+      ts: Date.now(),
+      sourceSignature: `manual-dust-sell-${mint}`,
+      wallet: "manual-dust-sell",
+      side: "sell",
+      input: toLegView(result.input),
+      output: toLegView(result.output),
+      isSimulated: result.isSimulated,
+      mirrorSignature: result.signature,
+    },
+    {
+      realizedPnlLamports,
+      realizedPnlPct,
+      exitReason: "manual wallet dust cleanup",
+      priceImpactPct: result.priceImpactPct ? parseFloat(result.priceImpactPct) * 100 : null,
+    }
+  );
+}
+
+export async function sellAllWalletDust(): Promise<void> {
+  if (simulationMode) {
+    console.log("Wallet dust cleanup is live-wallet only. Use 'a' or 'e' for simulation exits.");
+    return;
+  }
+  if (!keypair) {
+    throw new Error("Wallet is not loaded yet. Start the bot before selling wallet dust.");
+  }
+
+  const balances = (await getWalletTokenBalances(keypair.publicKey)).filter((b) => {
+    if (b.mint === WRAPPED_SOL_MINT || b.mint === USDC_MINT || b.amountRaw <= 0) return false;
+    const tracked = getPosition(b.mint);
+    if (tracked && tracked.heldRaw > 0) {
+      console.log(
+        `Dust cleanup skipping active tracked position $${tracked.symbol} ` +
+          `(${formatTokenAmount(tracked.heldRaw, tracked.decimals)} held). Use 'a' or position hotkeys to sell it.`
+      );
+      return false;
+    }
+    return true;
+  });
+  if (balances.length === 0) {
+    console.log("No nonzero wallet token balances/dust found.");
+    return;
+  }
+
+  console.log(`Selling ${balances.length} untracked wallet dust/token balance(s) (LIVE)...`);
+  console.log("");
+  for (const balance of balances) {
+    try {
+      await sellLiveWalletTokenBalance(balance.mint, balance.amountRaw);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Dust sell failed for ${balance.mint.slice(0, 8)}...: ${msg}`);
+    }
+  }
+  printPnlReport();
 }
 
 /**

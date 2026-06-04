@@ -23,6 +23,8 @@ export type ExecutionTelemetryEvent = {
   error?: string;
   errorClass?: string;
   errorCode?: string;
+  errorSummary?: string;
+  errorHint?: string;
   recoverable?: boolean;
   details?: Record<string, unknown>;
 };
@@ -42,6 +44,8 @@ export async function recordExecutionTelemetry(event: ExecutionTelemetryEvent): 
       ...event,
       errorClass: event.errorClass ?? classified?.category,
       errorCode: event.errorCode ?? classified?.code,
+      errorSummary: event.errorSummary ?? classified?.summary,
+      errorHint: event.errorHint ?? classified?.hint,
       recoverable: event.recoverable ?? classified?.recoverable,
     };
     await appendFile(executionTelemetryPath, `${JSON.stringify(row)}\n`, "utf8");
@@ -55,7 +59,7 @@ export function recordExecutionTelemetrySync(event: ExecutionTelemetryEvent): vo
 }
 
 export function recordExecutionStage(args: Omit<ExecutionTelemetryEvent, "kind"> & {
-  stage: "quote" | "build" | "preflight" | "broadcast" | "confirm";
+  stage: "detect" | "plan" | "quote" | "swap-response" | "build" | "preflight" | "broadcast" | "confirm" | "metadata" | "cleanup";
 }): void {
   recordExecutionTelemetrySync({
     ...args,
