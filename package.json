@@ -21,6 +21,7 @@
     "env:performance": "node scripts/applyPerformanceEnv.mjs",
     "env:free-helius": "node scripts/applyPerformanceEnv.mjs .env.performance.free-helius",
     "env:infra-engine": "node scripts/applyPerformanceEnv.mjs .env.infra-engine",
+    "env:copy-percentage": "node scripts/applyPerformanceEnv.mjs .env.copy-percentage",
     "test:license": "tsx src/testLicense.ts",
     "rust-sidecar": "cargo run --manifest-path rust-sidecar/Cargo.toml --release",
     "rust-sidecar:build": "cargo build --manifest-path rust-sidecar/Cargo.toml --release",
