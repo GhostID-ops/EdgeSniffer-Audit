@@ -1,6 +1,14 @@
 # Friend Infra Engine Env Patch
 
-Copy only these lines into your `.env` after pulling the latest build.
+Fast path after pulling the latest build:
+
+```powershell
+npm run env:infra-engine
+```
+
+That command merges `.env.infra-engine` into your existing `.env`, preserves secrets, and saves a backup in `.restore-backups`.
+
+Manual copy/paste fallback:
 
 ```env
 # Execution landing / retry engine
