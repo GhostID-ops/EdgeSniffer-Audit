@@ -29,11 +29,16 @@ async function main(): Promise<void> {
   console.log("Build Sender-ready transaction...");
   const transaction = await createSenderTransactionFromSwapResponse(
     swapResponse as { swapTransaction: string; [key: string]: unknown },
-    keypair
+    keypair,
+    { route: "jupiter-swap" }
   );
 
   console.log("Broadcast via Sender...");
-  const signature = await broadcastTransactionWithSender(transaction);
+  const signature = await broadcastTransactionWithSender(transaction, {
+    route: "jupiter-swap",
+    side: "swap",
+    mint: outputMint,
+  });
   console.log("Signature:", signature);
 
   console.log("Confirming (polling sendConnection)...");

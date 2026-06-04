@@ -8,6 +8,8 @@ SENDER_RPC_FALLBACK_ENABLED=true
 EXECUTION_MULTI_SEND_ENABLED=false
 EXECUTION_RESCUE_RETRIES=2
 EXECUTION_RESCUE_DELAY_MS=25
+EXECUTION_ALT_ADDRESSES=
+EXECUTION_TIP_MULTIPLIERS=pumpfun-direct-buy:1,pumpswap-direct-buy:1,pumpfun-direct-sell:1,pumpswap-direct-sell:1,jupiter-buy:1,jupiter-sell:1
 
 # Runtime telemetry
 EXECUTION_TELEMETRY_ENABLED=true
@@ -27,4 +29,3 @@ npm run build
 ```
 
 Keep `EXECUTION_MULTI_SEND_ENABLED=false` for the first live test. Turn it on only if dropped/landing failures are still showing in `data/execution-telemetry.jsonl`.
-

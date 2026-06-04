@@ -20,8 +20,6 @@ import {
   PUMP_FUN_FEE_PROGRAM_ID,
   PUMP_FUN_FEE_RECIPIENT,
   SYSTEM_PROGRAM_ID,
-  SELL_DISCRIMINATOR,
-  SELL_V2_DISCRIMINATOR,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
   deriveAta,
@@ -33,10 +31,14 @@ import {
   deriveUserVolumeAccumulatorPda,
 } from "./constants.js";
 import { WRAPPED_SOL_MINT } from "../tokenRegistry.js";
+import { getNativeIdlDiscriminator } from "../idlNativeBuilder.js";
+
+const IDL_SELL_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "sell");
+const IDL_SELL_V2_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "sell_v2");
 
 function encodeSellArgs(amount: bigint, minSolOutput: bigint): Buffer {
   const buf = Buffer.alloc(25);
-  SELL_DISCRIMINATOR.copy(buf, 0);
+  IDL_SELL_DISCRIMINATOR.copy(buf, 0);
   buf.writeBigUInt64LE(amount, 8);
   buf.writeBigUInt64LE(minSolOutput, 16);
   buf.writeUInt8(0, 24); // OptionBool::None for track_volume.
@@ -45,7 +47,7 @@ function encodeSellArgs(amount: bigint, minSolOutput: bigint): Buffer {
 
 function encodeSellV2Args(amount: bigint, minSolOutput: bigint): Buffer {
   const buf = Buffer.alloc(24);
-  SELL_V2_DISCRIMINATOR.copy(buf, 0);
+  IDL_SELL_V2_DISCRIMINATOR.copy(buf, 0);
   buf.writeBigUInt64LE(amount, 8);
   buf.writeBigUInt64LE(minSolOutput, 16);
   return buf;

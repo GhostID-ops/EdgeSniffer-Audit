@@ -2782,10 +2782,15 @@ export async function sellAllPositions(): Promise<void> {
         const swapResponse = await getSwap(quote, keypair!.publicKey.toBase58());
         const transaction = await createSenderTransactionFromSwapResponse(
           swapResponse as { swapTransaction: string; [key: string]: unknown },
-          keypair!
+          keypair!,
+          { route: "jupiter-sell" }
         );
         
-        const signature = await broadcastTransactionWithSender(transaction);
+        const signature = await broadcastTransactionWithSender(transaction, {
+          route: "jupiter-sell",
+          side: "sell",
+          mint: p.mint,
+        });
         await confirmSignature(signature);
 
         // Record the actual sell

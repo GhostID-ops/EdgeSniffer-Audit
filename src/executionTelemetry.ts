@@ -54,3 +54,11 @@ export function recordExecutionTelemetrySync(event: ExecutionTelemetryEvent): vo
   void recordExecutionTelemetry(event);
 }
 
+export function recordExecutionStage(args: Omit<ExecutionTelemetryEvent, "kind"> & {
+  stage: "quote" | "build" | "preflight" | "broadcast" | "confirm";
+}): void {
+  recordExecutionTelemetrySync({
+    ...args,
+    kind: `stage:${args.stage}`,
+  });
+}

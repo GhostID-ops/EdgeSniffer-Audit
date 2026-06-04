@@ -25,10 +25,6 @@ import {
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
   TOKEN_2022_PROGRAM_ID,
-  BUY_DISCRIMINATOR,
-  BUY_EXACT_SOL_IN_DISCRIMINATOR,
-  BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR,
-  BUY_V2_DISCRIMINATOR,
   deriveAta,
   deriveCreatorVaultPda,
   deriveEventAuthorityPda,
@@ -38,12 +34,17 @@ import {
   deriveUserVolumeAccumulatorPda,
   deriveSharingConfigPda,
 } from "./constants.js";
+import { getNativeIdlDiscriminator } from "../idlNativeBuilder.js";
 
 const WRAPPED_SOL_MINT = new PublicKey("So11111111111111111111111111111111111111112");
+const IDL_BUY_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "buy");
+const IDL_BUY_EXACT_SOL_IN_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "buy_exact_sol_in");
+const IDL_BUY_V2_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "buy_v2");
+const IDL_BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "buy_exact_quote_in_v2");
 
 function encodeBuyArgs(amount: bigint, maxSolCost: bigint): Buffer {
   const buf = Buffer.alloc(25);
-  BUY_DISCRIMINATOR.copy(buf, 0);
+  IDL_BUY_DISCRIMINATOR.copy(buf, 0);
   buf.writeBigUInt64LE(amount, 8);
   buf.writeBigUInt64LE(maxSolCost, 16);
   buf.writeUInt8(0, 24); // OptionBool::None for track_volume.
@@ -52,7 +53,7 @@ function encodeBuyArgs(amount: bigint, maxSolCost: bigint): Buffer {
 
 function encodeBuyExactSolInArgs(spendableSolIn: bigint, minTokensOut: bigint): Buffer {
   const buf = Buffer.alloc(25);
-  BUY_EXACT_SOL_IN_DISCRIMINATOR.copy(buf, 0);
+  IDL_BUY_EXACT_SOL_IN_DISCRIMINATOR.copy(buf, 0);
   buf.writeBigUInt64LE(spendableSolIn, 8);
   buf.writeBigUInt64LE(minTokensOut, 16);
   buf.writeUInt8(0, 24); // OptionBool::None for track_volume.
@@ -61,7 +62,7 @@ function encodeBuyExactSolInArgs(spendableSolIn: bigint, minTokensOut: bigint): 
 
 function encodeBuyV2Args(amount: bigint, maxSolCost: bigint): Buffer {
   const buf = Buffer.alloc(24);
-  BUY_V2_DISCRIMINATOR.copy(buf, 0);
+  IDL_BUY_V2_DISCRIMINATOR.copy(buf, 0);
   buf.writeBigUInt64LE(amount, 8);
   buf.writeBigUInt64LE(maxSolCost, 16);
   return buf;
@@ -69,7 +70,7 @@ function encodeBuyV2Args(amount: bigint, maxSolCost: bigint): Buffer {
 
 function encodeBuyExactQuoteInV2Args(spendableQuoteIn: bigint, minTokensOut: bigint): Buffer {
   const buf = Buffer.alloc(24);
-  BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR.copy(buf, 0);
+  IDL_BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR.copy(buf, 0);
   buf.writeBigUInt64LE(spendableQuoteIn, 8);
   buf.writeBigUInt64LE(minTokensOut, 16);
   return buf;
@@ -104,7 +105,7 @@ export function scalePumpFunSourceBuyData(args: {
   const data = args.sourceIxData;
   const slippageBps = BigInt(Math.max(0, Math.min(10_000, args.slippageBps)));
 
-  if (dataMatches(data, BUY_DISCRIMINATOR) || dataMatches(data, BUY_V2_DISCRIMINATOR)) {
+  if (dataMatches(data, IDL_BUY_DISCRIMINATOR) || dataMatches(data, IDL_BUY_V2_DISCRIMINATOR)) {
     if (data.length < 24) throw new Error("Source pump.fun buy data is too short");
     const sourceTokensOut = data.readBigUInt64LE(8);
     const sourceMaxSol = data.readBigUInt64LE(16);
@@ -114,8 +115,8 @@ export function scalePumpFunSourceBuyData(args: {
   }
 
   if (
-    dataMatches(data, BUY_EXACT_SOL_IN_DISCRIMINATOR) ||
-    dataMatches(data, BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR)
+    dataMatches(data, IDL_BUY_EXACT_SOL_IN_DISCRIMINATOR) ||
+    dataMatches(data, IDL_BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR)
   ) {
     if (data.length < 24) throw new Error("Source pump.fun exact-in data is too short");
     const sourceSpend = data.readBigUInt64LE(8);
@@ -429,11 +430,12 @@ export async function buildPumpFunBuyTransaction(args: {
   }
 
   const { blockhash } = await getCachedBlockhash();
-  const tx = buildCompactV0Transaction({
+  const tx = await buildCompactV0Transaction({
     payer: args.user.publicKey,
     blockhash,
     instructions: [...computeIxs, ...setupIxs, buyIx],
     signer: args.user,
+    route: "pumpfun-direct-buy",
   });
   return tx;
 }
@@ -495,11 +497,12 @@ export async function buildPumpFunBuyReplayTransaction(args: {
   });
 
   const { blockhash } = await getCachedBlockhash();
-  const tx = buildCompactV0Transaction({
+  const tx = await buildCompactV0Transaction({
     payer: args.user.publicKey,
     blockhash,
     instructions: [...computeIxs, ...setupIxs, buyIx],
     signer: args.user,
+    route: "pumpfun-source-replay-buy",
   });
   return { tx, estimatedTokensOut: scaled.estimatedTokensOut };
 }

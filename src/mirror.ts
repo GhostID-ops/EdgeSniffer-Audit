@@ -759,9 +759,11 @@ export async function mirrorSwap(
       console.log(`Swap response received (${elapsed()})`);
 
       console.log("Creating transaction...");
+      const jupiterRoute = `jupiter-${side}`;
       const transaction = await createSenderTransactionFromSwapResponse(
         swapResponse as { swapTransaction: string; [key: string]: unknown },
-        keypair
+        keypair,
+        { route: jupiterRoute }
       );
       console.log(`Transaction created (${elapsed()})`);
 
@@ -789,7 +791,7 @@ export async function mirrorSwap(
       console.log("Broadcasting transaction...");
       const signature = await broadcastTransactionWithSender(transaction, {
         preferHelius: attempt.isBroadcastRetry === true,
-        route: `jupiter-${side}`,
+        route: jupiterRoute,
         side,
         mint: side === "buy" ? mirrorSwap.outputMint : mirrorSwap.inputMint,
         sourceSignature: swap.signature,

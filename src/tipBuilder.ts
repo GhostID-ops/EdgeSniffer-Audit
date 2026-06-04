@@ -7,6 +7,7 @@ import {
   JITO_TIP_ACCOUNTS,
   HELIUS_TIP_ACCOUNTS,
   HELIUS_TIP_MIN_LAMPORTS,
+  executionTipMultipliers,
   tipLamports,
   useJitoDirect,
   useJitoFallback,
@@ -23,18 +24,28 @@ function randomAccount(accounts: readonly string[]): PublicKey {
   return new PublicKey(accounts[Math.floor(Math.random() * accounts.length)]!);
 }
 
-function jitoTip(user: PublicKey): TransactionInstruction {
+function routeMultiplier(route?: string): number {
+  if (!route) return 1;
+  return executionTipMultipliers.get(route) ?? executionTipMultipliers.get(route.split("-")[0] ?? "") ?? 1;
+}
+
+function routeTipLamports(route?: string): number {
+  return Math.max(0, Math.round(tipLamports * routeMultiplier(route)));
+}
+
+function jitoTip(user: PublicKey, route?: string): TransactionInstruction {
   return SystemProgram.transfer({
     fromPubkey: user,
     toPubkey: randomAccount(JITO_TIP_ACCOUNTS),
-    lamports: tipLamports,
+    lamports: routeTipLamports(route),
   });
 }
 
-function heliusTip(user: PublicKey): TransactionInstruction {
+function heliusTip(user: PublicKey, route?: string): TransactionInstruction {
+  const routeLamports = routeTipLamports(route);
   const heliusLamports = useJitoDirect
     ? HELIUS_TIP_MIN_LAMPORTS
-    : Math.max(tipLamports, HELIUS_TIP_MIN_LAMPORTS);
+    : Math.max(routeLamports, HELIUS_TIP_MIN_LAMPORTS);
   return SystemProgram.transfer({
     fromPubkey: user,
     toPubkey: randomAccount(HELIUS_TIP_ACCOUNTS),
@@ -49,30 +60,36 @@ function heliusTip(user: PublicKey): TransactionInstruction {
  */
 export function buildTipInstructions(
   user: PublicKey,
-  options: { selection?: TipSelection } = {}
+  options: { selection?: TipSelection; route?: string } = {}
 ): TransactionInstruction[] {
   const selection = options.selection ?? "all";
   if (selection === "none") return [];
 
   if (selection === "primary") {
-    return [useJitoDirect ? jitoTip(user) : heliusTip(user)];
+    return [useJitoDirect ? jitoTip(user, options.route) : heliusTip(user, options.route)];
   }
 
   if (selection === "fallback") {
-    return [useJitoDirect && useJitoFallback ? heliusTip(user) : useJitoDirect ? jitoTip(user) : heliusTip(user)];
+    return [
+      useJitoDirect && useJitoFallback
+        ? heliusTip(user, options.route)
+        : useJitoDirect
+          ? jitoTip(user, options.route)
+          : heliusTip(user, options.route),
+    ];
   }
 
   const ixs: TransactionInstruction[] = [];
-  if (useJitoDirect) ixs.push(jitoTip(user));
-  if (!useJitoDirect || useJitoFallback) ixs.push(heliusTip(user));
+  if (useJitoDirect) ixs.push(jitoTip(user, options.route));
+  if (!useJitoDirect || useJitoFallback) ixs.push(heliusTip(user, options.route));
   return ixs;
 }
 
-export function buildTipInstructionSets(user: PublicKey): TipInstructionSet[] {
+export function buildTipInstructionSets(user: PublicKey, options: { route?: string } = {}): TipInstructionSet[] {
   const sets: TipInstructionSet[] = [
-    { label: "all", instructions: buildTipInstructions(user, { selection: "all" }) },
-    { label: "primary", instructions: buildTipInstructions(user, { selection: "primary" }) },
-    { label: "fallback", instructions: buildTipInstructions(user, { selection: "fallback" }) },
+    { label: "all", instructions: buildTipInstructions(user, { selection: "all", route: options.route }) },
+    { label: "primary", instructions: buildTipInstructions(user, { selection: "primary", route: options.route }) },
+    { label: "fallback", instructions: buildTipInstructions(user, { selection: "fallback", route: options.route }) },
   ];
 
   const seen = new Set<string>();

@@ -23,7 +23,8 @@
     "test:license": "tsx src/testLicense.ts",
     "rust-sidecar": "cargo run --manifest-path rust-sidecar/Cargo.toml --release",
     "rust-sidecar:build": "cargo build --manifest-path rust-sidecar/Cargo.toml --release",
-    "test:pumpswap": "tsx src/testPumpSwap.ts"
+    "test:pumpswap": "tsx src/testPumpSwap.ts",
+    "test:idl": "tsx src/testIdlBuilders.ts"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.0",

@@ -26,6 +26,8 @@ import { buildCompactV0Transaction } from "../transactionSize.js";
 import { confirmSignature, isConfirmationTimeoutError } from "../confirm.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
 import { accountExistsCached, knownAccountExists } from "../walletWarmup.js";
+import { getNativeIdlDiscriminator } from "../idlNativeBuilder.js";
+import { recordExecutionStage } from "../executionTelemetry.js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   PUMP_FUN_FEE_PROGRAM_ID,
@@ -36,9 +38,9 @@ import {
 
 export const PUMPSWAP_PROGRAM_ID = new PublicKey("pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA");
 export const PUMPSWAP_GLOBAL_CONFIG = new PublicKey("ADyA8hBd1ckwkgdC5fC4bKBS32sNeuHuJecF8GWqV7Zb");
-export const PUMPSWAP_BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 235, 234]);
-export const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = Buffer.from([198, 46, 21, 82, 180, 217, 232, 112]);
-export const PUMPSWAP_SELL_DISCRIMINATOR = Buffer.from([51, 230, 133, 164, 1, 127, 131, 173]);
+export const PUMPSWAP_BUY_DISCRIMINATOR = getNativeIdlDiscriminator("pump_amm", "buy");
+export const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = getNativeIdlDiscriminator("pump_amm", "buy_exact_quote_in");
+export const PUMPSWAP_SELL_DISCRIMINATOR = getNativeIdlDiscriminator("pump_amm", "sell");
 const SYNC_NATIVE_IX = Buffer.from([17]);
 const CLOSE_ACCOUNT_IX = Buffer.from([9]);
 const PUMPSWAP_USER_INDEX = 1;
@@ -975,28 +977,58 @@ export async function tryPumpSwapDirectBuy(args: {
     );
   }
   const closeIxs = keepWsolAtaOpen ? [] : [closeTokenAccountIx(userQuoteAta, args.user.publicKey)];
-  const tx = buildCompactV0Transaction({
-    payer: args.user.publicKey,
-    blockhash,
-    instructions: [
-      ...computeIxs,
-      ...setupIxs,
-      SystemProgram.transfer({
-        fromPubkey: args.user.publicKey,
-        toPubkey: userQuoteAta,
-        lamports: args.solInLamports,
-      }),
-      syncNativeIx(userQuoteAta),
-      swapIx,
-      ...closeIxs,
-    ],
-    signer: args.user,
-    log: args.log,
-  });
+  const buildStartedAt = Date.now();
+  let tx;
+  try {
+    tx = await buildCompactV0Transaction({
+      payer: args.user.publicKey,
+      blockhash,
+      instructions: [
+        ...computeIxs,
+        ...setupIxs,
+        SystemProgram.transfer({
+          fromPubkey: args.user.publicKey,
+          toPubkey: userQuoteAta,
+          lamports: args.solInLamports,
+        }),
+        syncNativeIx(userQuoteAta),
+        swapIx,
+        ...closeIxs,
+      ],
+      signer: args.user,
+      log: args.log,
+      route: "pumpswap-direct-buy",
+    });
+    recordExecutionStage({
+      stage: "build",
+      route: "pumpswap-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      elapsedMs: Date.now() - buildStartedAt,
+      success: true,
+      details: { accountPlan: accountPlan.source },
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    recordExecutionStage({
+      stage: "build",
+      route: "pumpswap-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      elapsedMs: Date.now() - buildStartedAt,
+      success: false,
+      error: msg,
+      details: { accountPlan: accountPlan.source },
+    });
+    return { ok: false, recoverable: true, reason: `PumpSwap build failed: ${msg} | ${formatContext(ctx)}` };
+  }
 
   if (args.log && false) args.log(userBaseAta.toBase58());
   args.log(`PumpSwap tx built (${elapsed()})`);
   if (pumpSwapDirectPreflight) {
+    const preflightStartedAt = Date.now();
     const sim = await readConnection.simulateTransaction(tx, {
       commitment: "processed",
       sigVerify: false,
@@ -1014,6 +1046,16 @@ export async function tryPumpSwapDirectBuy(args: {
         ].filter(Boolean).join(" | "),
       };
     }
+    recordExecutionStage({
+      stage: "preflight",
+      route: "pumpswap-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      elapsedMs: Date.now() - preflightStartedAt,
+      success: true,
+      details: { accountPlan: accountPlan.source },
+    });
     args.log(`PumpSwap preflight ok (${elapsed()})`);
   }
   let signature: string | null = null;
@@ -1177,24 +1219,50 @@ export async function tryPumpSwapDirectSell(args: {
           mint: new PublicKey(WRAPPED_SOL_MINT),
           tokenProgramId: TOKEN_PROGRAM_ID,
         }),
-      ];
+  ];
   // Sells must unwrap WSOL back to native SOL so wallet balance and PnL accounting stay correct.
   const closeIxs = [closeTokenAccountIx(userQuoteAta, args.user.publicKey)];
-  const tx = buildCompactV0Transaction({
-    payer: args.user.publicKey,
-    blockhash,
-    instructions: [
-      ...computeIxs,
-      ...setupIxs,
-      swapIx,
-      ...closeIxs,
-    ],
-    signer: args.user,
-    log: args.log,
-  });
+  const buildStartedAt = Date.now();
+  let tx;
+  try {
+    tx = await buildCompactV0Transaction({
+      payer: args.user.publicKey,
+      blockhash,
+      instructions: [
+        ...computeIxs,
+        ...setupIxs,
+        swapIx,
+        ...closeIxs,
+      ],
+      signer: args.user,
+      log: args.log,
+      route: "pumpswap-direct-sell",
+    });
+    recordExecutionStage({
+      stage: "build",
+      route: "pumpswap-direct-sell",
+      side: "sell",
+      mint: args.mint,
+      elapsedMs: Date.now() - buildStartedAt,
+      success: true,
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    recordExecutionStage({
+      stage: "build",
+      route: "pumpswap-direct-sell",
+      side: "sell",
+      mint: args.mint,
+      elapsedMs: Date.now() - buildStartedAt,
+      success: false,
+      error: msg,
+    });
+    return { ok: false, recoverable: true, reason: `PumpSwap sell build failed: ${msg}` };
+  }
 
   args.log(`PumpSwap sell tx built (${elapsed()})`);
   if (pumpSwapDirectPreflight) {
+    const preflightStartedAt = Date.now();
     const sim = await readConnection.simulateTransaction(tx, {
       commitment: "processed",
       sigVerify: false,
@@ -1202,6 +1270,16 @@ export async function tryPumpSwapDirectSell(args: {
     });
     if (sim.value.err) {
       const logSummary = summarizeLogs(sim.value.logs ?? []);
+      recordExecutionStage({
+        stage: "preflight",
+        route: "pumpswap-direct-sell",
+        side: "sell",
+        mint: args.mint,
+        elapsedMs: Date.now() - preflightStartedAt,
+        success: false,
+        error: JSON.stringify(sim.value.err),
+        details: { logs: logSummary },
+      });
       return {
         ok: false,
         recoverable: true,
@@ -1211,6 +1289,14 @@ export async function tryPumpSwapDirectSell(args: {
         ].filter(Boolean).join(" | "),
       };
     }
+    recordExecutionStage({
+      stage: "preflight",
+      route: "pumpswap-direct-sell",
+      side: "sell",
+      mint: args.mint,
+      elapsedMs: Date.now() - preflightStartedAt,
+      success: true,
+    });
     args.log(`PumpSwap sell preflight ok (${elapsed()})`);
   }
 

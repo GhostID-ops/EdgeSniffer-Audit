@@ -23,6 +23,7 @@ import {
 } from "./curve.js";
 import { buildPumpFunBuyReplayTransaction, buildPumpFunBuyTransaction } from "./buy.js";
 import { buildPumpFunSellTransaction } from "./sell.js";
+import { recordExecutionStage } from "../executionTelemetry.js";
 
 export type PumpFunBuyOutcome =
   | {
@@ -189,6 +190,7 @@ export async function tryPumpFunDirectBuy(args: {
       args.log("Building pump.fun source-replay buy tx...");
       let signature: string;
       let estimatedTokensOut: bigint;
+      const buildStartedAt = Date.now();
       try {
         const replay = await buildPumpFunBuyReplayTransaction({
           user: args.user,
@@ -199,6 +201,15 @@ export async function tryPumpFunDirectBuy(args: {
           sourceIxData,
         });
         estimatedTokensOut = replay.estimatedTokensOut;
+        recordExecutionStage({
+          stage: "build",
+          route: "pumpfun-source-replay-buy",
+          side: "buy",
+          mint: args.mint,
+          sourceSignature: args.sourceSignature,
+          elapsedMs: Date.now() - buildStartedAt,
+          success: true,
+        });
         args.log(`Tx built (${elapsed()})`);
         signature = await broadcastTransactionWithSender(replay.tx, {
           preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
@@ -209,6 +220,16 @@ export async function tryPumpFunDirectBuy(args: {
         });
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
+        recordExecutionStage({
+          stage: "build",
+          route: "pumpfun-source-replay-buy",
+          side: "buy",
+          mint: args.mint,
+          sourceSignature: args.sourceSignature,
+          elapsedMs: Date.now() - buildStartedAt,
+          success: false,
+          error: msg,
+        });
         return { ok: false, recoverable: false, reason: `source-replay failed: ${msg}` };
       }
       args.log(`Broadcast: ${signature} (${elapsed()})`);
@@ -298,6 +319,7 @@ export async function tryPumpFunDirectBuy(args: {
 
   // 5. Build + sign + broadcast.
   args.log("Building pump.fun buy tx...");
+  const buildStartedAt = Date.now();
   // Prefer source ix accounts from the gRPC payload (always fresh, never races confirmation).
   // Fall back to the getTransaction-based extraction for non-gRPC source signals.
   let sourceIxPubkeys: PublicKey[] | undefined;
@@ -309,7 +331,9 @@ export async function tryPumpFunDirectBuy(args: {
   if (!sourceIxPubkeys && remainingAccounts.length > 0) {
     args.log(`Using ${remainingAccounts.length} source pump.fun remaining account(s) from getTransaction.`);
   }
-  const tx = await buildPumpFunBuyTransaction({
+  let tx;
+  try {
+    tx = await buildPumpFunBuyTransaction({
     user: args.user,
     mint: mintKey,
     bondingCurve: curve.pda,
@@ -320,7 +344,30 @@ export async function tryPumpFunDirectBuy(args: {
     slippageBps: args.slippageBps,
     remainingAccounts,
     sourceIxAccounts: sourceIxPubkeys,
-  });
+    });
+    recordExecutionStage({
+      stage: "build",
+      route: "pumpfun-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      elapsedMs: Date.now() - buildStartedAt,
+      success: true,
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    recordExecutionStage({
+      stage: "build",
+      route: "pumpfun-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      elapsedMs: Date.now() - buildStartedAt,
+      success: false,
+      error: msg,
+    });
+    return { ok: false, recoverable: true, reason: msg };
+  }
   args.log(`Tx built (${elapsed()})`);
 
   let signature: string;
@@ -473,6 +520,7 @@ export async function tryPumpFunDirectSell(args: {
   }
 
   args.log("Building pump.fun sell tx...");
+  const buildStartedAt = Date.now();
   const isToken2022 = curve.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
   if (isToken2022 && !usePumpfunToken2022DirectSell) {
     return {
@@ -490,7 +538,9 @@ export async function tryPumpFunDirectSell(args: {
   } else if (remainingAccounts.length > 0) {
     args.log(`Using ${remainingAccounts.length} source pump.fun remaining account(s) for fee/buyback routing.`);
   }
-  const tx = await buildPumpFunSellTransaction({
+  let tx;
+  try {
+    tx = await buildPumpFunSellTransaction({
     user: args.user,
     mint: mintKey,
     bondingCurve: curve.pda,
@@ -502,7 +552,30 @@ export async function tryPumpFunDirectSell(args: {
     remainingAccounts,
     useV2: useSellV2,
     buybackFeeRecipient: useSellV2 ? PUMP_FUN_BUYBACK_FEE_RECIPIENT : undefined,
-  });
+    });
+    recordExecutionStage({
+      stage: "build",
+      route: "pumpfun-direct-sell",
+      side: "sell",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      elapsedMs: Date.now() - buildStartedAt,
+      success: true,
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    recordExecutionStage({
+      stage: "build",
+      route: "pumpfun-direct-sell",
+      side: "sell",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      elapsedMs: Date.now() - buildStartedAt,
+      success: false,
+      error: msg,
+    });
+    return { ok: false, recoverable: true, reason: msg };
+  }
   args.log(`Tx built (${elapsed()})`);
 
   let signature: string;

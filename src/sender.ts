@@ -86,7 +86,8 @@ function getComputeInstructionType(
  */
 export async function createSenderTransactionFromSwapResponse(
   swapResponse: SwapResponse,
-  keypair: Keypair
+  keypair: Keypair,
+  options: { route?: string } = {}
 ): Promise<VersionedTransaction> {
   const transactionBase64 = swapResponse.swapTransaction as string;
   const jupiterTransaction = VersionedTransaction.deserialize(
@@ -116,7 +117,7 @@ export async function createSenderTransactionFromSwapResponse(
   const priorityFeeIx = ComputeBudgetProgram.setComputeUnitPrice({
     microLamports: getDynamicPriorityFee(),
   });
-  const tipIxs = buildTipInstructions(keypair.publicKey);
+  const tipIxs = buildTipInstructions(keypair.publicKey, { route: options.route });
 
   const mandatoryComputeInstructions: TransactionInstruction[] = [];
   if (computeUnitLimit > 0) {

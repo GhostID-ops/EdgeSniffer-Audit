@@ -223,6 +223,23 @@ export const executionRescueDelayMs = Math.max(
   0,
   parseInt(process.env.EXECUTION_RESCUE_DELAY_MS ?? "25", 10)
 );
+export const executionAltAddresses = (process.env.EXECUTION_ALT_ADDRESSES ?? "")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
+export const executionTipMultipliers = new Map(
+  (process.env.EXECUTION_TIP_MULTIPLIERS ?? "")
+    .split(",")
+    .map((piece) => piece.trim())
+    .filter(Boolean)
+    .map((piece): [string, number] | null => {
+      const [route, value] = piece.split(":");
+      const multiplier = parseFloat(value ?? "");
+      if (!route || !Number.isFinite(multiplier) || multiplier <= 0) return null;
+      return [route.trim(), multiplier];
+    })
+    .filter((entry): entry is [string, number] => entry != null)
+);
 const WARM_WALLET_MODE_RAW = (process.env.WARM_WALLET_MODE ?? "true").toLowerCase();
 export const warmWalletMode =
   WARM_WALLET_MODE_RAW !== "false" &&
