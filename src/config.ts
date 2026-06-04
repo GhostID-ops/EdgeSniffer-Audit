@@ -375,6 +375,12 @@ export const mirrorSells =
 const BUY_ONCE_RAW = (process.env.BUY_ONCE_PER_TOKEN ?? "true").toLowerCase();
 export const buyOncePerToken =
   BUY_ONCE_RAW !== "false" && BUY_ONCE_RAW !== "0" && BUY_ONCE_RAW !== "no";
+/** Optional cap on repeated entries into the same token. Useful when BUY_ONCE_PER_TOKEN=false. */
+export const maxBuysPerToken = parseOptionalPositiveInteger(process.env.MAX_BUYS_PER_TOKEN);
+const MAX_SOL_PER_TOKEN = parseOptionalPositiveNumber(process.env.MAX_SOL_PER_TOKEN);
+/** Optional cap on total SOL spent per token position. */
+export const maxSolPerTokenLamports =
+  MAX_SOL_PER_TOKEN != null ? Math.round(MAX_SOL_PER_TOKEN * LAMPORTS_PER_SOL) : null;
 
 /**
  * Startup-only source wallet prefilter. When enabled, the bot builds an in-memory set of mints

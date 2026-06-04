@@ -38,6 +38,8 @@ import {
   sourcePreexistingScanTxLimit,
   failedBuyRecovery,
   maxOpenPositions,
+  maxBuysPerToken,
+  maxSolPerTokenLamports,
   showMarketCap,
   stopLossPct,
   takeProfitPct,
@@ -1207,7 +1209,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   }
 
   // Skip duplicate buys of the same token if buy-once is ON. Position lookup is in-memory (no API cost).
-  if (buyOncePerTokenEnabled && isBuySignal(swap)) {
+  if (isBuySignal(swap)) {
     const mint = swap.outputMint;
     const quarantineReason = quarantinedBuyMints.get(mint);
     if (quarantineReason) {
@@ -1227,11 +1229,31 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       return;
     }
     const existing = getPosition(mint);
-    if (boughtMintsThisSession.has(mint) || (existing && existing.buysCount > 0)) {
+    if (buyOncePerTokenEnabled && (boughtMintsThisSession.has(mint) || (existing && existing.buysCount > 0))) {
       console.log(
         `Skipping buy: already bought ${mint.slice(0, 8)}... this session (buy-once ON).`
       );
       return;
+    }
+    if (!buyOncePerTokenEnabled && maxBuysPerToken != null && existing && existing.buysCount >= maxBuysPerToken) {
+      console.log(
+        `Skipping buy: ${mint.slice(0, 8)}... max buys per token reached ` +
+          `(${existing.buysCount}/${maxBuysPerToken}).`
+      );
+      return;
+    }
+    if (!buyOncePerTokenEnabled && maxSolPerTokenLamports != null && existing) {
+      const nextBuyLamports =
+        mirrorQuoteMintForBuy(swap) === WRAPPED_SOL_MINT ? mirroredBuyAmountRaw(swap) : null;
+      const projectedLamports = existing.totalSolSpentLamports + (nextBuyLamports ?? 0);
+      if (nextBuyLamports != null && projectedLamports > maxSolPerTokenLamports) {
+        console.log(
+          `Skipping buy: ${mint.slice(0, 8)}... max SOL per token exposure would be exceeded ` +
+            `(${formatSolAmount(existing.totalSolSpentLamports)} + ${formatSolAmount(nextBuyLamports)} > ` +
+            `${formatSolAmount(maxSolPerTokenLamports)} SOL).`
+        );
+        return;
+      }
     }
     if (buyMintsInFlight.has(mint)) {
       // Keep only the latest duplicate source buy so a dropped first broadcast can retry promptly.
