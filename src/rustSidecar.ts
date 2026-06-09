@@ -95,6 +95,28 @@ export async function startRustPumpFunSidecar(
 
   console.log(`Rust sidecar: started ${command.label}`);
 
+  // A spawn failure (e.g. `cargo`/binary not on PATH) emits an async 'error' event. Without a
+  // listener Node treats it as an unhandled error and kills the whole bot — which is exactly the
+  // "works on my laptop, crashes on my desktop" case when Rust isn't installed. Degrade instead:
+  // warn with a fix hint and let the WebSocket/gRPC watcher carry detection.
+  child.on("error", (err) => {
+    proc = null;
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") {
+      console.warn(
+        `Rust sidecar could not start: '${command.command}' was not found on PATH. ` +
+          (rustSidecarUseCargo
+            ? "Install Rust via https://rustup.rs so 'cargo' is available, OR build the binary " +
+              "(npm run rust-sidecar:build) and set RUST_SIDECAR_USE_CARGO=false, OR disable it with RUST_SIDECAR_ENABLED=false."
+            : "Build it with 'npm run rust-sidecar:build', or disable it with RUST_SIDECAR_ENABLED=false.") +
+          " Continuing without the sidecar; the WebSocket/gRPC watcher still runs."
+      );
+    } else {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Rust sidecar process error: ${msg}. Continuing without the sidecar.`);
+    }
+  });
+
   if (!child.stdout || !child.stderr) {
     console.warn("Rust sidecar: stdout/stderr unavailable; sidecar disabled.");
     child.kill();

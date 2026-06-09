@@ -18,8 +18,14 @@ import {
   broadcastRaceEnabled,
   senderRpcFallbackEnabled,
   executionMultiSendEnabled,
+  executionAltAddresses,
 } from "./config.js";
 import { getDynamicPriorityFee } from "./feeOracle.js";
+import {
+  getConfiguredAltAccounts,
+  diagnoseV0Transaction,
+  formatSizeDiagnostics,
+} from "./transactionSize.js";
 import { broadcastViaJito } from "./jitoSender.js";
 import { invalidateBlockhashCache } from "./blockhashCache.js";
 import { buildTipInstructions } from "./tipBuilder.js";
@@ -94,9 +100,24 @@ export async function createSenderTransactionFromSwapResponse(
     Buffer.from(transactionBase64, "base64")
   );
 
-  const altAccounts: AddressLookupTableAccount[] = await Promise.all(
+  const jupiterAltAccounts: AddressLookupTableAccount[] = await Promise.all(
     jupiterTransaction.message.addressTableLookups.map((lookup) => fetchAlt(lookup.accountKey))
   );
+  // Fold in our own configured execution ALT(s) so the recompile can compress more accounts than
+  // Jupiter's route tables alone — the main lever that keeps account-heavy routes under 1232B.
+  // Dedupe by table key so a table Jupiter already used isn't counted twice.
+  const altByKey = new Map<string, AddressLookupTableAccount>();
+  for (const table of jupiterAltAccounts) altByKey.set(table.key.toBase58(), table);
+  if (executionAltAddresses.length > 0) {
+    try {
+      for (const table of await getConfiguredAltAccounts()) {
+        altByKey.set(table.key.toBase58(), table);
+      }
+    } catch {
+      // Configured ALT unavailable (RPC blip / bad address) — proceed with Jupiter's tables only.
+    }
+  }
+  const altAccounts: AddressLookupTableAccount[] = [...altByKey.values()];
 
   const decompiledMessage = TransactionMessage.decompile(
     jupiterTransaction.message,
@@ -180,7 +201,21 @@ export async function createSenderTransactionFromSwapResponse(
     transaction = tryBuild(baseInstructionsWithoutHeap, [fallbackTip]);
   }
   if (!transaction) {
-    throw new Error(`Transaction exceeds ${PACKET_DATA_SIZE}B packet limit after size fallbacks`);
+    // Hard fail before sending, with a breakdown of what's driving the size so the route can be
+    // diagnosed (account-heavy swap vs. too many hops vs. missing ALT coverage).
+    const diag = diagnoseV0Transaction({
+      payer: keypair.publicKey,
+      blockhash: decompiledMessage.recentBlockhash,
+      instructions: [...baseInstructionsWithoutHeap, ...tipIxs],
+      lookupTables: altAccounts,
+    });
+    const detail = formatSizeDiagnostics(options.route ?? "jupiter", diag, {
+      jupiterAlt: jupiterAltAccounts.length,
+      configuredAlt: executionAltAddresses.length,
+    });
+    throw new Error(
+      `Transaction exceeds ${PACKET_DATA_SIZE}B packet limit after size fallbacks (${detail})`
+    );
   }
 
   return transaction;

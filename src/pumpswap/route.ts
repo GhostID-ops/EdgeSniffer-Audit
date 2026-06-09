@@ -22,7 +22,7 @@ import {
 import { getDynamicPriorityFee } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
 import { broadcastTransactionWithSender } from "../sender.js";
-import { buildCompactV0Transaction } from "../transactionSize.js";
+import { buildSizeSafeV0Transaction } from "../transactionSize.js";
 import { confirmSignature, isConfirmationTimeoutError } from "../confirm.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
 import { accountExistsCached, knownAccountExists } from "../walletWarmup.js";
@@ -1130,13 +1130,16 @@ export async function tryPumpSwapDirectBuy(args: {
   const closeIxs = keepWsolAtaOpen ? [] : [closeTokenAccountIx(userQuoteAta, args.user.publicKey)];
   const buildStartedAt = Date.now();
   let tx;
+  let setupTx;
   try {
-    tx = await buildCompactV0Transaction({
+    const built = await buildSizeSafeV0Transaction({
       payer: args.user.publicKey,
       blockhash,
+      // ATA creates are splittable: when the account-heavy buy + WSOL wrap won't fit, they move
+      // to their own tx (sent + confirmed first) so the swap stays under the packet limit.
+      setupInstructions: setupIxs,
       instructions: [
         ...computeIxs,
-        ...setupIxs,
         SystemProgram.transfer({
           fromPubkey: args.user.publicKey,
           toPubkey: userQuoteAta,
@@ -1150,6 +1153,8 @@ export async function tryPumpSwapDirectBuy(args: {
       log: args.log,
       route: "pumpswap-direct-buy",
     });
+    tx = built.swapTx;
+    setupTx = built.setupTx;
     recordExecutionStage({
       stage: "build",
       route: "pumpswap-direct-buy",
@@ -1158,7 +1163,12 @@ export async function tryPumpSwapDirectBuy(args: {
       sourceSignature: args.sourceSignature,
       elapsedMs: Date.now() - buildStartedAt,
       success: true,
-      details: { accountPlan: accountPlan.source, accountDiagnostics: accountPlan.diagnostics },
+      details: {
+        accountPlan: accountPlan.source,
+        accountDiagnostics: accountPlan.diagnostics,
+        splitSetup: built.setupTx != null,
+        txBytes: built.diagnostics.bytes,
+      },
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -1178,6 +1188,24 @@ export async function tryPumpSwapDirectBuy(args: {
 
   if (args.log && false) args.log(userBaseAta.toBase58());
   args.log(`PumpSwap tx built (${elapsed()})`);
+  if (setupTx) {
+    // Oversized combined tx: ATAs were split out. Land + confirm them before the swap, which
+    // references the freshly-created accounts.
+    try {
+      const setupSig = await broadcastTransactionWithSender(setupTx, {
+        route: "pumpswap-setup",
+        side: "buy",
+        mint: args.mint,
+        sourceSignature: args.sourceSignature,
+      });
+      args.log(`PumpSwap setup tx broadcast: ${setupSig}; confirming before swap...`);
+      await confirmSignature(setupSig);
+      args.log(`PumpSwap setup confirmed (${elapsed()})`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return { ok: false, recoverable: true, reason: `PumpSwap setup tx failed: ${msg}` };
+    }
+  }
   if (pumpSwapDirectPreflight) {
     const preflightStartedAt = Date.now();
     const sim = await readConnection.simulateTransaction(tx, {
@@ -1463,13 +1491,14 @@ export async function tryPumpSwapDirectSell(args: {
   const closeIxs = [closeTokenAccountIx(userQuoteAta, args.user.publicKey)];
   const buildStartedAt = Date.now();
   let tx;
+  let setupTx;
   try {
-    tx = await buildCompactV0Transaction({
+    const built = await buildSizeSafeV0Transaction({
       payer: args.user.publicKey,
       blockhash,
+      setupInstructions: setupIxs,
       instructions: [
         ...computeIxs,
-        ...setupIxs,
         swapIx,
         ...closeIxs,
       ],
@@ -1477,6 +1506,8 @@ export async function tryPumpSwapDirectSell(args: {
       log: args.log,
       route: "pumpswap-direct-sell",
     });
+    tx = built.swapTx;
+    setupTx = built.setupTx;
     recordExecutionStage({
       stage: "build",
       route: "pumpswap-direct-sell",
@@ -1484,6 +1515,7 @@ export async function tryPumpSwapDirectSell(args: {
       mint: args.mint,
       elapsedMs: Date.now() - buildStartedAt,
       success: true,
+      details: { splitSetup: built.setupTx != null, txBytes: built.diagnostics.bytes },
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -1500,6 +1532,21 @@ export async function tryPumpSwapDirectSell(args: {
   }
 
   args.log(`PumpSwap sell tx built (${elapsed()})`);
+  if (setupTx) {
+    try {
+      const setupSig = await broadcastTransactionWithSender(setupTx, {
+        route: "pumpswap-setup",
+        side: "sell",
+        mint: args.mint,
+      });
+      args.log(`PumpSwap sell setup tx broadcast: ${setupSig}; confirming before swap...`);
+      await confirmSignature(setupSig);
+      args.log(`PumpSwap sell setup confirmed (${elapsed()})`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return { ok: false, recoverable: true, reason: `PumpSwap sell setup tx failed: ${msg}` };
+    }
+  }
   if (pumpSwapDirectPreflight) {
     const preflightStartedAt = Date.now();
     const sim = await readConnection.simulateTransaction(tx, {
