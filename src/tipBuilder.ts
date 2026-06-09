@@ -20,13 +20,37 @@ export type TipInstructionSet = {
   instructions: TransactionInstruction[];
 };
 
+const DEFAULT_ROUTE_TIP_MULTIPLIERS = new Map<string, number>([
+  ["pumpfun-source-replay-buy", 1.3],
+  ["pumpfun-direct-buy", 1.2],
+  ["pumpswap-direct-buy", 1.2],
+  ["pumpfun-direct-sell", 1.0],
+  ["pumpswap-direct-sell", 1.0],
+  ["jupiter", 0.9],
+]);
+
 function randomAccount(accounts: readonly string[]): PublicKey {
   return new PublicKey(accounts[Math.floor(Math.random() * accounts.length)]!);
 }
 
 function routeMultiplier(route?: string): number {
   if (!route) return 1;
-  return executionTipMultipliers.get(route) ?? executionTipMultipliers.get(route.split("-")[0] ?? "") ?? 1;
+  const candidates = [
+    route,
+    route.replace(/-v\d+$/i, ""),
+    route.includes("buy") ? "buy" : "",
+    route.includes("sell") ? "sell" : "",
+    route.split("-")[0] ?? "",
+  ].filter(Boolean);
+  for (const candidate of candidates) {
+    const multiplier = executionTipMultipliers.get(candidate);
+    if (multiplier != null) return multiplier;
+  }
+  for (const candidate of candidates) {
+    const multiplier = DEFAULT_ROUTE_TIP_MULTIPLIERS.get(candidate);
+    if (multiplier != null) return multiplier;
+  }
+  return 1;
 }
 
 function routeTipLamports(route?: string): number {

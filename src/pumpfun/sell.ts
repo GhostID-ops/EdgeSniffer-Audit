@@ -2,19 +2,16 @@ import {
   PublicKey,
   Keypair,
   TransactionInstruction,
-  TransactionMessage,
   VersionedTransaction,
-  SystemProgram,
   ComputeBudgetProgram,
   type AccountMeta,
 } from "@solana/web3.js";
 import {
-  readConnection,
   computeUnitLimit,
 } from "../config.js";
-import { buildTipInstructions } from "../tipBuilder.js";
 import { getDynamicPriorityFee } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
+import { buildCompactV0Transaction } from "../transactionSize.js";
 import {
   PUMP_FUN_PROGRAM_ID,
   PUMP_FUN_FEE_PROGRAM_ID,
@@ -31,7 +28,7 @@ import {
   deriveUserVolumeAccumulatorPda,
 } from "./constants.js";
 import { WRAPPED_SOL_MINT } from "../tokenRegistry.js";
-import { getNativeIdlDiscriminator } from "../idlNativeBuilder.js";
+import { assertNativeIdlInstruction, getNativeIdlDiscriminator } from "../idlNativeBuilder.js";
 
 const IDL_SELL_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "sell");
 const IDL_SELL_V2_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "sell_v2");
@@ -88,11 +85,18 @@ export function buildPumpFunSellIx(args: {
     ...(args.remainingAccounts ?? []),
   ];
 
-  return new TransactionInstruction({
+  const ix = new TransactionInstruction({
     keys,
     programId: PUMP_FUN_PROGRAM_ID,
     data: encodeSellArgs(args.amount, args.minSolOutput),
   });
+  assertNativeIdlInstruction({
+    program: "pump",
+    instruction: "sell",
+    ix,
+    allowExtraAccounts: true,
+  });
+  return ix;
 }
 
 export function buildPumpFunSellV2Ix(args: {
@@ -150,11 +154,17 @@ export function buildPumpFunSellV2Ix(args: {
     { pubkey: PUMP_FUN_PROGRAM_ID, isSigner: false, isWritable: false },
   ];
 
-  return new TransactionInstruction({
+  const ix = new TransactionInstruction({
     keys,
     programId: PUMP_FUN_PROGRAM_ID,
     data: encodeSellV2Args(args.amount, args.minSolOutput),
   });
+  assertNativeIdlInstruction({
+    program: "pump",
+    instruction: "sell_v2",
+    ix,
+  });
+  return ix;
 }
 
 export async function buildPumpFunSellTransaction(args: {
@@ -172,8 +182,6 @@ export async function buildPumpFunSellTransaction(args: {
 }): Promise<VersionedTransaction> {
   const minSolOutput =
     (args.expectedSolOut * BigInt(10_000 - args.slippageBps)) / 10_000n;
-
-  const tipIxs = buildTipInstructions(args.user.publicKey);
 
   const computeIxs: TransactionInstruction[] = [];
   if (computeUnitLimit > 0) {
@@ -217,14 +225,11 @@ export async function buildPumpFunSellTransaction(args: {
   }
 
   const { blockhash } = await getCachedBlockhash();
-
-  const message = new TransactionMessage({
-    payerKey: args.user.publicKey,
-    recentBlockhash: blockhash,
-    instructions: [...computeIxs, sellIx, ...tipIxs],
-  }).compileToV0Message();
-
-  const tx = new VersionedTransaction(message);
-  tx.sign([args.user]);
-  return tx;
+  return buildCompactV0Transaction({
+    payer: args.user.publicKey,
+    blockhash,
+    instructions: [...computeIxs, sellIx],
+    signer: args.user,
+    route: args.useV2 ? "pumpfun-direct-sell-v2" : "pumpfun-direct-sell",
+  });
 }

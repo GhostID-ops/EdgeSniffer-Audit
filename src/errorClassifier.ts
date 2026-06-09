@@ -26,18 +26,73 @@ export type ExecutionErrorClass =
 export type ClassifiedExecutionError = {
   category: ExecutionErrorClass;
   code?: string;
+  program?: "pump" | "pump_amm" | "unknown";
+  errorName?: string;
   recoverable: boolean;
   summary: string;
   hint: string;
 };
 
+function inferProgram(lower: string): "pump" | "pump_amm" | "unknown" {
+  if (
+    lower.includes("pump_amm") ||
+    lower.includes("pump-amm") ||
+    lower.includes("pamm") ||
+    lower.includes("program pammbay6oceh9fjkbrhgp5d4bd4swpmswmn52fmfxea")
+  ) {
+    return "pump_amm";
+  }
+  if (
+    lower.includes("pump.fun") ||
+    lower.includes("pump fun") ||
+    lower.includes("program 6ef8rrecthr5dkzon8nwu78hrvfckubj14m5ubewf6p")
+  ) {
+    return "pump";
+  }
+  return "unknown";
+}
+
+function knownErrorName(program: "pump" | "pump_amm" | "unknown", code: string | undefined): string | undefined {
+  if (!code) return undefined;
+  if (program === "pump_amm") {
+    return {
+      "6004": "ExceededSlippage",
+      "6023": "Overflow",
+      "6040": "BuySlippageBelowMinBaseAmountOut",
+    }[code];
+  }
+  if (program === "pump") {
+    return {
+      "6002": "TooMuchSolRequired",
+      "6003": "TooLittleSolReceived",
+      "6004": "MintDoesNotMatchBondingCurve",
+      "6005": "BondingCurveComplete",
+      "6021": "NotEnoughTokensToBuy",
+      "6023": "NotEnoughTokensToSell",
+      "6024": "Overflow",
+      "6042": "BuySlippageBelowMinTokensOut",
+      "6057": "BuybackFeeRecipientNotAuthorized",
+      "6062": "BuybackFeeRecipientMissing",
+    }[code];
+  }
+  return undefined;
+}
+
 export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   const msg = err instanceof Error ? err.message : String(err);
   const lower = msg.toLowerCase();
-  const custom = msg.match(/Custom["):\s]*(\d+)/i)?.[1];
+  const hexCustom = msg.match(/custom program error:\s*0x([0-9a-f]+)/i)?.[1];
+  const custom =
+    msg.match(/Custom["):\s]*(\d+)/i)?.[1] ??
+    msg.match(/Error Number:\s*(\d+)/i)?.[1] ??
+    (hexCustom ? String(parseInt(hexCustom, 16)) : undefined);
+  const program = inferProgram(lower);
+  const errorName = knownErrorName(program, custom);
+  const base = { program, errorName };
 
   if (lower.includes("constraintseeds") || custom === "2006") {
     return {
+      ...base,
       category: "account-constraint-seeds",
       code: custom ?? "2006",
       recoverable: true,
@@ -47,6 +102,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("constraintmut") || custom === "2000") {
     return {
+      ...base,
       category: "account-constraint-mut",
       code: custom ?? "2000",
       recoverable: true,
@@ -56,6 +112,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("invalidprogramid") || custom === "3008") {
     return {
+      ...base,
       category: "account-invalid-program",
       code: custom ?? "3008",
       recoverable: true,
@@ -65,6 +122,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("privilegeescalation") || lower.includes("unauthorized signer or writable")) {
     return {
+      ...base,
       category: "account-privilege",
       recoverable: true,
       summary: "Signer/writable privilege mismatch",
@@ -75,38 +133,59 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
     lower.includes("stale") ||
     lower.includes("expected at least") ||
     lower.includes("account list too short") ||
-    custom === "6002" ||
-    custom === "6004"
+    (program === "pump" && custom === "6004")
   ) {
     return {
+      ...base,
       category: "account-stale-source",
       code: custom,
       recoverable: true,
-      summary: "Source account hints are stale or incomplete",
+      summary:
+        program === "pump" && custom === "6004"
+          ? "Pump.fun mint/bonding-curve account mismatch"
+          : "Source account hints are stale or incomplete",
       hint: "Ignore source tx account hints and rebuild from current on-chain state.",
     };
   }
-  if (custom === "6023" || custom === "6042") {
+  if (
+    (program === "pump_amm" && custom === "6023") ||
+    (program === "pump" && (custom === "6021" || custom === "6023" || custom === "6024"))
+  ) {
     return {
+      ...base,
       category: "liquidity-overflow",
       code: custom,
       recoverable: false,
-      summary: "AMM math overflow / unsafe liquidity state",
-      hint: "Skip this route; retrying immediately is unlikely to land.",
+      summary:
+        custom === "6023" && program === "pump"
+          ? "Not enough token balance/reserves for requested sell amount"
+          : "AMM math overflow / unsafe liquidity state",
+      hint:
+        custom === "6023" && program === "pump"
+          ? "Refresh wallet/token balance and retry smaller sell if still holding."
+          : "Skip this route; retrying immediately is unlikely to land.",
     };
   }
   if (lower.includes("insufficient liquidity") || lower.includes("no liquidity")) {
     return {
+      ...base,
       category: "liquidity-no-liquidity",
       recoverable: false,
       summary: "Pool has no usable liquidity",
       hint: "Skip until pool state changes.",
     };
   }
-  if (lower.includes("slippage") || lower.includes("6001")) {
+  if (
+    lower.includes("slippage") ||
+    custom === "6002" ||
+    custom === "6003" ||
+    custom === "6042" ||
+    (program === "pump_amm" && (custom === "6004" || custom === "6040"))
+  ) {
     return {
+      ...base,
       category: "slippage",
-      code: custom ?? "6001",
+      code: custom,
       recoverable: true,
       summary: "Price moved beyond slippage guard",
       hint: "Fresh quote once; widen only if strategy accepts worse fills.",
@@ -114,6 +193,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("token_not_tradable") || lower.includes("not tradable")) {
     return {
+      ...base,
       category: "not-tradable",
       recoverable: false,
       summary: "Aggregator/token index says token is not tradable",
@@ -122,6 +202,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("no_routes_found") || lower.includes("no routes found")) {
     return {
+      ...base,
       category: "no-route",
       recoverable: false,
       summary: "Aggregator found no executable route",
@@ -130,6 +211,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("1232") || lower.includes("too large") || lower.includes("encoding overruns")) {
     return {
+      ...base,
       category: "oversize",
       recoverable: true,
       summary: "Transaction exceeds packet/encoding limit",
@@ -143,6 +225,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
     lower.includes("block height exceeded")
   ) {
     return {
+      ...base,
       category: "dropped-or-expired",
       recoverable: true,
       summary: "Broadcast likely dropped or blockhash expired",
@@ -151,6 +234,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("429") || lower.includes("rate limited") || lower.includes("max usage reached")) {
     return {
+      ...base,
       category: "rate-limit",
       recoverable: true,
       summary: "RPC/API rate limit",
@@ -159,6 +243,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("insufficient funds") || lower.includes("insufficient lamports")) {
     return {
+      ...base,
       category: "insufficient-funds",
       recoverable: false,
       summary: "Wallet balance is insufficient",
@@ -167,6 +252,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("transaction failed") || lower.includes("instructionerror")) {
     return {
+      ...base,
       category: "confirmation-failed",
       code: custom,
       recoverable: custom != null,
@@ -176,6 +262,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("fetch failed") || lower.includes("timeout") || lower.includes("network")) {
     return {
+      ...base,
       category: "network",
       recoverable: true,
       summary: "Network/RPC timeout",
@@ -184,6 +271,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("jito")) {
     return {
+      ...base,
       category: "sender-jito",
       recoverable: true,
       summary: "Jito sender path failed",
@@ -192,6 +280,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("helius")) {
     return {
+      ...base,
       category: "sender-helius",
       recoverable: true,
       summary: "Helius sender/RPC path failed",
@@ -200,6 +289,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("sendrawtransaction")) {
     return {
+      ...base,
       category: "sender-rpc",
       recoverable: true,
       summary: "Normal RPC broadcast failed",
@@ -208,6 +298,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   }
   if (lower.includes("sender") || lower.includes("jito") || lower.includes("sendtransaction")) {
     return {
+      ...base,
       category: "sender",
       recoverable: true,
       summary: "Sender path failed",
@@ -215,6 +306,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
     };
   }
   return {
+    ...base,
     category: "unknown",
     code: custom,
     recoverable: true,

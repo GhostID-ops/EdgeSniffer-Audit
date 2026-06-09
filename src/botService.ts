@@ -54,6 +54,7 @@ import {
   confirmationNullStatusTimeoutMs,
   prebuyMoralisFilterEnabled,
   copyBuyPercentage,
+  minBuyBehavior,
   executionRescueRetries,
   executionRescueDelayMs,
 } from "./config.js";
@@ -134,6 +135,7 @@ import { decideRetryAction } from "./executionRetry.js";
 import { planExecution } from "./executionPlanner.js";
 import { recordExecutionTelemetrySync } from "./executionTelemetry.js";
 import { warmWalletAccounts } from "./walletWarmup.js";
+import { warmExecutionAltAccounts } from "./transactionSize.js";
 import { startBlockhashCache, stopBlockhashCache } from "./blockhashCache.js";
 import { validateLicense } from "./licenseClient.js";
 import { checkPrebuyMoralisFilter } from "./prebuyMoralisFilter.js";
@@ -844,11 +846,18 @@ function mirrorQuoteMintForBuy(swap: DetectedSwap): string {
 function mirroredBuyAmountRaw(swap: DetectedSwap): number | null {
   const quoteMint = mirrorQuoteMintForBuy(swap);
   const calculatedRaw = Math.floor(swap.amountRaw * (copyBuyPercentage / 100));
+  if (calculatedRaw <= 0) return null;
   if (quoteMint === USDC_MINT) {
-    if (calculatedRaw < minBuyUsdcRaw) return null;
+    if (calculatedRaw < minBuyUsdcRaw) {
+      if (minBuyBehavior === "skip") return null;
+      if (minBuyBehavior === "floor") return Math.min(maxBuyUsdcRaw, minBuyUsdcRaw);
+    }
     return Math.min(maxBuyUsdcRaw, calculatedRaw);
   }
-  if (calculatedRaw < minBuyLamports) return null;
+  if (calculatedRaw < minBuyLamports) {
+    if (minBuyBehavior === "skip") return null;
+    if (minBuyBehavior === "floor") return Math.min(maxBuyLamports, minBuyLamports);
+  }
   return Math.min(maxBuyLamports, calculatedRaw);
 }
 
@@ -910,14 +919,21 @@ function shouldAttemptFailedBuyRecovery(
   sourceSwap: DetectedSwap | undefined,
   reason: string
 ): sourceSwap is DetectedSwap {
+  const decision = decideRetryAction(reason);
+  const canRescue =
+    decision.action === "rebuild-derived-accounts" ||
+    decision.action === "rebuild-pool-state" ||
+    decision.action === "fresh-quote" ||
+    decision.action === "compact-transaction" ||
+    decision.action === "fresh-blockhash-rebroadcast";
   const mint = sourceSwap?.outputMint;
   if (
+    canRescue &&
     Boolean(sourceSwap) &&
     Boolean(mint) &&
     !failedBuyRecoveryInFlightMints.has(mint!) &&
     !sourceSwap?.skipDirectBuyRoutes &&
     !sourceSwap?.forceDerivedPumpFunBuy &&
-    isPumpFunAccountLayoutFailure(reason) &&
     (sourceSwap?.buyRecoveryAttempt ?? 0) < executionRescueRetries
   ) {
     return true;
@@ -942,7 +958,11 @@ function scheduleFailedBuyRecovery(
   reason: string
 ): void {
   failedBuyRecoveryInFlightMints.add(sourceSwap.outputMint);
-  const useDerivedPumpFunRescue = isPumpFunAccountLayoutFailure(reason) && !sourceSwap.forceDerivedPumpFunBuy;
+  const decision = decideRetryAction(reason);
+  const useDerivedPumpFunRescue =
+    decision.program !== "pump_amm" &&
+    decision.action === "rebuild-derived-accounts" &&
+    !sourceSwap.forceDerivedPumpFunBuy;
   const recoverySwap: DetectedSwap = {
     ...sourceSwap,
     skipDirectBuyRoutes: false,
@@ -954,7 +974,7 @@ function scheduleFailedBuyRecovery(
   console.warn(
     useDerivedPumpFunRescue
       ? `Scheduling derived-account pump.fun rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after pump.fun account-layout failure.`
-      : `Scheduling direct rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after direct buy failed.`
+      : `Scheduling direct ${decision.action} rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after direct buy failed.`
   );
   setTimeout(() => {
     if (stopRequested || !failedBuyRecoveryInFlightMints.has(sourceSwap.outputMint)) return;
@@ -2014,6 +2034,7 @@ export async function startBot(): Promise<void> {
     warmConnection(),
     warmPumpSwapStaticAccounts(),
     warmWalletAccounts(keypair.publicKey),
+    warmExecutionAltAccounts(console.log),
   ]);
   startedAt = Date.now();
   console.log("Fresh start - only trades from this moment onward will be mirrored.");

@@ -34,7 +34,7 @@ import {
   deriveUserVolumeAccumulatorPda,
   deriveSharingConfigPda,
 } from "./constants.js";
-import { getNativeIdlDiscriminator } from "../idlNativeBuilder.js";
+import { assertNativeIdlInstruction, getNativeIdlDiscriminator } from "../idlNativeBuilder.js";
 
 const WRAPPED_SOL_MINT = new PublicKey("So11111111111111111111111111111111111111112");
 const IDL_BUY_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "buy");
@@ -333,7 +333,14 @@ export function buildPumpFunBuyIx(args: {
     ];
   }
 
-  return new TransactionInstruction({
+  const instructionName = isV2
+    ? args.exactSolIn
+      ? "buy_exact_quote_in_v2"
+      : "buy_v2"
+    : args.exactSolIn
+      ? "buy_exact_sol_in"
+      : "buy";
+  const ix = new TransactionInstruction({
     keys,
     programId: PUMP_FUN_PROGRAM_ID,
     data: isV2
@@ -344,6 +351,13 @@ export function buildPumpFunBuyIx(args: {
         ? encodeBuyExactSolInArgs(args.maxSolCost, args.amount)
         : encodeBuyArgs(args.amount, args.maxSolCost),
   });
+  assertNativeIdlInstruction({
+    program: "pump",
+    instruction: instructionName,
+    ix,
+    allowExtraAccounts: !isV2,
+  });
+  return ix;
 }
 
 export function buildCreateAtaIdempotentIx(args: {

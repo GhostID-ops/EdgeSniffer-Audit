@@ -18,6 +18,7 @@ import {
   deriveAta,
 } from "./pumpfun/constants.js";
 import { WRAPPED_SOL_MINT } from "./tokenRegistry.js";
+import { classifyExecutionError } from "./errorClassifier.js";
 
 function key(seed: string): PublicKey {
   const bytes = Buffer.alloc(32);
@@ -103,7 +104,6 @@ function testRecoverableFailureClassification(): void {
     "Transaction failed: {\"InstructionError\":[6,{\"Custom\":2006}]}",
     "AnchorError caused by account: user_volume_accumulator. Error Code: ConstraintSeeds.",
     "SlippageToleranceExceeded",
-    "insufficient liquidity for PumpSwap pool",
     "blockhash not found",
     "Transaction expired: block height exceeded",
     "Sender did not return a transaction signature",
@@ -114,7 +114,40 @@ function testRecoverableFailureClassification(): void {
   for (const msg of cases) {
     assert.equal(isRecoverablePumpSwapFailure(new Error(msg)), true, msg);
   }
+  assert.equal(
+    isRecoverablePumpSwapFailure(
+      new Error("AnchorError thrown in programs/pump-amm/src/instructions/swap/buy.rs:754. Error Code: Overflow. Error Number: 6023. Error Message: Overflow.")
+    ),
+    false
+  );
+  assert.equal(isRecoverablePumpSwapFailure(new Error("insufficient liquidity for PumpSwap pool")), false);
   assert.equal(isRecoverablePumpSwapFailure(new Error("private key missing")), false);
+}
+
+function testProgramAwareErrorClassification(): void {
+  const pumpAmmSlippage = classifyExecutionError(
+    "Program pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA failed: custom program error: 0x1774 | {\"Custom\":6004}"
+  );
+  assert.equal(pumpAmmSlippage.program, "pump_amm");
+  assert.equal(pumpAmmSlippage.errorName, "ExceededSlippage");
+  assert.equal(pumpAmmSlippage.category, "slippage");
+  assert.equal(pumpAmmSlippage.recoverable, true);
+
+  const pumpMintMismatch = classifyExecutionError(
+    "Program 6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P failed: {\"InstructionError\":[3,{\"Custom\":6004}]}"
+  );
+  assert.equal(pumpMintMismatch.program, "pump");
+  assert.equal(pumpMintMismatch.errorName, "MintDoesNotMatchBondingCurve");
+  assert.equal(pumpMintMismatch.category, "account-stale-source");
+  assert.equal(pumpMintMismatch.recoverable, true);
+
+  const pumpAmmOverflow = classifyExecutionError(
+    "AnchorError thrown in programs/pump-amm/src/instructions/swap/buy.rs:754. Error Code: Overflow. Error Number: 6023. Error Message: Overflow."
+  );
+  assert.equal(pumpAmmOverflow.program, "pump_amm");
+  assert.equal(pumpAmmOverflow.errorName, "Overflow");
+  assert.equal(pumpAmmOverflow.category, "liquidity-overflow");
+  assert.equal(pumpAmmOverflow.recoverable, false);
 }
 
 function testPoolPrecheckSimulationCases(): void {
@@ -161,6 +194,7 @@ function run(): void {
   testPumpSwapHintAccountFlags();
   testPumpSwapPdaProgramOwner();
   testRecoverableFailureClassification();
+  testProgramAwareErrorClassification();
   testPoolPrecheckSimulationCases();
   testBuyExactQuoteInEncoding();
   testSellEncoding();

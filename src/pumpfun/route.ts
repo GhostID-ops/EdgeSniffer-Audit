@@ -25,6 +25,31 @@ import { buildPumpFunBuyReplayTransaction, buildPumpFunBuyTransaction } from "./
 import { buildPumpFunSellTransaction } from "./sell.js";
 import { recordExecutionStage } from "../executionTelemetry.js";
 
+function recordConfirmStage(args: {
+  route: string;
+  side: "buy" | "sell";
+  mint: string;
+  sourceSignature?: string;
+  signature?: string;
+  startedAt: number;
+  success: boolean;
+  error?: string;
+  details?: Record<string, unknown>;
+}): void {
+  recordExecutionStage({
+    stage: "confirm",
+    route: args.route,
+    side: args.side,
+    mint: args.mint,
+    sourceSignature: args.sourceSignature,
+    signature: args.signature,
+    elapsedMs: Date.now() - args.startedAt,
+    success: args.success,
+    error: args.error,
+    details: args.details,
+  });
+}
+
 export type PumpFunBuyOutcome =
   | {
       ok: true;
@@ -234,12 +259,34 @@ export async function tryPumpFunDirectBuy(args: {
       }
       args.log(`Broadcast: ${signature} (${elapsed()})`);
       if (fastMode) {
+        const confirmStartedAt = Date.now();
         confirmSignature(signature)
           .then(() => {
+            recordConfirmStage({
+              route: "pumpfun-source-replay-buy",
+              side: "buy",
+              mint: args.mint,
+              sourceSignature: args.sourceSignature,
+              signature,
+              startedAt: confirmStartedAt,
+              success: true,
+              details: { mode: "background" },
+            });
             args.onConfirmSuccess?.(args.mint, Number(estimatedTokensOut), Number(solIn), signature);
           })
           .catch((err) => {
             const reason = err instanceof Error ? err.message : String(err);
+            recordConfirmStage({
+              route: "pumpfun-source-replay-buy",
+              side: "buy",
+              mint: args.mint,
+              sourceSignature: args.sourceSignature,
+              signature,
+              startedAt: confirmStartedAt,
+              success: false,
+              error: reason,
+              details: { mode: "background" },
+            });
             args.onConfirmFailure?.(args.mint, Number(estimatedTokensOut), Number(solIn), reason);
           });
         const mintMeta = await getTokenMeta(args.mint);
@@ -254,7 +301,34 @@ export async function tryPumpFunDirectBuy(args: {
           confirmationPending: true,
         };
       }
-      await confirmSignature(signature);
+      const confirmStartedAt = Date.now();
+      try {
+        await confirmSignature(signature);
+        recordConfirmStage({
+          route: "pumpfun-source-replay-buy",
+          side: "buy",
+          mint: args.mint,
+          sourceSignature: args.sourceSignature,
+          signature,
+          startedAt: confirmStartedAt,
+          success: true,
+          details: { mode: "blocking" },
+        });
+      } catch (err) {
+        const reason = err instanceof Error ? err.message : String(err);
+        recordConfirmStage({
+          route: "pumpfun-source-replay-buy",
+          side: "buy",
+          mint: args.mint,
+          sourceSignature: args.sourceSignature,
+          signature,
+          startedAt: confirmStartedAt,
+          success: false,
+          error: reason,
+          details: { mode: "blocking" },
+        });
+        throw err;
+      }
       const mintMeta = await getTokenMeta(args.mint);
       return {
         ok: true,
@@ -387,12 +461,34 @@ export async function tryPumpFunDirectBuy(args: {
 
   if (fastMode) {
     // Fast mode records after broadcast so snipes are not delayed by confirmation polling.
+    const confirmStartedAt = Date.now();
     confirmSignature(signature)
       .then(() => {
+        recordConfirmStage({
+          route: "pumpfun-direct-buy",
+          side: "buy",
+          mint: args.mint,
+          sourceSignature: args.sourceSignature,
+          signature,
+          startedAt: confirmStartedAt,
+          success: true,
+          details: { mode: "background" },
+        });
         args.onConfirmSuccess?.(args.mint, Number(quote.tokensOut), Number(quote.solIn), signature);
       })
       .catch((err) => {
         const reason = err instanceof Error ? err.message : String(err);
+        recordConfirmStage({
+          route: "pumpfun-direct-buy",
+          side: "buy",
+          mint: args.mint,
+          sourceSignature: args.sourceSignature,
+          signature,
+          startedAt: confirmStartedAt,
+          success: false,
+          error: reason,
+          details: { mode: "background" },
+        });
         args.onConfirmFailure?.(args.mint, Number(quote.tokensOut), Number(quote.solIn), reason);
       });
     const mintMeta = await getTokenMeta(args.mint);
@@ -407,12 +503,34 @@ export async function tryPumpFunDirectBuy(args: {
       confirmationPending: true,
     };
   }
+  const confirmStartedAt = Date.now();
   try {
     await confirmSignature(signature);
+    recordConfirmStage({
+      route: "pumpfun-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      signature,
+      startedAt: confirmStartedAt,
+      success: true,
+      details: { mode: "blocking" },
+    });
   } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    recordConfirmStage({
+      route: "pumpfun-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      signature,
+      startedAt: confirmStartedAt,
+      success: false,
+      error: msg,
+      details: { mode: "blocking", rebroadcastAttempt: args.rebroadcastAttempt ?? 0 },
+    });
     const rebroadcastAttempt = args.rebroadcastAttempt ?? 0;
     if (isConfirmationTimeoutError(err) && rebroadcastAttempt < confirmationRebroadcastRetries) {
-      const msg = err instanceof Error ? err.message : String(err);
       // A never-seen signature usually means the bundle was dropped; rebuild with fresh curve state/blockhash.
       args.log(`Pump.fun buy suspected dropped (${msg}); rebuilding once with fresh blockhash...`);
       return tryPumpFunDirectBuy({
@@ -595,12 +713,34 @@ export async function tryPumpFunDirectSell(args: {
 
   if (fastMode) {
     // Fast mode keeps the manual/risk exit hot; any late failure is surfaced by the background poller.
+    const confirmStartedAt = Date.now();
     confirmSignature(signature)
       .then(() => {
+        recordConfirmStage({
+          route: "pumpfun-direct-sell",
+          side: "sell",
+          mint: args.mint,
+          sourceSignature: args.sourceSignature,
+          signature,
+          startedAt: confirmStartedAt,
+          success: true,
+          details: { mode: "background" },
+        });
         args.onConfirmSuccess?.(args.mint, Number(quote.tokensIn), Number(quote.solOut), signature);
       })
       .catch((err) => {
         const msg = err instanceof Error ? err.message : String(err);
+        recordConfirmStage({
+          route: "pumpfun-direct-sell",
+          side: "sell",
+          mint: args.mint,
+          sourceSignature: args.sourceSignature,
+          signature,
+          startedAt: confirmStartedAt,
+          success: false,
+          error: msg,
+          details: { mode: "background" },
+        });
         console.warn(`Pump.fun direct sell confirmation failed after broadcast: ${msg}`);
         args.onConfirmFailure?.(args.mint, Number(quote.tokensIn), Number(quote.solOut), msg);
       });
@@ -616,12 +756,34 @@ export async function tryPumpFunDirectSell(args: {
       confirmationPending: true,
     };
   }
+  const confirmStartedAt = Date.now();
   try {
     await confirmSignature(signature);
+    recordConfirmStage({
+      route: "pumpfun-direct-sell",
+      side: "sell",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      signature,
+      startedAt: confirmStartedAt,
+      success: true,
+      details: { mode: "blocking" },
+    });
   } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    recordConfirmStage({
+      route: "pumpfun-direct-sell",
+      side: "sell",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      signature,
+      startedAt: confirmStartedAt,
+      success: false,
+      error: msg,
+      details: { mode: "blocking", rebroadcastAttempt: args.rebroadcastAttempt ?? 0 },
+    });
     const rebroadcastAttempt = args.rebroadcastAttempt ?? 0;
     if (isConfirmationTimeoutError(err) && rebroadcastAttempt < confirmationRebroadcastRetries) {
-      const msg = err instanceof Error ? err.message : String(err);
       // A dropped sell is worse than a delayed one; retry once with a fresh quote/blockhash.
       args.log(`Pump.fun sell suspected dropped (${msg}); rebuilding once with fresh blockhash...`);
       return tryPumpFunDirectSell({

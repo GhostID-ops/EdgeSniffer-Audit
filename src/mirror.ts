@@ -17,6 +17,7 @@ import {
   jupiterOversizeMaxAccounts,
   mirrorQuoteAsset,
   copyBuyPercentage,
+  minBuyBehavior,
 } from "./config.js";
 import { getQuote, getSwap, type QuoteResponse } from "./jupiter.js";
 import {
@@ -322,13 +323,30 @@ async function getMirrorAmount(
     console.log(`Copy Percentage: ${copyBuyPercentage}%`);
     console.log(`Bot Buy Amount: ${formatQuoteAmount(calculatedRaw, quoteMint)}`);
 
-    if (calculatedRaw < minRaw) {
+    if (calculatedRaw <= 0) {
       throw new BuyAmountBelowMinimumError(swap.outputMint, calculatedRaw, minRaw, quoteMint);
     }
 
-    const amountRaw = Math.min(maxRaw, calculatedRaw);
+    if (calculatedRaw < minRaw) {
+      if (minBuyBehavior === "skip") {
+        throw new BuyAmountBelowMinimumError(swap.outputMint, calculatedRaw, minRaw, quoteMint);
+      }
+      if (minBuyBehavior === "allow") {
+        console.log(
+          `Copy-sized buy is below configured minimum, allowing because MIN_BUY_BEHAVIOR=allow.`
+        );
+      }
+    }
 
-    if (calculatedRaw > maxRaw) {
+    const unclampedRaw =
+      calculatedRaw < minRaw && minBuyBehavior === "floor" ? minRaw : calculatedRaw;
+    const amountRaw = Math.min(maxRaw, unclampedRaw);
+
+    if (calculatedRaw < minRaw && minBuyBehavior === "floor") {
+      console.log(
+        `Trade floored: ${formatQuoteAmount(calculatedRaw, quoteMint)} -> ${formatQuoteAmount(amountRaw, quoteMint)} (min: ${formatQuoteAmount(minRaw, quoteMint)})`
+      );
+    } else if (calculatedRaw > maxRaw) {
       console.log(
         `Trade capped: ${formatQuoteAmount(calculatedRaw, quoteMint)} -> ${formatQuoteAmount(amountRaw, quoteMint)} (max: ${formatQuoteAmount(maxRaw, quoteMint)})`
       );

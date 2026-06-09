@@ -8,6 +8,7 @@ import {
 } from "@solana/web3.js";
 import { buildTipInstructionSets } from "./tipBuilder.js";
 import { executionAltAddresses, readConnection } from "./config.js";
+import { recordExecutionStage } from "./executionTelemetry.js";
 
 export const PACKET_DATA_SIZE = 1232;
 
@@ -25,9 +26,18 @@ export function transactionFitsPacket(tx: VersionedTransaction): boolean {
   }
 }
 
+function transactionSizeBytes(tx: VersionedTransaction): number | null {
+  try {
+    return tx.serialize().length;
+  } catch (err) {
+    if (isOversizeError(err)) return null;
+    throw err;
+  }
+}
+
 const altCache = new Map<string, AddressLookupTableAccount>();
 
-async function getConfiguredAltAccounts(): Promise<AddressLookupTableAccount[]> {
+export async function getConfiguredAltAccounts(): Promise<AddressLookupTableAccount[]> {
   const out: AddressLookupTableAccount[] = [];
   for (const address of executionAltAddresses) {
     const cached = altCache.get(address);
@@ -42,6 +52,17 @@ async function getConfiguredAltAccounts(): Promise<AddressLookupTableAccount[]> 
     out.push(resp.value);
   }
   return out;
+}
+
+export async function warmExecutionAltAccounts(log?: (msg: string) => void): Promise<void> {
+  if (executionAltAddresses.length === 0) return;
+  const startedAt = Date.now();
+  const accounts = await getConfiguredAltAccounts();
+  log?.(
+    `Execution ALT warmup: ${accounts.length}/${executionAltAddresses.length} configured table(s) loaded in ${
+      Date.now() - startedAt
+    }ms.`
+  );
 }
 
 function buildWithTipSet(args: {
@@ -69,16 +90,33 @@ export async function buildCompactV0Transaction(args: {
   log?: (msg: string) => void;
   route?: string;
 }): Promise<VersionedTransaction> {
+  const startedAt = Date.now();
+  const route = args.route ?? "direct";
   const tipSets = buildTipInstructionSets(args.payer, { route: args.route });
   for (const tipSet of tipSets) {
     const tx = buildWithTipSet({
       ...args,
       instructions: [...args.instructions, ...tipSet.instructions],
     });
-    if (transactionFitsPacket(tx)) {
+    const txBytes = transactionSizeBytes(tx);
+    if (txBytes != null && txBytes <= PACKET_DATA_SIZE) {
       if (tipSet.label !== "all") {
         args.log?.(`Tx compacted to ${tipSet.label} tip only to fit ${PACKET_DATA_SIZE}B packet limit.`);
       }
+      recordExecutionStage({
+        stage: "build",
+        route,
+        elapsedMs: Date.now() - startedAt,
+        success: true,
+        details: {
+          compactMode: "direct",
+          tipSet: tipSet.label,
+          txBytes,
+          packetLimit: PACKET_DATA_SIZE,
+          altCount: 0,
+          instructionCount: args.instructions.length + tipSet.instructions.length,
+        },
+      });
       return tx;
     }
   }
@@ -92,15 +130,44 @@ export async function buildCompactV0Transaction(args: {
           instructions: [...args.instructions, ...tipSet.instructions],
           lookupTables,
         });
-        if (transactionFitsPacket(tx)) {
+        const txBytes = transactionSizeBytes(tx);
+        if (txBytes != null && txBytes <= PACKET_DATA_SIZE) {
           args.log?.(
             `Tx compacted with ${lookupTables.length} ALT(s) and ${tipSet.label} tip to fit ${PACKET_DATA_SIZE}B packet limit.`
           );
+          recordExecutionStage({
+            stage: "build",
+            route,
+            elapsedMs: Date.now() - startedAt,
+            success: true,
+            details: {
+              compactMode: "alt",
+              tipSet: tipSet.label,
+              txBytes,
+              packetLimit: PACKET_DATA_SIZE,
+              altCount: lookupTables.length,
+              instructionCount: args.instructions.length + tipSet.instructions.length,
+            },
+          });
           return tx;
         }
       }
     }
   }
 
+  recordExecutionStage({
+    stage: "build",
+    route,
+    elapsedMs: Date.now() - startedAt,
+    success: false,
+    error: `Transaction exceeds ${PACKET_DATA_SIZE}B packet limit after direct-route size fallbacks`,
+    details: {
+      compactMode: "failed",
+      packetLimit: PACKET_DATA_SIZE,
+      configuredAltCount: executionAltAddresses.length,
+      tipSetCount: tipSets.length,
+      instructionCount: args.instructions.length,
+    },
+  });
   throw new Error(`Transaction exceeds ${PACKET_DATA_SIZE}B packet limit after direct-route size fallbacks`);
 }

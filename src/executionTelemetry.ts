@@ -23,6 +23,8 @@ export type ExecutionTelemetryEvent = {
   error?: string;
   errorClass?: string;
   errorCode?: string;
+  errorProgram?: string;
+  errorName?: string;
   errorSummary?: string;
   errorHint?: string;
   recoverable?: boolean;
@@ -44,6 +46,8 @@ export async function recordExecutionTelemetry(event: ExecutionTelemetryEvent): 
       ...event,
       errorClass: event.errorClass ?? classified?.category,
       errorCode: event.errorCode ?? classified?.code,
+      errorProgram: event.errorProgram ?? classified?.program,
+      errorName: event.errorName ?? classified?.errorName,
       errorSummary: event.errorSummary ?? classified?.summary,
       errorHint: event.errorHint ?? classified?.hint,
       recoverable: event.recoverable ?? classified?.recoverable,

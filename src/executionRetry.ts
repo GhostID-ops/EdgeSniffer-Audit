@@ -53,6 +53,18 @@ export function decideRetryAction(err: unknown): RetryDecision {
         shouldQuarantine: false,
       };
     case "liquidity-overflow":
+      if (classified.program === "pump_amm") {
+        return {
+          ...classified,
+          action: "rebuild-pool-state",
+          shouldQuarantine: false,
+        };
+      }
+      return {
+        ...classified,
+        action: "skip",
+        shouldQuarantine: true,
+      };
     case "liquidity-no-liquidity":
     case "liquidity":
     case "not-tradable":

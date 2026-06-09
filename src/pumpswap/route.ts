@@ -26,7 +26,11 @@ import { buildCompactV0Transaction } from "../transactionSize.js";
 import { confirmSignature, isConfirmationTimeoutError } from "../confirm.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
 import { accountExistsCached, knownAccountExists } from "../walletWarmup.js";
-import { getNativeIdlDiscriminator } from "../idlNativeBuilder.js";
+import {
+  assertNativeIdlInstruction,
+  buildNativeIdlInstructionFromOrderedAccounts,
+  getNativeIdlDiscriminator,
+} from "../idlNativeBuilder.js";
 import { recordExecutionStage } from "../executionTelemetry.js";
 import { classifyExecutionError } from "../errorClassifier.js";
 import {
@@ -56,6 +60,7 @@ const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 17, 2
 type PumpSwapAccountPlan = {
   accounts: AccountMeta[];
   source: "confirmed-source-metas" | "detector-pubkey-hints" | "canonical-pool-state";
+  diagnostics?: Record<string, unknown>;
 };
 
 export type PumpSwapBuildContext = {
@@ -185,7 +190,44 @@ function formatContext(ctx: PumpSwapBuildContext): string {
   ].join(" ");
 }
 
+function recordPumpSwapConfirmStage(args: {
+  route: "pumpswap-direct-buy" | "pumpswap-direct-sell";
+  side: "buy" | "sell";
+  mint: string;
+  sourceSignature?: string;
+  signature?: string;
+  startedAt: number;
+  success: boolean;
+  error?: string;
+  details?: Record<string, unknown>;
+}): void {
+  recordExecutionStage({
+    stage: "confirm",
+    route: args.route,
+    side: args.side,
+    mint: args.mint,
+    sourceSignature: args.sourceSignature,
+    signature: args.signature,
+    elapsedMs: Date.now() - args.startedAt,
+    success: args.success,
+    error: args.error,
+    details: args.details,
+  });
+}
+
 export function isRecoverablePumpSwapFailure(err: unknown): boolean {
+  const classified = classifyExecutionError(err);
+  if (
+    classified.category === "liquidity-overflow" ||
+    classified.category === "liquidity-no-liquidity" ||
+    classified.category === "not-tradable" ||
+    classified.category === "no-route" ||
+    classified.category === "insufficient-funds"
+  ) {
+    return false;
+  }
+  if (classified.category !== "unknown" && classified.recoverable) return true;
+
   const msg = err instanceof Error ? err.message : String(err);
   const lower = msg.toLowerCase();
   return (
@@ -306,6 +348,39 @@ function validatePumpSwapBuyAccountLayout(accounts: AccountMeta[], mint: PublicK
   return null;
 }
 
+function comparePumpSwapAccounts(
+  baseline: AccountMeta[],
+  candidate: AccountMeta[],
+  candidateLabel: string
+): Record<string, unknown> {
+  const max = Math.max(baseline.length, candidate.length);
+  const pubkeyMismatches: number[] = [];
+  const signerMismatches: number[] = [];
+  const writableMismatches: number[] = [];
+  for (let i = 0; i < max; i++) {
+    const a = baseline[i];
+    const b = candidate[i];
+    if (!a || !b) {
+      pubkeyMismatches.push(i);
+      continue;
+    }
+    if (!a.pubkey.equals(b.pubkey)) pubkeyMismatches.push(i);
+    if (a.isSigner !== b.isSigner) signerMismatches.push(i);
+    if (a.isWritable !== b.isWritable) writableMismatches.push(i);
+  }
+  return {
+    comparedTo: candidateLabel,
+    baselineAccounts: baseline.length,
+    candidateAccounts: candidate.length,
+    pubkeyMismatchCount: pubkeyMismatches.length,
+    signerMismatchCount: signerMismatches.length,
+    writableMismatchCount: writableMismatches.length,
+    pubkeyMismatchIndexes: pubkeyMismatches.slice(0, 16),
+    signerMismatchIndexes: signerMismatches.slice(0, 16),
+    writableMismatchIndexes: writableMismatches.slice(0, 16),
+  };
+}
+
 function compiledInstructionDataToBuffer(data: unknown): Buffer {
   if (data == null) return Buffer.alloc(0);
   if (Buffer.isBuffer(data)) return data;
@@ -406,22 +481,6 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   sourcePumpSwapAccounts?: string[];
   canonicalOnly?: boolean;
 }): Promise<PumpSwapAccountPlan | null> {
-  const canonicalAccounts = await buildCanonicalPumpSwapBuyAccounts({
-    user: args.user,
-    mint: args.mint,
-    baseTokenProgram: args.baseTokenProgram,
-  });
-  if (canonicalAccounts) {
-    return { accounts: canonicalAccounts, source: "canonical-pool-state" };
-  }
-
-  if (args.canonicalOnly) return null;
-
-  const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
-  if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint)) {
-    return { accounts: confirmedAccounts, source: "confirmed-source-metas" };
-  }
-
   const hintedPubkeys = args.sourcePumpSwapAccounts
     ?.map((value) => {
       try {
@@ -431,11 +490,41 @@ async function resolvePumpSwapBuyAccountPlan(args: {
       }
     })
     .filter((value): value is PublicKey => value != null);
+  const hintedAccounts = hintedPubkeys?.length ? pumpSwapPubkeyHintsToMetas(hintedPubkeys) : null;
 
-  if (hintedPubkeys?.length) {
-    const hintedAccounts = pumpSwapPubkeyHintsToMetas(hintedPubkeys);
+  const canonicalAccounts = await buildCanonicalPumpSwapBuyAccounts({
+    user: args.user,
+    mint: args.mint,
+    baseTokenProgram: args.baseTokenProgram,
+  });
+  if (canonicalAccounts) {
+    return {
+      accounts: canonicalAccounts,
+      source: "canonical-pool-state",
+      diagnostics: hintedAccounts
+        ? comparePumpSwapAccounts(canonicalAccounts, hintedAccounts, "detector-pubkey-hints")
+        : { comparedTo: "detector-pubkey-hints", candidateAccounts: 0 },
+    };
+  }
+
+  if (args.canonicalOnly) return null;
+
+  const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
+  if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint)) {
+    return {
+      accounts: confirmedAccounts,
+      source: "confirmed-source-metas",
+      diagnostics: { canonicalUnavailable: true },
+    };
+  }
+
+  if (hintedAccounts?.length) {
     if (!validatePumpSwapBuyAccountLayout(hintedAccounts, args.mint)) {
-      return { accounts: hintedAccounts, source: "detector-pubkey-hints" };
+      return {
+        accounts: hintedAccounts,
+        source: "detector-pubkey-hints",
+        diagnostics: { canonicalUnavailable: true, detectorHintAccounts: hintedAccounts.length },
+      };
     }
   }
   return null;
@@ -896,6 +985,22 @@ export async function tryPumpSwapDirectBuy(args: {
     };
   }
   args.log(`PumpSwap account plan: ${accountPlan.source}`);
+  if (
+    accountPlan.source === "canonical-pool-state" &&
+    accountPlan.diagnostics?.comparedTo === "detector-pubkey-hints" &&
+    typeof accountPlan.diagnostics.pubkeyMismatchCount === "number" &&
+    accountPlan.diagnostics.pubkeyMismatchCount > 0
+  ) {
+    const writableMismatchCount =
+      typeof accountPlan.diagnostics.writableMismatchCount === "number"
+        ? accountPlan.diagnostics.writableMismatchCount
+        : 0;
+    args.log(
+      `PumpSwap detector hints differed from canonical accounts: ` +
+        `${accountPlan.diagnostics.pubkeyMismatchCount} pubkey mismatch(es), ` +
+        `${writableMismatchCount} writable mismatch(es).`
+    );
+  }
 
   const { accounts, userBaseAta, userQuoteAta } = replacePumpSwapUserAccounts({
     accounts: accountPlan.accounts,
@@ -983,10 +1088,18 @@ export async function tryPumpSwapDirectBuy(args: {
   }
   computeIxs.push(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: getDynamicPriorityFee() }));
 
-  const swapIx = new TransactionInstruction({
-    programId: PUMPSWAP_PROGRAM_ID,
-    keys: accounts,
+  const swapIx = buildNativeIdlInstructionFromOrderedAccounts({
+    program: "pump_amm",
+    instruction: "buy_exact_quote_in",
+    accounts,
     data: encodeBuyExactQuoteIn(BigInt(args.solInLamports), minBaseOut),
+    allowExtraAccounts: true,
+  });
+  assertNativeIdlInstruction({
+    program: "pump_amm",
+    instruction: "buy_exact_quote_in",
+    ix: swapIx,
+    allowExtraAccounts: true,
   });
 
   const { blockhash, lastValidBlockHeight } = await getCachedBlockhash();
@@ -1045,7 +1158,7 @@ export async function tryPumpSwapDirectBuy(args: {
       sourceSignature: args.sourceSignature,
       elapsedMs: Date.now() - buildStartedAt,
       success: true,
-      details: { accountPlan: accountPlan.source },
+      details: { accountPlan: accountPlan.source, accountDiagnostics: accountPlan.diagnostics },
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -1058,7 +1171,7 @@ export async function tryPumpSwapDirectBuy(args: {
       elapsedMs: Date.now() - buildStartedAt,
       success: false,
       error: msg,
-      details: { accountPlan: accountPlan.source },
+      details: { accountPlan: accountPlan.source, accountDiagnostics: accountPlan.diagnostics },
     });
     return { ok: false, recoverable: true, reason: `PumpSwap build failed: ${msg} | ${formatContext(ctx)}` };
   }
@@ -1088,7 +1201,7 @@ export async function tryPumpSwapDirectBuy(args: {
         elapsedMs: Date.now() - preflightStartedAt,
         success: false,
         error: reason,
-        details: { accountPlan: accountPlan.source },
+        details: { accountPlan: accountPlan.source, accountDiagnostics: accountPlan.diagnostics },
       });
       if (
         accountPlan.source !== "canonical-pool-state" &&
@@ -1127,7 +1240,7 @@ export async function tryPumpSwapDirectBuy(args: {
       sourceSignature: args.sourceSignature,
       elapsedMs: Date.now() - preflightStartedAt,
       success: true,
-      details: { accountPlan: accountPlan.source },
+      details: { accountPlan: accountPlan.source, accountDiagnostics: accountPlan.diagnostics },
     });
     args.log(`PumpSwap preflight ok (${elapsed()})`);
   }
@@ -1143,23 +1256,69 @@ export async function tryPumpSwapDirectBuy(args: {
     args.log(`PumpSwap broadcast: ${signature} (${elapsed()})`);
     if (fastMode) {
       // PumpSwap is a hot post-graduation entry path; do not block recording on confirmation.
+      const confirmStartedAt = Date.now();
       confirmSignature(signature)
         .then(() => {
+          recordPumpSwapConfirmStage({
+            route: "pumpswap-direct-buy",
+            side: "buy",
+            mint: args.mint,
+            sourceSignature: args.sourceSignature,
+            signature: signature ?? undefined,
+            startedAt: confirmStartedAt,
+            success: true,
+            details: { mode: "background", accountPlan: accountPlan.source },
+          });
           args.onConfirmSuccess?.(args.mint, Number(expectedBaseOut), args.solInLamports, signature!);
         })
         .catch((err) => {
           const msg = err instanceof Error ? err.message : String(err);
+          recordPumpSwapConfirmStage({
+            route: "pumpswap-direct-buy",
+            side: "buy",
+            mint: args.mint,
+            sourceSignature: args.sourceSignature,
+            signature: signature ?? undefined,
+            startedAt: confirmStartedAt,
+            success: false,
+            error: msg,
+            details: { mode: "background", accountPlan: accountPlan.source },
+          });
           console.warn(`PumpSwap confirmation failed after broadcast: ${msg}`);
           args.onConfirmFailure?.(args.mint, Number(expectedBaseOut), args.solInLamports, msg);
         });
     } else {
+      const confirmStartedAt = Date.now();
       await confirmSignature(signature);
+      recordPumpSwapConfirmStage({
+        route: "pumpswap-direct-buy",
+        side: "buy",
+        mint: args.mint,
+        sourceSignature: args.sourceSignature,
+        signature,
+        startedAt: confirmStartedAt,
+        success: true,
+        details: { mode: "blocking", accountPlan: accountPlan.source },
+      });
       args.log(`PumpSwap confirmed (${elapsed()})`);
     }
   } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (signature) {
+      recordPumpSwapConfirmStage({
+        route: "pumpswap-direct-buy",
+        side: "buy",
+        mint: args.mint,
+        sourceSignature: args.sourceSignature,
+        signature,
+        startedAt: args.startedAt,
+        success: false,
+        error: msg,
+        details: { mode: "blocking", accountPlan: accountPlan.source, rebroadcastAttempt: args.rebroadcastAttempt ?? 0 },
+      });
+    }
     const rebroadcastAttempt = args.rebroadcastAttempt ?? 0;
     if (isConfirmationTimeoutError(err) && rebroadcastAttempt < confirmationRebroadcastRetries) {
-      const msg = err instanceof Error ? err.message : String(err);
       // PumpSwap direct bypasses Jupiter's retry ladder, so rebuild here on suspected bundle drops.
       args.log(`PumpSwap buy suspected dropped (${msg}); rebuilding once with fresh blockhash...`);
       return tryPumpSwapDirectBuy({
@@ -1167,7 +1326,6 @@ export async function tryPumpSwapDirectBuy(args: {
         rebroadcastAttempt: rebroadcastAttempt + 1,
       });
     }
-    const msg = err instanceof Error ? err.message : String(err);
     const logs = signature ? await getTransactionFailureLogs(signature) : [];
     const logSummary = summarizeLogs(logs);
     const reason = [
@@ -1274,10 +1432,18 @@ export async function tryPumpSwapDirectSell(args: {
   }
   computeIxs.push(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: getDynamicPriorityFee() }));
 
-  const swapIx = new TransactionInstruction({
-    programId: PUMPSWAP_PROGRAM_ID,
-    keys: accounts,
+  const swapIx = buildNativeIdlInstructionFromOrderedAccounts({
+    program: "pump_amm",
+    instruction: "sell",
+    accounts,
     data: encodeSell(tokensIn, minQuoteOut),
+    allowExtraAccounts: true,
+  });
+  assertNativeIdlInstruction({
+    program: "pump_amm",
+    instruction: "sell",
+    ix: swapIx,
+    allowExtraAccounts: true,
   });
 
   const { blockhash, lastValidBlockHeight } = await getCachedBlockhash();
@@ -1383,30 +1549,71 @@ export async function tryPumpSwapDirectSell(args: {
     });
     args.log(`PumpSwap sell broadcast: ${signature} (${elapsed()})`);
     if (fastMode) {
+      const confirmStartedAt = Date.now();
       confirmSignature(signature)
         .then(() => {
+          recordPumpSwapConfirmStage({
+            route: "pumpswap-direct-sell",
+            side: "sell",
+            mint: args.mint,
+            signature: signature ?? undefined,
+            startedAt: confirmStartedAt,
+            success: true,
+            details: { mode: "background" },
+          });
           args.onConfirmSuccess?.(args.mint, Number(tokensIn), Number(expectedQuoteOut), signature!);
         })
         .catch((err) => {
           const msg = err instanceof Error ? err.message : String(err);
+          recordPumpSwapConfirmStage({
+            route: "pumpswap-direct-sell",
+            side: "sell",
+            mint: args.mint,
+            signature: signature ?? undefined,
+            startedAt: confirmStartedAt,
+            success: false,
+            error: msg,
+            details: { mode: "background" },
+          });
           console.warn(`PumpSwap sell confirmation failed after broadcast: ${msg}`);
           args.onConfirmFailure?.(args.mint, Number(tokensIn), Number(expectedQuoteOut), msg);
         });
     } else {
+      const confirmStartedAt = Date.now();
       await confirmSignature(signature);
+      recordPumpSwapConfirmStage({
+        route: "pumpswap-direct-sell",
+        side: "sell",
+        mint: args.mint,
+        signature,
+        startedAt: confirmStartedAt,
+        success: true,
+        details: { mode: "blocking" },
+      });
       args.log(`PumpSwap sell confirmed (${elapsed()})`);
     }
   } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (signature) {
+      recordPumpSwapConfirmStage({
+        route: "pumpswap-direct-sell",
+        side: "sell",
+        mint: args.mint,
+        signature,
+        startedAt: args.startedAt,
+        success: false,
+        error: msg,
+        details: { mode: "blocking", rebroadcastAttempt: args.rebroadcastAttempt ?? 0 },
+      });
+    }
     const rebroadcastAttempt = args.rebroadcastAttempt ?? 0;
     if (isConfirmationTimeoutError(err) && rebroadcastAttempt < confirmationRebroadcastRetries) {
-      const msg = err instanceof Error ? err.message : String(err);
       args.log(`PumpSwap sell suspected dropped (${msg}); rebuilding once with fresh blockhash...`);
       return tryPumpSwapDirectSell({
         ...args,
         rebroadcastAttempt: rebroadcastAttempt + 1,
       });
     }
-    const msg = err instanceof Error ? err.message : String(err);
     const logs = signature ? await getTransactionFailureLogs(signature) : [];
     const logSummary = summarizeLogs(logs);
     const reason = [

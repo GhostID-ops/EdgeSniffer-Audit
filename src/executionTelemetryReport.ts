@@ -12,6 +12,8 @@ type Row = {
   success?: boolean;
   errorClass?: string;
   errorCode?: string;
+  errorProgram?: string;
+  errorName?: string;
   errorSummary?: string;
   errorHint?: string;
   details?: Record<string, unknown>;
@@ -20,6 +22,18 @@ type Row = {
 function key(row: Row, field: keyof Row, fallback = "unknown"): string {
   const value = row[field];
   return typeof value === "string" && value.length > 0 ? value : fallback;
+}
+
+function detailString(row: Row, field: string, fallback = "unknown"): string {
+  const value = row.details?.[field];
+  return typeof value === "string" && value.length > 0 ? value : fallback;
+}
+
+function detailRecord(row: Row, field: string): Record<string, unknown> | null {
+  const value = row.details?.[field];
+  return value != null && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
 }
 
 function pct(n: number, d: number): string {
@@ -79,9 +93,37 @@ console.log(`Latency ms: p50=${quantile(elapsed, 0.5).toFixed(0)} p90=${quantile
 
 printTop("By kind", countBy(rows, (row) => key(row, "kind")), rows.length);
 printTop("By route", countBy(rows, (row) => key(row, "route")), rows.length);
+printTop("By account plan", countBy(rows, (row) => detailString(row, "accountPlan")), rows.length);
+printTop("By compact mode", countBy(rows, (row) => detailString(row, "compactMode")), rows.length);
+printTop("By tip set", countBy(rows, (row) => detailString(row, "tipSet")), rows.length);
 printTop("Failures by class", countBy(failures, (row) => key(row, "errorClass")), Math.max(1, failures.length));
+printTop("Failures by error name", countBy(failures, (row) => key(row, "errorName")), Math.max(1, failures.length));
+printTop("Failures by program", countBy(failures, (row) => key(row, "errorProgram")), Math.max(1, failures.length));
 printTop("Failures by route", countBy(failures, (row) => key(row, "route")), Math.max(1, failures.length));
 printTop("Failures by stage/kind", countBy(failures, (row) => key(row, "kind")), Math.max(1, failures.length));
+printTop("Failures by account plan", countBy(failures, (row) => detailString(row, "accountPlan")), Math.max(1, failures.length));
+
+const accountDiagnostics = rows
+  .map((row) => ({ row, diagnostics: detailRecord(row, "accountDiagnostics") }))
+  .filter((entry): entry is { row: Row; diagnostics: Record<string, unknown> } => entry.diagnostics != null);
+if (accountDiagnostics.length > 0) {
+  const mismatches = accountDiagnostics.filter(({ diagnostics }) => {
+    const count = diagnostics.pubkeyMismatchCount;
+    return typeof count === "number" && count > 0;
+  });
+  console.log("\nPumpSwap account diagnostics");
+  console.log(`  Rows with diagnostics: ${accountDiagnostics.length}`);
+  console.log(`  Detector/canonical pubkey mismatches: ${mismatches.length}`);
+
+  for (const { row, diagnostics } of mismatches.slice(-8).reverse()) {
+    const mint = row.mint ? `${row.mint.slice(0, 8)}...` : "unknown";
+    const count = typeof diagnostics.pubkeyMismatchCount === "number" ? diagnostics.pubkeyMismatchCount : 0;
+    const indexes = Array.isArray(diagnostics.pubkeyMismatchIndexes)
+      ? diagnostics.pubkeyMismatchIndexes.slice(0, 8).join(",")
+      : "";
+    console.log(`  ${row.kind ?? "event"} ${mint}: ${count} pubkey mismatch(es) at [${indexes}]`);
+  }
+}
 
 const latestFailures = failures.slice(-10).reverse();
 if (latestFailures.length > 0) {
@@ -90,8 +132,8 @@ if (latestFailures.length > 0) {
     const mint = row.mint ? `${row.mint.slice(0, 8)}...` : "unknown";
     const cls = row.errorClass ?? "unknown";
     const code = row.errorCode ? `/${row.errorCode}` : "";
+    const name = row.errorName ? `/${row.errorName}` : "";
     const hint = row.errorHint ? ` | ${row.errorHint}` : "";
-    console.log(`  ${row.kind ?? "event"} ${row.route ?? "unknown"} ${mint}: ${cls}${code}${hint}`);
+    console.log(`  ${row.kind ?? "event"} ${row.route ?? "unknown"} ${mint}: ${cls}${code}${name}${hint}`);
   }
 }
-

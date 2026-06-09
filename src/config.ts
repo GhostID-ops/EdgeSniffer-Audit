@@ -34,6 +34,12 @@ function parseOptionalPositiveInteger(value: string | undefined): number | null 
   return Number.isFinite(n) && n > 0 ? n : null;
 }
 
+function parseNonNegativeInteger(value: string | undefined, fallback: number): number {
+  if (value == null || value.trim() === "") return fallback;
+  const n = parseInt(value, 10);
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
+}
+
 /** Tracked wallet addresses (comma-separated in TRACKED_WALLETS). */
 const TRACKED_WALLETS_RAW = process.env.TRACKED_WALLETS ?? "";
 export const trackedWallets: string[] = TRACKED_WALLETS_RAW
@@ -41,10 +47,24 @@ export const trackedWallets: string[] = TRACKED_WALLETS_RAW
   .map((s) => s.trim())
   .filter(Boolean);
 
-/** Min buy size in SOL. Mirror trades below this are skipped. Default 0.01 SOL. */
+/** Min buy size in SOL. Behavior for smaller copy-sized buys is controlled by MIN_BUY_BEHAVIOR. */
 let MIN_BUY_SOL = parseFloat(process.env.MIN_BUY_SOL ?? "0.01");
 /** Max buy size in SOL. Mirror trades are capped to this. Default 1 SOL. */
 let MAX_BUY_SOL = parseFloat(process.env.MAX_BUY_SOL ?? "1");
+export type MinBuyBehavior = "skip" | "floor" | "allow";
+function parseMinBuyBehavior(raw: string | undefined): MinBuyBehavior {
+  const value = (raw ?? "skip").trim().toLowerCase();
+  if (value === "allow" || value === "copy" || value === "copy-sized") return "allow";
+  if (value === "floor" || value === "min") return "floor";
+  return "skip";
+}
+/**
+ * How to handle percentage-sized copy buys below MIN_BUY_SOL/MIN_BUY_USDC:
+ * - skip: do not buy
+ * - floor: raise the buy to the configured minimum
+ * - allow: buy the calculated copy-sized amount
+ */
+export const minBuyBehavior = parseMinBuyBehavior(process.env.MIN_BUY_BEHAVIOR);
 const COPY_BUY_PERCENTAGE_RAW = process.env.COPY_BUY_PERCENTAGE ?? "100";
 const COPY_BUY_PERCENTAGE_PARSED = parseFloat(COPY_BUY_PERCENTAGE_RAW);
 if (!Number.isFinite(COPY_BUY_PERCENTAGE_PARSED)) {
@@ -227,8 +247,19 @@ export const executionAltAddresses = (process.env.EXECUTION_ALT_ADDRESSES ?? "")
   .split(",")
   .map((value) => value.trim())
   .filter(Boolean);
-export const executionTipMultipliers = new Map(
-  (process.env.EXECUTION_TIP_MULTIPLIERS ?? "")
+const DEFAULT_EXECUTION_TIP_MULTIPLIERS: Array<[string, number]> = [
+  ["buy", 1.15],
+  ["sell", 0.9],
+  ["pumpfun-direct-buy", 1.2],
+  ["pumpfun-source-replay-buy", 1.25],
+  ["pumpswap-direct-buy", 1.15],
+  ["jupiter-buy", 1.0],
+  ["pumpfun-direct-sell", 0.9],
+  ["pumpfun-direct-sell-v2", 1.0],
+  ["pumpswap-direct-sell", 0.95],
+  ["jupiter-sell", 0.9],
+];
+const configuredExecutionTipMultipliers = (process.env.EXECUTION_TIP_MULTIPLIERS ?? "")
     .split(",")
     .map((piece) => piece.trim())
     .filter(Boolean)
@@ -238,8 +269,11 @@ export const executionTipMultipliers = new Map(
       if (!route || !Number.isFinite(multiplier) || multiplier <= 0) return null;
       return [route.trim(), multiplier];
     })
-    .filter((entry): entry is [string, number] => entry != null)
-);
+    .filter((entry): entry is [string, number] => entry != null);
+export const executionTipMultipliers = new Map([
+  ...DEFAULT_EXECUTION_TIP_MULTIPLIERS,
+  ...configuredExecutionTipMultipliers,
+]);
 const WARM_WALLET_MODE_RAW = (process.env.WARM_WALLET_MODE ?? "true").toLowerCase();
 export const warmWalletMode =
   WARM_WALLET_MODE_RAW !== "false" &&
@@ -511,7 +545,7 @@ export const confirmationRebroadcastRetries = Math.max(
   parseInt(process.env.CONFIRMATION_REBROADCAST_RETRIES ?? "1", 10)
 );
 
-/** Min buy in lamports (for copytrading: skip mirrors below this). */
+/** Min buy in lamports. See MIN_BUY_BEHAVIOR for below-minimum copy trades. */
 export let minBuyLamports = Math.round(MIN_BUY_SOL * LAMPORTS_PER_SOL);
 /** Max buy in lamports (for copytrading: cap mirror size to this). */
 export let maxBuyLamports = Math.round(MAX_BUY_SOL * LAMPORTS_PER_SOL);
@@ -664,7 +698,7 @@ export const maxRiskQuotesPerCheck = Math.max(
  */
 export const minHoldBeforeStopLossMs = Math.max(
   0,
-  parseInt(process.env.MIN_HOLD_BEFORE_STOP_LOSS_MS ?? "3500", 10)
+  parseNonNegativeInteger(process.env.MIN_HOLD_BEFORE_STOP_LOSS_MS, 3500)
 );
 export const riskControlsEnabled = stopLossPct != null || takeProfitPct != null;
 
