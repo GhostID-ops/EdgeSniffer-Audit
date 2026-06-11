@@ -4,6 +4,8 @@ import {
   getPrivateKeyBase58,
   setSimulationMode,
   trackedWallets,
+  exitSignalSellsEnabled,
+  exitSignalWallets,
   simulationMode,
   simulationSolBalance,
   minBuyLamports,
@@ -40,6 +42,7 @@ import {
   maxOpenPositions,
   maxBuysPerToken,
   maxSolPerTokenLamports,
+  maxSessionDeployedLamports,
   showMarketCap,
   stopLossPct,
   takeProfitPct,
@@ -177,6 +180,8 @@ export type BotState = {
   startedAt: number | null;
   ourWallet: string | null;
   trackedWallets: string[];
+  exitSignalSellsEnabled: boolean;
+  exitSignalWallets: string[];
   simulationMode: boolean;
   minBuySol: number;
   maxBuySol: number;
@@ -257,6 +262,7 @@ const fastSellConfirmPendingByMint = new Set<string>();
 const quarantinedBuyMints = new Map<string, string>();
 const openPositionBuyMintsInFlight = new Set<string>();
 const riskSellsInFlight = new Set<string>();
+const exitSignalSellsInFlight = new Set<string>();
 const riskSellRetryAfterByMint = new Map<string, number>();
 const RISK_SELL_FAILURE_COOLDOWN_MS = 15_000;
 const GRADUATION_TRANSIENT_FLOOR_MS = 2 * 60_000;
@@ -1138,16 +1144,80 @@ function logTrade(
   console.log("");
 }
 
+function shortWallet(wallet: string): string {
+  return `${wallet.slice(0, 4)}...${wallet.slice(-4)}`;
+}
+
+function uniqueWallets(wallets: string[]): string[] {
+  return Array.from(new Set(wallets.map((wallet) => wallet.trim()).filter(Boolean)));
+}
+
+function getWatchedWallets(): string[] {
+  if (!exitSignalSellsEnabled) return trackedWallets;
+  return uniqueWallets([...trackedWallets, ...exitSignalWallets]);
+}
+
+function isExitSignalWallet(wallet: string): boolean {
+  return exitSignalSellsEnabled && exitSignalWallets.includes(wallet);
+}
+
+async function closePositionFromExitSignal(swap: DetectedSwap): Promise<void> {
+  const mint = swap.inputMint;
+  const position = getPosition(mint);
+  const walletTag = shortWallet(swap.wallet);
+  if (!position || position.heldRaw <= 0) {
+    console.log(
+      `Exit signal from ${walletTag} for ${mint.slice(0, 8)}... ignored: no matching open position.`
+    );
+    return;
+  }
+
+  if (exitSignalSellsInFlight.has(mint) || riskSellsInFlight.has(mint) || fastSellConfirmPendingByMint.has(mint)) {
+    console.log(`Exit signal for $${position.symbol} skipped: sell already in flight.`);
+    return;
+  }
+
+  exitSignalSellsInFlight.add(mint);
+  const note = `exit signal from ${walletTag}`;
+  try {
+    console.log(
+      `Exit signal sell detected from ${walletTag}: closing ${formatTokenAmount(position.heldRaw, position.decimals)} $${position.symbol}.`
+    );
+    if (simulationMode) {
+      await sellSimulatedPosition(position, note);
+      return;
+    }
+
+    await sellLivePosition(position, note, undefined, false);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`Exit signal sell failed for $${position.symbol}: ${msg}`);
+    void telegram.notifyError(`Exit signal sell failed for $${position.symbol}`, msg);
+  } finally {
+    exitSignalSellsInFlight.delete(mint);
+  }
+}
+
 async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   if (stopRequested) return;
   const ts = Date.now();
   const processStartedAt = Date.now();
   const elapsed = () => `${Date.now() - processStartedAt}ms`;
-  if (!trackedWallets.includes(swap.wallet)) {
+  const isTrackedSourceWallet = trackedWallets.includes(swap.wallet);
+  const isExitOnlyWallet = !isTrackedSourceWallet && isExitSignalWallet(swap.wallet);
+  if (!isTrackedSourceWallet && !isExitOnlyWallet) {
     console.warn(
       `Ignoring swap from untracked wallet ${swap.wallet.slice(0, 4)}...${swap.wallet.slice(-4)} ` +
-        `(tracked: ${trackedWallets.map((wallet) => `${wallet.slice(0, 4)}...${wallet.slice(-4)}`).join(", ")}).`
+        `(tracked: ${trackedWallets.map(shortWallet).join(", ")}).`
     );
+    return;
+  }
+  if (isExitOnlyWallet) {
+    if (!isSellSignal(swap)) {
+      console.log(`Exit signal wallet ${shortWallet(swap.wallet)} buy ignored; exit wallets only trigger sells.`);
+      return;
+    }
+    await closePositionFromExitSignal(swap);
     return;
   }
   let lockedBuyMint: string | null = null;
@@ -1262,15 +1332,29 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       );
       return;
     }
-    if (!buyOncePerTokenEnabled && maxSolPerTokenLamports != null && existing) {
+    if (maxSolPerTokenLamports != null) {
       const nextBuyLamports =
         mirrorQuoteMintForBuy(swap) === WRAPPED_SOL_MINT ? mirroredBuyAmountRaw(swap) : null;
-      const projectedLamports = existing.totalSolSpentLamports + (nextBuyLamports ?? 0);
+      const projectedLamports = (existing?.totalSolSpentLamports ?? 0) + (nextBuyLamports ?? 0);
       if (nextBuyLamports != null && projectedLamports > maxSolPerTokenLamports) {
         console.log(
           `Skipping buy: ${mint.slice(0, 8)}... max SOL per token exposure would be exceeded ` +
-            `(${formatSolAmount(existing.totalSolSpentLamports)} + ${formatSolAmount(nextBuyLamports)} > ` +
+            `(${formatSolAmount(existing?.totalSolSpentLamports ?? 0)} + ${formatSolAmount(nextBuyLamports)} > ` +
             `${formatSolAmount(maxSolPerTokenLamports)} SOL).`
+        );
+        return;
+      }
+    }
+    if (maxSessionDeployedLamports != null) {
+      const nextBuyLamports =
+        mirrorQuoteMintForBuy(swap) === WRAPPED_SOL_MINT ? mirroredBuyAmountRaw(swap) : null;
+      const deployedLamports = getTotals().totalSolSpentLamports;
+      const projectedLamports = deployedLamports + (nextBuyLamports ?? 0);
+      if (nextBuyLamports != null && projectedLamports > maxSessionDeployedLamports) {
+        console.log(
+          `Skipping buy: session deployed SOL cap would be exceeded ` +
+            `(${formatSolAmount(deployedLamports)} + ${formatSolAmount(nextBuyLamports)} > ` +
+            `${formatSolAmount(maxSessionDeployedLamports)} SOL).`
         );
         return;
       }
@@ -1877,6 +1961,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
 async function loop(): Promise<void> {
   const kp = keypair!;
   const bootTimeSec = Math.floor((startedAt ?? Date.now()) / 1000);
+  const watchedWallets = getWatchedWallets();
   let lastWarm = 0;
   let lastBalanceLog = 0;
   let lastRiskCheck = 0;
@@ -1887,7 +1972,7 @@ async function loop(): Promise<void> {
       // Poll is a safety net — WebSocket does the fast path. Run serially so polls catch anything the WS missed.
       const loopStartedAt = Date.now();
       if (loopStartedAt - lastPoll >= pollIntervalMs) {
-        const swaps = await getNewSwaps(trackedWallets, processedSignatures, bootTimeSec);
+        const swaps = await getNewSwaps(watchedWallets, processedSignatures, bootTimeSec);
         for (const swap of swaps) {
           await processSwap(swap, kp);
         }
@@ -1997,8 +2082,16 @@ export async function startBot(): Promise<void> {
     "Copytrading bot started. Our wallet:",
     keypair.publicKey.toBase58()
   );
+  const watchedWallets = getWatchedWallets();
   console.log("Tracked wallets:", trackedWallets.length);
-  console.log("Tracked wallet list:", trackedWallets.map((wallet) => `${wallet.slice(0, 4)}...${wallet.slice(-4)}`).join(", "));
+  console.log("Tracked wallet list:", trackedWallets.map(shortWallet).join(", "));
+  if (exitSignalSellsEnabled && exitSignalWallets.length > 0) {
+    console.log("Exit signal sells: ON");
+    console.log("Exit signal wallet list:", exitSignalWallets.map(shortWallet).join(", "));
+    console.log("Total watched wallets:", watchedWallets.length);
+  } else {
+    console.log("Exit signal sells: OFF");
+  }
   
   // Send Telegram notification
   void telegram.notifyBotStatus("started");
@@ -2023,6 +2116,12 @@ export async function startBot(): Promise<void> {
   }
   if (maxOpenPositions != null) {
     console.log(`Max open positions enabled: ${maxOpenPositions}.`);
+  }
+  if (maxSolPerTokenLamports != null) {
+    console.log(`Max per-token deployed SOL enabled: ${formatSolAmount(maxSolPerTokenLamports)} SOL.`);
+  }
+  if (maxSessionDeployedLamports != null) {
+    console.log(`Max session deployed SOL enabled: ${formatSolAmount(maxSessionDeployedLamports)} SOL.`);
   }
   if (blockPumpfunMayhem) {
     console.log(`Pump.fun Mayhem Mode filter enabled${pumpfunMayhemStrict ? " (strict)" : ""}.`);
@@ -2055,7 +2154,7 @@ export async function startBot(): Promise<void> {
 
   if (shyftGrpcEnabled) {
     unsubscribeGrpc = await subscribeGrpcWalletSwaps(
-      trackedWallets,
+      watchedWallets,
       processedSignatures,
       (swap) => {
         processSwap(swap, kp).catch((err) => {
@@ -2068,7 +2167,7 @@ export async function startBot(): Promise<void> {
   }
   if (shyftRabbitStreamEnabled) {
     unsubscribeRabbit = await subscribeRabbitWalletSwaps(
-      trackedWallets,
+      watchedWallets,
       processedSignatures,
       (swap) => {
         processSwap(swap, kp).catch((err) => {
@@ -2080,7 +2179,7 @@ export async function startBot(): Promise<void> {
 
   if (heliusTxSubscribeEnabled) {
     unsubscribeHeliusTx = await subscribeHeliusTransactionSwaps(
-      trackedWallets,
+      watchedWallets,
       processedSignatures,
       (swap) => {
         processSwap(swap, kp).catch((err) => {
@@ -2093,7 +2192,7 @@ export async function startBot(): Promise<void> {
   }
 
   unsubscribeWs = await subscribeWalletSwaps(
-    trackedWallets,
+    watchedWallets,
     processedSignatures,
     (swap) => {
       processSwap(swap, kp).catch((err) => {
@@ -2134,6 +2233,7 @@ export function resetTradingState(): void {
   sourceBuySignatureByMint.clear();
   openPositionBuyMintsInFlight.clear();
   riskSellsInFlight.clear();
+  exitSignalSellsInFlight.clear();
   riskSellRetryAfterByMint.clear();
   riskTraceByMint.clear();
   riskQuoteStateByMint.clear();
@@ -2292,7 +2392,12 @@ export async function sellPositionPercentByIndex(index: number, fraction: number
 /**
  * Sell all open positions (simulated or live based on mode)
  */
-async function sellLivePosition(p: PositionSnapshot, note?: string, amountRawOverride?: number): Promise<void> {
+async function sellLivePosition(
+  p: PositionSnapshot,
+  note?: string,
+  amountRawOverride?: number,
+  requireFreshRiskReason = true
+): Promise<void> {
   p = await reconcileOpenPositionWithConfirmedBuy(p);
   let effectiveNote = note;
   let liveHeldRaw: number | null;
@@ -2371,7 +2476,7 @@ async function sellLivePosition(p: PositionSnapshot, note?: string, amountRawOve
   const avgEntry = p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
   const sellCostBasisLamports = avgEntry * sellRaw;
 
-  if (effectiveNote) {
+  if (effectiveNote && requireFreshRiskReason) {
     const freshOutLamports = await quoteRiskExitLamports(p.mint, sellRaw);
     const tickAt = Date.now();
     const freshPnlPct =
@@ -3226,6 +3331,8 @@ export function getBotState(): BotState {
     startedAt,
     ourWallet: keypair?.publicKey.toBase58() ?? null,
     trackedWallets,
+    exitSignalSellsEnabled,
+    exitSignalWallets,
     simulationMode,
     minBuySol: minBuyLamports / LAMPORTS_PER_SOL,
     maxBuySol: maxBuyLamports / LAMPORTS_PER_SOL,

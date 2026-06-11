@@ -41,6 +41,49 @@ const IDL_BUY_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "buy");
 const IDL_BUY_EXACT_SOL_IN_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "buy_exact_sol_in");
 const IDL_BUY_V2_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "buy_v2");
 const IDL_BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR = getNativeIdlDiscriminator("pump", "buy_exact_quote_in_v2");
+const derivedPubkeyCache = new Map<string, PublicKey>();
+
+function memoPubkey(key: string, factory: () => PublicKey): PublicKey {
+  const cached = derivedPubkeyCache.get(key);
+  if (cached) return cached;
+  const value = factory();
+  derivedPubkeyCache.set(key, value);
+  return value;
+}
+
+function cachedAta(owner: PublicKey, mint: PublicKey, tokenProgramId: PublicKey): PublicKey {
+  return memoPubkey(
+    `ata:${owner.toBase58()}:${mint.toBase58()}:${tokenProgramId.toBase58()}`,
+    () => deriveAta(owner, mint, tokenProgramId)
+  );
+}
+
+function cachedCreatorVaultPda(creator: PublicKey): PublicKey {
+  return memoPubkey(`creator-vault:${creator.toBase58()}`, () => deriveCreatorVaultPda(creator));
+}
+
+function cachedSharingConfigPda(mint: PublicKey): PublicKey {
+  return memoPubkey(`sharing-config:${mint.toBase58()}`, () => deriveSharingConfigPda(mint));
+}
+
+function cachedUserVolumeAccumulatorPda(user: PublicKey): PublicKey {
+  return memoPubkey(`user-volume:${user.toBase58()}`, () => deriveUserVolumeAccumulatorPda(user));
+}
+
+const GLOBAL_PDA = memoPubkey("global", deriveGlobalPda);
+const EVENT_AUTHORITY_PDA = memoPubkey("event-authority", deriveEventAuthorityPda);
+const GLOBAL_VOLUME_ACCUMULATOR_PDA = memoPubkey("global-volume", deriveGlobalVolumeAccumulatorPda);
+const FEE_CONFIG_PDA = memoPubkey("fee-config", deriveFeeConfigPda);
+const ASSOCIATED_QUOTE_FEE_RECIPIENT = cachedAta(
+  PUMP_FUN_FEE_RECIPIENT,
+  WRAPPED_SOL_MINT,
+  TOKEN_PROGRAM_ID
+);
+const ASSOCIATED_QUOTE_BUYBACK_FEE_RECIPIENT = cachedAta(
+  PUMP_FUN_BUYBACK_FEE_RECIPIENT,
+  WRAPPED_SOL_MINT,
+  TOKEN_PROGRAM_ID
+);
 
 function encodeBuyArgs(amount: bigint, maxSolCost: bigint): Buffer {
   const buf = Buffer.alloc(25);
@@ -159,6 +202,10 @@ export function scalePumpFunSourceBuyData(args: {
  */
 const PUMP_FUN_BUY_WRITABLE_FLAGS = [
   false, true, false, true, true, true, true, false,
+  false, true, false, false, false, true, false, false,
+];
+const PUMP_FUN_BUY_EXACT_SOL_IN_WRITABLE_FLAGS = [
+  false, true, false, true, true, true, true, false,
   false, true, false, false, true, true, false, false,
 ];
 
@@ -211,10 +258,10 @@ export function buildPumpFunBuyIx(args: {
    */
   sourceIxAccounts?: PublicKey[];
 }): TransactionInstruction {
-  const associatedUser = deriveAta(args.user, args.mint, args.tokenProgramId);
-  const userVolumeAccumulator = deriveUserVolumeAccumulatorPda(args.user);
-  const associatedQuoteUser = deriveAta(args.user, WRAPPED_SOL_MINT, TOKEN_PROGRAM_ID);
-  const associatedUserVolumeAccumulator = deriveAta(
+  const associatedUser = cachedAta(args.user, args.mint, args.tokenProgramId);
+  const userVolumeAccumulator = cachedUserVolumeAccumulatorPda(args.user);
+  const associatedQuoteUser = cachedAta(args.user, WRAPPED_SOL_MINT, TOKEN_PROGRAM_ID);
+  const associatedUserVolumeAccumulator = cachedAta(
     userVolumeAccumulator,
     WRAPPED_SOL_MINT,
     TOKEN_PROGRAM_ID
@@ -245,6 +292,9 @@ export function buildPumpFunBuyIx(args: {
     // Source-extracted path: use source's exact slots 0-15, replace user-specific slots.
     // Slot 16+ are the per-coin remaining accounts (fee recipients) — keep verbatim.
     const src = args.sourceIxAccounts;
+    const writableFlags = args.exactSolIn
+      ? PUMP_FUN_BUY_EXACT_SOL_IN_WRITABLE_FLAGS
+      : PUMP_FUN_BUY_WRITABLE_FLAGS;
     keys = src.slice(0, 16).map((pubkey, i) => {
       let actual = pubkey;
       if (i === 5) actual = associatedUser;
@@ -253,28 +303,24 @@ export function buildPumpFunBuyIx(args: {
       return {
         pubkey: actual,
         isSigner: i === 6,
-        isWritable: PUMP_FUN_BUY_WRITABLE_FLAGS[i]!,
+        isWritable: writableFlags[i]!,
       };
     });
     for (let i = 16; i < src.length; i++) {
       keys.push({ pubkey: src[i]!, isSigner: false, isWritable: true });
     }
   } else if (isV2) {
-    const global = deriveGlobalPda();
-    const eventAuthority = deriveEventAuthorityPda();
-    const associatedBaseBondingCurve = deriveAta(args.bondingCurve, args.mint, args.tokenProgramId);
-    const associatedQuoteBondingCurve = deriveAta(args.bondingCurve, WRAPPED_SOL_MINT, TOKEN_PROGRAM_ID);
-    const creatorVault = deriveCreatorVaultPda(args.creator);
-    const associatedCreatorVault = deriveAta(creatorVault, WRAPPED_SOL_MINT, TOKEN_PROGRAM_ID);
-    const associatedQuoteFeeRecipient = deriveAta(PUMP_FUN_FEE_RECIPIENT, WRAPPED_SOL_MINT, TOKEN_PROGRAM_ID);
-    const associatedQuoteBuybackFeeRecipient = deriveAta(
-      PUMP_FUN_BUYBACK_FEE_RECIPIENT,
-      WRAPPED_SOL_MINT,
-      TOKEN_PROGRAM_ID
-    );
-    const sharingConfig = deriveSharingConfigPda(args.mint);
-    const globalVolumeAccumulator = deriveGlobalVolumeAccumulatorPda();
-    const feeConfig = deriveFeeConfigPda();
+    const global = GLOBAL_PDA;
+    const eventAuthority = EVENT_AUTHORITY_PDA;
+    const associatedBaseBondingCurve = cachedAta(args.bondingCurve, args.mint, args.tokenProgramId);
+    const associatedQuoteBondingCurve = cachedAta(args.bondingCurve, WRAPPED_SOL_MINT, TOKEN_PROGRAM_ID);
+    const creatorVault = cachedCreatorVaultPda(args.creator);
+    const associatedCreatorVault = cachedAta(creatorVault, WRAPPED_SOL_MINT, TOKEN_PROGRAM_ID);
+    const associatedQuoteFeeRecipient = ASSOCIATED_QUOTE_FEE_RECIPIENT;
+    const associatedQuoteBuybackFeeRecipient = ASSOCIATED_QUOTE_BUYBACK_FEE_RECIPIENT;
+    const sharingConfig = cachedSharingConfigPda(args.mint);
+    const globalVolumeAccumulator = GLOBAL_VOLUME_ACCUMULATOR_PDA;
+    const feeConfig = FEE_CONFIG_PDA;
     keys = [
       { pubkey: global, isSigner: false, isWritable: false },
       { pubkey: args.mint, isSigner: false, isWritable: false },
@@ -306,12 +352,12 @@ export function buildPumpFunBuyIx(args: {
     ];
   } else {
     // Legacy derived path — works for classic SPL pump.fun where slots are all constants/PDAs.
-    const global = deriveGlobalPda();
-    const eventAuthority = deriveEventAuthorityPda();
-    const associatedBondingCurve = deriveAta(args.bondingCurve, args.mint, args.tokenProgramId);
-    const creatorVault = deriveCreatorVaultPda(args.creator);
-    const globalVolumeAccumulator = deriveGlobalVolumeAccumulatorPda();
-    const feeConfig = deriveFeeConfigPda();
+    const global = GLOBAL_PDA;
+    const eventAuthority = EVENT_AUTHORITY_PDA;
+    const associatedBondingCurve = cachedAta(args.bondingCurve, args.mint, args.tokenProgramId);
+    const creatorVault = cachedCreatorVaultPda(args.creator);
+    const globalVolumeAccumulator = GLOBAL_VOLUME_ACCUMULATOR_PDA;
+    const feeConfig = FEE_CONFIG_PDA;
     keys = [
       { pubkey: global, isSigner: false, isWritable: false },
       { pubkey: PUMP_FUN_FEE_RECIPIENT, isSigner: false, isWritable: true },
@@ -325,7 +371,7 @@ export function buildPumpFunBuyIx(args: {
       { pubkey: creatorVault, isSigner: false, isWritable: true },
       { pubkey: eventAuthority, isSigner: false, isWritable: false },
       { pubkey: PUMP_FUN_PROGRAM_ID, isSigner: false, isWritable: false },
-      { pubkey: globalVolumeAccumulator, isSigner: false, isWritable: false },
+      { pubkey: globalVolumeAccumulator, isSigner: false, isWritable: args.exactSolIn === true },
       { pubkey: userVolumeAccumulator, isSigner: false, isWritable: true },
       { pubkey: feeConfig, isSigner: false, isWritable: false },
       { pubkey: PUMP_FUN_FEE_PROGRAM_ID, isSigner: false, isWritable: false },
@@ -366,7 +412,7 @@ export function buildCreateAtaIdempotentIx(args: {
   mint: PublicKey;
   tokenProgramId: PublicKey;
 }): TransactionInstruction {
-  const ata = deriveAta(args.owner, args.mint, args.tokenProgramId);
+  const ata = cachedAta(args.owner, args.mint, args.tokenProgramId);
   const keys = [
     { pubkey: args.payer, isSigner: true, isWritable: true },
     { pubkey: ata, isSigner: false, isWritable: true },
@@ -413,7 +459,7 @@ export async function buildPumpFunBuyTransaction(args: {
     })
   );
 
-  const associatedUser = deriveAta(args.user.publicKey, args.mint, args.tokenProgramId);
+  const associatedUser = cachedAta(args.user.publicKey, args.mint, args.tokenProgramId);
   const setupIxs = knownAccountExists(associatedUser)
     ? []
     : [
@@ -486,7 +532,7 @@ export async function buildPumpFunBuyReplayTransaction(args: {
     })
   );
 
-  const associatedUser = deriveAta(args.user.publicKey, args.mint, tokenProgramId);
+  const associatedUser = cachedAta(args.user.publicKey, args.mint, tokenProgramId);
   const setupIxs = knownAccountExists(associatedUser)
     ? []
     : [

@@ -40,12 +40,31 @@ function parseNonNegativeInteger(value: string | undefined, fallback: number): n
   return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
 
+function parseCsvList(value: string | undefined): string[] {
+  return (value ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function parseEnvBool(value: string | undefined, fallback: boolean): boolean {
+  const normalized = (value ?? "").trim().toLowerCase();
+  if (normalized === "") return fallback;
+  if (normalized === "true" || normalized === "1" || normalized === "yes" || normalized === "on") return true;
+  if (normalized === "false" || normalized === "0" || normalized === "no" || normalized === "off") return false;
+  return fallback;
+}
+
 /** Tracked wallet addresses (comma-separated in TRACKED_WALLETS). */
 const TRACKED_WALLETS_RAW = process.env.TRACKED_WALLETS ?? "";
-export const trackedWallets: string[] = TRACKED_WALLETS_RAW
-  .split(",")
-  .map((s) => s.trim())
-  .filter(Boolean);
+export const trackedWallets: string[] = parseCsvList(TRACKED_WALLETS_RAW);
+
+/**
+ * Optional exit-only wallets. When enabled, these wallets are watched for sells only; their buys
+ * are ignored. A sell signal closes our matching open position for that mint.
+ */
+export const exitSignalSellsEnabled = parseEnvBool(process.env.EXIT_SIGNAL_SELLS_ENABLED, false);
+export const exitSignalWallets: string[] = parseCsvList(process.env.EXIT_SIGNAL_WALLETS);
 
 /** Min buy size in SOL. Behavior for smaller copy-sized buys is controlled by MIN_BUY_BEHAVIOR. */
 let MIN_BUY_SOL = parseFloat(process.env.MIN_BUY_SOL ?? "0.01");
@@ -329,6 +348,7 @@ export const jitoBundleUrls = Array.from(
 );
 export const jitoBundleUrl = jitoBundleUrls[0] ?? `${JITO_REGIONS[""]}/api/v1/bundles`;
 export const jitoAuthUuid = process.env.JITO_AUTH_UUID ?? "";
+export const jitoRegionRaceEnabled = parseEnvBool(process.env.JITO_REGION_RACE_ENABLED, true);
 
 /** Helius enhanced transactions API (parse transactions). POST with { transactions: [sigs] }. */
 export const heliusEnhancedTransactionsUrl =
@@ -415,6 +435,10 @@ const MAX_SOL_PER_TOKEN = parseOptionalPositiveNumber(process.env.MAX_SOL_PER_TO
 /** Optional cap on total SOL spent per token position. */
 export const maxSolPerTokenLamports =
   MAX_SOL_PER_TOKEN != null ? Math.round(MAX_SOL_PER_TOKEN * LAMPORTS_PER_SOL) : null;
+const MAX_SESSION_DEPLOYED_SOL = parseOptionalPositiveNumber(process.env.MAX_SESSION_DEPLOYED_SOL);
+/** Optional cap on total gross SOL deployed into buys during this bot session. */
+export const maxSessionDeployedLamports =
+  MAX_SESSION_DEPLOYED_SOL != null ? Math.round(MAX_SESSION_DEPLOYED_SOL * LAMPORTS_PER_SOL) : null;
 
 /**
  * Startup-only source wallet prefilter. When enabled, the bot builds an in-memory set of mints

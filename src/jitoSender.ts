@@ -1,6 +1,6 @@
 import type { VersionedTransaction } from "@solana/web3.js";
 import bs58 from "bs58";
-import { jitoAuthUuid, jitoBundleUrls } from "./config.js";
+import { jitoAuthUuid, jitoBundleUrls, jitoRegionRaceEnabled } from "./config.js";
 
 /**
  * Submit a single signed transaction as a 1-tx bundle to Jito's BlockEngine.
@@ -66,24 +66,43 @@ export async function broadcastViaJito(tx: VersionedTransaction): Promise<string
   const start = nextRegionIndex % urls.length;
   nextRegionIndex = (nextRegionIndex + 1) % urls.length;
   const orderedUrls = [...urls.slice(start), ...urls.slice(0, start)];
-  const errors: string[] = [];
 
-  for (const url of orderedUrls) {
+  if (jitoRegionRaceEnabled && orderedUrls.length > 1) {
+    const errors: string[] = [];
     try {
-      await sendBundleToUrl(url, txBase64);
-      break;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      errors.push(msg);
-      if (!isRateLimitError(err) || orderedUrls.length === 1) {
-        throw err;
-      }
-      console.warn(`Jito region rate-limited; trying next region: ${msg}`);
+      await Promise.any(
+        orderedUrls.map(async (url) => {
+          try {
+            return await sendBundleToUrl(url, txBase64);
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            errors.push(msg);
+            throw err;
+          }
+        })
+      );
+    } catch {
+      throw new Error(`Jito sendBundle failed in all configured regions: ${errors.join(" | ")}`);
     }
-  }
+  } else {
+    const errors: string[] = [];
+    for (const url of orderedUrls) {
+      try {
+        await sendBundleToUrl(url, txBase64);
+        break;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        errors.push(msg);
+        if (!isRateLimitError(err) || orderedUrls.length === 1) {
+          throw err;
+        }
+        console.warn(`Jito region rate-limited; trying next region: ${msg}`);
+      }
+    }
 
-  if (errors.length === orderedUrls.length) {
-    throw new Error(`Jito sendBundle failed in all configured regions: ${errors.join(" | ")}`);
+    if (errors.length === orderedUrls.length) {
+      throw new Error(`Jito sendBundle failed in all configured regions: ${errors.join(" | ")}`);
+    }
   }
 
   // sendBundle returns a bundle_id, but the caller needs the tx signature for confirmation.

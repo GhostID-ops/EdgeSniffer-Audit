@@ -21,9 +21,15 @@ import {
   quoteSellOnCurve,
   maxSolForImpact,
 } from "./curve.js";
-import { buildPumpFunBuyReplayTransaction, buildPumpFunBuyTransaction } from "./buy.js";
+import { buildPumpFunBuyReplayTransaction, buildPumpFunBuyTransaction, scalePumpFunSourceBuyData } from "./buy.js";
 import { buildPumpFunSellTransaction } from "./sell.js";
 import { recordExecutionStage } from "../executionTelemetry.js";
+
+const DIRECT_CURVE_RETRY_DELAYS_MS = [25, 50, 100];
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function recordConfirmStage(args: {
   route: string;
@@ -193,20 +199,44 @@ export async function tryPumpFunDirectBuy(args: {
   const sourceAccountsPromise: Promise<AccountMeta[]> = haveGrpcAccounts
     ? Promise.resolve([])
     : getSourcePumpRemainingAccounts(args.sourceSignature, mintKey);
-  const curve = await getBondingCurveState(mintKey);
+  let curve = await getBondingCurveState(mintKey);
+  const canSourceReplay =
+    args.sourceIxAccounts !== undefined &&
+    args.sourceIxAccounts.length >= 16 &&
+    Boolean(args.sourceIxDataBase64);
+
+  if (!curve && canSourceReplay) {
+    for (const delayMs of DIRECT_CURVE_RETRY_DELAYS_MS) {
+      await sleep(delayMs);
+      curve = await getBondingCurveState(mintKey);
+      if (curve) {
+        args.log(
+          `Pump.fun curve RPC became available after ${delayMs}ms retry; using direct curve quote instead of source replay.`
+        );
+        break;
+      }
+    }
+  }
   if (!curve) {
-    if (args.sourceIxAccounts && args.sourceIxAccounts.length >= 16 && args.sourceIxDataBase64) {
-      args.log("Pump.fun curve RPC unavailable; replaying scaled source Pump.fun ix.");
-      const sourceIxPubkeys = args.sourceIxAccounts.map((k) => new PublicKey(k));
-      const sourceIxData = Buffer.from(args.sourceIxDataBase64, "base64");
+    if (canSourceReplay) {
+      args.log("Pump.fun curve RPC unavailable after direct retries; replaying scaled source Pump.fun ix.");
+      const sourceIxAccounts = args.sourceIxAccounts!;
+      const sourceIxDataBase64 = args.sourceIxDataBase64!;
+      const sourceIxPubkeys = sourceIxAccounts.map((k) => new PublicKey(k));
+      const sourceIxData = Buffer.from(sourceIxDataBase64, "base64");
       const solIn = BigInt(args.solInLamports);
       if (simulationMode) {
         const mintMeta = await getTokenMeta(args.mint);
+        const scaled = scalePumpFunSourceBuyData({
+          sourceIxData,
+          solInLamports: solIn,
+          slippageBps: args.slippageBps,
+        });
         return {
           ok: true,
           signature: `sim-pumpfun-replay-${args.mint.slice(0, 8)}-${Date.now()}`,
           isSimulated: true,
-          tokensOut: 1n,
+          tokensOut: scaled.estimatedTokensOut,
           solIn,
           priceImpactPct: 0,
           mintMeta,
