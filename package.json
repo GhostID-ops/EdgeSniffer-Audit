@@ -22,6 +22,7 @@
     "env:free-helius": "node scripts/applyPerformanceEnv.mjs .env.performance.free-helius",
     "env:infra-engine": "node scripts/applyPerformanceEnv.mjs .env.infra-engine",
     "env:friend-latest": "node scripts/applyPerformanceEnv.mjs .env.friend-latest",
+    "env:friend-exposure": "node scripts/applyPerformanceEnv.mjs .env.friend-exposure",
     "env:copy-percentage": "node scripts/applyPerformanceEnv.mjs .env.copy-percentage",
     "friend:update": "powershell -ExecutionPolicy Bypass -File scripts/updateFriendBot.ps1",
     "telemetry:execution": "tsx src/executionTelemetryReport.ts",

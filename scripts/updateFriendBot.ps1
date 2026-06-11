@@ -56,4 +56,5 @@ Run-Step "Build TypeScript" {
 
 Write-Host ""
 Write-Host "Done. His private key/API keys and strategy/accounting values were preserved; .env was backed up under .restore-backups." -ForegroundColor Green
+Write-Host "Optional exposure caps can be applied with: npm run env:friend-exposure" -ForegroundColor Yellow
 Write-Host "Start the bot with: npm run bot" -ForegroundColor Green
