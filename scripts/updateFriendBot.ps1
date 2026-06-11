@@ -3,6 +3,8 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$BotRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
+Set-Location $BotRoot
 
 function Run-Step {
   param(
@@ -16,7 +18,20 @@ function Run-Step {
 }
 
 if (-not (Test-Path ".git")) {
-  throw "Run this from inside the bot folder. I could not find a .git directory here."
+  throw @"
+This folder is not a git clone: $BotRoot
+
+It looks like the bot was downloaded as a ZIP or copied without its .git folder.
+To enable updates, clone it once, then copy his existing .env into the clone:
+
+  cd C:\Users\maxim\Downloads
+  git clone https://github.com/frankykas/TradingBot.git TradingBot-git
+  copy "$BotRoot\.env" "C:\Users\maxim\Downloads\TradingBot-git\.env"
+  cd C:\Users\maxim\Downloads\TradingBot-git
+  npm run friend:update
+
+After that, always use C:\Users\maxim\Downloads\TradingBot-git for the bot.
+"@
 }
 
 if (-not (Test-Path ".env")) {
