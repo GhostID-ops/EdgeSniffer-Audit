@@ -31,7 +31,7 @@ Run-Step "Install/update npm dependencies" {
   npm install
 }
 
-Run-Step "Apply safe friend env preset" {
+Run-Step "Apply safe friend infra env preset" {
   npm run env:friend-latest
 }
 
@@ -40,5 +40,5 @@ Run-Step "Build TypeScript" {
 }
 
 Write-Host ""
-Write-Host "Done. His private key/API keys were preserved; .env was backed up under .restore-backups." -ForegroundColor Green
+Write-Host "Done. His private key/API keys and strategy/accounting values were preserved; .env was backed up under .restore-backups." -ForegroundColor Green
 Write-Host "Start the bot with: npm run bot" -ForegroundColor Green
