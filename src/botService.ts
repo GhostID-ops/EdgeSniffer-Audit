@@ -205,6 +205,8 @@ export type BotState = {
   lastBalanceLamports: number | null;
   lastBalanceSol: number | null;
   lastBalanceAt: number | null;
+  sessionStartBalanceLamports: number | null;
+  sessionWalletDeltaLamports: number | null;
   recentSwaps: MirrorRecord[];
   positions: PositionSnapshot[];
   totals: PnlTotals;
@@ -294,6 +296,8 @@ let sleepResolve: (() => void) | null = null;
 let keypair: Keypair | null = null;
 let lastBalanceLamports: number | null = null;
 let lastBalanceAt: number | null = null;
+let sessionStartBalanceLamports: number | null = null;
+let sessionStartBalanceAt: number | null = null;
 let unsubscribeWs: Unsubscribe | null = null;
 let unsubscribeGrpc: GrpcUnsubscribe | null = null;
 let unsubscribeRabbit: RabbitUnsubscribe | null = null;
@@ -743,30 +747,58 @@ function interruptibleSleep(ms: number): Promise<void> {
   });
 }
 
-async function updateBalance(pubkey: PublicKey): Promise<void> {
+async function updateBalance(pubkey: PublicKey, options: { log?: boolean } = {}): Promise<void> {
+  const shouldLog = options.log ?? true;
   try {
     const shadowLamports = getShadowSolLamports();
     if (simulationMode && shadowLamports != null) {
       lastBalanceLamports = shadowLamports;
       lastBalanceAt = Date.now();
-      console.log("Balance:", formatSol(shadowLamports), "(shadow simulated)");
+      if (shouldLog) console.log("Balance:", formatSol(shadowLamports), "(shadow simulated)");
       return;
     }
     if (simulationMode && simulationSolBalance != null) {
       const lamports = Math.round(simulationSolBalance * LAMPORTS_PER_SOL);
       lastBalanceLamports = lamports;
       lastBalanceAt = Date.now();
-      console.log("Balance:", formatSol(lamports), "(simulated)");
+      if (shouldLog) console.log("Balance:", formatSol(lamports), "(simulated)");
       return;
     }
     const { lamports } = await getSolBalance(pubkey);
     lastBalanceLamports = lamports;
     lastBalanceAt = Date.now();
     setBalanceCache(lamports);
-    console.log("Balance:", formatSol(lamports));
+    if (shouldLog) console.log("Balance:", formatSol(lamports));
   } catch (err) {
     console.warn("Failed to fetch balance:", err);
   }
+}
+
+function captureSessionStartBalance(): void {
+  sessionStartBalanceLamports = lastBalanceLamports;
+  sessionStartBalanceAt = lastBalanceLamports != null ? Date.now() : null;
+}
+
+export type SessionWalletPnlSnapshot = {
+  startBalanceLamports: number | null;
+  currentBalanceLamports: number | null;
+  deltaLamports: number | null;
+  startBalanceAt: number | null;
+  currentBalanceAt: number | null;
+};
+
+export function getSessionWalletPnlSnapshot(): SessionWalletPnlSnapshot {
+  const deltaLamports =
+    sessionStartBalanceLamports != null && lastBalanceLamports != null
+      ? lastBalanceLamports - sessionStartBalanceLamports
+      : null;
+  return {
+    startBalanceLamports: sessionStartBalanceLamports,
+    currentBalanceLamports: lastBalanceLamports,
+    deltaLamports,
+    startBalanceAt: sessionStartBalanceAt,
+    currentBalanceAt: lastBalanceAt,
+  };
 }
 
 function legDisplay(leg: {
@@ -2096,6 +2128,7 @@ export async function startBot(): Promise<void> {
   // Send Telegram notification
   void telegram.notifyBotStatus("started");
   await updateBalance(keypair.publicKey);
+  captureSessionStartBalance();
   if (simulationMode) {
     console.log(
       "Running in SIMULATION mode –",
@@ -2238,6 +2271,7 @@ export function resetTradingState(): void {
   riskTraceByMint.clear();
   riskQuoteStateByMint.clear();
   lastCurveRiskValueByMint.clear();
+  captureSessionStartBalance();
   resetCircuitBreaker();
   console.log("?? Cleared all positions, trade history, and signature cache.");
 }
@@ -2721,7 +2755,7 @@ export async function sellAllWalletDust(): Promise<void> {
       console.warn(`Dust sell failed for ${balance.mint.slice(0, 8)}...: ${msg}`);
     }
   }
-  printPnlReport();
+  await printPnlReport();
 }
 
 /**
@@ -2969,7 +3003,7 @@ export async function sellAllPositions(): Promise<void> {
         console.warn(`Failed to sell $${p.symbol}: ${msg}`);
       }
     }
-    printPnlReport();
+    await printPnlReport();
     return;
   }
 
@@ -3132,7 +3166,7 @@ export async function sellAllPositions(): Promise<void> {
     }
   }
 
-  printPnlReport();
+  await printPnlReport();
 }
 
 /**
@@ -3149,7 +3183,7 @@ export async function closeAllOpenPositionsSimulated(): Promise<void> {
   const open = getPositions().filter((p) => p.heldRaw > 0);
   if (open.length === 0) {
     console.log("?? No open positions to close.");
-    printPnlReport();
+    await printPnlReport();
     return;
   }
 
@@ -3235,16 +3269,21 @@ export async function closeAllOpenPositionsSimulated(): Promise<void> {
     }
   }
 
-  printPnlReport();
+  await printPnlReport();
 }
 
 export function isRunning(): boolean {
   return running;
 }
 
-export function printPnlReport(): void {
+export async function printPnlReport(): Promise<void> {
+  if (keypair) {
+    await updateBalance(keypair.publicKey, { log: false });
+  }
+
   const totals = getTotals();
   const positions = getPositions();
+  const walletPnl = getSessionWalletPnlSnapshot();
   const divider = "─".repeat(60);
 
   console.log("");
@@ -3265,6 +3304,16 @@ export function printPnlReport(): void {
   console.log(`💸 SOL spent: ${formatSolAmount(totals.totalSolSpentLamports)} SOL`);
   console.log(`💰 SOL received: ${formatSolAmount(totals.totalSolReceivedLamports)} SOL`);
   console.log(`📊 Realized PnL: ${formatPnl(totals.realizedPnlLamports)}`);
+
+  if (walletPnl.deltaLamports != null) {
+    console.log(`Wallet SOL delta: ${formatPnl(walletPnl.deltaLamports)} (real session cashflow)`);
+    console.log(
+      `Balance: ${formatSolAmount(walletPnl.startBalanceLamports ?? 0)} -> ` +
+        `${formatSolAmount(walletPnl.currentBalanceLamports ?? 0)} SOL`
+    );
+  } else if (!simulationMode) {
+    console.log("Wallet SOL delta: unavailable until start/current balances are known");
+  }
 
   if (positions.length > 0) {
     const subdivider = "·".repeat(60);
@@ -3315,6 +3364,7 @@ export function printPnlReport(): void {
     totalBuys: totals.buysCount,
     totalSells: totals.sellsCount,
     realizedPnl: formatPnl(totals.realizedPnlLamports),
+    walletPnl: walletPnl.deltaLamports != null ? formatPnl(walletPnl.deltaLamports) : undefined,
     unrealizedPnl: formatPnl(totals.totalSolReceivedLamports - totals.totalSolSpentLamports - totals.realizedPnlLamports),
     totalPnl: formatPnl(totals.totalSolReceivedLamports - totals.totalSolSpentLamports),
     winRate: "N/A",
@@ -3359,6 +3409,8 @@ export function getBotState(): BotState {
         ? lastBalanceLamports / LAMPORTS_PER_SOL
         : null,
     lastBalanceAt,
+    sessionStartBalanceLamports,
+    sessionWalletDeltaLamports: getSessionWalletPnlSnapshot().deltaLamports,
     recentSwaps: recentSwaps.slice(),
     positions: getPositions().filter((p) => p.heldRaw > 0),
     totals: getTotals(),

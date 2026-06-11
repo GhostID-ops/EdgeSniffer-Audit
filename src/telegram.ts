@@ -82,6 +82,7 @@ export interface PnlNotification {
   totalBuys: number;
   totalSells: number;
   realizedPnl: string;
+  walletPnl?: string;
   unrealizedPnl: string;
   totalPnl: string;
   winRate: string;
@@ -275,6 +276,7 @@ class TelegramService {
 
     let message = `${pnlColor} ðŸ“Š PnL REPORT\n\n`;
     message += `ðŸ“ˆ Total PnL: <b>${pnl.totalPnl}</b>\n`;
+    if (pnl.walletPnl) message += `ðŸ§¾ Wallet SOL delta: <b>${pnl.walletPnl}</b>\n`;
     message += `ðŸ’° Realized: ${pnl.realizedPnl}\n`;
     message += `ðŸ“Š Unrealized: ${pnl.unrealizedPnl}\n\n`;
     

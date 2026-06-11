@@ -15,7 +15,7 @@ import {
   isShowMarketCapEnabled,
 } from "./botService.js";
 
-type Shortcut = { key: string; label: string; action: () => void };
+type Shortcut = { key: string; label: string; action: () => void | Promise<void> };
 
 function runShortcut(action: () => void | Promise<void>): void {
   void Promise.resolve()
@@ -66,7 +66,7 @@ export function registerKeyboardShortcuts(onQuit: () => void): void {
     { key: "a", label: "Sell ALL open positions (sim/live)", action: () => runShortcut(sellAllPositions) },
     { key: "d", label: "Sell ALL wallet token dust/balances (live)", action: () => runShortcut(sellAllWalletDust) },
     { key: "e", label: "Close all open positions (sim) at market & report", action: () => runShortcut(closeAllOpenPositionsSimulated) },
-    { key: "r", label: "Print PnL report", action: printPnlReport },
+    { key: "r", label: "Print PnL report", action: () => runShortcut(printPnlReport) },
     { key: "x", label: "Clear all positions & history", action: resetTradingState },
     { key: "s", label: "Show bot status", action: printStatus },
     { key: "m", label: "Toggle mirror-sells ON/OFF", action: toggleMirrorSells },
@@ -98,7 +98,7 @@ export function registerKeyboardShortcuts(onQuit: () => void): void {
     else if (key === "a") runShortcut(sellAllPositions);
     else if (key === "d") runShortcut(sellAllWalletDust);
     else if (key === "e") runShortcut(closeAllOpenPositionsSimulated);
-    else if (key === "r") printPnlReport();
+    else if (key === "r") runShortcut(printPnlReport);
     else if (key === "x") resetTradingState();
     else if (key === "s") printStatus();
     else if (key === "m") toggleMirrorSells();

@@ -5,6 +5,7 @@ import { getPositions, getTotals } from "./pnl.js";
 import {
   formatPnl,
   getBotState,
+  getSessionWalletPnlSnapshot,
   isBuyOncePerTokenEnabled,
   isMirrorSellsEnabled,
   isShowMarketCapEnabled,
@@ -453,6 +454,7 @@ class TelegramBotHandler {
   private async sendPnlReport(chatId: number): Promise<void> {
     const totals = getTotals();
     const positions = getPositions();
+    const walletPnl = getSessionWalletPnlSnapshot();
     const lines = [
       "<b>PnL Report</b>",
       "",
@@ -460,6 +462,9 @@ class TelegramBotHandler {
       `SOL spent: ${formatSolAmount(totals.totalSolSpentLamports)} SOL`,
       `SOL received: ${formatSolAmount(totals.totalSolReceivedLamports)} SOL`,
       `Realized PnL: ${escapeHtml(formatPnl(totals.realizedPnlLamports))}`,
+      walletPnl.deltaLamports != null
+        ? `Wallet SOL delta: ${escapeHtml(formatPnl(walletPnl.deltaLamports))}`
+        : "Wallet SOL delta: unavailable",
       `Open positions: ${totals.openPositions}`,
       "",
     ];

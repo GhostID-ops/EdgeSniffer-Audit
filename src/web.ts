@@ -7,7 +7,7 @@ import { registerKeyboardShortcuts, restoreTerminal } from "./keyboard.js";
 
 let shuttingDown = false;
 
-function shutdown(signal: string): void {
+async function shutdown(signal: string): Promise<void> {
   if (shuttingDown) {
     console.log("\nForce exit.");
     process.exit(1);
@@ -15,14 +15,14 @@ function shutdown(signal: string): void {
   shuttingDown = true;
   console.log(`\nReceived ${signal}, shutting down...`);
   stopBot();
-  printPnlReport();
+  await printPnlReport();
   restoreTerminal();
   setTimeout(() => process.exit(0), 250);
 }
 
-process.on("SIGINT", () => shutdown("SIGINT"));
-process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => void shutdown("SIGINT"));
+process.on("SIGTERM", () => void shutdown("SIGTERM"));
 
-registerKeyboardShortcuts(() => shutdown("keyboard"));
+registerKeyboardShortcuts(() => void shutdown("keyboard"));
 
 startServer();
