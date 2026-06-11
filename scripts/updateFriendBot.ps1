@@ -1,6 +1,7 @@
 param(
   [string]$Branch = "main",
-  [switch]$ApplyExposure
+  [switch]$ApplyExposure,
+  [switch]$ApplyRecommended
 )
 
 $ErrorActionPreference = "Stop"
@@ -63,7 +64,11 @@ Run-Step "Apply safe friend infra env preset" {
   npm run env:friend-latest
 }
 
-if ($ApplyExposure) {
+if ($ApplyRecommended) {
+  Run-Step "Apply recommended friend strategy preset" {
+    npm run env:friend-recommended
+  }
+} elseif ($ApplyExposure) {
   Run-Step "Apply optional friend exposure preset" {
     npm run env:friend-exposure
   }
@@ -75,7 +80,20 @@ Run-Step "Build TypeScript" {
 
 Write-Host ""
 Write-Host "Done. His private key/API keys and strategy/accounting values were preserved; .env was backed up under .restore-backups." -ForegroundColor Green
-if ($ApplyExposure) {
+if ($ApplyRecommended) {
+  Write-Host "Recommended strategy values now active in .env:" -ForegroundColor Green
+  Write-Host "  SIMULATION_MODE=$(Get-EnvValue "SIMULATION_MODE")"
+  Write-Host "  SHADOW_EXECUTION_MODE=$(Get-EnvValue "SHADOW_EXECUTION_MODE")"
+  Write-Host "  MIRROR_SELLS=$(Get-EnvValue "MIRROR_SELLS")"
+  Write-Host "  BUY_ONCE_PER_TOKEN=$(Get-EnvValue "BUY_ONCE_PER_TOKEN")"
+  Write-Host "  MAX_OPEN_POSITIONS=$(Get-EnvValue "MAX_OPEN_POSITIONS")"
+  Write-Host "  MIN_BUY_SOL=$(Get-EnvValue "MIN_BUY_SOL")"
+  Write-Host "  MAX_BUY_SOL=$(Get-EnvValue "MAX_BUY_SOL")"
+  Write-Host "  STOP_LOSS_PCT=$(Get-EnvValue "STOP_LOSS_PCT")"
+  Write-Host "  TRAILING_STEPS=$(Get-EnvValue "TRAILING_STEPS")"
+  Write-Host "  MAX_SOL_PER_TOKEN=$(Get-EnvValue "MAX_SOL_PER_TOKEN")"
+  Write-Host "  MAX_SESSION_DEPLOYED_SOL=$(Get-EnvValue "MAX_SESSION_DEPLOYED_SOL")"
+} elseif ($ApplyExposure) {
   Write-Host "Exposure values now active in .env:" -ForegroundColor Green
   Write-Host "  COPY_BUY_PERCENTAGE=$(Get-EnvValue "COPY_BUY_PERCENTAGE")"
   Write-Host "  MIN_BUY_BEHAVIOR=$(Get-EnvValue "MIN_BUY_BEHAVIOR")"
@@ -84,5 +102,6 @@ if ($ApplyExposure) {
 } else {
   Write-Host "Optional exposure caps can be applied with: npm run env:friend-exposure" -ForegroundColor Yellow
   Write-Host "Or update infra + exposure together with: npm run friend:update:exposure" -ForegroundColor Yellow
+  Write-Host "Or update infra + recommended strategy with: npm run friend:update:recommended" -ForegroundColor Yellow
 }
 Write-Host "Start the bot with: npm run bot" -ForegroundColor Green
