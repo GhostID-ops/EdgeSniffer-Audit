@@ -25,6 +25,7 @@
     "env:friend-exposure": "node scripts/applyPerformanceEnv.mjs .env.friend-exposure",
     "env:copy-percentage": "node scripts/applyPerformanceEnv.mjs .env.copy-percentage",
     "friend:update": "powershell -ExecutionPolicy Bypass -File scripts/updateFriendBot.ps1",
+    "friend:update:exposure": "powershell -ExecutionPolicy Bypass -File scripts/updateFriendBot.ps1 -ApplyExposure",
     "telemetry:execution": "tsx src/executionTelemetryReport.ts",
     "test:license": "tsx src/testLicense.ts",
     "rust-sidecar": "cargo run --manifest-path rust-sidecar/Cargo.toml --release",

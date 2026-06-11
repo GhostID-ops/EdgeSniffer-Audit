@@ -1,5 +1,6 @@
 param(
-  [string]$Branch = "main"
+  [string]$Branch = "main",
+  [switch]$ApplyExposure
 )
 
 $ErrorActionPreference = "Stop"
@@ -15,6 +16,18 @@ function Run-Step {
   Write-Host ""
   Write-Host "==> $Label" -ForegroundColor Cyan
   & $Command
+}
+
+function Get-EnvValue {
+  param([string]$Key)
+
+  $line = Get-Content ".env" |
+    Where-Object { $_ -match "^\s*$([regex]::Escape($Key))\s*=" } |
+    Select-Object -Last 1
+  if (-not $line) {
+    return $null
+  }
+  return ($line -replace "^\s*$([regex]::Escape($Key))\s*=", "")
 }
 
 if (-not (Test-Path ".git")) {
@@ -50,11 +63,26 @@ Run-Step "Apply safe friend infra env preset" {
   npm run env:friend-latest
 }
 
+if ($ApplyExposure) {
+  Run-Step "Apply optional friend exposure preset" {
+    npm run env:friend-exposure
+  }
+}
+
 Run-Step "Build TypeScript" {
   npm run build
 }
 
 Write-Host ""
 Write-Host "Done. His private key/API keys and strategy/accounting values were preserved; .env was backed up under .restore-backups." -ForegroundColor Green
-Write-Host "Optional exposure caps can be applied with: npm run env:friend-exposure" -ForegroundColor Yellow
+if ($ApplyExposure) {
+  Write-Host "Exposure values now active in .env:" -ForegroundColor Green
+  Write-Host "  COPY_BUY_PERCENTAGE=$(Get-EnvValue "COPY_BUY_PERCENTAGE")"
+  Write-Host "  MIN_BUY_BEHAVIOR=$(Get-EnvValue "MIN_BUY_BEHAVIOR")"
+  Write-Host "  MAX_SOL_PER_TOKEN=$(Get-EnvValue "MAX_SOL_PER_TOKEN")"
+  Write-Host "  MAX_SESSION_DEPLOYED_SOL=$(Get-EnvValue "MAX_SESSION_DEPLOYED_SOL")"
+} else {
+  Write-Host "Optional exposure caps can be applied with: npm run env:friend-exposure" -ForegroundColor Yellow
+  Write-Host "Or update infra + exposure together with: npm run friend:update:exposure" -ForegroundColor Yellow
+}
 Write-Host "Start the bot with: npm run bot" -ForegroundColor Green
