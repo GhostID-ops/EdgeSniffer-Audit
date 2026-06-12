@@ -85,6 +85,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
   const custom =
     msg.match(/Custom["):\s]*(\d+)/i)?.[1] ??
     msg.match(/Error Number:\s*(\d+)/i)?.[1] ??
+    msg.match(/(?:confirmation-failed|failed)\/(\d+)/i)?.[1] ??
     (hexCustom ? String(parseInt(hexCustom, 16)) : undefined);
   const program = inferProgram(lower);
   const errorName = knownErrorName(program, custom);
@@ -148,15 +149,21 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
     lower.includes("stale") ||
     lower.includes("expected at least") ||
     lower.includes("account list too short") ||
-    (program === "pump" && custom === "6004")
+    (program === "pump" && custom === "6004") ||
+    (program === "unknown" && custom === "6004")
   ) {
     return {
       ...base,
+      program: program === "unknown" && custom === "6004" ? "pump" : program,
+      errorName:
+        program === "unknown" && custom === "6004"
+          ? "MintDoesNotMatchBondingCurve"
+          : errorName,
       category: "account-stale-source",
       code: custom,
       recoverable: true,
       summary:
-        program === "pump" && custom === "6004"
+        custom === "6004"
           ? "Pump.fun mint/bonding-curve account mismatch"
           : "Source account hints are stale or incomplete",
       hint: "Ignore source tx account hints and rebuild from current on-chain state.",

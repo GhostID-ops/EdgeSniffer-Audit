@@ -49,4 +49,21 @@ assertDecision(
   }
 );
 
+assertDecision(
+  "Transaction failed: Program 6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P failed: custom program error: 0x1774",
+  {
+    action: "rebuild-derived-accounts",
+    shouldQuarantine: false,
+    category: "account-stale-source",
+    program: "pump",
+  }
+);
+
+assertDecision("confirmation-failed/6004", {
+  action: "rebuild-derived-accounts",
+  shouldQuarantine: false,
+  category: "account-stale-source",
+  program: "pump",
+});
+
 console.log("Execution retry tests passed");
