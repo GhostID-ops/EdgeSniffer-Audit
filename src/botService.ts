@@ -1235,6 +1235,25 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   const ts = Date.now();
   const processStartedAt = Date.now();
   const elapsed = () => `${Date.now() - processStartedAt}ms`;
+  const sourceLatencyDetails = {
+    detector: swap.detector ?? "unknown",
+    providerCreatedAtMs: swap.providerCreatedAtMs,
+    receivedAtMs: swap.receivedAtMs,
+    detectedAtMs: swap.detectedAtMs,
+    processStartedAtMs: processStartedAt,
+    providerToReceivedMs:
+      swap.providerCreatedAtMs != null && swap.receivedAtMs != null
+        ? swap.receivedAtMs - swap.providerCreatedAtMs
+        : undefined,
+    receivedToDetectedMs:
+      swap.receivedAtMs != null && swap.detectedAtMs != null
+        ? swap.detectedAtMs - swap.receivedAtMs
+        : undefined,
+    detectedToProcessMs:
+      swap.detectedAtMs != null ? processStartedAt - swap.detectedAtMs : undefined,
+    providerToProcessMs:
+      swap.providerCreatedAtMs != null ? processStartedAt - swap.providerCreatedAtMs : undefined,
+  };
   const isTrackedSourceWallet = trackedWallets.includes(swap.wallet);
   const isExitOnlyWallet = !isTrackedSourceWallet && isExitSignalWallet(swap.wallet);
   if (!isTrackedSourceWallet && !isExitOnlyWallet) {
@@ -1271,7 +1290,20 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     `⚡ Processing ${isBuySignal(swap) ? "buy" : "sell"} from ${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)} (${swap.signature.slice(0, 8)}…)`
   );
 
+  recordExecutionTelemetrySync({
+    kind: "source-detected",
+    side: isBuySignal(swap) ? "buy" : isSellSignal(swap) ? "sell" : "swap",
+    mint: isBuySignal(swap) ? swap.outputMint : swap.inputMint,
+    sourceSignature: swap.signature,
+    wallet: swap.wallet,
+    detector: swap.detector,
+    elapsedMs: sourceLatencyDetails.providerToProcessMs,
+    success: true,
+    details: sourceLatencyDetails,
+  });
+
   const executionPlan = planExecution(swap);
+  const decisionAtMs = Date.now();
   console.log(
     `Execution plan: ${executionPlan.route} (${executionPlan.reason}) for ${executionPlan.mint.slice(0, 8)}...`
   );
@@ -1282,8 +1314,14 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     mint: executionPlan.mint,
     sourceSignature: swap.signature,
     wallet: swap.wallet,
+    detector: swap.detector,
+    elapsedMs: decisionAtMs - processStartedAt,
     success: true,
-    details: { reason: executionPlan.reason },
+    details: {
+      reason: executionPlan.reason,
+      processToDecisionMs: decisionAtMs - processStartedAt,
+      ...sourceLatencyDetails,
+    },
   });
 
   if (isSellSignal(swap)) {

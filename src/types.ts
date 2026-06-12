@@ -2,6 +2,14 @@
 export type DetectedSwap = {
   signature: string;
   wallet: string;
+  /** Feed/parser that first produced this signal (grpc, rabbitstream, ws-raw, poll, shredstream, etc.). */
+  detector?: string;
+  /** Millisecond timestamp from the upstream provider, when available. */
+  providerCreatedAtMs?: number;
+  /** Local wall-clock timestamp when this bot process received the provider event. */
+  receivedAtMs?: number;
+  /** Local wall-clock timestamp after parsing/classification produced this DetectedSwap. */
+  detectedAtMs?: number;
   /** Input token mint (e.g. wrapped SOL). */
   inputMint: string;
   /** Output token mint. */

@@ -130,6 +130,21 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
     };
   }
   if (
+    lower.includes("idl writable flag mismatch") ||
+    lower.includes("idl signer flag mismatch") ||
+    lower.includes("idl account count mismatch") ||
+    lower.includes("idl account list too short") ||
+    lower.includes("idl discriminator mismatch")
+  ) {
+    return {
+      ...base,
+      category: "account-layout",
+      recoverable: true,
+      summary: "Local instruction layout/IDL mismatch",
+      hint: "Update the route builder/IDL account metas or rebuild from verified source/canonical accounts.",
+    };
+  }
+  if (
     lower.includes("stale") ||
     lower.includes("expected at least") ||
     lower.includes("account list too short") ||

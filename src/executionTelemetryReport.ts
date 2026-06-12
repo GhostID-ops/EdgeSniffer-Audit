@@ -2,12 +2,14 @@ import { existsSync, readFileSync } from "node:fs";
 import { executionTelemetryPath } from "./config.js";
 
 type Row = {
+  tsMs?: number;
   kind?: string;
   route?: string;
   side?: string;
   mint?: string;
   sourceSignature?: string;
   signature?: string;
+  detector?: string;
   elapsedMs?: number;
   success?: boolean;
   errorClass?: string;
@@ -60,6 +62,23 @@ function printTop(title: string, entries: Array<[string, number]>, total: number
   }
 }
 
+function fmtMs(value: number | null | undefined): string {
+  return typeof value === "number" && Number.isFinite(value) ? `${value.toFixed(0)}ms` : "-";
+}
+
+function printLatency(title: string, values: number[]): void {
+  const xs = values.filter((value) => Number.isFinite(value));
+  if (xs.length === 0) return;
+  console.log(
+    `${title}: n=${xs.length} p50=${fmtMs(quantile(xs, 0.5))} p90=${fmtMs(quantile(xs, 0.9))} p99=${fmtMs(quantile(xs, 0.99))}`
+  );
+}
+
+function detailNumber(row: Row, field: string): number | null {
+  const value = row.details?.[field];
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
 if (!existsSync(executionTelemetryPath)) {
   console.log(`No telemetry file found at ${executionTelemetryPath}`);
   process.exit(0);
@@ -90,6 +109,80 @@ console.log(`Rows: ${rows.length}`);
 console.log(`Success: ${successes.length} (${pct(successes.length, rows.length)})`);
 console.log(`Failure: ${failures.length} (${pct(failures.length, rows.length)})`);
 console.log(`Latency ms: p50=${quantile(elapsed, 0.5).toFixed(0)} p90=${quantile(elapsed, 0.9).toFixed(0)} p99=${quantile(elapsed, 0.99).toFixed(0)}`);
+
+console.log("\nLatency by stage/kind");
+for (const kind of [...new Set(rows.map((row) => row.kind).filter(Boolean))].sort()) {
+  printLatency(`  ${kind}`, rows.filter((row) => row.kind === kind).map((row) => row.elapsedMs ?? NaN));
+}
+
+console.log("\nSource feed latency");
+printLatency("  provider -> bot received", rows.map((row) => detailNumber(row, "providerToReceivedMs") ?? NaN));
+printLatency("  bot received -> parsed", rows.map((row) => detailNumber(row, "receivedToDetectedMs") ?? NaN));
+printLatency("  parsed -> process start", rows.map((row) => detailNumber(row, "detectedToProcessMs") ?? NaN));
+printLatency("  provider -> process start", rows.map((row) => detailNumber(row, "providerToProcessMs") ?? NaN));
+
+const chainRows = rows
+  .filter((row) => row.sourceSignature)
+  .reduce((map, row) => {
+    const sig = row.sourceSignature!;
+    const group = map.get(sig) ?? [];
+    group.push(row);
+    map.set(sig, group);
+    return map;
+  }, new Map<string, Row[]>());
+
+type Chain = {
+  sig: string;
+  mint: string;
+  detector: string;
+  seenToBroadcastMs: number | null;
+  processToBroadcastMs: number | null;
+  broadcastToConfirmMs: number | null;
+  providerToConfirmMs: number | null;
+};
+
+const chains: Chain[] = [];
+for (const [sig, group] of chainRows) {
+  const sorted = [...group].sort((a, b) => (a.tsMs ?? 0) - (b.tsMs ?? 0));
+  const source = sorted.find((row) => row.kind === "source-detected");
+  const broadcast = sorted.find((row) => row.kind === "broadcast" && row.success === true);
+  const confirm = sorted.find((row) => row.kind === "stage:confirm");
+  if (!source && !broadcast && !confirm) continue;
+  const providerCreatedAt = detailNumber(source ?? sorted[0]!, "providerCreatedAtMs");
+  const processStartedAt = detailNumber(source ?? sorted[0]!, "processStartedAtMs");
+  const broadcastAt = broadcast?.tsMs ?? null;
+  const confirmAt = confirm?.tsMs ?? null;
+  chains.push({
+    sig,
+    mint: (source?.mint ?? broadcast?.mint ?? confirm?.mint ?? "unknown").slice(0, 8),
+    detector: String((source?.details?.detector ?? source?.detector ?? broadcast?.detector ?? "unknown")),
+    seenToBroadcastMs:
+      providerCreatedAt != null && broadcastAt != null ? broadcastAt - providerCreatedAt : null,
+    processToBroadcastMs:
+      processStartedAt != null && broadcastAt != null ? broadcastAt - processStartedAt : null,
+    broadcastToConfirmMs:
+      broadcastAt != null && confirmAt != null ? confirmAt - broadcastAt : null,
+    providerToConfirmMs:
+      providerCreatedAt != null && confirmAt != null ? confirmAt - providerCreatedAt : null,
+  });
+}
+
+if (chains.length > 0) {
+  console.log("\nEnd-to-end chains");
+  printLatency("  provider -> broadcast", chains.map((chain) => chain.seenToBroadcastMs ?? NaN));
+  printLatency("  process -> broadcast", chains.map((chain) => chain.processToBroadcastMs ?? NaN));
+  printLatency("  broadcast -> confirm", chains.map((chain) => chain.broadcastToConfirmMs ?? NaN));
+  printLatency("  provider -> confirm", chains.map((chain) => chain.providerToConfirmMs ?? NaN));
+  console.log("\nLatest chains");
+  for (const chain of chains.slice(-10).reverse()) {
+    console.log(
+      `  ${chain.sig.slice(0, 8)} ${chain.mint} ${chain.detector}: ` +
+        `provider->broadcast=${fmtMs(chain.seenToBroadcastMs)} ` +
+        `process->broadcast=${fmtMs(chain.processToBroadcastMs)} ` +
+        `broadcast->confirm=${fmtMs(chain.broadcastToConfirmMs)}`
+    );
+  }
+}
 
 printTop("By kind", countBy(rows, (row) => key(row, "kind")), rows.length);
 printTop("By route", countBy(rows, (row) => key(row, "route")), rows.length);

@@ -5,6 +5,7 @@ import { classifyExecutionError } from "./errorClassifier.js";
 
 export type ExecutionTelemetryEvent = {
   ts?: string;
+  tsMs?: number;
   kind: string;
   route?: string;
   side?: "buy" | "sell" | "swap";
@@ -41,8 +42,10 @@ export async function recordExecutionTelemetry(event: ExecutionTelemetryEvent): 
       telemetryDirReady = true;
     }
     const classified = event.error ? classifyExecutionError(event.error) : null;
+    const tsMs = event.tsMs ?? Date.now();
     const row = {
-      ts: event.ts ?? new Date().toISOString(),
+      ts: event.ts ?? new Date(tsMs).toISOString(),
+      tsMs,
       ...event,
       errorClass: event.errorClass ?? classified?.category,
       errorCode: event.errorCode ?? classified?.code,

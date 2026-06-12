@@ -112,7 +112,9 @@ export function applyShadowExecution(result: MirrorResult, sourceSignature: stri
 
   if (adjusted.side === "buy") {
     const penalty = Math.max(0, 1 - shadowEntrySlippagePct / 100);
-    adjusted.output.amountRaw = clampRaw(adjusted.output.amountRaw * penalty);
+    const originalOut = adjusted.output.amountRaw;
+    const penalizedOut = clampRaw(originalOut * penalty);
+    adjusted.output.amountRaw = originalOut > 0 ? Math.max(1, penalizedOut) : 0;
     adjusted.costBasisLamports = (adjusted.costBasisLamports ?? adjusted.input.amountRaw) + feeLamports;
     shadowSolLamports = Math.max(0, shadowSolLamports - adjusted.input.amountRaw - feeLamports);
     console.log(

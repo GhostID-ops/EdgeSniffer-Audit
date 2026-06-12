@@ -316,6 +316,7 @@ export async function subscribeRabbitWalletSwaps(
         });
 
         stream.on("data", (update: SubscribeUpdate) => {
+          const receivedAtMs = Date.now();
           const info = update.transaction?.transaction;
           if (!info) return;
           const signature = signatureToBase58(info.signature);
@@ -327,7 +328,17 @@ export async function subscribeRabbitWalletSwaps(
               extractTopLevelPumpSwapBuyFromRabbit(info, wallet);
             if (!swap) continue;
             processedSignatures.add(signature);
-            const ageMs = update.createdAt ? Date.now() - update.createdAt.getTime() : null;
+            const providerCreatedAtMs = update.createdAt?.getTime();
+            const detectedAtMs = Date.now();
+            swap.detector = "shyft-rabbitstream";
+            swap.providerCreatedAtMs =
+              typeof providerCreatedAtMs === "number" && Number.isFinite(providerCreatedAtMs)
+                ? providerCreatedAtMs
+                : undefined;
+            swap.receivedAtMs = receivedAtMs;
+            swap.detectedAtMs = detectedAtMs;
+            const ageMs =
+              swap.providerCreatedAtMs != null ? detectedAtMs - swap.providerCreatedAtMs : null;
             console.log(
               `RabbitStream detected direct pump.fun swap ${signature.slice(0, 8)}...` +
                 (ageMs != null && Number.isFinite(ageMs) ? ` (age ${ageMs}ms)` : "")

@@ -40,4 +40,13 @@ assertDecision("Jupiter quote failed: 400 {\"errorCode\":\"NO_ROUTES_FOUND\"}", 
   category: "no-route",
 });
 
+assertDecision(
+  "IDL writable flag mismatch for pump.buy_exact_sol_in.global_volume_accumulator at index 12: expected false got true",
+  {
+    action: "rebuild-derived-accounts",
+    shouldQuarantine: false,
+    category: "account-layout",
+  }
+);
+
 console.log("Execution retry tests passed");

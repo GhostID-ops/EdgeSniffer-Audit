@@ -943,7 +943,14 @@ export async function getNewSwaps(
         processedSignatures.add(tx.signature);
         if (tx.timestamp != null && tx.timestamp < minTimestampSec) continue;
         const swap = extractSwap(tx, wallet);
-        if (swap) allSwaps.push(swap);
+        if (swap) {
+          const detectedAtMs = Date.now();
+          swap.detector = "poll-helius";
+          swap.providerCreatedAtMs = tx.timestamp != null ? tx.timestamp * 1000 : undefined;
+          swap.receivedAtMs = detectedAtMs;
+          swap.detectedAtMs = detectedAtMs;
+          allSwaps.push(swap);
+        }
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -1028,7 +1035,12 @@ export async function subscribeWalletSwaps(
             processedSignatures.add(sig);
 
             if (swap) {
-              const ms = Date.now() - detectedAt;
+              const detectedAtMs = Date.now();
+              const ms = detectedAtMs - detectedAt;
+              swap.detector = source === "raw" ? "ws-raw-rpc" : "ws-helius-enhanced";
+              swap.providerCreatedAtMs = slowTx?.timestamp != null ? slowTx.timestamp * 1000 : undefined;
+              swap.receivedAtMs = detectedAt;
+              swap.detectedAtMs = detectedAtMs;
               console.log(`⚡ WS detected swap ${sig.slice(0, 8)}… (${source}, ${ms}ms)`);
               onSwap(swap);
               return;

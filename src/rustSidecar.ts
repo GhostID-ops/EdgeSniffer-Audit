@@ -9,6 +9,8 @@ import type { SignatureDedupe } from "./watcher.js";
 type RustSidecarEvent = {
   kind?: string;
   source?: string;
+  providerCreatedAtMs?: number;
+  receivedAtMs?: number;
   detectedAtMs?: number;
   signature?: string;
   wallet?: string;
@@ -26,7 +28,7 @@ type RustSidecarEvent = {
 
 export type RustSidecarUnsubscribe = () => Promise<void>;
 
-function toSwap(event: RustSidecarEvent): DetectedSwap | null {
+function toSwap(event: RustSidecarEvent, nodeReceivedAtMs: number): DetectedSwap | null {
   if (event.kind !== "swap") return null;
   if (
     typeof event.signature !== "string" ||
@@ -41,6 +43,19 @@ function toSwap(event: RustSidecarEvent): DetectedSwap | null {
   return {
     signature: event.signature,
     wallet: event.wallet,
+    detector: event.source === "jito-shredstream" ? "jito-shredstream" : "rust-sidecar",
+    providerCreatedAtMs:
+      typeof event.providerCreatedAtMs === "number" && Number.isFinite(event.providerCreatedAtMs)
+        ? event.providerCreatedAtMs
+        : undefined,
+    receivedAtMs:
+      typeof event.receivedAtMs === "number" && Number.isFinite(event.receivedAtMs)
+        ? event.receivedAtMs
+        : nodeReceivedAtMs,
+    detectedAtMs:
+      typeof event.detectedAtMs === "number" && Number.isFinite(event.detectedAtMs)
+        ? event.detectedAtMs
+        : nodeReceivedAtMs,
     inputMint: event.inputMint,
     outputMint: event.outputMint,
     amountRaw: event.amountRaw,
@@ -127,6 +142,7 @@ export async function startRustPumpFunSidecar(
   const stderr = createInterface({ input: child.stderr });
 
   stdout.on("line", (line) => {
+    const nodeReceivedAtMs = Date.now();
     if (!line.trim()) return;
     let event: RustSidecarEvent;
     try {
@@ -136,14 +152,14 @@ export async function startRustPumpFunSidecar(
       return;
     }
 
-    const swap = toSwap(event);
+    const swap = toSwap(event, nodeReceivedAtMs);
     if (!swap) return;
     if (processedSignatures.has(swap.signature)) return;
     processedSignatures.add(swap.signature);
 
     const ageMs =
       typeof event.detectedAtMs === "number" && Number.isFinite(event.detectedAtMs)
-        ? Date.now() - event.detectedAtMs
+        ? nodeReceivedAtMs - event.detectedAtMs
         : null;
     console.log(
       `Rust sidecar detected ${swap.inputMint === "So11111111111111111111111111111111111111112" ? "buy" : "sell"} ` +
