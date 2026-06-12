@@ -424,12 +424,23 @@ export async function tryPumpFunDirectBuy(args: {
   // 5. Build + sign + broadcast.
   args.log("Building pump.fun buy tx...");
   const buildStartedAt = Date.now();
-  // Prefer source ix accounts from the gRPC payload (always fresh, never races confirmation).
-  // Fall back to the getTransaction-based extraction for non-gRPC source signals.
+  // Prefer canonical curve-derived V2 accounts when the curve RPC is available. Source CPI metas
+  // can carry router-specific or stale accounts and have repeatedly failed with Pump.fun 2006/6004.
+  // Source metas remain useful for legacy per-coin remaining accounts, and for the earlier
+  // source-replay fallback when the curve account is not readable yet.
   let sourceIxPubkeys: PublicKey[] | undefined;
   if (args.sourceIxAccounts && args.sourceIxAccounts.length >= 16) {
-    sourceIxPubkeys = args.sourceIxAccounts.map((k) => new PublicKey(k));
-    args.log(`Using ${sourceIxPubkeys.length} source pump.fun account(s) from gRPC payload.`);
+    const candidate = args.sourceIxAccounts.map((k) => new PublicKey(k));
+    const isV2Source =
+      candidate.length >= 27 &&
+      candidate[1]?.equals(mintKey) === true &&
+      candidate[26]?.equals(PUMP_FUN_PROGRAM_ID) === true;
+    if (isV2Source) {
+      args.log("Using canonical Pump.fun V2 account derivation; ignoring source V2 metas after curve RPC quote.");
+    } else {
+      sourceIxPubkeys = candidate;
+      args.log(`Using ${sourceIxPubkeys.length} source pump.fun account(s) from gRPC payload.`);
+    }
   }
   const remainingAccounts = sourceIxPubkeys ? [] : await sourceAccountsPromise;
   if (!sourceIxPubkeys && remainingAccounts.length > 0) {

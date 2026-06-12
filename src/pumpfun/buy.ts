@@ -206,7 +206,7 @@ const PUMP_FUN_BUY_WRITABLE_FLAGS = [
 ];
 const PUMP_FUN_BUY_EXACT_SOL_IN_WRITABLE_FLAGS = [
   false, true, false, true, true, true, true, false,
-  false, true, false, false, true, true, false, false,
+  false, true, false, false, false, true, false, false,
 ];
 
 const PUMP_FUN_BUY_V2_WRITABLE_FLAGS = [
