@@ -25,6 +25,7 @@
     "env:friend-exposure": "node scripts/applyPerformanceEnv.mjs .env.friend-exposure",
     "env:friend-recommended": "node scripts/applyPerformanceEnv.mjs .env.friend-recommended",
     "env:copy-percentage": "node scripts/applyPerformanceEnv.mjs .env.copy-percentage",
+    "env:vps-tiny-live-test": "node scripts/applyPerformanceEnv.mjs .env.vps-tiny-live-test",
     "friend:update": "powershell -ExecutionPolicy Bypass -File scripts/updateFriendBot.ps1",
     "friend:update:exposure": "powershell -ExecutionPolicy Bypass -File scripts/updateFriendBot.ps1 -ApplyExposure",
     "friend:update:recommended": "powershell -ExecutionPolicy Bypass -File scripts/updateFriendBot.ps1 -ApplyRecommended",
