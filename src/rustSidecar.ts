@@ -28,6 +28,13 @@ type RustSidecarEvent = {
 
 export type RustSidecarUnsubscribe = () => Promise<void>;
 
+function envFlag(name: string, defaultValue = false): boolean {
+  const raw = process.env[name];
+  if (raw == null || raw === "") return defaultValue;
+  const normalized = raw.toLowerCase();
+  return normalized === "true" || normalized === "1" || normalized === "yes" || normalized === "on";
+}
+
 function toSwap(event: RustSidecarEvent, nodeReceivedAtMs: number): DetectedSwap | null {
   if (event.kind !== "swap") return null;
   if (
@@ -97,8 +104,22 @@ export async function startRustPumpFunSidecar(
   processedSignatures: SignatureDedupe,
   onSwap: (swap: DetectedSwap) => void
 ): Promise<RustSidecarUnsubscribe> {
+  const jitoShredstreamEnabled = envFlag("JITO_SHREDSTREAM_ENABLED");
+  const jitoShredstreamGrpcUrl = process.env.JITO_SHREDSTREAM_GRPC_URL ?? "http://127.0.0.1:9999";
+  const yellowstoneEnabled = envFlag("RUST_SIDECAR_YELLOWSTONE_ENABLED", true);
+  console.log(
+    `Rust sidecar config: Yellowstone=${yellowstoneEnabled ? "ON" : "OFF"}, ` +
+      `Jito ShredStream=${jitoShredstreamEnabled ? "ON" : "OFF"}` +
+      (jitoShredstreamEnabled ? ` (${jitoShredstreamGrpcUrl})` : "")
+  );
+
   const command = commandForSidecar();
-  if (!command) return async () => {};
+  if (!command) {
+    if (jitoShredstreamEnabled) {
+      console.warn("Jito ShredStream is enabled, but the Rust sidecar could not be launched.");
+    }
+    return async () => {};
+  }
 
   const child = spawn(command.command, command.args, {
     cwd: process.cwd(),
@@ -109,6 +130,9 @@ export async function startRustPumpFunSidecar(
   let proc: ChildProcess | null = child;
 
   console.log(`Rust sidecar: started ${command.label}`);
+  if (jitoShredstreamEnabled) {
+    console.log("Jito ShredStream: waiting for Rust sidecar subscription confirmation...");
+  }
 
   // A spawn failure (e.g. `cargo`/binary not on PATH) emits an async 'error' event. Without a
   // listener Node treats it as an unhandled error and kills the whole bot — which is exactly the
@@ -170,7 +194,16 @@ export async function startRustPumpFunSidecar(
   });
 
   stderr.on("line", (line) => {
-    if (line.trim()) console.log(line);
+    const trimmed = line.trim();
+    if (!trimmed) return;
+    console.log(trimmed);
+    if (trimmed.includes("subscribed to Jito ShredStream entries")) {
+      console.log("Jito ShredStream: CONNECTED and streaming entries into the bot.");
+    } else if (trimmed.includes("JITO_SHREDSTREAM_ENABLED=true but this binary was built without")) {
+      console.warn("Jito ShredStream: NOT ACTIVE. Rebuild with npm run rust-sidecar:jito-build.");
+    } else if (trimmed.includes("Jito ShredStream error")) {
+      console.warn("Jito ShredStream: connection error reported by Rust sidecar.");
+    }
   });
 
   child.on("exit", (code, signal) => {
