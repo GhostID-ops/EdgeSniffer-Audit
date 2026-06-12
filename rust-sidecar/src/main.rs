@@ -7,7 +7,7 @@ use serde::Serialize;
 #[cfg(feature = "jito-shredstream")]
 use solana_entry::entry::Entry as SolanaEntry;
 #[cfg(feature = "jito-shredstream")]
-use solana_instruction::compiled_instruction::CompiledInstruction;
+use solana_message::compiled_instruction::CompiledInstruction;
 #[cfg(feature = "jito-shredstream")]
 use solana_transaction::versioned::VersionedTransaction;
 use tokio::time::sleep;
