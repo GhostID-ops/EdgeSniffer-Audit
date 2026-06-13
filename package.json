@@ -9,6 +9,7 @@
     "bot": "tsx src/copytrade.ts",
     "dev": "tsx src/copytrade.ts",
     "web": "tsx src/web.ts",
+    "vps:control": "tsx src/vpsControlPanel.ts",
     "swap": "tsx src/swap.ts",
     "profile-edge": "tsx src/profileSourceEdge.ts",
     "find-source-wallet": "tsx src/findSourceWallet.ts",
