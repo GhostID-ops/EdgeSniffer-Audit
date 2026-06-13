@@ -21,6 +21,7 @@ npm run build
 node - <<'NODE'
 const fs = require("fs");
 const instances = [
+  ["/root/bot/FinalBot/.env", "3100"],
   ["/root/bot/FinalBot-4bdk/.env", "3101"],
   ["/root/bot/FinalBot-5qn/.env", "3102"],
   ["/root/bot/FinalBot-cya/.env", "3103"],
@@ -64,6 +65,7 @@ EOF
 
 systemctl daemon-reload
 systemctl enable finalbot-control
+systemctl restart finalbot 2>/dev/null || true
 systemctl restart finalbot-4bdk 2>/dev/null || true
 systemctl restart finalbot-5qn 2>/dev/null || true
 systemctl restart finalbot-cya 2>/dev/null || true

@@ -5,7 +5,7 @@ import path from "node:path";
 
 const PORT = Math.max(1, Math.min(65535, parseInt(process.env.VPS_CONTROL_PORT ?? "8787", 10)));
 
-type InstanceId = "4bdk" | "5qn" | "cya";
+type InstanceId = "main" | "4bdk" | "5qn" | "cya";
 
 type InstanceConfig = {
   id: InstanceId;
@@ -17,6 +17,14 @@ type InstanceConfig = {
 };
 
 const INSTANCES: Record<InstanceId, InstanceConfig> = {
+  main: {
+    id: "main",
+    label: "Main",
+    service: "finalbot",
+    dir: "/root/bot/FinalBot",
+    envPath: "/root/bot/FinalBot/.env",
+    apiPort: 3100,
+  },
   "4bdk": {
     id: "4bdk",
     label: "4BdK",
@@ -122,7 +130,7 @@ function sendError(res: ServerResponse, status: number, error: string): void {
 }
 
 function parseInstance(id: string): InstanceConfig | null {
-  return id === "4bdk" || id === "5qn" || id === "cya" ? INSTANCES[id] : null;
+  return id === "main" || id === "4bdk" || id === "5qn" || id === "cya" ? INSTANCES[id] : null;
 }
 
 function readJsonBody(req: IncomingMessage): Promise<Record<string, unknown>> {
@@ -274,7 +282,7 @@ function html(): string {
 <div class="toast" id="toast" hidden></div>
 <script>
 const keys=${JSON.stringify(ENV_KEYS)};
-const ids=["4bdk","5qn","cya"];
+const ids=["main","4bdk","5qn","cya"];
 function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.hidden=false;setTimeout(()=>el.hidden=true,4500)}
 async function api(url, opts){const res=await fetch(url,opts);const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||res.statusText);return data}
 function field(id,key,val){const area=key==="TRAILING_STEPS"||key==="TRACKED_WALLETS"||key==="EXECUTION_TIP_MULTIPLIERS";return '<label class="'+(area?'wide':'')+'"><span>'+key+'</span>'+(area?'<textarea data-i="'+id+'" data-k="'+key+'">'+(val||'')+'</textarea>':'<input data-i="'+id+'" data-k="'+key+'" value="'+(val||'').replaceAll('"','&quot;')+'">')+'</label>'}
