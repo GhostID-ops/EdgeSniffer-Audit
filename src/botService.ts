@@ -1079,6 +1079,14 @@ function scheduleFailedBuyRecovery(
       console.error(`Direct rescue buy failed for ${sourceSwap.outputMint.slice(0, 8)}...: ${msg}`);
       if (decision.shouldQuarantine) {
         quarantinedBuyMints.set(sourceSwap.outputMint, `direct rescue ${decision.action}: ${msg}`);
+      } else if (isPumpFunAccountLayoutFailure(msg)) {
+        boughtMintsThisSession.delete(sourceSwap.outputMint);
+        pendingBuyRetryByMint.delete(sourceSwap.outputMint);
+        quarantinedBuyMints.set(sourceSwap.outputMint, `direct rescue ${decision.action}: ${msg}`);
+        console.warn(
+          `Buy quarantine set for ${sourceSwap.outputMint.slice(0, 8)}... after pump.fun account-layout ` +
+            "rescue also failed. No more retries for this mint this session."
+        );
       } else {
         boughtMintsThisSession.delete(sourceSwap.outputMint);
         pendingBuyRetryByMint.delete(sourceSwap.outputMint);
@@ -1737,9 +1745,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           pendingBuyRetryByMint.delete(mint);
           fastBuyConfirmRetryScheduledByMint.delete(mint);
           failedBuyRecoveryInFlightMints.delete(mint);
+          quarantinedBuyMints.set(mint, reason);
           console.warn(
             `Buy failed for ${mint.slice(0, 8)}... with pump.fun account-layout error after rescue; ` +
-              "not session-quarantining so a later source buy can retry."
+              "quarantining this mint for the rest of the session."
           );
           return;
         }
