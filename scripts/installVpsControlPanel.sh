@@ -23,6 +23,7 @@ const fs = require("fs");
 const instances = [
   ["/root/bot/FinalBot-4bdk/.env", "3101"],
   ["/root/bot/FinalBot-5qn/.env", "3102"],
+  ["/root/bot/FinalBot-cya/.env", "3103"],
 ];
 
 for (const [envPath, port] of instances) {
@@ -65,6 +66,7 @@ systemctl daemon-reload
 systemctl enable finalbot-control
 systemctl restart finalbot-4bdk 2>/dev/null || true
 systemctl restart finalbot-5qn 2>/dev/null || true
+systemctl restart finalbot-cya 2>/dev/null || true
 systemctl restart finalbot-control
 
 echo "FinalBot control panel installed."

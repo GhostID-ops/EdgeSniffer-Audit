@@ -499,6 +499,12 @@ export const prebuyMinMomentumPct = parseOptionalPositiveNumber(
 export const prebuyMinLiquidityUsd = parseOptionalPositiveNumber(
   process.env.PREBUY_MIN_LIQUIDITY_USD
 );
+export const prebuyMinMarketCapUsd = parseOptionalPositiveNumber(
+  process.env.PREBUY_MIN_MARKET_CAP_USD
+);
+export const prebuyMaxMarketCapUsd = parseOptionalPositiveNumber(
+  process.env.PREBUY_MAX_MARKET_CAP_USD
+);
 export const prebuyMoralisTimeoutMs = Math.max(
   250,
   parseInt(process.env.PREBUY_MORALIS_TIMEOUT_MS ?? "1500", 10)

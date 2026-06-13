@@ -5,7 +5,7 @@ import path from "node:path";
 
 const PORT = Math.max(1, Math.min(65535, parseInt(process.env.VPS_CONTROL_PORT ?? "8787", 10)));
 
-type InstanceId = "4bdk" | "5qn";
+type InstanceId = "4bdk" | "5qn" | "cya";
 
 type InstanceConfig = {
   id: InstanceId;
@@ -32,6 +32,14 @@ const INSTANCES: Record<InstanceId, InstanceConfig> = {
     dir: "/root/bot/FinalBot-5qn",
     envPath: "/root/bot/FinalBot-5qn/.env",
     apiPort: 3102,
+  },
+  cya: {
+    id: "cya",
+    label: "Cya",
+    service: "finalbot-cya",
+    dir: "/root/bot/FinalBot-cya",
+    envPath: "/root/bot/FinalBot-cya/.env",
+    apiPort: 3103,
   },
 };
 
@@ -60,6 +68,14 @@ const ENV_KEYS = [
   "MAX_ENTRY_PRICE_IMPACT_PCT",
   "MAX_SOURCE_DRIFT_PCT",
   "PREBUY_MORALIS_FILTER_ENABLED",
+  "PREBUY_MIN_MARKET_CAP_USD",
+  "PREBUY_MAX_MARKET_CAP_USD",
+  "PREBUY_MIN_LIQUIDITY_USD",
+  "PREBUY_MIN_VOLUME_USD",
+  "PREBUY_MIN_MOMENTUM_PCT",
+  "PREBUY_MORALIS_WINDOW_MS",
+  "PREBUY_MORALIS_TIMEOUT_MS",
+  "PREBUY_FILTER_FAIL_OPEN",
   "BLOCK_PUMPFUN_MAYHEM",
   "PUMPFUN_MAYHEM_STRICT",
   "TIP_LAMPORTS",
@@ -106,7 +122,7 @@ function sendError(res: ServerResponse, status: number, error: string): void {
 }
 
 function parseInstance(id: string): InstanceConfig | null {
-  return id === "4bdk" || id === "5qn" ? INSTANCES[id] : null;
+  return id === "4bdk" || id === "5qn" || id === "cya" ? INSTANCES[id] : null;
 }
 
 function readJsonBody(req: IncomingMessage): Promise<Record<string, unknown>> {
@@ -258,7 +274,7 @@ function html(): string {
 <div class="toast" id="toast" hidden></div>
 <script>
 const keys=${JSON.stringify(ENV_KEYS)};
-const ids=["4bdk","5qn"];
+const ids=["4bdk","5qn","cya"];
 function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.hidden=false;setTimeout(()=>el.hidden=true,4500)}
 async function api(url, opts){const res=await fetch(url,opts);const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||res.statusText);return data}
 function field(id,key,val){const area=key==="TRAILING_STEPS"||key==="TRACKED_WALLETS"||key==="EXECUTION_TIP_MULTIPLIERS";return '<label class="'+(area?'wide':'')+'"><span>'+key+'</span>'+(area?'<textarea data-i="'+id+'" data-k="'+key+'">'+(val||'')+'</textarea>':'<input data-i="'+id+'" data-k="'+key+'" value="'+(val||'').replaceAll('"','&quot;')+'">')+'</label>'}

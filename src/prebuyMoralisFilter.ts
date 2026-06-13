@@ -1,6 +1,8 @@
 import {
   prebuyFilterFailOpen,
   prebuyMinLiquidityUsd,
+  prebuyMaxMarketCapUsd,
+  prebuyMinMarketCapUsd,
   prebuyMinMomentumPct,
   prebuyMinVolumeUsd,
   prebuyMoralisTimeoutMs,
@@ -24,6 +26,7 @@ export type PrebuyFilterResult = {
   volumeUsd?: number;
   momentumPct?: number | null;
   liquidityUsd?: number | null;
+  marketCapUsd?: number | null;
 };
 
 function short(mint: string): string {
@@ -33,6 +36,10 @@ function short(mint: string): string {
 function pct(from: number, to: number): number | null {
   if (!Number.isFinite(from) || !Number.isFinite(to) || from <= 0) return null;
   return ((to - from) / from) * 100;
+}
+
+function formatUsd(value: number | null | undefined): string {
+  return value == null || !Number.isFinite(value) ? "unknown" : `$${Math.round(value)}`;
 }
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
@@ -91,22 +98,46 @@ async function checkPrebuyMoralisFilterInner(mint: string): Promise<PrebuyFilter
     };
   }
 
-  const nowTs = Math.floor(Date.now() / 1000);
-  const fromTs = nowTs - Math.ceil(prebuyMoralisWindowMs / 1000);
-  const candles = await fetchMoralisCandles(pair.pairAddress, fromTs, nowTs);
-  const volumeUsd = candles.reduce((sum, candle) => sum + candle.volume, 0);
-  const momentumPct = candles.length > 0 ? pct(candles[0]!.open, candles[candles.length - 1]!.close) : null;
   const liquidityUsd = pair.liquidityUsd;
+  const marketCapUsd = pair.marketCapUsd;
+
+  if (prebuyMinMarketCapUsd != null && (marketCapUsd ?? 0) < prebuyMinMarketCapUsd) {
+    return {
+      allowed: false,
+      reason: `prebuy Moralis filter: market cap ${formatUsd(marketCapUsd)} < $${prebuyMinMarketCapUsd}`,
+      liquidityUsd,
+      marketCapUsd,
+    };
+  }
+  if (prebuyMaxMarketCapUsd != null && (marketCapUsd ?? Infinity) > prebuyMaxMarketCapUsd) {
+    return {
+      allowed: false,
+      reason: `prebuy Moralis filter: market cap ${formatUsd(marketCapUsd)} > $${prebuyMaxMarketCapUsd}`,
+      liquidityUsd,
+      marketCapUsd,
+    };
+  }
 
   if (prebuyMinLiquidityUsd != null && (liquidityUsd ?? 0) < prebuyMinLiquidityUsd) {
     return {
       allowed: false,
-      reason: `prebuy Moralis filter: liquidity $${Math.round(liquidityUsd ?? 0)} < $${prebuyMinLiquidityUsd}`,
-      volumeUsd,
-      momentumPct,
+      reason: `prebuy Moralis filter: liquidity ${formatUsd(liquidityUsd)} < $${prebuyMinLiquidityUsd}`,
       liquidityUsd,
+      marketCapUsd,
     };
   }
+
+  let volumeUsd = 0;
+  let momentumPct: number | null = null;
+  const needsCandles = prebuyMinVolumeUsd > 0 || prebuyMinMomentumPct != null;
+  if (needsCandles) {
+    const nowTs = Math.floor(Date.now() / 1000);
+    const fromTs = nowTs - Math.ceil(prebuyMoralisWindowMs / 1000);
+    const candles = await fetchMoralisCandles(pair.pairAddress, fromTs, nowTs);
+    volumeUsd = candles.reduce((sum, candle) => sum + candle.volume, 0);
+    momentumPct = candles.length > 0 ? pct(candles[0]!.open, candles[candles.length - 1]!.close) : null;
+  }
+
   if (volumeUsd < prebuyMinVolumeUsd) {
     return {
       allowed: false,
@@ -114,6 +145,7 @@ async function checkPrebuyMoralisFilterInner(mint: string): Promise<PrebuyFilter
       volumeUsd,
       momentumPct,
       liquidityUsd,
+      marketCapUsd,
     };
   }
   if (prebuyMinMomentumPct != null && (momentumPct ?? -Infinity) < prebuyMinMomentumPct) {
@@ -123,18 +155,22 @@ async function checkPrebuyMoralisFilterInner(mint: string): Promise<PrebuyFilter
       volumeUsd,
       momentumPct,
       liquidityUsd,
+      marketCapUsd,
     };
   }
 
   return {
     allowed: true,
     reason:
-      `prebuy Moralis filter passed: vol${Math.round(prebuyMoralisWindowMs / 60_000)}m=$${Math.round(volumeUsd)}` +
+      `prebuy Moralis filter passed:` +
+      `${needsCandles ? ` vol${Math.round(prebuyMoralisWindowMs / 60_000)}m=$${Math.round(volumeUsd)}` : ""}` +
       `${momentumPct == null ? "" : ` momentum=${momentumPct.toFixed(1)}%`}` +
-      `${liquidityUsd == null ? "" : ` liq=$${Math.round(liquidityUsd)}`}`,
+      `${liquidityUsd == null ? "" : ` liq=$${Math.round(liquidityUsd)}`}` +
+      `${marketCapUsd == null ? "" : ` mc=$${Math.round(marketCapUsd)}`}`,
     volumeUsd,
     momentumPct,
     liquidityUsd,
+    marketCapUsd,
   };
 }
 
