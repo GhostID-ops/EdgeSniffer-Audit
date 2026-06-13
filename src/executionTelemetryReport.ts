@@ -74,6 +74,15 @@ function printLatency(title: string, values: number[]): void {
   );
 }
 
+function printNumberDistribution(title: string, values: number[], unit: string): void {
+  const xs = values.filter((value) => Number.isFinite(value));
+  if (xs.length === 0) return;
+  console.log(
+    `${title}: n=${xs.length} p50=${quantile(xs, 0.5).toFixed(0)}${unit} ` +
+      `p90=${quantile(xs, 0.9).toFixed(0)}${unit} p99=${quantile(xs, 0.99).toFixed(0)}${unit}`
+  );
+}
+
 function detailNumber(row: Row, field: string): number | null {
   const value = row.details?.[field];
   return typeof value === "number" && Number.isFinite(value) ? value : null;
@@ -135,6 +144,10 @@ type Chain = {
   sig: string;
   mint: string;
   detector: string;
+  sourceSlot: number | null;
+  sourceTransactionIndex: number | null;
+  landingSlot: number | null;
+  slotDelta: number | null;
   seenToBroadcastMs: number | null;
   processToBroadcastMs: number | null;
   broadcastToConfirmMs: number | null;
@@ -150,12 +163,19 @@ for (const [sig, group] of chainRows) {
   if (!source && !broadcast && !confirm) continue;
   const providerCreatedAt = detailNumber(source ?? sorted[0]!, "providerCreatedAtMs");
   const processStartedAt = detailNumber(source ?? sorted[0]!, "processStartedAtMs");
+  const sourceSlot = detailNumber(source ?? sorted[0]!, "sourceSlot");
+  const sourceTransactionIndex = detailNumber(source ?? sorted[0]!, "sourceTransactionIndex");
+  const landingSlot = detailNumber(confirm ?? sorted[0]!, "landingSlot");
   const broadcastAt = broadcast?.tsMs ?? null;
   const confirmAt = confirm?.tsMs ?? null;
   chains.push({
     sig,
     mint: (source?.mint ?? broadcast?.mint ?? confirm?.mint ?? "unknown").slice(0, 8),
     detector: String((source?.details?.detector ?? source?.detector ?? broadcast?.detector ?? "unknown")),
+    sourceSlot,
+    sourceTransactionIndex,
+    landingSlot,
+    slotDelta: sourceSlot != null && landingSlot != null ? landingSlot - sourceSlot : null,
     seenToBroadcastMs:
       providerCreatedAt != null && broadcastAt != null ? broadcastAt - providerCreatedAt : null,
     processToBroadcastMs:
@@ -173,10 +193,16 @@ if (chains.length > 0) {
   printLatency("  process -> broadcast", chains.map((chain) => chain.processToBroadcastMs ?? NaN));
   printLatency("  broadcast -> confirm", chains.map((chain) => chain.broadcastToConfirmMs ?? NaN));
   printLatency("  provider -> confirm", chains.map((chain) => chain.providerToConfirmMs ?? NaN));
+  printNumberDistribution("  source slot -> landing slot", chains.map((chain) => chain.slotDelta ?? NaN), " slot(s)");
   console.log("\nLatest chains");
   for (const chain of chains.slice(-10).reverse()) {
+    const slotInfo =
+      chain.sourceSlot == null && chain.landingSlot == null
+        ? ""
+        : ` sourceSlot=${chain.sourceSlot ?? "-"} txIdx=${chain.sourceTransactionIndex ?? "-"} landingSlot=${chain.landingSlot ?? "-"} delta=${chain.slotDelta ?? "-"} `;
     console.log(
       `  ${chain.sig.slice(0, 8)} ${chain.mint} ${chain.detector}: ` +
+        slotInfo +
         `provider->broadcast=${fmtMs(chain.seenToBroadcastMs)} ` +
         `process->broadcast=${fmtMs(chain.processToBroadcastMs)} ` +
         `broadcast->confirm=${fmtMs(chain.broadcastToConfirmMs)}`

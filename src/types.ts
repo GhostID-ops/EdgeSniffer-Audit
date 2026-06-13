@@ -10,6 +10,10 @@ export type DetectedSwap = {
   receivedAtMs?: number;
   /** Local wall-clock timestamp after parsing/classification produced this DetectedSwap. */
   detectedAtMs?: number;
+  /** Upstream slot for the source transaction, when the detector provides it. */
+  sourceSlot?: number;
+  /** Best-effort transaction index within the upstream slot/entry stream, when available. */
+  sourceTransactionIndex?: number;
   /** Input token mint (e.g. wrapped SOL). */
   inputMint: string;
   /** Output token mint. */

@@ -477,6 +477,24 @@ export async function subscribeGrpcWalletSwaps(
             if (!swap) continue;
             processedSignatures.add(signature);
             const providerCreatedAtMs = update.createdAt?.getTime();
+            const sourceSlotRaw =
+              (update.transaction as unknown as { slot?: number | string | bigint } | undefined)?.slot ??
+              (update as unknown as { slot?: number | string | bigint }).slot;
+            const sourceSlot =
+              typeof sourceSlotRaw === "bigint"
+                ? Number(sourceSlotRaw)
+                : typeof sourceSlotRaw === "string"
+                  ? Number(sourceSlotRaw)
+                  : sourceSlotRaw;
+            const sourceTransactionIndexRaw =
+              (info as unknown as { index?: number | string | bigint }).index ??
+              (update.transaction as unknown as { index?: number | string | bigint } | undefined)?.index;
+            const sourceTransactionIndex =
+              typeof sourceTransactionIndexRaw === "bigint"
+                ? Number(sourceTransactionIndexRaw)
+                : typeof sourceTransactionIndexRaw === "string"
+                  ? Number(sourceTransactionIndexRaw)
+                  : sourceTransactionIndexRaw;
             const detectedAtMs = Date.now();
             swap.detector = "shyft-grpc";
             swap.providerCreatedAtMs =
@@ -485,6 +503,12 @@ export async function subscribeGrpcWalletSwaps(
                 : undefined;
             swap.receivedAtMs = receivedAtMs;
             swap.detectedAtMs = detectedAtMs;
+            swap.sourceSlot =
+              typeof sourceSlot === "number" && Number.isFinite(sourceSlot) ? sourceSlot : undefined;
+            swap.sourceTransactionIndex =
+              typeof sourceTransactionIndex === "number" && Number.isFinite(sourceTransactionIndex)
+                ? sourceTransactionIndex
+                : undefined;
             const ageMs =
               swap.providerCreatedAtMs != null ? detectedAtMs - swap.providerCreatedAtMs : null;
             console.log(

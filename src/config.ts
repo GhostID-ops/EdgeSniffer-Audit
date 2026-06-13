@@ -254,6 +254,14 @@ export const executionMultiSendEnabled =
   EXECUTION_MULTI_SEND_ENABLED_RAW === "true" ||
   EXECUTION_MULTI_SEND_ENABLED_RAW === "1" ||
   EXECUTION_MULTI_SEND_ENABLED_RAW === "yes";
+const JITO_SEND_MODE_RAW = (process.env.JITO_SEND_MODE ?? "bundle").toLowerCase().trim();
+export type JitoSendMode = "bundle" | "transaction" | "race";
+export const jitoSendMode: JitoSendMode =
+  JITO_SEND_MODE_RAW === "transaction" || JITO_SEND_MODE_RAW === "tx"
+    ? "transaction"
+    : JITO_SEND_MODE_RAW === "race" || JITO_SEND_MODE_RAW === "both"
+      ? "race"
+      : "bundle";
 export const executionRescueRetries = Math.max(
   0,
   parseInt(process.env.EXECUTION_RESCUE_RETRIES ?? "2", 10)
@@ -347,8 +355,34 @@ export const jitoBundleUrls = Array.from(
   )
 );
 export const jitoBundleUrl = jitoBundleUrls[0] ?? `${JITO_REGIONS[""]}/api/v1/bundles`;
+export const jitoTransactionUrls = Array.from(
+  new Set(
+    configuredJitoRegions.map(
+      (region) => `${JITO_REGIONS[region] ?? JITO_REGIONS[""]}/api/v1/transactions`
+    )
+  )
+);
+export const jitoTransactionUrl =
+  jitoTransactionUrls[0] ?? `${JITO_REGIONS[""]}/api/v1/transactions`;
 export const jitoAuthUuid = process.env.JITO_AUTH_UUID ?? "";
 export const jitoRegionRaceEnabled = parseEnvBool(process.env.JITO_REGION_RACE_ENABLED, true);
+export const jitoTipFloorUrl =
+  process.env.JITO_TIP_FLOOR_URL ?? "https://bundles.jito.wtf/api/v1/bundles/tip_floor";
+export const jitoTipOracleEnabled = parseEnvBool(process.env.JITO_TIP_ORACLE_ENABLED, false);
+export const jitoTipOracleRefreshMs = Math.max(
+  1000,
+  parseInt(process.env.JITO_TIP_ORACLE_REFRESH_MS ?? "5000", 10)
+);
+export const jitoTipOraclePercentile = (
+  process.env.JITO_TIP_ORACLE_PERCENTILE ?? "p75"
+).toLowerCase().trim();
+export const jitoTipOracleMinLamports = Math.max(
+  0,
+  parseNonNegativeInteger(process.env.JITO_TIP_ORACLE_MIN_LAMPORTS, TIP_LAMPORTS)
+);
+export const jitoTipOracleMaxLamports = parseOptionalPositiveInteger(
+  process.env.JITO_TIP_ORACLE_MAX_LAMPORTS
+);
 
 /** Helius enhanced transactions API (parse transactions). POST with { transactions: [sigs] }. */
 export const heliusEnhancedTransactionsUrl =

@@ -26,6 +26,26 @@ export type ConfirmSignatureOptions = {
   nullStatusTimeoutMs?: number;
 };
 
+export type ConfirmationResult = {
+  confirmationStatus: "confirmed" | "finalized";
+  slot: number | null;
+};
+
+const lastConfirmationResults = new Map<string, ConfirmationResult>();
+const MAX_CONFIRMATION_RESULTS = 2_000;
+
+function rememberConfirmation(signature: string, result: ConfirmationResult): void {
+  if (lastConfirmationResults.size >= MAX_CONFIRMATION_RESULTS) {
+    const oldest = lastConfirmationResults.keys().next().value;
+    if (oldest != null) lastConfirmationResults.delete(oldest);
+  }
+  lastConfirmationResults.set(signature, result);
+}
+
+export function getLastConfirmationResult(signature: string): ConfirmationResult | null {
+  return lastConfirmationResults.get(signature) ?? null;
+}
+
 export function isConfirmationTimeoutError(err: unknown): boolean {
   return err instanceof ConfirmationTimeoutError;
 }
@@ -58,9 +78,11 @@ export async function confirmSignature(
       sawStatus = true;
     }
     if (status?.confirmationStatus === "finalized") {
+      rememberConfirmation(signature, { confirmationStatus: "finalized", slot: status.slot ?? null });
       return "finalized";
     }
     if (status?.confirmationStatus === "confirmed") {
+      rememberConfirmation(signature, { confirmationStatus: "confirmed", slot: status.slot ?? null });
       return "confirmed";
     }
     if (!sawStatus && elapsedMs >= nullTimeoutMs) {
@@ -81,10 +103,12 @@ export async function confirmSignature(
   }
   if (finalStatus?.confirmationStatus === "finalized") {
     console.log("Transaction was actually finalized (late confirmation)");
+    rememberConfirmation(signature, { confirmationStatus: "finalized", slot: finalStatus.slot ?? null });
     return "finalized";
   }
   if (finalStatus?.confirmationStatus === "confirmed") {
     console.log("Transaction was actually confirmed (late confirmation)");
+    rememberConfirmation(signature, { confirmationStatus: "confirmed", slot: finalStatus.slot ?? null });
     return "confirmed";
   }
 

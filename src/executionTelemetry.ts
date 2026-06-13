@@ -2,6 +2,7 @@ import { mkdir, appendFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { executionTelemetryEnabled, executionTelemetryPath } from "./config.js";
 import { classifyExecutionError } from "./errorClassifier.js";
+import { getLastConfirmationResult } from "./confirm.js";
 
 export type ExecutionTelemetryEvent = {
   ts?: string;
@@ -43,10 +44,23 @@ export async function recordExecutionTelemetry(event: ExecutionTelemetryEvent): 
     }
     const classified = event.error ? classifyExecutionError(event.error) : null;
     const tsMs = event.tsMs ?? Date.now();
+    const confirmation =
+      event.kind === "stage:confirm" && event.signature
+        ? getLastConfirmationResult(event.signature)
+        : null;
+    const details =
+      confirmation == null
+        ? event.details
+        : {
+            ...(event.details ?? {}),
+            landingSlot: confirmation.slot,
+            confirmationStatus: confirmation.confirmationStatus,
+          };
     const row = {
       ts: event.ts ?? new Date(tsMs).toISOString(),
       tsMs,
       ...event,
+      details,
       errorClass: event.errorClass ?? classified?.category,
       errorCode: event.errorCode ?? classified?.code,
       errorProgram: event.errorProgram ?? classified?.program,

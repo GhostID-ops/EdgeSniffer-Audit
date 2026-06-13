@@ -86,14 +86,75 @@ const ENV_KEYS = [
   "PREBUY_FILTER_FAIL_OPEN",
   "BLOCK_PUMPFUN_MAYHEM",
   "PUMPFUN_MAYHEM_STRICT",
+  "SHYFT_GRPC_ENABLED",
+  "SHYFT_GRPC_URL",
+  "SHYFT_GRPC_COMMITMENT",
+  "SHYFT_RABBITSTREAM_ENABLED",
+  "SHYFT_RABBITSTREAM_URL",
+  "RUST_SIDECAR_ENABLED",
+  "RUST_SIDECAR_USE_CARGO",
+  "JITO_SHREDSTREAM_ENABLED",
+  "JITO_SHREDSTREAM_GRPC_URL",
+  "USE_JITO_DIRECT",
+  "USE_JITO_FALLBACK",
+  "JITO_SEND_MODE",
+  "BROADCAST_RACE_ENABLED",
+  "EXECUTION_MULTI_SEND_ENABLED",
+  "SENDER_RPC_FALLBACK_ENABLED",
+  "JITO_REGION",
+  "JITO_REGIONS",
+  "JITO_REGION_RACE_ENABLED",
+  "JITO_TIP_ORACLE_ENABLED",
+  "JITO_TIP_ORACLE_PERCENTILE",
+  "JITO_TIP_ORACLE_REFRESH_MS",
+  "JITO_TIP_ORACLE_MIN_LAMPORTS",
+  "JITO_TIP_ORACLE_MAX_LAMPORTS",
+  "JITO_TIP_FLOOR_URL",
   "TIP_LAMPORTS",
   "PRIORITY_FEE_MICRO_LAMPORTS",
   "DYNAMIC_PRIORITY_FEE_ENABLED",
+  "DYNAMIC_PRIORITY_FEE_REFRESH_MS",
   "DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS",
   "EXECUTION_TIP_MULTIPLIERS",
+  "FAST_MODE",
+  "WARM_WALLET_MODE",
+  "KEEP_WSOL_ATA_OPEN",
+  "PUMPFUN_EXACT_SOL_IN_BUYS",
+  "PUMPSWAP_DIRECT_BUY_ENABLED",
+  "PUMPSWAP_DIRECT_PREFLIGHT",
 ] as const;
 
 const ENV_KEY_SET = new Set<string>(ENV_KEYS);
+
+const SPEED_MODE_ENV: Record<string, string> = {
+  PREBUY_MORALIS_FILTER_ENABLED: "false",
+  PREBUY_MIN_MARKET_CAP_USD: "",
+  PREBUY_MAX_MARKET_CAP_USD: "",
+  PREBUY_MIN_LIQUIDITY_USD: "",
+  PREBUY_MIN_VOLUME_USD: "0",
+  PREBUY_MIN_MOMENTUM_PCT: "",
+  PREBUY_FILTER_FAIL_OPEN: "true",
+  BLOCK_PUMPFUN_MAYHEM: "false",
+  PUMPFUN_MAYHEM_STRICT: "false",
+  USE_JITO_DIRECT: "true",
+  USE_JITO_FALLBACK: "true",
+  JITO_SEND_MODE: "race",
+  BROADCAST_RACE_ENABLED: "true",
+  EXECUTION_MULTI_SEND_ENABLED: "true",
+  SENDER_RPC_FALLBACK_ENABLED: "true",
+  JITO_REGION_RACE_ENABLED: "true",
+  JITO_TIP_ORACLE_ENABLED: "true",
+  JITO_TIP_ORACLE_PERCENTILE: "p75",
+  JITO_TIP_ORACLE_REFRESH_MS: "5000",
+  DYNAMIC_PRIORITY_FEE_ENABLED: "true",
+  DYNAMIC_PRIORITY_FEE_REFRESH_MS: "5000",
+  FAST_MODE: "true",
+  WARM_WALLET_MODE: "true",
+  KEEP_WSOL_ATA_OPEN: "true",
+  PUMPFUN_EXACT_SOL_IN_BUYS: "true",
+  PUMPSWAP_DIRECT_BUY_ENABLED: "true",
+  PUMPSWAP_DIRECT_PREFLIGHT: "true",
+};
 
 function execCommand(command: string, args: string[], cwd?: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -285,11 +346,12 @@ const keys=${JSON.stringify(ENV_KEYS)};
 const ids=["main","4bdk","5qn","cya"];
 function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.hidden=false;setTimeout(()=>el.hidden=true,4500)}
 async function api(url, opts){const res=await fetch(url,opts);const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||res.statusText);return data}
-function field(id,key,val){const area=key==="TRAILING_STEPS"||key==="TRACKED_WALLETS"||key==="EXECUTION_TIP_MULTIPLIERS";return '<label class="'+(area?'wide':'')+'"><span>'+key+'</span>'+(area?'<textarea data-i="'+id+'" data-k="'+key+'">'+(val||'')+'</textarea>':'<input data-i="'+id+'" data-k="'+key+'" value="'+(val||'').replaceAll('"','&quot;')+'">')+'</label>'}
-function card(s){const pill=s.active==="active"?"active":"inactive";return '<section class="inst"><div class="head"><div><div class="name">'+s.label+'</div><div class="sub">'+s.service+' · '+s.dir+' · API '+s.apiPort+'</div></div><div class="pill '+pill+'">'+s.active+'</div></div><div class="actions"><button onclick="act(\\''+s.id+'\\',\\'start\\')">Start</button><button class="danger" onclick="act(\\''+s.id+'\\',\\'stop\\')">Stop</button><button onclick="act(\\''+s.id+'\\',\\'restart\\')">Restart</button><button onclick="deploy(\\''+s.id+'\\')">Deploy</button><button onclick="save(\\''+s.id+'\\')">Save Env</button><button onclick="save(\\''+s.id+'\\',true)">Save + Restart</button></div><div class="actions trade"><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'sell-all\\')">Sell All</button><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'panic\\')">Panic</button><button onclick="botAction(\\''+s.id+'\\',\\'close-all-sim\\')">Close Sim</button><button onclick="botAction(\\''+s.id+'\\',\\'reset-session\\')">Reset Session</button></div><div class="grid">'+keys.map(k=>field(s.id,k,s.env?.[k]||"")).join("")+'</div><div class="logs"><pre>'+String(s.logs||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))+'</pre></div></section>'}
+function field(id,key,val){const area=key==="TRAILING_STEPS"||key==="TRACKED_WALLETS"||key==="EXECUTION_TIP_MULTIPLIERS"||key.endsWith("_URL");return '<label class="'+(area?'wide':'')+'"><span>'+key+'</span>'+(area?'<textarea data-i="'+id+'" data-k="'+key+'">'+(val||'')+'</textarea>':'<input data-i="'+id+'" data-k="'+key+'" value="'+(val||'').replaceAll('"','&quot;')+'">')+'</label>'}
+function card(s){const pill=s.active==="active"?"active":"inactive";return '<section class="inst"><div class="head"><div><div class="name">'+s.label+'</div><div class="sub">'+s.service+' · '+s.dir+' · API '+s.apiPort+'</div></div><div class="pill '+pill+'">'+s.active+'</div></div><div class="actions"><button onclick="act(\\''+s.id+'\\',\\'start\\')">Start</button><button class="danger" onclick="act(\\''+s.id+'\\',\\'stop\\')">Stop</button><button onclick="act(\\''+s.id+'\\',\\'restart\\')">Restart</button><button onclick="deploy(\\''+s.id+'\\')">Deploy</button><button onclick="speedMode(\\''+s.id+'\\')">Speed Mode</button><button onclick="save(\\''+s.id+'\\')">Save Env</button><button onclick="save(\\''+s.id+'\\',true)">Save + Restart</button></div><div class="actions trade"><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'sell-all\\')">Sell All</button><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'panic\\')">Panic</button><button onclick="botAction(\\''+s.id+'\\',\\'close-all-sim\\')">Close Sim</button><button onclick="botAction(\\''+s.id+'\\',\\'reset-session\\')">Reset Session</button></div><div class="grid">'+keys.map(k=>field(s.id,k,s.env?.[k]||"")).join("")+'</div><div class="logs"><pre>'+String(s.logs||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))+'</pre></div></section>'}
 async function load(){try{const data=await api("/api/instances");document.getElementById("app").innerHTML=data.instances.map(card).join("")}catch(e){toast(e.message)}}
 async function act(id,action){try{await api("/api/instances/"+id+"/"+action,{method:"POST"});toast(id+" "+action+" ok");await load()}catch(e){toast(e.message)}}
 async function deploy(id){try{toast(id+" deploy running...");await api("/api/instances/"+id+"/deploy",{method:"POST"});toast(id+" deploy ok");await load()}catch(e){toast(e.message)}}
+async function speedMode(id){if(!confirm(id+": apply low-latency speed mode env? Strategy/wallet/buy sizing will not be changed."))return;try{await api("/api/instances/"+id+"/speed-mode",{method:"POST"});toast(id+" speed mode applied");await load()}catch(e){toast(e.message)}}
 async function botAction(id,action){const labels={"sell-all":"SELL ALL open positions","panic":"STOP BOT + SELL ALL","close-all-sim":"close all simulated positions","reset-session":"reset session state"};if(!confirm(id+": "+labels[action]+"?"))return;try{toast(id+" "+action+" running...");await api("/api/instances/"+id+"/bot-"+action,{method:"POST"});toast(id+" "+action+" ok");await load()}catch(e){toast(e.message)}}
 async function save(id,restart=false){const updates={};document.querySelectorAll("[data-i='"+id+"']").forEach(el=>updates[el.dataset.k]=el.value);try{await api("/api/instances/"+id+"/env",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({updates,restart})});toast(id+" env saved"+(restart?" and restarted":""));await load()}catch(e){toast(e.message)}}
 load();setInterval(load,10000);
@@ -348,7 +410,8 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
   }
 
   if (req.method === "POST" && action === "deploy") {
-    await execCommand("git", ["pull", "origin", "main"], instance.dir);
+    const branch = (await execCommand("git", ["rev-parse", "--abbrev-ref", "HEAD"], instance.dir)).trim();
+    await execCommand("git", ["pull", "origin", branch === "HEAD" ? "main" : branch], instance.dir);
     await execCommand("npm", ["install"], instance.dir);
     await execCommand("npm", ["run", "build"], instance.dir);
     await patchEnv(instance.envPath, {
@@ -357,6 +420,11 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
     });
     await execCommand("systemctl", ["restart", instance.service]);
     return sendJson(res, 200, { ok: true, status: await serviceStatus(instance) });
+  }
+
+  if (req.method === "POST" && action === "speed-mode") {
+    const env = await patchEnv(instance.envPath, SPEED_MODE_ENV);
+    return sendJson(res, 200, { ok: true, env, status: await serviceStatus(instance) });
   }
 
   return sendError(res, 404, "Not found");

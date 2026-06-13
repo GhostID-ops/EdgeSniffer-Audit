@@ -12,6 +12,7 @@ import {
   useJitoDirect,
   useJitoFallback,
 } from "./config.js";
+import { getDynamicJitoTipLamports } from "./jitoTipOracle.js";
 
 export type TipSelection = "all" | "primary" | "fallback" | "none";
 
@@ -53,15 +54,15 @@ function routeMultiplier(route?: string): number {
   return 1;
 }
 
-function routeTipLamports(route?: string): number {
-  return Math.max(0, Math.round(tipLamports * routeMultiplier(route)));
+function routeTipLamports(route?: string, baseLamports = tipLamports): number {
+  return Math.max(0, Math.round(baseLamports * routeMultiplier(route)));
 }
 
 function jitoTip(user: PublicKey, route?: string): TransactionInstruction {
   return SystemProgram.transfer({
     fromPubkey: user,
     toPubkey: randomAccount(JITO_TIP_ACCOUNTS),
-    lamports: routeTipLamports(route),
+    lamports: routeTipLamports(route, getDynamicJitoTipLamports()),
   });
 }
 

@@ -69,6 +69,8 @@ struct DetectedSwapLine {
     source_pump_swap_accounts: Option<Vec<String>>,
     source_quote_mint: Option<String>,
     source_quote_amount_raw: Option<u64>,
+    source_slot: Option<u64>,
+    source_transaction_index: Option<u64>,
 }
 
 #[tokio::main]
@@ -212,7 +214,7 @@ async fn run_once(cfg: &Config) -> Result<()> {
         let Some(info) = tx_update.transaction else {
             continue;
         };
-        if let Some(line) = extract_swap(&info, &cfg.tracked_wallets) {
+        if let Some(line) = extract_swap(&info, &cfg.tracked_wallets, Some(tx_update.slot), Some(info.index)) {
             println!("{}", serde_json::to_string(&line)?);
         }
     }
@@ -247,11 +249,15 @@ async fn run_jito_shredstream_once(cfg: &Config) -> Result<()> {
                 continue;
             }
         };
+        let mut tx_index = 0_u64;
         for entry in entries {
             for tx in entry.transactions {
-                if let Some(line) = extract_shred_swap(&tx, &cfg.tracked_wallets, slot_entry.slot) {
+                if let Some(line) =
+                    extract_shred_swap(&tx, &cfg.tracked_wallets, slot_entry.slot, tx_index)
+                {
                     println!("{}", serde_json::to_string(&line)?);
                 }
+                tx_index = tx_index.saturating_add(1);
             }
         }
     }
@@ -290,6 +296,8 @@ fn build_request(tracked_wallets: &[String]) -> SubscribeRequest {
 fn extract_swap(
     info: &yellowstone_grpc_proto::geyser::SubscribeUpdateTransactionInfo,
     tracked_wallets: &[String],
+    source_slot: Option<u64>,
+    source_transaction_index: Option<u64>,
 ) -> Option<DetectedSwapLine> {
     let message = info.transaction.as_ref()?.message.as_ref()?;
     let account_keys = message
@@ -307,7 +315,14 @@ fn extract_swap(
         let program_id = account_keys.get(ix.program_id_index as usize)?;
         if program_id == PUMPSWAP_PROGRAM_ID {
             if let Some(line) =
-                extract_top_level_pumpswap_buy(ix, &account_keys, &signature, &wallet)
+                extract_top_level_pumpswap_buy(
+                    ix,
+                    &account_keys,
+                    &signature,
+                    &wallet,
+                    source_slot,
+                    source_transaction_index,
+                )
             {
                 return Some(line);
             }
@@ -358,6 +373,8 @@ fn extract_swap(
                 source_pump_swap_accounts: None,
                 source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
                 source_quote_amount_raw: Some(max_sol_cost),
+                source_slot,
+                source_transaction_index,
             });
         }
 
@@ -384,6 +401,8 @@ fn extract_swap(
                 source_pump_swap_accounts: None,
                 source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
                 source_quote_amount_raw: Some(spendable_sol),
+                source_slot,
+                source_transaction_index,
             });
         }
 
@@ -408,6 +427,8 @@ fn extract_swap(
                 source_pump_swap_accounts: None,
                 source_quote_mint: None,
                 source_quote_amount_raw: None,
+                source_slot,
+                source_transaction_index,
             });
         }
     }
@@ -419,8 +440,11 @@ fn extract_swap(
 fn extract_shred_swap(
     tx: &VersionedTransaction,
     tracked_wallets: &[String],
-    _slot: u64,
+    source_slot: u64,
+    source_transaction_index: u64,
 ) -> Option<DetectedSwapLine> {
+    let source_slot = Some(source_slot);
+    let source_transaction_index = Some(source_transaction_index);
     let account_keys = tx
         .message
         .static_account_keys()
@@ -436,8 +460,15 @@ fn extract_shred_swap(
     for ix in tx.message.instructions() {
         let program_id = account_keys.get(ix.program_id_index as usize)?;
         if program_id == PUMPSWAP_PROGRAM_ID {
-            if let Some(line) =
-                extract_top_level_pumpswap_buy_from_compiled(ix, &account_keys, &signature, &wallet, "jito-shredstream")
+            if let Some(line) = extract_top_level_pumpswap_buy_from_compiled(
+                ix,
+                &account_keys,
+                &signature,
+                &wallet,
+                "jito-shredstream",
+                Some(source_slot),
+                Some(source_transaction_index),
+            )
             {
                 return Some(line);
             }
@@ -490,6 +521,8 @@ fn extract_shred_swap(
                 source_pump_swap_accounts: None,
                 source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
                 source_quote_amount_raw: Some(max_sol_cost),
+                source_slot,
+                source_transaction_index,
             });
         }
 
@@ -516,6 +549,8 @@ fn extract_shred_swap(
                 source_pump_swap_accounts: None,
                 source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
                 source_quote_amount_raw: Some(spendable_sol),
+                source_slot,
+                source_transaction_index,
             });
         }
     }
@@ -528,6 +563,8 @@ fn extract_top_level_pumpswap_buy(
     account_keys: &[String],
     signature: &str,
     wallet: &str,
+    source_slot: Option<u64>,
+    source_transaction_index: Option<u64>,
 ) -> Option<DetectedSwapLine> {
     let keys = ix
         .accounts
@@ -540,6 +577,8 @@ fn extract_top_level_pumpswap_buy(
         signature,
         wallet,
         "rust-sidecar",
+        source_slot,
+        source_transaction_index,
     )
 }
 
@@ -550,13 +589,23 @@ fn extract_top_level_pumpswap_buy_from_compiled(
     signature: &str,
     wallet: &str,
     source: &'static str,
+    source_slot: Option<u64>,
+    source_transaction_index: Option<u64>,
 ) -> Option<DetectedSwapLine> {
     let keys = ix
         .accounts
         .iter()
         .filter_map(|idx| account_keys.get(*idx as usize).cloned())
         .collect::<Vec<_>>();
-    extract_top_level_pumpswap_buy_from_parts(&keys, ix.data.as_slice(), signature, wallet, source)
+    extract_top_level_pumpswap_buy_from_parts(
+        &keys,
+        ix.data.as_slice(),
+        signature,
+        wallet,
+        source,
+        source_slot,
+        source_transaction_index,
+    )
 }
 
 fn extract_top_level_pumpswap_buy_from_parts(
@@ -565,6 +614,8 @@ fn extract_top_level_pumpswap_buy_from_parts(
     signature: &str,
     wallet: &str,
     source: &'static str,
+    source_slot: Option<u64>,
+    source_transaction_index: Option<u64>,
 ) -> Option<DetectedSwapLine> {
     if keys.len() < 17 {
         return None;
@@ -602,6 +653,8 @@ fn extract_top_level_pumpswap_buy_from_parts(
         source_pump_swap_accounts: Some(keys.to_vec()),
         source_quote_mint: Some(quote_mint),
         source_quote_amount_raw: Some(quote_in),
+        source_slot,
+        source_transaction_index,
     })
 }
 

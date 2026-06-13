@@ -12,6 +12,8 @@ type RustSidecarEvent = {
   providerCreatedAtMs?: number;
   receivedAtMs?: number;
   detectedAtMs?: number;
+  sourceSlot?: number;
+  sourceTransactionIndex?: number;
   signature?: string;
   wallet?: string;
   inputMint?: string;
@@ -63,6 +65,14 @@ function toSwap(event: RustSidecarEvent, nodeReceivedAtMs: number): DetectedSwap
       typeof event.detectedAtMs === "number" && Number.isFinite(event.detectedAtMs)
         ? event.detectedAtMs
         : nodeReceivedAtMs,
+    sourceSlot:
+      typeof event.sourceSlot === "number" && Number.isFinite(event.sourceSlot)
+        ? event.sourceSlot
+        : undefined,
+    sourceTransactionIndex:
+      typeof event.sourceTransactionIndex === "number" && Number.isFinite(event.sourceTransactionIndex)
+        ? event.sourceTransactionIndex
+        : undefined,
     inputMint: event.inputMint,
     outputMint: event.outputMint,
     amountRaw: event.amountRaw,

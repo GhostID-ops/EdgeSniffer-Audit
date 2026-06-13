@@ -139,6 +139,7 @@ import {
   resetCircuitBreaker,
 } from "./circuitBreaker.js";
 import { startFeeOracle, stopFeeOracle } from "./feeOracle.js";
+import { startJitoTipOracle, stopJitoTipOracle } from "./jitoTipOracle.js";
 import { classifyExecutionError } from "./errorClassifier.js";
 import { decideRetryAction } from "./executionRetry.js";
 import { planExecution } from "./executionPlanner.js";
@@ -1318,6 +1319,8 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       swap.detectedAtMs != null ? processStartedAt - swap.detectedAtMs : undefined,
     providerToProcessMs:
       swap.providerCreatedAtMs != null ? processStartedAt - swap.providerCreatedAtMs : undefined,
+    sourceSlot: swap.sourceSlot,
+    sourceTransactionIndex: swap.sourceTransactionIndex,
   };
   const isTrackedSourceWallet = trackedWallets.includes(swap.wallet);
   const isExitOnlyWallet = !isTrackedSourceWallet && isExitSignalWallet(swap.wallet);
@@ -2242,6 +2245,7 @@ async function loop(): Promise<void> {
   startedAt = null;
   stopRequested = false;
   stopFeeOracle();
+  stopJitoTipOracle();
   stopBlockhashCache();
   console.log("Bot stopped.");
 }
@@ -2258,6 +2262,7 @@ export async function startBot(): Promise<void> {
   stopRequested = false;
   resetCircuitBreaker();
   startFeeOracle();
+  startJitoTipOracle();
   startBlockhashCache();
   console.log(
     "Copytrading bot started. Our wallet:",

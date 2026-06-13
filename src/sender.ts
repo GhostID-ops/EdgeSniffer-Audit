@@ -15,6 +15,7 @@ import {
   computeUnitLimit,
   useJitoDirect,
   useJitoFallback,
+  jitoSendMode,
   broadcastRaceEnabled,
   senderRpcFallbackEnabled,
   executionMultiSendEnabled,
@@ -26,7 +27,7 @@ import {
   diagnoseV0Transaction,
   formatSizeDiagnostics,
 } from "./transactionSize.js";
-import { broadcastViaJito } from "./jitoSender.js";
+import { broadcastViaJito, broadcastViaJitoTransaction } from "./jitoSender.js";
 import { invalidateBlockhashCache } from "./blockhashCache.js";
 import { buildTipInstructions } from "./tipBuilder.js";
 import { classifyExecutionError } from "./errorClassifier.js";
@@ -251,7 +252,7 @@ async function raceJitoAndHelius(transaction: VersionedTransaction): Promise<str
 
   try {
     return await Promise.any([
-      wrap("Jito", () => broadcastViaJito(transaction)),
+      ...jitoLandingFns(transaction).map((path) => wrap(path.name, path.fn)),
       wrap("Helius", () => broadcastViaHeliusSender(transaction)),
     ]);
   } catch {
@@ -269,7 +270,7 @@ async function broadcastViaRpcFallback(transaction: VersionedTransaction): Promi
 async function raceLandingPaths(transaction: VersionedTransaction): Promise<string> {
   const errors: string[] = [];
   const paths: Array<{ name: string; fn: () => Promise<string> }> = [];
-  if (useJitoDirect) paths.push({ name: "Jito", fn: () => broadcastViaJito(transaction) });
+  if (useJitoDirect) paths.push(...jitoLandingFns(transaction));
   if (!useJitoDirect || useJitoFallback) {
     paths.push({ name: "Helius", fn: () => broadcastViaHeliusSender(transaction) });
   }
@@ -293,6 +294,41 @@ async function raceLandingPaths(transaction: VersionedTransaction): Promise<stri
     return await Promise.any(paths.map((path) => wrap(path)));
   } catch {
     throw new Error(`Multi-send broadcast failed: ${errors.join(" | ")}`);
+  }
+}
+
+function jitoLandingFns(transaction: VersionedTransaction): Array<{ name: string; fn: () => Promise<string> }> {
+  if (jitoSendMode === "transaction") {
+    return [{ name: "JitoTx", fn: () => broadcastViaJitoTransaction(transaction) }];
+  }
+  if (jitoSendMode === "race") {
+    return [
+      { name: "JitoTx", fn: () => broadcastViaJitoTransaction(transaction) },
+      { name: "JitoBundle", fn: () => broadcastViaJito(transaction) },
+    ];
+  }
+  return [{ name: "JitoBundle", fn: () => broadcastViaJito(transaction) }];
+}
+
+async function broadcastViaJitoPreferred(transaction: VersionedTransaction): Promise<string> {
+  const paths = jitoLandingFns(transaction);
+  if (paths.length === 1) return paths[0]!.fn();
+
+  const errors: string[] = [];
+  try {
+    return await Promise.any(
+      paths.map(async (path) => {
+        try {
+          return await path.fn();
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          errors.push(`${path.name}: ${msg}`);
+          throw err;
+        }
+      })
+    );
+  } catch {
+    throw new Error(`Jito ${jitoSendMode} broadcast failed: ${errors.join(" | ")}`);
   }
 }
 
@@ -362,21 +398,21 @@ export async function broadcastTransactionWithSender(
       }
     }
     try {
-      attempted.push("jito");
-      const signature = await broadcastViaJito(transaction);
-      emit({ path: "jito", success: true, signature });
+      attempted.push(`jito:${jitoSendMode}`);
+      const signature = await broadcastViaJitoPreferred(transaction);
+      emit({ path: `jito:${jitoSendMode}`, success: true, signature });
       return signature;
     } catch (jitoErr) {
       if (!useJitoFallback) {
         maybeInvalidateBlockhash(jitoErr);
-        emit({ path: "jito", success: false, error: jitoErr });
+        emit({ path: `jito:${jitoSendMode}`, success: false, error: jitoErr });
         if (!senderRpcFallbackEnabled) throw jitoErr;
         failureDetails.push(`jito: ${jitoErr instanceof Error ? jitoErr.message : String(jitoErr)}`);
       } else {
         const msg = jitoErr instanceof Error ? jitoErr.message : String(jitoErr);
         maybeInvalidateBlockhash(jitoErr);
         failureDetails.push(`jito: ${msg}`);
-        emit({ path: "jito", success: false, error: jitoErr });
+        emit({ path: `jito:${jitoSendMode}`, success: false, error: jitoErr });
         console.warn(`Jito direct broadcast failed; falling back to Helius Sender: ${msg}`);
       }
     }
