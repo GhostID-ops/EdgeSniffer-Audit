@@ -1,5 +1,6 @@
 import { startBot, stopBot, printPnlReport } from "./botService.js";
 import { registerKeyboardShortcuts, restoreTerminal } from "./keyboard.js";
+import { startServer } from "./server.js";
 
 let shuttingDown = false;
 
@@ -20,6 +21,11 @@ process.on("SIGINT", () => void shutdown("SIGINT"));
 process.on("SIGTERM", () => void shutdown("SIGTERM"));
 
 registerKeyboardShortcuts(() => void shutdown("keyboard"));
+
+const controlApiEnabled = (process.env.BOT_CONTROL_API_ENABLED ?? "false").trim().toLowerCase();
+if (controlApiEnabled === "true" || controlApiEnabled === "1" || controlApiEnabled === "yes") {
+  startServer();
+}
 
 startBot().catch((err) => {
   console.error(err);

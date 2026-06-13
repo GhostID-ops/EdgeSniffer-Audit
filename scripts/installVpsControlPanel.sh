@@ -18,6 +18,30 @@ cd "$BOT_DIR"
 npm install
 npm run build
 
+node - <<'NODE'
+const fs = require("fs");
+const instances = [
+  ["/root/bot/FinalBot-4bdk/.env", "3101"],
+  ["/root/bot/FinalBot-5qn/.env", "3102"],
+];
+
+for (const [envPath, port] of instances) {
+  if (!fs.existsSync(envPath)) continue;
+  let text = fs.readFileSync(envPath, "utf8");
+  const updates = {
+    BOT_CONTROL_API_ENABLED: "true",
+    WEB_PORT: port,
+  };
+  for (const [key, value] of Object.entries(updates)) {
+    const re = new RegExp(`^#?\\s*${key}=.*$`, "m");
+    if (re.test(text)) text = text.replace(re, `${key}=${value}`);
+    else text += `\n${key}=${value}`;
+  }
+  fs.writeFileSync(envPath, text);
+  console.log(`Enabled control API for ${envPath} on port ${port}`);
+}
+NODE
+
 cat > /etc/systemd/system/finalbot-control.service <<EOF
 [Unit]
 Description=FinalBot local VPS control panel
@@ -39,6 +63,8 @@ EOF
 
 systemctl daemon-reload
 systemctl enable finalbot-control
+systemctl restart finalbot-4bdk 2>/dev/null || true
+systemctl restart finalbot-5qn 2>/dev/null || true
 systemctl restart finalbot-control
 
 echo "FinalBot control panel installed."

@@ -13,6 +13,7 @@ type InstanceConfig = {
   service: string;
   dir: string;
   envPath: string;
+  apiPort: number;
 };
 
 const INSTANCES: Record<InstanceId, InstanceConfig> = {
@@ -22,6 +23,7 @@ const INSTANCES: Record<InstanceId, InstanceConfig> = {
     service: "finalbot-4bdk",
     dir: "/root/bot/FinalBot-4bdk",
     envPath: "/root/bot/FinalBot-4bdk/.env",
+    apiPort: 3101,
   },
   "5qn": {
     id: "5qn",
@@ -29,12 +31,15 @@ const INSTANCES: Record<InstanceId, InstanceConfig> = {
     service: "finalbot-5qn",
     dir: "/root/bot/FinalBot-5qn",
     envPath: "/root/bot/FinalBot-5qn/.env",
+    apiPort: 3102,
   },
 };
 
 const ENV_KEYS = [
   "SIMULATION_MODE",
   "SHADOW_EXECUTION_MODE",
+  "BOT_CONTROL_API_ENABLED",
+  "WEB_PORT",
   "TRACKED_WALLETS",
   "MIRROR_SELLS",
   "MIRROR_SELL_MODE",
@@ -189,11 +194,36 @@ async function serviceStatus(instance: InstanceConfig): Promise<Record<string, u
     label: instance.label,
     service: instance.service,
     dir: instance.dir,
+    apiPort: instance.apiPort,
     active,
     enabled,
     env: await readEnv(instance.envPath).catch(() => ({})),
     logs,
   };
+}
+
+async function callBotApi(instance: InstanceConfig, apiPath: string): Promise<unknown> {
+  const response = await fetch(`http://127.0.0.1:${instance.apiPort}${apiPath}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: "{}",
+    signal: AbortSignal.timeout(60_000),
+  });
+  const text = await response.text();
+  let body: unknown = text;
+  try {
+    body = text ? JSON.parse(text) : {};
+  } catch {
+    // keep text body
+  }
+  if (!response.ok) {
+    const message =
+      body && typeof body === "object" && "error" in body
+        ? String((body as { error: unknown }).error)
+        : text || response.statusText;
+    throw new Error(message);
+  }
+  return body;
 }
 
 function html(): string {
@@ -212,6 +242,7 @@ function html(): string {
   .name{font-weight:800}.sub{color:var(--muted);font-size:12px;margin-top:3px}.pill{border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:12px;color:var(--muted)}
   .pill.active{color:#03130a;background:var(--green);border-color:var(--green)}.pill.inactive{color:#190407;background:var(--red);border-color:var(--red)}
   .actions{display:flex;gap:8px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .actions.trade{background:#0b0d11}
   button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:8px;height:34px;padding:0 12px;cursor:pointer}button:hover{border-color:var(--blue)}button.danger:hover{border-color:var(--red)}
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px}
   label{display:grid;gap:5px;color:var(--muted);font-size:12px}input,textarea{width:100%;border:1px solid var(--line);background:#080a0e;color:var(--text);border-radius:8px;padding:9px;font:inherit;font-size:13px}
@@ -231,10 +262,11 @@ const ids=["4bdk","5qn"];
 function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.hidden=false;setTimeout(()=>el.hidden=true,4500)}
 async function api(url, opts){const res=await fetch(url,opts);const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||res.statusText);return data}
 function field(id,key,val){const area=key==="TRAILING_STEPS"||key==="TRACKED_WALLETS"||key==="EXECUTION_TIP_MULTIPLIERS";return '<label class="'+(area?'wide':'')+'"><span>'+key+'</span>'+(area?'<textarea data-i="'+id+'" data-k="'+key+'">'+(val||'')+'</textarea>':'<input data-i="'+id+'" data-k="'+key+'" value="'+(val||'').replaceAll('"','&quot;')+'">')+'</label>'}
-function card(s){const pill=s.active==="active"?"active":"inactive";return '<section class="inst"><div class="head"><div><div class="name">'+s.label+'</div><div class="sub">'+s.service+' · '+s.dir+'</div></div><div class="pill '+pill+'">'+s.active+'</div></div><div class="actions"><button onclick="act(\\''+s.id+'\\',\\'start\\')">Start</button><button class="danger" onclick="act(\\''+s.id+'\\',\\'stop\\')">Stop</button><button onclick="act(\\''+s.id+'\\',\\'restart\\')">Restart</button><button onclick="deploy(\\''+s.id+'\\')">Deploy</button><button onclick="save(\\''+s.id+'\\')">Save Env</button><button onclick="save(\\''+s.id+'\\',true)">Save + Restart</button></div><div class="grid">'+keys.map(k=>field(s.id,k,s.env?.[k]||"")).join("")+'</div><div class="logs"><pre>'+String(s.logs||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))+'</pre></div></section>'}
+function card(s){const pill=s.active==="active"?"active":"inactive";return '<section class="inst"><div class="head"><div><div class="name">'+s.label+'</div><div class="sub">'+s.service+' · '+s.dir+' · API '+s.apiPort+'</div></div><div class="pill '+pill+'">'+s.active+'</div></div><div class="actions"><button onclick="act(\\''+s.id+'\\',\\'start\\')">Start</button><button class="danger" onclick="act(\\''+s.id+'\\',\\'stop\\')">Stop</button><button onclick="act(\\''+s.id+'\\',\\'restart\\')">Restart</button><button onclick="deploy(\\''+s.id+'\\')">Deploy</button><button onclick="save(\\''+s.id+'\\')">Save Env</button><button onclick="save(\\''+s.id+'\\',true)">Save + Restart</button></div><div class="actions trade"><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'sell-all\\')">Sell All</button><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'panic\\')">Panic</button><button onclick="botAction(\\''+s.id+'\\',\\'close-all-sim\\')">Close Sim</button><button onclick="botAction(\\''+s.id+'\\',\\'reset-session\\')">Reset Session</button></div><div class="grid">'+keys.map(k=>field(s.id,k,s.env?.[k]||"")).join("")+'</div><div class="logs"><pre>'+String(s.logs||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))+'</pre></div></section>'}
 async function load(){try{const data=await api("/api/instances");document.getElementById("app").innerHTML=data.instances.map(card).join("")}catch(e){toast(e.message)}}
 async function act(id,action){try{await api("/api/instances/"+id+"/"+action,{method:"POST"});toast(id+" "+action+" ok");await load()}catch(e){toast(e.message)}}
 async function deploy(id){try{toast(id+" deploy running...");await api("/api/instances/"+id+"/deploy",{method:"POST"});toast(id+" deploy ok");await load()}catch(e){toast(e.message)}}
+async function botAction(id,action){const labels={"sell-all":"SELL ALL open positions","panic":"STOP BOT + SELL ALL","close-all-sim":"close all simulated positions","reset-session":"reset session state"};if(!confirm(id+": "+labels[action]+"?"))return;try{toast(id+" "+action+" running...");await api("/api/instances/"+id+"/bot-"+action,{method:"POST"});toast(id+" "+action+" ok");await load()}catch(e){toast(e.message)}}
 async function save(id,restart=false){const updates={};document.querySelectorAll("[data-i='"+id+"']").forEach(el=>updates[el.dataset.k]=el.value);try{await api("/api/instances/"+id+"/env",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({updates,restart})});toast(id+" env saved"+(restart?" and restarted":""));await load()}catch(e){toast(e.message)}}
 load();setInterval(load,10000);
 </script>
@@ -277,10 +309,28 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
     return sendJson(res, 200, { ok: true, env, status: await serviceStatus(instance) });
   }
 
+  if (req.method === "POST" && action.startsWith("bot-")) {
+    const apiAction = action.slice("bot-".length);
+    const paths: Record<string, string> = {
+      "sell-all": "/api/actions/sell-all",
+      panic: "/api/actions/panic",
+      "close-all-sim": "/api/actions/close-all-sim",
+      "reset-session": "/api/actions/reset-session",
+    };
+    const apiPath = paths[apiAction];
+    if (!apiPath) return sendError(res, 404, "Unknown bot action");
+    const result = await callBotApi(instance, apiPath);
+    return sendJson(res, 200, { ok: true, result, status: await serviceStatus(instance) });
+  }
+
   if (req.method === "POST" && action === "deploy") {
     await execCommand("git", ["pull", "origin", "main"], instance.dir);
     await execCommand("npm", ["install"], instance.dir);
     await execCommand("npm", ["run", "build"], instance.dir);
+    await patchEnv(instance.envPath, {
+      BOT_CONTROL_API_ENABLED: "true",
+      WEB_PORT: String(instance.apiPort),
+    });
     await execCommand("systemctl", ["restart", instance.service]);
     return sendJson(res, 200, { ok: true, status: await serviceStatus(instance) });
   }
