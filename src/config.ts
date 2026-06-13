@@ -505,6 +505,13 @@ const SHOW_MC_RAW = (process.env.SHOW_MARKET_CAP ?? "true").toLowerCase();
 export const showMarketCap =
   SHOW_MC_RAW !== "false" && SHOW_MC_RAW !== "0" && SHOW_MC_RAW !== "no";
 
+const PNL_ACCOUNTING_BASIS_RAW = (process.env.PNL_ACCOUNTING_BASIS ?? "dex").toLowerCase();
+export const pnlAccountingBasis: "dex" | "wallet" =
+  PNL_ACCOUNTING_BASIS_RAW === "wallet" || PNL_ACCOUNTING_BASIS_RAW === "cashflow"
+    ? "wallet"
+    : "dex";
+export const useWalletPnlAccounting = pnlAccountingBasis === "wallet";
+
 /** Skip pump.fun tokens identified as Mayhem Mode. Default off so the hot path has zero Mayhem-filter cost. */
 const BLOCK_MAYHEM_RAW = (process.env.BLOCK_PUMPFUN_MAYHEM ?? "false").toLowerCase();
 export const blockPumpfunMayhem =

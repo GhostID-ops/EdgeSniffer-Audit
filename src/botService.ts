@@ -60,6 +60,8 @@ import {
   minBuyBehavior,
   executionRescueRetries,
   executionRescueDelayMs,
+  pnlAccountingBasis,
+  useWalletPnlAccounting,
 } from "./config.js";
 import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import { estimatePumpSwapSellQuote, warmPumpSwapStaticAccounts } from "./pumpswap/route.js";
@@ -463,6 +465,7 @@ async function reconcileFastBuyTokens(args: {
   }
   if (
     args.quoteMint !== USDC_MINT &&
+    useWalletPnlAccounting &&
     execution.solSpentLamports != null &&
     execution.solSpentLamports > 0 &&
     execution.solSpentLamports !== args.expectedSolLamports &&
@@ -471,6 +474,18 @@ async function reconcileFastBuyTokens(args: {
     console.warn(
       `🧾 Fast buy cost basis corrected for ${args.mint.slice(0, 8)}…: ` +
         `${formatSolAmount(args.expectedSolLamports)} SOL trade → ${formatSolAmount(execution.solSpentLamports)} SOL wallet debit.`
+    );
+  } else if (
+    args.quoteMint !== USDC_MINT &&
+    !useWalletPnlAccounting &&
+    execution.solSpentLamports != null &&
+    execution.solSpentLamports > 0 &&
+    execution.solSpentLamports !== args.expectedSolLamports
+  ) {
+    console.warn(
+      `🧾 Fast buy wallet debit observed for ${args.mint.slice(0, 8)}…: ` +
+        `${formatSolAmount(execution.solSpentLamports)} SOL all-in vs ${formatSolAmount(args.expectedSolLamports)} SOL trade basis ` +
+        `(PnL basis=${pnlAccountingBasis}).`
     );
   }
 }
@@ -501,6 +516,7 @@ async function reconcileOpenPositionWithConfirmedBuy(
   if (
     execution.solSpentLamports != null &&
     execution.solSpentLamports > 0 &&
+    useWalletPnlAccounting &&
     execution.solSpentLamports !== position.totalSolSpentLamports &&
     adjustBuySolCost(position.mint, position.totalSolSpentLamports, execution.solSpentLamports)
   ) {
@@ -509,6 +525,17 @@ async function reconcileOpenPositionWithConfirmedBuy(
       `Fast buy cost reconciled before risk/sell for ${position.mint.slice(0, 8)}...: ` +
         `${formatSolAmount(position.totalSolSpentLamports)} SOL tracked -> ` +
         `${formatSolAmount(execution.solSpentLamports)} SOL wallet debit.`
+    );
+  } else if (
+    execution.solSpentLamports != null &&
+    execution.solSpentLamports > 0 &&
+    !useWalletPnlAccounting &&
+    execution.solSpentLamports !== position.totalSolSpentLamports
+  ) {
+    console.warn(
+      `Fast buy wallet debit observed for ${position.mint.slice(0, 8)}...: ` +
+        `${formatSolAmount(execution.solSpentLamports)} SOL all-in vs ` +
+        `${formatSolAmount(position.totalSolSpentLamports)} SOL trade basis (PnL basis=${pnlAccountingBasis}).`
     );
   }
 
@@ -529,6 +556,7 @@ async function reconcileFastSellExecution(args: {
     execution.solReceivedLamports != null && execution.solReceivedLamports >= 0
       ? execution.solReceivedLamports
       : args.expectedSolLamports;
+  const ledgerSol = useWalletPnlAccounting ? actualSol : args.expectedSolLamports;
   if (
     actualTokens !== args.expectedTokenAmountRaw ||
     actualSol !== args.expectedSolLamports
@@ -538,29 +566,37 @@ async function reconcileFastSellExecution(args: {
       args.expectedTokenAmountRaw,
       actualTokens,
       args.expectedSolLamports,
-      actualSol
+      ledgerSol
     );
     if (adjusted) {
       console.warn(
         `🧾 Fast sell corrected for ${args.mint.slice(0, 8)}…: ` +
           `${formatTokenAmount(args.expectedTokenAmountRaw, 6)} / ${formatSolAmount(args.expectedSolLamports)} SOL quoted → ` +
-          `${formatTokenAmount(actualTokens, 6)} / ${formatSolAmount(actualSol)} SOL actual wallet delta.`
+          `${formatTokenAmount(actualTokens, 6)} / ${formatSolAmount(actualSol)} SOL actual wallet delta` +
+          (!useWalletPnlAccounting ? ` (kept ${formatSolAmount(args.expectedSolLamports)} SOL DEX/trade PnL basis).` : ".")
       );
       const pos = getPosition(args.mint);
       const avgEntry = pos && pos.totalBoughtRaw > 0 ? pos.totalSolSpentLamports / pos.totalBoughtRaw : 0;
       const fillPnl =
-        avgEntry > 0 ? actualSol - avgEntry * actualTokens : actualSol - args.expectedSolLamports;
+        avgEntry > 0 ? ledgerSol - avgEntry * actualTokens : ledgerSol - args.expectedSolLamports;
       void telegram.notifyInfo(
         `Sell accounting corrected for $${pos?.symbol ?? shortMint(args.mint)}`,
         [
           `Tx: ${args.signature}`,
           `Quoted: ${formatSolAmount(args.expectedSolLamports)} SOL`,
           `Confirmed wallet delta: ${formatSolAmount(actualSol)} SOL`,
+          !useWalletPnlAccounting ? `PnL basis kept as DEX/trade quote: ${formatSolAmount(args.expectedSolLamports)} SOL` : undefined,
           `Fill PnL now: ${formatPnl(fillPnl)}`,
           pos ? `Position PnL now: ${formatPnl(pos.realizedPnlLamports)}` : undefined,
         ]
           .filter(Boolean)
           .join("\n")
+      );
+    } else if (!useWalletPnlAccounting && actualSol !== args.expectedSolLamports) {
+      console.warn(
+        `🧾 Fast sell wallet delta observed for ${args.mint.slice(0, 8)}…: ` +
+          `${formatSolAmount(actualSol)} SOL all-in vs ${formatSolAmount(args.expectedSolLamports)} SOL DEX/trade basis ` +
+          `(PnL basis=${pnlAccountingBasis}).`
       );
     }
   }
@@ -3339,12 +3375,15 @@ export async function printPnlReport(): Promise<void> {
     `📈 Trades: ${totals.tradesCount} (${totals.buysCount} buys, ${totals.sellsCount} sells)`
   );
   console.log(`🪙 Tokens tracked: ${totals.trackedTokens} (${totals.openPositions} open)`);
+  const pnlBasisLabel =
+    pnlAccountingBasis === "dex" ? "DEX/trade basis" : "wallet cashflow basis";
+  console.log(`PnL basis: ${pnlBasisLabel}`);
   console.log(`💸 SOL spent: ${formatSolAmount(totals.totalSolSpentLamports)} SOL`);
   console.log(`💰 SOL received: ${formatSolAmount(totals.totalSolReceivedLamports)} SOL`);
-  console.log(`📊 Realized PnL: ${formatPnl(totals.realizedPnlLamports)}`);
+  console.log(`📊 Realized PnL: ${formatPnl(totals.realizedPnlLamports)} (${pnlBasisLabel})`);
 
   if (walletPnl.deltaLamports != null) {
-    console.log(`Wallet SOL delta: ${formatPnl(walletPnl.deltaLamports)} (real session cashflow)`);
+    console.log(`Wallet SOL delta: ${formatPnl(walletPnl.deltaLamports)} (all-in fees/tips/rent included)`);
     console.log(
       `Balance: ${formatSolAmount(walletPnl.startBalanceLamports ?? 0)} -> ` +
         `${formatSolAmount(walletPnl.currentBalanceLamports ?? 0)} SOL`
@@ -3386,7 +3425,7 @@ export async function printPnlReport(): Promise<void> {
 
       console.log(`${pnlIcon} $${p.symbol}`);
       console.log(`   Status:    ${statusTag}`);
-      console.log(`   PnL:       ${formatPnl(pnlLamports)}${pctStr}`);
+      console.log(`   PnL:       ${formatPnl(pnlLamports)}${pctStr} (${pnlBasisLabel})`);
       console.log(`   Spent:     ${formatSolAmount(p.totalSolSpentLamports)} SOL  (${p.buysCount} buy${p.buysCount === 1 ? "" : "s"})`);
       console.log(`   Received:  ${formatSolAmount(p.totalSolReceivedLamports)} SOL  (${p.sellsCount} sell${p.sellsCount === 1 ? "" : "s"})`);
       console.log(`   CA:        ${p.mint}`);
