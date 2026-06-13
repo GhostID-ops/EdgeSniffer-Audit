@@ -35,6 +35,7 @@
     "rust-sidecar:build": "cargo build --manifest-path rust-sidecar/Cargo.toml --release",
     "rust-sidecar:jito-build": "cargo build --manifest-path rust-sidecar/Cargo.toml --release --features jito-shredstream",
     "test:pumpswap": "tsx src/testPumpSwap.ts",
+    "test:source-positions": "tsx src/testSourcePositions.ts",
     "test:idl": "tsx src/testIdlBuilders.ts",
     "test:retry": "tsx src/testExecutionRetry.ts"
   },

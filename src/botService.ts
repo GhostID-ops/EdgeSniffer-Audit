@@ -35,6 +35,10 @@ import {
   maxRiskQuotesPerCheck,
   readConnection,
   mirrorSells,
+  mirrorSellMode,
+  mirrorSellProportionalMinPct,
+  mirrorSellProportionalMaxPct,
+  mirrorSellProportionalFallback,
   buyOncePerToken,
   skipSourcePreexistingMints,
   sourcePreexistingScanTxLimit,
@@ -145,6 +149,11 @@ import { startBlockhashCache, stopBlockhashCache } from "./blockhashCache.js";
 import { validateLicense } from "./licenseClient.js";
 import { checkPrebuyMoralisFilter } from "./prebuyMoralisFilter.js";
 import { applyShadowSellLamports, getShadowSolLamports, shadowCanSpend } from "./shadowExecution.js";
+import {
+  calculateProportionalSellRaw,
+  recordSourceBuyRaw,
+  recordSourceSellRaw,
+} from "./sourcePositions.js";
 
 const WARM_INTERVAL_MS = 30_000;
 const BALANCE_LOG_INTERVAL_MS = 60_000;
@@ -906,6 +915,18 @@ function isSellSignal(swap: DetectedSwap): boolean {
   return swap.outputMint === WRAPPED_SOL_MINT || swap.outputMint === USDC_MINT;
 }
 
+function sourceBuyTokenAmountRaw(swap: DetectedSwap): number {
+  if (!isBuySignal(swap)) return 0;
+  const raw = swap.counterpartyAmountRaw ?? 0;
+  return Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 0;
+}
+
+function sourceSellTokenAmountRaw(swap: DetectedSwap): number {
+  if (!isSellSignal(swap) || swap.inputMint === WRAPPED_SOL_MINT || swap.inputMint === USDC_MINT) return 0;
+  const raw = swap.amountRaw;
+  return Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 0;
+}
+
 function quoteAmountDisplay(raw: number, mint: string): string {
   if (mint === USDC_MINT) return `${(raw / 1_000_000).toFixed(2)} USDC`;
   return `${(raw / LAMPORTS_PER_SOL).toFixed(4)} SOL`;
@@ -1360,6 +1381,14 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     },
   });
 
+  if (isBuySignal(swap)) {
+    const sourceTokenRaw = sourceBuyTokenAmountRaw(swap);
+    if (sourceTokenRaw > 0) {
+      recordSourceBuyRaw(swap.wallet, swap.outputMint, sourceTokenRaw);
+    }
+  }
+
+  let proportionalSellAmountRaw: number | undefined;
   if (isSellSignal(swap)) {
     const mint = swap.inputMint;
     if (
@@ -1374,6 +1403,42 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       console.warn(
         `Canceled pending buy for ${mint.slice(0, 8)}... because the source wallet already sold it.`
       );
+    }
+
+    const sourceSellRaw = sourceSellTokenAmountRaw(swap);
+    if (mirrorSellMode === "proportional" && sourceSellRaw > 0) {
+      const position = getPosition(mint);
+      if (position && position.heldRaw > 0) {
+        const proportional = calculateProportionalSellRaw({
+          wallet: swap.wallet,
+          mint,
+          sourceSellAmountRaw: sourceSellRaw,
+          ourHeldRaw: position.heldRaw,
+          minPct: mirrorSellProportionalMinPct,
+          maxPct: mirrorSellProportionalMaxPct,
+        });
+        if (!proportional.fallback && proportional.amountRaw > 0) {
+          proportionalSellAmountRaw = proportional.amountRaw;
+          console.log(
+            `Proportional mirror sell: source sold ${proportional.fractionPct.toFixed(1)}% ` +
+              `(${sourceSellRaw}/${proportional.sourceHeldRaw} raw); selling ` +
+              `${formatTokenAmount(proportionalSellAmountRaw, position.decimals)} $${position.symbol}.`
+          );
+        } else if (mirrorSellProportionalFallback === "skip") {
+          console.log(
+            `Proportional mirror sell skipped for ${mint.slice(0, 8)}...: source position history unavailable.`
+          );
+          recordSourceSellRaw(swap.wallet, mint, sourceSellRaw);
+          return;
+        } else {
+          console.log(
+            `Proportional mirror sell fallback for ${mint.slice(0, 8)}...: source position history unavailable; closing full bot position.`
+          );
+        }
+      }
+    }
+    if (sourceSellRaw > 0) {
+      recordSourceSellRaw(swap.wallet, mint, sourceSellRaw);
     }
   }
 
@@ -1655,6 +1720,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
 
     const result = await mirrorSwap(swap, kp, {
+      exactAmountRaw: proportionalSellAmountRaw,
       onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, reason, sourceSwap }) => {
         unrecordZeroSell(mint, tokenAmountRaw);
         mirrorBuySignatureByMint.delete(mint);

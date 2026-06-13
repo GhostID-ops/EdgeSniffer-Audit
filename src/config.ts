@@ -424,6 +424,22 @@ export const rustSidecarUseCargo =
 const MIRROR_SELLS_RAW = (process.env.MIRROR_SELLS ?? "true").toLowerCase();
 export const mirrorSells =
   MIRROR_SELLS_RAW !== "false" && MIRROR_SELLS_RAW !== "0" && MIRROR_SELLS_RAW !== "no";
+export type MirrorSellMode = "full" | "proportional";
+const MIRROR_SELL_MODE_RAW = (process.env.MIRROR_SELL_MODE ?? "full").trim().toLowerCase();
+export const mirrorSellMode: MirrorSellMode =
+  MIRROR_SELL_MODE_RAW === "proportional" || MIRROR_SELL_MODE_RAW === "chunk" ? "proportional" : "full";
+export const mirrorSellProportionalMinPct = Math.max(
+  0,
+  Math.min(100, parseFloat(process.env.MIRROR_SELL_PROPORTIONAL_MIN_PCT ?? "0"))
+);
+export const mirrorSellProportionalMaxPct = Math.max(
+  mirrorSellProportionalMinPct,
+  Math.min(100, parseFloat(process.env.MIRROR_SELL_PROPORTIONAL_MAX_PCT ?? "100"))
+);
+export const mirrorSellProportionalFallback =
+  (process.env.MIRROR_SELL_PROPORTIONAL_FALLBACK ?? "full").trim().toLowerCase() === "skip"
+    ? "skip"
+    : "full";
 
 /** When true (default), only one buy per token mint per session (prevents pyramiding). Toggle with 'b' key. */
 const BUY_ONCE_RAW = (process.env.BUY_ONCE_PER_TOKEN ?? "true").toLowerCase();
