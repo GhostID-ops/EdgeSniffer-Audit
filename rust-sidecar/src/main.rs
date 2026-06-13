@@ -466,8 +466,8 @@ fn extract_shred_swap(
                 &signature,
                 &wallet,
                 "jito-shredstream",
-                Some(source_slot),
-                Some(source_transaction_index),
+                source_slot,
+                source_transaction_index,
             )
             {
                 return Some(line);
