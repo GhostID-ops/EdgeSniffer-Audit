@@ -34,10 +34,17 @@ async function warmTipFloor(): Promise<void> {
   });
 }
 
+function warmupUrls(): string[] {
+  return Array.from(new Set([...jitoTransactionUrls, ...jitoBundleUrls])).filter(Boolean);
+}
+
 async function warmOnce(): Promise<void> {
   try {
-    const urls = Array.from(new Set([...jitoTransactionUrls, ...jitoBundleUrls])).filter(Boolean);
-    await Promise.allSettled([...urls.map((url) => warmJsonRpc(url)), warmTipFloor()]);
+    const urls = warmupUrls();
+    const results = await Promise.allSettled([...urls.map((url) => warmJsonRpc(url)), warmTipFloor()]);
+    const failed = results.filter((result) => result.status === "rejected");
+    if (failed.length === 0) return;
+    throw failed[0]!.reason;
   } catch (err) {
     const now = Date.now();
     suppressedWarnings += 1;
@@ -53,8 +60,16 @@ async function warmOnce(): Promise<void> {
 }
 
 export function startJitoConnectionWarmup(): void {
-  if (pollerStarted || !jitoConnectionWarmupEnabled) return;
+  if (pollerStarted) return;
+  if (!jitoConnectionWarmupEnabled) {
+    console.log("Jito connection warmup: OFF (set JITO_CONNECTION_WARMUP_ENABLED=true to enable).");
+    return;
+  }
   pollerStarted = true;
+  const urls = warmupUrls();
+  console.log(
+    `Jito connection warmup: ON (${urls.length} Jito endpoint(s) + tip floor, every ${jitoConnectionWarmupMs}ms).`
+  );
   void warmOnce();
   pollerHandle = setInterval(() => {
     void warmOnce();

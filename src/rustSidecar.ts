@@ -222,6 +222,9 @@ export async function startRustPumpFunSidecar(
   let proc: ChildProcess | null = child;
   if (rustExecutorEnabled && child.stdin) {
     executorStdin = child.stdin;
+    console.log(
+      "Rust executor: command bridge ready; direct/source-replay buy broadcast logs appear after an eligible live buy."
+    );
   }
 
   console.log(`Rust sidecar: started ${command.label}`);
