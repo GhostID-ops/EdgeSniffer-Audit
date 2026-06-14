@@ -90,7 +90,7 @@ import {
   type MirrorResult,
 } from "./mirror.js";
 import { getQuote, getSwap, isJupiterRateLimitError } from "./jupiter.js";
-import type { DetectedSwap } from "./types.js";
+import type { DetectedSwap, RustHotBuy } from "./types.js";
 import { warmConnection, createSenderTransactionFromSwapResponse, broadcastTransactionWithSender } from "./sender.js";
 import { confirmSignature } from "./confirm.js";
 import { getSolBalance, formatSol, getTokenBalance, getTokenBalanceFast, getWalletTokenBalances } from "./balance.js";
@@ -123,6 +123,7 @@ import {
   adjustBuySolCost,
   adjustSellExecution,
   recordSell,
+  unrecordBuy,
   unrecordSell,
   unrecordZeroSell,
   getPositions,
@@ -956,6 +957,194 @@ function mirroredBuyAmountRaw(swap: DetectedSwap): number | null {
     if (minBuyBehavior === "floor") return Math.min(maxBuyLamports, minBuyLamports);
   }
   return Math.min(maxBuyLamports, calculatedRaw);
+}
+
+async function handleRustHotBuy(hotBuy: RustHotBuy): Promise<void> {
+  if (stopRequested) return;
+  const ts = Date.now();
+  const route = hotBuy.route ?? "pumpfun-hot-source-replay-buy";
+  const sourceSwap: DetectedSwap = {
+    signature: hotBuy.sourceSignature,
+    wallet: hotBuy.wallet,
+    detector: "rust-hot-sniper",
+    receivedAtMs: hotBuy.receivedAtMs,
+    detectedAtMs: hotBuy.detectedAtMs,
+    sourceSlot: hotBuy.sourceSlot,
+    sourceTransactionIndex: hotBuy.sourceTransactionIndex,
+    inputMint: WRAPPED_SOL_MINT,
+    outputMint: hotBuy.mint,
+    amountRaw: hotBuy.sourceAmountRaw,
+    isNativeInput: true,
+  };
+
+  recordExecutionTelemetrySync({
+    kind: "source-detected",
+    route,
+    side: "buy",
+    mint: hotBuy.mint,
+    sourceSignature: hotBuy.sourceSignature,
+    wallet: hotBuy.wallet,
+    detector: "rust-hot-sniper",
+    elapsedMs:
+      hotBuy.detectedAtMs != null && hotBuy.receivedAtMs != null
+        ? hotBuy.receivedAtMs - hotBuy.detectedAtMs
+        : hotBuy.elapsedMs,
+    success: true,
+    details: {
+      sourceSlot: hotBuy.sourceSlot,
+      sourceTransactionIndex: hotBuy.sourceTransactionIndex,
+      rustElapsedMs: hotBuy.elapsedMs,
+      senderPath: hotBuy.senderPath,
+    },
+  });
+  recordExecutionTelemetrySync({
+    kind: "execution-plan",
+    route,
+    side: "buy",
+    mint: hotBuy.mint,
+    sourceSignature: hotBuy.sourceSignature,
+    wallet: hotBuy.wallet,
+    detector: "rust-hot-sniper",
+    elapsedMs: 0,
+    success: true,
+    details: { reason: "rust-hot-sniper pre-node broadcast" },
+  });
+  if (hotBuy.buildMs != null) {
+    recordExecutionTelemetrySync({
+      kind: "stage:build",
+      route,
+      side: "buy",
+      mint: hotBuy.mint,
+      sourceSignature: hotBuy.sourceSignature,
+      wallet: hotBuy.wallet,
+      detector: "rust-hot-sniper",
+      elapsedMs: hotBuy.buildMs,
+      success: true,
+      details: { txBytes: hotBuy.txBytes },
+    });
+  }
+  recordExecutionTelemetrySync({
+    kind: "broadcast",
+    route,
+    side: "buy",
+    mint: hotBuy.mint,
+    sourceSignature: hotBuy.sourceSignature,
+    signature: hotBuy.signature,
+    wallet: hotBuy.wallet,
+    detector: "rust-hot-sniper",
+    elapsedMs: hotBuy.broadcastMs ?? hotBuy.elapsedMs,
+    success: true,
+    details: { senderPath: hotBuy.senderPath, txBytes: hotBuy.txBytes },
+  });
+
+  const inputMeta = await getTokenMeta(WRAPPED_SOL_MINT);
+  const outputMeta = await getTokenMeta(hotBuy.mint);
+  const result: MirrorResult = {
+    signature: hotBuy.signature,
+    isSimulated: false,
+    side: "buy",
+    input: { meta: inputMeta, amountRaw: hotBuy.solInLamports },
+    output: { meta: outputMeta, amountRaw: hotBuy.tokensOutRaw },
+    costBasisLamports: hotBuy.solInLamports,
+    priceImpactPct: "0",
+    confirmationPending: true,
+  };
+
+  console.log(
+    `Rust hot sniper recorded buy for ${hotBuy.mint.slice(0, 8)}... ` +
+      `(${formatSolAmount(hotBuy.solInLamports)} SOL, ${hotBuy.elapsedMs ?? "?"}ms, ${hotBuy.senderPath ?? "unknown sender"}).`
+  );
+  const marketCapUsd = await maybeGetMarketCap(hotBuy.mint);
+  const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
+  logTrade(result, sourceSwap, marketCapUsd, marketCapCheckedAt);
+  noteLocalSolDebit(hotBuy.solInLamports);
+
+  pushSwap(
+    {
+      ts,
+      sourceSignature: hotBuy.sourceSignature,
+      wallet: hotBuy.wallet,
+      side: "buy",
+      input: toLegView(result.input),
+      output: toLegView(result.output),
+      isSimulated: false,
+      mirrorSignature: hotBuy.signature,
+      marketCapUsd,
+      marketCapCheckedAt,
+    },
+    { priceImpactPct: 0 }
+  );
+
+  const confirmStartedAt = Date.now();
+  confirmSignature(hotBuy.signature)
+    .then(() => {
+      recordExecutionTelemetrySync({
+        kind: "stage:confirm",
+        route,
+        side: "buy",
+        mint: hotBuy.mint,
+        sourceSignature: hotBuy.sourceSignature,
+        signature: hotBuy.signature,
+        wallet: hotBuy.wallet,
+        detector: "rust-hot-sniper",
+        elapsedMs: Date.now() - confirmStartedAt,
+        success: true,
+        details: { mode: "background", senderPath: hotBuy.senderPath },
+      });
+      confirmedFastBuyTokensByMint.set(hotBuy.mint, hotBuy.tokensOutRaw);
+      void reconcileFastBuyTokens({
+        mint: hotBuy.mint,
+        expectedTokenAmountRaw: hotBuy.tokensOutRaw,
+        expectedSolLamports: hotBuy.solInLamports,
+        quoteMint: WRAPPED_SOL_MINT,
+        signature: hotBuy.signature,
+      });
+    })
+    .catch((err) => {
+      const reason = err instanceof Error ? err.message : String(err);
+      recordExecutionTelemetrySync({
+        kind: "stage:confirm",
+        route,
+        side: "buy",
+        mint: hotBuy.mint,
+        sourceSignature: hotBuy.sourceSignature,
+        signature: hotBuy.signature,
+        wallet: hotBuy.wallet,
+        detector: "rust-hot-sniper",
+        elapsedMs: Date.now() - confirmStartedAt,
+        success: false,
+        error: reason,
+        errorClass: classifyExecutionError(reason).category,
+        errorCode: classifyExecutionError(reason).code,
+        details: { mode: "background", senderPath: hotBuy.senderPath },
+      });
+      const removed = unrecordBuy(hotBuy.mint, hotBuy.tokensOutRaw, hotBuy.solInLamports);
+      mirrorBuySignatureByMint.delete(hotBuy.mint);
+      confirmedFastBuyTokensByMint.delete(hotBuy.mint);
+      boughtMintsThisSession.delete(hotBuy.mint);
+      noteLocalSolCredit(hotBuy.solInLamports);
+      if (removed) {
+        console.warn(
+          `Phantom Rust hot buy cleaned up: ${hotBuy.mint.slice(0, 8)}... ` +
+            `(reason: ${reason}). Position removed from tracking.`
+        );
+      }
+      const decision = decideRetryAction(reason);
+      if (decision.shouldQuarantine) {
+        quarantinedBuyMints.set(hotBuy.mint, `rust hot buy ${decision.action}: ${reason}`);
+        console.warn(
+          `Buy quarantine set for ${hotBuy.mint.slice(0, 8)}... after Rust hot buy failed ` +
+            `(${reason}). No more retries for this mint this session.`
+        );
+      } else {
+        pendingBuyRetryByMint.delete(hotBuy.mint);
+        failedBuyRecoveryInFlightMints.delete(hotBuy.mint);
+        console.warn(
+          `Rust hot buy failed for ${hotBuy.mint.slice(0, 8)}... with recoverable ` +
+            `${decision.category} failure; a later source signal can retry.`
+        );
+      }
+    });
 }
 
 async function getCurrentSourceHeldMints(wallet: string): Promise<Set<string>> {
@@ -2335,6 +2524,11 @@ export async function startBot(): Promise<void> {
       (swap) => {
         processSwap(swap, kp).catch((err) => {
           console.error("Rust sidecar processSwap error:", err);
+        });
+      },
+      (hotBuy) => {
+        handleRustHotBuy(hotBuy).catch((err) => {
+          console.error("Rust hot sniper bookkeeping error:", err);
         });
       }
     );

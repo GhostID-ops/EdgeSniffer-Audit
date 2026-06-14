@@ -23,7 +23,7 @@ import {
 import { getCachedBlockhash } from "./blockhashCache.js";
 import { getDynamicPriorityFee } from "./feeOracle.js";
 import { getHeliusTipLamportsForRoute, getJitoTipLamportsForRoute } from "./tipBuilder.js";
-import type { DetectedSwap } from "./types.js";
+import type { DetectedSwap, RustHotBuy } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
 
 type RustSidecarEvent = {
@@ -47,6 +47,17 @@ type RustSidecarEvent = {
   sourcePumpSwapAccounts?: string[];
   sourceQuoteMint?: string;
   sourceQuoteAmountRaw?: number;
+  sourceSignature?: string;
+  mint?: string;
+  solInLamports?: number;
+  tokensOutRaw?: number;
+  sourceAmountRaw?: number;
+  route?: string;
+  senderPath?: string;
+  elapsedMs?: number;
+  buildMs?: number;
+  broadcastMs?: number;
+  txBytes?: number;
 };
 
 type RustExecutorResponse = {
@@ -193,16 +204,20 @@ function commandForSidecar(): { command: string; args: string[]; label: string }
 
 export async function startRustPumpFunSidecar(
   processedSignatures: SignatureDedupe,
-  onSwap: (swap: DetectedSwap) => void
+  onSwap: (swap: DetectedSwap) => void,
+  onHotBuy?: (hotBuy: RustHotBuy) => void
 ): Promise<RustSidecarUnsubscribe> {
   const jitoShredstreamEnabled = envFlag("JITO_SHREDSTREAM_ENABLED");
   const jitoShredstreamGrpcUrl = process.env.JITO_SHREDSTREAM_GRPC_URL ?? "http://127.0.0.1:9999";
   const yellowstoneEnabled = envFlag("RUST_SIDECAR_YELLOWSTONE_ENABLED", true);
+  const rustHotSniperEnabled =
+    envFlag("RUST_HOT_SNIPER_ENABLED") && !envFlag("SIMULATION_MODE") && !envFlag("SHADOW_EXECUTION_MODE");
   console.log(
     `Rust sidecar config: Yellowstone=${yellowstoneEnabled ? "ON" : "OFF"}, ` +
       `Jito ShredStream=${jitoShredstreamEnabled ? "ON" : "OFF"}` +
       (jitoShredstreamEnabled ? ` (${jitoShredstreamGrpcUrl})` : "") +
-      `, Rust executor=${rustExecutorEnabled ? "ON" : "OFF"}`
+      `, Rust executor=${rustExecutorEnabled ? "ON" : "OFF"}` +
+      `, Rust hot sniper=${rustHotSniperEnabled ? "ON" : "OFF"}`
   );
 
   const command = commandForSidecar();
@@ -282,6 +297,18 @@ export async function startRustPumpFunSidecar(
       return;
     }
 
+    const hotBuy = toHotBuy(event, nodeReceivedAtMs);
+    if (hotBuy) {
+      processedSignatures.add(hotBuy.sourceSignature);
+      console.log(
+        `Rust hot sniper buy ${hotBuy.mint.slice(0, 8)}... ` +
+          `${hotBuy.signature.slice(0, 8)}...` +
+          (hotBuy.elapsedMs != null ? ` (${hotBuy.elapsedMs}ms)` : "")
+      );
+      onHotBuy?.(hotBuy);
+      return;
+    }
+
     const swap = toSwap(event, nodeReceivedAtMs);
     if (!swap) return;
     if (processedSignatures.has(swap.signature)) return;
@@ -330,6 +357,49 @@ export async function startRustPumpFunSidecar(
     }
     rejectAllExecutorPending("Rust sidecar stopped");
     executorStdin = null;
+  };
+}
+
+function toHotBuy(event: RustSidecarEvent, nodeReceivedAtMs: number): RustHotBuy | null {
+  if (event.kind !== "hotBuy") return null;
+  if (
+    typeof event.sourceSignature !== "string" ||
+    typeof event.wallet !== "string" ||
+    typeof event.mint !== "string" ||
+    typeof event.signature !== "string" ||
+    typeof event.sourceAmountRaw !== "number" ||
+    typeof event.solInLamports !== "number" ||
+    typeof event.tokensOutRaw !== "number"
+  ) {
+    return null;
+  }
+  return {
+    sourceSignature: event.sourceSignature,
+    wallet: event.wallet,
+    mint: event.mint,
+    signature: event.signature,
+    sourceAmountRaw: event.sourceAmountRaw,
+    solInLamports: event.solInLamports,
+    tokensOutRaw: event.tokensOutRaw,
+    route: typeof event.route === "string" ? event.route : undefined,
+    senderPath: typeof event.senderPath === "string" ? event.senderPath : undefined,
+    elapsedMs: typeof event.elapsedMs === "number" ? event.elapsedMs : undefined,
+    buildMs: typeof event.buildMs === "number" ? event.buildMs : undefined,
+    broadcastMs: typeof event.broadcastMs === "number" ? event.broadcastMs : undefined,
+    txBytes: typeof event.txBytes === "number" ? event.txBytes : undefined,
+    sourceSlot:
+      typeof event.sourceSlot === "number" && Number.isFinite(event.sourceSlot)
+        ? event.sourceSlot
+        : undefined,
+    sourceTransactionIndex:
+      typeof event.sourceTransactionIndex === "number" && Number.isFinite(event.sourceTransactionIndex)
+        ? event.sourceTransactionIndex
+        : undefined,
+    detectedAtMs:
+      typeof event.detectedAtMs === "number" && Number.isFinite(event.detectedAtMs)
+        ? event.detectedAtMs
+        : undefined,
+    receivedAtMs: nodeReceivedAtMs,
   };
 }
 

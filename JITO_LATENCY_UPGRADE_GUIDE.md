@@ -1,12 +1,13 @@
 # Jito Latency Upgrade Guide
 
-This branch adds five latency upgrades:
+This branch adds six latency upgrades:
 
 1. Jito direct `sendTransaction` support.
 2. Jito tip-floor oracle.
 3. Multi-send sender racing.
 4. Rust Pump.fun buy executor.
-5. Slot-aware execution telemetry.
+5. Rust Pump.fun hot sniper.
+6. Slot-aware execution telemetry.
 
 ## What changed
 
@@ -85,6 +86,41 @@ Current Rust executor scope:
 - TypeScript still owns strategy gates, PnL, risk exits, sells, Telegram, and UI.
 
 If Rust execution fails or times out, the bot falls back to the existing TypeScript execution path.
+
+## Rust Pump.fun hot sniper
+
+The Rust sidecar can also execute the earliest eligible Pump.fun buy before the normal TypeScript mirror path runs:
+
+```env
+RUST_HOT_SNIPER_ENABLED=true
+```
+
+Scope:
+
+- Pump.fun source-replay buys only.
+- Requires source instruction accounts/data from ShredStream/Yellowstone.
+- Uses the same env sizing basics: `COPY_BUY_PERCENTAGE`, `MIN_BUY_SOL`, `MAX_BUY_SOL`, `MIN_BUY_BEHAVIOR`, `BUY_ONCE_PER_TOKEN`, `MAX_SOL_PER_TOKEN`, and `MAX_SESSION_DEPLOYED_SOL`.
+- Uses the same sender settings: `USE_JITO_DIRECT`, `JITO_SEND_MODE`, `EXECUTION_MULTI_SEND_ENABLED`, `USE_JITO_FALLBACK`, and `SENDER_RPC_FALLBACK_ENABLED`.
+- Disabled automatically when `SIMULATION_MODE=true` or `SHADOW_EXECUTION_MODE=true`.
+
+Optional hot-path fee overrides:
+
+```env
+RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS=
+RUST_HOT_SNIPER_JITO_TIP_LAMPORTS=
+RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS=
+```
+
+Leave those blank to reuse normal env fee/tip values. After a hot buy broadcasts, Node records the position, sends Telegram/UI updates, confirms in the background, and cleans up the position if the transaction fails on chain.
+
+Expected startup/log lines:
+
+```text
+Rust sidecar config: ... Rust executor=ON, Rust hot sniper=ON
+rust-sidecar: hot sniper ON for Pump.fun source-replay buys
+Rust hot sniper buy ABCD1234... 5sigHere... (18ms)
+Rust hot sniper recorded buy for ABCD1234...
+```
 
 ## Speed mode preset
 

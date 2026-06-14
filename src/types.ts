@@ -71,3 +71,24 @@ export type DetectedSwap = {
    */
   forceDerivedPumpFunBuy?: boolean;
 };
+
+/** A Pump.fun buy already built/signed/broadcast by the Rust sidecar hot path. */
+export type RustHotBuy = {
+  sourceSignature: string;
+  wallet: string;
+  mint: string;
+  signature: string;
+  sourceAmountRaw: number;
+  solInLamports: number;
+  tokensOutRaw: number;
+  route?: string;
+  senderPath?: string;
+  elapsedMs?: number;
+  buildMs?: number;
+  broadcastMs?: number;
+  txBytes?: number;
+  sourceSlot?: number;
+  sourceTransactionIndex?: number;
+  detectedAtMs?: number;
+  receivedAtMs?: number;
+};

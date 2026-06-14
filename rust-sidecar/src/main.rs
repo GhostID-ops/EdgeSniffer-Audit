@@ -1,4 +1,12 @@
-use std::{collections::HashMap, env, time::Duration};
+use std::{
+    collections::{HashMap, HashSet},
+    env,
+    sync::{
+        atomic::{AtomicU64, Ordering},
+        Arc, Mutex,
+    },
+    time::{Duration, Instant},
+};
 
 use anyhow::{bail, Context, Result};
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine as _};
@@ -12,8 +20,7 @@ use solana_message::compiled_instruction::CompiledInstruction;
 use solana_transaction::versioned::VersionedTransaction;
 use tokio::time::sleep;
 use yellowstone_grpc_proto::geyser::{
-    geyser_client::GeyserClient,
-    subscribe_update::UpdateOneof, CommitmentLevel, SubscribeRequest,
+    geyser_client::GeyserClient, subscribe_update::UpdateOneof, CommitmentLevel, SubscribeRequest,
     SubscribeRequestFilterTransactions,
 };
 use yellowstone_grpc_proto::tonic::{
@@ -33,13 +40,13 @@ const USDC_MINT: &str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const PUMP_FUN_PROGRAM_ID: &str = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P";
 const PUMPSWAP_PROGRAM_ID: &str = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
 const BUY_DISCRIMINATOR: [u8; 8] = [102, 6, 61, 18, 1, 218, 235, 234];
-const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR: [u8; 8] =
-    [198, 46, 21, 82, 180, 217, 232, 112];
+const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR: [u8; 8] = [198, 46, 21, 82, 180, 217, 232, 112];
 const BUY_EXACT_SOL_IN_DISCRIMINATOR: [u8; 8] = [56, 252, 116, 8, 158, 223, 205, 95];
 const BUY_V2_DISCRIMINATOR: [u8; 8] = [184, 23, 238, 97, 103, 197, 211, 61];
 const BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR: [u8; 8] = [194, 171, 28, 70, 104, 77, 91, 47];
 const SELL_DISCRIMINATOR: [u8; 8] = [51, 230, 133, 164, 1, 127, 131, 173];
 const SELL_V2_DISCRIMINATOR: [u8; 8] = [93, 246, 130, 60, 231, 233, 64, 178];
+const LAMPORTS_PER_SOL: f64 = 1_000_000_000.0;
 
 #[derive(Debug, Clone)]
 struct Config {
@@ -51,6 +58,36 @@ struct Config {
     jito_shredstream_grpc_url: String,
     tracked_wallets: Vec<String>,
     reconnect_ms: u64,
+    hot_sniper: HotSniperConfig,
+}
+
+#[derive(Debug, Clone)]
+struct HotSniperConfig {
+    enabled: bool,
+    buy_once_per_token: bool,
+    bought_mints: Arc<Mutex<HashSet<String>>>,
+    session_deployed_lamports: Arc<AtomicU64>,
+    max_session_deployed_lamports: Option<u64>,
+    min_buy_lamports: u64,
+    max_buy_lamports: u64,
+    max_sol_per_token_lamports: Option<u64>,
+    copy_buy_percentage: f64,
+    min_buy_behavior: String,
+    slippage_bps: u64,
+    compute_unit_limit: u32,
+    priority_fee_micro_lamports: u64,
+    jito_tip_lamports: u64,
+    helius_tip_lamports: u64,
+    use_jito_direct: bool,
+    use_jito_fallback: bool,
+    sender_rpc_fallback_enabled: bool,
+    execution_multi_send_enabled: bool,
+    jito_send_mode: String,
+    jito_transaction_urls: Vec<String>,
+    jito_bundle_urls: Vec<String>,
+    sender_endpoint_url: String,
+    rpc_fallback_url: String,
+    jito_auth_uuid: Option<String>,
 }
 
 #[derive(Serialize)]
@@ -75,6 +112,29 @@ struct DetectedSwapLine {
     source_transaction_index: Option<u64>,
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct HotBuyLine {
+    kind: &'static str,
+    source: &'static str,
+    detected_at_ms: u128,
+    source_signature: String,
+    wallet: String,
+    mint: String,
+    signature: String,
+    source_amount_raw: u64,
+    sol_in_lamports: u64,
+    tokens_out_raw: u64,
+    route: String,
+    sender_path: Option<String>,
+    elapsed_ms: u128,
+    build_ms: Option<u128>,
+    broadcast_ms: Option<u128>,
+    tx_bytes: Option<usize>,
+    source_slot: Option<u64>,
+    source_transaction_index: Option<u64>,
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
     let _ = rustls::crypto::ring::default_provider().install_default();
@@ -83,28 +143,32 @@ async fn main() -> Result<()> {
         executor::start_executor_stdin();
     }
     eprintln!(
-        "rust-sidecar: starting yellowstone={} jito_shredstream={} wallets={}",
+        "rust-sidecar: starting yellowstone={} jito_shredstream={} hot_sniper={} wallets={}",
         cfg.yellowstone_enabled,
         cfg.jito_shredstream_enabled,
+        cfg.hot_sniper.enabled,
         cfg.tracked_wallets.len()
     );
+    if cfg.hot_sniper.enabled {
+        eprintln!("rust-sidecar: hot sniper ON for Pump.fun source-replay buys");
+    }
 
     if cfg.jito_shredstream_enabled {
         #[cfg(feature = "jito-shredstream")]
         {
-        let jito_cfg = cfg.clone();
-        tokio::spawn(async move {
-            loop {
-                if let Err(err) = run_jito_shredstream_once(&jito_cfg).await {
-                    eprintln!(
-                        "rust-sidecar: Jito ShredStream error: {err:#}; reconnecting in {}ms",
-                        jito_cfg.reconnect_ms
-                    );
-                    sleep(Duration::from_millis(jito_cfg.reconnect_ms)).await;
-                    continue;
+            let jito_cfg = cfg.clone();
+            tokio::spawn(async move {
+                loop {
+                    if let Err(err) = run_jito_shredstream_once(&jito_cfg).await {
+                        eprintln!(
+                            "rust-sidecar: Jito ShredStream error: {err:#}; reconnecting in {}ms",
+                            jito_cfg.reconnect_ms
+                        );
+                        sleep(Duration::from_millis(jito_cfg.reconnect_ms)).await;
+                        continue;
+                    }
                 }
-            }
-        });
+            });
         }
         #[cfg(not(feature = "jito-shredstream"))]
         {
@@ -166,6 +230,7 @@ impl Config {
             .and_then(|v| v.parse::<u64>().ok())
             .unwrap_or(1000)
             .max(250);
+        let hot_sniper = HotSniperConfig::from_env();
         Ok(Self {
             yellowstone_enabled,
             endpoint,
@@ -174,7 +239,82 @@ impl Config {
             jito_shredstream_grpc_url,
             tracked_wallets,
             reconnect_ms,
+            hot_sniper,
         })
+    }
+}
+
+impl HotSniperConfig {
+    fn from_env() -> Self {
+        let enabled = parse_env_bool("RUST_HOT_SNIPER_ENABLED", false)
+            && !parse_env_bool("SIMULATION_MODE", false)
+            && !parse_env_bool("SHADOW_EXECUTION_MODE", false);
+        let min_buy_lamports = sol_env_lamports("MIN_BUY_SOL", 0.01);
+        let mut max_buy_lamports = sol_env_lamports("MAX_BUY_SOL", 1.0).max(1);
+        let max_sol_per_token_lamports = optional_sol_env_lamports("MAX_SOL_PER_TOKEN");
+        if let Some(max_per_token) = max_sol_per_token_lamports {
+            max_buy_lamports = max_buy_lamports.min(max_per_token.max(1));
+        }
+        let static_tip = parse_env_u64("TIP_LAMPORTS", 65_000);
+        let oracle_min_tip = parse_env_u64("JITO_TIP_ORACLE_MIN_LAMPORTS", static_tip);
+        let oracle_max_tip = parse_env_optional_u64("JITO_TIP_ORACLE_MAX_LAMPORTS");
+        let jito_tip_lamports = parse_env_optional_u64("RUST_HOT_SNIPER_JITO_TIP_LAMPORTS")
+            .unwrap_or_else(|| {
+                let uncapped = static_tip.max(oracle_min_tip);
+                oracle_max_tip
+                    .map(|cap| uncapped.min(cap))
+                    .unwrap_or(uncapped)
+            });
+        let helius_tip_lamports = parse_env_optional_u64("RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS")
+            .unwrap_or_else(|| parse_env_u64("HELIUS_TIP_LAMPORTS", static_tip));
+        let priority_fee_micro_lamports =
+            parse_env_optional_u64("RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS")
+                .or_else(|| parse_env_optional_u64("DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS"))
+                .unwrap_or_else(|| parse_env_u64("PRIORITY_FEE_MICRO_LAMPORTS", 50_000));
+        let configured_regions = configured_jito_regions();
+        Self {
+            enabled,
+            buy_once_per_token: parse_env_bool("BUY_ONCE_PER_TOKEN", true),
+            bought_mints: Arc::new(Mutex::new(HashSet::new())),
+            session_deployed_lamports: Arc::new(AtomicU64::new(0)),
+            max_session_deployed_lamports: optional_sol_env_lamports("MAX_SESSION_DEPLOYED_SOL"),
+            min_buy_lamports,
+            max_buy_lamports,
+            max_sol_per_token_lamports,
+            copy_buy_percentage: parse_env_f64("COPY_BUY_PERCENTAGE", 100.0).clamp(0.0, 100.0),
+            min_buy_behavior: env::var("MIN_BUY_BEHAVIOR")
+                .unwrap_or_else(|_| "skip".to_string())
+                .trim()
+                .to_ascii_lowercase(),
+            slippage_bps: parse_env_u64(
+                "MIRROR_SLIPPAGE_BPS",
+                parse_env_u64("SWAP_SLIPPAGE_BPS", 500),
+            ),
+            compute_unit_limit: parse_env_u64("COMPUTE_UNIT_LIMIT", 160_000).min(1_400_000) as u32,
+            priority_fee_micro_lamports,
+            jito_tip_lamports,
+            helius_tip_lamports,
+            use_jito_direct: parse_env_bool("USE_JITO_DIRECT", false),
+            use_jito_fallback: parse_env_bool("USE_JITO_FALLBACK", true),
+            sender_rpc_fallback_enabled: parse_env_bool("SENDER_RPC_FALLBACK_ENABLED", true),
+            execution_multi_send_enabled: parse_env_bool("EXECUTION_MULTI_SEND_ENABLED", false)
+                || parse_env_bool("BROADCAST_RACE_ENABLED", false),
+            jito_send_mode: env::var("JITO_SEND_MODE").unwrap_or_else(|_| "bundle".to_string()),
+            jito_transaction_urls: configured_regions
+                .iter()
+                .map(|region| format!("{}/api/v1/transactions", jito_region_base_url(region)))
+                .collect(),
+            jito_bundle_urls: configured_regions
+                .iter()
+                .map(|region| format!("{}/api/v1/bundles", jito_region_base_url(region)))
+                .collect(),
+            sender_endpoint_url: env::var("SENDER_ENDPOINT")
+                .unwrap_or_else(|_| "http://ewr-sender.helius-rpc.com/fast".to_string()),
+            rpc_fallback_url: read_rpc_url(),
+            jito_auth_uuid: env::var("JITO_AUTH_UUID")
+                .ok()
+                .filter(|v| !v.trim().is_empty()),
+        }
     }
 }
 
@@ -187,6 +327,101 @@ fn parse_env_bool(name: &str, fallback: bool) -> bool {
         },
         Err(_) => fallback,
     }
+}
+
+fn parse_env_u64(name: &str, fallback: u64) -> u64 {
+    env::var(name)
+        .ok()
+        .and_then(|v| v.trim().parse::<u64>().ok())
+        .unwrap_or(fallback)
+}
+
+fn parse_env_optional_u64(name: &str) -> Option<u64> {
+    env::var(name)
+        .ok()
+        .and_then(|v| {
+            let trimmed = v.trim();
+            if trimmed.is_empty() {
+                None
+            } else {
+                trimmed.parse::<u64>().ok()
+            }
+        })
+        .filter(|v| *v > 0)
+}
+
+fn parse_env_f64(name: &str, fallback: f64) -> f64 {
+    env::var(name)
+        .ok()
+        .and_then(|v| v.trim().parse::<f64>().ok())
+        .filter(|v| v.is_finite())
+        .unwrap_or(fallback)
+}
+
+fn sol_env_lamports(name: &str, fallback_sol: f64) -> u64 {
+    (parse_env_f64(name, fallback_sol).max(0.0) * LAMPORTS_PER_SOL).round() as u64
+}
+
+fn optional_sol_env_lamports(name: &str) -> Option<u64> {
+    env::var(name)
+        .ok()
+        .and_then(|v| {
+            let trimmed = v.trim();
+            if trimmed.is_empty() {
+                None
+            } else {
+                trimmed.parse::<f64>().ok()
+            }
+        })
+        .filter(|v| v.is_finite() && *v > 0.0)
+        .map(|v| (v * LAMPORTS_PER_SOL).round() as u64)
+}
+
+fn configured_jito_regions() -> Vec<String> {
+    let raw = env::var("JITO_REGIONS").unwrap_or_default();
+    let mut seen = HashSet::new();
+    let mut regions = raw
+        .split(',')
+        .map(|s| s.trim().to_ascii_lowercase())
+        .filter(|s| !s.is_empty())
+        .filter(|s| seen.insert(s.clone()))
+        .collect::<Vec<_>>();
+    if regions.is_empty() {
+        let region = env::var("JITO_REGION")
+            .unwrap_or_default()
+            .trim()
+            .to_ascii_lowercase();
+        regions.push(region);
+    }
+    regions
+}
+
+fn jito_region_base_url(region: &str) -> &'static str {
+    match region {
+        "ny" => "https://ny.mainnet.block-engine.jito.wtf",
+        "amsterdam" => "https://amsterdam.mainnet.block-engine.jito.wtf",
+        "dublin" => "https://dublin.mainnet.block-engine.jito.wtf",
+        "frankfurt" => "https://frankfurt.mainnet.block-engine.jito.wtf",
+        "london" => "https://london.mainnet.block-engine.jito.wtf",
+        "singapore" => "https://singapore.mainnet.block-engine.jito.wtf",
+        "tokyo" => "https://tokyo.mainnet.block-engine.jito.wtf",
+        "slc" => "https://slc.mainnet.block-engine.jito.wtf",
+        _ => "https://mainnet.block-engine.jito.wtf",
+    }
+}
+
+fn read_rpc_url() -> String {
+    if let Ok(url) = env::var("SECURE_RPC_URL") {
+        if !url.trim().is_empty() {
+            return url;
+        }
+    }
+    if let Ok(key) = env::var("HELIUS_API_KEY") {
+        if !key.trim().is_empty() {
+            return format!("https://mainnet.helius-rpc.com/?api-key={key}");
+        }
+    }
+    "https://mainnet.helius-rpc.com".to_string()
 }
 
 async fn run_once(cfg: &Config) -> Result<()> {
@@ -219,8 +454,13 @@ async fn run_once(cfg: &Config) -> Result<()> {
         let Some(info) = tx_update.transaction else {
             continue;
         };
-        if let Some(line) = extract_swap(&info, &cfg.tracked_wallets, Some(tx_update.slot), Some(info.index)) {
-            println!("{}", serde_json::to_string(&line)?);
+        if let Some(line) = extract_swap(
+            &info,
+            &cfg.tracked_wallets,
+            Some(tx_update.slot),
+            Some(info.index),
+        ) {
+            emit_detected_line(cfg, line).await?;
         }
     }
 
@@ -229,9 +469,7 @@ async fn run_once(cfg: &Config) -> Result<()> {
 
 #[cfg(feature = "jito-shredstream")]
 async fn run_jito_shredstream_once(cfg: &Config) -> Result<()> {
-    use shredstream::{
-        shredstream_proxy_client::ShredstreamProxyClient, SubscribeEntriesRequest,
-    };
+    use shredstream::{shredstream_proxy_client::ShredstreamProxyClient, SubscribeEntriesRequest};
 
     let mut client = ShredstreamProxyClient::connect(cfg.jito_shredstream_grpc_url.clone()).await?;
     let mut stream = client
@@ -260,13 +498,229 @@ async fn run_jito_shredstream_once(cfg: &Config) -> Result<()> {
                 if let Some(line) =
                     extract_shred_swap(&tx, &cfg.tracked_wallets, slot_entry.slot, tx_index)
                 {
-                    println!("{}", serde_json::to_string(&line)?);
+                    emit_detected_line(cfg, line).await?;
                 }
                 tx_index = tx_index.saturating_add(1);
             }
         }
     }
     Ok(())
+}
+
+async fn emit_detected_line(cfg: &Config, line: DetectedSwapLine) -> Result<()> {
+    match try_hot_sniper_buy(cfg, &line).await {
+        HotDecision::Bought(hot_line) => {
+            println!("{}", serde_json::to_string(&hot_line)?);
+        }
+        HotDecision::Fallback(reason) => {
+            if let Some(reason) = reason {
+                eprintln!(
+                    "rust-sidecar: hot sniper fallback for {}...: {reason}",
+                    line.output_mint.chars().take(8).collect::<String>()
+                );
+            }
+            println!("{}", serde_json::to_string(&line)?);
+        }
+    }
+    Ok(())
+}
+
+enum HotDecision {
+    Bought(HotBuyLine),
+    Fallback(Option<String>),
+}
+
+async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecision {
+    let hot = &cfg.hot_sniper;
+    if !hot.enabled {
+        return HotDecision::Fallback(None);
+    }
+    if line.input_mint != WRAPPED_SOL_MINT || !line.is_native_input {
+        return HotDecision::Fallback(None);
+    }
+    let Some(source_ix_accounts) = line.source_ix_accounts.clone() else {
+        return HotDecision::Fallback(None);
+    };
+    let Some(source_ix_data_base64) = line.source_ix_data_base64.clone() else {
+        return HotDecision::Fallback(None);
+    };
+    let Some(sol_in_lamports) = hot_sized_lamports(hot, line.amount_raw) else {
+        return HotDecision::Fallback(Some("copy-sized amount below minimum".to_string()));
+    };
+    if sol_in_lamports == 0 {
+        return HotDecision::Fallback(Some("copy-sized amount is zero".to_string()));
+    }
+
+    if hot.buy_once_per_token {
+        let mut bought = match hot.bought_mints.lock() {
+            Ok(guard) => guard,
+            Err(_) => {
+                return HotDecision::Fallback(Some("buy-once state lock poisoned".to_string()))
+            }
+        };
+        if bought.contains(&line.output_mint) {
+            return HotDecision::Fallback(Some(
+                "mint already hot-bought by Rust this session".to_string(),
+            ));
+        }
+        bought.insert(line.output_mint.clone());
+    }
+
+    let session_reserved = reserve_hot_session_lamports(hot, sol_in_lamports);
+    if !session_reserved {
+        if hot.buy_once_per_token {
+            if let Ok(mut bought) = hot.bought_mints.lock() {
+                bought.remove(&line.output_mint);
+            }
+        }
+        return HotDecision::Fallback(Some(
+            "session deployed SOL cap would be exceeded".to_string(),
+        ));
+    }
+
+    let started = Instant::now();
+    let blockhash = match executor::fetch_latest_blockhash(&hot.rpc_fallback_url).await {
+        Ok(blockhash) => blockhash,
+        Err(err) => {
+            release_hot_reservations(hot, &line.output_mint, sol_in_lamports);
+            return HotDecision::Fallback(Some(format!("blockhash fetch failed: {err}")));
+        }
+    };
+
+    let command = executor::ExecutePumpfunBuyCommand {
+        id: format!(
+            "rust-hot-{}-{}",
+            now_ms(),
+            line.signature.chars().take(8).collect::<String>()
+        ),
+        mode: "source-replay".to_string(),
+        route: "pumpfun-hot-source-replay-buy".to_string(),
+        mint: line.output_mint.clone(),
+        sol_in_lamports,
+        tokens_out_raw: None,
+        slippage_bps: hot.slippage_bps,
+        exact_sol_in: false,
+        source_ix_accounts: Some(source_ix_accounts),
+        source_ix_data_base64: Some(source_ix_data_base64),
+        bonding_curve: None,
+        creator: None,
+        token_program_id: None,
+        blockhash,
+        compute_unit_limit: hot.compute_unit_limit,
+        priority_fee_micro_lamports: hot.priority_fee_micro_lamports,
+        jito_tip_lamports: hot.jito_tip_lamports,
+        helius_tip_lamports: hot.helius_tip_lamports,
+        use_jito_direct: hot.use_jito_direct,
+        use_jito_fallback: hot.use_jito_fallback,
+        sender_rpc_fallback_enabled: hot.sender_rpc_fallback_enabled,
+        execution_multi_send_enabled: hot.execution_multi_send_enabled,
+        jito_send_mode: hot.jito_send_mode.clone(),
+        jito_transaction_urls: hot.jito_transaction_urls.clone(),
+        jito_bundle_urls: hot.jito_bundle_urls.clone(),
+        sender_endpoint_url: hot.sender_endpoint_url.clone(),
+        rpc_fallback_url: hot.rpc_fallback_url.clone(),
+        jito_auth_uuid: hot.jito_auth_uuid.clone(),
+    };
+
+    match executor::execute_pumpfun_buy_command(command, started).await {
+        Ok(response) if response.ok => {
+            let signature = response.signature.unwrap_or_default();
+            if signature.is_empty() {
+                release_hot_reservations(hot, &line.output_mint, sol_in_lamports);
+                return HotDecision::Fallback(Some(
+                    "Rust executor returned no signature".to_string(),
+                ));
+            }
+            HotDecision::Bought(HotBuyLine {
+                kind: "hotBuy",
+                source: "rust-hot-sniper",
+                detected_at_ms: now_ms(),
+                source_signature: line.signature.clone(),
+                wallet: line.wallet.clone(),
+                mint: line.output_mint.clone(),
+                signature,
+                source_amount_raw: line.amount_raw,
+                sol_in_lamports: response.sol_in_lamports.unwrap_or(sol_in_lamports),
+                tokens_out_raw: response.tokens_out_raw.unwrap_or(1).max(1),
+                route: response
+                    .route
+                    .unwrap_or_else(|| "pumpfun-hot-source-replay-buy".to_string()),
+                sender_path: response.sender_path,
+                elapsed_ms: response.elapsed_ms,
+                build_ms: response.build_ms,
+                broadcast_ms: response.broadcast_ms,
+                tx_bytes: response.tx_bytes,
+                source_slot: line.source_slot,
+                source_transaction_index: line.source_transaction_index,
+            })
+        }
+        Ok(response) => {
+            release_hot_reservations(hot, &line.output_mint, sol_in_lamports);
+            HotDecision::Fallback(Some(
+                response
+                    .error
+                    .unwrap_or_else(|| "Rust executor failed".to_string()),
+            ))
+        }
+        Err(err) => {
+            release_hot_reservations(hot, &line.output_mint, sol_in_lamports);
+            HotDecision::Fallback(Some(format!("{err:#}")))
+        }
+    }
+}
+
+fn hot_sized_lamports(hot: &HotSniperConfig, source_lamports: u64) -> Option<u64> {
+    let copied = ((source_lamports as f64) * (hot.copy_buy_percentage / 100.0)).floor() as u64;
+    let mut sized = copied;
+    if sized < hot.min_buy_lamports {
+        match hot.min_buy_behavior.as_str() {
+            "floor" | "min" => sized = hot.min_buy_lamports,
+            "allow" | "copy" | "copy-sized" => {}
+            _ => return None,
+        }
+    }
+    sized = sized.min(hot.max_buy_lamports);
+    if let Some(max_per_token) = hot.max_sol_per_token_lamports {
+        sized = sized.min(max_per_token);
+    }
+    Some(sized.max(1))
+}
+
+fn reserve_hot_session_lamports(hot: &HotSniperConfig, lamports: u64) -> bool {
+    let Some(cap) = hot.max_session_deployed_lamports else {
+        return true;
+    };
+    loop {
+        let current = hot.session_deployed_lamports.load(Ordering::Relaxed);
+        let Some(next) = current.checked_add(lamports) else {
+            return false;
+        };
+        if next > cap {
+            return false;
+        }
+        if hot
+            .session_deployed_lamports
+            .compare_exchange(current, next, Ordering::SeqCst, Ordering::SeqCst)
+            .is_ok()
+        {
+            return true;
+        }
+    }
+}
+
+fn release_hot_reservations(hot: &HotSniperConfig, mint: &str, lamports: u64) {
+    if hot.buy_once_per_token {
+        if let Ok(mut bought) = hot.bought_mints.lock() {
+            bought.remove(mint);
+        }
+    }
+    if hot.max_session_deployed_lamports.is_some() {
+        hot.session_deployed_lamports
+            .fetch_update(Ordering::SeqCst, Ordering::SeqCst, |current| {
+                Some(current.saturating_sub(lamports))
+            })
+            .ok();
+    }
 }
 
 fn build_request(tracked_wallets: &[String]) -> SubscribeRequest {
@@ -319,16 +773,14 @@ fn extract_swap(
     for ix in &message.instructions {
         let program_id = account_keys.get(ix.program_id_index as usize)?;
         if program_id == PUMPSWAP_PROGRAM_ID {
-            if let Some(line) =
-                extract_top_level_pumpswap_buy(
-                    ix,
-                    &account_keys,
-                    &signature,
-                    &wallet,
-                    source_slot,
-                    source_transaction_index,
-                )
-            {
+            if let Some(line) = extract_top_level_pumpswap_buy(
+                ix,
+                &account_keys,
+                &signature,
+                &wallet,
+                source_slot,
+                source_transaction_index,
+            ) {
                 return Some(line);
             }
             continue;
@@ -343,10 +795,14 @@ fn extract_swap(
             .collect::<Vec<_>>();
         let is_legacy = source_ix_accounts.len() >= 16
             && source_ix_accounts.get(2).is_some()
-            && source_ix_accounts.get(11).is_some_and(|v| v == PUMP_FUN_PROGRAM_ID);
+            && source_ix_accounts
+                .get(11)
+                .is_some_and(|v| v == PUMP_FUN_PROGRAM_ID);
         let is_v2 = source_ix_accounts.len() >= 27
             && source_ix_accounts.get(1).is_some()
-            && source_ix_accounts.get(26).is_some_and(|v| v == PUMP_FUN_PROGRAM_ID);
+            && source_ix_accounts
+                .get(26)
+                .is_some_and(|v| v == PUMP_FUN_PROGRAM_ID);
         if !is_legacy && !is_v2 {
             continue;
         }
@@ -473,8 +929,7 @@ fn extract_shred_swap(
                 "jito-shredstream",
                 source_slot,
                 source_transaction_index,
-            )
-            {
+            ) {
                 return Some(line);
             }
             continue;
@@ -490,11 +945,15 @@ fn extract_shred_swap(
         let is_legacy = source_ix_accounts.len() >= 16
             && source_ix_accounts.get(2).is_some()
             && source_ix_accounts.get(6).is_some_and(|v| v == &wallet)
-            && source_ix_accounts.get(11).is_some_and(|v| v == PUMP_FUN_PROGRAM_ID);
+            && source_ix_accounts
+                .get(11)
+                .is_some_and(|v| v == PUMP_FUN_PROGRAM_ID);
         let is_v2 = source_ix_accounts.len() >= 27
             && source_ix_accounts.get(1).is_some()
             && source_ix_accounts.get(13).is_some_and(|v| v == &wallet)
-            && source_ix_accounts.get(26).is_some_and(|v| v == PUMP_FUN_PROGRAM_ID);
+            && source_ix_accounts
+                .get(26)
+                .is_some_and(|v| v == PUMP_FUN_PROGRAM_ID);
         if !is_legacy && !is_v2 {
             continue;
         }

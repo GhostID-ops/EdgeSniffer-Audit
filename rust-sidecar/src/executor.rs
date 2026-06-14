@@ -40,8 +40,8 @@ const PUMP_FUN_BUY_WRITABLE_FLAGS: [bool; 16] = [
     false, false,
 ];
 const PUMP_FUN_BUY_V2_WRITABLE_FLAGS: [bool; 27] = [
-    false, false, false, false, false, false, true, true, true, true, true, true, true, true,
-    true, true, true, true, false, false, true, true, false, false, false, false, false,
+    false, false, false, false, false, false, true, true, true, true, true, true, true, true, true,
+    true, true, true, false, false, true, true, false, false, false, false, false,
 ];
 const PUMP_FUN_BUY_V2_ACCOUNT_COUNT: usize = 27;
 
@@ -79,52 +79,52 @@ enum ExecutorCommand {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExecutePumpfunBuyCommand {
-    id: String,
-    mode: String,
-    route: String,
-    mint: String,
-    sol_in_lamports: u64,
-    tokens_out_raw: Option<u64>,
-    slippage_bps: u64,
-    exact_sol_in: bool,
-    source_ix_accounts: Option<Vec<String>>,
-    source_ix_data_base64: Option<String>,
-    bonding_curve: Option<String>,
-    creator: Option<String>,
-    token_program_id: Option<String>,
-    blockhash: String,
-    compute_unit_limit: u32,
-    priority_fee_micro_lamports: u64,
-    jito_tip_lamports: u64,
-    helius_tip_lamports: u64,
-    use_jito_direct: bool,
-    use_jito_fallback: bool,
-    sender_rpc_fallback_enabled: bool,
-    execution_multi_send_enabled: bool,
-    jito_send_mode: String,
-    jito_transaction_urls: Vec<String>,
-    jito_bundle_urls: Vec<String>,
-    sender_endpoint_url: String,
-    rpc_fallback_url: String,
-    jito_auth_uuid: Option<String>,
+    pub id: String,
+    pub mode: String,
+    pub route: String,
+    pub mint: String,
+    pub sol_in_lamports: u64,
+    pub tokens_out_raw: Option<u64>,
+    pub slippage_bps: u64,
+    pub exact_sol_in: bool,
+    pub source_ix_accounts: Option<Vec<String>>,
+    pub source_ix_data_base64: Option<String>,
+    pub bonding_curve: Option<String>,
+    pub creator: Option<String>,
+    pub token_program_id: Option<String>,
+    pub blockhash: String,
+    pub compute_unit_limit: u32,
+    pub priority_fee_micro_lamports: u64,
+    pub jito_tip_lamports: u64,
+    pub helius_tip_lamports: u64,
+    pub use_jito_direct: bool,
+    pub use_jito_fallback: bool,
+    pub sender_rpc_fallback_enabled: bool,
+    pub execution_multi_send_enabled: bool,
+    pub jito_send_mode: String,
+    pub jito_transaction_urls: Vec<String>,
+    pub jito_bundle_urls: Vec<String>,
+    pub sender_endpoint_url: String,
+    pub rpc_fallback_url: String,
+    pub jito_auth_uuid: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
-struct ExecutorResponse {
-    kind: &'static str,
-    id: String,
-    ok: bool,
-    signature: Option<String>,
-    route: Option<String>,
-    sender_path: Option<String>,
-    sol_in_lamports: Option<u64>,
-    tokens_out_raw: Option<u64>,
-    elapsed_ms: u128,
-    build_ms: Option<u128>,
-    broadcast_ms: Option<u128>,
-    tx_bytes: Option<usize>,
-    error: Option<String>,
+pub struct ExecutorResponse {
+    pub kind: &'static str,
+    pub id: String,
+    pub ok: bool,
+    pub signature: Option<String>,
+    pub route: Option<String>,
+    pub sender_path: Option<String>,
+    pub sol_in_lamports: Option<u64>,
+    pub tokens_out_raw: Option<u64>,
+    pub elapsed_ms: u128,
+    pub build_ms: Option<u128>,
+    pub broadcast_ms: Option<u128>,
+    pub tx_bytes: Option<usize>,
+    pub error: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -177,7 +177,9 @@ pub fn start_executor_stdin() {
                         let response = handle_line(&line).await;
                         match serde_json::to_string(&response) {
                             Ok(json) => println!("{json}"),
-                            Err(err) => eprintln!("rust-sidecar: executor response serialization failed: {err}"),
+                            Err(err) => eprintln!(
+                                "rust-sidecar: executor response serialization failed: {err}"
+                            ),
                         }
                     });
                 }
@@ -243,7 +245,10 @@ fn extract_id(line: &str) -> Option<String> {
         .and_then(|v| v.get("id").and_then(Value::as_str).map(str::to_string))
 }
 
-async fn execute_pumpfun_buy(cmd: ExecutePumpfunBuyCommand, started: Instant) -> Result<ExecutorResponse> {
+async fn execute_pumpfun_buy(
+    cmd: ExecutePumpfunBuyCommand,
+    started: Instant,
+) -> Result<ExecutorResponse> {
     let built = build_pumpfun_buy_tx(&cmd)?;
     let broadcast_started = Instant::now();
     let sender_path = broadcast_signed_tx(&cmd, &built.tx, &built.signature).await?;
@@ -264,13 +269,59 @@ async fn execute_pumpfun_buy(cmd: ExecutePumpfunBuyCommand, started: Instant) ->
     })
 }
 
+pub async fn execute_pumpfun_buy_command(
+    cmd: ExecutePumpfunBuyCommand,
+    started: Instant,
+) -> Result<ExecutorResponse> {
+    execute_pumpfun_buy(cmd, started).await
+}
+
+pub async fn fetch_latest_blockhash(rpc_url: &str) -> Result<String> {
+    let body = json!({
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "getLatestBlockhash",
+        "params": [{ "commitment": "processed" }],
+    });
+    let response = reqwest::Client::new()
+        .post(rpc_url)
+        .timeout(Duration::from_millis(900))
+        .json(&body)
+        .send()
+        .await
+        .context("blockhash rpc send failed")?;
+    let json = response
+        .json::<JsonRpcResponse>()
+        .await
+        .context("blockhash rpc response parse failed")?;
+    if let Some(error) = json.error {
+        let code = error.code.map(|c| format!(" code {c}")).unwrap_or_default();
+        bail!(
+            "{}{}",
+            error
+                .message
+                .unwrap_or_else(|| "blockhash json-rpc error".to_string()),
+            code
+        );
+    }
+    json.result
+        .and_then(|v| v.get("value").cloned())
+        .and_then(|v| {
+            v.get("blockhash")
+                .and_then(Value::as_str)
+                .map(str::to_string)
+        })
+        .context("getLatestBlockhash returned no blockhash")
+}
+
 fn build_pumpfun_buy_tx(cmd: &ExecutePumpfunBuyCommand) -> Result<BuiltTx> {
     let started = Instant::now();
     let private_key = env::var("PRIVATE_KEY_BASE58").context("PRIVATE_KEY_BASE58 is not set")?;
     let keypair_bytes = bs58::decode(private_key.trim())
         .into_vec()
         .context("PRIVATE_KEY_BASE58 is not valid base58")?;
-    let keypair = Keypair::from_bytes(&keypair_bytes).context("PRIVATE_KEY_BASE58 is not a Solana keypair")?;
+    let keypair = Keypair::from_bytes(&keypair_bytes)
+        .context("PRIVATE_KEY_BASE58 is not a Solana keypair")?;
     let user = keypair.pubkey();
     let mint = parse_pubkey(&cmd.mint, "mint")?;
     let token_program_id = token_program_for_command(cmd)?;
@@ -285,7 +336,12 @@ fn build_pumpfun_buy_tx(cmd: &ExecutePumpfunBuyCommand) -> Result<BuiltTx> {
     instructions.push(ComputeBudgetInstruction::set_compute_unit_price(
         cmd.priority_fee_micro_lamports,
     ));
-    instructions.push(create_ata_idempotent_ix(&user, &user, &mint, &token_program_id)?);
+    instructions.push(create_ata_idempotent_ix(
+        &user,
+        &user,
+        &mint,
+        &token_program_id,
+    )?);
     instructions.push(build_pumpfun_buy_ix(cmd, &user, &mint, &token_program_id)?);
 
     let tip_sets = tip_instruction_sets(cmd, &user)?;
@@ -310,7 +366,9 @@ fn build_pumpfun_buy_tx(cmd: &ExecutePumpfunBuyCommand) -> Result<BuiltTx> {
                 });
             }
             Ok((_tx, bytes)) => {
-                last_error = Some(anyhow!("transaction too large: {bytes}B > {PACKET_DATA_SIZE}B"));
+                last_error = Some(anyhow!(
+                    "transaction too large: {bytes}B > {PACKET_DATA_SIZE}B"
+                ));
             }
             Err(err) => {
                 last_error = Some(err);
@@ -320,13 +378,19 @@ fn build_pumpfun_buy_tx(cmd: &ExecutePumpfunBuyCommand) -> Result<BuiltTx> {
     Err(last_error.unwrap_or_else(|| anyhow!("no tip set could build a transaction")))
 }
 
-fn compile_and_sign(keypair: &Keypair, blockhash: Hash, instructions: &[Instruction]) -> Result<(VersionedTransaction, usize)> {
+fn compile_and_sign(
+    keypair: &Keypair,
+    blockhash: Hash,
+    instructions: &[Instruction],
+) -> Result<(VersionedTransaction, usize)> {
     let payer = keypair.pubkey();
     let message = v0::Message::try_compile(&payer, instructions, &[], blockhash)
         .context("compile v0 message failed")?;
     let tx = VersionedTransaction::try_new(VersionedMessage::V0(message), &[keypair])
         .context("sign v0 transaction failed")?;
-    let bytes = bincode::serialize(&tx).context("serialize transaction failed")?.len();
+    let bytes = bincode::serialize(&tx)
+        .context("serialize transaction failed")?
+        .len();
     Ok((tx, bytes))
 }
 
@@ -352,12 +416,13 @@ fn build_pumpfun_buy_ix(
     }
 
     let amount = if cmd.exact_sol_in {
-        let tokens = cmd.tokens_out_raw.context("direct rust buy requires tokensOutRaw")?;
-        tokens
-            .saturating_mul(10_000u64.saturating_sub(cmd.slippage_bps.min(10_000)))
-            / 10_000
+        let tokens = cmd
+            .tokens_out_raw
+            .context("direct rust buy requires tokensOutRaw")?;
+        tokens.saturating_mul(10_000u64.saturating_sub(cmd.slippage_bps.min(10_000))) / 10_000
     } else {
-        cmd.tokens_out_raw.context("direct rust buy requires tokensOutRaw")?
+        cmd.tokens_out_raw
+            .context("direct rust buy requires tokensOutRaw")?
     };
     let max_sol_cost = if cmd.exact_sol_in {
         cmd.sol_in_lamports
@@ -393,10 +458,15 @@ struct ScaledBuyData {
     max_sol_cost: u64,
 }
 
-fn scale_source_buy_data(data: &[u8], sol_in_lamports: u64, slippage_bps: u64) -> Result<ScaledBuyData> {
+fn scale_source_buy_data(
+    data: &[u8],
+    sol_in_lamports: u64,
+    slippage_bps: u64,
+) -> Result<ScaledBuyData> {
     let bps = slippage_bps.min(10_000);
     if starts_with(data, &BUY_DISCRIMINATOR) || starts_with(data, &BUY_V2_DISCRIMINATOR) {
-        let source_tokens_out = read_u64_le(data, 8).context("source buy data missing token amount")?;
+        let source_tokens_out =
+            read_u64_le(data, 8).context("source buy data missing token amount")?;
         let source_max_sol = read_u64_le(data, 16).context("source buy data missing max sol")?;
         if source_max_sol == 0 {
             bail!("source buy max sol is zero");
@@ -414,7 +484,8 @@ fn scale_source_buy_data(data: &[u8], sol_in_lamports: u64, slippage_bps: u64) -
         || starts_with(data, &BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR)
     {
         let source_spend = read_u64_le(data, 8).context("source exact-in data missing spend")?;
-        let source_min_tokens_out = read_u64_le(data, 16).context("source exact-in data missing min out")?;
+        let source_min_tokens_out =
+            read_u64_le(data, 16).context("source exact-in data missing min out")?;
         if source_spend == 0 {
             bail!("source exact-in spend is zero");
         }
@@ -441,7 +512,16 @@ fn source_data_for_scaled(source_data: &[u8], scaled: &ScaledBuyData) -> Vec<u8>
     } else {
         BUY_DISCRIMINATOR
     };
-    data.resize(if starts_with(&discriminator, &BUY_DISCRIMINATOR) || starts_with(&discriminator, &BUY_EXACT_SOL_IN_DISCRIMINATOR) { 25 } else { 24 }, 0);
+    data.resize(
+        if starts_with(&discriminator, &BUY_DISCRIMINATOR)
+            || starts_with(&discriminator, &BUY_EXACT_SOL_IN_DISCRIMINATOR)
+        {
+            25
+        } else {
+            24
+        },
+        0,
+    );
     data[0..8].copy_from_slice(&discriminator);
     if scaled.exact_sol_in {
         data[8..16].copy_from_slice(&scaled.max_sol_cost.to_le_bytes());
@@ -499,13 +579,24 @@ fn build_source_replay_buy_ix(
     let program_id = parse_pubkey(PUMP_FUN_PROGRAM_ID, "pump program")?;
     let associated_user = derive_ata(user, mint, token_program_id)?;
     let user_volume_accumulator = derive_user_volume_accumulator(user)?;
-    let associated_quote_user = derive_ata(user, &parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?, &parse_pubkey(TOKEN_PROGRAM_ID, "token program")?)?;
-    let associated_user_volume_accumulator =
-        derive_ata(&user_volume_accumulator, &parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?, &parse_pubkey(TOKEN_PROGRAM_ID, "token program")?)?;
+    let associated_quote_user = derive_ata(
+        user,
+        &parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?,
+        &parse_pubkey(TOKEN_PROGRAM_ID, "token program")?,
+    )?;
+    let associated_user_volume_accumulator = derive_ata(
+        &user_volume_accumulator,
+        &parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?,
+        &parse_pubkey(TOKEN_PROGRAM_ID, "token program")?,
+    )?;
 
     let mut keys = Vec::new();
     if is_v2_source_accounts(source_accounts, mint) {
-        for (i, source) in source_accounts.iter().take(PUMP_FUN_BUY_V2_ACCOUNT_COUNT).enumerate() {
+        for (i, source) in source_accounts
+            .iter()
+            .take(PUMP_FUN_BUY_V2_ACCOUNT_COUNT)
+            .enumerate()
+        {
             let actual = match i {
                 13 => *user,
                 14 => associated_user,
@@ -564,14 +655,28 @@ fn build_derived_legacy_buy_ix(
     token_program_id: &Pubkey,
     data: Vec<u8>,
 ) -> Result<Instruction> {
-    let bonding_curve = parse_pubkey(cmd.bonding_curve.as_deref().context("direct buy missing bondingCurve")?, "bondingCurve")?;
-    let creator = parse_pubkey(cmd.creator.as_deref().context("direct buy missing creator")?, "creator")?;
+    let bonding_curve = parse_pubkey(
+        cmd.bonding_curve
+            .as_deref()
+            .context("direct buy missing bondingCurve")?,
+        "bondingCurve",
+    )?;
+    let creator = parse_pubkey(
+        cmd.creator
+            .as_deref()
+            .context("direct buy missing creator")?,
+        "creator",
+    )?;
     let associated_bonding_curve = derive_ata(&bonding_curve, mint, token_program_id)?;
     let associated_user = derive_ata(user, mint, token_program_id)?;
     let creator_vault = derive_creator_vault(&creator)?;
     let keys = vec![
         meta(derive_global()?, false, false),
-        meta(parse_pubkey(PUMP_FUN_FEE_RECIPIENT, "fee recipient")?, false, true),
+        meta(
+            parse_pubkey(PUMP_FUN_FEE_RECIPIENT, "fee recipient")?,
+            false,
+            true,
+        ),
         meta(*mint, false, false),
         meta(bonding_curve, false, true),
         meta(associated_bonding_curve, false, true),
@@ -581,11 +686,19 @@ fn build_derived_legacy_buy_ix(
         meta(*token_program_id, false, false),
         meta(creator_vault, false, true),
         meta(derive_event_authority()?, false, false),
-        meta(parse_pubkey(PUMP_FUN_PROGRAM_ID, "pump program")?, false, false),
+        meta(
+            parse_pubkey(PUMP_FUN_PROGRAM_ID, "pump program")?,
+            false,
+            false,
+        ),
         meta(derive_global_volume_accumulator()?, false, cmd.exact_sol_in),
         meta(derive_user_volume_accumulator(user)?, false, true),
         meta(derive_fee_config()?, false, false),
-        meta(parse_pubkey(PUMP_FUN_FEE_PROGRAM_ID, "fee program")?, false, false),
+        meta(
+            parse_pubkey(PUMP_FUN_FEE_PROGRAM_ID, "fee program")?,
+            false,
+            false,
+        ),
     ];
     Ok(Instruction {
         program_id: parse_pubkey(PUMP_FUN_PROGRAM_ID, "pump program")?,
@@ -601,8 +714,18 @@ fn build_derived_v2_buy_ix(
     token_program_id: &Pubkey,
     data: Vec<u8>,
 ) -> Result<Instruction> {
-    let bonding_curve = parse_pubkey(cmd.bonding_curve.as_deref().context("direct buy missing bondingCurve")?, "bondingCurve")?;
-    let creator = parse_pubkey(cmd.creator.as_deref().context("direct buy missing creator")?, "creator")?;
+    let bonding_curve = parse_pubkey(
+        cmd.bonding_curve
+            .as_deref()
+            .context("direct buy missing bondingCurve")?,
+        "bondingCurve",
+    )?;
+    let creator = parse_pubkey(
+        cmd.creator
+            .as_deref()
+            .context("direct buy missing creator")?,
+        "creator",
+    )?;
     let wsol = parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?;
     let token_program = parse_pubkey(TOKEN_PROGRAM_ID, "token program")?;
     let creator_vault = derive_creator_vault(&creator)?;
@@ -613,28 +736,80 @@ fn build_derived_v2_buy_ix(
         meta(wsol, false, false),
         meta(*token_program_id, false, false),
         meta(token_program, false, false),
-        meta(parse_pubkey(ASSOCIATED_TOKEN_PROGRAM_ID, "ata program")?, false, false),
-        meta(parse_pubkey(PUMP_FUN_FEE_RECIPIENT, "fee recipient")?, false, true),
-        meta(derive_ata(&parse_pubkey(PUMP_FUN_FEE_RECIPIENT, "fee recipient")?, &wsol, &token_program)?, false, true),
-        meta(parse_pubkey(PUMP_FUN_BUYBACK_FEE_RECIPIENT, "buyback recipient")?, false, true),
-        meta(derive_ata(&parse_pubkey(PUMP_FUN_BUYBACK_FEE_RECIPIENT, "buyback recipient")?, &wsol, &token_program)?, false, true),
+        meta(
+            parse_pubkey(ASSOCIATED_TOKEN_PROGRAM_ID, "ata program")?,
+            false,
+            false,
+        ),
+        meta(
+            parse_pubkey(PUMP_FUN_FEE_RECIPIENT, "fee recipient")?,
+            false,
+            true,
+        ),
+        meta(
+            derive_ata(
+                &parse_pubkey(PUMP_FUN_FEE_RECIPIENT, "fee recipient")?,
+                &wsol,
+                &token_program,
+            )?,
+            false,
+            true,
+        ),
+        meta(
+            parse_pubkey(PUMP_FUN_BUYBACK_FEE_RECIPIENT, "buyback recipient")?,
+            false,
+            true,
+        ),
+        meta(
+            derive_ata(
+                &parse_pubkey(PUMP_FUN_BUYBACK_FEE_RECIPIENT, "buyback recipient")?,
+                &wsol,
+                &token_program,
+            )?,
+            false,
+            true,
+        ),
         meta(bonding_curve, false, true),
-        meta(derive_ata(&bonding_curve, mint, token_program_id)?, false, true),
-        meta(derive_ata(&bonding_curve, &wsol, &token_program)?, false, true),
+        meta(
+            derive_ata(&bonding_curve, mint, token_program_id)?,
+            false,
+            true,
+        ),
+        meta(
+            derive_ata(&bonding_curve, &wsol, &token_program)?,
+            false,
+            true,
+        ),
         meta(*user, true, true),
         meta(derive_ata(user, mint, token_program_id)?, false, true),
         meta(derive_ata(user, &wsol, &token_program)?, false, true),
         meta(creator_vault, false, true),
-        meta(derive_ata(&creator_vault, &wsol, &token_program)?, false, true),
+        meta(
+            derive_ata(&creator_vault, &wsol, &token_program)?,
+            false,
+            true,
+        ),
         meta(derive_sharing_config(mint)?, false, false),
         meta(derive_global_volume_accumulator()?, false, false),
         meta(user_volume_accumulator, false, true),
-        meta(derive_ata(&user_volume_accumulator, &wsol, &token_program)?, false, true),
+        meta(
+            derive_ata(&user_volume_accumulator, &wsol, &token_program)?,
+            false,
+            true,
+        ),
         meta(derive_fee_config()?, false, false),
-        meta(parse_pubkey(PUMP_FUN_FEE_PROGRAM_ID, "fee program")?, false, false),
+        meta(
+            parse_pubkey(PUMP_FUN_FEE_PROGRAM_ID, "fee program")?,
+            false,
+            false,
+        ),
         meta(solana_system_interface::program::ID, false, false),
         meta(derive_event_authority()?, false, false),
-        meta(parse_pubkey(PUMP_FUN_PROGRAM_ID, "pump program")?, false, false),
+        meta(
+            parse_pubkey(PUMP_FUN_PROGRAM_ID, "pump program")?,
+            false,
+            false,
+        ),
     ];
     Ok(Instruction {
         program_id: parse_pubkey(PUMP_FUN_PROGRAM_ID, "pump program")?,
@@ -664,7 +839,10 @@ fn create_ata_idempotent_ix(
     })
 }
 
-fn tip_instruction_sets(cmd: &ExecutePumpfunBuyCommand, user: &Pubkey) -> Result<Vec<Vec<Instruction>>> {
+fn tip_instruction_sets(
+    cmd: &ExecutePumpfunBuyCommand,
+    user: &Pubkey,
+) -> Result<Vec<Vec<Instruction>>> {
     let mut all = Vec::new();
     if cmd.use_jito_direct && cmd.jito_tip_lamports > 0 {
         all.push(system_instruction::transfer(
@@ -690,22 +868,44 @@ fn tip_instruction_sets(cmd: &ExecutePumpfunBuyCommand, user: &Pubkey) -> Result
     Ok(sets)
 }
 
-async fn broadcast_signed_tx(cmd: &ExecutePumpfunBuyCommand, tx: &VersionedTransaction, signature: &str) -> Result<String> {
-    let tx_base64 = BASE64_STANDARD.encode(bincode::serialize(tx).context("serialize tx for broadcast")?);
+async fn broadcast_signed_tx(
+    cmd: &ExecutePumpfunBuyCommand,
+    tx: &VersionedTransaction,
+    signature: &str,
+) -> Result<String> {
+    let tx_base64 =
+        BASE64_STANDARD.encode(bincode::serialize(tx).context("serialize tx for broadcast")?);
     let candidates = broadcast_candidates(cmd)?;
     if cmd.execution_multi_send_enabled {
-        return race_broadcast(candidates, tx_base64, signature.to_string(), cmd.jito_auth_uuid.clone()).await;
+        return race_broadcast(
+            candidates,
+            tx_base64,
+            signature.to_string(),
+            cmd.jito_auth_uuid.clone(),
+        )
+        .await;
     }
 
     let client = reqwest::Client::new();
     let mut errors = Vec::new();
     for candidate in candidates {
-        match send_candidate(&client, &candidate, &tx_base64, signature, cmd.jito_auth_uuid.as_deref()).await {
+        match send_candidate(
+            &client,
+            &candidate,
+            &tx_base64,
+            signature,
+            cmd.jito_auth_uuid.as_deref(),
+        )
+        .await
+        {
             Ok(path) => return Ok(path),
             Err(err) => errors.push(format!("{}: {err}", candidate.name)),
         }
     }
-    Err(anyhow!("all rust executor broadcast paths failed: {}", errors.join(" | ")))
+    Err(anyhow!(
+        "all rust executor broadcast paths failed: {}",
+        errors.join(" | ")
+    ))
 }
 
 fn broadcast_candidates(cmd: &ExecutePumpfunBuyCommand) -> Result<Vec<BroadcastCandidate>> {
@@ -794,7 +994,10 @@ async fn race_broadcast(
             Err(err) => errors.push(err),
         }
     }
-    Err(anyhow!("all rust executor broadcast paths failed: {}", errors.join(" | ")))
+    Err(anyhow!(
+        "all rust executor broadcast paths failed: {}",
+        errors.join(" | ")
+    ))
 }
 
 async fn send_candidate(
@@ -805,11 +1008,12 @@ async fn send_candidate(
     jito_auth_uuid: Option<&str>,
 ) -> Result<String> {
     let (method, params) = match candidate.method {
-        BroadcastMethod::JitoBundle => (
-            "sendBundle",
-            json!([[tx_base64], { "encoding": "base64" }]),
-        ),
-        BroadcastMethod::JitoTransaction | BroadcastMethod::HeliusSender | BroadcastMethod::RpcFallback => (
+        BroadcastMethod::JitoBundle => {
+            ("sendBundle", json!([[tx_base64], { "encoding": "base64" }]))
+        }
+        BroadcastMethod::JitoTransaction
+        | BroadcastMethod::HeliusSender
+        | BroadcastMethod::RpcFallback => (
             "sendTransaction",
             json!([tx_base64, { "encoding": "base64", "skipPreflight": true, "maxRetries": 0 }]),
         ),
@@ -830,10 +1034,19 @@ async fn send_candidate(
         }
     }
     let response = request.send().await.context("http send failed")?;
-    let json = response.json::<JsonRpcResponse>().await.context("json-rpc response parse failed")?;
+    let json = response
+        .json::<JsonRpcResponse>()
+        .await
+        .context("json-rpc response parse failed")?;
     if let Some(error) = json.error {
         let code = error.code.map(|c| format!(" code {c}")).unwrap_or_default();
-        bail!("{}{}", error.message.unwrap_or_else(|| "json-rpc error".to_string()), code);
+        bail!(
+            "{}{}",
+            error
+                .message
+                .unwrap_or_else(|| "json-rpc error".to_string()),
+            code
+        );
     }
     match candidate.method {
         BroadcastMethod::JitoBundle => Ok(format!("{}:{}", candidate.name, signature)),
@@ -850,7 +1063,9 @@ async fn send_candidate(
 fn estimate_tokens_out(cmd: &ExecutePumpfunBuyCommand) -> Result<u64> {
     if cmd.mode == "source-replay" {
         let source_data = decode_source_data(cmd)?;
-        return Ok(scale_source_buy_data(&source_data, cmd.sol_in_lamports, cmd.slippage_bps)?.amount);
+        return Ok(
+            scale_source_buy_data(&source_data, cmd.sol_in_lamports, cmd.slippage_bps)?.amount,
+        );
     }
     Ok(cmd.tokens_out_raw.unwrap_or(1).max(1))
 }
@@ -862,9 +1077,15 @@ fn token_program_for_command(cmd: &ExecutePumpfunBuyCommand) -> Result<Pubkey> {
     if let Some(accounts) = &cmd.source_ix_accounts {
         let parsed = parse_pubkeys(accounts, "sourceIxAccounts")?;
         if is_v2_source_accounts(&parsed, &parse_pubkey(&cmd.mint, "mint")?) {
-            return parsed.get(3).copied().context("source V2 accounts missing token program");
+            return parsed
+                .get(3)
+                .copied()
+                .context("source V2 accounts missing token program");
         }
-        return parsed.get(8).copied().context("source legacy accounts missing token program");
+        return parsed
+            .get(8)
+            .copied()
+            .context("source legacy accounts missing token program");
     }
     parse_pubkey(TOKEN_PROGRAM_ID, "token program")
 }
@@ -880,7 +1101,11 @@ fn parse_source_accounts(cmd: &ExecutePumpfunBuyCommand) -> Result<Vec<Pubkey>> 
 
 fn decode_source_data(cmd: &ExecutePumpfunBuyCommand) -> Result<Vec<u8>> {
     BASE64_STANDARD
-        .decode(cmd.source_ix_data_base64.as_deref().context("source-replay requires sourceIxDataBase64")?)
+        .decode(
+            cmd.source_ix_data_base64
+                .as_deref()
+                .context("source-replay requires sourceIxDataBase64")?,
+        )
         .context("sourceIxDataBase64 decode failed")
 }
 
@@ -929,7 +1154,10 @@ fn derive_global_volume_accumulator() -> Result<Pubkey> {
 }
 
 fn derive_user_volume_accumulator(user: &Pubkey) -> Result<Pubkey> {
-    pda(&[b"user_volume_accumulator", user.as_ref()], PUMP_FUN_PROGRAM_ID)
+    pda(
+        &[b"user_volume_accumulator", user.as_ref()],
+        PUMP_FUN_PROGRAM_ID,
+    )
 }
 
 fn derive_fee_config() -> Result<Pubkey> {
