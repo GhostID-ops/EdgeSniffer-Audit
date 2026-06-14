@@ -552,6 +552,19 @@ export const prebuyMinMarketCapUsd = parseOptionalPositiveNumber(
 export const prebuyMaxMarketCapUsd = parseOptionalPositiveNumber(
   process.env.PREBUY_MAX_MARKET_CAP_USD
 );
+export const localPumpfunMarketCapFilterEnabled = parseEnvBool(
+  process.env.LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED,
+  false
+);
+export const localPumpfunSolPriceUsd = parseOptionalPositiveNumber(
+  process.env.LOCAL_PUMPFUN_SOL_PRICE_USD ?? process.env.SOL_PRICE_USD
+);
+export const localPumpfunMinMarketCapSol = parseOptionalPositiveNumber(
+  process.env.LOCAL_PUMPFUN_MIN_MARKET_CAP_SOL
+);
+export const localPumpfunMaxMarketCapSol = parseOptionalPositiveNumber(
+  process.env.LOCAL_PUMPFUN_MAX_MARKET_CAP_SOL
+);
 export const prebuyMoralisTimeoutMs = Math.max(
   250,
   parseInt(process.env.PREBUY_MORALIS_TIMEOUT_MS ?? "1500", 10)

@@ -141,6 +141,33 @@ export function quoteBuyOnCurve(state: BondingCurveState, solInLamports: bigint)
 }
 
 /**
+ * Estimate Pump.fun market cap directly from the bonding curve account, in SOL.
+ * Uses current virtual reserves and token_total_supply from the curve:
+ *   price_sol_per_token ~= virtual_sol_reserves / virtual_token_reserves
+ *   market_cap_sol ~= price * token_total_supply
+ *
+ * Raw token decimals cancel out because virtual_token_reserves and token_total_supply
+ * are both stored in raw mint units.
+ */
+export function estimateMarketCapSolOnCurve(state: BondingCurveState): number | null {
+  const virtualSol = Number(state.virtualSolReserves) / 1_000_000_000;
+  const virtualTokens = Number(state.virtualTokenReserves);
+  const totalSupply = Number(state.tokenTotalSupply);
+  if (
+    !Number.isFinite(virtualSol) ||
+    !Number.isFinite(virtualTokens) ||
+    !Number.isFinite(totalSupply) ||
+    virtualSol <= 0 ||
+    virtualTokens <= 0 ||
+    totalSupply <= 0
+  ) {
+    return null;
+  }
+  const marketCapSol = virtualSol * (totalSupply / virtualTokens);
+  return Number.isFinite(marketCapSol) && marketCapSol > 0 ? marketCapSol : null;
+}
+
+/**
  * Compute expected SOL out for a sell, including the trade fee. Inverse constant-product:
  * tokens_in raises virtual_token_reserves, virtual_sol_reserves drops, fee deducted from SOL output.
  *

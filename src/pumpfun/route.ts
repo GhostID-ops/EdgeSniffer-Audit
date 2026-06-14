@@ -4,9 +4,16 @@ import { confirmSignature, isConfirmationTimeoutError } from "../confirm.js";
 import {
   confirmationRebroadcastRetries,
   fastMode,
+  localPumpfunMarketCapFilterEnabled,
+  localPumpfunMaxMarketCapSol,
+  localPumpfunMinMarketCapSol,
+  localPumpfunSolPriceUsd,
   simulationMode,
   mirrorRetrySlippageBps,
   pumpfunExactSolInBuys,
+  prebuyFilterFailOpen,
+  prebuyMaxMarketCapUsd,
+  prebuyMinMarketCapUsd,
   readConnection,
   usePumpfunToken2022DirectSell,
 } from "../config.js";
@@ -18,6 +25,7 @@ import {
 } from "./constants.js";
 import {
   getBondingCurveState,
+  estimateMarketCapSolOnCurve,
   quoteBuyOnCurve,
   quoteSellOnCurve,
   maxSolForImpact,
@@ -56,6 +64,80 @@ function recordConfirmStage(args: {
     error: args.error,
     details: args.details,
   });
+}
+
+function formatMcSol(value: number): string {
+  return `${value.toFixed(value >= 100 ? 1 : 2)} SOL`;
+}
+
+function formatMcUsd(value: number): string {
+  if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(2)}M`;
+  if (value >= 1_000) return `$${(value / 1_000).toFixed(1)}K`;
+  return `$${value.toFixed(0)}`;
+}
+
+function localPumpfunMarketCapGate(state: { marketCapSol: number | null }): {
+  allowed: boolean;
+  reason?: string;
+} {
+  if (!localPumpfunMarketCapFilterEnabled) return { allowed: true };
+  if (state.marketCapSol == null) {
+    return {
+      allowed: prebuyFilterFailOpen,
+      reason: `local Pump.fun MC unavailable (${prebuyFilterFailOpen ? "fail-open" : "fail-closed"})`,
+    };
+  }
+
+  const minSolFromUsd =
+    prebuyMinMarketCapUsd != null && localPumpfunSolPriceUsd != null
+      ? prebuyMinMarketCapUsd / localPumpfunSolPriceUsd
+      : null;
+  const maxSolFromUsd =
+    prebuyMaxMarketCapUsd != null && localPumpfunSolPriceUsd != null
+      ? prebuyMaxMarketCapUsd / localPumpfunSolPriceUsd
+      : null;
+  if (
+    (prebuyMinMarketCapUsd != null || prebuyMaxMarketCapUsd != null) &&
+    localPumpfunSolPriceUsd == null &&
+    localPumpfunMinMarketCapSol == null &&
+    localPumpfunMaxMarketCapSol == null
+  ) {
+    return {
+      allowed: prebuyFilterFailOpen,
+      reason:
+        `local Pump.fun MC needs LOCAL_PUMPFUN_SOL_PRICE_USD for USD thresholds ` +
+        `(${prebuyFilterFailOpen ? "fail-open" : "fail-closed"})`,
+    };
+  }
+
+  const minSol =
+    localPumpfunMinMarketCapSol != null && minSolFromUsd != null
+      ? Math.max(localPumpfunMinMarketCapSol, minSolFromUsd)
+      : localPumpfunMinMarketCapSol ?? minSolFromUsd;
+  const maxSol =
+    localPumpfunMaxMarketCapSol != null && maxSolFromUsd != null
+      ? Math.min(localPumpfunMaxMarketCapSol, maxSolFromUsd)
+      : localPumpfunMaxMarketCapSol ?? maxSolFromUsd;
+
+  const usd = localPumpfunSolPriceUsd != null ? state.marketCapSol * localPumpfunSolPriceUsd : null;
+  const label = usd != null
+    ? `${formatMcUsd(usd)} (${formatMcSol(state.marketCapSol)})`
+    : formatMcSol(state.marketCapSol);
+  if (minSol != null && state.marketCapSol < minSol) {
+    const minLabel =
+      prebuyMinMarketCapUsd != null && minSol === minSolFromUsd
+        ? formatMcUsd(prebuyMinMarketCapUsd)
+        : formatMcSol(minSol);
+    return { allowed: false, reason: `local Pump.fun MC ${label} < ${minLabel}` };
+  }
+  if (maxSol != null && state.marketCapSol > maxSol) {
+    const maxLabel =
+      prebuyMaxMarketCapUsd != null && maxSol === maxSolFromUsd
+        ? formatMcUsd(prebuyMaxMarketCapUsd)
+        : formatMcSol(maxSol);
+    return { allowed: false, reason: `local Pump.fun MC ${label} > ${maxLabel}` };
+  }
+  return { allowed: true, reason: `local Pump.fun MC passed: ${label}` };
 }
 
 export type PumpFunBuyOutcome =
@@ -430,6 +512,14 @@ export async function tryPumpFunDirectBuy(args: {
   args.log(
     `Pump.fun curve detected (${elapsed()}); virtSol=${(Number(curve.state.virtualSolReserves) / 1e9).toFixed(2)} SOL · tokenProg=${curve.tokenProgramId.toBase58().slice(0, 8)}…`
   );
+  const localMarketCapSol = estimateMarketCapSolOnCurve(curve.state);
+  const mcGate = localPumpfunMarketCapGate({ marketCapSol: localMarketCapSol });
+  if (localPumpfunMarketCapFilterEnabled && mcGate.reason) {
+    args.log(mcGate.reason);
+  }
+  if (!mcGate.allowed) {
+    return { ok: false, recoverable: false, reason: mcGate.reason ?? "local Pump.fun market-cap filter blocked" };
+  }
 
   // 2. Liquidity-aware sizing: if size exceeds the impact cap, shrink to fit using exact curve math.
   let solIn = BigInt(args.solInLamports);

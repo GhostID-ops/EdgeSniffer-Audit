@@ -113,6 +113,29 @@ systemctl restart finalbot
 
 The speed preset does **not** change private keys, tracked wallets, buy sizing, TP/SL, trailing steps, or mirror-sell strategy.
 
+## Local Pump.fun market-cap filter
+
+For fast Pump.fun instances, prefer the local curve filter over Moralis/DexScreener prebuy checks. The bot already reads the bonding curve before a direct buy, so it can estimate current market cap from virtual reserves without an extra HTTP lookup.
+
+```env
+PREBUY_MORALIS_FILTER_ENABLED=false
+LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=true
+LOCAL_PUMPFUN_SOL_PRICE_USD=150
+PREBUY_MIN_MARKET_CAP_USD=15000
+PREBUY_MAX_MARKET_CAP_USD=
+PREBUY_FILTER_FAIL_OPEN=true
+```
+
+If you do not want to maintain a SOL/USD value, use SOL-denominated thresholds:
+
+```env
+LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=true
+LOCAL_PUMPFUN_MIN_MARKET_CAP_SOL=100
+LOCAL_PUMPFUN_MAX_MARKET_CAP_SOL=
+```
+
+The log will say `local Pump.fun MC passed` when a token clears the filter, or `local Pump.fun MC ... < ...` / `> ...` when it is blocked. This filter only applies to Pump.fun bonding-curve direct buys; non-Pump routes still need their own route-specific filters.
+
 ## VPS control UI
 
 The VPS control panel now has a `Speed Mode` button for each instance. It applies the same low-latency env values as `.env.speed-mode`.
