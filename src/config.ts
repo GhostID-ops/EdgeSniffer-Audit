@@ -383,6 +383,14 @@ export const jitoTipOracleMinLamports = Math.max(
 export const jitoTipOracleMaxLamports = parseOptionalPositiveInteger(
   process.env.JITO_TIP_ORACLE_MAX_LAMPORTS
 );
+export const jitoConnectionWarmupEnabled = parseEnvBool(
+  process.env.JITO_CONNECTION_WARMUP_ENABLED,
+  false
+);
+export const jitoConnectionWarmupMs = Math.max(
+  5000,
+  parseInt(process.env.JITO_CONNECTION_WARMUP_MS ?? "15000", 10)
+);
 
 /** Helius enhanced transactions API (parse transactions). POST with { transactions: [sigs] }. */
 export const heliusEnhancedTransactionsUrl =
@@ -453,6 +461,11 @@ export const rustSidecarBin =
   process.env.RUST_SIDECAR_BIN ?? "rust-sidecar\\target\\release\\pumpfun-sidecar.exe";
 export const rustSidecarUseCargo =
   (process.env.RUST_SIDECAR_USE_CARGO ?? "false").toLowerCase() === "true";
+export const rustExecutorEnabled = parseEnvBool(process.env.RUST_EXECUTOR_ENABLED, false);
+export const rustExecutorTimeoutMs = Math.max(
+  250,
+  parseInt(process.env.RUST_EXECUTOR_TIMEOUT_MS ?? "1500", 10)
+);
 
 /** When false, the bot ignores source-wallet sells (you exit manually via 'e' or 'a' keys). Default true. */
 const MIRROR_SELLS_RAW = (process.env.MIRROR_SELLS ?? "true").toLowerCase();

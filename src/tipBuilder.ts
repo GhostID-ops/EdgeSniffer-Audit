@@ -78,6 +78,15 @@ function heliusTip(user: PublicKey, route?: string): TransactionInstruction {
   });
 }
 
+export function getJitoTipLamportsForRoute(route?: string): number {
+  return routeTipLamports(route, getDynamicJitoTipLamports());
+}
+
+export function getHeliusTipLamportsForRoute(route?: string): number {
+  const routeLamports = routeTipLamports(route);
+  return useJitoDirect ? HELIUS_TIP_MIN_LAMPORTS : Math.max(routeLamports, HELIUS_TIP_MIN_LAMPORTS);
+}
+
 /**
  * Build tip transfer instructions for the active sender strategy. Default "all" preserves the
  * old behavior: Jito tip when Jito direct is enabled, plus a Helius-compatible tip when Helius

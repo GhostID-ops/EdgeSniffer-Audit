@@ -1,10 +1,12 @@
 # Jito Latency Upgrade Guide
 
-This branch adds three latency upgrades:
+This branch adds five latency upgrades:
 
 1. Jito direct `sendTransaction` support.
 2. Jito tip-floor oracle.
-3. Slot-aware execution telemetry.
+3. Multi-send sender racing.
+4. Rust Pump.fun buy executor.
+5. Slot-aware execution telemetry.
 
 ## What changed
 
@@ -35,6 +37,15 @@ SENDER_RPC_FALLBACK_ENABLED=true
 
 This can race Jito transaction, Jito bundle, Helius Sender, and RPC fallback. Use it only on the wallets where speed matters, because too many simultaneous instances can hit sender/rate limits.
 
+## Jito connection warmup
+
+Enable periodic lightweight Jito warmup calls so quiet wallets do not pay a cold connection penalty when they wake up:
+
+```env
+JITO_CONNECTION_WARMUP_ENABLED=true
+JITO_CONNECTION_WARMUP_MS=15000
+```
+
 ## Jito tip oracle
 
 The bot can now poll Jito's public tip-floor endpoint in the background:
@@ -57,6 +68,24 @@ JITO_TIP_ORACLE_MAX_LAMPORTS=2000000
 
 If the oracle fails, the bot keeps using your static `TIP_LAMPORTS`.
 
+## Rust Pump.fun buy executor
+
+The Rust sidecar can now execute Pump.fun buys after TypeScript has made the strategy decision:
+
+```env
+RUST_EXECUTOR_ENABLED=true
+RUST_EXECUTOR_TIMEOUT_MS=1500
+```
+
+Current Rust executor scope:
+
+- Pump.fun direct buys.
+- Pump.fun source-replay buys.
+- Rust build/sign/send using Jito transaction, Jito bundle, Helius Sender, and RPC fallback settings.
+- TypeScript still owns strategy gates, PnL, risk exits, sells, Telegram, and UI.
+
+If Rust execution fails or times out, the bot falls back to the existing TypeScript execution path.
+
 ## Speed mode preset
 
 Apply the speed preset on the VPS:
@@ -66,6 +95,7 @@ cd /root/bot/FinalBot
 git pull origin feature/latency-roadmap
 npm install
 npm run build
+npm run rust-sidecar:jito-build
 npm run env:speed-mode
 ```
 

@@ -2,12 +2,33 @@ import { spawn, type ChildProcess } from "node:child_process";
 import { createInterface } from "node:readline";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { rustSidecarBin, rustSidecarUseCargo } from "./config.js";
+import {
+  broadcastRaceEnabled,
+  computeUnitLimit,
+  executionMultiSendEnabled,
+  jitoAuthUuid,
+  jitoBundleUrls,
+  jitoSendMode,
+  jitoTransactionUrls,
+  readRpcUrl,
+  rustExecutorEnabled,
+  rustExecutorTimeoutMs,
+  rustSidecarBin,
+  rustSidecarUseCargo,
+  senderEndpointUrl,
+  senderRpcFallbackEnabled,
+  useJitoDirect,
+  useJitoFallback,
+} from "./config.js";
+import { getCachedBlockhash } from "./blockhashCache.js";
+import { getDynamicPriorityFee } from "./feeOracle.js";
+import { getHeliusTipLamportsForRoute, getJitoTipLamportsForRoute } from "./tipBuilder.js";
 import type { DetectedSwap } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
 
 type RustSidecarEvent = {
   kind?: string;
+  id?: string;
   source?: string;
   providerCreatedAtMs?: number;
   receivedAtMs?: number;
@@ -27,6 +48,64 @@ type RustSidecarEvent = {
   sourceQuoteMint?: string;
   sourceQuoteAmountRaw?: number;
 };
+
+type RustExecutorResponse = {
+  kind?: string;
+  id?: string;
+  ok?: boolean;
+  signature?: string;
+  route?: string;
+  senderPath?: string;
+  solInLamports?: number;
+  tokensOutRaw?: number;
+  elapsedMs?: number;
+  buildMs?: number;
+  broadcastMs?: number;
+  txBytes?: number;
+  error?: string;
+};
+
+export type RustPumpFunBuyMode = "source-replay" | "direct";
+
+export type RustPumpFunBuyArgs = {
+  mode: RustPumpFunBuyMode;
+  route: "pumpfun-source-replay-buy" | "pumpfun-direct-buy";
+  mint: string;
+  solInLamports: number;
+  tokensOutRaw?: number;
+  slippageBps: number;
+  exactSolIn: boolean;
+  sourceIxAccounts?: string[];
+  sourceIxDataBase64?: string;
+  bondingCurve?: string;
+  creator?: string;
+  tokenProgramId?: string;
+};
+
+export type RustPumpFunBuyResult =
+  | {
+      ok: true;
+      signature: string;
+      route: string;
+      senderPath?: string;
+      solInLamports: number;
+      tokensOutRaw: number;
+      elapsedMs?: number;
+      buildMs?: number;
+      broadcastMs?: number;
+      txBytes?: number;
+    }
+  | { ok: false; error: string };
+
+let executorStdin: NodeJS.WritableStream | null = null;
+let executorSeq = 0;
+const executorPending = new Map<
+  string,
+  {
+    resolve: (value: RustPumpFunBuyResult) => void;
+    timer: NodeJS.Timeout;
+  }
+>();
 
 export type RustSidecarUnsubscribe = () => Promise<void>;
 
@@ -93,10 +172,12 @@ function toSwap(event: RustSidecarEvent, nodeReceivedAtMs: number): DetectedSwap
 
 function commandForSidecar(): { command: string; args: string[]; label: string } | null {
   if (rustSidecarUseCargo) {
+    const args = ["run", "--manifest-path", "rust-sidecar/Cargo.toml", "--release"];
+    if (envFlag("JITO_SHREDSTREAM_ENABLED")) args.push("--features", "jito-shredstream");
     return {
       command: "cargo",
-      args: ["run", "--manifest-path", "rust-sidecar/Cargo.toml", "--release"],
-      label: "cargo run --manifest-path rust-sidecar/Cargo.toml --release",
+      args,
+      label: `cargo ${args.join(" ")}`,
     };
   }
 
@@ -120,7 +201,8 @@ export async function startRustPumpFunSidecar(
   console.log(
     `Rust sidecar config: Yellowstone=${yellowstoneEnabled ? "ON" : "OFF"}, ` +
       `Jito ShredStream=${jitoShredstreamEnabled ? "ON" : "OFF"}` +
-      (jitoShredstreamEnabled ? ` (${jitoShredstreamGrpcUrl})` : "")
+      (jitoShredstreamEnabled ? ` (${jitoShredstreamGrpcUrl})` : "") +
+      `, Rust executor=${rustExecutorEnabled ? "ON" : "OFF"}`
   );
 
   const command = commandForSidecar();
@@ -134,10 +216,13 @@ export async function startRustPumpFunSidecar(
   const child = spawn(command.command, command.args, {
     cwd: process.cwd(),
     env: process.env,
-    stdio: ["ignore", "pipe", "pipe"],
+    stdio: [rustExecutorEnabled ? "pipe" : "ignore", "pipe", "pipe"],
     windowsHide: true,
   });
   let proc: ChildProcess | null = child;
+  if (rustExecutorEnabled && child.stdin) {
+    executorStdin = child.stdin;
+  }
 
   console.log(`Rust sidecar: started ${command.label}`);
   if (jitoShredstreamEnabled) {
@@ -164,6 +249,8 @@ export async function startRustPumpFunSidecar(
       const msg = err instanceof Error ? err.message : String(err);
       console.warn(`Rust sidecar process error: ${msg}. Continuing without the sidecar.`);
     }
+    rejectAllExecutorPending("Rust sidecar process error");
+    executorStdin = null;
   });
 
   if (!child.stdout || !child.stderr) {
@@ -183,6 +270,12 @@ export async function startRustPumpFunSidecar(
       event = JSON.parse(line) as RustSidecarEvent;
     } catch {
       console.log(`Rust sidecar: ${line}`);
+      return;
+    }
+
+    const execResponse = toExecutorResponse(event);
+    if (execResponse) {
+      handleExecutorResponse(execResponse);
       return;
     }
 
@@ -220,6 +313,8 @@ export async function startRustPumpFunSidecar(
     if (proc) {
       console.warn(`Rust sidecar exited (${signal ?? code ?? "unknown"}).`);
     }
+    rejectAllExecutorPending(`Rust sidecar exited (${signal ?? code ?? "unknown"})`);
+    executorStdin = null;
   });
 
   return async () => {
@@ -230,5 +325,94 @@ export async function startRustPumpFunSidecar(
     if (running && !running.killed) {
       running.kill();
     }
+    rejectAllExecutorPending("Rust sidecar stopped");
+    executorStdin = null;
   };
+}
+
+function toExecutorResponse(event: RustSidecarEvent | RustExecutorResponse): RustExecutorResponse | null {
+  if (event.kind !== "execResult") return null;
+  if (typeof event.id !== "string") return null;
+  return event as RustExecutorResponse;
+}
+
+function handleExecutorResponse(response: RustExecutorResponse): void {
+  const id = response.id!;
+  const pending = executorPending.get(id);
+  if (!pending) return;
+  executorPending.delete(id);
+  clearTimeout(pending.timer);
+  if (response.ok === true && typeof response.signature === "string") {
+    pending.resolve({
+      ok: true,
+      signature: response.signature,
+      route: response.route ?? "pumpfun-rust",
+      senderPath: response.senderPath,
+      solInLamports: response.solInLamports ?? 0,
+      tokensOutRaw: response.tokensOutRaw ?? 1,
+      elapsedMs: response.elapsedMs,
+      buildMs: response.buildMs,
+      broadcastMs: response.broadcastMs,
+      txBytes: response.txBytes,
+    });
+    return;
+  }
+  pending.resolve({ ok: false, error: response.error ?? "Rust executor failed" });
+}
+
+function rejectAllExecutorPending(reason: string): void {
+  for (const [id, pending] of executorPending) {
+    executorPending.delete(id);
+    clearTimeout(pending.timer);
+    pending.resolve({ ok: false, error: reason });
+  }
+}
+
+export async function executeRustPumpFunBuy(args: RustPumpFunBuyArgs): Promise<RustPumpFunBuyResult | null> {
+  if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) return null;
+  const id = `rust-exec-${Date.now()}-${++executorSeq}`;
+  const { blockhash } = await getCachedBlockhash();
+  const command = {
+    kind: "executePumpfunBuy",
+    id,
+    mode: args.mode,
+    route: args.route,
+    mint: args.mint,
+    solInLamports: Math.max(1, Math.floor(args.solInLamports)),
+    tokensOutRaw: args.tokensOutRaw == null ? undefined : Math.max(1, Math.floor(args.tokensOutRaw)),
+    slippageBps: Math.max(0, Math.floor(args.slippageBps)),
+    exactSolIn: args.exactSolIn,
+    sourceIxAccounts: args.sourceIxAccounts,
+    sourceIxDataBase64: args.sourceIxDataBase64,
+    bondingCurve: args.bondingCurve,
+    creator: args.creator,
+    tokenProgramId: args.tokenProgramId,
+    blockhash,
+    computeUnitLimit,
+    priorityFeeMicroLamports: getDynamicPriorityFee(),
+    jitoTipLamports: getJitoTipLamportsForRoute(args.route),
+    heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
+    useJitoDirect,
+    useJitoFallback,
+    senderRpcFallbackEnabled,
+    executionMultiSendEnabled: executionMultiSendEnabled || broadcastRaceEnabled,
+    jitoSendMode,
+    jitoTransactionUrls,
+    jitoBundleUrls,
+    senderEndpointUrl,
+    rpcFallbackUrl: readRpcUrl,
+    jitoAuthUuid,
+  };
+
+  return await new Promise<RustPumpFunBuyResult>((resolve) => {
+    const timer = setTimeout(() => {
+      executorPending.delete(id);
+      resolve({ ok: false, error: `Rust executor timed out after ${rustExecutorTimeoutMs}ms` });
+    }, rustExecutorTimeoutMs);
+    executorPending.set(id, { resolve, timer });
+    const ok = executorStdin!.write(`${JSON.stringify(command)}\n`);
+    if (!ok) {
+      // Backpressure here is unusual; the timeout remains as a safety net.
+    }
+  });
 }

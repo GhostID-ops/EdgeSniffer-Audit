@@ -140,6 +140,7 @@ import {
 } from "./circuitBreaker.js";
 import { startFeeOracle, stopFeeOracle } from "./feeOracle.js";
 import { startJitoTipOracle, stopJitoTipOracle } from "./jitoTipOracle.js";
+import { startJitoConnectionWarmup, stopJitoConnectionWarmup } from "./jitoWarmup.js";
 import { classifyExecutionError } from "./errorClassifier.js";
 import { decideRetryAction } from "./executionRetry.js";
 import { planExecution } from "./executionPlanner.js";
@@ -2246,6 +2247,7 @@ async function loop(): Promise<void> {
   stopRequested = false;
   stopFeeOracle();
   stopJitoTipOracle();
+  stopJitoConnectionWarmup();
   stopBlockhashCache();
   console.log("Bot stopped.");
 }
@@ -2263,6 +2265,7 @@ export async function startBot(): Promise<void> {
   resetCircuitBreaker();
   startFeeOracle();
   startJitoTipOracle();
+  startJitoConnectionWarmup();
   startBlockhashCache();
   console.log(
     "Copytrading bot started. Our wallet:",

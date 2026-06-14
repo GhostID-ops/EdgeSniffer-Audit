@@ -26,6 +26,8 @@ pub mod shredstream {
     tonic::include_proto!("shredstream");
 }
 
+mod executor;
+
 const WRAPPED_SOL_MINT: &str = "So11111111111111111111111111111111111111112";
 const USDC_MINT: &str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const PUMP_FUN_PROGRAM_ID: &str = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P";
@@ -77,6 +79,9 @@ struct DetectedSwapLine {
 async fn main() -> Result<()> {
     let _ = rustls::crypto::ring::default_provider().install_default();
     let cfg = Config::from_env()?;
+    if parse_env_bool("RUST_EXECUTOR_ENABLED", false) {
+        executor::start_executor_stdin();
+    }
     eprintln!(
         "rust-sidecar: starting yellowstone={} jito_shredstream={} wallets={}",
         cfg.yellowstone_enabled,

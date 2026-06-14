@@ -6,6 +6,7 @@ import {
   fastMode,
   simulationMode,
   mirrorRetrySlippageBps,
+  pumpfunExactSolInBuys,
   readConnection,
   usePumpfunToken2022DirectSell,
 } from "../config.js";
@@ -24,6 +25,7 @@ import {
 import { buildPumpFunBuyReplayTransaction, buildPumpFunBuyTransaction, scalePumpFunSourceBuyData } from "./buy.js";
 import { buildPumpFunSellTransaction } from "./sell.js";
 import { recordExecutionStage } from "../executionTelemetry.js";
+import { executeRustPumpFunBuy } from "../rustSidecar.js";
 
 const DIRECT_CURVE_RETRY_DELAYS_MS = [25, 50, 100];
 
@@ -225,6 +227,7 @@ export async function tryPumpFunDirectBuy(args: {
       const sourceIxPubkeys = sourceIxAccounts.map((k) => new PublicKey(k));
       const sourceIxData = Buffer.from(sourceIxDataBase64, "base64");
       const solIn = BigInt(args.solInLamports);
+      const route = "pumpfun-source-replay-buy";
       if (simulationMode) {
         const mintMeta = await getTokenMeta(args.mint);
         const scaled = scalePumpFunSourceBuyData({
@@ -246,6 +249,51 @@ export async function tryPumpFunDirectBuy(args: {
       let signature: string;
       let estimatedTokensOut: bigint;
       const buildStartedAt = Date.now();
+      const rust = await executeRustPumpFunBuy({
+        mode: "source-replay",
+        route,
+        mint: args.mint,
+        solInLamports: Number(solIn),
+        slippageBps: args.slippageBps,
+        exactSolIn: false,
+        sourceIxAccounts,
+        sourceIxDataBase64,
+      });
+      if (rust?.ok) {
+        signature = rust.signature;
+        estimatedTokensOut = BigInt(rust.tokensOutRaw);
+        recordExecutionStage({
+          stage: "build",
+          route,
+          side: "buy",
+          mint: args.mint,
+          sourceSignature: args.sourceSignature,
+          elapsedMs: rust.buildMs ?? Date.now() - buildStartedAt,
+          success: true,
+          details: {
+            executor: "rust",
+            senderPath: rust.senderPath,
+            txBytes: rust.txBytes,
+            broadcastMs: rust.broadcastMs,
+          },
+        });
+        recordExecutionStage({
+          stage: "broadcast",
+          route,
+          side: "buy",
+          mint: args.mint,
+          sourceSignature: args.sourceSignature,
+          signature,
+          elapsedMs: rust.broadcastMs,
+          success: true,
+          details: { executor: "rust", senderPath: rust.senderPath },
+        });
+        args.log(
+          `Rust executor source-replay broadcast: ${signature}` +
+            (rust.elapsedMs != null ? ` (${rust.elapsedMs}ms)` : "")
+        );
+      } else {
+        if (rust && !rust.ok) args.log(`Rust executor source-replay failed; falling back to TypeScript: ${rust.error}`);
       try {
         const replay = await buildPumpFunBuyReplayTransaction({
           user: args.user,
@@ -286,6 +334,7 @@ export async function tryPumpFunDirectBuy(args: {
           error: msg,
         });
         return { ok: false, recoverable: false, reason: `source-replay failed: ${msg}` };
+      }
       }
       args.log(`Broadcast: ${signature} (${elapsed()})`);
       if (fastMode) {
@@ -447,6 +496,54 @@ export async function tryPumpFunDirectBuy(args: {
     args.log(`Using ${remainingAccounts.length} source pump.fun remaining account(s) from getTransaction.`);
   }
   let tx;
+  let signature: string | undefined;
+  const rust = await executeRustPumpFunBuy({
+    mode: "direct",
+    route: "pumpfun-direct-buy",
+    mint: args.mint,
+    solInLamports: Number(quote.solIn),
+    tokensOutRaw: Number(quote.tokensOut),
+    slippageBps: args.slippageBps,
+    exactSolIn: pumpfunExactSolInBuys,
+    bondingCurve: curve.pda.toBase58(),
+    creator: curve.state.creator.toBase58(),
+    tokenProgramId: curve.tokenProgramId.toBase58(),
+    sourceIxAccounts: sourceIxPubkeys?.map((k) => k.toBase58()),
+  });
+  if (rust?.ok) {
+    signature = rust.signature;
+    recordExecutionStage({
+      stage: "build",
+      route: "pumpfun-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      elapsedMs: rust.buildMs ?? Date.now() - buildStartedAt,
+      success: true,
+      details: {
+        executor: "rust",
+        senderPath: rust.senderPath,
+        txBytes: rust.txBytes,
+        broadcastMs: rust.broadcastMs,
+      },
+    });
+    recordExecutionStage({
+      stage: "broadcast",
+      route: "pumpfun-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      signature,
+      elapsedMs: rust.broadcastMs,
+      success: true,
+      details: { executor: "rust", senderPath: rust.senderPath },
+    });
+    args.log(
+      `Rust executor direct-buy broadcast: ${signature}` +
+        (rust.elapsedMs != null ? ` (${rust.elapsedMs}ms)` : "")
+    );
+  } else {
+    if (rust && !rust.ok) args.log(`Rust executor direct-buy failed; falling back to TypeScript: ${rust.error}`);
   try {
     tx = await buildPumpFunBuyTransaction({
     user: args.user,
@@ -485,7 +582,6 @@ export async function tryPumpFunDirectBuy(args: {
   }
   args.log(`Tx built (${elapsed()})`);
 
-  let signature: string;
   try {
     signature = await broadcastTransactionWithSender(tx, {
       preferHelius: (args.rebroadcastAttempt ?? 0) > 0,
@@ -497,6 +593,10 @@ export async function tryPumpFunDirectBuy(args: {
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return { ok: false, recoverable: false, reason: `broadcast failed: ${msg}` };
+  }
+  }
+  if (!signature) {
+    return { ok: false, recoverable: false, reason: "broadcast failed: no signature returned" };
   }
   args.log(`Broadcast: ${signature} (${elapsed()})`);
 
