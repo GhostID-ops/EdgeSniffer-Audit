@@ -267,13 +267,14 @@ function fixedTpSl(row: EntryLab, tp: number, sl: number): number {
     if (lo <= -sl) return -sl;
     if (hi >= tp) return tp;
   }
-  const last = row.candles[row.candles.length - 1]!;
-  return pct(row.entryPrice, last.close);
+  const last = row.candles[row.candles.length - 1];
+  return last ? pct(row.entryPrice, last.close) : 0;
 }
 
 function timeExit(row: EntryLab, minutes: number): number {
-  const p = priceAt(row.candles, row.entryTs + minutes * 60) ?? row.candles[row.candles.length - 1]!.close;
-  return pct(row.entryPrice, p);
+  const last = row.candles[row.candles.length - 1];
+  const p = priceAt(row.candles, row.entryTs + minutes * 60) ?? last?.close;
+  return p != null ? pct(row.entryPrice, p) : 0;
 }
 
 function trailing(row: EntryLab, trailPct: number): number {
@@ -283,7 +284,8 @@ function trailing(row: EntryLab, trailPct: number): number {
     const stop = peak * (1 - trailPct / 100);
     if (c.low <= stop) return pct(row.entryPrice, stop);
   }
-  return pct(row.entryPrice, row.candles[row.candles.length - 1]!.close);
+  const last = row.candles[row.candles.length - 1];
+  return last ? pct(row.entryPrice, last.close) : 0;
 }
 
 function sourceExit(row: EntryLab): number {
@@ -381,7 +383,10 @@ async function main(): Promise<void> {
   const open = campaigns.filter((c) => c.spent > 0 && c.soldRaw < c.boughtRaw);
   const openApprox = open
     .map((c) => labs.find((l) => l.mint === c.mint))
-    .filter((l): l is EntryLab => Boolean(l))
+    .filter((l): l is EntryLab => {
+      if (!l) return false;
+      return l.candles.length > 0;
+    })
     .map((l) => pct(l.entryPrice, l.candles[l.candles.length - 1]!.close));
 
   const strategies = [

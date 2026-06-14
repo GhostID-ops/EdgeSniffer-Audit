@@ -58,6 +58,7 @@ type LabRow = {
   symbol: string;
   buyAt: number;
   entryPrice: number | null;
+  entryMcApprox: number | null;
   sourceBuySol: number;
   sourceExitPct: number | null;
   mfePct: number | null;
@@ -302,7 +303,7 @@ function pct(from: number, to: number): number {
   return ((to - from) / from) * 100;
 }
 
-function analyzeCandles(campaign: Campaign, candles: Candle[]): Omit<LabRow, "mint" | "symbol" | "sourceBuySol" | "currentLiquidityUsd" | "currentMarketCapUsd" | "candles"> {
+function analyzeCandles(campaign: Campaign, candles: Candle[]): Omit<LabRow, "mint" | "symbol" | "sourceBuySol" | "currentLiquidityUsd" | "currentMarketCapUsd" | "candles" | "entryMcApprox"> {
   const entryCandle = candleAtOrAfter(candles, campaign.firstBuy.timestamp);
   const entryPrice = entryCandle?.open ?? null;
   const post = entryPrice == null ? [] : candles.filter((c) => c.ts >= campaign.firstBuy.timestamp);
@@ -445,12 +446,15 @@ async function main(): Promise<void> {
       const to = campaign.firstBuy.timestamp + horizonMinutes * 60;
       const candles = await fetchMoralisOhlcv(pair.pairAddress, from, to);
       const metrics = analyzeCandles(campaign, candles);
+      // Estimate entry-time market cap: entryPrice (USD) * 1B supply (pump.fun standard)
+      const entryMcApprox = metrics.entryPrice != null ? metrics.entryPrice * 1_000_000_000 : null;
       rows.push({
         mint: campaign.mint,
         symbol: pair.baseToken.symbol || short(campaign.mint),
         sourceBuySol: sol(campaign.spentLamports),
         currentLiquidityUsd: pair.liquidityUsd,
         currentMarketCapUsd: pair.marketCapUsd,
+        entryMcApprox,
         candles,
         ...metrics,
       });
@@ -513,14 +517,39 @@ async function main(): Promise<void> {
 
   console.log("");
   console.log("4) Entry Filters");
-  console.log(`  ${bucketStats(measured, "current liquidity >= $10k", (r) => (r.currentLiquidityUsd ?? 0) >= 10_000)}`);
-  console.log(`  ${bucketStats(measured, "current liquidity < $10k", (r) => (r.currentLiquidityUsd ?? 0) < 10_000)}`);
+
+  console.log("");
+  console.log("  -- Entry Market Cap (approx, assumes 1B supply) --");
+  for (const threshold of [5_000, 10_000, 20_000, 30_000, 50_000, 80_000, 100_000, 150_000]) {
+    const label = threshold >= 1_000 ? `$${threshold / 1_000}k` : `$${threshold}`;
+    console.log(`  ${bucketStats(measured, `entry MC >= ${label}`, (r) => (r.entryMcApprox ?? 0) >= threshold)}`);
+    console.log(`  ${bucketStats(measured, `entry MC <  ${label}`, (r) => (r.entryMcApprox ?? 0) < threshold)}`);
+  }
+
+  console.log("");
+  console.log("  -- Pre-5m Volume --");
+  for (const threshold of [1_000, 3_000, 5_000, 10_000, 15_000, 25_000]) {
+    const label = threshold >= 1_000 ? `$${threshold / 1_000}k` : `$${threshold}`;
+    console.log(`  ${bucketStats(measured, `pre5m vol >= ${label}`, (r) => r.pre5mVolumeUsd >= threshold)}`);
+    console.log(`  ${bucketStats(measured, `pre5m vol <  ${label}`, (r) => r.pre5mVolumeUsd < threshold)}`);
+  }
+
+  console.log("");
+  console.log("  -- Liquidity --");
+  for (const threshold of [3_000, 5_000, 10_000, 20_000]) {
+    const label = threshold >= 1_000 ? `$${threshold / 1_000}k` : `$${threshold}`;
+    console.log(`  ${bucketStats(measured, `liquidity >= ${label}`, (r) => (r.currentLiquidityUsd ?? 0) >= threshold)}`);
+    console.log(`  ${bucketStats(measured, `liquidity <  ${label}`, (r) => (r.currentLiquidityUsd ?? 0) < threshold)}`);
+  }
+
+  console.log("");
+  console.log("  -- Momentum & Buy Size --");
   console.log(`  ${bucketStats(measured, "pre5m momentum >= +10%", (r) => (r.pre5mMomentumPct ?? -Infinity) >= 10)}`);
   console.log(`  ${bucketStats(measured, "pre5m momentum < +10%", (r) => (r.pre5mMomentumPct ?? -Infinity) < 10)}`);
-  console.log(`  ${bucketStats(measured, "pre5m volume >= $5k", (r) => r.pre5mVolumeUsd >= 5_000)}`);
-  console.log(`  ${bucketStats(measured, "pre5m volume < $5k", (r) => r.pre5mVolumeUsd < 5_000)}`);
-  console.log(`  ${bucketStats(measured, "source buy >= 0.005 SOL", (r) => r.sourceBuySol >= 0.005)}`);
-  console.log(`  ${bucketStats(measured, "source buy < 0.005 SOL", (r) => r.sourceBuySol < 0.005)}`);
+  console.log(`  ${bucketStats(measured, "pre5m momentum >= +25%", (r) => (r.pre5mMomentumPct ?? -Infinity) >= 25)}`);
+  console.log(`  ${bucketStats(measured, "pre5m momentum < +25%", (r) => (r.pre5mMomentumPct ?? -Infinity) < 25)}`);
+  console.log(`  ${bucketStats(measured, "source buy >= 5 SOL", (r) => r.sourceBuySol >= 5)}`);
+  console.log(`  ${bucketStats(measured, "source buy < 5 SOL", (r) => r.sourceBuySol < 5)}`);
 
   console.log("");
   console.log("5) Source Exit Quality");
@@ -532,11 +561,17 @@ async function main(): Promise<void> {
   console.log("");
   console.log("Rows");
   for (const r of measured) {
+    const mcStr = r.entryMcApprox != null
+      ? r.entryMcApprox >= 1_000_000 ? `$${(r.entryMcApprox / 1_000_000).toFixed(1)}M`
+      : r.entryMcApprox >= 1_000 ? `$${(r.entryMcApprox / 1_000).toFixed(1)}k`
+      : `$${Math.round(r.entryMcApprox)}`
+      : "-";
     console.log(
       [
         short(r.mint),
         r.symbol,
         `buy=${r.sourceBuySol.toFixed(4)} SOL`,
+        `entryMC=${mcStr}`,
         `MFE=${fmtPct(r.mfePct)}`,
         `MAE=${fmtPct(r.maePct)}`,
         `t30=${r.timeTo30Sec == null ? "-" : `${r.timeTo30Sec}s`}`,

@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FinalBot Technical Updates</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #090b10;
+        --panel: #111722;
+        --panel-soft: #151c28;
+        --line: #273247;
+        --text: #f1f6ff;
+        --muted: #9ba8bb;
+        --blue: #5eead4;
+        --green: #86efac;
+        --yellow: #fcd34d;
+        --red: #fb7185;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          linear-gradient(180deg, rgba(94, 234, 212, 0.08), transparent 360px),
+          var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      main {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 42px 0 56px;
+      }
+
+      .hero {
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(21, 28, 40, 0.98), rgba(14, 19, 28, 0.98));
+        border-radius: 8px;
+        padding: 34px;
+        margin-bottom: 18px;
+      }
+
+      .eyebrow {
+        color: var(--blue);
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 940px;
+        font-size: clamp(34px, 5vw, 58px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        max-width: 850px;
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      .summary {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin: 18px 0;
+      }
+
+      .stat,
+      .card,
+      .band {
+        border: 1px solid var(--line);
+        background: rgba(17, 23, 34, 0.94);
+        border-radius: 8px;
+      }
+
+      .stat {
+        padding: 16px;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 24px;
+      }
+
+      .stat span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .section-title {
+        margin: 30px 0 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .section-title h2 {
+        font-size: 22px;
+      }
+
+      .tag {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 5px 9px;
+        color: var(--muted);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .card {
+        padding: 18px;
+        min-height: 188px;
+      }
+
+      .card header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .icon {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel-soft);
+        color: var(--blue);
+        font-weight: 900;
+      }
+
+      .card h3 {
+        font-size: 17px;
+      }
+
+      .card p {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .card strong {
+        color: var(--text);
+      }
+
+      .band {
+        padding: 20px;
+        margin-top: 14px;
+      }
+
+      .settings {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .setting {
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.035);
+        border-radius: 8px;
+        padding: 12px;
+      }
+
+      code {
+        display: inline-block;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        color: #dbeafe;
+        background: rgba(148, 163, 184, 0.12);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 6px;
+        padding: 2px 6px;
+        font-size: 13px;
+      }
+
+      .setting p {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 6px;
+      }
+
+      @media (max-width: 900px) {
+        main {
+          width: min(100% - 24px, 720px);
+          padding-top: 28px;
+        }
+
+        .hero {
+          padding: 24px;
+        }
+
+        .summary,
+        .grid,
+        .settings {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">FinalBot technical changelog</div>
+        <h1>Routing, execution, risk, telemetry, and wallet-watching upgrades.</h1>
+        <p class="lead">
+          This page only covers technical bot features: trade routing, latency improvements,
+          fallback systems, risk controls, simulation fixes, observability, and analysis tools.
+        </p>
+      </section>
+
+      <section class="summary">
+        <div class="stat">
+          <strong>Direct</strong>
+          <span>Pump.fun and PumpSwap routing paths</span>
+        </div>
+        <div class="stat">
+          <strong>Faster</strong>
+          <span>gRPC, RabbitStream, WS, raw transaction parsing</span>
+        </div>
+        <div class="stat">
+          <strong>Safer</strong>
+          <span>Risk exits, circuit breakers, position caps</span>
+        </div>
+        <div class="stat">
+          <strong>Observable</strong>
+          <span>Execution telemetry, JSONL logs, analysis scripts</span>
+        </div>
+      </section>
+
+      <div class="section-title">
+        <h2>Execution And Routing</h2>
+        <span class="tag">Core trading engine</span>
+      </div>
+      <section class="grid">
+        <article class="card">
+          <header><div class="icon">01</div><h3>Direct Pump.fun Buys</h3></header>
+          <p>
+            Fresh pump.fun bonding-curve tokens can bypass Jupiter. The bot derives the curve,
+            quotes locally, sizes the buy, builds the instruction, and broadcasts directly.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">02</div><h3>Source Buy Replay</h3></header>
+          <p>
+            For hot pump.fun launches, the bot can replay source buy instruction data and scale it
+            to our configured buy size, reducing dependency on slow indexing.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">03</div><h3>PumpSwap Direct Routes</h3></header>
+          <p>
+            Graduated pump.fun tokens can use canonical PumpSwap direct buy/sell builders instead
+            of relying only on Jupiter routes.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">04</div><h3>Jupiter Rescue Path</h3></header>
+          <p>
+            Jupiter remains available as fallback. Failed direct buys can attempt one Jupiter rescue,
+            and quote throttles protect against rate limits.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">05</div><h3>Size-Safe Transactions</h3></header>
+          <p>
+            Transaction building now handles oversize routes more carefully with compact builders,
+            ALT support, account limits, and route-aware transaction construction.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">06</div><h3>Jito / Sender Landing</h3></header>
+          <p>
+            Broadcasts can use Helius Sender and optional direct Jito BlockEngine submission,
+            with route-specific tip multipliers and fallback behavior.
+          </p>
+        </article>
+      </section>
+
+      <div class="section-title">
+        <h2>Speed And Detection</h2>
+        <span class="tag">Signal ingestion</span>
+      </div>
+      <section class="grid">
+        <article class="card">
+          <header><div class="icon">07</div><h3>Multi-Feed Watchers</h3></header>
+          <p>
+            The bot can listen through Shyft gRPC, RabbitStream, Helius transactionSubscribe,
+            wallet logsSubscribe, polling fallback, and the Rust sidecar.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">08</div><h3>Raw Transaction Fast Path</h3></header>
+          <p>
+            WS-detected signatures can be parsed from raw RPC transactions before slower enhanced
+            transaction APIs catch up.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">09</div><h3>Rust Sidecar</h3></header>
+          <p>
+            A Rust pump.fun sidecar can provide faster low-level detection for fresh launches,
+            feeding swaps back into the TypeScript bot.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">10</div><h3>ALT Cache</h3></header>
+          <p>
+            Address lookup tables are cached so repeated Jupiter-style routes do not waste time
+            fetching the same lookup tables.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">11</div><h3>Direct Balance Reads</h3></header>
+          <p>
+            Sells use direct associated-token-account balance lookup first, then fall back to
+            slower full token-account scans when needed.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">12</div><h3>Signature Dedupe TTL</h3></header>
+          <p>
+            Processed signatures are bounded and swept over time, preventing long sessions from
+            growing memory forever.
+          </p>
+        </article>
+      </section>
+
+      <div class="section-title">
+        <h2>Risk And Position Controls</h2>
+        <span class="tag">Exits and guardrails</span>
+      </div>
+      <section class="grid">
+        <article class="card">
+          <header><div class="icon">13</div><h3>Exit Signal Wallets</h3></header>
+          <p>
+            Optional sell-only wallets can be watched. Their buys are ignored; their sells can close
+            our matching open mint. Disabled by default.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">14</div><h3>Mirror Sells Toggle</h3></header>
+          <p>
+            Source-wallet sell mirroring can be toggled separately from buy mirroring, allowing
+            manual exits or exit-signal exits.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">15</div><h3>Tiered Risk Checks</h3></header>
+          <p>
+            Positions are checked in fast, near-trigger, and normal buckets, so fresh or risky
+            positions get more attention without overloading quote APIs.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">16</div><h3>TP / SL / Trailing Steps</h3></header>
+          <p>
+            Stop-loss, take-profit, minimum hold time, and stair-step trailing stops can all be
+            configured from env.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">17</div><h3>Position Caps</h3></header>
+          <p>
+            Controls include max open positions, max SOL per token, max buys per token, and
+            buy-once-per-token mode.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">18</div><h3>Circuit Breakers</h3></header>
+          <p>
+            Optional daily loss and consecutive-loss controls can pause new buys while still
+            allowing sells.
+          </p>
+        </article>
+      </section>
+
+      <div class="section-title">
+        <h2>Entry Quality And Simulation</h2>
+        <span class="tag">Fill quality</span>
+      </div>
+      <section class="grid">
+        <article class="card">
+          <header><div class="icon">19</div><h3>Soft Impact Cap</h3></header>
+          <p>
+            Instead of skipping every high-impact quote, the bot can reduce size and retry until
+            the entry fits the configured impact limit.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">20</div><h3>Source Drift Check</h3></header>
+          <p>
+            Optional guardrail to skip buys when our quote is too far above the source wallet's
+            actual fill price.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">21</div><h3>Shadow Execution</h3></header>
+          <p>
+            Paper trading can model latency, entry slippage, exit slippage, flat fees, failure rate,
+            and RPC simulation behavior.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">22</div><h3>Fresh-Launch PnL Fix</h3></header>
+          <p>
+            Pump.fun simulation now estimates replay-buy token output instead of using a placeholder,
+            improving open-position and PnL tracking.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">23</div><h3>Dust-Safe Paper Fills</h3></header>
+          <p>
+            Shadow execution no longer rounds a positive simulated buy output down to zero tokens.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">24</div><h3>Preexisting Mint Filter</h3></header>
+          <p>
+            Startup scan can skip mints already held or recently bought by the source wallet before
+            this bot session began.
+          </p>
+        </article>
+      </section>
+
+      <div class="section-title">
+        <h2>Observability And Tooling</h2>
+        <span class="tag">Debugging and analysis</span>
+      </div>
+      <section class="grid">
+        <article class="card">
+          <header><div class="icon">25</div><h3>Execution Telemetry</h3></header>
+          <p>
+            The bot records execution-plan and route diagnostics, with a report script available
+            from npm.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">26</div><h3>Persistent Trade Logs</h3></header>
+          <p>
+            Trades can be written to JSONL with details that make post-session review and PnL
+            debugging easier.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">27</div><h3>Telegram Controls</h3></header>
+          <p>
+            Telegram notifications and commands support bot monitoring, PnL reporting, and position
+            management.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">28</div><h3>Wallet Cluster Tools</h3></header>
+          <p>
+            New scripts inspect wallet relationships, token transfers, first buys, first sells, and
+            source/outlet wallet behavior.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">29</div><h3>Wallet Performance Audits</h3></header>
+          <p>
+            Analysis scripts can review wallet PnL, ATH behavior, quant-style exit ideas, and
+            source copyability.
+          </p>
+        </article>
+
+        <article class="card">
+          <header><div class="icon">30</div><h3>License System</h3></header>
+          <p>
+            License API, license admin commands, machine reset, revoke, list, and local test scripts
+            exist for friend/distribution builds.
+          </p>
+        </article>
+      </section>
+
+      <section class="band">
+        <div class="section-title" style="margin-top: 0">
+          <h2>Key Config Flags</h2>
+          <span class="tag">Env-driven features</span>
+        </div>
+        <div class="settings">
+          <div class="setting">
+            <code>PUMPFUN_DIRECT_ENABLED=true</code>
+            <p>Use direct pump.fun route for pre-graduation bonding-curve tokens.</p>
+          </div>
+          <div class="setting">
+            <code>PUMPFUN_EXACT_SOL_IN_BUYS=true</code>
+            <p>Use exact-SOL-in direct buys for pump.fun curve entries.</p>
+          </div>
+          <div class="setting">
+            <code>PUMPSWAP_DIRECT_BUY_ENABLED=true</code>
+            <p>Use PumpSwap direct buys for graduated tokens when appropriate.</p>
+          </div>
+          <div class="setting">
+            <code>FAILED_BUY_RECOVERY=JUPITER_ONCE</code>
+            <p>Try one Jupiter fallback after a failed direct buy.</p>
+          </div>
+          <div class="setting">
+            <code>EXIT_SIGNAL_SELLS_ENABLED=false</code>
+            <p>Optional sell-only outlet-wallet exit system. Currently disabled.</p>
+          </div>
+          <div class="setting">
+            <code>MAX_ENTRY_PRICE_IMPACT_PCT=60</code>
+            <p>Soft cap for entry impact before reducing size or skipping.</p>
+          </div>
+          <div class="setting">
+            <code>SHYFT_GRPC_ENABLED=true</code>
+            <p>Enable gRPC wallet swap stream.</p>
+          </div>
+          <div class="setting">
+            <code>SHYFT_RABBITSTREAM_ENABLED=true</code>
+            <p>Enable RabbitStream wallet swap stream.</p>
+          </div>
+          <div class="setting">
+            <code>RUST_SIDECAR_ENABLED=true</code>
+            <p>Enable the Rust pump.fun sidecar feed.</p>
+          </div>
+          <div class="setting">
+            <code>USE_JITO_DIRECT=true</code>
+            <p>Allow direct Jito BlockEngine bundle submission.</p>
+          </div>
+          <div class="setting">
+            <code>JUPITER_QUOTE_MIN_GAP_MS=650</code>
+            <p>Throttle Jupiter quote calls across buys, sells, and risk checks.</p>
+          </div>
+          <div class="setting">
+            <code>MAX_OPEN_POSITIONS=3</code>
+            <p>Limit simultaneous open token positions.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
