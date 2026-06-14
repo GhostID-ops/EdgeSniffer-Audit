@@ -123,7 +123,7 @@ LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=true
 LOCAL_PUMPFUN_SOL_PRICE_USD=150
 PREBUY_MIN_MARKET_CAP_USD=15000
 PREBUY_MAX_MARKET_CAP_USD=
-PREBUY_FILTER_FAIL_OPEN=true
+PREBUY_FILTER_FAIL_OPEN=false
 ```
 
 If you do not want to maintain a SOL/USD value, use SOL-denominated thresholds:
@@ -135,6 +135,8 @@ LOCAL_PUMPFUN_MAX_MARKET_CAP_SOL=
 ```
 
 The log will say `local Pump.fun MC passed` when a token clears the filter, or `local Pump.fun MC ... < ...` / `> ...` when it is blocked. This filter only applies to Pump.fun bonding-curve direct buys; non-Pump routes still need their own route-specific filters.
+
+Use `PREBUY_FILTER_FAIL_OPEN=false` when the filter is meant to protect real buys. If it is `true`, the bot is allowed to buy when the curve/MC cannot be checked fast enough, including source-replay entries.
 
 ## VPS control UI
 

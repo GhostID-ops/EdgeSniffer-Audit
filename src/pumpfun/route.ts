@@ -302,6 +302,17 @@ export async function tryPumpFunDirectBuy(args: {
     }
   }
   if (!curve) {
+    if (localPumpfunMarketCapFilterEnabled) {
+      const mcGate = localPumpfunMarketCapGate({ marketCapSol: null });
+      if (mcGate.reason) args.log(`${mcGate.reason}; curve unavailable before source replay.`);
+      if (!mcGate.allowed) {
+        return {
+          ok: false,
+          recoverable: false,
+          reason: mcGate.reason ?? "local Pump.fun market-cap filter blocked source replay",
+        };
+      }
+    }
     if (canSourceReplay) {
       args.log("Pump.fun curve RPC unavailable after direct retries; replaying scaled source Pump.fun ix.");
       const sourceIxAccounts = args.sourceIxAccounts!;
