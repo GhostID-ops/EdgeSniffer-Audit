@@ -109,7 +109,7 @@ export function stopJitoTipOracle(): void {
 
 export function getDynamicJitoTipLamports(): number {
   if (!jitoTipOracleEnabled) return tipLamports;
-  return Math.max(cachedTipLamports, tipLamports, jitoTipOracleMinLamports);
+  return clampTip(Math.max(cachedTipLamports, tipLamports, jitoTipOracleMinLamports));
 }
 
 export function getJitoTipOracleSnapshot(): {
