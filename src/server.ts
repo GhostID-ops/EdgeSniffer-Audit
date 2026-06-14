@@ -41,6 +41,10 @@ type TokenLiveBody = {
 
 const tokenLiveCache = new Map<string, TokenLiveBody>();
 
+type StartServerOptions = {
+  optional?: boolean;
+};
+
 function sendJson(res: ServerResponse, status: number, body: unknown): void {
   const text = JSON.stringify(body);
   res.writeHead(status, {
@@ -305,7 +309,7 @@ async function handle(
   res.end("Not found");
 }
 
-export function startServer(): void {
+export function startServer(options: StartServerOptions = {}): void {
   const server = createServer((req, res) => {
     handle(req, res).catch((err) => {
       console.error("Server error:", err);
@@ -316,6 +320,19 @@ export function startServer(): void {
       }
     });
   });
+
+  server.on("error", (err: NodeJS.ErrnoException) => {
+    if (options.optional && (err.code === "EADDRINUSE" || err.code === "EACCES")) {
+      console.warn(
+        `Web UI disabled: cannot listen on 127.0.0.1:${PORT} (${err.code}). ` +
+          "Set WEB_PORT to a free port, or set BOT_CONTROL_API_ENABLED=false."
+      );
+      server.close();
+      return;
+    }
+    throw err;
+  });
+
   server.listen(PORT, "127.0.0.1", () => {
     console.log(`Web UI: http://localhost:${PORT}`);
   });

@@ -24,7 +24,7 @@ registerKeyboardShortcuts(() => void shutdown("keyboard"));
 
 const controlApiEnabled = (process.env.BOT_CONTROL_API_ENABLED ?? "false").trim().toLowerCase();
 if (controlApiEnabled === "true" || controlApiEnabled === "1" || controlApiEnabled === "yes") {
-  startServer();
+  startServer({ optional: true });
 }
 
 startBot().catch((err) => {
