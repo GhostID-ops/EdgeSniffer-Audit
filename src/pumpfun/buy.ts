@@ -234,7 +234,6 @@ function shouldUseV2BuyLayout(args: {
   tokenProgramId: PublicKey;
 }): boolean {
   if (isV2SourceIxAccounts(args.sourceIxAccounts, args.mint)) return true;
-  if (args.sourceIxAccounts && args.sourceIxAccounts.length >= 16) return false;
   return args.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
 }
 

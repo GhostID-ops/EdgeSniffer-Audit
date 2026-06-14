@@ -484,8 +484,12 @@ export async function tryPumpFunDirectBuy(args: {
       candidate.length >= 27 &&
       candidate[1]?.equals(mintKey) === true &&
       candidate[26]?.equals(PUMP_FUN_PROGRAM_ID) === true;
-    if (isV2Source) {
-      args.log("Using canonical Pump.fun V2 account derivation; ignoring source V2 metas after curve RPC quote.");
+    if (curve.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID)) {
+      args.log(
+        isV2Source
+          ? "Using canonical Pump.fun V2 account derivation; ignoring source V2 metas after curve RPC quote."
+          : "Using canonical Pump.fun V2 account derivation; ignoring legacy source metas for Token-2022 direct buy."
+      );
     } else {
       sourceIxPubkeys = candidate;
       args.log(`Using ${sourceIxPubkeys.length} source pump.fun account(s) from gRPC payload.`);
