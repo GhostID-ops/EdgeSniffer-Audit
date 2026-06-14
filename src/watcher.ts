@@ -7,7 +7,7 @@ import {
   heliusAddressTransactionsUrl,
   websocketUrl,
 } from "./config.js";
-import type { DetectedSwap } from "./types.js";
+import type { DetectedSwap, SourcePumpSwapAccountMeta } from "./types.js";
 import { getTokenMeta } from "./tokenRegistry.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
@@ -697,7 +697,8 @@ function extractPumpSwapBuyAccountsFromRawTx(
   tx: VersionedTransactionResponse,
   accountKeys: string[],
   mint: string
-): string[] | undefined {
+): SourcePumpSwapAccountMeta[] | undefined {
+  const sourceMessage = tx.transaction.message;
   const message = tx.transaction.message as unknown as {
     compiledInstructions?: Array<{
       programIdIndex: number;
@@ -718,7 +719,7 @@ function extractPumpSwapBuyAccountsFromRawTx(
     accountKeyIndexes?: number[];
     accounts?: number[] | Uint8Array;
     data?: unknown;
-  }): string[] | undefined => {
+  }): SourcePumpSwapAccountMeta[] | undefined => {
     if (accountKeys[ix.programIdIndex] !== PUMPSWAP_PROGRAM_ID_BASE58) return undefined;
     const data = instructionDataToBuffer(ix.data);
     if (
@@ -730,7 +731,17 @@ function extractPumpSwapBuyAccountsFromRawTx(
     const indexes = ix.accountKeyIndexes ?? Array.from(ix.accounts ?? []);
     const keys = indexes.map((idx) => accountKeys[idx]).filter((key): key is string => Boolean(key));
     if (keys[3] !== mint) return undefined;
-    return keys;
+    const accounts = indexes.map((idx) => {
+      const pubkey = accountKeys[idx];
+      if (!pubkey) return null;
+      return {
+        pubkey,
+        isSigner: sourceMessage.isAccountSigner(idx),
+        isWritable: sourceMessage.isAccountWritable(idx),
+      };
+    });
+    if (accounts.some((account) => account == null)) return undefined;
+    return accounts as SourcePumpSwapAccountMeta[];
   };
 
   const instructions = message.compiledInstructions ?? message.instructions ?? [];

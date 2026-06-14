@@ -13,7 +13,7 @@ import {
   shyftGrpcUrl,
   shyftGrpcXToken,
 } from "./config.js";
-import type { DetectedSwap } from "./types.js";
+import type { DetectedSwap, SourcePumpSwapAccountMeta } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
@@ -92,6 +92,40 @@ function ixDataToBuffer(data: unknown): Buffer {
   return Buffer.alloc(0);
 }
 
+function accountMetaFromMessage(
+  info: SubscribeUpdateTransactionInfo,
+  allKeysBase58: string[],
+  index: number
+): SourcePumpSwapAccountMeta | null {
+  const message = info.transaction?.message;
+  const meta = info.meta;
+  if (!message || !meta) return null;
+  const pubkey = allKeysBase58[index];
+  if (!pubkey) return null;
+
+  const staticCount = message.accountKeys.length;
+  const loadedWritableCount = meta.loadedWritableAddresses.length;
+  const header = message.header;
+  const signerCount = header?.numRequiredSignatures ?? 0;
+  const readonlySignedCount = header?.numReadonlySignedAccounts ?? 0;
+  const readonlyUnsignedCount = header?.numReadonlyUnsignedAccounts ?? 0;
+
+  if (index < staticCount) {
+    const isSigner = index < signerCount;
+    const isWritable = isSigner
+      ? index < signerCount - readonlySignedCount
+      : index < staticCount - readonlyUnsignedCount;
+    return { pubkey, isSigner, isWritable };
+  }
+
+  const loadedIndex = index - staticCount;
+  return {
+    pubkey,
+    isSigner: false,
+    isWritable: loadedIndex < loadedWritableCount,
+  };
+}
+
 /**
  * Capture the exact PumpSwap AMM buy account list from the source tx. This is the graduated-token
  * equivalent of sourceIxAccounts for pump.fun bonding-curve buys.
@@ -100,12 +134,16 @@ function extractPumpSwapBuyIxAccounts(
   info: SubscribeUpdateTransactionInfo,
   allKeysBase58: string[],
   mint: string
-): string[] | null {
+): SourcePumpSwapAccountMeta[] | null {
   const message = info.transaction?.message;
   const meta = info.meta;
   if (!message || !meta) return null;
 
-  const tryIx = (programIdIndex: number, accIndexes: Uint8Array | number[] | undefined, dataRaw: unknown): string[] | null => {
+  const tryIx = (
+    programIdIndex: number,
+    accIndexes: Uint8Array | number[] | undefined,
+    dataRaw: unknown
+  ): SourcePumpSwapAccountMeta[] | null => {
     if (!accIndexes) return null;
     const programId = allKeysBase58[programIdIndex];
     if (programId !== PUMPSWAP_PROGRAM_ID_BASE58) return null;
@@ -121,7 +159,9 @@ function extractPumpSwapBuyIxAccounts(
     if (idxArr.length < 17) return null;
     const keys = idxArr.map((i) => allKeysBase58[i]!);
     if (keys[3] !== mint || keys[4] !== WRAPPED_SOL_MINT) return null;
-    return keys;
+    const accounts = idxArr.map((i) => accountMetaFromMessage(info, allKeysBase58, i));
+    if (accounts.some((account) => account == null)) return null;
+    return accounts as SourcePumpSwapAccountMeta[];
   };
 
   for (const ix of message.instructions ?? []) {

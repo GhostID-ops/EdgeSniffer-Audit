@@ -10,6 +10,7 @@ import {
   isRecoverablePumpSwapFailure,
   pumpSwapPubkeyHintsToMetas,
   replacePumpSwapUserAccounts,
+  sourcePumpSwapHintAccountsToMetas,
   validatePumpSwapPoolAccount,
 } from "./pumpswap/route.js";
 import {
@@ -87,6 +88,17 @@ function testPumpSwapHintAccountFlags(): void {
   for (const [idx, meta] of hinted.entries()) {
     if (idx !== 1) assert.equal(meta.isSigner, false, `hinted account ${idx} must not be a signer`);
   }
+
+  const exact = sourcePumpSwapHintAccountsToMetas(
+    pubkeys.map((pubkey, idx) => ({
+      pubkey: pubkey.toBase58(),
+      isSigner: idx === 1 || idx === 9,
+      isWritable: idx === 2 || idx === 14,
+    }))
+  );
+  assert.ok(exact);
+  assert.equal(exact[9]!.isSigner, true, "exact source signer flag is preserved");
+  assert.equal(exact[14]!.isWritable, true, "exact source writable flag is preserved");
 }
 
 function testPumpSwapPdaProgramOwner(): void {

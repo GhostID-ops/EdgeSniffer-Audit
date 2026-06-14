@@ -33,6 +33,7 @@ import {
 } from "../idlNativeBuilder.js";
 import { recordExecutionStage } from "../executionTelemetry.js";
 import { classifyExecutionError } from "../errorClassifier.js";
+import type { SourcePumpSwapAccountMeta } from "../types.js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   PUMP_FUN_FEE_PROGRAM_ID,
@@ -335,6 +336,49 @@ export function pumpSwapPubkeyHintsToMetas(pubkeys: PublicKey[]): AccountMeta[] 
   return pubkeys.map((pubkey, idx) => pumpSwapMetaFromSourceKey(pubkey, idx));
 }
 
+function isSourcePumpSwapAccountMeta(value: unknown): value is SourcePumpSwapAccountMeta {
+  if (value == null || typeof value !== "object") return false;
+  const maybe = value as Partial<SourcePumpSwapAccountMeta>;
+  return (
+    typeof maybe.pubkey === "string" &&
+    typeof maybe.isSigner === "boolean" &&
+    typeof maybe.isWritable === "boolean"
+  );
+}
+
+export function sourcePumpSwapHintAccountsToMetas(
+  sourcePumpSwapAccounts: SourcePumpSwapAccountMeta[] | string[] | undefined
+): AccountMeta[] | null {
+  if (!sourcePumpSwapAccounts?.length) return null;
+
+  if (sourcePumpSwapAccounts.every(isSourcePumpSwapAccountMeta)) {
+    const accounts: AccountMeta[] = [];
+    for (const account of sourcePumpSwapAccounts) {
+      try {
+        accounts.push({
+          pubkey: new PublicKey(account.pubkey),
+          isSigner: account.isSigner,
+          isWritable: account.isWritable,
+        });
+      } catch {
+        return null;
+      }
+    }
+    return accounts;
+  }
+
+  const pubkeys: PublicKey[] = [];
+  for (const value of sourcePumpSwapAccounts) {
+    if (typeof value !== "string") return null;
+    try {
+      pubkeys.push(new PublicKey(value));
+    } catch {
+      return null;
+    }
+  }
+  return pubkeys.length ? pumpSwapPubkeyHintsToMetas(pubkeys) : null;
+}
+
 function validatePumpSwapBuyAccountLayout(accounts: AccountMeta[], mint: PublicKey): string | null {
   if (accounts.length < PUMPSWAP_MIN_BUY_ACCOUNT_COUNT) {
     return `PumpSwap account list too short: ${accounts.length}`;
@@ -478,19 +522,10 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   mint: PublicKey;
   user: PublicKey;
   baseTokenProgram: PublicKey;
-  sourcePumpSwapAccounts?: string[];
+  sourcePumpSwapAccounts?: SourcePumpSwapAccountMeta[] | string[];
   canonicalOnly?: boolean;
 }): Promise<PumpSwapAccountPlan | null> {
-  const hintedPubkeys = args.sourcePumpSwapAccounts
-    ?.map((value) => {
-      try {
-        return new PublicKey(value);
-      } catch {
-        return null;
-      }
-    })
-    .filter((value): value is PublicKey => value != null);
-  const hintedAccounts = hintedPubkeys?.length ? pumpSwapPubkeyHintsToMetas(hintedPubkeys) : null;
+  const hintedAccounts = sourcePumpSwapHintAccountsToMetas(args.sourcePumpSwapAccounts);
 
   const canonicalAccounts = await buildCanonicalPumpSwapBuyAccounts({
     user: args.user,
@@ -509,15 +544,6 @@ async function resolvePumpSwapBuyAccountPlan(args: {
 
   if (args.canonicalOnly) return null;
 
-  const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
-  if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint)) {
-    return {
-      accounts: confirmedAccounts,
-      source: "confirmed-source-metas",
-      diagnostics: { canonicalUnavailable: true },
-    };
-  }
-
   if (hintedAccounts?.length) {
     if (!validatePumpSwapBuyAccountLayout(hintedAccounts, args.mint)) {
       return {
@@ -526,6 +552,15 @@ async function resolvePumpSwapBuyAccountPlan(args: {
         diagnostics: { canonicalUnavailable: true, detectorHintAccounts: hintedAccounts.length },
       };
     }
+  }
+
+  const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
+  if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint)) {
+    return {
+      accounts: confirmedAccounts,
+      source: "confirmed-source-metas",
+      diagnostics: { canonicalUnavailable: true },
+    };
   }
   return null;
 }
@@ -947,7 +982,7 @@ export async function tryPumpSwapDirectBuy(args: {
   sourceSignature: string;
   sourceSolInLamports: number;
   sourceTokensOutRaw?: number;
-  sourcePumpSwapAccounts?: string[];
+  sourcePumpSwapAccounts?: SourcePumpSwapAccountMeta[] | string[];
   solInLamports: number;
   slippageBps: number;
   startedAt: number;
@@ -1242,7 +1277,6 @@ export async function tryPumpSwapDirectBuy(args: {
         );
         return tryPumpSwapDirectBuy({
           ...args,
-          sourcePumpSwapAccounts: undefined,
           canonicalRetryAttempt: (args.canonicalRetryAttempt ?? 0) + 1,
         });
       }

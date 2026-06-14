@@ -23,7 +23,7 @@ import {
 import { getCachedBlockhash } from "./blockhashCache.js";
 import { getDynamicPriorityFee } from "./feeOracle.js";
 import { getHeliusTipLamportsForRoute, getJitoTipLamportsForRoute } from "./tipBuilder.js";
-import type { DetectedSwap, RustHotBuy } from "./types.js";
+import type { DetectedSwap, RustHotBuy, SourcePumpSwapAccountMeta } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
 
 type RustSidecarEvent = {
@@ -44,7 +44,7 @@ type RustSidecarEvent = {
   counterpartyAmountRaw?: number;
   sourceIxAccounts?: string[];
   sourceIxDataBase64?: string;
-  sourcePumpSwapAccounts?: string[];
+  sourcePumpSwapAccounts?: SourcePumpSwapAccountMeta[] | string[];
   sourceQuoteMint?: string;
   sourceQuoteAmountRaw?: number;
   sourceSignature?: string;

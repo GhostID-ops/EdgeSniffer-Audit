@@ -1,3 +1,9 @@
+export type SourcePumpSwapAccountMeta = {
+  pubkey: string;
+  isSigner: boolean;
+  isWritable: boolean;
+};
+
 /** A Jupiter swap detected from a tracked wallet's transaction. */
 export type DetectedSwap = {
   signature: string;
@@ -47,11 +53,12 @@ export type DetectedSwap = {
    */
   sourceIxDataBase64?: string;
   /**
-   * Base58 pubkeys of the source's PumpSwap AMM buy ix accounts, in order. When present, the
-   * graduated-token direct path can reuse the source's exact pool/global/fee accounts without
-   * waiting for getTransaction to become available.
+   * Account metas of the source's PumpSwap AMM buy ix accounts, in order. When present, the
+   * graduated-token direct path can reuse the source's exact pool/global/fee account privileges
+   * without waiting for getTransaction to become available. Older detectors may still send bare
+   * pubkeys; those are accepted as a compatibility fallback.
    */
-  sourcePumpSwapAccounts?: string[];
+  sourcePumpSwapAccounts?: SourcePumpSwapAccountMeta[] | string[];
   /** Original quote mint used by the source wallet when it differs from the mirrored input. */
   sourceQuoteMint?: string;
   /** Original quote amount used by the source wallet, in raw units. */

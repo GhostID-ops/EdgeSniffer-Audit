@@ -21,7 +21,7 @@ import {
   SELL_DISCRIMINATOR,
   SELL_V2_DISCRIMINATOR,
 } from "./pumpfun/constants.js";
-import type { DetectedSwap } from "./types.js";
+import type { DetectedSwap, SourcePumpSwapAccountMeta } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
@@ -58,6 +58,40 @@ function pubkeyToBase58(bytes: Uint8Array): string {
 
 function signatureToBase58(bytes: Uint8Array): string {
   return bs58.encode(bytes);
+}
+
+function accountMetaFromMessage(
+  info: SubscribeUpdateTransactionInfo,
+  allKeysBase58: string[],
+  index: number
+): SourcePumpSwapAccountMeta | null {
+  const message = info.transaction?.message;
+  const meta = info.meta;
+  if (!message || !meta) return null;
+  const pubkey = allKeysBase58[index];
+  if (!pubkey) return null;
+
+  const staticCount = message.accountKeys.length;
+  const loadedWritableCount = meta.loadedWritableAddresses.length;
+  const header = message.header;
+  const signerCount = header?.numRequiredSignatures ?? 0;
+  const readonlySignedCount = header?.numReadonlySignedAccounts ?? 0;
+  const readonlyUnsignedCount = header?.numReadonlyUnsignedAccounts ?? 0;
+
+  if (index < staticCount) {
+    const isSigner = index < signerCount;
+    const isWritable = isSigner
+      ? index < signerCount - readonlySignedCount
+      : index < staticCount - readonlyUnsignedCount;
+    return { pubkey, isSigner, isWritable };
+  }
+
+  const loadedIndex = index - staticCount;
+  return {
+    pubkey,
+    isSigner: false,
+    isWritable: loadedIndex < loadedWritableCount,
+  };
 }
 
 function ixDataToBuffer(data: unknown): Buffer {
@@ -259,6 +293,9 @@ function extractTopLevelPumpSwapBuyFromRabbit(
     const minOrBaseOut = Number(data.readBigUInt64LE(isExactQuoteIn ? 16 : 8));
     if (!Number.isSafeInteger(quoteIn) || quoteIn <= 0) continue;
 
+    const sourcePumpSwapAccounts = accountIndexes.map((idx) => accountMetaFromMessage(info, accountKeys, idx));
+    if (sourcePumpSwapAccounts.some((account) => account == null)) continue;
+
     return {
       signature: signatureToBase58(info.signature),
       wallet,
@@ -269,7 +306,7 @@ function extractTopLevelPumpSwapBuyFromRabbit(
       counterpartyAmountRaw: Number.isSafeInteger(minOrBaseOut) && minOrBaseOut > 0 ? minOrBaseOut : undefined,
       sourceQuoteMint: quoteMint,
       sourceQuoteAmountRaw: quoteIn,
-      sourcePumpSwapAccounts: keys,
+      sourcePumpSwapAccounts: sourcePumpSwapAccounts as SourcePumpSwapAccountMeta[],
     };
   }
 
