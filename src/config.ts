@@ -479,6 +479,12 @@ export const rustExecutorTimeoutMs = Math.max(
   250,
   parseInt(process.env.RUST_EXECUTOR_TIMEOUT_MS ?? "1500", 10)
 );
+export const rustHotSniperEnabled = parseEnvBool(process.env.RUST_HOT_SNIPER_ENABLED, false);
+export const rustHotSniperPrimary = parseEnvBool(process.env.RUST_HOT_SNIPER_PRIMARY, false);
+export const rustHotSniperPrimaryFallbackDelayMs = Math.max(
+  0,
+  parseInt(process.env.RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS ?? "80", 10)
+);
 
 /** When false, the bot ignores source-wallet sells (you exit manually via 'e' or 'a' keys). Default true. */
 const MIRROR_SELLS_RAW = (process.env.MIRROR_SELLS ?? "true").toLowerCase();

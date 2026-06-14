@@ -57,6 +57,9 @@ import {
   shyftGrpcEnabled,
   shyftRabbitStreamEnabled,
   rustSidecarEnabled,
+  rustHotSniperEnabled,
+  rustHotSniperPrimary,
+  rustHotSniperPrimaryFallbackDelayMs,
   heliusTxSubscribeEnabled,
   confirmationNullStatusTimeoutMs,
   prebuyMoralisFilterEnabled,
@@ -66,6 +69,7 @@ import {
   executionRescueDelayMs,
   pnlAccountingBasis,
   useWalletPnlAccounting,
+  shadowExecutionMode,
 } from "./config.js";
 import { valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import { estimatePumpSwapSellQuote, warmPumpSwapStaticAccounts } from "./pumpswap/route.js";
@@ -266,6 +270,9 @@ class BoundedSignatureSet {
 const processedSignatures = new BoundedSignatureSet();
 const buyMintsInFlight = new Set<string>();
 const pendingBuyRetryByMint = new Map<string, DetectedSwap>();
+const rustHotSniperPrimaryPendingMints = new Set<string>();
+const rustHotSniperPrimaryFallbackSources = new Set<string>();
+const rustHotBuyRecordedByMint = new Set<string>();
 const fastBuyConfirmRetryScheduledByMint = new Set<string>();
 const fastSellConfirmRetryScheduledByMint = new Set<string>();
 const failedBuyRecoveryInFlightMints = new Set<string>();
@@ -959,6 +966,19 @@ function mirroredBuyAmountRaw(swap: DetectedSwap): number | null {
   return Math.min(maxBuyLamports, calculatedRaw);
 }
 
+function shouldDeferToRustHotSniperPrimary(
+  swap: DetectedSwap,
+  executionPlan: ReturnType<typeof planExecution>
+): boolean {
+  if (!rustHotSniperPrimary || !rustHotSniperEnabled || !rustSidecarEnabled) return false;
+  if (simulationMode || shadowExecutionMode) return false;
+  if (rustHotSniperPrimaryFallbackSources.has(swap.signature)) return false;
+  if (!isBuySignal(swap) || executionPlan.side !== "buy") return false;
+  if (swap.inputMint !== WRAPPED_SOL_MINT) return false;
+  if (swap.skipDirectBuyRoutes || swap.forceDerivedPumpFunBuy) return false;
+  return executionPlan.route === "pumpfun-bonding-curve" || executionPlan.route === "pumpfun-v2-token2022";
+}
+
 async function handleRustHotBuy(hotBuy: RustHotBuy): Promise<void> {
   if (stopRequested) return;
   const ts = Date.now();
@@ -1054,6 +1074,9 @@ async function handleRustHotBuy(hotBuy: RustHotBuy): Promise<void> {
     `Rust hot sniper recorded buy for ${hotBuy.mint.slice(0, 8)}... ` +
       `(${formatSolAmount(hotBuy.solInLamports)} SOL, ${hotBuy.elapsedMs ?? "?"}ms, ${hotBuy.senderPath ?? "unknown sender"}).`
   );
+  rustHotBuyRecordedByMint.add(hotBuy.mint);
+  rustHotSniperPrimaryPendingMints.delete(hotBuy.mint);
+  pendingBuyRetryByMint.delete(hotBuy.mint);
   const marketCapUsd = await maybeGetMarketCap(hotBuy.mint);
   const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
   logTrade(result, sourceSwap, marketCapUsd, marketCapCheckedAt);
@@ -1122,6 +1145,7 @@ async function handleRustHotBuy(hotBuy: RustHotBuy): Promise<void> {
       mirrorBuySignatureByMint.delete(hotBuy.mint);
       confirmedFastBuyTokensByMint.delete(hotBuy.mint);
       boughtMintsThisSession.delete(hotBuy.mint);
+      rustHotBuyRecordedByMint.delete(hotBuy.mint);
       noteLocalSolCredit(hotBuy.solInLamports);
       if (removed) {
         console.warn(
@@ -1731,6 +1755,46 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         return;
       }
     }
+    if (shouldDeferToRustHotSniperPrimary(swap, executionPlan)) {
+      if (rustHotSniperPrimaryPendingMints.has(mint)) {
+        pendingBuyRetryByMint.set(mint, swap);
+        console.log(
+          `Skipping TypeScript buy: Rust hot sniper primary already pending for ${mint.slice(0, 8)}... ` +
+            "(queued latest fallback signal)."
+        );
+        return;
+      }
+      rustHotSniperPrimaryPendingMints.add(mint);
+      pendingBuyRetryByMint.set(mint, swap);
+      console.log(
+        `Rust hot sniper primary: deferring TypeScript fallback for ${mint.slice(0, 8)}... ` +
+          `${rustHotSniperPrimaryFallbackDelayMs}ms.`
+      );
+      setTimeout(() => {
+        const fallback = pendingBuyRetryByMint.get(mint) ?? swap;
+        rustHotSniperPrimaryPendingMints.delete(mint);
+        if (
+          stopRequested ||
+          rustHotBuyRecordedByMint.has(mint) ||
+          boughtMintsThisSession.has(mint) ||
+          quarantinedBuyMints.has(mint) ||
+          (getPosition(mint)?.buysCount ?? 0) > 0
+        ) {
+          pendingBuyRetryByMint.delete(mint);
+          return;
+        }
+        pendingBuyRetryByMint.delete(mint);
+        rustHotSniperPrimaryFallbackSources.add(fallback.signature);
+        processSwap(fallback, kp)
+          .catch((err) => {
+            console.error("Rust hot sniper primary fallback failed:", err);
+          })
+          .finally(() => {
+            rustHotSniperPrimaryFallbackSources.delete(fallback.signature);
+          });
+      }, rustHotSniperPrimaryFallbackDelayMs);
+      return;
+    }
     if (buyMintsInFlight.has(mint)) {
       // Keep only the latest duplicate source buy so a dropped first broadcast can retry promptly.
       if (!failedBuyRecoveryInFlightMints.has(mint)) {
@@ -1923,6 +1987,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     const result = await mirrorSwap(swap, kp, {
       exactAmountRaw: proportionalSellAmountRaw,
       onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, reason, sourceSwap }) => {
+        if (rustHotBuyRecordedByMint.has(mint)) {
+          console.warn(
+            `Ignoring TypeScript buy confirmation failure for ${mint.slice(0, 8)}... ` +
+              "because Rust hot sniper already recorded this mint."
+          );
+          return;
+        }
         unrecordZeroSell(mint, tokenAmountRaw);
         mirrorBuySignatureByMint.delete(mint);
         confirmedFastBuyTokensByMint.delete(mint);
@@ -2010,6 +2081,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         }
       },
       onFastBuyConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature, sourceSwap }) => {
+        if (rustHotBuyRecordedByMint.has(mint) && mirrorBuySignatureByMint.get(mint) !== signature) {
+          console.warn(
+            `Ignoring late TypeScript buy confirmation ${signature.slice(0, 8)}... for ${mint.slice(0, 8)}... ` +
+              "because Rust hot sniper already recorded this mint."
+          );
+          return;
+        }
         fastBuyConfirmRetryScheduledByMint.delete(mint);
         failedBuyRecoveryInFlightMints.delete(mint);
         pendingBuyRetryByMint.delete(mint);
@@ -2078,6 +2156,18 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
     const marketCapUsd = tokenMint ? await maybeGetMarketCap(tokenMint) : null;
     const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
+    if (
+      result.side === "buy" &&
+      tokenMint &&
+      rustHotBuyRecordedByMint.has(tokenMint) &&
+      mirrorBuySignatureByMint.get(tokenMint) !== result.signature
+    ) {
+      console.warn(
+        `TypeScript buy ${result.signature.slice(0, 8)}... for ${tokenMint.slice(0, 8)}... ` +
+          "was broadcast after Rust hot sniper already recorded this mint; skipping duplicate optimistic accounting."
+      );
+      return;
+    }
     logTrade(result, swap, marketCapUsd, marketCapCheckedAt);
     if (!simulationMode) {
       if (result.side === "buy" && result.input.meta.mint === WRAPPED_SOL_MINT) {
@@ -2610,6 +2700,9 @@ export function resetTradingState(): void {
   processedSignatures.clear();
   buyMintsInFlight.clear();
   pendingBuyRetryByMint.clear();
+  rustHotSniperPrimaryPendingMints.clear();
+  rustHotSniperPrimaryFallbackSources.clear();
+  rustHotBuyRecordedByMint.clear();
   fastBuyConfirmRetryScheduledByMint.clear();
   failedBuyRecoveryInFlightMints.clear();
   boughtMintsThisSession.clear();
