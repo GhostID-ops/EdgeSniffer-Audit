@@ -1,6 +1,7 @@
 use std::{
     env,
     str::FromStr,
+    sync::OnceLock,
     time::{Duration, Instant},
 };
 
@@ -69,6 +70,12 @@ const HELIUS_TIP_ACCOUNTS: [&str; 11] = [
     "wyvPkWjVZz1M8fHQnMMCDTQDbkManefNNhweYk5WkcF",
     "4vieeGHPYPG2MmyPRcYjdiDmmhN3ww7hsFNap8pVN3Ey",
 ];
+
+static HTTP_CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
+
+fn http_client() -> reqwest::Client {
+    HTTP_CLIENT.get_or_init(reqwest::Client::new).clone()
+}
 
 #[derive(Debug, Deserialize)]
 #[serde(tag = "kind", rename_all = "camelCase")]
@@ -283,7 +290,7 @@ pub async fn fetch_latest_blockhash(rpc_url: &str) -> Result<String> {
         "method": "getLatestBlockhash",
         "params": [{ "commitment": "processed" }],
     });
-    let response = reqwest::Client::new()
+    let response = http_client()
         .post(rpc_url)
         .timeout(Duration::from_millis(900))
         .json(&body)
@@ -886,7 +893,7 @@ async fn broadcast_signed_tx(
         .await;
     }
 
-    let client = reqwest::Client::new();
+    let client = http_client();
     let mut errors = Vec::new();
     for candidate in candidates {
         match send_candidate(
@@ -974,7 +981,7 @@ async fn race_broadcast(
     signature: String,
     jito_auth_uuid: Option<String>,
 ) -> Result<String> {
-    let client = reqwest::Client::new();
+    let client = http_client();
     let mut futures = FuturesUnordered::new();
     for candidate in candidates {
         let client = client.clone();

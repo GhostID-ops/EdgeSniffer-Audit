@@ -335,13 +335,26 @@ const JITO_REGIONS_RAW = process.env.JITO_REGIONS ?? "";
 const JITO_REGIONS: Record<string, string> = {
   "": "https://mainnet.block-engine.jito.wtf",
   ny: "https://ny.mainnet.block-engine.jito.wtf",
+  "new-york": "https://ny.mainnet.block-engine.jito.wtf",
+  newyork: "https://ny.mainnet.block-engine.jito.wtf",
+  ewr: "https://ny.mainnet.block-engine.jito.wtf",
+  va: "https://ny.mainnet.block-engine.jito.wtf",
+  virginia: "https://ny.mainnet.block-engine.jito.wtf",
+  ashburn: "https://ny.mainnet.block-engine.jito.wtf",
   amsterdam: "https://amsterdam.mainnet.block-engine.jito.wtf",
+  ams: "https://amsterdam.mainnet.block-engine.jito.wtf",
   dublin: "https://dublin.mainnet.block-engine.jito.wtf",
   frankfurt: "https://frankfurt.mainnet.block-engine.jito.wtf",
+  fra: "https://frankfurt.mainnet.block-engine.jito.wtf",
   london: "https://london.mainnet.block-engine.jito.wtf",
+  lon: "https://london.mainnet.block-engine.jito.wtf",
   singapore: "https://singapore.mainnet.block-engine.jito.wtf",
+  sg: "https://singapore.mainnet.block-engine.jito.wtf",
+  sgp: "https://singapore.mainnet.block-engine.jito.wtf",
   tokyo: "https://tokyo.mainnet.block-engine.jito.wtf",
+  tyo: "https://tokyo.mainnet.block-engine.jito.wtf",
   "slc": "https://slc.mainnet.block-engine.jito.wtf",
+  "salt-lake-city": "https://slc.mainnet.block-engine.jito.wtf",
 };
 const configuredJitoRegions =
   JITO_REGIONS_RAW.trim().length > 0

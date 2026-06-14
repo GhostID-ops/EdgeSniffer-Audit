@@ -246,6 +246,48 @@ cd /root/bot/FinalBot-5qn
 npm run telemetry:execution
 ```
 
+## CyA Same-Slot Main Bot
+
+This applies the live CyA same-slot validation preset to the main/root bot. It removes the local
+market-cap filter for this session, enables Rust hot sniper, races Jito transaction + Jito bundle +
+Helius Sender + RPC fallback, and uses small live exposure.
+
+```bash
+cd /root/bot/FinalBot
+
+sudo apt update
+sudo apt install -y build-essential perl pkg-config libssl-dev
+
+cp .env ".env.backup-before-cya-same-slot-$(date +%Y%m%d-%H%M%S)"
+
+npm run env:cya-same-slot
+npm run build
+npm run rust-sidecar:jito-build
+
+systemctl restart finalbot
+journalctl -u finalbot -f
+```
+
+Starting exposure:
+
+```env
+MIN_BUY_SOL=0.04
+MAX_BUY_SOL=0.04
+MAX_SOL_PER_TOKEN=0.04
+MAX_SESSION_DEPLOYED_SOL=0.20
+MAX_OPEN_POSITIONS=2
+```
+
+Scale-up after clean telemetry:
+
+```env
+MIN_BUY_SOL=0.06
+MAX_BUY_SOL=0.06
+MAX_SOL_PER_TOKEN=0.06
+MAX_SESSION_DEPLOYED_SOL=0.30
+MAX_OPEN_POSITIONS=2
+```
+
 ## Jito/ShredStream Sanity Check
 
 Bot logs should show:

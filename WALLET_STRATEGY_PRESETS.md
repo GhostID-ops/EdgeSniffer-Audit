@@ -218,6 +218,84 @@ Notes:
 - If you want pure speed on Cya, turn `LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=false`.
 - If you only care about the 50% scalp and do not care about runners, keep `TAKE_PROFIT_PCT=50` and make trailing less important.
 
+### Cya Same-Slot Live Validation
+
+Purpose: remove the market-cap gate and let Rust hot sniper try to buy in the source wallet's slot.
+Use this on the main/root bot for the first live same-slot test.
+
+Folder/service:
+
+```bash
+cd /root/bot/FinalBot
+npm run env:cya-same-slot
+npm run build
+npm run rust-sidecar:jito-build
+systemctl restart finalbot
+```
+
+Wallet:
+
+```env
+TRACKED_WALLETS=CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o
+```
+
+Live validation exposure:
+
+```env
+SIMULATION_MODE=false
+SHADOW_EXECUTION_MODE=false
+MIRROR_SELLS=false
+BUY_ONCE_PER_TOKEN=true
+
+MIN_BUY_SOL=0.04
+MAX_BUY_SOL=0.04
+MAX_SOL_PER_TOKEN=0.04
+MAX_SESSION_DEPLOYED_SOL=0.20
+MAX_OPEN_POSITIONS=2
+
+STOP_LOSS_PCT=45
+MIN_HOLD_BEFORE_STOP_LOSS_MS=10000
+TAKE_PROFIT_PCT=50
+TRAILING_STEPS=20:8,35:18,60:35,100:70,180:130
+
+PREBUY_MORALIS_FILTER_ENABLED=false
+LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=false
+PREBUY_FILTER_FAIL_OPEN=true
+
+EXECUTION_MULTI_SEND_ENABLED=true
+RUST_HOT_SNIPER_ENABLED=true
+RUST_HOT_SNIPER_BLOCKHASH_REFRESH_MS=750
+RUST_HOT_SNIPER_BLOCKHASH_MAX_AGE_MS=15000
+```
+
+Same-slot fee bias:
+
+```env
+TIP_LAMPORTS=1500000
+RUST_HOT_SNIPER_JITO_TIP_LAMPORTS=1500000
+RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS=300000
+RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS=5000000
+JITO_TIP_ORACLE_PERCENTILE=p95
+JITO_TIP_ORACLE_MIN_LAMPORTS=500000
+JITO_TIP_ORACLE_MAX_LAMPORTS=5000000
+DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS=5000000
+```
+
+Scale-up after clean telemetry:
+
+```env
+MIN_BUY_SOL=0.06
+MAX_BUY_SOL=0.06
+MAX_SOL_PER_TOKEN=0.06
+MAX_SESSION_DEPLOYED_SOL=0.30
+```
+
+Notes:
+
+- Same-slot hot sniper requires live mode; it is disabled in simulation or shadow execution.
+- Keep the MC filter off for this run. The high-MC filter is useful for trade selection, but it costs the hot path the thing we are testing: time.
+- Check `source slot -> landing slot`, `process -> broadcast`, and `senderPath` with `npm run telemetry:execution`.
+
 ## 4vw Full Sell Mirror
 
 Purpose: buy once, then sell the entire bag on the first source sell, even if the source sell is partial. Keep a 50% TP as backup.

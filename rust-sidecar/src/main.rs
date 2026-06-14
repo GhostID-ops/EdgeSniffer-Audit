@@ -67,6 +67,7 @@ struct HotSniperConfig {
     buy_once_per_token: bool,
     bought_mints: Arc<Mutex<HashSet<String>>>,
     session_deployed_lamports: Arc<AtomicU64>,
+    blockhash_cache: Arc<Mutex<Option<CachedBlockhash>>>,
     max_session_deployed_lamports: Option<u64>,
     min_buy_lamports: u64,
     max_buy_lamports: u64,
@@ -88,6 +89,14 @@ struct HotSniperConfig {
     sender_endpoint_url: String,
     rpc_fallback_url: String,
     jito_auth_uuid: Option<String>,
+    blockhash_refresh_ms: u64,
+    blockhash_max_age_ms: u64,
+}
+
+#[derive(Debug, Clone)]
+struct CachedBlockhash {
+    value: String,
+    fetched_at_ms: u128,
 }
 
 #[derive(Serialize)]
@@ -151,6 +160,10 @@ async fn main() -> Result<()> {
     );
     if cfg.hot_sniper.enabled {
         eprintln!("rust-sidecar: hot sniper ON for Pump.fun source-replay buys");
+        let hot = cfg.hot_sniper.clone();
+        tokio::spawn(async move {
+            run_hot_blockhash_refresher(hot).await;
+        });
     }
 
     if cfg.jito_shredstream_enabled {
@@ -277,6 +290,7 @@ impl HotSniperConfig {
             buy_once_per_token: parse_env_bool("BUY_ONCE_PER_TOKEN", true),
             bought_mints: Arc::new(Mutex::new(HashSet::new())),
             session_deployed_lamports: Arc::new(AtomicU64::new(0)),
+            blockhash_cache: Arc::new(Mutex::new(None)),
             max_session_deployed_lamports: optional_sol_env_lamports("MAX_SESSION_DEPLOYED_SOL"),
             min_buy_lamports,
             max_buy_lamports,
@@ -314,6 +328,10 @@ impl HotSniperConfig {
             jito_auth_uuid: env::var("JITO_AUTH_UUID")
                 .ok()
                 .filter(|v| !v.trim().is_empty()),
+            blockhash_refresh_ms: parse_env_u64("RUST_HOT_SNIPER_BLOCKHASH_REFRESH_MS", 1000)
+                .max(250),
+            blockhash_max_age_ms: parse_env_u64("RUST_HOT_SNIPER_BLOCKHASH_MAX_AGE_MS", 15_000)
+                .max(1000),
         }
     }
 }
@@ -398,14 +416,16 @@ fn configured_jito_regions() -> Vec<String> {
 
 fn jito_region_base_url(region: &str) -> &'static str {
     match region {
-        "ny" => "https://ny.mainnet.block-engine.jito.wtf",
-        "amsterdam" => "https://amsterdam.mainnet.block-engine.jito.wtf",
+        "ny" | "new-york" | "newyork" | "ewr" | "va" | "virginia" | "ashburn" => {
+            "https://ny.mainnet.block-engine.jito.wtf"
+        }
+        "amsterdam" | "ams" => "https://amsterdam.mainnet.block-engine.jito.wtf",
         "dublin" => "https://dublin.mainnet.block-engine.jito.wtf",
-        "frankfurt" => "https://frankfurt.mainnet.block-engine.jito.wtf",
-        "london" => "https://london.mainnet.block-engine.jito.wtf",
-        "singapore" => "https://singapore.mainnet.block-engine.jito.wtf",
-        "tokyo" => "https://tokyo.mainnet.block-engine.jito.wtf",
-        "slc" => "https://slc.mainnet.block-engine.jito.wtf",
+        "frankfurt" | "fra" => "https://frankfurt.mainnet.block-engine.jito.wtf",
+        "london" | "lon" => "https://london.mainnet.block-engine.jito.wtf",
+        "singapore" | "sg" | "sgp" => "https://singapore.mainnet.block-engine.jito.wtf",
+        "tokyo" | "tyo" => "https://tokyo.mainnet.block-engine.jito.wtf",
+        "slc" | "salt-lake-city" => "https://slc.mainnet.block-engine.jito.wtf",
         _ => "https://mainnet.block-engine.jito.wtf",
     }
 }
@@ -422,6 +442,43 @@ fn read_rpc_url() -> String {
         }
     }
     "https://mainnet.helius-rpc.com".to_string()
+}
+
+async fn run_hot_blockhash_refresher(hot: HotSniperConfig) {
+    loop {
+        match executor::fetch_latest_blockhash(&hot.rpc_fallback_url).await {
+            Ok(blockhash) => store_hot_blockhash(&hot, blockhash),
+            Err(err) => eprintln!("rust-sidecar: hot blockhash refresh failed: {err:#}"),
+        }
+        sleep(Duration::from_millis(hot.blockhash_refresh_ms)).await;
+    }
+}
+
+fn store_hot_blockhash(hot: &HotSniperConfig, value: String) {
+    if let Ok(mut cache) = hot.blockhash_cache.lock() {
+        *cache = Some(CachedBlockhash {
+            value,
+            fetched_at_ms: now_ms(),
+        });
+    }
+}
+
+fn cached_hot_blockhash(hot: &HotSniperConfig) -> Option<String> {
+    let cache = hot.blockhash_cache.lock().ok()?;
+    let cached = cache.as_ref()?;
+    if now_ms().saturating_sub(cached.fetched_at_ms) <= hot.blockhash_max_age_ms as u128 {
+        return Some(cached.value.clone());
+    }
+    None
+}
+
+async fn hot_blockhash(hot: &HotSniperConfig) -> Result<String> {
+    if let Some(blockhash) = cached_hot_blockhash(hot) {
+        return Ok(blockhash);
+    }
+    let blockhash = executor::fetch_latest_blockhash(&hot.rpc_fallback_url).await?;
+    store_hot_blockhash(hot, blockhash.clone());
+    Ok(blockhash)
 }
 
 async fn run_once(cfg: &Config) -> Result<()> {
@@ -579,7 +636,7 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
     }
 
     let started = Instant::now();
-    let blockhash = match executor::fetch_latest_blockhash(&hot.rpc_fallback_url).await {
+    let blockhash = match hot_blockhash(hot).await {
         Ok(blockhash) => blockhash,
         Err(err) => {
             release_hot_reservations(hot, &line.output_mint, sol_in_lamports);
