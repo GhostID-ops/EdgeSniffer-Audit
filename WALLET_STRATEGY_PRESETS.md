@@ -13,7 +13,10 @@ General rule:
 Use this on fast Pump.fun instances unless a strategy says otherwise:
 
 ```env
+SHYFT_GRPC_ENABLED=true
 SHYFT_GRPC_URL=https://grpc.va.shyft.to
+SHYFT_GRPC_COMMITMENT=processed
+SHYFT_RABBITSTREAM_ENABLED=true
 SHYFT_RABBITSTREAM_URL=https://rabbitstream.va.shyft.to/
 JITO_REGION=ny
 JITO_REGIONS=ny
@@ -32,6 +35,8 @@ RUST_SIDECAR_YELLOWSTONE_ENABLED=true
 RUST_EXECUTOR_ENABLED=true
 RUST_EXECUTOR_TIMEOUT_MS=1500
 RUST_HOT_SNIPER_ENABLED=true
+RUST_HOT_SNIPER_PRIMARY=true
+RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS=80
 
 JITO_CONNECTION_WARMUP_ENABLED=true
 JITO_CONNECTION_WARMUP_MS=15000
@@ -94,6 +99,8 @@ SOURCE_PREEXISTING_SCAN_TX_LIMIT=300
 MAX_ENTRY_PRICE_IMPACT_PCT=60
 
 EXECUTION_MULTI_SEND_ENABLED=true
+RUST_HOT_SNIPER_PRIMARY=true
+RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS=80
 ```
 
 Notes:
@@ -101,6 +108,7 @@ Notes:
 - Best outcome is same slot; very good is `+1 slot`.
 - Latest local audit showed your wallet landing mostly `+1 slot` behind 5qn on shared entries.
 - Keep local MC filter off for this pure-speed instance unless you intentionally want high-MC-only sniping.
+- Keep `RUST_HOT_SNIPER_PRIMARY=true` only when logs show `Jito ShredStream: CONNECTED`; otherwise set it false so TypeScript does not wait the fallback delay.
 
 Optional high-MC-only variant:
 
