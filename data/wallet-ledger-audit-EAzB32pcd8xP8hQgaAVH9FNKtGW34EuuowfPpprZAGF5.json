@@ -1,0 +1,99 @@
+{
+  "wallet": "EAzB32pcd8xP8hQgaAVH9FNKtGW34EuuowfPpprZAGF5",
+  "txs": 3000,
+  "classified": 838,
+  "unclassifiedWithToken": 86,
+  "positions": 274,
+  "solUsd": 65.03,
+  "realizedPnlSol": -12.830926030793366,
+  "realizedPnlUsd": -834.3951197824925,
+  "realizedRoiPct": -1.0934003628217968,
+  "unrealizedPnlSol": -766.9117018292067,
+  "unrealizedPnlUsd": -49872.26796995331,
+  "combinedPnlSol": -779.74262786,
+  "combinedPnlUsd": -50706.6630897358,
+  "realizedTrades": 369,
+  "winRatePct": 53.65853658536586,
+  "avgRoiPct": 122.85346939149886,
+  "medianRoiPct": 3.881166876717751,
+  "profitFactor": 0.9590745028720802,
+  "sharpeProxy": 0.12685558824587584,
+  "maxDrawdownSol": -154.702934495,
+  "largestWinSol": 9.71496749641425,
+  "largestLossSol": -58.877677547,
+  "nativeNetSol": -3.000111465,
+  "wsolNetSol": 0,
+  "usdcNet": 0,
+  "topOpen": [
+    {
+      "mint": "6QM4yL2VFiiKum7fNtVAW7rXiARRR49zs8otPx1Ppump",
+      "symbol": "WORLDFROG",
+      "heldRaw": 298096226074332,
+      "valueSol": 8.636218513,
+      "valueUsd": 561.6132899240415
+    },
+    {
+      "mint": "6N1EGfbAwRZpUqDSJw2VSRSMYpzG2uZjWj1X94Thpump",
+      "symbol": "WORLDGUY",
+      "heldRaw": 291216879866363,
+      "valueSol": 8.42795891,
+      "valueUsd": 548.0701679084951
+    },
+    {
+      "mint": "CsUQjjuJZcVB8svkfUaEZow9WDSLwsqHuaiSVzr3pump",
+      "symbol": "RETARDFEST",
+      "heldRaw": 253638817586297,
+      "valueSol": 7.28972705,
+      "valueUsd": 474.0509500687891
+    },
+    {
+      "mint": "61Er3DHVtp1ewfCaAee9a9c4DzCLnMrCiqbdzpVpump",
+      "symbol": "NP67C",
+      "heldRaw": 248154468052523,
+      "valueSol": 7.174079655,
+      "valueUsd": 466.53039993874324
+    },
+    {
+      "mint": "AFaycnPrFsLbHNQKRpXdUzUcsKFENWwkzvSSSToCpump",
+      "symbol": "TROLLOPOOP",
+      "heldRaw": 143940148446289,
+      "valueSol": 6.361432979,
+      "valueUsd": 413.6839866346346
+    },
+    {
+      "mint": "AHDBgQoDu918BaNb1hZQ2dqZ5e5ZQ5kkF9MkcxM9pump",
+      "symbol": "WORLDLGBT",
+      "heldRaw": 159913473032386,
+      "valueSol": 4.645187614,
+      "valueUsd": 302.0765505581772
+    },
+    {
+      "mint": "3QFtTezTyBFgNTwtjffqEJ11ZMTVnX1ZSp7ggoUapump",
+      "symbol": "TOXGUY",
+      "heldRaw": 157263183642056,
+      "valueSol": 4.575456612,
+      "valueUsd": 297.54194345076996
+    },
+    {
+      "mint": "384MNrvGUt4kh4o5BDm2vMu3KhAB2VKttGvHgswDpump",
+      "symbol": "CHILL",
+      "heldRaw": 151881169696446,
+      "valueSol": 4.3861731,
+      "valueUsd": 285.2328366899256
+    },
+    {
+      "mint": "BQDmZJggnNRwvr3HKrZU7w2MxiksbZMBmh6TvMY4pump",
+      "symbol": "cumtire",
+      "heldRaw": 147242286722666,
+      "valueSol": 3.262742352,
+      "valueUsd": 212.1761351673617
+    },
+    {
+      "mint": "EKqZ9QAtLjVJ1Ue7s5RtAMeAx2fSv2ScTxCtvTWXpump",
+      "symbol": "WORLDTROLL",
+      "heldRaw": 102479028535012,
+      "valueSol": 2.973672564,
+      "valueUsd": 193.37792684556766
+    }
+  ]
+}

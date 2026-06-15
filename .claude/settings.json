@@ -19,7 +19,12 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
-      "Bash(git ls-tree *)"
+      "Bash(git ls-tree *)",
+      "Bash(git commit -q -m ' *)",
+      "Bash(echo \"===TSC EXIT $?===\")",
+      "Bash(npm run *)",
+      "Bash(Select-String -Pattern \"walletLeadOrder\" -SimpleMatch)",
+      "Bash(npx tsx *)"
     ]
   }
 }

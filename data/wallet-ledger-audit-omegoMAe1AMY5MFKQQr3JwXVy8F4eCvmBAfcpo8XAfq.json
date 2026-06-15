@@ -1,0 +1,99 @@
+{
+  "wallet": "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq",
+  "txs": 10000,
+  "classified": 9794,
+  "unclassifiedWithToken": 29,
+  "positions": 800,
+  "solUsd": 82.61,
+  "realizedPnlSol": 49.301103382678846,
+  "realizedPnlUsd": 4072.7641504430994,
+  "realizedRoiPct": 1.4506348919794174,
+  "unrealizedPnlSol": -31.34201414961447,
+  "unrealizedPnlUsd": -2589.1637888996515,
+  "combinedPnlSol": 17.959089233064375,
+  "combinedPnlUsd": 1483.6003615434481,
+  "realizedTrades": 4809,
+  "winRatePct": 45.581201913079646,
+  "avgRoiPct": 1.8398288335459378,
+  "medianRoiPct": -1.3324631194957073,
+  "profitFactor": 1.2228654706367632,
+  "sharpeProxy": 0.07690740844548641,
+  "maxDrawdownSol": -5.0563622698573,
+  "largestWinSol": 1.700768054,
+  "largestLossSol": -1.2236284637024322,
+  "nativeNetSol": -3.417672619,
+  "wsolNetSol": 0,
+  "usdcNet": 0,
+  "topOpen": [
+    {
+      "mint": "3Hvxn5wa5F7ysyY1uQVQsLVmmpEdN5XJcGjSXUgnSdPv",
+      "symbol": "IBM",
+      "heldRaw": 3392055610464,
+      "valueSol": 3.891768923,
+      "valueUsd": 321.49903075977795
+    },
+    {
+      "mint": "7QXDpKoeEe9hJjiYTw6NmaAyyqX1KyBfvVXq3F24pump",
+      "symbol": "TAPE",
+      "heldRaw": 7105113741390,
+      "valueSol": 1.924857106,
+      "valueUsd": 159.0124455323082
+    },
+    {
+      "mint": "BdntCwkZwKELvTane4PQ2v1TbVZsdTrXreYvvkfrpump",
+      "symbol": "Graphify",
+      "heldRaw": 7032457148322,
+      "valueSol": 1.734916798,
+      "valueUsd": 143.32147668280237
+    },
+    {
+      "mint": "AMc5zMxS1HWdyhYst68vaVGT5RyDvK1W6MoGoveppump",
+      "symbol": "FCSRL",
+      "heldRaw": 5138271205009,
+      "valueSol": 0.952890871,
+      "valueUsd": 78.71831486073788
+    },
+    {
+      "mint": "AyLn7YdHqh3pGSNC1YrdEtEdSCVjG7BxQedxBvkTpump",
+      "symbol": "DATA",
+      "heldRaw": 7635632361626,
+      "valueSol": 0.890654321,
+      "valueUsd": 73.57695343662814
+    },
+    {
+      "mint": "GJF4KMWjSHzhJj8ZS9yS81DRd4WYefAcDeJh9Bkkpump",
+      "symbol": "FLUKI",
+      "heldRaw": 6748169074065,
+      "valueSol": 0.759281341,
+      "valueUsd": 62.72423154343417
+    },
+    {
+      "mint": "FboMqyPvfKMs1NGnF4Gu41YVEtr72dWna9bN8QUApump",
+      "symbol": "TripleK",
+      "heldRaw": 6072672339890,
+      "valueSol": 0.735101361,
+      "valueUsd": 60.726723398900006
+    },
+    {
+      "mint": "Cgv7iy6PoFFF963FLdhYWv8sWHQP5EeECek4Hurrpump",
+      "symbol": "PokeBurn",
+      "heldRaw": 8746839186513,
+      "valueSol": 0.563181668,
+      "valueUsd": 46.52443763306265
+    },
+    {
+      "mint": "214uC4yTasZZLhbabnKU3agdipLZiPoQz25Nv1xupump",
+      "symbol": "opsec",
+      "heldRaw": 5975462930230,
+      "valueSol": 0.540041233,
+      "valueUsd": 44.61280623709718
+    },
+    {
+      "mint": "Anr6gkCX8TqedhmdZ8ihNXxZxbX9Z4xRVMtaBUxxpump",
+      "symbol": "Juan",
+      "heldRaw": 7193394176712,
+      "valueSol": 0.45819683,
+      "valueUsd": 37.85164015785854
+    }
+  ]
+}

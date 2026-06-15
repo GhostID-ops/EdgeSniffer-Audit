@@ -1,0 +1,3793 @@
+{
+  "sample": {
+    "partial": false,
+    "txsFetched": 4000,
+    "swaps": 3327,
+    "campaigns": 956,
+    "measuredEntries": 50,
+    "oldestTx": "2026-06-05T17:51:43.000Z",
+    "newestTx": "2026-06-07T01:09:17.000Z",
+    "horizonHours": 24,
+    "solUsdUsed": "62.72"
+  },
+  "performance": {
+    "realizedPnlSol": "+170.9726 SOL",
+    "closedCampaigns": 928,
+    "realizedWinRate": "+46.0%",
+    "avgSourceExit": "+28.0%",
+    "medianSourceExit": "+2.8%"
+  },
+  "pathStats": {
+    "hit30": "14/50",
+    "hit50": "12/50",
+    "hit100": "9/50",
+    "hit200": "1/50",
+    "medianMfe": "+0.5%",
+    "medianMae": "-14.7%",
+    "medianEntryMcApprox": "$2,896",
+    "medianTimeTo2x": "13m"
+  },
+  "strategies": [
+    {
+      "name": "Mirror source exit",
+      "trades": 47,
+      "avgPct": 28.04599817087952,
+      "medianPct": 2.7961337490894254,
+      "winRatePct": 59.57446808510638,
+      "profitFactor": 3.4395232179069932,
+      "sharpeProxy": 0.15417937098412413,
+      "totalPct": 1318.1619140313376
+    },
+    {
+      "name": "Trail arm65 give35 SL35",
+      "trades": 50,
+      "avgPct": 6.0687790348459965,
+      "medianPct": 0,
+      "winRatePct": 30,
+      "profitFactor": 1.576484915207379,
+      "sharpeProxy": 0.14434162129843664,
+      "totalPct": 303.4389517422998
+    },
+    {
+      "name": "TP100 SL35",
+      "trades": 50,
+      "avgPct": 5.414234164392884,
+      "medianPct": -0.0469063178838246,
+      "winRatePct": 28.000000000000004,
+      "profitFactor": 1.4822420798655258,
+      "sharpeProxy": 0.12298063519013498,
+      "totalPct": 270.7117082196442
+    },
+    {
+      "name": "Trail arm45 give30 SL35",
+      "trades": 50,
+      "avgPct": 4.412158463677324,
+      "medianPct": 0,
+      "winRatePct": 32,
+      "profitFactor": 1.4489735615803812,
+      "sharpeProxy": 0.12033120166127485,
+      "totalPct": 220.60792318386618
+    },
+    {
+      "name": "TP50 SL30",
+      "trades": 50,
+      "avgPct": 2.5168662839256526,
+      "medianPct": 0,
+      "winRatePct": 32,
+      "profitFactor": 1.2860532346768534,
+      "sharpeProxy": 0.0895388414584045,
+      "totalPct": 125.84331419628262
+    },
+    {
+      "name": "TP30 SL25",
+      "trades": 50,
+      "avgPct": -1.7358273510326117,
+      "medianPct": 0,
+      "winRatePct": 30,
+      "profitFactor": 0.7924348194691888,
+      "sharpeProxy": -0.08750432109950462,
+      "totalPct": -86.79136755163059
+    },
+    {
+      "name": "Time exit 4h",
+      "trades": 50,
+      "avgPct": -10.376200111227602,
+      "medianPct": -1.095917327298126,
+      "winRatePct": 20,
+      "profitFactor": 0.44760633134634925,
+      "sharpeProxy": -0.20963461179061793,
+      "totalPct": -518.8100055613801
+    },
+    {
+      "name": "Time exit 30m",
+      "trades": 50,
+      "avgPct": -10.383521709210754,
+      "medianPct": -0.7246543397071019,
+      "winRatePct": 20,
+      "profitFactor": 0.34223224341526576,
+      "sharpeProxy": -0.3349921604575637,
+      "totalPct": -519.1760854605377
+    },
+    {
+      "name": "Time exit 1h",
+      "trades": 50,
+      "avgPct": -12.947279514449178,
+      "medianPct": -1.095917327298126,
+      "winRatePct": 18,
+      "profitFactor": 0.25862177545368686,
+      "sharpeProxy": -0.41449345413457367,
+      "totalPct": -647.3639757224589
+    }
+  ],
+  "leadStats": {
+    "profiledLeadEntries": 50,
+    "medianSourceOrder": "2",
+    "medianSourceDelaySec": "0",
+    "medianEarlierBuys": "0",
+    "repeatedTopEarlierBuyers": "none"
+  },
+  "rows": [
+    {
+      "mint": "GonUhW9pyJki6vRBHKQdfTRT5WBKQ7LkL78X4M5epump",
+      "symbol": "WEEDSLUT",
+      "entryTs": 1780794555,
+      "sourceBuySol": 3.071762611,
+      "sourceExitPct": 0.6274334133432813,
+      "entryMarketCapUsdApprox": 2538.5878347404973,
+      "pre5mVolumeUsd": 1451.2977777516494,
+      "mfePct": 27.332178445732485,
+      "maePct": -35.317831005656544,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780794600,
+          "open": 0.000003355649186277,
+          "high": 0.000004272821209883,
+          "low": 0.000002170506677525,
+          "close": 0.000002170506677525,
+          "volume": 1543.8523716280463
+        }
+      ],
+      "lead": {
+        "creator": "3uVv6g5rUsVKY8MHt2QoPkhYZ1ExkT8CBbLf5mpe2LY9",
+        "sourceDelaySec": 0,
+        "sourceOrder": 1,
+        "earlierBuys": 11,
+        "earlierBuySol": 6.294950866,
+        "topEarlierBuyer": "14th5GcWHBLpqCGpBaPjJUete8F7pVj3RA6ScWi9SMLs",
+        "topEarlierBuyerSol": 1.03567908
+      }
+    },
+    {
+      "mint": "Bqd7iiWeu4ZsEYKTaKJjhMSfCNafuVjWdSeNK3z7pump",
+      "symbol": "LTC",
+      "entryTs": 1780794477,
+      "sourceBuySol": 1.8246626,
+      "sourceExitPct": 12.911041471447927,
+      "entryMarketCapUsdApprox": 2535.217800362611,
+      "pre5mVolumeUsd": 2019.2719990642472,
+      "mfePct": 0,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780794600,
+          "open": 0.000001760004780976,
+          "high": 0.000001760004780976,
+          "low": 0.000001760004780976,
+          "close": 0.000001760004780976,
+          "volume": 1.9784486859208323
+        }
+      ],
+      "lead": {
+        "creator": "26zXzuVzk4twhhr9r18qYoFQA8Zysmsg78wiDWzACfSP",
+        "sourceDelaySec": 0,
+        "sourceOrder": 3,
+        "earlierBuys": 5,
+        "earlierBuySol": 8.878804329,
+        "topEarlierBuyer": "26zXzuVzk4twhhr9r18qYoFQA8Zysmsg78wiDWzACfSP",
+        "topEarlierBuyerSol": 5.011153524
+      }
+    },
+    {
+      "mint": "At2im4gt8rX7aiXs9CvqejqZHEDL3siXGUZo4Hvupump",
+      "symbol": "bankvote",
+      "entryTs": 1780794219,
+      "sourceBuySol": 12.442162602,
+      "sourceExitPct": -16.755346362897498,
+      "entryMarketCapUsdApprox": 5090.856146004703,
+      "pre5mVolumeUsd": 11866.058592693682,
+      "mfePct": 1.065258369090269,
+      "maePct": -37.32408642618352,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780794300,
+          "open": 0.000010442215618357,
+          "high": 0.000010442215618357,
+          "low": 0.000008634124062766,
+          "close": 0.000009573197754664,
+          "volume": 10771.14920004443
+        },
+        {
+          "ts": 1780794600,
+          "open": 0.000009699569843286,
+          "high": 0.00001055345219415,
+          "low": 0.000006544754036153,
+          "close": 0.000007869681116104,
+          "volume": 1361.8290399016018
+        }
+      ],
+      "lead": {
+        "creator": "6yiRnGg5Yg4tB4fKJjb9w3F2HenSZ6HKKdea8xWWM8J1",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "46jBqPaTxEx5SaSdQ3jG6Y86nRwGprsGtcMdg5ZUpump",
+      "symbol": "1000000",
+      "entryTs": 1780793904,
+      "sourceBuySol": 1.878914679,
+      "sourceExitPct": 13.943170966093666,
+      "entryMarketCapUsdApprox": 2757.9360258600577,
+      "pre5mVolumeUsd": 3678.091694637372,
+      "mfePct": 0,
+      "maePct": -40.85680054786505,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780794000,
+          "open": 0.000003190077798772,
+          "high": 0.000003190077798772,
+          "low": 0.000002933458060447,
+          "close": 0.000002089940598513,
+          "volume": 3001.6003729444874
+        },
+        {
+          "ts": 1780794300,
+          "open": 0.000002089940598513,
+          "high": 0.000002089940598513,
+          "low": 0.000002061064712269,
+          "close": 0.000002061064712269,
+          "volume": 7438.023920669128
+        },
+        {
+          "ts": 1780794600,
+          "open": 0.000001901784228969,
+          "high": 0.000001901784228969,
+          "low": 0.000001886714075206,
+          "close": 0.000001886714075206,
+          "volume": 15.589599627874419
+        }
+      ],
+      "lead": {
+        "creator": "DLScWhTGnUMEm2esPtywt8bkrR1pDFXp97SzdQg8wjn7",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "Dr14gE2DaA8gCh46kQejKEzg3kEeLYxvfxXfSb1Apump",
+      "symbol": "manlet",
+      "entryTs": 1780793818,
+      "sourceBuySol": 0.0021626,
+      "sourceExitPct": 1232.4239341276837,
+      "entryMarketCapUsdApprox": 9.8907204667627,
+      "pre5mVolumeUsd": 28908.121323507003,
+      "mfePct": 53.65968325518886,
+      "maePct": -60.72797774728087,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780794000,
+          "open": 0.000031571463204153,
+          "high": 0.00004851261035853,
+          "low": 0.000022678231003966,
+          "close": 0.000011326585059411,
+          "volume": 15382.318644834379
+        },
+        {
+          "ts": 1780794300,
+          "open": 0.000011326585059411,
+          "high": 0.000020330553295362,
+          "low": 0.000017155325761572,
+          "close": 0.000020330553295362,
+          "volume": 18516.29518955936
+        },
+        {
+          "ts": 1780794600,
+          "open": 0.000019520006878956,
+          "high": 0.000022368451561602,
+          "low": 0.000012398752055044,
+          "close": 0.000015622326770503,
+          "volume": 4300.8503708164
+        }
+      ],
+      "lead": {
+        "creator": "6XzmFvaNivoYZATpfjLmU9yWFU8p1XTiDnjFJQ4JHFGd",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "EGyo2h1ovgamNGkFMGoK9n6ftZFcBfYAAf3wYwn2pump",
+      "symbol": "1000000",
+      "entryTs": 1780793603,
+      "sourceBuySol": 1.211149011,
+      "sourceExitPct": null,
+      "entryMarketCapUsdApprox": 3781.1368396710845,
+      "pre5mVolumeUsd": 8693.806199038707,
+      "mfePct": 0,
+      "maePct": -0.7311909173880943,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780793700,
+          "open": 0.000001764012609193,
+          "high": 0.000001764012609193,
+          "low": 0.000001754486915603,
+          "close": 0.000001754486915603,
+          "volume": 5.838191112208191
+        },
+        {
+          "ts": 1780794000,
+          "open": 0.000001751114309213,
+          "high": 0.000001751114309213,
+          "low": 0.000001751114309213,
+          "close": 0.000001751114309213,
+          "volume": 2.057255017749186
+        }
+      ],
+      "lead": {
+        "creator": "4U9URrKXL6JznpYqjHAZ3URyT5qQCLmbxLcTWq43g2jB",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "FS2EhuwLTWNm2TLdpMep3c81CSPvFrF35YMidXFupump",
+      "symbol": "FONDJO",
+      "entryTs": 1780792817,
+      "sourceBuySol": 4.33076261,
+      "sourceExitPct": -2.350326124201945,
+      "entryMarketCapUsdApprox": 2090.4730063181696,
+      "pre5mVolumeUsd": 1817.5490969073524,
+      "mfePct": 0,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780793400,
+          "open": 0.00000174326477158,
+          "high": 0.00000174326477158,
+          "low": 0.00000174326477158,
+          "close": 0.00000174326477158,
+          "volume": 3.117626825257327
+        }
+      ],
+      "lead": {
+        "creator": "2nL4eFXwcevZL7dN8gYLSZwsSdbKYnN9LC5qhpFSZGv4",
+        "sourceDelaySec": 0,
+        "sourceOrder": 1,
+        "earlierBuys": 3,
+        "earlierBuySol": 0.635357896,
+        "topEarlierBuyer": "EuVGgnp3agmspDtqZ4znL64M3EZfixGfgQ6zDSJa7oPN",
+        "topEarlierBuyerSol": 0.517997397
+      }
+    },
+    {
+      "mint": "CgHE4SAtNuzbCpQmkPzwYZ7cBMQLK7R4J2gVSVrDpump",
+      "symbol": "RDOG",
+      "entryTs": 1780792634,
+      "sourceBuySol": 1.9406684,
+      "sourceExitPct": 3.808487013968386,
+      "entryMarketCapUsdApprox": 2328.9609520877843,
+      "pre5mVolumeUsd": 1064.4777710033118,
+      "mfePct": 134.16396037820513,
+      "maePct": -15.621024491381203,
+      "timeTo2xSec": 766,
+      "candles": [
+        {
+          "ts": 1780792800,
+          "open": 0.000002265438033653,
+          "high": 0.000002265438033653,
+          "low": 0.000001986266013239,
+          "close": 0.00000204818113977,
+          "volume": 1496.0296915389083
+        },
+        {
+          "ts": 1780793100,
+          "open": 0.00000204818113977,
+          "high": 0.000003446557434381,
+          "low": 0.000002163872797697,
+          "close": 0.000003446557434381,
+          "volume": 5066.880036603923
+        },
+        {
+          "ts": 1780793400,
+          "open": 0.000003618251089812,
+          "high": 0.000005304839419516,
+          "low": 0.000002316037750647,
+          "close": 0.000002387858527678,
+          "volume": 670.7056726473969
+        },
+        {
+          "ts": 1780793700,
+          "open": 0.000002338502582705,
+          "high": 0.000002338502582705,
+          "low": 0.000001911553403579,
+          "close": 0.000001990373844428,
+          "volume": 143.63830835565986
+        },
+        {
+          "ts": 1780794000,
+          "open": 0.00000223524340254,
+          "high": 0.00000223524340254,
+          "low": 0.00000223524340254,
+          "close": 0.00000223524340254,
+          "volume": 3.41750699479087
+        }
+      ],
+      "lead": {
+        "creator": "FhwFSBV6UZP55DWjVGAsqaatXajhMZS9ZV84p7Yzq6wj",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "H2VYgVzPvRmYDZV8o8My2vkXnnGSjP7okLB1rJAmpump",
+      "symbol": "TRADE",
+      "entryTs": 1780792360,
+      "sourceBuySol": 2.0110626,
+      "sourceExitPct": 1.0553898222760445,
+      "entryMarketCapUsdApprox": 1939.4822213709522,
+      "pre5mVolumeUsd": 406.3023763907581,
+      "mfePct": 0,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780793100,
+          "open": 0.000001764405947153,
+          "high": 0.000001764405947153,
+          "low": 0.000001764405947153,
+          "close": 0.000001764405947153,
+          "volume": 0.44116399788773475
+        }
+      ],
+      "lead": {
+        "creator": "DjP5AoZcr8QG3uCt5qRm7SJi9dBVHEwN9sAgrSkVEGoA",
+        "sourceDelaySec": 0,
+        "sourceOrder": 1,
+        "earlierBuys": 4,
+        "earlierBuySol": 1.014561718,
+        "topEarlierBuyer": "Ez2jYoXp45DZxr7JVhiqbDNirgBT37MErjZGxA8jZkTf",
+        "topEarlierBuyerSol": 0.331761138
+      }
+    },
+    {
+      "mint": "2GUALaq54J2S5RvJWWbH4H9qkDLP8sDwGP6SoK77rfNZ",
+      "symbol": "MONEY",
+      "entryTs": 1780792084,
+      "sourceBuySol": 3.1231626,
+      "sourceExitPct": null,
+      "entryMarketCapUsdApprox": 4566.830377789791,
+      "pre5mVolumeUsd": 2757.8864029916967,
+      "mfePct": 0,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780792200,
+          "open": 0.000001798652233586,
+          "high": 0.000001798652233586,
+          "low": 0.000001798652233586,
+          "close": 0.000001798652233586,
+          "volume": 61.51247314005709
+        }
+      ],
+      "lead": {
+        "creator": "bobMpu1reULvieXi1DM8YeUn6rmRozhyU9nA4cANDaJ",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "it8wRbMTYYwVYCqxbGzz3i7Ko4jD25bdD6s6rdQpump",
+      "symbol": "unrecprd",
+      "entryTs": 1780792013,
+      "sourceBuySol": 1.211062611,
+      "sourceExitPct": -16.07127164460038,
+      "entryMarketCapUsdApprox": 2175.589820964661,
+      "pre5mVolumeUsd": 263.7048982721632,
+      "mfePct": 0,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780792800,
+          "open": 0.000001747491178641,
+          "high": 0.000001747491178641,
+          "low": 0.000001747491178641,
+          "close": 0.000001747491178641,
+          "volume": 2.6678690816048802
+        }
+      ],
+      "lead": {
+        "creator": "G9rzNF4vVSKUtDe79CgJ1GwoFKvkak4JDChrjF5MCh2m",
+        "sourceDelaySec": 0,
+        "sourceOrder": 2,
+        "earlierBuys": 3,
+        "earlierBuySol": 3.0904848,
+        "topEarlierBuyer": "G9rzNF4vVSKUtDe79CgJ1GwoFKvkak4JDChrjF5MCh2m",
+        "topEarlierBuyerSol": 2.53174624
+      }
+    },
+    {
+      "mint": "4EL7nmuUrAJJmV6pKUWskYQTH3hsmdJQnUCP238Vpump",
+      "symbol": "BabyT",
+      "entryTs": 1780791829,
+      "sourceBuySol": 4.90626841,
+      "sourceExitPct": 4.092370865620864,
+      "entryMarketCapUsdApprox": 8764.226911769845,
+      "pre5mVolumeUsd": 0,
+      "mfePct": 173.33510991992347,
+      "maePct": -26.041329744916887,
+      "timeTo2xSec": 971,
+      "candles": [
+        {
+          "ts": 1780792200,
+          "open": 0.00002508432311365,
+          "high": 0.000033775978791292,
+          "low": 0.000018552031817344,
+          "close": 0.000033452368195555,
+          "volume": 19346.324453236826
+        },
+        {
+          "ts": 1780792500,
+          "open": 0.000031804591589516,
+          "high": 0.000041106154221967,
+          "low": 0.00002281828260045,
+          "close": 0.00004051565783963,
+          "volume": 11628.903823470175
+        },
+        {
+          "ts": 1780792800,
+          "open": 0.000039328358945246,
+          "high": 0.000068564262155364,
+          "low": 0.000036712381847856,
+          "close": 0.000063314438357174,
+          "volume": 21966.829285879106
+        },
+        {
+          "ts": 1780793100,
+          "open": 0.000064554380334696,
+          "high": 0.000064818661759721,
+          "low": 0.000020039087948885,
+          "close": 0.000021770035871794,
+          "volume": 31858.30802605185
+        },
+        {
+          "ts": 1780793400,
+          "open": 0.000022165403440309,
+          "high": 0.000045988994186291,
+          "low": 0.000020365719975434,
+          "close": 0.000044413914084912,
+          "volume": 9885.366162394377
+        },
+        {
+          "ts": 1780793700,
+          "open": 0.000041955778220655,
+          "high": 0.000041955778220655,
+          "low": 0.000033619159634443,
+          "close": 0.000039108903438444,
+          "volume": 17697.99486743895
+        },
+        {
+          "ts": 1780794000,
+          "open": 0.000040071232673409,
+          "high": 0.000042189899340012,
+          "low": 0.000038952300370665,
+          "close": 0.000038952300370665,
+          "volume": 6106.557376837715
+        },
+        {
+          "ts": 1780794300,
+          "open": 0.000038083088405061,
+          "high": 0.000042757116245893,
+          "low": 0.000025712161136478,
+          "close": 0.000025892702010163,
+          "volume": 4126.859326971619
+        },
+        {
+          "ts": 1780794600,
+          "open": 0.000025620396020835,
+          "high": 0.000031154563861942,
+          "low": 0.000025110142562594,
+          "close": 0.000030445861002191,
+          "volume": 2427.999802018709
+        }
+      ],
+      "lead": {
+        "creator": "CnNaUyKxR8LsorBooxTwPJbFNNyd689XBtoXjVho4VTE",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "HHBtMjjSte1bWRgXuhe9HWDrs7vp4pcjr8tpvfbqpump",
+      "symbol": "TRUMP80",
+      "entryTs": 1780791156,
+      "sourceBuySol": 1.010562611,
+      "sourceExitPct": -3.109809393096575,
+      "entryMarketCapUsdApprox": 1975.3623847435363,
+      "pre5mVolumeUsd": 64.87758751931524,
+      "mfePct": 103.15475477880389,
+      "maePct": -9.297466537545464e-7,
+      "timeTo2xSec": 1044,
+      "candles": [
+        {
+          "ts": 1780791300,
+          "open": 0.000001859861488418,
+          "high": 0.000001933490033469,
+          "low": 0.000001859861471126,
+          "close": 0.000001933490033469,
+          "volume": 39.29200406840187
+        },
+        {
+          "ts": 1780791600,
+          "open": 0.000001989176451752,
+          "high": 0.000002560695613833,
+          "low": 0.000001989176451752,
+          "close": 0.000002490120207916,
+          "volume": 280.7116047238814
+        },
+        {
+          "ts": 1780791900,
+          "open": 0.000002436469377099,
+          "high": 0.000002436469377099,
+          "low": 0.000002436469377099,
+          "close": 0.000002436469377099,
+          "volume": 15.192031482932457
+        },
+        {
+          "ts": 1780792200,
+          "open": 0.000002493387632558,
+          "high": 0.000003778397046021,
+          "low": 0.000002493387632558,
+          "close": 0.000003547541077532,
+          "volume": 464.77916824476813
+        },
+        {
+          "ts": 1780792500,
+          "open": 0.000003390516570601,
+          "high": 0.000003390516570601,
+          "low": 0.000002491791713545,
+          "close": 0.00000274953166283,
+          "volume": 512.7616754526035
+        },
+        {
+          "ts": 1780792800,
+          "open": 0.00000274638434249,
+          "high": 0.000002860829083619,
+          "low": 0.00000274638434249,
+          "close": 0.000002860829083619,
+          "volume": 42.30277238818903
+        },
+        {
+          "ts": 1780793100,
+          "open": 0.000002864793448007,
+          "high": 0.000002864793448007,
+          "low": 0.000002864793448007,
+          "close": 0.000002864793448007,
+          "volume": 1.2287917737609184
+        },
+        {
+          "ts": 1780793400,
+          "open": 0.000002912635689341,
+          "high": 0.000002938598786725,
+          "low": 0.000002912635689341,
+          "close": 0.000002938598786725,
+          "volume": 14.612440293529486
+        },
+        {
+          "ts": 1780793700,
+          "open": 0.000003205324099129,
+          "high": 0.000003723781698183,
+          "low": 0.000003199557288526,
+          "close": 0.000003668690619572,
+          "volume": 466.31823166756453
+        },
+        {
+          "ts": 1780794000,
+          "open": 0.000003682574469381,
+          "high": 0.000003682574469381,
+          "low": 0.000003682574469381,
+          "close": 0.000003682574469381,
+          "volume": 11.0910756853981
+        },
+        {
+          "ts": 1780794300,
+          "open": 0.000003651041183476,
+          "high": 0.000003651041183476,
+          "low": 0.000003631018239101,
+          "close": 0.000003631018239101,
+          "volume": 194.5541308348605
+        }
+      ],
+      "lead": {
+        "creator": "77ekJw3pcApGwSV4oVjQUPFqWikoVbjPRPEtXDGfxT47",
+        "sourceDelaySec": 0,
+        "sourceOrder": 2,
+        "earlierBuys": 2,
+        "earlierBuySol": 1.044992315,
+        "topEarlierBuyer": "77ekJw3pcApGwSV4oVjQUPFqWikoVbjPRPEtXDGfxT47",
+        "topEarlierBuyerSol": 1.012463418
+      }
+    },
+    {
+      "mint": "9DeqQ82FAc1EP3v7onieEt4w3E49d2vgWp19FA4spump",
+      "symbol": "CUMSKIN",
+      "entryTs": 1780791146,
+      "sourceBuySol": 1.213762611,
+      "sourceExitPct": 13.156259597454351,
+      "entryMarketCapUsdApprox": 3391.7527568074916,
+      "pre5mVolumeUsd": 16615.849135275,
+      "mfePct": 95.3709095764547,
+      "maePct": -43.92681881821531,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780791300,
+          "open": 0.000006081344651708,
+          "high": 0.000011881178360521,
+          "low": 0.000005570963075421,
+          "close": 0.000002411445919329,
+          "volume": 11852.896967943445
+        },
+        {
+          "ts": 1780791600,
+          "open": 0.000002411445919329,
+          "high": 0.000009997715239946,
+          "low": 0.000003626211824322,
+          "close": 0.000006990836277498,
+          "volume": 10336.031270268813
+        },
+        {
+          "ts": 1780791900,
+          "open": 0.00000686142786338,
+          "high": 0.000010130699393074,
+          "low": 0.000003714337448371,
+          "close": 0.000004298265154063,
+          "volume": 5356.473665540171
+        },
+        {
+          "ts": 1780792200,
+          "open": 0.000004845988079304,
+          "high": 0.00000737439465372,
+          "low": 0.000003410003404841,
+          "close": 0.00000737439465372,
+          "volume": 2341.2643889774236
+        },
+        {
+          "ts": 1780792500,
+          "open": 0.000007406997582072,
+          "high": 0.000007406997582072,
+          "low": 0.000005281173119623,
+          "close": 0.000005464994039778,
+          "volume": 843.548346912082
+        },
+        {
+          "ts": 1780792800,
+          "open": 0.000005504795092048,
+          "high": 0.000005506235115683,
+          "low": 0.000005504795092048,
+          "close": 0.000005506235115683,
+          "volume": 658.7979091285263
+        },
+        {
+          "ts": 1780793100,
+          "open": 0.000005411085987013,
+          "high": 0.000007225386466783,
+          "low": 0.000005021005975867,
+          "close": 0.000007225386466783,
+          "volume": 1271.5962382182483
+        },
+        {
+          "ts": 1780793400,
+          "open": 0.00000718965676689,
+          "high": 0.000007239692037063,
+          "low": 0.000005490837026883,
+          "close": 0.000005578671212034,
+          "volume": 965.4936455582351
+        },
+        {
+          "ts": 1780793700,
+          "open": 0.000004724585555231,
+          "high": 0.000005032575120082,
+          "low": 0.000004724585555231,
+          "close": 0.000004975989720114,
+          "volume": 1380.2428239977223
+        },
+        {
+          "ts": 1780794000,
+          "open": 0.000005108609358223,
+          "high": 0.000005108609358223,
+          "low": 0.000004270234221269,
+          "close": 0.000004418175606938,
+          "volume": 326.23007851628137
+        },
+        {
+          "ts": 1780794300,
+          "open": 0.000004065689907393,
+          "high": 0.000004729440490586,
+          "low": 0.000004025578309217,
+          "close": 0.000004729440490586,
+          "volume": 349.8843636750362
+        },
+        {
+          "ts": 1780794600,
+          "open": 0.000004721993077055,
+          "high": 0.000004741036491399,
+          "low": 0.000004654177025105,
+          "close": 0.000004654177025105,
+          "volume": 40.79568469722041
+        }
+      ],
+      "lead": {
+        "creator": "5UwMWJfVsgTKbCsiWqt1rQMYmkjyKZ4Xg1fshohLMqPa",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "2L2W3wiDWXCWqEJjmJow5HzigEdVrn3MEvtxy9vBpump",
+      "symbol": "richdev",
+      "entryTs": 1780791040,
+      "sourceBuySol": 4.3632706,
+      "sourceExitPct": 8.484556859709778,
+      "entryMarketCapUsdApprox": 3597.9637696446994,
+      "pre5mVolumeUsd": 5292.626282848006,
+      "mfePct": 0,
+      "maePct": -14.109926198172614,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780791300,
+          "open": 0.000002132280886763,
+          "high": 0.000002132280886763,
+          "low": 0.000001831417627303,
+          "close": 0.000001831417627303,
+          "volume": 157.0693191936975
+        }
+      ],
+      "lead": {
+        "creator": "DKfDdLy9JYA2gpoSmxzPmmT57FmTe6uzTmpEk6hyjPhR",
+        "sourceDelaySec": 0,
+        "sourceOrder": 2,
+        "earlierBuys": 5,
+        "earlierBuySol": 15.655755707,
+        "topEarlierBuyer": "DKfDdLy9JYA2gpoSmxzPmmT57FmTe6uzTmpEk6hyjPhR",
+        "topEarlierBuyerSol": 10.009685128
+      }
+    },
+    {
+      "mint": "EPXmkwog34sHseANnhouvLUHB3Xu3idXpMczBWAapump",
+      "symbol": "bottom",
+      "entryTs": 1780790635,
+      "sourceBuySol": 8.224225453,
+      "sourceExitPct": -44.660522793207406,
+      "entryMarketCapUsdApprox": 6480.036349156431,
+      "pre5mVolumeUsd": 2220.3845561439684,
+      "mfePct": 0,
+      "maePct": -0.7181177620261097,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780790700,
+          "open": 0.000001750786012245,
+          "high": 0.000001750786012245,
+          "low": 0.000001738213306916,
+          "close": 0.000001738213306916,
+          "volume": 12.557345998923594
+        }
+      ],
+      "lead": {
+        "creator": "FGGeLFNYZd5ggbYLAtDUrLb1zL5MWZcgHYJ7B6VayBCn",
+        "sourceDelaySec": 0,
+        "sourceOrder": 1,
+        "earlierBuys": 20,
+        "earlierBuySol": 25.070540003,
+        "topEarlierBuyer": "39LLDsoxpqDKVSfdehobhQjQAYqDrsbmXBxxHnQ4bCtz",
+        "topEarlierBuyerSol": 4.459808338
+      }
+    },
+    {
+      "mint": "DJEpYNv2jEHrL8aC1SguibAD12MzfYjTgNWxFjAapump",
+      "symbol": "Free Money",
+      "entryTs": 1780790426,
+      "sourceBuySol": 1.2276626,
+      "sourceExitPct": -34.48728860844991,
+      "entryMarketCapUsdApprox": 2878.866676007769,
+      "pre5mVolumeUsd": 841.4819174760207,
+      "mfePct": 0,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780790700,
+          "open": 0.000001735600040097,
+          "high": 0.000001735600040097,
+          "low": 0.000001735600040097,
+          "close": 0.000001735600040097,
+          "volume": 0.05180787231701993
+        }
+      ],
+      "lead": {
+        "creator": "JC1irmi7bWUEjPvqCbZbAoJ9JXh6htDC9uP5tAC2w4k",
+        "sourceDelaySec": 0,
+        "sourceOrder": 4,
+        "earlierBuys": 5,
+        "earlierBuySol": 8.772727311,
+        "topEarlierBuyer": "2mqrindMAjJEQPLhroYWyiYPo5h9iAsahfdd4QtsjwdY",
+        "topEarlierBuyerSol": 3.105007242
+      }
+    },
+    {
+      "mint": "4iCFoT5zFrhY6RJr1WhqisQ6eh1gFraTfr3qA3Hmpump",
+      "symbol": "UP",
+      "entryTs": 1780789514,
+      "sourceBuySol": 3.0396626,
+      "sourceExitPct": 1.8100623733699917,
+      "entryMarketCapUsdApprox": 2903.787027813715,
+      "pre5mVolumeUsd": 3544.757937704464,
+      "mfePct": 0,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780790400,
+          "open": 0.000001740331003073,
+          "high": 0.000001740331003073,
+          "low": 0.000001740331003073,
+          "close": 0.000001740331003073,
+          "volume": 1.265370114645417
+        }
+      ],
+      "lead": {
+        "creator": "HhJENixhxdPcScuUFwH438MwrVaYbsqYmUBa9Tw8HXAL",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "GNRxbRjqfTeMuwcREVhREqe8Y47CjxbxLSaToyimpump",
+      "symbol": "Posthuman",
+      "entryTs": 1780789220,
+      "sourceBuySol": 1.8246626,
+      "sourceExitPct": 88.44814723554919,
+      "entryMarketCapUsdApprox": 4547.309216632492,
+      "pre5mVolumeUsd": 54618.77917308119,
+      "mfePct": 33.07942063058131,
+      "maePct": -4.298503320473674,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780789500,
+          "open": 0.000001902577361159,
+          "high": 0.000001902577361159,
+          "low": 0.00000183094631804,
+          "close": 0.00000183094631804,
+          "volume": 11.285265765734014
+        },
+        {
+          "ts": 1780789800,
+          "open": 0.000001820795010115,
+          "high": 0.000001820831684458,
+          "low": 0.000001820795010115,
+          "close": 0.000001820831684458,
+          "volume": 2.7541342108318596
+        },
+        {
+          "ts": 1780790100,
+          "open": 0.000002112276809273,
+          "high": 0.000002112276809273,
+          "low": 0.000002112276809273,
+          "close": 0.000002112276809273,
+          "volume": 304.0157941134808
+        },
+        {
+          "ts": 1780790400,
+          "open": 0.000002446618574819,
+          "high": 0.000002446618574819,
+          "low": 0.000002446618574819,
+          "close": 0.000002446618574819,
+          "volume": 2.9859591076477487
+        },
+        {
+          "ts": 1780790700,
+          "open": 0.000002427104863698,
+          "high": 0.000002531938929279,
+          "low": 0.000002427104863698,
+          "close": 0.000002531938929279,
+          "volume": 602.9176525141236
+        },
+        {
+          "ts": 1780791300,
+          "open": 0.000002152819780453,
+          "high": 0.000002162292882938,
+          "low": 0.000002152375442028,
+          "close": 0.000002162292882938,
+          "volume": 10.759145541441757
+        },
+        {
+          "ts": 1780792800,
+          "open": 0.000002177006643335,
+          "high": 0.000002177006643335,
+          "low": 0.000002177006643335,
+          "close": 0.000002177006643335,
+          "volume": 1.2783065701866736
+        }
+      ],
+      "lead": {
+        "creator": "3TcgykzMCWujmnRXtTsr5j3s6mRsyCzynsKczMvvUsBp",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "FHaL9ismftz9Aqs2aqKA8humiavTvNdwZjGE93yipump",
+      "symbol": "Dell",
+      "entryTs": 1780789107,
+      "sourceBuySol": 1.213762611,
+      "sourceExitPct": 5.415218791905924,
+      "entryMarketCapUsdApprox": 2105.621154531154,
+      "pre5mVolumeUsd": 244.098272573984,
+      "mfePct": 0,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780789500,
+          "open": 0.000001738367621586,
+          "high": 0.000001738367621586,
+          "low": 0.000001738367621586,
+          "close": 0.000001738367621586,
+          "volume": 0.12408896213795326
+        }
+      ],
+      "lead": {
+        "creator": "H8fY8BtGAUyNnwQh5cDKyuFbxHPmLkQ1ZVjFSsv4cwtv",
+        "sourceDelaySec": 0,
+        "sourceOrder": 2,
+        "earlierBuys": 3,
+        "earlierBuySol": 2.460117251,
+        "topEarlierBuyer": "H8fY8BtGAUyNnwQh5cDKyuFbxHPmLkQ1ZVjFSsv4cwtv",
+        "topEarlierBuyerSol": 1.92592862
+      }
+    },
+    {
+      "mint": "2EQ7SUWfdW5Xw5R7xYWLm6TkBmvccjyD9siKwLgMpump",
+      "symbol": "ROMO",
+      "entryTs": 1780789023,
+      "sourceBuySol": 1.873662602,
+      "sourceExitPct": 61.374912311987316,
+      "entryMarketCapUsdApprox": 4602.049104409393,
+      "pre5mVolumeUsd": 35888.573361825314,
+      "mfePct": 29.77042040367544,
+      "maePct": -31.84063389892054,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780789200,
+          "open": 0.000002620886486617,
+          "high": 0.000003401135411986,
+          "low": 0.000001814239197328,
+          "close": 0.000001814239197328,
+          "volume": 1398.6491555791786
+        },
+        {
+          "ts": 1780789500,
+          "open": 0.000001788274926268,
+          "high": 0.000001810358605767,
+          "low": 0.000001786379615507,
+          "close": 0.000001810358605767,
+          "volume": 27.166105972754984
+        },
+        {
+          "ts": 1780789800,
+          "open": 0.000001830058835436,
+          "high": 0.000001830058835436,
+          "low": 0.000001830058835436,
+          "close": 0.000001830058835436,
+          "volume": 3.26922914859797
+        },
+        {
+          "ts": 1780790700,
+          "open": 0.000001822016818114,
+          "high": 0.000001822016818114,
+          "low": 0.000001822016818114,
+          "close": 0.000001822016818114,
+          "volume": 0.3191287405019494
+        },
+        {
+          "ts": 1780791300,
+          "open": 0.000001813155407945,
+          "high": 0.000001813155407945,
+          "low": 0.000001813155407945,
+          "close": 0.000001813155407945,
+          "volume": 11.491273684846059
+        },
+        {
+          "ts": 1780792500,
+          "open": 0.000001812525961033,
+          "high": 0.000001812525961033,
+          "low": 0.000001812525961033,
+          "close": 0.000001812525961033,
+          "volume": 1.2463689022894606
+        },
+        {
+          "ts": 1780793100,
+          "open": 0.000001803027364543,
+          "high": 0.000001803027364543,
+          "low": 0.000001803027364543,
+          "close": 0.000001803027364543,
+          "volume": 1.110211715633768
+        }
+      ],
+      "lead": {
+        "creator": "5kTfix6dceRuznzExRBjZoxUxwfNb6ShpwFE8qcN5VuJ",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "9vbEfmTxSysds8WDDDZvSvvcyc35xRfMY13QwEYapump",
+      "symbol": "OHIO",
+      "entryTs": 1780788752,
+      "sourceBuySol": 1.2344176,
+      "sourceExitPct": -3.396459107517585,
+      "entryMarketCapUsdApprox": 2193.09677195844,
+      "pre5mVolumeUsd": 889.834815848157,
+      "mfePct": 0,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780788900,
+          "open": 0.000001755182693257,
+          "high": 0.000001755182693257,
+          "low": 0.000001755182693257,
+          "close": 0.000001755182693257,
+          "volume": 16.799605778291426
+        }
+      ],
+      "lead": {
+        "creator": "GGU5FGnq1gwNC3wZbj6FS6T1t7MTNTmtH1XndQPzxhG5",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "6nDksFLJ7wRuizRY7MnnKRzNKBtgT8piDZHMUvSkpump",
+      "symbol": "SOLDROP",
+      "entryTs": 1780788411,
+      "sourceBuySol": 1.861262611,
+      "sourceExitPct": -0.2431254446984644,
+      "entryMarketCapUsdApprox": 3986.0665982593378,
+      "pre5mVolumeUsd": 1746.2699941840785,
+      "mfePct": 2.382616677336711,
+      "maePct": -52.39477765035571,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780788600,
+          "open": 0.000003673281149481,
+          "high": 0.000003760801358754,
+          "low": 0.000002064409769374,
+          "close": 0.000002064409769374,
+          "volume": 204.83810405713228
+        },
+        {
+          "ts": 1780788900,
+          "open": 0.00000200503099644,
+          "high": 0.00000200503099644,
+          "low": 0.000001756079377697,
+          "close": 0.000001756079377697,
+          "volume": 36.094923564692834
+        },
+        {
+          "ts": 1780790100,
+          "open": 0.000001755551940343,
+          "high": 0.000001755551940343,
+          "low": 0.000001755551940343,
+          "close": 0.000001755551940343,
+          "volume": 0.15128527612655895
+        },
+        {
+          "ts": 1780791300,
+          "open": 0.000001748673658738,
+          "high": 0.000001748673658738,
+          "low": 0.000001748673658738,
+          "close": 0.000001748673658738,
+          "volume": 0.49434279529325004
+        }
+      ],
+      "lead": {
+        "creator": "5C1JAeFwk9CneMCu3Qa4vNuJh8Ny6tofevQUaScp2Fxn",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "CGw7g9ftd7wcVgkhLvj83rNSMgN1rbA4iEnZt3Gqpump",
+      "symbol": "Idiot6900",
+      "entryTs": 1780788247,
+      "sourceBuySol": 1.8246626,
+      "sourceExitPct": 114.4828421429803,
+      "entryMarketCapUsdApprox": 2887.855337764223,
+      "pre5mVolumeUsd": 15077.726979014664,
+      "mfePct": 3.207928466589993,
+      "maePct": -58.533905830356815,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780788300,
+          "open": 0.000004271770160906,
+          "high": 0.000004408805491925,
+          "low": 0.000001771336237632,
+          "close": 0.000001800187908898,
+          "volume": 2936.8155487353915
+        }
+      ],
+      "lead": {
+        "creator": "ARKtgyP7xLfoehvGNxjnkvSsPmBYTQ5W6zNDNErRp4wV",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "FtjXyfDRyVFU4nmnYpSkSFryVBcn9JP1Nbx2pUT1pump",
+      "symbol": "$Crypto",
+      "entryTs": 1780788210,
+      "sourceBuySol": 1.839262611,
+      "sourceExitPct": 29.800481311709987,
+      "entryMarketCapUsdApprox": 3031.5557044302936,
+      "pre5mVolumeUsd": 4338.272563369719,
+      "mfePct": 98.58281744745605,
+      "maePct": -23.09751635371755,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780788300,
+          "open": 0.000003340845347906,
+          "high": 0.000006380720025341,
+          "low": 0.000002855734659103,
+          "close": 0.000006380720025341,
+          "volume": 1727.4081323264736
+        },
+        {
+          "ts": 1780788600,
+          "open": 0.000006186125479028,
+          "high": 0.000006634344818434,
+          "low": 0.000003513053551846,
+          "close": 0.0000042467744855,
+          "volume": 1892.1805115267164
+        },
+        {
+          "ts": 1780788900,
+          "open": 0.000004215085796045,
+          "high": 0.000004215085796045,
+          "low": 0.00000327852557515,
+          "close": 0.000003567319111196,
+          "volume": 256.7791810099091
+        },
+        {
+          "ts": 1780789200,
+          "open": 0.000003531478843576,
+          "high": 0.000003911985520899,
+          "low": 0.000003135645897254,
+          "close": 0.000003213485630622,
+          "volume": 505.80239132068687
+        },
+        {
+          "ts": 1780789500,
+          "open": 0.000002938741884094,
+          "high": 0.000002938741884094,
+          "low": 0.000002894124100946,
+          "close": 0.000002903010825773,
+          "volume": 34.405525230272566
+        },
+        {
+          "ts": 1780789800,
+          "open": 0.000002880690207429,
+          "high": 0.000002880690207429,
+          "low": 0.000002880690207429,
+          "close": 0.000002880690207429,
+          "volume": 9.546435711674055
+        },
+        {
+          "ts": 1780790100,
+          "open": 0.000002569193047321,
+          "high": 0.000002569193047321,
+          "low": 0.000002569193047321,
+          "close": 0.000002569193047321,
+          "volume": 9.789943571406514
+        },
+        {
+          "ts": 1780790700,
+          "open": 0.000002699789588535,
+          "high": 0.000002699789588535,
+          "low": 0.000002699789588535,
+          "close": 0.000002699789588535,
+          "volume": 17.339958602144694
+        },
+        {
+          "ts": 1780791000,
+          "open": 0.000002763593392363,
+          "high": 0.000002763593392363,
+          "low": 0.000002763593392363,
+          "close": 0.000002763593392363,
+          "volume": 40.304649415462954
+        },
+        {
+          "ts": 1780791600,
+          "open": 0.000002993413194488,
+          "high": 0.000003833428417669,
+          "low": 0.000002993413194488,
+          "close": 0.000003608881558482,
+          "volume": 296.8535284571912
+        },
+        {
+          "ts": 1780791900,
+          "open": 0.000003499462177678,
+          "high": 0.000003530379184878,
+          "low": 0.000003499462177678,
+          "close": 0.000003530379184878,
+          "volume": 153.34865079716198
+        },
+        {
+          "ts": 1780792200,
+          "open": 0.000003921782450083,
+          "high": 0.000003921782450083,
+          "low": 0.000003687482424022,
+          "close": 0.000003714530144907,
+          "volume": 74.87527579960513
+        },
+        {
+          "ts": 1780792500,
+          "open": 0.000003725671775748,
+          "high": 0.000003725671775748,
+          "low": 0.000003189326649217,
+          "close": 0.000003189326649217,
+          "volume": 93.65150629573338
+        },
+        {
+          "ts": 1780792800,
+          "open": 0.000003298203420252,
+          "high": 0.000003298203420252,
+          "low": 0.000003298203420252,
+          "close": 0.000003298203420252,
+          "volume": 9.793590909028625
+        },
+        {
+          "ts": 1780793100,
+          "open": 0.000003275098185638,
+          "high": 0.000004099390363293,
+          "low": 0.000003233068409454,
+          "close": 0.000004099390363293,
+          "volume": 296.0435130729274
+        },
+        {
+          "ts": 1780793400,
+          "open": 0.000004615936015057,
+          "high": 0.000004615936015057,
+          "low": 0.000004615936015057,
+          "close": 0.000004615936015057,
+          "volume": 62.76743199703485
+        },
+        {
+          "ts": 1780793700,
+          "open": 0.000004751469029423,
+          "high": 0.000004751469029423,
+          "low": 0.000004751469029423,
+          "close": 0.000004751469029423,
+          "volume": 0.6072762370889421
+        },
+        {
+          "ts": 1780794000,
+          "open": 0.00000437308354903,
+          "high": 0.00000437308354903,
+          "low": 0.000003885379838786,
+          "close": 0.000003885379838786,
+          "volume": 265.30724576888827
+        }
+      ],
+      "lead": {
+        "creator": "HWJ29uRo4PEgk3Q3HqjSFdYXk1WGaKDD1mGHYhotzT6i",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "4fJUdyn6yjzW2NFvBavZhz8KqBTgsgyp4cctDAmwpump",
+      "symbol": "toga",
+      "entryTs": 1780788022,
+      "sourceBuySol": 1.211062611,
+      "sourceExitPct": -17.209998484545736,
+      "entryMarketCapUsdApprox": 2214.7720315516062,
+      "pre5mVolumeUsd": 252.57270414676333,
+      "mfePct": 0,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780788300,
+          "open": 0.000001734374092153,
+          "high": 0.000001734374092153,
+          "low": 0.000001734374092153,
+          "close": 0.000001734374092153,
+          "volume": 4.829066347256179
+        }
+      ],
+      "lead": {
+        "creator": "4ciCkRtRuXVAFnYWbdP2xZuTNNrbj2avAg947dMsZYU8",
+        "sourceDelaySec": 0,
+        "sourceOrder": 2,
+        "earlierBuys": 3,
+        "earlierBuySol": 2.839076324,
+        "topEarlierBuyer": "4ciCkRtRuXVAFnYWbdP2xZuTNNrbj2avAg947dMsZYU8",
+        "topEarlierBuyerSol": 2.53169056
+      }
+    },
+    {
+      "mint": "34rn4s9zYEgYBfwki9HYyysFPoonZSNahR2VByiRpump",
+      "symbol": "6/6",
+      "entryTs": 1780787819,
+      "sourceBuySol": 1.2171626,
+      "sourceExitPct": 10.705037930018554,
+      "entryMarketCapUsdApprox": 2693.2975576995996,
+      "pre5mVolumeUsd": 10355.998511787182,
+      "mfePct": 1.421906311439621,
+      "maePct": -2.956280566895545,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780788000,
+          "open": 0.000001796084338225,
+          "high": 0.000001821622974789,
+          "low": 0.000001751981879809,
+          "close": 0.000001751981879809,
+          "volume": 87.32314149939904
+        },
+        {
+          "ts": 1780789200,
+          "open": 0.00000174987405815,
+          "high": 0.00000174987405815,
+          "low": 0.00000174987405815,
+          "close": 0.00000174987405815,
+          "volume": 3.663990546434363
+        },
+        {
+          "ts": 1780789500,
+          "open": 0.000001742987045969,
+          "high": 0.000001742987045969,
+          "low": 0.000001742987045969,
+          "close": 0.000001742987045969,
+          "volume": 5.649782082271394
+        }
+      ],
+      "lead": {
+        "creator": "8i5U2uNBEuTc4zskYP14zbebDg2RSwrrG8REhEnJb97K",
+        "sourceDelaySec": 0,
+        "sourceOrder": 5,
+        "earlierBuys": 6,
+        "earlierBuySol": 9.024525073,
+        "topEarlierBuyer": "8i5U2uNBEuTc4zskYP14zbebDg2RSwrrG8REhEnJb97K",
+        "topEarlierBuyerSol": 3.0104016
+      }
+    },
+    {
+      "mint": "kLAHgaUgwH4pPcnbsjXxCcu9k1fHhL946N3UEwfpump",
+      "symbol": "SPCX6900",
+      "entryTs": 1780787773,
+      "sourceBuySol": 1.2137626,
+      "sourceExitPct": 43.870450696042205,
+      "entryMarketCapUsdApprox": 3724.3989731336173,
+      "pre5mVolumeUsd": 7234.082924535816,
+      "mfePct": 38.09940700191529,
+      "maePct": -15.190412351848249,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780788000,
+          "open": 0.000002047950487507,
+          "high": 0.00000282820747894,
+          "low": 0.000001989610176133,
+          "close": 0.00000257369492944,
+          "volume": 1876.4465817736454
+        },
+        {
+          "ts": 1780788300,
+          "open": 0.000001736858363693,
+          "high": 0.000001736858363693,
+          "low": 0.000001736858363693,
+          "close": 0.000001736858363693,
+          "volume": 0.6104599464491333
+        },
+        {
+          "ts": 1780789800,
+          "open": 0.000001743191804622,
+          "high": 0.000001743191804622,
+          "low": 0.000001743191804622,
+          "close": 0.000001743191804622,
+          "volume": 1.7083440100725933
+        },
+        {
+          "ts": 1780791000,
+          "open": 0.000001754821737728,
+          "high": 0.000001754821737728,
+          "low": 0.000001754821737728,
+          "close": 0.000001754821737728,
+          "volume": 16.170790971446504
+        },
+        {
+          "ts": 1780791300,
+          "open": 0.000001787323394735,
+          "high": 0.000001806509446871,
+          "low": 0.000001787323394735,
+          "close": 0.000001806509446871,
+          "volume": 17.883234944474196
+        }
+      ],
+      "lead": {
+        "creator": "7iy4meSnUdBz7N3iVgadhL8r4CoZfAZruG1HEVL7YasN",
+        "sourceDelaySec": 0,
+        "sourceOrder": 6,
+        "earlierBuys": 14,
+        "earlierBuySol": 19.566958807,
+        "topEarlierBuyer": "BVYnrhmc6UopqLVNWKqhLoj7Mnv5rEqcaYZBmeUqc7Yu",
+        "topEarlierBuyerSol": 3.406403898
+      }
+    },
+    {
+      "mint": "2kFkFUfFNrCXpfuZpgGkvP29oknAcF1whV4ioPWJpump",
+      "symbol": "BT6",
+      "entryTs": 1780787492,
+      "sourceBuySol": 1.228762602,
+      "sourceExitPct": -1.5244598077375404,
+      "entryMarketCapUsdApprox": 2872.39659994949,
+      "pre5mVolumeUsd": 3476.6287093081855,
+      "mfePct": 104.10997306845171,
+      "maePct": -55.670180215961786,
+      "timeTo2xSec": 808,
+      "candles": [
+        {
+          "ts": 1780787700,
+          "open": 0.000004799149144554,
+          "high": 0.000005607741183099,
+          "low": 0.000004224344474333,
+          "close": 0.000005607741183099,
+          "volume": 1177.61898963141
+        },
+        {
+          "ts": 1780788000,
+          "open": 0.000005661524896222,
+          "high": 0.000008919117049562,
+          "low": 0.000005230648799038,
+          "close": 0.000008919117049562,
+          "volume": 4642.373347570482
+        },
+        {
+          "ts": 1780788300,
+          "open": 0.000009215083946486,
+          "high": 0.000009795542026464,
+          "low": 0.000004191467553403,
+          "close": 0.000004483117787498,
+          "volume": 2816.499489953337
+        },
+        {
+          "ts": 1780788600,
+          "open": 0.000004583395562108,
+          "high": 0.000006300242920479,
+          "low": 0.000004583395562108,
+          "close": 0.000005229510299546,
+          "volume": 1649.4691326871198
+        },
+        {
+          "ts": 1780788900,
+          "open": 0.000005364246274475,
+          "high": 0.000005992026783838,
+          "low": 0.000004449848845152,
+          "close": 0.000005873853781031,
+          "volume": 1478.628457555328
+        },
+        {
+          "ts": 1780789200,
+          "open": 0.000006154561187875,
+          "high": 0.00000621071141456,
+          "low": 0.000004510553553319,
+          "close": 0.000004510553553319,
+          "volume": 862.2839476468472
+        },
+        {
+          "ts": 1780789500,
+          "open": 0.000004343323827285,
+          "high": 0.000004761282554956,
+          "low": 0.000002589553283143,
+          "close": 0.000002833790605639,
+          "volume": 2311.948161026808
+        },
+        {
+          "ts": 1780789800,
+          "open": 0.000002828110880513,
+          "high": 0.000002828110880513,
+          "low": 0.000002127454166948,
+          "close": 0.000002215993604166,
+          "volume": 350.7063595087417
+        },
+        {
+          "ts": 1780790100,
+          "open": 0.000002452988288215,
+          "high": 0.000002452988288215,
+          "low": 0.000002449895030174,
+          "close": 0.000002449895030174,
+          "volume": 173.60422095945538
+        },
+        {
+          "ts": 1780790400,
+          "open": 0.000002630210383446,
+          "high": 0.000002630210383446,
+          "low": 0.000002258388455809,
+          "close": 0.000002361787118083,
+          "volume": 224.4907289379406
+        },
+        {
+          "ts": 1780790700,
+          "open": 0.000002266147265002,
+          "high": 0.000002266147265002,
+          "low": 0.000002266147265002,
+          "close": 0.000002266147265002,
+          "volume": 12.391317552995543
+        },
+        {
+          "ts": 1780791000,
+          "open": 0.000002238746369106,
+          "high": 0.000002238746369106,
+          "low": 0.000002186382774918,
+          "close": 0.000002186382774918,
+          "volume": 47.70398438070695
+        },
+        {
+          "ts": 1780791900,
+          "open": 0.000002140666619661,
+          "high": 0.000002140666619661,
+          "low": 0.000002140666619661,
+          "close": 0.000002140666619661,
+          "volume": 16.520371275810184
+        },
+        {
+          "ts": 1780792500,
+          "open": 0.000002142048855937,
+          "high": 0.000002142048855937,
+          "low": 0.000002142048855937,
+          "close": 0.000002142048855937,
+          "volume": 1.0140629919189212
+        },
+        {
+          "ts": 1780794000,
+          "open": 0.00000223853382686,
+          "high": 0.000002286298255089,
+          "low": 0.00000223853382686,
+          "close": 0.000002286298255089,
+          "volume": 60.05834205331501
+        },
+        {
+          "ts": 1780794300,
+          "open": 0.000002251179474544,
+          "high": 0.000002251179474544,
+          "low": 0.000002251179474544,
+          "close": 0.000002251179474544,
+          "volume": 7.146862634870122
+        }
+      ],
+      "lead": {
+        "creator": "5YDBek8zoJpmgRLUoWcJQ6sMh9nx9WFGBMNVivjpQbDM",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "7FzxzoMhpFEZkxD2Txvjhvsr1aaHwCqvz5UZhjCLpump",
+      "symbol": "Gustavo",
+      "entryTs": 1780787382,
+      "sourceBuySol": 1.8687626,
+      "sourceExitPct": 30.929732950786004,
+      "entryMarketCapUsdApprox": 2853.137396347177,
+      "pre5mVolumeUsd": 4100.490267492005,
+      "mfePct": 0,
+      "maePct": -45.01891927776239,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780787400,
+          "open": 0.000003165053512457,
+          "high": 0.000003165053512457,
+          "low": 0.000001798444572153,
+          "close": 0.000001798444572153,
+          "volume": 1822.7691486496562
+        },
+        {
+          "ts": 1780787700,
+          "open": 0.000001740180626586,
+          "high": 0.000001740180626586,
+          "low": 0.000001740180626586,
+          "close": 0.000001740180626586,
+          "volume": 2.731796577083996
+        },
+        {
+          "ts": 1780789200,
+          "open": 0.000001744315741047,
+          "high": 0.000001744315741047,
+          "low": 0.000001744315741047,
+          "close": 0.000001744315741047,
+          "volume": 3.74028440819508
+        }
+      ],
+      "lead": {
+        "creator": "FaBGrHWjcJ8vKnbgUtsdpZjvF7YAAajtQTWmmEHiKtQr",
+        "sourceDelaySec": 0,
+        "sourceOrder": 4,
+        "earlierBuys": 10,
+        "earlierBuySol": 17.50981373,
+        "topEarlierBuyer": "4BHBSZA96XCaepYLvmteV6wLqKTqJPyfkME941X5PqHP",
+        "topEarlierBuyerSol": 5.5831626
+      }
+    },
+    {
+      "mint": "7THy5ojabZJqy4sRywPEWTXwpE143XSaS3SJHaoJpump",
+      "symbol": "USWR",
+      "entryTs": 1780787249,
+      "sourceBuySol": 2.009250703,
+      "sourceExitPct": -2.8165137339757846,
+      "entryMarketCapUsdApprox": 1913.317522208036,
+      "pre5mVolumeUsd": 153.73658645328467,
+      "mfePct": 0.07992227699550523,
+      "maePct": -0.8589961189815137,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780788300,
+          "open": 0.000001774487087098,
+          "high": 0.000001775905297583,
+          "low": 0.000001774487087098,
+          "close": 0.000001775905297583,
+          "volume": 11.102356172209156
+        },
+        {
+          "ts": 1780788900,
+          "open": 0.000001763727976756,
+          "high": 0.000001763727976756,
+          "low": 0.000001763727976756,
+          "close": 0.000001763727976756,
+          "volume": 3.0320293574372106
+        },
+        {
+          "ts": 1780789500,
+          "open": 0.000001759244311888,
+          "high": 0.000001759244311888,
+          "low": 0.000001759244311888,
+          "close": 0.000001759244311888,
+          "volume": 6.2070128363582535
+        }
+      ],
+      "lead": {
+        "creator": "HFprnJDFAxpwtJyQayCvxqQMgNe9JDwwRWjZcxK13pxk",
+        "sourceDelaySec": 0,
+        "sourceOrder": 1,
+        "earlierBuys": 1,
+        "earlierBuySol": 0.112623494,
+        "topEarlierBuyer": "HFprnJDFAxpwtJyQayCvxqQMgNe9JDwwRWjZcxK13pxk",
+        "topEarlierBuyerSol": 0.112623494
+      }
+    },
+    {
+      "mint": "5sSzgc4L3YWbP7DWX9AFHce5cmqkKLqVxG95D1P7pump",
+      "symbol": "BTC",
+      "entryTs": 1780787206,
+      "sourceBuySol": 1.213762611,
+      "sourceExitPct": 2.7961337490894254,
+      "entryMarketCapUsdApprox": 2014.3206763421217,
+      "pre5mVolumeUsd": 204.33947255322948,
+      "mfePct": 0.38056670071104687,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780787400,
+          "open": 0.000001881913369882,
+          "high": 0.000001881913369882,
+          "low": 0.000001881913369882,
+          "close": 0.000001881913369882,
+          "volume": 6.071619621257439
+        },
+        {
+          "ts": 1780787700,
+          "open": 0.000001889075305504,
+          "high": 0.000001889075305504,
+          "low": 0.000001889075305504,
+          "close": 0.000001889075305504,
+          "volume": 3.033098133770655
+        }
+      ],
+      "lead": {
+        "creator": "7nfdUe4h9UsauN5KkML6gxBFuoNpbruSSmVGFMPbi6Xq",
+        "sourceDelaySec": 0,
+        "sourceOrder": 1,
+        "earlierBuys": 4,
+        "earlierBuySol": 2.256569665,
+        "topEarlierBuyer": "7nfdUe4h9UsauN5KkML6gxBFuoNpbruSSmVGFMPbi6Xq",
+        "topEarlierBuyerSol": 1.209690643
+      }
+    },
+    {
+      "mint": "N9Curnf2ZQWBZWrjBkzP6xBe6n5WRhBhouRfiSqpump",
+      "symbol": "POKETCG",
+      "entryTs": 1780786697,
+      "sourceBuySol": 0.0542426,
+      "sourceExitPct": -97.87510185721186,
+      "entryMarketCapUsdApprox": 56.97632741622558,
+      "pre5mVolumeUsd": 0,
+      "mfePct": 0,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780793100,
+          "open": 0.000018426917039614,
+          "high": 0.000018426917039614,
+          "low": 0.000018426917039614,
+          "close": 0.000018426917039614,
+          "volume": 4.131971999999914
+        }
+      ],
+      "lead": {
+        "creator": "7v3AvB39W9MCaCdYSUH6mACXkx1ZSzR9eckdG4XeUWZC",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "FGLoACYk8PVAURfYc8MdjMdo14KdD9PXdShvA3TXq5uu",
+      "symbol": "Screwed",
+      "entryTs": 1780786199,
+      "sourceBuySol": 1.213762611,
+      "sourceExitPct": -3.562858553071709,
+      "entryMarketCapUsdApprox": 3303.315733304126,
+      "pre5mVolumeUsd": 639.5636036118226,
+      "mfePct": 0,
+      "maePct": -46.44265463008288,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780786200,
+          "open": 0.000003278437091089,
+          "high": 0.000003278437091089,
+          "low": 0.00000175584387561,
+          "close": 0.00000175584387561,
+          "volume": 790.3030243594571
+        }
+      ],
+      "lead": {
+        "creator": "EndJzwh6H2GwrKsc5JQ1tJoKbQDA1TywFvwdMPwJELSQ",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "E2oecxpiXHyoYYs6hsFt1D2MaZ9VMs8AzHV9HKrzpump",
+      "symbol": "ZOO",
+      "entryTs": 1780786163,
+      "sourceBuySol": 1.203330703,
+      "sourceExitPct": 24.097878685972496,
+      "entryMarketCapUsdApprox": 3551.1497048371034,
+      "pre5mVolumeUsd": 0,
+      "mfePct": 411.38462388564443,
+      "maePct": -15.680485483876133,
+      "timeTo2xSec": 637,
+      "candles": [
+        {
+          "ts": 1780786200,
+          "open": 0.000023776980671222,
+          "high": 0.00004525258015248,
+          "low": 0.000020048634668567,
+          "close": 0.00003692889158988,
+          "volume": 26490.759612617632
+        },
+        {
+          "ts": 1780786500,
+          "open": 0.00003656420787691,
+          "high": 0.00003656420787691,
+          "low": 0.000030043244701582,
+          "close": 0.000023776980671222,
+          "volume": 35402.30675951354
+        },
+        {
+          "ts": 1780786800,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000049473540405272,
+          "close": 0.00003656420787691,
+          "volume": 56916.79290333147
+        },
+        {
+          "ts": 1780787100,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000098481009793277,
+          "close": 0.000059683126981562,
+          "volume": 99786.57996145509
+        },
+        {
+          "ts": 1780787400,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000121440421893075,
+          "close": 0.00003656420787691,
+          "volume": 39078.12017477558
+        },
+        {
+          "ts": 1780787700,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000103213835571824,
+          "close": 0.000059683126981562,
+          "volume": 34418.00162720951
+        },
+        {
+          "ts": 1780788000,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000094706290645243,
+          "close": 0.00003656420787691,
+          "volume": 52185.909270456046
+        },
+        {
+          "ts": 1780788300,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000094749432246179,
+          "close": 0.000059683126981562,
+          "volume": 23899.004972160947
+        },
+        {
+          "ts": 1780788600,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000085865897869694,
+          "close": 0.00003656420787691,
+          "volume": 21103.74398593595
+        },
+        {
+          "ts": 1780788900,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000100409719641677,
+          "close": 0.000059683126981562,
+          "volume": 17736.337241746067
+        },
+        {
+          "ts": 1780789200,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000109167626357119,
+          "close": 0.00003656420787691,
+          "volume": 16278.278425669458
+        },
+        {
+          "ts": 1780789500,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000098079122316759,
+          "close": 0.000059683126981562,
+          "volume": 10251.536645742046
+        },
+        {
+          "ts": 1780789800,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000097826085630202,
+          "close": 0.00003656420787691,
+          "volume": 12476.581007159579
+        },
+        {
+          "ts": 1780790100,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000093519998210462,
+          "close": 0.000059683126981562,
+          "volume": 7844.692835304899
+        },
+        {
+          "ts": 1780790400,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000105180788487348,
+          "close": 0.00003656420787691,
+          "volume": 6500.315702020974
+        },
+        {
+          "ts": 1780790700,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000132530080622408,
+          "close": 0.000059683126981562,
+          "volume": 21665.738360543535
+        },
+        {
+          "ts": 1780791000,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000147616835604968,
+          "close": 0.00003656420787691,
+          "volume": 15061.765830014245
+        },
+        {
+          "ts": 1780791300,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000137618231534442,
+          "close": 0.000059683126981562,
+          "volume": 9255.686289401683
+        },
+        {
+          "ts": 1780791600,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.00014017671564856,
+          "close": 0.00003656420787691,
+          "volume": 6317.14054563367
+        },
+        {
+          "ts": 1780791900,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000149749427477993,
+          "close": 0.000059683126981562,
+          "volume": 8628.900967371896
+        },
+        {
+          "ts": 1780792200,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000174752671839573,
+          "close": 0.00003656420787691,
+          "volume": 14292.276949754074
+        },
+        {
+          "ts": 1780792500,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000165436351331999,
+          "close": 0.000059683126981562,
+          "volume": 5177.674077061429
+        },
+        {
+          "ts": 1780792800,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000147314876780575,
+          "close": 0.00003656420787691,
+          "volume": 11881.297532467172
+        },
+        {
+          "ts": 1780793100,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000140644362974604,
+          "close": 0.000059683126981562,
+          "volume": 5916.826727987019
+        },
+        {
+          "ts": 1780793400,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000121948727775315,
+          "close": 0.00003656420787691,
+          "volume": 9741.650016681388
+        },
+        {
+          "ts": 1780793700,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000130001208034908,
+          "close": 0.000059683126981562,
+          "volume": 3423.7720804184573
+        },
+        {
+          "ts": 1780794000,
+          "open": 0.000059683126981562,
+          "high": 0.000059683126981562,
+          "low": 0.000124264380371132,
+          "close": 0.00003656420787691,
+          "volume": 3732.2377574670095
+        },
+        {
+          "ts": 1780794300,
+          "open": 0.00003656420787691,
+          "high": 0.000059683126981562,
+          "low": 0.000098927591341225,
+          "close": 0.000059683126981562,
+          "volume": 10715.8174962925
+        },
+        {
+          "ts": 1780794600,
+          "open": 0.000059683126981562,
+          "high": 0.000121591823176891,
+          "low": 0.000080416132739437,
+          "close": 0.000085343142162845,
+          "volume": 15119.322443742374
+        }
+      ],
+      "lead": {
+        "creator": "8r62QGovia8Mh7SpRM7VkEHHFRY91kyFF6jnKsz89VmU",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "3H77cq4exAzvmH6q8cVKXawst8NZFwqvDTR4VPiApump",
+      "symbol": "SCAT",
+      "entryTs": 1780785634,
+      "sourceBuySol": 5.81066261,
+      "sourceExitPct": 6.704364564715279,
+      "entryMarketCapUsdApprox": 3864.9936820118305,
+      "pre5mVolumeUsd": 13131.437250607585,
+      "mfePct": 128.81162196902963,
+      "maePct": -73.31246054071333,
+      "timeTo2xSec": 566,
+      "candles": [
+        {
+          "ts": 1780785900,
+          "open": 0.000007325084848179,
+          "high": 0.000007325084848179,
+          "low": 0.000007074085418547,
+          "close": 0.000007074085418547,
+          "volume": 5299.9729950242845
+        },
+        {
+          "ts": 1780786200,
+          "open": 0.000006884301865333,
+          "high": 0.000016760645451726,
+          "low": 0.000006884301865333,
+          "close": 0.00001084502089325,
+          "volume": 7680.8710150093375
+        },
+        {
+          "ts": 1780786500,
+          "open": 0.000010878716038973,
+          "high": 0.000012035614585189,
+          "low": 0.000002216084977457,
+          "close": 0.000002620084757619,
+          "volume": 5263.495551965783
+        },
+        {
+          "ts": 1780786800,
+          "open": 0.000002514712804544,
+          "high": 0.000002641005146204,
+          "low": 0.000002352899101378,
+          "close": 0.000002639773239963,
+          "volume": 331.96125395861435
+        },
+        {
+          "ts": 1780787100,
+          "open": 0.000002461049434869,
+          "high": 0.000002461049434869,
+          "low": 0.0000023870883449,
+          "close": 0.0000023870883449,
+          "volume": 39.01524994596173
+        },
+        {
+          "ts": 1780787400,
+          "open": 0.000002322260986977,
+          "high": 0.000002322260986977,
+          "low": 0.00000206735243726,
+          "close": 0.00000206735243726,
+          "volume": 149.0540910100876
+        },
+        {
+          "ts": 1780788000,
+          "open": 0.000002055822706586,
+          "high": 0.000002055822706586,
+          "low": 0.000002022303290998,
+          "close": 0.000002022303290998,
+          "volume": 32.10979417365028
+        },
+        {
+          "ts": 1780789200,
+          "open": 0.000001977683277779,
+          "high": 0.000001977683277779,
+          "low": 0.000001977683277779,
+          "close": 0.000001977683277779,
+          "volume": 15.549328062184596
+        },
+        {
+          "ts": 1780789800,
+          "open": 0.000001975643294177,
+          "high": 0.000001975643294177,
+          "low": 0.000001975643294177,
+          "close": 0.000001975643294177,
+          "volume": 0.22790895462428215
+        },
+        {
+          "ts": 1780790100,
+          "open": 0.0000019635300885,
+          "high": 0.0000019635300885,
+          "low": 0.0000019635300885,
+          "close": 0.0000019635300885,
+          "volume": 1.3182676110622957
+        },
+        {
+          "ts": 1780790700,
+          "open": 0.000001965836417742,
+          "high": 0.000001965836417742,
+          "low": 0.000001965836417742,
+          "close": 0.000001965836417742,
+          "volume": 5.71667055906244
+        },
+        {
+          "ts": 1780791600,
+          "open": 0.000001961877440724,
+          "high": 0.000001961877440724,
+          "low": 0.000001961877440724,
+          "close": 0.000001961877440724,
+          "volume": 0.6816019520282349
+        },
+        {
+          "ts": 1780791900,
+          "open": 0.000001954884909284,
+          "high": 0.000001954884909284,
+          "low": 0.000001954884909284,
+          "close": 0.000001954884909284,
+          "volume": 6.1757038887750495
+        }
+      ],
+      "lead": {
+        "creator": "GDnTMKEuRzZCBZhuVpgAUVEX4QNWqSxE3YU4gMVwUYqZ",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "DeY7995fwCRsEndZLG3eEwX65E6RmiBrpraaXhaDpump",
+      "symbol": "Sleuth",
+      "entryTs": 1780785596,
+      "sourceBuySol": 1.2137626,
+      "sourceExitPct": -0.447512717890632,
+      "entryMarketCapUsdApprox": 2387.104157120333,
+      "pre5mVolumeUsd": 357.2510283025939,
+      "mfePct": 0,
+      "maePct": -24.023428880628686,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780785600,
+          "open": 0.000002278066719869,
+          "high": 0.000002278066719869,
+          "low": 0.000001730796981568,
+          "close": 0.000001730796981568,
+          "volume": 29.581820190825322
+        }
+      ],
+      "lead": {
+        "creator": "FdeF1zdS4jVkZnVE3MqrBDTCkWs8qDapoe5ernKc9QUF",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "JDmr2YFmGsA7YZjfBjKjajs5AkTDDBiU77CPqVzNpump",
+      "symbol": "AFD",
+      "entryTs": 1780785472,
+      "sourceBuySol": 5.2671626,
+      "sourceExitPct": 10.106957080319958,
+      "entryMarketCapUsdApprox": 3568.2631994164917,
+      "pre5mVolumeUsd": 6063.7634632282725,
+      "mfePct": 2.6510185358764966,
+      "maePct": -19.9101554589263,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780785600,
+          "open": 0.000002443814678066,
+          "high": 0.000002508600658164,
+          "low": 0.000002306625680763,
+          "close": 0.000002306625680763,
+          "volume": 154.08905679986992
+        },
+        {
+          "ts": 1780785900,
+          "open": 0.000002279912974335,
+          "high": 0.000002306675924714,
+          "low": 0.000002208224836713,
+          "close": 0.000002208224836713,
+          "volume": 102.99463977607022
+        },
+        {
+          "ts": 1780786500,
+          "open": 0.000002040417763565,
+          "high": 0.000002040417763565,
+          "low": 0.000002040417763565,
+          "close": 0.000002040417763565,
+          "volume": 55.66045143959443
+        },
+        {
+          "ts": 1780786800,
+          "open": 0.000001979598458947,
+          "high": 0.000001979598458947,
+          "low": 0.000001979598458947,
+          "close": 0.000001979598458947,
+          "volume": 6.981327413554424
+        },
+        {
+          "ts": 1780787700,
+          "open": 0.000001957247376535,
+          "high": 0.000001957247376535,
+          "low": 0.000001957247376535,
+          "close": 0.000001957247376535,
+          "volume": 17.937282001813404
+        },
+        {
+          "ts": 1780794600,
+          "open": 0.000001971331196146,
+          "high": 0.000001971331196146,
+          "low": 0.000001971331196146,
+          "close": 0.000001971331196146,
+          "volume": 0.9977222451064054
+        }
+      ],
+      "lead": {
+        "creator": "BbZNfrCseL4m5bvfSLpyJErcAN2PCCVKd6enZBra92WR",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "DvRKEcDSfwCwDQ57GiwmBDNp1WhDDLa3BQUmXbxepump",
+      "symbol": "MontyMemes",
+      "entryTs": 1780785398,
+      "sourceBuySol": 2.755649537,
+      "sourceExitPct": 5.224012635391959,
+      "entryMarketCapUsdApprox": 3378.355652491431,
+      "pre5mVolumeUsd": 8284.529027112996,
+      "mfePct": 0.7189589048651774,
+      "maePct": -3.218621037040908,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780785600,
+          "open": 0.000001799093081186,
+          "high": 0.000001799093081186,
+          "low": 0.000001760822915758,
+          "close": 0.000001760822915758,
+          "volume": 41.742337509021624
+        },
+        {
+          "ts": 1780785900,
+          "open": 0.0000017632562108,
+          "high": 0.0000018120278211,
+          "low": 0.0000017632562108,
+          "close": 0.0000018120278211,
+          "volume": 51.87340251509794
+        },
+        {
+          "ts": 1780786200,
+          "open": 0.00000179224415271,
+          "high": 0.00000179224415271,
+          "low": 0.00000179224415271,
+          "close": 0.00000179224415271,
+          "volume": 51.89147323496491
+        },
+        {
+          "ts": 1780787700,
+          "open": 0.000001741187092799,
+          "high": 0.000001741187092799,
+          "low": 0.000001741187092799,
+          "close": 0.000001741187092799,
+          "volume": 6.412307946758516
+        }
+      ],
+      "lead": {
+        "creator": "64hP97Bwr5PubotcTeGgfhkFrGiLVVxT2kVo9M9b4AEz",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "4YGDAXTuSxXkEzs1VoKXHgxcVfFVdQyihV8VEAgFpump",
+      "symbol": "MOG",
+      "entryTs": 1780784966,
+      "sourceBuySol": 18.62566261,
+      "sourceExitPct": 13.744791636509667,
+      "entryMarketCapUsdApprox": 8496.556582640875,
+      "pre5mVolumeUsd": 19063.419300936624,
+      "mfePct": 7.563909449408585,
+      "maePct": -79.47658048934937,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780785000,
+          "open": 0.000009791273802556,
+          "high": 0.000010531876886925,
+          "low": 0.000008316508949776,
+          "close": 0.000008316508949776,
+          "volume": 10555.894860516099
+        },
+        {
+          "ts": 1780785300,
+          "open": 0.00000833299096389,
+          "high": 0.0000083785884538,
+          "low": 0.00000833299096389,
+          "close": 0.0000083785884538,
+          "volume": 6420.633784433227
+        },
+        {
+          "ts": 1780785600,
+          "open": 0.000008220825604415,
+          "high": 0.000008492977564668,
+          "low": 0.000004843345616851,
+          "close": 0.000005337347867304,
+          "volume": 3041.0958239762326
+        },
+        {
+          "ts": 1780785900,
+          "open": 0.000005462619049564,
+          "high": 0.000006158553467787,
+          "low": 0.000004638323776971,
+          "close": 0.000004871244062866,
+          "volume": 1579.5543533049404
+        },
+        {
+          "ts": 1780786200,
+          "open": 0.000004843139033851,
+          "high": 0.000004843139033851,
+          "low": 0.000002321743486127,
+          "close": 0.000002321743486127,
+          "volume": 1350.7146944982296
+        },
+        {
+          "ts": 1780786500,
+          "open": 0.000002292898384368,
+          "high": 0.000003152798925647,
+          "low": 0.000002200132867457,
+          "close": 0.000002780377412057,
+          "volume": 801.827028682607
+        },
+        {
+          "ts": 1780786800,
+          "open": 0.000002494632397104,
+          "high": 0.000002515379974894,
+          "low": 0.000002494632397104,
+          "close": 0.000002515379974894,
+          "volume": 18.470022444673415
+        },
+        {
+          "ts": 1780787100,
+          "open": 0.000002518916654249,
+          "high": 0.000002518916654249,
+          "low": 0.00000241081319539,
+          "close": 0.00000241081319539,
+          "volume": 57.18849453503348
+        },
+        {
+          "ts": 1780787400,
+          "open": 0.000002400676658877,
+          "high": 0.000002400676658877,
+          "low": 0.000002400676658877,
+          "close": 0.000002400676658877,
+          "volume": 0.6311683836191275
+        },
+        {
+          "ts": 1780787700,
+          "open": 0.000002333296920466,
+          "high": 0.000002333296920466,
+          "low": 0.000002306284192778,
+          "close": 0.000002306284192778,
+          "volume": 31.354393275059675
+        },
+        {
+          "ts": 1780788300,
+          "open": 0.000002265650948514,
+          "high": 0.000002265650948514,
+          "low": 0.000002265650948514,
+          "close": 0.000002265650948514,
+          "volume": 22.664057843603505
+        },
+        {
+          "ts": 1780788900,
+          "open": 0.000002237627859164,
+          "high": 0.000002237627859164,
+          "low": 0.000002237627859164,
+          "close": 0.000002237627859164,
+          "volume": 5.691923082395281
+        },
+        {
+          "ts": 1780791000,
+          "open": 0.000002076027342357,
+          "high": 0.000002076027342357,
+          "low": 0.000002076027342357,
+          "close": 0.000002076027342357,
+          "volume": 46.38995113861621
+        },
+        {
+          "ts": 1780792200,
+          "open": 0.000002040707720351,
+          "high": 0.000002040707720351,
+          "low": 0.000002040707720351,
+          "close": 0.000002040707720351,
+          "volume": 8.6754137030587
+        },
+        {
+          "ts": 1780793100,
+          "open": 0.000002009504197935,
+          "high": 0.000002009504197935,
+          "low": 0.000002009504197935,
+          "close": 0.000002009504197935,
+          "volume": 1.647655277953351
+        }
+      ],
+      "lead": {
+        "creator": "AfT4SSLJpZ9HprtzJePcS9mqUatji2Wjnxf911vV9dq2",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "6WccBjdSnN4oLNvrQmVhUJUQCkXqbqBen6wHLR8Tpump",
+      "symbol": "dca",
+      "entryTs": 1780784927,
+      "sourceBuySol": 5.892162602,
+      "sourceExitPct": -9.866487167252822,
+      "entryMarketCapUsdApprox": 3013.180984211004,
+      "pre5mVolumeUsd": 2547.042725899986,
+      "mfePct": 0,
+      "maePct": -30.22546997251288,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780785000,
+          "open": 0.00000249293685778,
+          "high": 0.00000249293685778,
+          "low": 0.000001739434976398,
+          "close": 0.000001739434976398,
+          "volume": 373.63648147993985
+        }
+      ],
+      "lead": {
+        "creator": "5SW7p56x22LKj8gYcE8DVVd1S59UJUGR9jKq2PFdKiKg",
+        "sourceDelaySec": 0,
+        "sourceOrder": 1,
+        "earlierBuys": 10,
+        "earlierBuySol": 10.069449314,
+        "topEarlierBuyer": "5SW7p56x22LKj8gYcE8DVVd1S59UJUGR9jKq2PFdKiKg",
+        "topEarlierBuyerSol": 2.03079576
+      }
+    },
+    {
+      "mint": "7h8raL2ZurkDjmZiKHJXdGDcdrvCvUmz7EVsgkKdpump",
+      "symbol": "LAYOFF",
+      "entryTs": 1780784732,
+      "sourceBuySol": 2.0937856,
+      "sourceExitPct": null,
+      "entryMarketCapUsdApprox": 2021.1571688264532,
+      "pre5mVolumeUsd": 446.8971656764978,
+      "mfePct": 0.0907725280130147,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780786800,
+          "open": 0.000001753645689775,
+          "high": 0.000001753645689775,
+          "low": 0.000001753645689775,
+          "close": 0.000001753645689775,
+          "volume": 5.869297554511936
+        },
+        {
+          "ts": 1780789500,
+          "open": 0.0000017552375183,
+          "high": 0.0000017552375183,
+          "low": 0.0000017552375183,
+          "close": 0.0000017552375183,
+          "volume": 5.874625264278773
+        }
+      ],
+      "lead": {
+        "creator": "BNUb9nuVAszP1EfNcgZkX5TzirEC7MSTwd3TSZafAE5u",
+        "sourceDelaySec": 0,
+        "sourceOrder": 1,
+        "earlierBuys": 4,
+        "earlierBuySol": 2.956565718,
+        "topEarlierBuyer": "97TG2szetrGvN5rtDHAPuENRDLV77HEcsFDQsh8muAUg",
+        "topEarlierBuyerSol": 2.046213341
+      }
+    },
+    {
+      "mint": "8fiJ96C9FABjLTW3nBLE5qESDe9e4RUvhF5iNXwjpump",
+      "symbol": "SIDECOIN",
+      "entryTs": 1780784639,
+      "sourceBuySol": 2.409862548,
+      "sourceExitPct": 3.0921667736545113,
+      "entryMarketCapUsdApprox": 3186.2391638382546,
+      "pre5mVolumeUsd": 2472.7558862076435,
+      "mfePct": 0.09512857250894627,
+      "maePct": 0,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780784700,
+          "open": 0.000001737208311251,
+          "high": 0.000001737208311251,
+          "low": 0.000001737208311251,
+          "close": 0.000001737208311251,
+          "volume": 12.923159308394796
+        },
+        {
+          "ts": 1780791900,
+          "open": 0.000001738860892719,
+          "high": 0.000001738860892719,
+          "low": 0.000001738860892719,
+          "close": 0.000001738860892719,
+          "volume": 0.9862874983360721
+        }
+      ],
+      "lead": {
+        "creator": "26hvW9ZmPjGWLgAQD1TDoEbSpb3wVESa1ArsXvyJf1iQ",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "H9JEdHT7gr1m9WSQjiMaVLB6Bzu23rk2DN4p62Hjpump",
+      "symbol": "LOP",
+      "entryTs": 1780784217,
+      "sourceBuySol": 1.213762611,
+      "sourceExitPct": 0.023640701847257677,
+      "entryMarketCapUsdApprox": 1879.0478540951126,
+      "pre5mVolumeUsd": 125.62915151072575,
+      "mfePct": 0.7824679951116603,
+      "maePct": -0.0853755037410922,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780786200,
+          "open": 0.000001757360049728,
+          "high": 0.000001757360049728,
+          "low": 0.000001757360049728,
+          "close": 0.000001757360049728,
+          "volume": 6.098309300653972
+        },
+        {
+          "ts": 1780789500,
+          "open": 0.000001755859694733,
+          "high": 0.000001755859694733,
+          "low": 0.000001755859694733,
+          "close": 0.000001755859694733,
+          "volume": 6.093102838368849
+        },
+        {
+          "ts": 1780794900,
+          "open": 0.000001771110829676,
+          "high": 0.000001771110829676,
+          "low": 0.000001771110829676,
+          "close": 0.000001771110829676,
+          "volume": 6.611966662154339
+        }
+      ],
+      "lead": {
+        "creator": "GhDFwetfwEBFqhqsJ4bAW3t6cRPHjaD6zAjkzUE1iZnj",
+        "sourceDelaySec": 0,
+        "sourceOrder": 1,
+        "earlierBuys": 5,
+        "earlierBuySol": 0.711173095,
+        "topEarlierBuyer": "9yzDcVC569tYadQqmuNPGNNa3ZmHA6AY7tdgWnSEvDbi",
+        "topEarlierBuyerSol": 0.30419178
+      }
+    },
+    {
+      "mint": "2fGpWR7MEnkAR6wF3Q9FL9doSYh5i4sd8oPWNGA3pump",
+      "symbol": "fastmoney",
+      "entryTs": 1780783908,
+      "sourceBuySol": 5.5119126,
+      "sourceExitPct": 63.18555063808523,
+      "entryMarketCapUsdApprox": 3537.7201415972368,
+      "pre5mVolumeUsd": 9253.99080183662,
+      "mfePct": 19.27032204295034,
+      "maePct": -80.02248021725634,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780784100,
+          "open": 0.00000996326829701,
+          "high": 0.000011883222183847,
+          "low": 0.000003623077070183,
+          "close": 0.000003634054876378,
+          "volume": 8186.768788700737
+        },
+        {
+          "ts": 1780784400,
+          "open": 0.000003743685111565,
+          "high": 0.000003990087700388,
+          "low": 0.000002173643998092,
+          "close": 0.000002325626130167,
+          "volume": 896.5322681217898
+        },
+        {
+          "ts": 1780784700,
+          "open": 0.000002314163673917,
+          "high": 0.000002355716774599,
+          "low": 0.000002052123404966,
+          "close": 0.000002067681129233,
+          "volume": 149.61289260971563
+        },
+        {
+          "ts": 1780785000,
+          "open": 0.000002061481710053,
+          "high": 0.000002061481710053,
+          "low": 0.000001994431191964,
+          "close": 0.000001994431191964,
+          "volume": 11.870401933518815
+        },
+        {
+          "ts": 1780785300,
+          "open": 0.000001990413895043,
+          "high": 0.000001990413895043,
+          "low": 0.000001990413895043,
+          "close": 0.000001990413895043,
+          "volume": 33.145546978155025
+        },
+        {
+          "ts": 1780786200,
+          "open": 0.000002028086893949,
+          "high": 0.000002028086893949,
+          "low": 0.000002026449800588,
+          "close": 0.000002026449800588,
+          "volume": 1.6124452003245016
+        },
+        {
+          "ts": 1780786800,
+          "open": 0.000002018201999944,
+          "high": 0.000002018201999944,
+          "low": 0.000002018201999944,
+          "close": 0.000002018201999944,
+          "volume": 0.2335274520255971
+        },
+        {
+          "ts": 1780787400,
+          "open": 0.000002017751265111,
+          "high": 0.000002017751265111,
+          "low": 0.000002017751265111,
+          "close": 0.000002017751265111,
+          "volume": 3.14384248447114
+        },
+        {
+          "ts": 1780788000,
+          "open": 0.000002009275646291,
+          "high": 0.000002009275646291,
+          "low": 0.000002009275646291,
+          "close": 0.000002009275646291,
+          "volume": 1.4058526349217275
+        },
+        {
+          "ts": 1780788300,
+          "open": 0.000002011431337712,
+          "high": 0.000002011431337712,
+          "low": 0.000002011431337712,
+          "close": 0.000002011431337712,
+          "volume": 4.383893564638351
+        },
+        {
+          "ts": 1780789500,
+          "open": 0.000002022397024611,
+          "high": 0.000002022397024611,
+          "low": 0.000002022397024611,
+          "close": 0.000002022397024611,
+          "volume": 0.5968377289871608
+        },
+        {
+          "ts": 1780790400,
+          "open": 0.000002023953320057,
+          "high": 0.000002024623322003,
+          "low": 0.000002023953320057,
+          "close": 0.000002024623322003,
+          "volume": 0.6688036711720794
+        },
+        {
+          "ts": 1780791300,
+          "open": 0.000002001582902545,
+          "high": 0.000002001582902545,
+          "low": 0.000001998188450549,
+          "close": 0.000001998188450549,
+          "volume": 6.760924612692814
+        },
+        {
+          "ts": 1780792800,
+          "open": 0.000001996086194501,
+          "high": 0.000001996086194501,
+          "low": 0.000001996086194501,
+          "close": 0.000001996086194501,
+          "volume": 4.3504489854922
+        }
+      ],
+      "lead": {
+        "creator": "B7X7zQ27Cif7mm3x4RuUMF3nK8gy2TyY9ZEXSWVgtnyA",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "FbCUAShvgygfy6zbJLYKYE2nyyvumM85VmcK196Apump",
+      "symbol": "OIL",
+      "entryTs": 1780783444,
+      "sourceBuySol": 2.011149011,
+      "sourceExitPct": 52.18276329898461,
+      "entryMarketCapUsdApprox": 2365.1819904832323,
+      "pre5mVolumeUsd": 3326.804886125615,
+      "mfePct": 125.35389625072557,
+      "maePct": -49.04867022490353,
+      "timeTo2xSec": 956,
+      "candles": [
+        {
+          "ts": 1780783500,
+          "open": 0.000003483925780641,
+          "high": 0.000003483925780641,
+          "low": 0.000003151880829541,
+          "close": 0.000002707481175383,
+          "volume": 2902.9702689184173
+        },
+        {
+          "ts": 1780783800,
+          "open": 0.000002707481175383,
+          "high": 0.000003483925780641,
+          "low": 0.000006654949450227,
+          "close": 0.000003483925780641,
+          "volume": 2637.643161804523
+        },
+        {
+          "ts": 1780784100,
+          "open": 0.000003483925780641,
+          "high": 0.000003483925780641,
+          "low": 0.0000075992206636,
+          "close": 0.000002707481175383,
+          "volume": 690.9734431897956
+        },
+        {
+          "ts": 1780784400,
+          "open": 0.000002707481175383,
+          "high": 0.000007851162489158,
+          "low": 0.000004353423961234,
+          "close": 0.000004912424504212,
+          "volume": 2108.3604538667964
+        },
+        {
+          "ts": 1780784700,
+          "open": 0.000004967277829045,
+          "high": 0.000006813457134759,
+          "low": 0.000004577775459521,
+          "close": 0.000006148973155994,
+          "volume": 363.74971861853436
+        },
+        {
+          "ts": 1780785000,
+          "open": 0.000005865100731735,
+          "high": 0.000006412178255412,
+          "low": 0.000003476483930244,
+          "close": 0.000003476483930244,
+          "volume": 1050.3579965690174
+        },
+        {
+          "ts": 1780785300,
+          "open": 0.000003412130151576,
+          "high": 0.000003512645681598,
+          "low": 0.000003371142343171,
+          "close": 0.000003512645681598,
+          "volume": 104.10566323746222
+        },
+        {
+          "ts": 1780785600,
+          "open": 0.000003528166958965,
+          "high": 0.000003528166958965,
+          "low": 0.000002693915845822,
+          "close": 0.000002768837430952,
+          "volume": 191.83170010178532
+        },
+        {
+          "ts": 1780785900,
+          "open": 0.000002716281593649,
+          "high": 0.000002716281593649,
+          "low": 0.000002456271513424,
+          "close": 0.000002456271513424,
+          "volume": 12.784666297766714
+        },
+        {
+          "ts": 1780786200,
+          "open": 0.000002000560680738,
+          "high": 0.000002000560680738,
+          "low": 0.000001973663694663,
+          "close": 0.000001977712894178,
+          "volume": 27.9381178152426
+        },
+        {
+          "ts": 1780786500,
+          "open": 0.000001997641029781,
+          "high": 0.000001997641029781,
+          "low": 0.000001997641029781,
+          "close": 0.000001997641029781,
+          "volume": 0.013485736776969907
+        },
+        {
+          "ts": 1780787100,
+          "open": 0.000002014963374369,
+          "high": 0.000002014963374369,
+          "low": 0.000002014963374369,
+          "close": 0.000002014963374369,
+          "volume": 13.014594296427074
+        },
+        {
+          "ts": 1780787700,
+          "open": 0.000001837084923025,
+          "high": 0.000001837084923025,
+          "low": 0.000001837084923025,
+          "close": 0.000001837084923025,
+          "volume": 29.3933587684
+        },
+        {
+          "ts": 1780788300,
+          "open": 0.000001787035616913,
+          "high": 0.000001787035616913,
+          "low": 0.000001787035616913,
+          "close": 0.000001787035616913,
+          "volume": 0.640076649953568
+        },
+        {
+          "ts": 1780791000,
+          "open": 0.000001781451914141,
+          "high": 0.000001781451914141,
+          "low": 0.000001781451914141,
+          "close": 0.000001781451914141,
+          "volume": 1.8419427230943306
+        },
+        {
+          "ts": 1780791600,
+          "open": 0.000001775106513614,
+          "high": 0.000001775106513614,
+          "low": 0.000001775106513614,
+          "close": 0.000001775106513614,
+          "volume": 5.4937936973061605
+        }
+      ],
+      "lead": {
+        "creator": "HxGFNdT2yubWuKFV4ruzGX5MwNLQk2PjpQZ5JqdbFbMX",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "8y7osHxMeB9xoiNjh5LqoMrmbdeGdyayJ44vvZ8Spump",
+      "symbol": "HUNTER",
+      "entryTs": 1780783404,
+      "sourceBuySol": 0.1181626,
+      "sourceExitPct": -90.24564456104564,
+      "entryMarketCapUsdApprox": 429.1666305631544,
+      "pre5mVolumeUsd": 24913.726780261895,
+      "mfePct": 136.67625919385185,
+      "maePct": -85.30743208229859,
+      "timeTo2xSec": 2796,
+      "candles": [
+        {
+          "ts": 1780783500,
+          "open": 0.000019210136798439,
+          "high": 0.000019576118514734,
+          "low": 0.000019210136798439,
+          "close": 0.000019576118514734,
+          "volume": 21640.53762368124
+        },
+        {
+          "ts": 1780783800,
+          "open": 0.000019576118514734,
+          "high": 0.000019576118514734,
+          "low": 0.000050929196535447,
+          "close": 0.000019210136798439,
+          "volume": 58546.53376219767
+        },
+        {
+          "ts": 1780784100,
+          "open": 0.000019210136798439,
+          "high": 0.000019576118514734,
+          "low": 0.000041023628773618,
+          "close": 0.000019576118514734,
+          "volume": 37816.927483859894
+        },
+        {
+          "ts": 1780784400,
+          "open": 0.000019576118514734,
+          "high": 0.000019576118514734,
+          "low": 0.000057659387680065,
+          "close": 0.000019210136798439,
+          "volume": 26240.65672584859
+        },
+        {
+          "ts": 1780784700,
+          "open": 0.000019210136798439,
+          "high": 0.000019576118514734,
+          "low": 0.000041515760899053,
+          "close": 0.000019576118514734,
+          "volume": 16079.369943571148
+        },
+        {
+          "ts": 1780785000,
+          "open": 0.000019576118514734,
+          "high": 0.000019576118514734,
+          "low": 0.000043735120024307,
+          "close": 0.000019210136798439,
+          "volume": 6841.47226209106
+        },
+        {
+          "ts": 1780785300,
+          "open": 0.000019210136798439,
+          "high": 0.000019576118514734,
+          "low": 0.000033059269549786,
+          "close": 0.000019576118514734,
+          "volume": 13519.992828233739
+        },
+        {
+          "ts": 1780785600,
+          "open": 0.000019576118514734,
+          "high": 0.000019576118514734,
+          "low": 0.000034236709458805,
+          "close": 0.000019210136798439,
+          "volume": 6428.953052522016
+        },
+        {
+          "ts": 1780785900,
+          "open": 0.000019210136798439,
+          "high": 0.000019576118514734,
+          "low": 0.000034675889517711,
+          "close": 0.000019576118514734,
+          "volume": 5479.567419721438
+        },
+        {
+          "ts": 1780786200,
+          "open": 0.000019576118514734,
+          "high": 0.000045465833160567,
+          "low": 0.000026949447098439,
+          "close": 0.000029846848320682,
+          "volume": 10638.550970437065
+        },
+        {
+          "ts": 1780786500,
+          "open": 0.000029397987774001,
+          "high": 0.000029397987774001,
+          "low": 0.000010184466861115,
+          "close": 0.000017635418630368,
+          "volume": 10321.17637494703
+        },
+        {
+          "ts": 1780786800,
+          "open": 0.000018307314080367,
+          "high": 0.000023564896458934,
+          "low": 0.000012377664492423,
+          "close": 0.000012892194313633,
+          "volume": 7257.029581518081
+        },
+        {
+          "ts": 1780787100,
+          "open": 0.000013766227629745,
+          "high": 0.000014126563523738,
+          "low": 0.000013766227629745,
+          "close": 0.000014126563523738,
+          "volume": 1963.5271910222452
+        },
+        {
+          "ts": 1780787400,
+          "open": 0.000014090029912997,
+          "high": 0.000014686616080893,
+          "low": 0.000010045874816873,
+          "close": 0.00001092494700493,
+          "volume": 2098.6516972599734
+        },
+        {
+          "ts": 1780787700,
+          "open": 0.000010783587623754,
+          "high": 0.000010785038224997,
+          "low": 0.000007968761989281,
+          "close": 0.000009587147907589,
+          "volume": 1495.3642388126616
+        },
+        {
+          "ts": 1780788000,
+          "open": 0.000009570819464171,
+          "high": 0.00000963012173209,
+          "low": 0.000009570819464171,
+          "close": 0.000009604226519825,
+          "volume": 437.2466342567027
+        },
+        {
+          "ts": 1780788300,
+          "open": 0.000009910875948158,
+          "high": 0.000009910875948158,
+          "low": 0.000006099999736267,
+          "close": 0.000007764368815249,
+          "volume": 1325.1929185667154
+        },
+        {
+          "ts": 1780788600,
+          "open": 0.000007454331530314,
+          "high": 0.000007561788058871,
+          "low": 0.000006205413655285,
+          "close": 0.000006604992540702,
+          "volume": 560.037992667045
+        },
+        {
+          "ts": 1780788900,
+          "open": 0.000006595196366013,
+          "high": 0.000006595196366013,
+          "low": 0.00000511982645219,
+          "close": 0.000005671266500582,
+          "volume": 441.60235534162973
+        },
+        {
+          "ts": 1780789200,
+          "open": 0.000005637372024976,
+          "high": 0.000005637372024976,
+          "low": 0.000004351795698993,
+          "close": 0.000004446888887707,
+          "volume": 472.67709337150865
+        },
+        {
+          "ts": 1780789500,
+          "open": 0.000004459028867576,
+          "high": 0.000004459028867576,
+          "low": 0.000004316760193285,
+          "close": 0.00000434228830392,
+          "volume": 19.902972759037443
+        },
+        {
+          "ts": 1780789800,
+          "open": 0.000004340909483464,
+          "high": 0.000005208552555276,
+          "low": 0.000004104909551578,
+          "close": 0.000004752868750056,
+          "volume": 197.63789053813986
+        },
+        {
+          "ts": 1780790100,
+          "open": 0.000004712039541491,
+          "high": 0.000004712039541491,
+          "low": 0.000004608748932352,
+          "close": 0.000004608748932352,
+          "volume": 50.52042902895479
+        },
+        {
+          "ts": 1780790400,
+          "open": 0.000004479572254229,
+          "high": 0.000004479572254229,
+          "low": 0.000004084834279445,
+          "close": 0.000004086662791958,
+          "volume": 134.86601309293272
+        },
+        {
+          "ts": 1780790700,
+          "open": 0.000004061612147103,
+          "high": 0.000004061612147103,
+          "low": 0.000003886016349971,
+          "close": 0.000003886016349971,
+          "volume": 219.77672417674484
+        },
+        {
+          "ts": 1780791000,
+          "open": 0.000003783556644935,
+          "high": 0.000003783556644935,
+          "low": 0.000003643170519758,
+          "close": 0.000003643170519758,
+          "volume": 227.81168442321686
+        },
+        {
+          "ts": 1780791300,
+          "open": 0.000003587382015766,
+          "high": 0.000003587382015766,
+          "low": 0.000003535361138076,
+          "close": 0.000003535361138076,
+          "volume": 28.124331434809953
+        },
+        {
+          "ts": 1780791600,
+          "open": 0.000003625399434319,
+          "high": 0.000003625399434319,
+          "low": 0.000003482341733059,
+          "close": 0.000003482341733059,
+          "volume": 33.865302590181315
+        },
+        {
+          "ts": 1780791900,
+          "open": 0.000003250727385995,
+          "high": 0.000003250727385995,
+          "low": 0.000003001383151688,
+          "close": 0.000003144191085295,
+          "volume": 163.3671662271364
+        },
+        {
+          "ts": 1780792200,
+          "open": 0.000003575763484026,
+          "high": 0.000003741786187477,
+          "low": 0.000003575763484026,
+          "close": 0.000003702907219034,
+          "volume": 30.97551286693555
+        },
+        {
+          "ts": 1780792800,
+          "open": 0.000003649929914768,
+          "high": 0.000003649929914768,
+          "low": 0.000003606788323235,
+          "close": 0.000003606788323235,
+          "volume": 40.9404348847461
+        },
+        {
+          "ts": 1780793100,
+          "open": 0.000003533968358321,
+          "high": 0.000003533968358321,
+          "low": 0.000003489316671541,
+          "close": 0.000003489316671541,
+          "volume": 26.606492332450756
+        },
+        {
+          "ts": 1780793400,
+          "open": 0.000003875778637472,
+          "high": 0.000003875778637472,
+          "low": 0.000003690884656859,
+          "close": 0.000003690884656859,
+          "volume": 99.16156743456972
+        },
+        {
+          "ts": 1780793700,
+          "open": 0.00000333862361272,
+          "high": 0.00000333862361272,
+          "low": 0.00000317750455583,
+          "close": 0.00000317750455583,
+          "volume": 111.71909712554977
+        },
+        {
+          "ts": 1780794300,
+          "open": 0.000003068689365625,
+          "high": 0.000003068689365625,
+          "low": 0.000002843081453119,
+          "close": 0.000002843081453119,
+          "volume": 124.22648070094625
+        },
+        {
+          "ts": 1780794600,
+          "open": 0.000002825312395102,
+          "high": 0.000002836512745772,
+          "low": 0.000002822462396194,
+          "close": 0.000002836512745772,
+          "volume": 1.5040713625706024
+        }
+      ],
+      "lead": {
+        "creator": "4wuDrzCRBHXQXLspVS7LYxjkxuavQwTCd7FbKBKXfDYz",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "HnZghCpKfbkxf9H85BNSTtG7UQQcRiPDh3DKjxsQpump",
+      "symbol": "boden",
+      "entryTs": 1780783175,
+      "sourceBuySol": 1.973389353,
+      "sourceExitPct": -55.18019577481121,
+      "entryMarketCapUsdApprox": 4229.3969016238325,
+      "pre5mVolumeUsd": 2261.5685608454037,
+      "mfePct": 0,
+      "maePct": -2.0960785033292386,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780783200,
+          "open": 0.000001767891327407,
+          "high": 0.000001767891327407,
+          "low": 0.000001730834937331,
+          "close": 0.000001730834937331,
+          "volume": 37.20757230231136
+        }
+      ],
+      "lead": {
+        "creator": "CqsH6oStb6hfScGPRLfA8PSDz2z1e4q83ypexweEppcF",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    },
+    {
+      "mint": "5deDQAF9gKoDG8QFSTWzx3135VTLvbP8cXjSuCb5pump",
+      "symbol": "HUNTER",
+      "entryTs": 1780783156,
+      "sourceBuySol": 2.074933457,
+      "sourceExitPct": -42.292511166540024,
+      "entryMarketCapUsdApprox": 5366.005613180617,
+      "pre5mVolumeUsd": 4973.157807783344,
+      "mfePct": 0,
+      "maePct": -0.0938126357676492,
+      "timeTo2xSec": null,
+      "candles": [
+        {
+          "ts": 1780783200,
+          "open": 0.000001733407435676,
+          "high": 0.000001733407435676,
+          "low": 0.000001731781280472,
+          "close": 0.000001731781280472,
+          "volume": 1.7439085335232767
+        }
+      ],
+      "lead": {
+        "creator": "D9gQ6RhKEpnobPBUdWY5bPQt2p3zGk3iVz6ChpUi2ArA",
+        "sourceDelaySec": 1,
+        "sourceOrder": 13,
+        "earlierBuys": 20,
+        "earlierBuySol": 37.36368681,
+        "topEarlierBuyer": "Aemby6yXpjA8CzFoq7cDbgPah5iuTgdnmLt8rFHBTUi8",
+        "topEarlierBuyerSol": 3.606308551
+      }
+    },
+    {
+      "mint": "3rZcNpM2Viub5G7kyX6ssQzaBeGoy7KUk2pYqhcqYKpZ",
+      "symbol": "Shatterproof",
+      "entryTs": 1780783141,
+      "sourceBuySol": 2.110531313,
+      "sourceExitPct": -98.24044231242765,
+      "entryMarketCapUsdApprox": 6068.911436450067,
+      "pre5mVolumeUsd": 20142.937694471544,
+      "mfePct": 192.6389986940198,
+      "maePct": -57.44155465443026,
+      "timeTo2xSec": 59,
+      "candles": [
+        {
+          "ts": 1780783200,
+          "open": 0.000014531146315733,
+          "high": 0.000033282985380591,
+          "low": 0.000006184229962866,
+          "close": 0.000029159190627035,
+          "volume": 33227.637573953325
+        },
+        {
+          "ts": 1780783500,
+          "open": 0.00002589444181532,
+          "high": 0.00003681002368087,
+          "low": 0.000008730331993948,
+          "close": 0.00001234108773834,
+          "volume": 24268.80848885653
+        },
+        {
+          "ts": 1780783800,
+          "open": 0.000011120031460566,
+          "high": 0.000011501598382886,
+          "low": 0.000011120031460566,
+          "close": 0.000011501598382886,
+          "volume": 7278.9161747410235
+        },
+        {
+          "ts": 1780784100,
+          "open": 0.000011613457204277,
+          "high": 0.000021191420892106,
+          "low": 0.000011063373870559,
+          "close": 0.000016554218129454,
+          "volume": 7002.757133919111
+        },
+        {
+          "ts": 1780784400,
+          "open": 0.000016273262533449,
+          "high": 0.000021191197741305,
+          "low": 0.00001261372312321,
+          "close": 0.000021140574169432,
+          "volume": 3250.993961488071
+        },
+        {
+          "ts": 1780784700,
+          "open": 0.000021022452853695,
+          "high": 0.000028268056299371,
+          "low": 0.000015148420315734,
+          "close": 0.000024976134095928,
+          "volume": 4033.244759230685
+        },
+        {
+          "ts": 1780785000,
+          "open": 0.000024073111953684,
+          "high": 0.000024809526583488,
+          "low": 0.000024073111953684,
+          "close": 0.000024809526583488,
+          "volume": 4265.9117168919665
+        },
+        {
+          "ts": 1780785300,
+          "open": 0.000025391717813768,
+          "high": 0.000042523801077124,
+          "low": 0.000024239156267576,
+          "close": 0.00003670995910425,
+          "volume": 7844.799956827354
+        },
+        {
+          "ts": 1780785600,
+          "open": 0.000038136144374323,
+          "high": 0.000042450394712075,
+          "low": 0.000031821832016389,
+          "close": 0.000032372189820375,
+          "volume": 6856.703611227789
+        },
+        {
+          "ts": 1780785900,
+          "open": 0.00003543738909657,
+          "high": 0.000037777468421221,
+          "low": 0.000034847303196766,
+          "close": 0.000037777468421221,
+          "volume": 5804.218892956205
+        },
+        {
+          "ts": 1780786200,
+          "open": 0.000038107661334631,
+          "high": 0.000039086163903768,
+          "low": 0.000014082083420096,
+          "close": 0.000015844772963984,
+          "volume": 12535.00459485052
+        },
+        {
+          "ts": 1780786500,
+          "open": 0.000014498111106335,
+          "high": 0.000016222006734732,
+          "low": 0.0000110504220918,
+          "close": 0.000016222006734732,
+          "volume": 2889.413462070905
+        },
+        {
+          "ts": 1780786800,
+          "open": 0.000016029254741019,
+          "high": 0.000021813687697309,
+          "low": 0.000016029254741019,
+          "close": 0.000019584737693109,
+          "volume": 1971.1234832114649
+        },
+        {
+          "ts": 1780787100,
+          "open": 0.000020715770502629,
+          "high": 0.000022605648292859,
+          "low": 0.000015922153857444,
+          "close": 0.000017019322086588,
+          "volume": 1329.2461152373062
+        },
+        {
+          "ts": 1780787400,
+          "open": 0.000017296823839329,
+          "high": 0.000021196032066632,
+          "low": 0.000016820896505965,
+          "close": 0.000021196032066632,
+          "volume": 591.320811776712
+        },
+        {
+          "ts": 1780787700,
+          "open": 0.000019274892247318,
+          "high": 0.000019274892247318,
+          "low": 0.000010008650505931,
+          "close": 0.000011640561956188,
+          "volume": 2890.762268730838
+        },
+        {
+          "ts": 1780788000,
+          "open": 0.000011483738912939,
+          "high": 0.00001172834000209,
+          "low": 0.00000778461467742,
+          "close": 0.000008086724359871,
+          "volume": 1862.1299574181958
+        },
+        {
+          "ts": 1780788300,
+          "open": 0.000007952701990489,
+          "high": 0.000010461119851258,
+          "low": 0.000006798187305073,
+          "close": 0.000010461119851258,
+          "volume": 793.2811919901037
+        },
+        {
+          "ts": 1780788600,
+          "open": 0.000012431277295884,
+          "high": 0.00001487311193447,
+          "low": 0.000011529082507179,
+          "close": 0.000013280396655077,
+          "volume": 1438.0016236035412
+        },
+        {
+          "ts": 1780788900,
+          "open": 0.000013605842818034,
+          "high": 0.000014048641458434,
+          "low": 0.000012119177165108,
+          "close": 0.000012897567166618,
+          "volume": 333.6225717024347
+        },
+        {
+          "ts": 1780789200,
+          "open": 0.000014000010756148,
+          "high": 0.000019756169657375,
+          "low": 0.000013752855341698,
+          "close": 0.000019756169657375,
+          "volume": 553.0507784959161
+        },
+        {
+          "ts": 1780789500,
+          "open": 0.000018645860508161,
+          "high": 0.000023396575073885,
+          "low": 0.000018544661196648,
+          "close": 0.000023175350509299,
+          "volume": 957.314807292855
+        },
+        {
+          "ts": 1780789800,
+          "open": 0.000021833156197393,
+          "high": 0.000021833156197393,
+          "low": 0.000017205266830867,
+          "close": 0.000019090506956839,
+          "volume": 1248.26966552997
+        },
+        {
+          "ts": 1780790100,
+          "open": 0.000018892000536114,
+          "high": 0.000029298975644533,
+          "low": 0.000018746684825808,
+          "close": 0.000025467048998367,
+          "volume": 1235.250337607139
+        },
+        {
+          "ts": 1780790400,
+          "open": 0.000023743577659471,
+          "high": 0.000024273614428682,
+          "low": 0.000017236853974188,
+          "close": 0.00001801440268602,
+          "volume": 2616.5354228409105
+        },
+        {
+          "ts": 1780790700,
+          "open": 0.000017588977829086,
+          "high": 0.000017719182292169,
+          "low": 0.000017588977829086,
+          "close": 0.000017719182292169,
+          "volume": 1525.2048761482665
+        },
+        {
+          "ts": 1780791000,
+          "open": 0.000017421332089209,
+          "high": 0.000017585287615763,
+          "low": 0.000011567736925138,
+          "close": 0.00001326719563675,
+          "volume": 1443.255895559787
+        },
+        {
+          "ts": 1780791300,
+          "open": 0.000013310237775742,
+          "high": 0.000017723157894527,
+          "low": 0.000012958080930016,
+          "close": 0.000017283232243871,
+          "volume": 1152.0007091666737
+        },
+        {
+          "ts": 1780791600,
+          "open": 0.000017427597915269,
+          "high": 0.000019780030722392,
+          "low": 0.000017427597915269,
+          "close": 0.000019327689144832,
+          "volume": 250.6917891798441
+        },
+        {
+          "ts": 1780791900,
+          "open": 0.000017964176795517,
+          "high": 0.000017964176795517,
+          "low": 0.000013563011491541,
+          "close": 0.000014792823805571,
+          "volume": 976.7468662769382
+        },
+        {
+          "ts": 1780792200,
+          "open": 0.000016914099446739,
+          "high": 0.000016914099446739,
+          "low": 0.000013104100454125,
+          "close": 0.000013104100454125,
+          "volume": 746.6489862488577
+        },
+        {
+          "ts": 1780792500,
+          "open": 0.000014036370209495,
+          "high": 0.000017088817800481,
+          "low": 0.000014036370209495,
+          "close": 0.000016001274047658,
+          "volume": 508.2007766641941
+        },
+        {
+          "ts": 1780792800,
+          "open": 0.000014954737192229,
+          "high": 0.000017110337912037,
+          "low": 0.000014796089141354,
+          "close": 0.000016492245019513,
+          "volume": 587.684431574078
+        },
+        {
+          "ts": 1780793100,
+          "open": 0.000018719234477254,
+          "high": 0.000018860632759959,
+          "low": 0.000018472415948164,
+          "close": 0.000018472415948164,
+          "volume": 321.89363771497324
+        },
+        {
+          "ts": 1780793400,
+          "open": 0.00001828807863759,
+          "high": 0.00001828807863759,
+          "low": 0.000014559868352122,
+          "close": 0.000014559868352122,
+          "volume": 585.8570309459418
+        },
+        {
+          "ts": 1780793700,
+          "open": 0.000014605980001186,
+          "high": 0.000015195284403026,
+          "low": 0.000013975987337984,
+          "close": 0.000015195284403026,
+          "volume": 365.8276085576617
+        },
+        {
+          "ts": 1780794000,
+          "open": 0.000014798089327581,
+          "high": 0.000015624523281367,
+          "low": 0.000014470328892433,
+          "close": 0.000015624523281367,
+          "volume": 192.05436037089052
+        },
+        {
+          "ts": 1780794300,
+          "open": 0.000016186805155984,
+          "high": 0.000016452146213157,
+          "low": 0.000013669967570591,
+          "close": 0.000013669967570591,
+          "volume": 391.04518802257587
+        },
+        {
+          "ts": 1780794600,
+          "open": 0.000013527248469433,
+          "high": 0.000016388901665563,
+          "low": 0.000013460226019268,
+          "close": 0.000016388901665563,
+          "volume": 106.3294534689748
+        }
+      ],
+      "lead": {
+        "creator": "HLXcHUAMbYc1BDYjJtBhiSsySTvkBfX4AEAdaYDrVvtQ",
+        "sourceDelaySec": 0,
+        "sourceOrder": null,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "topEarlierBuyer": null,
+        "topEarlierBuyerSol": 0
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from "node:ht
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const PORT = Math.max(1, Math.min(65535, parseInt(process.env.VPS_CONTROL_PORT ?? "8787", 10)));
+const PORT = Math.max(1, Math.min(65535, parseInt(process.env.VPS_CONTROL_PORT ?? "8799", 10)));
 
 type InstanceId = "main" | "4bdk" | "5qn" | "cya";
 
@@ -314,12 +314,23 @@ async function serviceStatus(instance: InstanceConfig): Promise<Record<string, u
 }
 
 async function callBotApi(instance: InstanceConfig, apiPath: string): Promise<unknown> {
-  const response = await fetch(`http://127.0.0.1:${instance.apiPort}${apiPath}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: "{}",
-    signal: AbortSignal.timeout(60_000),
-  });
+  const target = `http://127.0.0.1:${instance.apiPort}${apiPath}`;
+  let response: Response;
+  try {
+    response = await fetch(target, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+      signal: AbortSignal.timeout(60_000),
+    });
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    throw new Error(
+      `${instance.label} bot control API is unreachable at 127.0.0.1:${instance.apiPort}. ` +
+        `Check ${instance.service} is running and .env has BOT_CONTROL_API_ENABLED=true and WEB_PORT=${instance.apiPort}. ` +
+        `Details: ${detail}`
+    );
+  }
   const text = await response.text();
   let body: unknown = text;
   try {

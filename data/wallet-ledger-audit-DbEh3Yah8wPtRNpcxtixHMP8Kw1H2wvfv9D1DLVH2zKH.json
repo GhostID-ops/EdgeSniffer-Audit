@@ -1,0 +1,99 @@
+{
+  "wallet": "DbEh3Yah8wPtRNpcxtixHMP8Kw1H2wvfv9D1DLVH2zKH",
+  "txs": 10000,
+  "classified": 9600,
+  "unclassifiedWithToken": 111,
+  "positions": 617,
+  "solUsd": 82.72,
+  "realizedPnlSol": 30.692270120559545,
+  "realizedPnlUsd": 2538.8645843726854,
+  "realizedRoiPct": 1.319425002304871,
+  "unrealizedPnlSol": 188.24195686844047,
+  "unrealizedPnlUsd": 15571.374672157395,
+  "combinedPnlSol": 218.934226989,
+  "combinedPnlUsd": 18110.23925653008,
+  "realizedTrades": 4735,
+  "winRatePct": 50.66525871172123,
+  "avgRoiPct": 1.231815926697763,
+  "medianRoiPct": 0.21596890414535683,
+  "profitFactor": 1.2202189718680116,
+  "sharpeProxy": 0.058222057022194434,
+  "maxDrawdownSol": -3.541454025,
+  "largestWinSol": 0.693382807,
+  "largestLossSol": -0.466743569,
+  "nativeNetSol": -72.241516562,
+  "wsolNetSol": 0,
+  "usdcNet": -187.347536,
+  "topOpen": [
+    {
+      "mint": "BhTPX3YwwVff8F16ujjwvD9pqjCM8pa648Bchognpump",
+      "symbol": "SPCX",
+      "heldRaw": 25667880580989,
+      "valueSol": 144.971395158,
+      "valueUsd": 11992.033807438062
+    },
+    {
+      "mint": "72rNQZmW97fmSBbXZg3YDfDNGnk38bF6haKtBmxGpump",
+      "symbol": "USDC",
+      "heldRaw": 63371782819164,
+      "valueSol": 17.67392444,
+      "valueUsd": 1461.9870296381137
+    },
+    {
+      "mint": "ANM5za4vJz4GVAi45bfpymjTvy7YWXnYcYGfdP2fpump",
+      "symbol": "NDAQ",
+      "heldRaw": 57980489039884,
+      "valueSol": 11.642358836,
+      "valueUsd": 963.0559229524732
+    },
+    {
+      "mint": "J7C3Zse7k6pFsj1S3UAu8nZi19MVJeCHjhKipg5jpump",
+      "symbol": "STRAIGHT",
+      "heldRaw": 84033078768635,
+      "valueSol": 4.192511074,
+      "valueUsd": 346.8045160781566
+    },
+    {
+      "mint": "76UZDgonNfXEdcApm3yyuFhnBUvipR6DrTb5WgsBpump",
+      "symbol": "USDC",
+      "heldRaw": 46375102719189,
+      "valueSol": 3.378341018,
+      "valueUsd": 279.45636898583297
+    },
+    {
+      "mint": "8o6BZjJvHxGQ4SYeNAkW2XyuBvRFuH9yeoXZEt4Fpump",
+      "symbol": "Trumpcoin",
+      "heldRaw": 30288033580056,
+      "valueSol": 3.150365582,
+      "valueUsd": 260.5982409228018
+    },
+    {
+      "mint": "8x6nSKD5C33neSA2rfWFq3aKeDU97cFmGzE3RmLPpump",
+      "symbol": "Liquititty",
+      "heldRaw": 79366264598954,
+      "valueSol": 2.830397492,
+      "valueUsd": 234.13048056691434
+    },
+    {
+      "mint": "5p4U8yA2DdBZL2hdeDiwkfrSqno3p78Aw7mkNY5Npump",
+      "symbol": "DATBIHGAH",
+      "heldRaw": 4233016595218,
+      "valueSol": 0.628914095,
+      "valueUsd": 52.02377395522922
+    },
+    {
+      "mint": "2Vkmp5or41R9ACMJXAXqKnhDfYTgX63sZDAvk4QEpump",
+      "symbol": "MMCP",
+      "heldRaw": 6170533060409,
+      "valueSol": 0.628690191,
+      "valueUsd": 52.00525263312705
+    },
+    {
+      "mint": "YGiyoidBDH5Bb3Yotoy9kZ8ffmRFMvzQC6EhFpapump",
+      "symbol": "PIKACHU",
+      "heldRaw": 4803404335960,
+      "valueSol": 0.605651683,
+      "valueUsd": 50.0995072240628
+    }
+  ]
+}

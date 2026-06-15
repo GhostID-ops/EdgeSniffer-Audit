@@ -1,0 +1,28 @@
+[
+  {
+    "wallet": "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
+    "short": "CyaE1V...a54o",
+    "score": 100,
+    "verdict": "FOLLOW",
+    "txs": 3000,
+    "swaps": 1919,
+    "buys": 1352,
+    "sells": 567,
+    "campaigns": 263,
+    "closed": 262,
+    "realizedSol": 329.0405935765426,
+    "roiPct": 18.81172949167437,
+    "winRatePct": 62.59541984732825,
+    "avgRoiPct": 19.02834063269166,
+    "medianRoiPct": 7.793764165410348,
+    "profitFactor": 4.21389959319045,
+    "sharpe": 0.4380533982943125,
+    "maxDrawdownSol": -10.659575786,
+    "avgHoldMin": 8.785241730279894,
+    "medianHoldMin": 0.7333333333333334,
+    "largestWinSol": 23.748996631,
+    "largestLossSol": -8.218766978,
+    "recentRoiPct": 17.693929390000815,
+    "top5WinSharePct": 28.433161823918397
+  }
+]

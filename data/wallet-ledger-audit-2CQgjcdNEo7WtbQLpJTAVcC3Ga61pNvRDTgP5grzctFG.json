@@ -1,0 +1,99 @@
+{
+  "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+  "txs": 10000,
+  "classified": 8964,
+  "unclassifiedWithToken": 110,
+  "positions": 2142,
+  "solUsd": 80.77,
+  "realizedPnlSol": 364.685325865001,
+  "realizedPnlUsd": 29455.63377011613,
+  "realizedRoiPct": 6.812867690270314,
+  "unrealizedPnlSol": -61.54675389737518,
+  "unrealizedPnlUsd": -4971.131312290993,
+  "combinedPnlSol": 303.1385719676258,
+  "combinedPnlUsd": 24484.502457825136,
+  "realizedTrades": 6254,
+  "winRatePct": 52.46242404860889,
+  "avgRoiPct": 8.816510944057576,
+  "medianRoiPct": 0.9312347831160379,
+  "profitFactor": 2.2830259872866825,
+  "sharpeProxy": 0.2132843821447551,
+  "maxDrawdownSol": -4.86340948,
+  "largestWinSol": 6.57013897,
+  "largestLossSol": -4.571433362,
+  "nativeNetSol": 110.98201385,
+  "wsolNetSol": -6.118686037,
+  "usdcNet": 466.857061,
+  "topOpen": [
+    {
+      "mint": "5vAExw5RGMqsxUTUoX2UByh1vi4U4UoLL4fguaMEpump",
+      "symbol": "DATBIHGAH",
+      "heldRaw": 23671902209040,
+      "valueSol": 186.807855244,
+      "valueUsd": 15088.470468042096
+    },
+    {
+      "mint": "BhTPX3YwwVff8F16ujjwvD9pqjCM8pa648Bchognpump",
+      "symbol": "SPCX",
+      "heldRaw": 18264122462586,
+      "valueSol": 89.477692936,
+      "valueUsd": 7227.113258445281
+    },
+    {
+      "mint": "9CLsBqanocKyhhq81ewTH2RMu1pA7Hhq5g1QyunNpump",
+      "symbol": "1",
+      "heldRaw": 111432929006013,
+      "valueSol": 6.386319529,
+      "valueUsd": 515.8230283688342
+    },
+    {
+      "mint": "5ar4uHLz2xNsKeMapnsWpyzq2FNrBe6Ek5wyoQY4pump",
+      "symbol": "ANTH",
+      "heldRaw": 39367159461537,
+      "valueSol": 5.346759184,
+      "valueUsd": 431.85773929306094
+    },
+    {
+      "mint": "9HTEQTaGiQgiFV5pgWG2ZJ3xvSc3EijyjP9oU1ZRpump",
+      "symbol": "OAI",
+      "heldRaw": 49010896036881,
+      "valueSol": 5.264560282,
+      "valueUsd": 425.2185340159795
+    },
+    {
+      "mint": "5AGCYMFq78yLvFau2dZEgnXWDCac9HLBtDa3eGHHpump",
+      "symbol": "USDUT",
+      "heldRaw": 57594705977595,
+      "valueSol": 2.852282084,
+      "valueUsd": 230.37882391038
+    },
+    {
+      "mint": "2Y528WgTgnmxABeLeDGomkiSfnjHBVEKqULMFG2jpump",
+      "symbol": "POO",
+      "heldRaw": 94962792385392,
+      "valueSol": 2.719437152,
+      "valueUsd": 219.6489387874117
+    },
+    {
+      "mint": "6aoYgraZW56a9QNvsqNsm4eF2b7jCPHdQoB6NwAHpump",
+      "symbol": "$200",
+      "heldRaw": 48910090599865,
+      "valueSol": 2.429457515,
+      "valueUsd": 196.22728348665837
+    },
+    {
+      "mint": "9XfChpU3z1qKVBh4evPGFqncA1U9zpsh2dqAFj77pump",
+      "symbol": "test",
+      "heldRaw": 82845577931100,
+      "valueSol": 2.370386661,
+      "valueUsd": 191.4561305987721
+    },
+    {
+      "mint": "4bNZ5GZmXzovjYvqvb6JydxiVwsciLxEU6dpErXSpump",
+      "symbol": "35",
+      "heldRaw": 77374872564218,
+      "valueSol": 2.222479935,
+      "valueUsd": 179.50970434898574
+    }
+  ]
+}

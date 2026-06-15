@@ -1,0 +1,5460 @@
+{
+  "generatedAt": "2026-06-07T13:16:52.643Z",
+  "targetWallet": "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
+  "maxTxs": 3000,
+  "closedCampaigns": 260,
+  "profiledCampaigns": 68,
+  "winners": 45,
+  "losers": 23,
+  "medianRoiPct": 17.212367424201936,
+  "medianSourceOrder": 17,
+  "medianEarlierBuys": 0,
+  "topEarlierWallets": [
+    {
+      "id": "DxVLq8oEizx7Sz5WcbVUiQX8fLL3y1Jj8rMGEXEDi5oH",
+      "appearances": 10,
+      "winnerAppearances": 8,
+      "loserAppearances": 2,
+      "pnlSol": 9.947745898,
+      "roiPcts": [
+        5.173263379645635,
+        65.35639765132954,
+        12.406263941750574,
+        31.287487609858783,
+        34.43401097419376,
+        -1.98926610014742,
+        -20.43877885521903,
+        12.87967049245713,
+        45.43039029987577,
+        89.95861331852231
+      ],
+      "examples": [
+        {
+          "mint": "J8r7EQ3eQ5DtMd88rAF9PYDLvH9z86eKLeTCpc91pump",
+          "roiPct": 5.173263379645635,
+          "pnlSol": 0.168321647,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "2zrGDGt7us5NEfub2ggJ3vumPnxQBUX9mr35KGufpump",
+          "roiPct": 65.35639765132954,
+          "pnlSol": 1.965613031,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "D2NAwhBmSnmae3ES52MRbopJcYFh3u7ACD1aHcmnpump",
+          "roiPct": 12.406263941750574,
+          "pnlSol": 0.807063954,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "H5fjs4y5SYv2mysH4H5GDaoS7oXC4BerGA9d6UwSpump",
+          "roiPct": 31.287487609858783,
+          "pnlSol": 1.254784404,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "8xVSWkjy7L47SA8MoQWgwvVVPtBEUx8kxv473JSGpump",
+          "roiPct": 34.43401097419376,
+          "pnlSol": 1.12188903,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 1.6910913599999997,
+      "winRatePct": 80,
+      "avgRoiPct": 27.449805271226705,
+      "medianRoiPct": 22.083579051157955,
+      "medianLeadSeconds": 0,
+      "score": 72.92766800649068
+    },
+    {
+      "id": "J3sGCaN7fAGrpZrfhKVqmtAccxtwuWpKMhurqdarV6Dn",
+      "appearances": 3,
+      "winnerAppearances": 3,
+      "loserAppearances": 0,
+      "pnlSol": 13.144576604,
+      "roiPcts": [
+        26.639162646548414,
+        12.87967049245713,
+        24.722949108027688
+      ],
+      "examples": [
+        {
+          "mint": "2bFpytkR7mjAqdwQVKFCDchg78xPL9CD5gh485L5pump",
+          "roiPct": 26.639162646548414,
+          "pnlSol": 11.857445248,
+          "sourceBuySol": 44.009718696
+        },
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "B9eM2T3QRaVmj6RhJiXHkXNsx7JYbmrfKB7Eh2tspump",
+          "roiPct": 24.722949108027688,
+          "pnlSol": 0.867500862,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 0.316314828,
+      "winRatePct": 100,
+      "avgRoiPct": 21.413927415677744,
+      "medianRoiPct": 24.722949108027688,
+      "medianLeadSeconds": 0,
+      "score": 45.7101475702711
+    },
+    {
+      "id": "5opAR6Z3NCPEgXchUvox5nvqTKhFzsykooiR67xxkj6e",
+      "appearances": 3,
+      "winnerAppearances": 3,
+      "loserAppearances": 0,
+      "pnlSol": 3.947246354,
+      "roiPcts": [
+        65.35639765132954,
+        31.287487609858783,
+        24.16763942515958
+      ],
+      "examples": [
+        {
+          "mint": "2zrGDGt7us5NEfub2ggJ3vumPnxQBUX9mr35KGufpump",
+          "roiPct": 65.35639765132954,
+          "pnlSol": 1.965613031,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "H5fjs4y5SYv2mysH4H5GDaoS7oXC4BerGA9d6UwSpump",
+          "roiPct": 31.287487609858783,
+          "pnlSol": 1.254784404,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+          "roiPct": 24.16763942515958,
+          "pnlSol": 0.726848919,
+          "sourceBuySol": 3.00752964
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 0.007386390999999999,
+      "winRatePct": 100,
+      "avgRoiPct": 40.27050822878264,
+      "medianRoiPct": 31.287487609858783,
+      "medianLeadSeconds": 0,
+      "score": 44.05544964551306
+    },
+    {
+      "id": "4LtF24A86sQ92JdUMVaCyxeJ9BuoUzJczK1zPwbBMzJ8",
+      "appearances": 5,
+      "winnerAppearances": 4,
+      "loserAppearances": 1,
+      "pnlSol": 5.567375835,
+      "roiPcts": [
+        -20.43877885521903,
+        12.87967049245713,
+        24.722949108027688,
+        45.43039029987577,
+        89.95861331852231
+      ],
+      "examples": [
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "B9eM2T3QRaVmj6RhJiXHkXNsx7JYbmrfKB7Eh2tspump",
+          "roiPct": 24.722949108027688,
+          "pnlSol": 0.867500862,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "9MvxFNPg6GfbWtizoW8GZD2PogZd1YeXH2prkVWpump",
+          "roiPct": 45.43039029987577,
+          "pnlSol": 3.011972247,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "H2eo7pPWJkvSzteseWakRSagsZnpJc78uskKFmzvpump",
+          "roiPct": 89.95861331852231,
+          "pnlSol": 2.70134838,
+          "sourceBuySol": 3.00287908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 0.2678954,
+      "winRatePct": 80,
+      "avgRoiPct": 30.510568872732772,
+      "medianRoiPct": 24.722949108027688,
+      "medianLeadSeconds": 0,
+      "score": 43.77160338409311
+    },
+    {
+      "id": "8QFT4Dx84gRGajj3jzJv4BHL8dU8d7DpjCUR3HgnX7gW",
+      "appearances": 3,
+      "winnerAppearances": 3,
+      "loserAppearances": 0,
+      "pnlSol": 2.9409986320000003,
+      "roiPcts": [
+        5.173263379645635,
+        65.35639765132954,
+        12.406263941750574
+      ],
+      "examples": [
+        {
+          "mint": "J8r7EQ3eQ5DtMd88rAF9PYDLvH9z86eKLeTCpc91pump",
+          "roiPct": 5.173263379645635,
+          "pnlSol": 0.168321647,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "2zrGDGt7us5NEfub2ggJ3vumPnxQBUX9mr35KGufpump",
+          "roiPct": 65.35639765132954,
+          "pnlSol": 1.965613031,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "D2NAwhBmSnmae3ES52MRbopJcYFh3u7ACD1aHcmnpump",
+          "roiPct": 12.406263941750574,
+          "pnlSol": 0.807063954,
+          "sourceBuySol": 3.00287908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 0.165398598,
+      "winRatePct": 100,
+      "avgRoiPct": 27.64530832424192,
+      "medianRoiPct": 12.406263941750574,
+      "medianLeadSeconds": 0,
+      "score": 37.99912196169677
+    },
+    {
+      "id": "8F9JT88S2B7SPFbgMHiFUbfbmWRQZ23DiirB46j8ubSN",
+      "appearances": 2,
+      "winnerAppearances": 2,
+      "loserAppearances": 0,
+      "pnlSol": 2.772676985,
+      "roiPcts": [
+        65.35639765132954,
+        12.406263941750574
+      ],
+      "examples": [
+        {
+          "mint": "2zrGDGt7us5NEfub2ggJ3vumPnxQBUX9mr35KGufpump",
+          "roiPct": 65.35639765132954,
+          "pnlSol": 1.965613031,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "D2NAwhBmSnmae3ES52MRbopJcYFh3u7ACD1aHcmnpump",
+          "roiPct": 12.406263941750574,
+          "pnlSol": 0.807063954,
+          "sourceBuySol": 3.00287908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0
+      ],
+      "earlierBuySol": 5.871330815,
+      "winRatePct": 100,
+      "avgRoiPct": 38.881330796540055,
+      "medianRoiPct": 38.881330796540055,
+      "medianLeadSeconds": 0,
+      "score": 34.32520930361602
+    },
+    {
+      "id": "BSeVdKoeVEPrMsJviuJa7oqT1N5mfgLeE5Td66UY4UyS",
+      "appearances": 2,
+      "winnerAppearances": 2,
+      "loserAppearances": 0,
+      "pnlSol": 2.3766734339999998,
+      "roiPcts": [
+        31.287487609858783,
+        34.43401097419376
+      ],
+      "examples": [
+        {
+          "mint": "H5fjs4y5SYv2mysH4H5GDaoS7oXC4BerGA9d6UwSpump",
+          "roiPct": 31.287487609858783,
+          "pnlSol": 1.254784404,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "8xVSWkjy7L47SA8MoQWgwvVVPtBEUx8kxv473JSGpump",
+          "roiPct": 34.43401097419376,
+          "pnlSol": 1.12188903,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0
+      ],
+      "earlierBuySol": 0.103851018,
+      "winRatePct": 100,
+      "avgRoiPct": 32.86074929202627,
+      "medianRoiPct": 32.86074929202627,
+      "medianLeadSeconds": 0,
+      "score": 31.52097315081051
+    },
+    {
+      "id": "BLw4fXAc9P7NYhnRH9GyccXKUmvpUSiqc67BGbanxcDp",
+      "appearances": 2,
+      "winnerAppearances": 2,
+      "loserAppearances": 0,
+      "pnlSol": 2.0680448570000003,
+      "roiPcts": [
+        31.026406747413006,
+        27.949809671413263
+      ],
+      "examples": [
+        {
+          "mint": "GkjWvyaQfKCAHabhkqtLnAHYc9roMFvUgk34S1SVpump",
+          "roiPct": 31.026406747413006,
+          "pnlSol": 1.087317037,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "AotEiy5TY5WU4YanxUAMsKMnUQazemLGsSqPiKtfpump",
+          "roiPct": 27.949809671413263,
+          "pnlSol": 0.98072782,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        7,
+        1
+      ],
+      "earlierBuySol": 6.67475816,
+      "winRatePct": 100,
+      "avgRoiPct": 29.488108209413134,
+      "medianRoiPct": 29.488108209413134,
+      "medianLeadSeconds": 4,
+      "score": 29.863288140765253
+    },
+    {
+      "id": "9de8DN2BZvL3QgD7rQzBUF4KfTUawReVHjcpr3VDAUSG",
+      "appearances": 2,
+      "winnerAppearances": 2,
+      "loserAppearances": 0,
+      "pnlSol": 2.0618483579999998,
+      "roiPcts": [
+        12.406263941750574,
+        31.287487609858783
+      ],
+      "examples": [
+        {
+          "mint": "D2NAwhBmSnmae3ES52MRbopJcYFh3u7ACD1aHcmnpump",
+          "roiPct": 12.406263941750574,
+          "pnlSol": 0.807063954,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "H5fjs4y5SYv2mysH4H5GDaoS7oXC4BerGA9d6UwSpump",
+          "roiPct": 31.287487609858783,
+          "pnlSol": 1.254784404,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        5,
+        2
+      ],
+      "earlierBuySol": 0.006167197,
+      "winRatePct": 100,
+      "avgRoiPct": 21.846875775804676,
+      "medianRoiPct": 21.846875775804676,
+      "medianLeadSeconds": 3.5,
+      "score": 26.800598668321868
+    },
+    {
+      "id": "3Dz8tfyay2TdRLChehtzX179NKorQDzLFKe5u1RAPLM4",
+      "appearances": 2,
+      "winnerAppearances": 2,
+      "loserAppearances": 0,
+      "pnlSol": 1.400358314,
+      "roiPcts": [
+        12.87967049245713,
+        27.949809671413263
+      ],
+      "examples": [
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "AotEiy5TY5WU4YanxUAMsKMnUQazemLGsSqPiKtfpump",
+          "roiPct": 27.949809671413263,
+          "pnlSol": 0.98072782,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        1,
+        2
+      ],
+      "earlierBuySol": 0.13734049,
+      "winRatePct": 100,
+      "avgRoiPct": 20.414740081935197,
+      "medianRoiPct": 20.414740081935197,
+      "medianLeadSeconds": 1.5,
+      "score": 25.56625434677408
+    },
+    {
+      "id": "FUoY8NrMifG55ZBqxPze3vGKc222dMxnA1vtDS6GwgN",
+      "appearances": 2,
+      "winnerAppearances": 2,
+      "loserAppearances": 0,
+      "pnlSol": 1.533912873,
+      "roiPcts": [
+        12.406263941750574,
+        24.16763942515958
+      ],
+      "examples": [
+        {
+          "mint": "D2NAwhBmSnmae3ES52MRbopJcYFh3u7ACD1aHcmnpump",
+          "roiPct": 12.406263941750574,
+          "pnlSol": 0.807063954,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+          "roiPct": 24.16763942515958,
+          "pnlSol": 0.726848919,
+          "sourceBuySol": 3.00752964
+        }
+      ],
+      "leadSeconds": [
+        13,
+        3
+      ],
+      "earlierBuySol": 0.48799906,
+      "winRatePct": 100,
+      "avgRoiPct": 18.28695168345508,
+      "medianRoiPct": 18.28695168345508,
+      "medianLeadSeconds": 8,
+      "score": 24.84869354638203
+    },
+    {
+      "id": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+      "appearances": 8,
+      "winnerAppearances": 4,
+      "loserAppearances": 4,
+      "pnlSol": 11.620272791000001,
+      "roiPcts": [
+        65.35639765132954,
+        26.639162646548414,
+        -20.43877885521903,
+        12.87967049245713,
+        89.95861331852231,
+        -26.71101894039674,
+        -18.704170898925902,
+        -29.244009869193576
+      ],
+      "examples": [
+        {
+          "mint": "2zrGDGt7us5NEfub2ggJ3vumPnxQBUX9mr35KGufpump",
+          "roiPct": 65.35639765132954,
+          "pnlSol": 1.965613031,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "2bFpytkR7mjAqdwQVKFCDchg78xPL9CD5gh485L5pump",
+          "roiPct": 26.639162646548414,
+          "pnlSol": 11.857445248,
+          "sourceBuySol": 44.009718696
+        },
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "H2eo7pPWJkvSzteseWakRSagsZnpJc78uskKFmzvpump",
+          "roiPct": 89.95861331852231,
+          "pnlSol": 2.70134838,
+          "sourceBuySol": 3.00287908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "earlierBuySol": 24.75907269,
+      "winRatePct": 50,
+      "avgRoiPct": 12.466983193140269,
+      "medianRoiPct": -2.912250203234386,
+      "medianLeadSeconds": 0,
+      "score": 24.60706606825611
+    },
+    {
+      "id": "Fkemk4DNp9ncsixH8gJqoysHu8mvG2A1TMVbGTMoYa9d",
+      "appearances": 2,
+      "winnerAppearances": 2,
+      "loserAppearances": 0,
+      "pnlSol": 1.146479413,
+      "roiPcts": [
+        12.87967049245713,
+        24.16763942515958
+      ],
+      "examples": [
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+          "roiPct": 24.16763942515958,
+          "pnlSol": 0.726848919,
+          "sourceBuySol": 3.00752964
+        }
+      ],
+      "leadSeconds": [
+        4,
+        0
+      ],
+      "earlierBuySol": 1.460346251,
+      "winRatePct": 100,
+      "avgRoiPct": 18.523654958808358,
+      "medianRoiPct": 18.523654958808358,
+      "medianLeadSeconds": 2,
+      "score": 24.555941396523345
+    },
+    {
+      "id": "9yzDcVC569tYadQqmuNPGNNa3ZmHA6AY7tdgWnSEvDbi",
+      "appearances": 2,
+      "winnerAppearances": 2,
+      "loserAppearances": 0,
+      "pnlSol": 1.146479413,
+      "roiPcts": [
+        12.87967049245713,
+        24.16763942515958
+      ],
+      "examples": [
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+          "roiPct": 24.16763942515958,
+          "pnlSol": 0.726848919,
+          "sourceBuySol": 3.00752964
+        }
+      ],
+      "leadSeconds": [
+        4,
+        3
+      ],
+      "earlierBuySol": 0.60838356,
+      "winRatePct": 100,
+      "avgRoiPct": 18.523654958808358,
+      "medianRoiPct": 18.523654958808358,
+      "medianLeadSeconds": 3.5,
+      "score": 24.555941396523345
+    },
+    {
+      "id": "nya666pQkP3PzWxi7JngU3rRMHuc7zbLK8c8wxQ4qpT",
+      "appearances": 4,
+      "winnerAppearances": 3,
+      "loserAppearances": 1,
+      "pnlSol": 1.250323761,
+      "roiPcts": [
+        12.406263941750574,
+        12.87967049245713,
+        24.16763942515958,
+        -18.704170898925902
+      ],
+      "examples": [
+        {
+          "mint": "D2NAwhBmSnmae3ES52MRbopJcYFh3u7ACD1aHcmnpump",
+          "roiPct": 12.406263941750574,
+          "pnlSol": 0.807063954,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+          "roiPct": 24.16763942515958,
+          "pnlSol": 0.726848919,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "2jGgSEY79H6a821bYfonf8mMy2wPHCDLJBfd2bjCpump",
+          "roiPct": -18.704170898925902,
+          "pnlSol": -0.703219606,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        8,
+        2,
+        0,
+        0
+      ],
+      "earlierBuySol": 0.8942891879999999,
+      "winRatePct": 75,
+      "avgRoiPct": 7.687350740110345,
+      "medianRoiPct": 12.642967217103852,
+      "medianLeadSeconds": 1,
+      "score": 22.32526405704414
+    },
+    {
+      "id": "57stAMFvwctAjkBS76RXGoK4QKyS1QoxbGMbzFFe4DyZ",
+      "appearances": 5,
+      "winnerAppearances": 3,
+      "loserAppearances": 2,
+      "pnlSol": 3.922928851,
+      "roiPcts": [
+        5.173263379645635,
+        -1.98926610014742,
+        45.43039029987577,
+        -2.694613264825425,
+        27.423191577057153
+      ],
+      "examples": [
+        {
+          "mint": "J8r7EQ3eQ5DtMd88rAF9PYDLvH9z86eKLeTCpc91pump",
+          "roiPct": 5.173263379645635,
+          "pnlSol": 0.168321647,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "91ngv1xWHZ7hoiWdVVgheaYfRKdqqZn8VgNjNKm9pump",
+          "roiPct": -1.98926610014742,
+          "pnlSol": -0.069801141,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "9MvxFNPg6GfbWtizoW8GZD2PogZd1YeXH2prkVWpump",
+          "roiPct": 45.43039029987577,
+          "pnlSol": 3.011972247,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "6AjB4Ka8ptgBqE9gXbREcAAcsDPaqbkJHKR71obupump",
+          "roiPct": -2.694613264825425,
+          "pnlSol": -0.081034541,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "4w8GmC4UGDmVP4C1UNG4qQ7VaAGUUahx8N6Hm9VZpump",
+          "roiPct": 27.423191577057153,
+          "pnlSol": 0.893470639,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 11.0122214,
+      "winRatePct": 60,
+      "avgRoiPct": 14.66859317832114,
+      "medianRoiPct": 5.173263379645635,
+      "medianLeadSeconds": 0,
+      "score": 21.790366122328457
+    },
+    {
+      "id": "3ntEpydDjraXrnwWTCJM7DvfBvtYUMc7q1oHADMCoFuK",
+      "appearances": 7,
+      "winnerAppearances": 4,
+      "loserAppearances": 3,
+      "pnlSol": 2.6348663100000005,
+      "roiPcts": [
+        12.406263941750574,
+        31.287487609858783,
+        34.43401097419376,
+        31.026406747413006,
+        -1.4409460321607281,
+        -8.455728823200998,
+        -29.244009869193576
+      ],
+      "examples": [
+        {
+          "mint": "D2NAwhBmSnmae3ES52MRbopJcYFh3u7ACD1aHcmnpump",
+          "roiPct": 12.406263941750574,
+          "pnlSol": 0.807063954,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "H5fjs4y5SYv2mysH4H5GDaoS7oXC4BerGA9d6UwSpump",
+          "roiPct": 31.287487609858783,
+          "pnlSol": 1.254784404,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "8xVSWkjy7L47SA8MoQWgwvVVPtBEUx8kxv473JSGpump",
+          "roiPct": 34.43401097419376,
+          "pnlSol": 1.12188903,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "GkjWvyaQfKCAHabhkqtLnAHYc9roMFvUgk34S1SVpump",
+          "roiPct": 31.026406747413006,
+          "pnlSol": 1.087317037,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "9nwxwsuJFHw723TNcAb5aBXcUmo8VpCXsNM2oZMMpump",
+          "roiPct": -1.4409460321607281,
+          "pnlSol": -0.050561198,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 19.554553567,
+      "winRatePct": 57.14285714285714,
+      "avgRoiPct": 10.001926364094404,
+      "medianRoiPct": 12.406263941750574,
+      "medianLeadSeconds": 0,
+      "score": 20.635636855637763
+    },
+    {
+      "id": "DF9MXmawYzbqskNxL1wTSYRcG2Gv25pqvVxVKD4kvkM4",
+      "appearances": 3,
+      "winnerAppearances": 2,
+      "loserAppearances": 1,
+      "pnlSol": 1.72098109,
+      "roiPcts": [
+        12.87967049245713,
+        -1.4409460321607281,
+        35.95802651049736
+      ],
+      "examples": [
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "9nwxwsuJFHw723TNcAb5aBXcUmo8VpCXsNM2oZMMpump",
+          "roiPct": -1.4409460321607281,
+          "pnlSol": -0.050561198,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "Gv5Vh2FB5p3kByyuUTp2jyXvP6LgEPMMu5dYPDcBpump",
+          "roiPct": 35.95802651049736,
+          "pnlSol": 1.351911794,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        4,
+        2,
+        0
+      ],
+      "earlierBuySol": 4.363027091,
+      "winRatePct": 66.66666666666666,
+      "avgRoiPct": 15.798916990264587,
+      "medianRoiPct": 12.87967049245713,
+      "medianLeadSeconds": 2,
+      "score": 18.040547886105834
+    },
+    {
+      "id": "Ez2jYoXp45DZxr7JVhiqbDNirgBT37MErjZGxA8jZkTf",
+      "appearances": 7,
+      "winnerAppearances": 4,
+      "loserAppearances": 3,
+      "pnlSol": 0.87295023,
+      "roiPcts": [
+        12.406263941750574,
+        -1.98926610014742,
+        12.87967049245713,
+        -26.71101894039674,
+        -1.4409460321607281,
+        24.16763942515958,
+        27.949809671413263
+      ],
+      "examples": [
+        {
+          "mint": "D2NAwhBmSnmae3ES52MRbopJcYFh3u7ACD1aHcmnpump",
+          "roiPct": 12.406263941750574,
+          "pnlSol": 0.807063954,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "91ngv1xWHZ7hoiWdVVgheaYfRKdqqZn8VgNjNKm9pump",
+          "roiPct": -1.98926610014742,
+          "pnlSol": -0.069801141,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "FHcx64soe5j1GnN6KKhZzhWgJQvMNPr1RNUPjt2Kpump",
+          "roiPct": -26.71101894039674,
+          "pnlSol": -1.940958618,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "9nwxwsuJFHw723TNcAb5aBXcUmo8VpCXsNM2oZMMpump",
+          "roiPct": -1.4409460321607281,
+          "pnlSol": -0.050561198,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        13,
+        4,
+        4,
+        2,
+        0,
+        0
+      ],
+      "earlierBuySol": 2.662642059,
+      "winRatePct": 57.14285714285714,
+      "avgRoiPct": 6.75173606543938,
+      "medianRoiPct": 12.406263941750574,
+      "medianLeadSeconds": 2,
+      "score": 17.573644656175752
+    },
+    {
+      "id": "99j6HWTKqEigSbRpe1uJ1g3EVpRZJNnB7wbKsjhfPz8g",
+      "appearances": 3,
+      "winnerAppearances": 2,
+      "loserAppearances": 1,
+      "pnlSol": 0.830693267,
+      "roiPcts": [
+        12.406263941750574,
+        24.16763942515958,
+        -18.704170898925902
+      ],
+      "examples": [
+        {
+          "mint": "D2NAwhBmSnmae3ES52MRbopJcYFh3u7ACD1aHcmnpump",
+          "roiPct": 12.406263941750574,
+          "pnlSol": 0.807063954,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+          "roiPct": 24.16763942515958,
+          "pnlSol": 0.726848919,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "2jGgSEY79H6a821bYfonf8mMy2wPHCDLJBfd2bjCpump",
+          "roiPct": -18.704170898925902,
+          "pnlSol": -0.703219606,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        8,
+        0,
+        0
+      ],
+      "earlierBuySol": 0.006508138,
+      "winRatePct": 66.66666666666666,
+      "avgRoiPct": 5.956577489328086,
+      "medianRoiPct": 12.406263941750574,
+      "medianLeadSeconds": 0,
+      "score": 13.213324262731234
+    },
+    {
+      "id": "84UBp52FJZ5xwD5sGUqddzujNUUUAjNzNtLBfVeLXW84",
+      "appearances": 6,
+      "winnerAppearances": 3,
+      "loserAppearances": 3,
+      "pnlSol": 1.932715429,
+      "roiPcts": [
+        31.287487609858783,
+        12.87967049245713,
+        31.026406747413006,
+        -1.4409460321607281,
+        -3.0791694797841997,
+        -8.455728823200998
+      ],
+      "examples": [
+        {
+          "mint": "H5fjs4y5SYv2mysH4H5GDaoS7oXC4BerGA9d6UwSpump",
+          "roiPct": 31.287487609858783,
+          "pnlSol": 1.254784404,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "GkjWvyaQfKCAHabhkqtLnAHYc9roMFvUgk34S1SVpump",
+          "roiPct": 31.026406747413006,
+          "pnlSol": 1.087317037,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "9nwxwsuJFHw723TNcAb5aBXcUmo8VpCXsNM2oZMMpump",
+          "roiPct": -1.4409460321607281,
+          "pnlSol": -0.050561198,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+          "roiPct": -3.0791694797841997,
+          "pnlSol": -0.439338381,
+          "sourceBuySol": 3.00842052
+        }
+      ],
+      "leadSeconds": [
+        6,
+        1,
+        9,
+        0,
+        1,
+        0
+      ],
+      "earlierBuySol": 0.56441448,
+      "winRatePct": 50,
+      "avgRoiPct": 10.369620085763833,
+      "medianRoiPct": 5.719362230148201,
+      "medianLeadSeconds": 1,
+      "score": 12.080563463305532
+    },
+    {
+      "id": "Hn9B5qcoHAQZg6YsjT6twgugzw1YTNF9qahC1n7UKBao",
+      "appearances": 3,
+      "winnerAppearances": 2,
+      "loserAppearances": 1,
+      "pnlSol": -0.17743746400000004,
+      "roiPcts": [
+        5.173263379645635,
+        -20.43877885521903,
+        31.026406747413006
+      ],
+      "examples": [
+        {
+          "mint": "J8r7EQ3eQ5DtMd88rAF9PYDLvH9z86eKLeTCpc91pump",
+          "roiPct": 5.173263379645635,
+          "pnlSol": 0.168321647,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "GkjWvyaQfKCAHabhkqtLnAHYc9roMFvUgk34S1SVpump",
+          "roiPct": 31.026406747413006,
+          "pnlSol": 1.087317037,
+          "sourceBuySol": 3.00287908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        1,
+        10
+      ],
+      "earlierBuySol": 0.744576121,
+      "winRatePct": 66.66666666666666,
+      "avgRoiPct": 5.253630423946537,
+      "medianRoiPct": 5.173263379645635,
+      "medianLeadSeconds": 1,
+      "score": 11.924014705578614
+    },
+    {
+      "id": "8oP2ykpuBw9G1q3h9xySnqRDYise6eMUE9grAXCRSq3G",
+      "appearances": 4,
+      "winnerAppearances": 2,
+      "loserAppearances": 2,
+      "pnlSol": 1.8780965610000002,
+      "roiPcts": [
+        31.287487609858783,
+        -1.98926610014742,
+        24.16763942515958,
+        -0.9614330983639985
+      ],
+      "examples": [
+        {
+          "mint": "H5fjs4y5SYv2mysH4H5GDaoS7oXC4BerGA9d6UwSpump",
+          "roiPct": 31.287487609858783,
+          "pnlSol": 1.254784404,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "91ngv1xWHZ7hoiWdVVgheaYfRKdqqZn8VgNjNKm9pump",
+          "roiPct": -1.98926610014742,
+          "pnlSol": -0.069801141,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+          "roiPct": 24.16763942515958,
+          "pnlSol": 0.726848919,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "2bQcbtNSwS71oa7Hs7EsyiH82FARoKJkyFmaBKaipump",
+          "roiPct": -0.9614330983639985,
+          "pnlSol": -0.033735621,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 0.622603452,
+      "winRatePct": 50,
+      "avgRoiPct": 13.126106959126737,
+      "medianRoiPct": 11.603103163397792,
+      "medianLeadSeconds": 0,
+      "score": 11.128539344650694
+    },
+    {
+      "id": "6DNoDXoWNQWVYDJmBnWVvsQJEVAijUcr14ToSttWQDoa",
+      "appearances": 2,
+      "winnerAppearances": 1,
+      "loserAppearances": 1,
+      "pnlSol": 1.1849832630000001,
+      "roiPcts": [
+        31.287487609858783,
+        -1.98926610014742
+      ],
+      "examples": [
+        {
+          "mint": "H5fjs4y5SYv2mysH4H5GDaoS7oXC4BerGA9d6UwSpump",
+          "roiPct": 31.287487609858783,
+          "pnlSol": 1.254784404,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "91ngv1xWHZ7hoiWdVVgheaYfRKdqqZn8VgNjNKm9pump",
+          "roiPct": -1.98926610014742,
+          "pnlSol": -0.069801141,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        1,
+        12
+      ],
+      "earlierBuySol": 0.467168162,
+      "winRatePct": 50,
+      "avgRoiPct": 14.64911075485568,
+      "medianRoiPct": 14.64911075485568,
+      "medianLeadSeconds": 6.5,
+      "score": 9.044627564942273
+    },
+    {
+      "id": "8cKTsKRe8TN5QrQJE1pjzU3Ry6iFKF3ua1yf4BBHAv9g",
+      "appearances": 2,
+      "winnerAppearances": 1,
+      "loserAppearances": 1,
+      "pnlSol": 0.910926679,
+      "roiPcts": [
+        -1.98926610014742,
+        27.949809671413263
+      ],
+      "examples": [
+        {
+          "mint": "91ngv1xWHZ7hoiWdVVgheaYfRKdqqZn8VgNjNKm9pump",
+          "roiPct": -1.98926610014742,
+          "pnlSol": -0.069801141,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "AotEiy5TY5WU4YanxUAMsKMnUQazemLGsSqPiKtfpump",
+          "roiPct": 27.949809671413263,
+          "pnlSol": 0.98072782,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        13,
+        0
+      ],
+      "earlierBuySol": 3.5661116440000002,
+      "winRatePct": 50,
+      "avgRoiPct": 12.980271785632922,
+      "medianRoiPct": 12.980271785632922,
+      "medianLeadSeconds": 6.5,
+      "score": 8.103035393253169
+    },
+    {
+      "id": "5vjKSaF7EHSydzSWz7oSSE5WVmzZESMryrM3QBcy1tJK",
+      "appearances": 2,
+      "winnerAppearances": 1,
+      "loserAppearances": 1,
+      "pnlSol": 0.676287721,
+      "roiPcts": [
+        -1.4409460321607281,
+        24.16763942515958
+      ],
+      "examples": [
+        {
+          "mint": "9nwxwsuJFHw723TNcAb5aBXcUmo8VpCXsNM2oZMMpump",
+          "roiPct": -1.4409460321607281,
+          "pnlSol": -0.050561198,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+          "roiPct": 24.16763942515958,
+          "pnlSol": 0.726848919,
+          "sourceBuySol": 3.00752964
+        }
+      ],
+      "leadSeconds": [
+        2,
+        0
+      ],
+      "earlierBuySol": 0.014214092000000001,
+      "winRatePct": 50,
+      "avgRoiPct": 11.363346696499427,
+      "medianRoiPct": 11.363346696499427,
+      "medianLeadSeconds": 1,
+      "score": 7.221626399599771
+    },
+    {
+      "id": "3USuyHQVNyppevSmNiamBy8eFcjDJKqLWcCuJ6zJMG5H",
+      "appearances": 2,
+      "winnerAppearances": 1,
+      "loserAppearances": 1,
+      "pnlSol": 1.765462257,
+      "roiPcts": [
+        45.43039029987577,
+        -29.244009869193576
+      ],
+      "examples": [
+        {
+          "mint": "9MvxFNPg6GfbWtizoW8GZD2PogZd1YeXH2prkVWpump",
+          "roiPct": 45.43039029987577,
+          "pnlSol": 3.011972247,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "8bK3uLYEKgMWzFq5UCNapK4XkEzJPLn5wpZ7V5R8pump",
+          "roiPct": -29.244009869193576,
+          "pnlSol": -1.24650999,
+          "sourceBuySol": 3.00842052
+        }
+      ],
+      "leadSeconds": [
+        23,
+        1
+      ],
+      "earlierBuySol": 0.943624632,
+      "winRatePct": 50,
+      "avgRoiPct": 8.093190215341096,
+      "medianRoiPct": 8.093190215341096,
+      "medianLeadSeconds": 12,
+      "score": 7.002738343136438
+    },
+    {
+      "id": "4JQtbANx1W1axdpZ7E5RcUWERE31fe7Ju4oLRPa13qqZ",
+      "appearances": 2,
+      "winnerAppearances": 1,
+      "loserAppearances": 1,
+      "pnlSol": 0.349829353,
+      "roiPcts": [
+        -1.98926610014742,
+        12.87967049245713
+      ],
+      "examples": [
+        {
+          "mint": "91ngv1xWHZ7hoiWdVVgheaYfRKdqqZn8VgNjNKm9pump",
+          "roiPct": -1.98926610014742,
+          "pnlSol": -0.069801141,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        16,
+        1
+      ],
+      "earlierBuySol": 0.40419816,
+      "winRatePct": 50,
+      "avgRoiPct": 5.445202196154855,
+      "medianRoiPct": 5.445202196154855,
+      "medianLeadSeconds": 8.5,
+      "score": 4.527910231461942
+    },
+    {
+      "id": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+      "appearances": 15,
+      "winnerAppearances": 6,
+      "loserAppearances": 9,
+      "pnlSol": 8.768794444000001,
+      "roiPcts": [
+        26.639162646548414,
+        -20.43877885521903,
+        12.87967049245713,
+        -28.795606926955436,
+        -26.71101894039674,
+        31.026406747413006,
+        -19.618352256878094,
+        -1.4409460321607281,
+        -3.0791694797841997,
+        -2.694613264825425,
+        27.423191577057153,
+        24.16763942515958,
+        -0.9614330983639985,
+        35.95802651049736,
+        -8.455728823200998
+      ],
+      "examples": [
+        {
+          "mint": "2bFpytkR7mjAqdwQVKFCDchg78xPL9CD5gh485L5pump",
+          "roiPct": 26.639162646548414,
+          "pnlSol": 11.857445248,
+          "sourceBuySol": 44.009718696
+        },
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "5N2thTKqGbh5ZRXgFLvKMmL794Cfhe5wnThBhJB6pump",
+          "roiPct": -28.795606926955436,
+          "pnlSol": -1.87450592,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "FHcx64soe5j1GnN6KKhZzhWgJQvMNPr1RNUPjt2Kpump",
+          "roiPct": -26.71101894039674,
+          "pnlSol": -1.940958618,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 0.031562700000000006,
+      "winRatePct": 40,
+      "avgRoiPct": 3.059896648089867,
+      "medianRoiPct": -1.4409460321607281,
+      "medianLeadSeconds": 0,
+      "score": 3.9927531032359482
+    },
+    {
+      "id": "FpZKELRxqp6HTSHgF5d4RnAVTFRf33KPha1thHeYrpz3",
+      "appearances": 2,
+      "winnerAppearances": 1,
+      "loserAppearances": 1,
+      "pnlSol": -0.539605509,
+      "roiPcts": [
+        -20.43877885521903,
+        27.423191577057153
+      ],
+      "examples": [
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "4w8GmC4UGDmVP4C1UNG4qQ7VaAGUUahx8N6Hm9VZpump",
+          "roiPct": 27.423191577057153,
+          "pnlSol": 0.893470639,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        1,
+        7
+      ],
+      "earlierBuySol": 3.0874252,
+      "winRatePct": 50,
+      "avgRoiPct": 3.4922063609190612,
+      "medianRoiPct": 3.4922063609190612,
+      "medianLeadSeconds": 4,
+      "score": 2.8572770353676242
+    },
+    {
+      "id": "Hpu8geK6RYXtauxYpgkmnqVLQy3Q3pKtKLHkBrcTL2EF",
+      "appearances": 2,
+      "winnerAppearances": 1,
+      "loserAppearances": 1,
+      "pnlSol": -0.9558718390000001,
+      "roiPcts": [
+        12.87967049245713,
+        -19.618352256878094
+      ],
+      "examples": [
+        {
+          "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+          "roiPct": 12.87967049245713,
+          "pnlSol": 0.419630494,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "9k2CsoymWNF3AGmgo7ZboxNCtaVu5i6sr2r26H6ekjmR",
+          "roiPct": -19.618352256878094,
+          "pnlSol": -1.375502333,
+          "sourceBuySol": 0.250805001
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0
+      ],
+      "earlierBuySol": 2.5087252,
+      "winRatePct": 50,
+      "avgRoiPct": -3.369340882210482,
+      "medianRoiPct": -3.369340882210482,
+      "medianLeadSeconds": 0,
+      "score": -0.30360819188419286
+    },
+    {
+      "id": "7REhL47HTvumbVjnYwd6Yg3H9EHjWwpdtW5QwXsmTZAe",
+      "appearances": 5,
+      "winnerAppearances": 2,
+      "loserAppearances": 3,
+      "pnlSol": -0.145650877,
+      "roiPcts": [
+        -20.43877885521903,
+        -2.694613264825425,
+        24.16763942515958,
+        -8.455728823200998,
+        27.949809671413263
+      ],
+      "examples": [
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "6AjB4Ka8ptgBqE9gXbREcAAcsDPaqbkJHKR71obupump",
+          "roiPct": -2.694613264825425,
+          "pnlSol": -0.081034541,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+          "roiPct": 24.16763942515958,
+          "pnlSol": 0.726848919,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "GFNox1Yy1fsNqWZBd8hy9LYCNz9t7BZBb9B3rLYBpump",
+          "roiPct": -8.455728823200998,
+          "pnlSol": -0.339116927,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "AotEiy5TY5WU4YanxUAMsKMnUQazemLGsSqPiKtfpump",
+          "roiPct": 27.949809671413263,
+          "pnlSol": 0.98072782,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 2.1505887159999997,
+      "winRatePct": 40,
+      "avgRoiPct": 4.105665630665479,
+      "medianRoiPct": -2.694613264825425,
+      "medianLeadSeconds": 0,
+      "score": -0.5033846247338083
+    },
+    {
+      "id": "ayaCRDLwYRqAvPnrpwnkUsxrqx4hniVaWAGHYG5DGBD",
+      "appearances": 2,
+      "winnerAppearances": 1,
+      "loserAppearances": 1,
+      "pnlSol": -1.133894664,
+      "roiPcts": [
+        12.406263941750574,
+        -26.71101894039674
+      ],
+      "examples": [
+        {
+          "mint": "D2NAwhBmSnmae3ES52MRbopJcYFh3u7ACD1aHcmnpump",
+          "roiPct": 12.406263941750574,
+          "pnlSol": 0.807063954,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "FHcx64soe5j1GnN6KKhZzhWgJQvMNPr1RNUPjt2Kpump",
+          "roiPct": -26.71101894039674,
+          "pnlSol": -1.940958618,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        8,
+        0
+      ],
+      "earlierBuySol": 0.486274564,
+      "winRatePct": 50,
+      "avgRoiPct": -7.152377499323084,
+      "medianRoiPct": -7.152377499323084,
+      "medianLeadSeconds": 4,
+      "score": -1.9948456637292336
+    },
+    {
+      "id": "3XLsY9NonrVtm57PeHPCuP36BCj6V4hJy7xa7ZzxtvrZ",
+      "appearances": 5,
+      "winnerAppearances": 2,
+      "loserAppearances": 3,
+      "pnlSol": -0.945384489,
+      "roiPcts": [
+        -28.795606926955436,
+        -3.0791694797841997,
+        24.16763942515958,
+        -8.455728823200998,
+        27.949809671413263
+      ],
+      "examples": [
+        {
+          "mint": "5N2thTKqGbh5ZRXgFLvKMmL794Cfhe5wnThBhJB6pump",
+          "roiPct": -28.795606926955436,
+          "pnlSol": -1.87450592,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+          "roiPct": -3.0791694797841997,
+          "pnlSol": -0.439338381,
+          "sourceBuySol": 3.00842052
+        },
+        {
+          "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+          "roiPct": 24.16763942515958,
+          "pnlSol": 0.726848919,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "GFNox1Yy1fsNqWZBd8hy9LYCNz9t7BZBb9B3rLYBpump",
+          "roiPct": -8.455728823200998,
+          "pnlSol": -0.339116927,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "AotEiy5TY5WU4YanxUAMsKMnUQazemLGsSqPiKtfpump",
+          "roiPct": 27.949809671413263,
+          "pnlSol": 0.98072782,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 15.029849805,
+      "winRatePct": 40,
+      "avgRoiPct": 2.3573887733264427,
+      "medianRoiPct": -3.0791694797841997,
+      "medianLeadSeconds": 0,
+      "score": -2.002428979669423
+    },
+    {
+      "id": "J6AuAn2GLHiz3TzyAGa5itH2kpDbzzfrBhUXYW1hyGER",
+      "appearances": 5,
+      "winnerAppearances": 2,
+      "loserAppearances": 3,
+      "pnlSol": -1.4048190079999998,
+      "roiPcts": [
+        31.287487609858783,
+        -20.43877885521903,
+        -28.795606926955436,
+        31.026406747413006,
+        -3.0791694797841997
+      ],
+      "examples": [
+        {
+          "mint": "H5fjs4y5SYv2mysH4H5GDaoS7oXC4BerGA9d6UwSpump",
+          "roiPct": 31.287487609858783,
+          "pnlSol": 1.254784404,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "5N2thTKqGbh5ZRXgFLvKMmL794Cfhe5wnThBhJB6pump",
+          "roiPct": -28.795606926955436,
+          "pnlSol": -1.87450592,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "GkjWvyaQfKCAHabhkqtLnAHYc9roMFvUgk34S1SVpump",
+          "roiPct": 31.026406747413006,
+          "pnlSol": 1.087317037,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+          "roiPct": -3.0791694797841997,
+          "pnlSol": -0.439338381,
+          "sourceBuySol": 3.00842052
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "earlierBuySol": 17.839225669999998,
+      "winRatePct": 40,
+      "avgRoiPct": 2.0000678190626244,
+      "medianRoiPct": -3.0791694797841997,
+      "medianLeadSeconds": 0,
+      "score": -2.6047918803749504
+    },
+    {
+      "id": "Dxm74DtsrTmgdQXMrffzrRdaRhxpbWVhLcFVgwBbeTLN",
+      "appearances": 3,
+      "winnerAppearances": 1,
+      "loserAppearances": 2,
+      "pnlSol": -0.6161364840000001,
+      "roiPcts": [
+        -20.43877885521903,
+        24.722949108027688,
+        -1.4409460321607281
+      ],
+      "examples": [
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "B9eM2T3QRaVmj6RhJiXHkXNsx7JYbmrfKB7Eh2tspump",
+          "roiPct": 24.722949108027688,
+          "pnlSol": 0.867500862,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "9nwxwsuJFHw723TNcAb5aBXcUmo8VpCXsNM2oZMMpump",
+          "roiPct": -1.4409460321607281,
+          "pnlSol": -0.050561198,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 9.013163163,
+      "winRatePct": 33.33333333333333,
+      "avgRoiPct": 0.947741406882643,
+      "medianRoiPct": -1.4409460321607281,
+      "medianLeadSeconds": 0,
+      "score": -4.237039921246943
+    },
+    {
+      "id": "3JB7yggTsfwbqK9mio6RcgSZXenpZoWHeGSpzkxedK18",
+      "appearances": 3,
+      "winnerAppearances": 1,
+      "loserAppearances": 2,
+      "pnlSol": -0.6048990970000001,
+      "roiPcts": [
+        -8.455728823200998,
+        -29.244009869193576,
+        27.949809671413263
+      ],
+      "examples": [
+        {
+          "mint": "GFNox1Yy1fsNqWZBd8hy9LYCNz9t7BZBb9B3rLYBpump",
+          "roiPct": -8.455728823200998,
+          "pnlSol": -0.339116927,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "8bK3uLYEKgMWzFq5UCNapK4XkEzJPLn5wpZ7V5R8pump",
+          "roiPct": -29.244009869193576,
+          "pnlSol": -1.24650999,
+          "sourceBuySol": 3.00842052
+        },
+        {
+          "mint": "AotEiy5TY5WU4YanxUAMsKMnUQazemLGsSqPiKtfpump",
+          "roiPct": 27.949809671413263,
+          "pnlSol": 0.98072782,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 9.012737415,
+      "winRatePct": 33.33333333333333,
+      "avgRoiPct": -3.249976340327104,
+      "medianRoiPct": -8.455728823200998,
+      "medianLeadSeconds": 0,
+      "score": -5.904889633130843
+    },
+    {
+      "id": "6uwqG7Uog6FVUHZp5rx6jkJ8VjWjNf7svcAzzcCJQh7Q",
+      "appearances": 7,
+      "winnerAppearances": 2,
+      "loserAppearances": 5,
+      "pnlSol": -1.363448437,
+      "roiPcts": [
+        34.43401097419376,
+        -1.98926610014742,
+        -19.618352256878094,
+        -3.0791694797841997,
+        -2.694613264825425,
+        24.16763942515958,
+        -29.244009869193576
+      ],
+      "examples": [
+        {
+          "mint": "8xVSWkjy7L47SA8MoQWgwvVVPtBEUx8kxv473JSGpump",
+          "roiPct": 34.43401097419376,
+          "pnlSol": 1.12188903,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "91ngv1xWHZ7hoiWdVVgheaYfRKdqqZn8VgNjNKm9pump",
+          "roiPct": -1.98926610014742,
+          "pnlSol": -0.069801141,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "9k2CsoymWNF3AGmgo7ZboxNCtaVu5i6sr2r26H6ekjmR",
+          "roiPct": -19.618352256878094,
+          "pnlSol": -1.375502333,
+          "sourceBuySol": 0.250805001
+        },
+        {
+          "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+          "roiPct": -3.0791694797841997,
+          "pnlSol": -0.439338381,
+          "sourceBuySol": 3.00842052
+        },
+        {
+          "mint": "6AjB4Ka8ptgBqE9gXbREcAAcsDPaqbkJHKR71obupump",
+          "roiPct": -2.694613264825425,
+          "pnlSol": -0.081034541,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 17.6811382,
+      "winRatePct": 28.57142857142857,
+      "avgRoiPct": 0.2823199183606612,
+      "medianRoiPct": -2.694613264825425,
+      "medianLeadSeconds": 0,
+      "score": -15.250520469655736
+    },
+    {
+      "id": "9BEwcMC6p3RfpReeWadiv8wQF1Muyo3vmPycF8VNbSNR",
+      "appearances": 5,
+      "winnerAppearances": 1,
+      "loserAppearances": 4,
+      "pnlSol": -1.219587534,
+      "roiPcts": [
+        -19.618352256878094,
+        -1.4409460321607281,
+        -3.0791694797841997,
+        -2.694613264825425,
+        24.16763942515958
+      ],
+      "examples": [
+        {
+          "mint": "9k2CsoymWNF3AGmgo7ZboxNCtaVu5i6sr2r26H6ekjmR",
+          "roiPct": -19.618352256878094,
+          "pnlSol": -1.375502333,
+          "sourceBuySol": 0.250805001
+        },
+        {
+          "mint": "9nwxwsuJFHw723TNcAb5aBXcUmo8VpCXsNM2oZMMpump",
+          "roiPct": -1.4409460321607281,
+          "pnlSol": -0.050561198,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+          "roiPct": -3.0791694797841997,
+          "pnlSol": -0.439338381,
+          "sourceBuySol": 3.00842052
+        },
+        {
+          "mint": "6AjB4Ka8ptgBqE9gXbREcAAcsDPaqbkJHKR71obupump",
+          "roiPct": -2.694613264825425,
+          "pnlSol": -0.081034541,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+          "roiPct": 24.16763942515958,
+          "pnlSol": 0.726848919,
+          "sourceBuySol": 3.00752964
+        }
+      ],
+      "leadSeconds": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "earlierBuySol": 1.7391505660000002,
+      "winRatePct": 20,
+      "avgRoiPct": -0.5330883216977724,
+      "medianRoiPct": -2.694613264825425,
+      "medianLeadSeconds": 0,
+      "score": -17.432822862679107
+    },
+    {
+      "id": "ADkquSiH1zS6LmGoJxzwE6x44gpE6S3KWLALqNc3sTDs",
+      "appearances": 2,
+      "winnerAppearances": 0,
+      "loserAppearances": 2,
+      "pnlSol": -1.872414529,
+      "roiPcts": [
+        -20.43877885521903,
+        -3.0791694797841997
+      ],
+      "examples": [
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+          "roiPct": -3.0791694797841997,
+          "pnlSol": -0.439338381,
+          "sourceBuySol": 3.00842052
+        }
+      ],
+      "leadSeconds": [
+        1,
+        1
+      ],
+      "earlierBuySol": 0.704713488,
+      "winRatePct": 0,
+      "avgRoiPct": -11.758974167501615,
+      "medianRoiPct": -11.758974167501615,
+      "medianLeadSeconds": 1,
+      "score": -18.576004196000646
+    },
+    {
+      "id": "C5EMTGGE87SqLyuvhShLDMj2jUBwqBLJAZF6ybK8Jyqw",
+      "appearances": 2,
+      "winnerAppearances": 0,
+      "loserAppearances": 2,
+      "pnlSol": -1.685848371,
+      "roiPcts": [
+        -3.0791694797841997,
+        -29.244009869193576
+      ],
+      "examples": [
+        {
+          "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+          "roiPct": -3.0791694797841997,
+          "pnlSol": -0.439338381,
+          "sourceBuySol": 3.00842052
+        },
+        {
+          "mint": "8bK3uLYEKgMWzFq5UCNapK4XkEzJPLn5wpZ7V5R8pump",
+          "roiPct": -29.244009869193576,
+          "pnlSol": -1.24650999,
+          "sourceBuySol": 3.00842052
+        }
+      ],
+      "leadSeconds": [
+        1,
+        1
+      ],
+      "earlierBuySol": 1.741670884,
+      "winRatePct": 0,
+      "avgRoiPct": -16.161589674488887,
+      "medianRoiPct": -16.161589674488887,
+      "medianLeadSeconds": 1,
+      "score": -20.150484240795553
+    },
+    {
+      "id": "DQApNebkK5wCmy92T5c4Z9NePWjP7dC4avpLMzuxadxR",
+      "appearances": 2,
+      "winnerAppearances": 0,
+      "loserAppearances": 2,
+      "pnlSol": -2.136295754,
+      "roiPcts": [
+        -20.43877885521903,
+        -18.704170898925902
+      ],
+      "examples": [
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "2jGgSEY79H6a821bYfonf8mMy2wPHCDLJBfd2bjCpump",
+          "roiPct": -18.704170898925902,
+          "pnlSol": -0.703219606,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [
+        1,
+        1
+      ],
+      "earlierBuySol": 0.733544965,
+      "winRatePct": 0,
+      "avgRoiPct": -19.57147487707247,
+      "medianRoiPct": -19.57147487707247,
+      "medianLeadSeconds": 1,
+      "score": -21.964885704828987
+    },
+    {
+      "id": "9e2p6ayBqbMnUiZL68L1kdZdqZqK7aHYxtUXoA3fhrXK",
+      "appearances": 2,
+      "winnerAppearances": 0,
+      "loserAppearances": 2,
+      "pnlSol": -2.6795861380000003,
+      "roiPcts": [
+        -20.43877885521903,
+        -29.244009869193576
+      ],
+      "examples": [
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "8bK3uLYEKgMWzFq5UCNapK4XkEzJPLn5wpZ7V5R8pump",
+          "roiPct": -29.244009869193576,
+          "pnlSol": -1.24650999,
+          "sourceBuySol": 3.00842052
+        }
+      ],
+      "leadSeconds": [
+        1,
+        1
+      ],
+      "earlierBuySol": 1.041392892,
+      "winRatePct": 0,
+      "avgRoiPct": -24.8413943622063,
+      "medianRoiPct": -24.8413943622063,
+      "medianLeadSeconds": 1,
+      "score": -24.616143882882522
+    },
+    {
+      "id": "GdgWKG6DxpeJuBN3op1PTuCnrBPq4Yifrp1BnGpBQZDf",
+      "appearances": 3,
+      "winnerAppearances": 0,
+      "loserAppearances": 3,
+      "pnlSol": -3.118924519,
+      "roiPcts": [
+        -20.43877885521903,
+        -3.0791694797841997,
+        -29.244009869193576
+      ],
+      "examples": [
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+          "roiPct": -3.0791694797841997,
+          "pnlSol": -0.439338381,
+          "sourceBuySol": 3.00842052
+        },
+        {
+          "mint": "8bK3uLYEKgMWzFq5UCNapK4XkEzJPLn5wpZ7V5R8pump",
+          "roiPct": -29.244009869193576,
+          "pnlSol": -1.24650999,
+          "sourceBuySol": 3.00842052
+        }
+      ],
+      "leadSeconds": [
+        1,
+        1,
+        1
+      ],
+      "earlierBuySol": 3.69323724,
+      "winRatePct": 0,
+      "avgRoiPct": -17.587319401398933,
+      "medianRoiPct": -20.43877885521903,
+      "medianLeadSeconds": 1,
+      "score": -28.153852279559572
+    },
+    {
+      "id": "FoDiidYW6JhyvVdqedDDgPMENjAYmzmNXcNBMmrJACLr",
+      "appearances": 3,
+      "winnerAppearances": 0,
+      "loserAppearances": 3,
+      "pnlSol": -3.118924519,
+      "roiPcts": [
+        -20.43877885521903,
+        -3.0791694797841997,
+        -29.244009869193576
+      ],
+      "examples": [
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+          "roiPct": -3.0791694797841997,
+          "pnlSol": -0.439338381,
+          "sourceBuySol": 3.00842052
+        },
+        {
+          "mint": "8bK3uLYEKgMWzFq5UCNapK4XkEzJPLn5wpZ7V5R8pump",
+          "roiPct": -29.244009869193576,
+          "pnlSol": -1.24650999,
+          "sourceBuySol": 3.00842052
+        }
+      ],
+      "leadSeconds": [
+        1,
+        1,
+        1
+      ],
+      "earlierBuySol": 3.70323724,
+      "winRatePct": 0,
+      "avgRoiPct": -17.587319401398933,
+      "medianRoiPct": -20.43877885521903,
+      "medianLeadSeconds": 1,
+      "score": -28.153852279559572
+    },
+    {
+      "id": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+      "appearances": 3,
+      "winnerAppearances": 0,
+      "loserAppearances": 3,
+      "pnlSol": -3.118924519,
+      "roiPcts": [
+        -20.43877885521903,
+        -3.0791694797841997,
+        -29.244009869193576
+      ],
+      "examples": [
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+          "roiPct": -3.0791694797841997,
+          "pnlSol": -0.439338381,
+          "sourceBuySol": 3.00842052
+        },
+        {
+          "mint": "8bK3uLYEKgMWzFq5UCNapK4XkEzJPLn5wpZ7V5R8pump",
+          "roiPct": -29.244009869193576,
+          "pnlSol": -1.24650999,
+          "sourceBuySol": 3.00842052
+        }
+      ],
+      "leadSeconds": [
+        1,
+        1,
+        1
+      ],
+      "earlierBuySol": 3.18332248,
+      "winRatePct": 0,
+      "avgRoiPct": -17.587319401398933,
+      "medianRoiPct": -20.43877885521903,
+      "medianLeadSeconds": 1,
+      "score": -28.153852279559572
+    }
+  ],
+  "topCreators": [
+    {
+      "id": "JC1irmi7bWUEjPvqCbZbAoJ9JXh6htDC9uP5tAC2w4k",
+      "appearances": 2,
+      "winnerAppearances": 2,
+      "loserAppearances": 0,
+      "pnlSol": 2.0680448570000003,
+      "roiPcts": [
+        31.026406747413006,
+        27.949809671413263
+      ],
+      "examples": [
+        {
+          "mint": "GkjWvyaQfKCAHabhkqtLnAHYc9roMFvUgk34S1SVpump",
+          "roiPct": 31.026406747413006,
+          "pnlSol": 1.087317037,
+          "sourceBuySol": 3.00287908
+        },
+        {
+          "mint": "AotEiy5TY5WU4YanxUAMsKMnUQazemLGsSqPiKtfpump",
+          "roiPct": 27.949809671413263,
+          "pnlSol": 0.98072782,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [],
+      "earlierBuySol": 0,
+      "winRatePct": 100,
+      "avgRoiPct": 29.488108209413134,
+      "medianRoiPct": 29.488108209413134,
+      "medianLeadSeconds": null,
+      "score": 29.863288140765253
+    },
+    {
+      "id": "7qvLrGK7iL3LZLgv8EVKgNr3QSahgivkQ6QkCMNh9pWA",
+      "appearances": 2,
+      "winnerAppearances": 2,
+      "loserAppearances": 0,
+      "pnlSol": 1.989389892,
+      "roiPcts": [
+        34.43401097419376,
+        24.722949108027688
+      ],
+      "examples": [
+        {
+          "mint": "8xVSWkjy7L47SA8MoQWgwvVVPtBEUx8kxv473JSGpump",
+          "roiPct": 34.43401097419376,
+          "pnlSol": 1.12188903,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "B9eM2T3QRaVmj6RhJiXHkXNsx7JYbmrfKB7Eh2tspump",
+          "roiPct": 24.722949108027688,
+          "pnlSol": 0.867500862,
+          "sourceBuySol": 3.00727908
+        }
+      ],
+      "leadSeconds": [],
+      "earlierBuySol": 0,
+      "winRatePct": 100,
+      "avgRoiPct": 29.578480041110723,
+      "medianRoiPct": 29.578480041110723,
+      "medianLeadSeconds": null,
+      "score": 29.82078190844429
+    },
+    {
+      "id": "HesCZFsE7KQWLuYHxVSbTNAom3VbuWKPZ64Jm2nyhJXw",
+      "appearances": 2,
+      "winnerAppearances": 1,
+      "loserAppearances": 1,
+      "pnlSol": 1.833703112,
+      "roiPcts": [
+        45.43039029987577,
+        -20.472787628357235
+      ],
+      "examples": [
+        {
+          "mint": "9MvxFNPg6GfbWtizoW8GZD2PogZd1YeXH2prkVWpump",
+          "roiPct": 45.43039029987577,
+          "pnlSol": 3.011972247,
+          "sourceBuySol": 3.00727908
+        },
+        {
+          "mint": "6jzR29wBANveaUB5a2rMNFSFo17ayaadN5otm1N5pump",
+          "roiPct": -20.472787628357235,
+          "pnlSol": -1.178269135,
+          "sourceBuySol": 5.00287908
+        }
+      ],
+      "leadSeconds": [],
+      "earlierBuySol": 0,
+      "winRatePct": 50,
+      "avgRoiPct": 12.478801335759266,
+      "medianRoiPct": 12.478801335759266,
+      "medianLeadSeconds": null,
+      "score": 8.825223646303707
+    },
+    {
+      "id": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+      "appearances": 3,
+      "winnerAppearances": 0,
+      "loserAppearances": 3,
+      "pnlSol": -3.118924519,
+      "roiPcts": [
+        -20.43877885521903,
+        -3.0791694797841997,
+        -29.244009869193576
+      ],
+      "examples": [
+        {
+          "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+          "roiPct": -20.43877885521903,
+          "pnlSol": -1.433076148,
+          "sourceBuySol": 3.00752964
+        },
+        {
+          "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+          "roiPct": -3.0791694797841997,
+          "pnlSol": -0.439338381,
+          "sourceBuySol": 3.00842052
+        },
+        {
+          "mint": "8bK3uLYEKgMWzFq5UCNapK4XkEzJPLn5wpZ7V5R8pump",
+          "roiPct": -29.244009869193576,
+          "pnlSol": -1.24650999,
+          "sourceBuySol": 3.00842052
+        }
+      ],
+      "leadSeconds": [],
+      "earlierBuySol": 0,
+      "winRatePct": 0,
+      "avgRoiPct": -17.587319401398933,
+      "medianRoiPct": -20.43877885521903,
+      "medianLeadSeconds": null,
+      "score": -28.153852279559572
+    }
+  ],
+  "profiled": [
+    {
+      "mint": "75La9WaJi3zGS3QrmPB9XRzzPSBmQYW64FHpBVTZpump",
+      "sourceBuySignature": "4QpcC2Sz68ic64NYHggeAuJAAuL3UfiZ1y3Nbq3J2HUHVwqS1CogoGuqhY7RZNVkVSrwZJRbTVsFgGykXEW8f9Pd",
+      "sourceBuyAt": "2026-06-06T05:21:33.000Z",
+      "sourceBuySol": 11.009662967,
+      "pnlSol": 5.206682232,
+      "roiPct": 47.29193116634303,
+      "lead": {
+        "creator": "CaNdpwwd9eNVVEFyU7wJHWKnT3FbfDPup72Ah41Tdfta",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "Bqxhpjdsf413mJNUxL3NEVTuyXWMBVhZppM3PSoZpump",
+      "sourceBuySignature": "2hTVcs5MUr5ZkYZHQnn1yJw9mscJnJVodQhoTLiA1VzKjgu3GY2ipfRMCSPmyxBp5CvRTXwcmZpLR3CXJwaLSuP1",
+      "sourceBuyAt": "2026-06-06T05:15:34.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 0.699715191,
+      "roiPct": 17.447085171806513,
+      "lead": {
+        "creator": "D3n3u8VPExd7i9Cgbyi1b4GqrkPPYn39RsncaZ8CSfw7",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "HaSizMzfUjukQT9GhdWbRf1FgkGZ8jyVuZmLTrGHpump",
+      "sourceBuySignature": "31eoYWE5CWxbZAz6L7eMXc3sDufrtgq34y42cnmQNRUpZU2cSvM2uSZNjBgqwqxCT3yrrVxKSXJFUefyMUSFMvYq",
+      "sourceBuyAt": "2026-06-06T04:44:18.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 3.929623073,
+      "roiPct": 97.98339285694749,
+      "lead": {
+        "creator": "FFYYWq5BKASizixC51KU9G1zjXREesyRjTmPN7oTjWqT",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "ByQSFYTqqL2Fhcu2t2SA2T5haJr6UTM9wqsaRMNMpump",
+      "sourceBuySignature": "2px8JfRafUXbzRbQh7sLTuouNnj41hHp3F5SmXcQstwxbhafDHaS2Nencw482eDoohPAmS4BKSSaEyty9gHUjWcD",
+      "sourceBuyAt": "2026-06-06T04:31:13.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": 14.414503469,
+      "roiPct": 147.69988916654015,
+      "lead": {
+        "creator": "8BUFsnJmKbXReYVJBoPikPmSZDToy8FuK3bHWJYaJy6n",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "4M3a8SviYur9MAdcJUTLgQreRu9BgKZXZu5Wxg4ppump",
+      "sourceBuySignature": "5kSBL5La8S884BN2b91ozq8Zqe9JCas1vMyprLqRMuBtNEiNRYhi4gWrtETJHukQhCjti9pgtKuUnxiKydWWhKFW",
+      "sourceBuyAt": "2026-06-06T04:21:15.000Z",
+      "sourceBuySol": 3.00752964,
+      "pnlSol": 5.24654505,
+      "roiPct": 104.6385482627078,
+      "lead": {
+        "creator": "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "GYNeSXFznVqLqo1iot7sVp57KMp2ekoDuSEiHZkCpump",
+      "sourceBuySignature": "2ZbU4QdKcDmnWYKz7j86s5Q9WED7Jj8YFADK4uvieN5quDmNfZSTeqieMHj1qRXRRKezmGF5v883FgcbF7ZXCMmo",
+      "sourceBuyAt": "2026-06-06T04:13:24.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 2.85858875,
+      "roiPct": 71.27763129044015,
+      "lead": {
+        "creator": "6PU45i6inSAwhPQt3jEDZyJfHnMTf3QnvbiFURhCmi7d",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "J8r7EQ3eQ5DtMd88rAF9PYDLvH9z86eKLeTCpc91pump",
+      "sourceBuySignature": "3zSAmaftdMF7SAiKLsZz7fW7ERArHhcufWvk2CVfnNHs1EwW7DkSy1S4DPVDpdQX5jAHwX6buC9cPmXArDbQgamg",
+      "sourceBuyAt": "2026-06-06T04:12:28.000Z",
+      "sourceBuySol": 3.00287908,
+      "pnlSol": 0.168321647,
+      "roiPct": 5.173263379645635,
+      "lead": {
+        "creator": "7Qy6VwHAz7VZeH6gdqc8hatuhh34VBoxECNTbiLchnF7",
+        "sourceOrder": 12,
+        "sourceDelaySec": 8,
+        "earlierBuys": 11,
+        "earlierBuySol": 2.447312703,
+        "earlierWallets": [
+          {
+            "wallet": "2EsjTosWtwtj3rHvWAu6qfTZxyWtsiYgHgpmeUnDZDVY",
+            "buys": 1,
+            "solLamports": 101555621,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "35LRNbjVRU7RfutmKD7jQLxXJwEiGA4iLjBXH4tMV6MJ",
+            "buys": 1,
+            "solLamports": 222099080,
+            "minLeadSeconds": 5
+          },
+          {
+            "wallet": "5KcqJ7NFA9RoLe5LYuvgvhpcKvRMxdJUY4uJB9HYkyp3",
+            "buys": 1,
+            "solLamports": 55867393,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "99i9uVA7Q56bY22ajKKUfTZTgTeP5yCtVGsrG9J4pDYQ",
+            "buys": 1,
+            "solLamports": 46162607,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "4VJj2frqFP2yJNnX1xuLHdeM7BvratwKbeYuG18TchYd",
+            "buys": 1,
+            "solLamports": 1002479080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "57stAMFvwctAjkBS76RXGoK4QKyS1QoxbGMbzFFe4DyZ",
+            "buys": 1,
+            "solLamports": 539044280,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "DxVLq8oEizx7Sz5WcbVUiQX8fLL3y1Jj8rMGEXEDi5oH",
+            "buys": 1,
+            "solLamports": 209334640,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "Fs8iUdQnwt6iyfMsakt1ukwQoEBpfTdbf7kiEjutEjpw",
+            "buys": 1,
+            "solLamports": 106553160,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "Hqpm7gKTzc3dnzvu2mGX1XoCc4Gm6Sh622QHHYDgECzQ",
+            "buys": 1,
+            "solLamports": 104339696,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "8QFT4Dx84gRGajj3jzJv4BHL8dU8d7DpjCUR3HgnX7gW",
+            "buys": 1,
+            "solLamports": 55132866,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "Hn9B5qcoHAQZg6YsjT6twgugzw1YTNF9qahC1n7UKBao",
+            "buys": 1,
+            "solLamports": 4744280,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "E6MhM3Cs9h6uLryY5yMmWPRMT3j7wJtdqa5tXFSpyiT1",
+      "sourceBuySignature": "2Wcpp8u3tzNLk1qeLMRZX94CJNQ4NXeH5gMvoiD47V7ES2g5occu94WxVzeQR9weFXzEWoGqx5YSHnmqBujzPRBi",
+      "sourceBuyAt": "2026-06-06T03:26:06.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 3.217848335,
+      "roiPct": 75.51322953757241,
+      "lead": {
+        "creator": "A5siBTGsXNCoYDY92pXGauM5ixqdpeDLn5rQaBkWApVE",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "2zrGDGt7us5NEfub2ggJ3vumPnxQBUX9mr35KGufpump",
+      "sourceBuySignature": "tsudTp1REFrrdyysEq42SPw9oHi2rFJY4fys1xaTHAmxqHebEsppR6aBiP8FjQxXZymkrEwTgmPMZzkR7yjY1qp",
+      "sourceBuyAt": "2026-06-06T03:16:11.000Z",
+      "sourceBuySol": 3.00752964,
+      "pnlSol": 1.965613031,
+      "roiPct": 65.35639765132954,
+      "lead": {
+        "creator": "5opAR6Z3NCPEgXchUvox5nvqTKhFzsykooiR67xxkj6e",
+        "sourceOrder": 8,
+        "sourceDelaySec": 0,
+        "earlierBuys": 7,
+        "earlierBuySol": 8.661305963,
+        "earlierWallets": [
+          {
+            "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+            "buys": 1,
+            "solLamports": 3500828658,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "8F9JT88S2B7SPFbgMHiFUbfbmWRQZ23DiirB46j8ubSN",
+            "buys": 1,
+            "solLamports": 2952165412,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "3XvruS4ELYJKNHikqAD5QGYEup65DRGX4uz4qPUriorg",
+            "buys": 1,
+            "solLamports": 1537375571,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "HYz9UwGwAbpMqKvPwBCyqWszYz6kCNDZQxYZ7Xq4XgJb",
+            "buys": 1,
+            "solLamports": 404084080,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "DxVLq8oEizx7Sz5WcbVUiQX8fLL3y1Jj8rMGEXEDi5oH",
+            "buys": 1,
+            "solLamports": 209084080,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "8QFT4Dx84gRGajj3jzJv4BHL8dU8d7DpjCUR3HgnX7gW",
+            "buys": 1,
+            "solLamports": 55132866,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "5opAR6Z3NCPEgXchUvox5nvqTKhFzsykooiR67xxkj6e",
+            "buys": 1,
+            "solLamports": 2635296,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "D2NAwhBmSnmae3ES52MRbopJcYFh3u7ACD1aHcmnpump",
+      "sourceBuySignature": "3Fr21GXnzTBy6zrPfZ5us8BMSrBAmEsRNHv1fww3FwYBytgKPT5ZD9yvXLTJe2H1gxDP1KFXX3rn9nzdMXKWwTVA",
+      "sourceBuyAt": "2026-06-06T03:05:02.000Z",
+      "sourceBuySol": 3.00287908,
+      "pnlSol": 0.807063954,
+      "roiPct": 12.406263941750574,
+      "lead": {
+        "creator": "2PnyvNvsnNbA3Xgs87BenupszpEo87eVMXAVaDXfx2tU",
+        "sourceOrder": 44,
+        "sourceDelaySec": 13,
+        "earlierBuys": 43,
+        "earlierBuySol": 27.750255637,
+        "earlierWallets": [
+          {
+            "wallet": "FUoY8NrMifG55ZBqxPze3vGKc222dMxnA1vtDS6GwgN",
+            "buys": 1,
+            "solLamports": 244546780,
+            "minLeadSeconds": 13
+          },
+          {
+            "wallet": "2PnyvNvsnNbA3Xgs87BenupszpEo87eVMXAVaDXfx2tU",
+            "buys": 1,
+            "solLamports": 92414243,
+            "minLeadSeconds": 13
+          },
+          {
+            "wallet": "D14LJS3n8xwQF3sBja7Yw4k83bn5TR7Xpn5DumF5tMwM",
+            "buys": 1,
+            "solLamports": 112629117,
+            "minLeadSeconds": 12
+          },
+          {
+            "wallet": "GgXicFDK9fiL7pfVdf9Cw6PFsovxdEXdYisQnDgZqxUC",
+            "buys": 1,
+            "solLamports": 310444748,
+            "minLeadSeconds": 11
+          },
+          {
+            "wallet": "21cutQKXw6opqwAcUfVVSDFbjKjs9NA94cUTfYBy4SZ6",
+            "buys": 1,
+            "solLamports": 1085550670,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "BMkHjN2N8K2PdCqeC92YYjUovn9ecW4GvFpH6yDggXWJ",
+            "buys": 1,
+            "solLamports": 1009329640,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "2sapuxSmfbKAziDJKTwJWtqfZoukBLKX5zeBCVdPDpz7",
+            "buys": 1,
+            "solLamports": 1009079080,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "6HZBtMMibcaRUy8uLiKQ5saC87zhxCxMrg6DmSMqvhsW",
+            "buys": 1,
+            "solLamports": 951876414,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "768L2uj2dZuZZXHSoHWMFmX27niTHQqceH9kx7N9ocjP",
+            "buys": 12,
+            "solLamports": 7718540738,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "HtbXDAE1xX35vXhE3raVuYiZrykWiFWcnDJyy3WLo9So",
+            "buys": 1,
+            "solLamports": 978930000,
+            "minLeadSeconds": 8
+          },
+          {
+            "wallet": "DkpMvCWwdNZL5UScy1eKjMkQCsyeFjhMLG2WTtmE9zQ2",
+            "buys": 1,
+            "solLamports": 957440820,
+            "minLeadSeconds": 8
+          },
+          {
+            "wallet": "5i8rFRKn3TEWHTPC9JH7B6QQSNRmBx5TgUGiub1kAbJA",
+            "buys": 1,
+            "solLamports": 502629080,
+            "minLeadSeconds": 8
+          },
+          {
+            "wallet": "nya666pQkP3PzWxi7JngU3rRMHuc7zbLK8c8wxQ4qpT",
+            "buys": 1,
+            "solLamports": 499478510,
+            "minLeadSeconds": 8
+          },
+          {
+            "wallet": "ayaCRDLwYRqAvPnrpwnkUsxrqx4hniVaWAGHYG5DGBD",
+            "buys": 1,
+            "solLamports": 243137282,
+            "minLeadSeconds": 8
+          },
+          {
+            "wallet": "9sDsu85UuyBhZ7ZrzcvsnBxPZZKiDmPDkSgkQmCvPonV",
+            "buys": 1,
+            "solLamports": 72679081,
+            "minLeadSeconds": 8
+          },
+          {
+            "wallet": "99j6HWTKqEigSbRpe1uJ1g3EVpRZJNnB7wbKsjhfPz8g",
+            "buys": 1,
+            "solLamports": 2169379,
+            "minLeadSeconds": 8
+          },
+          {
+            "wallet": "9c9Vdg4S64zrD4kLEGdbPtrcjEuE6GVwXRXN746rhdpL",
+            "buys": 1,
+            "solLamports": 202279081,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "5HnzXhdADMB3gn2GphZATAwfrEzzMvG5hBwT36Wtd7JX",
+            "buys": 1,
+            "solLamports": 302024969,
+            "minLeadSeconds": 6
+          },
+          {
+            "wallet": "9Uw1BEkA1ns7x41s8At2upQ3sVBKpoKtAS6yy2bNWd32",
+            "buys": 1,
+            "solLamports": 113299080,
+            "minLeadSeconds": 6
+          },
+          {
+            "wallet": "2un1m91i78ZHPLjR4UwwaEzQz5jsehq9p3t8EZZZZZZZ",
+            "buys": 1,
+            "solLamports": 52479081,
+            "minLeadSeconds": 6
+          }
+        ]
+      }
+    },
+    {
+      "mint": "CPTBfMFzzeKneLKEvPNchAqnogZDNtaHJYexFNSApump",
+      "sourceBuySignature": "3VBv8t8wdKDBUf95pQytfPiZJ6FKk5jw95TJVyzUXk3vejRoytxSRUmTnXGiGW7mqcyVC4XB9U8TKveoMj6av9Xe",
+      "sourceBuyAt": "2026-06-06T02:54:52.000Z",
+      "sourceBuySol": 54.009823549,
+      "pnlSol": 10.32147349,
+      "roiPct": 18.669418252031885,
+      "lead": {
+        "creator": "DECU1ZfYC52KvdTKvCwstGERq5BiehZXP4VisqSuCJtW",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "BMudN5Ew3TrM12tDsmCQLe8NuyiksJdyyiSzP9depump",
+      "sourceBuySignature": "4LfWX3U34Fn5m6wCbCJvjbUkRoTvK9e1CYgyF9sauLHnkPSVBFUXVmUrnkwRYK2KsDZeriiDk6DGbD3LpKAkUmwS",
+      "sourceBuyAt": "2026-06-06T01:14:16.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 0.510565307,
+      "roiPct": 16.97764967659736,
+      "lead": {
+        "creator": "9f81JUmCDcH6gsgtwX2QXba4u3Uou41GSMbrubq4nDp4",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "3CyqGBeUHJ96Hr3gfmTKuVqJozKuEqE7w52Rzu44pump",
+      "sourceBuySignature": "Uv8zKu1q9fDE9cfs1GP6sPwvUXAquFsx1zppXLaAaXyQGXGT99tHnozCPWrBCzr3RAHLAZjLY3wyfoXCwCtvhYC",
+      "sourceBuyAt": "2026-06-06T01:07:04.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 8.781468411,
+      "roiPct": 206.07467188063865,
+      "lead": {
+        "creator": "8yALAzS22Vp3Jr7NgrLwEFi3fPmoPJAQWF6ZkfupqYdn",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "6C4BYHGpmS2qAUj1jkTVz4A8g6njHpmJkiLZEQ5tpump",
+      "sourceBuySignature": "2BS7HJPzzE2W8QTD5WaFKgeRGqmKdweTwtzDRups4DtsZRv3JWSvoN5KtBAGg9RYUn6LWYDsUXruH1waH3BBYhrK",
+      "sourceBuyAt": "2026-06-06T00:59:39.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 6.908896479,
+      "roiPct": 172.27024203953164,
+      "lead": {
+        "creator": "3ytwAZmZshX8333n9SykPoJ6cBpCPg3CPCwgRHTo3Hv6",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "H5fjs4y5SYv2mysH4H5GDaoS7oXC4BerGA9d6UwSpump",
+      "sourceBuySignature": "3WJqyPekTC1qBPpvJgqyGaZ74SmoxF863y3gsuAzviQeE4uMSgRhdJbwMyYG8teA6aaovGdsdcwnfGYE9Y2A9U5g",
+      "sourceBuyAt": "2026-06-06T00:52:37.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 1.254784404,
+      "roiPct": 31.287487609858783,
+      "lead": {
+        "creator": "AWvhxir6W4YFpc21QhkmwrntnfcREbkdYgxq1UK2T1aN",
+        "sourceOrder": 44,
+        "sourceDelaySec": 7,
+        "earlierBuys": 43,
+        "earlierBuySol": 27.775972057,
+        "earlierWallets": [
+          {
+            "wallet": "AWvhxir6W4YFpc21QhkmwrntnfcREbkdYgxq1UK2T1aN",
+            "buys": 1,
+            "solLamports": 857659796,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "Ak2WbvzUPcZvX2DTZS2Kzmzb5p7ZgEEKyiXYJP3yTR8X",
+            "buys": 1,
+            "solLamports": 853194938,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "AfHuC4rn989dYfvp1WSTzE7sqRd4nEa7q8PHj3fAtq9u",
+            "buys": 1,
+            "solLamports": 676339039,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "23yswHWhgykK6Qg2tt6PSNL8roQ9cDgUbQvbgxuwGpka",
+            "buys": 1,
+            "solLamports": 617404647,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "4pBRkSMyB8r8Hh3MH6Fyne2gdvjKQK6X8csh8Wn1pg6R",
+            "buys": 1,
+            "solLamports": 596671312,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "3bBsH3zKLRSWZ6N9jQCrdPAXSf9dq6rFhdKs5DQKRijf",
+            "buys": 1,
+            "solLamports": 585566960,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "GfPkWHdE3HxnW3YGVfqj22oCXPot5TLcc2hxrfbXBx3q",
+            "buys": 1,
+            "solLamports": 582748045,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "4m3DASCtu6Joyo4SQ9adCyujWgqkfQRuVoNHADR8Tvj2",
+            "buys": 1,
+            "solLamports": 454937771,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "2uepPiVjMXvmUaPEKjRWV4QVeiUWDt9BFJgW5ueVvBM8",
+            "buys": 1,
+            "solLamports": 402565298,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "Gae2YJcnNuCELsvmGyMogijcZXz7sTzduDgFFzzJPhKr",
+            "buys": 2,
+            "solLamports": 1197604113,
+            "minLeadSeconds": 6
+          },
+          {
+            "wallet": "4fTbqjnQmRM1awkTpefPeUeci93ceDdSimzs9SQqMy9d",
+            "buys": 1,
+            "solLamports": 478855284,
+            "minLeadSeconds": 6
+          },
+          {
+            "wallet": "97V26zCSXhBRSGsnfK4dTai8sd34UHQkA3G7jS9MG9BC",
+            "buys": 1,
+            "solLamports": 469366293,
+            "minLeadSeconds": 6
+          },
+          {
+            "wallet": "JDdREU4kQiiSB3RiU2i3Jp3xNzpg5QW2U3Rh4tK8b84B",
+            "buys": 12,
+            "solLamports": 10822593098,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "5f3JEs7g3nuSoWgxSF5ehm5hgU2FwvrZ1BonPa3zAyvp",
+            "buys": 1,
+            "solLamports": 121616907,
+            "minLeadSeconds": 6
+          },
+          {
+            "wallet": "84UBp52FJZ5xwD5sGUqddzujNUUUAjNzNtLBfVeLXW84",
+            "buys": 1,
+            "solLamports": 94069080,
+            "minLeadSeconds": 6
+          },
+          {
+            "wallet": "3SG3Rd7WyEFrbMZ1L54W4razuoZNKtbTK3dWw8vmM65n",
+            "buys": 1,
+            "solLamports": 1207736780,
+            "minLeadSeconds": 5
+          },
+          {
+            "wallet": "B8dTTE5FuquJisXw7FoZfFGzQzRqSUvGBTJvyDmsUDyF",
+            "buys": 1,
+            "solLamports": 80011808,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "74UauT2u3qNuohJz7k6BBG72eQ9gXRd6aRNPFdw9Vbuh",
+            "buys": 1,
+            "solLamports": 503943480,
+            "minLeadSeconds": 3
+          },
+          {
+            "wallet": "6DNoDXoWNQWVYDJmBnWVvsQJEVAijUcr14ToSttWQDoa",
+            "buys": 2,
+            "solLamports": 238084081,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "HEeMypEdmLARQgPJcJx7kGjCC4rC1ZBCFZy6DZr9JXGv",
+            "buys": 1,
+            "solLamports": 304079080,
+            "minLeadSeconds": 2
+          }
+        ]
+      }
+    },
+    {
+      "mint": "C1f7eywMW8zHKT32zFUVTDafv3utsFfqHPqdhNfPpump",
+      "sourceBuySignature": "Zk26xtvwQAvz19HwYg1y7Bqw7yXhbqCvzcMnHYf2Z1yZANCfwmkmP53BWzbTA768ap29foLgdXhWvP34MEfANCf",
+      "sourceBuyAt": "2026-06-06T00:42:10.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 0.472041138,
+      "roiPct": 13.452723268498005,
+      "lead": {
+        "creator": "D3qt3XDcZpAoWq5PWGT9GK2jFbvQTer7kQ6BtFwYVDPp",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "8xVSWkjy7L47SA8MoQWgwvVVPtBEUx8kxv473JSGpump",
+      "sourceBuySignature": "3vy1D16ndQrenzs8Py5uYMWWRitUiv2UYJ2PRCq4ejRiBKatnMhzQcyxDrYKjNLqqW9Wu9Z5hV9WCx8rBhsfqeMe",
+      "sourceBuyAt": "2026-06-06T00:36:40.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 1.12188903,
+      "roiPct": 34.43401097419376,
+      "lead": {
+        "creator": "7qvLrGK7iL3LZLgv8EVKgNr3QSahgivkQ6QkCMNh9pWA",
+        "sourceOrder": 17,
+        "sourceDelaySec": 5,
+        "earlierBuys": 16,
+        "earlierBuySol": 12.919901769,
+        "earlierWallets": [
+          {
+            "wallet": "9n3bQPtgzDEWg4kNiANpB5XPDg6ieW1FgzSTVPZCqxiX",
+            "buys": 7,
+            "solLamports": 5563058095,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "2GsYxA8jXeGdnXVpvMp4FrFdXPjyqp6ETqsUx7F8esdx",
+            "buys": 2,
+            "solLamports": 1679584080,
+            "minLeadSeconds": 3
+          },
+          {
+            "wallet": "6EYPtEsK1v46ZwnjQmPpWPFApNqdu4pMDSMbFR1oQMzE",
+            "buys": 1,
+            "solLamports": 2589130,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "6uwqG7Uog6FVUHZp5rx6jkJ8VjWjNf7svcAzzcCJQh7Q",
+            "buys": 1,
+            "solLamports": 2682162600,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "3ntEpydDjraXrnwWTCJM7DvfBvtYUMc7q1oHADMCoFuK",
+            "buys": 1,
+            "solLamports": 2510079081,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "DxVLq8oEizx7Sz5WcbVUiQX8fLL3y1Jj8rMGEXEDi5oH",
+            "buys": 1,
+            "solLamports": 209084080,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BNqfkxRXdkH1EeM6ZiWtgcySKfxcBL58ENDo9KDZWYB",
+            "buys": 1,
+            "solLamports": 202046257,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BSeVdKoeVEPrMsJviuJa7oqT1N5mfgLeE5Td66UY4UyS",
+            "buys": 1,
+            "solLamports": 51423610,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "2D2KZosXazZLYJke3aVAGmfPZNqZq88Z1fgRSCq55XMB",
+            "buys": 1,
+            "solLamports": 19874836,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "91ngv1xWHZ7hoiWdVVgheaYfRKdqqZn8VgNjNKm9pump",
+      "sourceBuySignature": "uuV5e6pzG5HtFxHU96mv9yqYgpPWL2HwDrbB4SnKS6DNmgEjzU9ft5dfKUS6XeYNYdm6uJRjYrgqy1BehhFHuNJ",
+      "sourceBuyAt": "2026-06-06T00:29:26.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": -0.069801141,
+      "roiPct": -1.98926610014742,
+      "lead": {
+        "creator": "BqfAhWhjhGjhZrev16TVR6xBQLNE8NVXoCnegZDPC4do",
+        "sourceOrder": 75,
+        "sourceDelaySec": 18,
+        "earlierBuys": 74,
+        "earlierBuySol": 49.506607197,
+        "earlierWallets": [
+          {
+            "wallet": "6AUmJYNaJStZVE4fj7XatNiackMxQk1DLggvWEwDV9BY",
+            "buys": 40,
+            "solLamports": 26454973821,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "farmCaoKwSQxhJuhAXtXCpSVvBYrLabRWrS9DJVTthi",
+            "buys": 2,
+            "solLamports": 506284080,
+            "minLeadSeconds": 17
+          },
+          {
+            "wallet": "96LYAv5W17C9Y5KNWT2xKxStqGFPkSiTGThVGgQiurYz",
+            "buys": 1,
+            "solLamports": 205089080,
+            "minLeadSeconds": 18
+          },
+          {
+            "wallet": "ARC5JvKVCcnitPgTmmqV9xc1FJUPB43AEWPU1iMdYM7k",
+            "buys": 1,
+            "solLamports": 565870562,
+            "minLeadSeconds": 16
+          },
+          {
+            "wallet": "6RzVctT8ZMQzZMzeocnYTfP9oPdpcs2pSntxDMeSYsrQ",
+            "buys": 1,
+            "solLamports": 510779349,
+            "minLeadSeconds": 16
+          },
+          {
+            "wallet": "5fHJszey2UdB2nETS1y6NS2wSG4ic9byKtbgJzaYzGeV",
+            "buys": 1,
+            "solLamports": 453587331,
+            "minLeadSeconds": 16
+          },
+          {
+            "wallet": "4JQtbANx1W1axdpZ7E5RcUWERE31fe7Ju4oLRPa13qqZ",
+            "buys": 1,
+            "solLamports": 202099080,
+            "minLeadSeconds": 16
+          },
+          {
+            "wallet": "HZDX7xyAqe8XFNr8KyzFSNutmfW5TFRFp9RKSfzdKz6f",
+            "buys": 1,
+            "solLamports": 12280281,
+            "minLeadSeconds": 16
+          },
+          {
+            "wallet": "CEHdauzuhhNxrh5WDdA9qnjwSQLAoTcy3bpMaRPGcMNR",
+            "buys": 1,
+            "solLamports": 302365412,
+            "minLeadSeconds": 15
+          },
+          {
+            "wallet": "7Qy6VwHAz7VZeH6gdqc8hatuhh34VBoxECNTbiLchnF7",
+            "buys": 1,
+            "solLamports": 53179080,
+            "minLeadSeconds": 15
+          },
+          {
+            "wallet": "6DNoDXoWNQWVYDJmBnWVvsQJEVAijUcr14ToSttWQDoa",
+            "buys": 2,
+            "solLamports": 229084081,
+            "minLeadSeconds": 12
+          },
+          {
+            "wallet": "8cKTsKRe8TN5QrQJE1pjzU3Ry6iFKF3ua1yf4BBHAv9g",
+            "buys": 1,
+            "solLamports": 2008055954,
+            "minLeadSeconds": 13
+          },
+          {
+            "wallet": "9QTHeFTWysTe4NEriJoQSbMP7enGFGKKUkrD4JJUFDxx",
+            "buys": 1,
+            "solLamports": 1532084080,
+            "minLeadSeconds": 13
+          },
+          {
+            "wallet": "HLKbPsdt61HqiGdAkAnB57R7rXrcScg86b5B7GkhFLKH",
+            "buys": 1,
+            "solLamports": 1393288265,
+            "minLeadSeconds": 13
+          },
+          {
+            "wallet": "BJ3WPii1DLJ1GiSGiSP5jip7DDugwoQpqFP4tQTYBtZp",
+            "buys": 1,
+            "solLamports": 1062869895,
+            "minLeadSeconds": 13
+          },
+          {
+            "wallet": "5rfYBLwi3aNTb1gJAUucVzHwKBy5NFS6tuq6rMYV5mN",
+            "buys": 1,
+            "solLamports": 540536676,
+            "minLeadSeconds": 13
+          },
+          {
+            "wallet": "qv1u2vPiuvJCzRPJ3ywovSYJG117zGbisXjMJtrGkvd",
+            "buys": 1,
+            "solLamports": 404265312,
+            "minLeadSeconds": 13
+          },
+          {
+            "wallet": "FaVqTAXTfTdL5qHoZ99NAXZKU7PkuTfVkPfNLwzzA1fX",
+            "buys": 1,
+            "solLamports": 375033623,
+            "minLeadSeconds": 13
+          },
+          {
+            "wallet": "Ez2jYoXp45DZxr7JVhiqbDNirgBT37MErjZGxA8jZkTf",
+            "buys": 1,
+            "solLamports": 290268688,
+            "minLeadSeconds": 13
+          },
+          {
+            "wallet": "7nou1XKkREhKEKCdH3EZLtPGaiZdjVzMPYL7oCHXmv2R",
+            "buys": 1,
+            "solLamports": 1006079080,
+            "minLeadSeconds": 12
+          }
+        ]
+      }
+    },
+    {
+      "mint": "8wtCTP6LThcm95cdgYfDyekMKEE7NKYeyuwfNRiSpump",
+      "sourceBuySignature": "3BXaQ535WRKx1vFdDGLB1TioHAcQrjfCNayT4gTXpZg2WPxDyFMSVAUMFPkeezDowbHTezhNWwUauhEoUT3ddiKJ",
+      "sourceBuyAt": "2026-06-06T00:25:38.000Z",
+      "sourceBuySol": 3.00752964,
+      "pnlSol": 0.292942193,
+      "roiPct": 7.791130477023887,
+      "lead": {
+        "creator": "GnziyifxXe2ENLBfpZuKbSEit1RBdXexu7jondjc9qCW",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "58NLHsD7ijwfRzcvsUvjDubMBuihznJ2cTCPTbNYpump",
+      "sourceBuySignature": "2yHSvMjnZ2Cf6MHHfN5QyWspHKTqdkgpG3LEMnJfkvdLGPoU8zUztQvpxUEK1rhEnFtYrUjH2o6KPZvin1FAQDTH",
+      "sourceBuyAt": "2026-06-06T00:21:32.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 2.478985772,
+      "roiPct": 52.047669278062294,
+      "lead": {
+        "creator": "59FMT32oL78CTLaZMnzmiWbCTVZVtnvsZA3QsY3kX4dg",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "6uU7VUTfjictC82wWcRmbpgEjEq3bWoAkK4ds2DTpump",
+      "sourceBuySignature": "2St3vZuRw8NsWYW59C4nuU9kCVoHXVFrzPatyZ1ghwLx6g4XY7aoDjrgqSiRJ2QDAMJsVuvsMzV1JHB3nBgpGaN2",
+      "sourceBuyAt": "2026-06-06T00:13:02.000Z",
+      "sourceBuySol": 0.250805001,
+      "pnlSol": -0.367649956,
+      "roiPct": -9.167187133061566,
+      "lead": {
+        "creator": "8dHLreuNbtp3qSsJzPiPrzS72X3gUEcygLK4mBdjYEHj",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "8KjjbfRhSRFGzBkwPBaxtFKNhoXpLGvFdBJXyJJrpump",
+      "sourceBuySignature": "5qjEwKaN6RnbdJ1ZWbo7ZNgSM5exXZoj5aeu35mC4xuhjVCTnwQUZcBQwiK86PWsckavMxzMr1GXaiiFunxLixA7",
+      "sourceBuyAt": "2026-06-06T00:12:07.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": -1.247599415,
+      "roiPct": -31.108333124356847,
+      "lead": {
+        "creator": "AiZmc96qy4sDHSRmZQYJbRnykikbKGCt25sZQYdZ52Rb",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "2bFpytkR7mjAqdwQVKFCDchg78xPL9CD5gh485L5pump",
+      "sourceBuySignature": "xikvnkGwbruzWjDrZ2rechMctPrPx2CG8g2oJACuFtqVhokGxkp2xbbixK6JbEALq287LEnpwMFhUsvy7R21vm7",
+      "sourceBuyAt": "2026-06-06T00:08:48.000Z",
+      "sourceBuySol": 44.009718696,
+      "pnlSol": 11.857445248,
+      "roiPct": 26.639162646548414,
+      "lead": {
+        "creator": "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
+        "sourceOrder": 4,
+        "sourceDelaySec": 0,
+        "earlierBuys": 3,
+        "earlierBuySol": 4.438305066,
+        "earlierWallets": [
+          {
+            "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+            "buys": 1,
+            "solLamports": 4330762610,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "J3sGCaN7fAGrpZrfhKVqmtAccxtwuWpKMhurqdarV6Dn",
+            "buys": 1,
+            "solLamports": 105438276,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "21ujLnELNYyQYWUsaRxjEgphcBpP5paiUjAKYXkrpump",
+      "sourceBuySignature": "51Szxq5QjvXJDdn4S2h4o7jcRwyXHxWdQBfCe3yn3zWZ9GbxjiFWRQKzX6iL591bXiZ2jtNBu3y43Rv5j79B3hTQ",
+      "sourceBuyAt": "2026-06-06T00:05:51.000Z",
+      "sourceBuySol": 3.00752964,
+      "pnlSol": -1.433076148,
+      "roiPct": -20.43877885521903,
+      "lead": {
+        "creator": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+        "sourceOrder": 33,
+        "sourceDelaySec": 1,
+        "earlierBuys": 32,
+        "earlierBuySol": 33.400786704,
+        "earlierWallets": [
+          {
+            "wallet": "FpZKELRxqp6HTSHgF5d4RnAVTFRf33KPha1thHeYrpz3",
+            "buys": 1,
+            "solLamports": 3054162600,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+            "buys": 2,
+            "solLamports": 4763880901,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "7cp6zxvhxbfS7QgYTB7ts2RqFf7zDYwtjfuHcEHhKLAz",
+            "buys": 1,
+            "solLamports": 1252853280,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "GdgWKG6DxpeJuBN3op1PTuCnrBPq4Yifrp1BnGpBQZDf",
+            "buys": 1,
+            "solLamports": 1231079080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "FoDiidYW6JhyvVdqedDDgPMENjAYmzmNXcNBMmrJACLr",
+            "buys": 1,
+            "solLamports": 1231079080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+            "buys": 1,
+            "solLamports": 1079701280,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "DQApNebkK5wCmy92T5c4Z9NePWjP7dC4avpLMzuxadxR",
+            "buys": 1,
+            "solLamports": 718208384,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "9e2p6ayBqbMnUiZL68L1kdZdqZqK7aHYxtUXoA3fhrXK",
+            "buys": 1,
+            "solLamports": 522815959,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "Hn9B5qcoHAQZg6YsjT6twgugzw1YTNF9qahC1n7UKBao",
+            "buys": 1,
+            "solLamports": 395534364,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "39wUkvhTUvoepxNnmzpf3x7uRBx3gYBMhkDQqsSUoq4M",
+            "buys": 11,
+            "solLamports": 6326819522,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "ADkquSiH1zS6LmGoJxzwE6x44gpE6S3KWLALqNc3sTDs",
+            "buys": 1,
+            "solLamports": 352356744,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "ADxWaATBSJPhZ1NfrkFnMfLE3jL7DR7zRFAe4Zdxa2r",
+            "buys": 1,
+            "solLamports": 108162600,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "AZ4vccCJyZsoygFiF5EuzgJfXdMQ3WZT4BVD8E8KmhLo",
+            "buys": 1,
+            "solLamports": 72780537,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "7qvLrGK7iL3LZLgv8EVKgNr3QSahgivkQ6QkCMNh9pWA",
+            "buys": 1,
+            "solLamports": 3312600,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "J6AuAn2GLHiz3TzyAGa5itH2kpDbzzfrBhUXYW1hyGER",
+            "buys": 1,
+            "solLamports": 3644265296,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "CGBDpvDpzFfdLFNp33qtAFTbav3zLkCqXeqiV9jGrLSJ",
+            "buys": 1,
+            "solLamports": 3338079080,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "Dxm74DtsrTmgdQXMrffzrRdaRhxpbWVhLcFVgwBbeTLN",
+            "buys": 1,
+            "solLamports": 3005079081,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "7REhL47HTvumbVjnYwd6Yg3H9EHjWwpdtW5QwXsmTZAe",
+            "buys": 1,
+            "solLamports": 2135848976,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "DxVLq8oEizx7Sz5WcbVUiQX8fLL3y1Jj8rMGEXEDi5oH",
+            "buys": 1,
+            "solLamports": 109084080,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "4LtF24A86sQ92JdUMVaCyxeJ9BuoUzJczK1zPwbBMzJ8",
+            "buys": 1,
+            "solLamports": 53579080,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "BZK3BSMsWkKVopP3BUv2Fn3Y5GcXC31uxWUyBREQpump",
+      "sourceBuySignature": "jhggGnCLEpw5xbvy7biqD9n2miBEo9iMD6FaNpTM45kLjK6uDAf5JcqCmj41C2cV6x2PcZ8mBbRNikAr3maaaHA",
+      "sourceBuyAt": "2026-06-05T23:56:08.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": -8.218766978,
+      "roiPct": -73.00567921586405,
+      "lead": {
+        "creator": "3TzTEHGV5GJty944wJC1ttL6Xsx9uRnHcEG6Ga3z8Vdj",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "9cEVQL4eTyLvqjoRo4pYUhwJZ6ampRsSxdixCdd6pump",
+      "sourceBuySignature": "44PyRzMQp38hdZpeqZNVYsVU7Co1SGDBLvwurqMKNLvATNsiieAXmNiRLt9j4peXQxtTDpg6UifR7nHG9sWsNkqN",
+      "sourceBuyAt": "2026-06-05T23:52:17.000Z",
+      "sourceBuySol": 5.00727908,
+      "pnlSol": 0.331177819,
+      "roiPct": 6.6139277182049945,
+      "lead": {
+        "creator": "2tgUbS9UMoQD6GkDZBiqKYCURnGrSb6ocYwRABrSJUvY",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "GvSAZYqkDACt65nBhtPuUbCJEMAgGt1UmsnooqWXpump",
+      "sourceBuySignature": "mt8tQNsNdEoXQoEG5kz1uNg45KAYGUFhmMTahm5zTA9SbfHSxxD14ifrihuSWyK545c9d87Z5sKRXXfaZcBKTt4",
+      "sourceBuyAt": "2026-06-05T23:49:03.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 0.419630494,
+      "roiPct": 12.87967049245713,
+      "lead": {
+        "creator": "NULLioEUhd89Jo5Acm9sX88bwjNjrsAVy6KWkXD7qZh",
+        "sourceOrder": 42,
+        "sourceDelaySec": 4,
+        "earlierBuys": 41,
+        "earlierBuySol": 26.363101611,
+        "earlierWallets": [
+          {
+            "wallet": "DF9MXmawYzbqskNxL1wTSYRcG2Gv25pqvVxVKD4kvkM4",
+            "buys": 1,
+            "solLamports": 1924816405,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "5sUw6LPyzQ9F64v4wcL49wGW8duPaisYQfuzrBJpj8hC",
+            "buys": 1,
+            "solLamports": 1240079080,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "CdiJmMccVr1JgiF11E6BG1xcFgGZ1ieEKrc722CAakHs",
+            "buys": 1,
+            "solLamports": 1126079080,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "6hRMmsSGFuVYh26Srgt83qKHjm6PD6w66DuGYP33pJyD",
+            "buys": 1,
+            "solLamports": 1097422144,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "HE1J7Vk4NRT8ArDuzRqYzV1dNCdRRRyiRe3JEevhaFYc",
+            "buys": 1,
+            "solLamports": 1042928825,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "ALSPqRz2AzbULf6tEjA3SvwVsKBfNTx64GUnpGDRTBdy",
+            "buys": 1,
+            "solLamports": 985886273,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "Ez2jYoXp45DZxr7JVhiqbDNirgBT37MErjZGxA8jZkTf",
+            "buys": 1,
+            "solLamports": 602194280,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "AgNaa6DLja2Nc5KEu3oEJ9Aan7shFFDB96fg6N7unxWS",
+            "buys": 1,
+            "solLamports": 535942084,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "Fkemk4DNp9ncsixH8gJqoysHu8mvG2A1TMVbGTMoYa9d",
+            "buys": 1,
+            "solLamports": 534017979,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "9oieEBu7gprdMmWrSKQFMk48DiCa3AH2edY2eZn8ortJ",
+            "buys": 1,
+            "solLamports": 502113000,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "9yzDcVC569tYadQqmuNPGNNa3ZmHA6AY7tdgWnSEvDbi",
+            "buys": 1,
+            "solLamports": 304191780,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "G9RbyTsfQZBJGbq4rZGKWME1N4ZfSCDjTYnHb8t13rxV",
+            "buys": 9,
+            "solLamports": 4985039101,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "NULLioEUhd89Jo5Acm9sX88bwjNjrsAVy6KWkXD7qZh",
+            "buys": 1,
+            "solLamports": 104079080,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "D1P9dPB1VLnPBMXe52hpJXgScaKjexZ3jx3KctwqHfAS",
+            "buys": 1,
+            "solLamports": 2226580,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "74DVBE6KtL54jprcM8U78ZjEC6aWKnxMrHkXYrE5Uejx",
+            "buys": 1,
+            "solLamports": 352279081,
+            "minLeadSeconds": 3
+          },
+          {
+            "wallet": "HrKw5GKnMtjUe7cNHBJBBDJph4Ri9QRv8wVGXrtbReko",
+            "buys": 2,
+            "solLamports": 1276824063,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "GxGBpBVuS94NSJhKFqXRPpMAManWSdSWdiuXuDC9s9iz",
+            "buys": 2,
+            "solLamports": 1218341394,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "Ep9MNp5qKnW43ApW6ThwgjGWMfPRPHMYh7bDLkqMQDFF",
+            "buys": 2,
+            "solLamports": 1251086787,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "nya666pQkP3PzWxi7JngU3rRMHuc7zbLK8c8wxQ4qpT",
+            "buys": 1,
+            "solLamports": 94478510,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "DqhDuYbRfLoiyMZJdqEKXAA5yaUPwUGHzdD3L8K4btSL",
+            "buys": 1,
+            "solLamports": 1457579080,
+            "minLeadSeconds": 1
+          }
+        ]
+      }
+    },
+    {
+      "mint": "B9eM2T3QRaVmj6RhJiXHkXNsx7JYbmrfKB7Eh2tspump",
+      "sourceBuySignature": "3xPHfd3eykNNtZii8RcH7gcwXp8rL9sWVqiZbyPCiLinqUCvRv7vLJ7ZZ38d2QbetWy6g9hS4UQXgyf5zK1JV13a",
+      "sourceBuyAt": "2026-06-05T23:44:58.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 0.867500862,
+      "roiPct": 24.722949108027688,
+      "lead": {
+        "creator": "7qvLrGK7iL3LZLgv8EVKgNr3QSahgivkQ6QkCMNh9pWA",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 11,
+        "earlierBuySol": 12.045777341,
+        "earlierWallets": [
+          {
+            "wallet": "2PW7ydZRXtFdwrYCwLitxYB4udq2z9WfUu3wuhuw4cLP",
+            "buys": 4,
+            "solLamports": 5650276511,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "Dxm74DtsrTmgdQXMrffzrRdaRhxpbWVhLcFVgwBbeTLN",
+            "buys": 1,
+            "solLamports": 3003005001,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "AiZmc96qy4sDHSRmZQYJbRnykikbKGCt25sZQYdZ52Rb",
+            "buys": 1,
+            "solLamports": 1080143804,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BaiyK1aJeypxRszgWEUvAanVjNhdkDhk1Zbcu49XVeXq",
+            "buys": 1,
+            "solLamports": 993074892,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "9fwGq3uqfedVbwuRLr14u43DFVRWiLRYtcW6oFvTfwu3",
+            "buys": 1,
+            "solLamports": 993018546,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "2qKU91U5P4vCXUh4JzPSRwvPPdvpoyzLHS3mgKiSZQXo",
+            "buys": 1,
+            "solLamports": 167241231,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "J3sGCaN7fAGrpZrfhKVqmtAccxtwuWpKMhurqdarV6Dn",
+            "buys": 1,
+            "solLamports": 105438276,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "4LtF24A86sQ92JdUMVaCyxeJ9BuoUzJczK1zPwbBMzJ8",
+            "buys": 1,
+            "solLamports": 53579080,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "ENDs2hnCnuvoYKyv1dAvVUy7bndS3psdevTFVrA1rCb",
+      "sourceBuySignature": "4oRGYzSM5xbGTeq9LonXqy938q5b3vx25JUty2H4wuRmjiA3sjiusy6PQMHWrczUdN5Gcx1mxBYQcpoCYKw7z1z",
+      "sourceBuyAt": "2026-06-05T23:36:21.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 1.802207981,
+      "roiPct": 47.934963356432206,
+      "lead": {
+        "creator": "3YSEVTra19jugr864iY1GduHSPmVu7PaBj2e1ccnedcb",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "2Ee8P9YMnkgtouPWALf2ZHPQcx5S4TcLT9BEGA2ipump",
+      "sourceBuySignature": "5wGCbEvP5bcaQHCRqhDJfnHTCRaahm2DQzJN3WUM7jXhoMYA7pHtFhyCE7B2Y4PJoTZhkHSfKHBuvZES684z4Ur1",
+      "sourceBuyAt": "2026-06-05T23:30:05.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 0.49107481,
+      "roiPct": 11.524049920037566,
+      "lead": {
+        "creator": "JTvTZV1YNByprPhGWFw4A2cNdp363ybDEWfacRFPhCS",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "6JxRivMvu9o2bSwPk8wbtZMQnfc7rTReZ6dRaUUr1N1H",
+      "sourceBuySignature": "H7Tm9XQL5tjJvLn5L7UKcUUBBeSAvjc5FSowgPFz1XAFgsMQi4hDd71TawtvnBNf5YXgymut3psC9X7KokxU8Jb",
+      "sourceBuyAt": "2026-06-05T23:22:25.000Z",
+      "sourceBuySol": 3.005205,
+      "pnlSol": -4.919324626,
+      "roiPct": -51.677382794936335,
+      "lead": {
+        "creator": "BA2JpWZ93wQxM8NCp9oPp94PGMSFfzu9yFp7MyY7F215",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "2aETBnw8qHbqiqifvPSSQLAQVK4JCEi6a3S1Pdauk9Cu",
+      "sourceBuySignature": "5PMXftojfEkm1wp9cAzEr9BuysmSyvxD8qRej1ajbUnKipqetr9cyS5a3Df7tBo21gWjqmZdhVsci8RxBTjdJxMX",
+      "sourceBuyAt": "2026-06-05T23:22:21.000Z",
+      "sourceBuySol": 0.250805001,
+      "pnlSol": 4.549301485,
+      "roiPct": 100.82427969473076,
+      "lead": {
+        "creator": "GVHnR6owV6KRZvz3bddUpEcuEZgvfD2psYfRU8Aycm16",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "FD3Cs9S8KGjp6RGMS3dd7aXgb4Fd9FTcmpD6aZ3Xpump",
+      "sourceBuySignature": "3HgitAGiM3zPNEXbLJ3hT11ohZdZQzrSxM1rapMQBgT531VWLaVqK97yRQdfNLGXvWVnevRTcJBJtFoGbte3g2SV",
+      "sourceBuyAt": "2026-06-05T23:01:00.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": 0.243433376,
+      "roiPct": 2.949102889485063,
+      "lead": {
+        "creator": "FWFioWr32kMvsubCK9mCZYRR43hp4g6Xs5nMWqgNwanF",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "GhdNjrGNXmJLYCmxCBaG7ixBUQ8doz5hB2gsTVgmpump",
+      "sourceBuySignature": "579LjE5YMCbyuBUz5Zzfvnfm1BKXUrEsiQHizCPUgFSWjCih4xL4FHcd1CDDeFQVUrYKJYqZdiA5U1acsDdGzpqp",
+      "sourceBuyAt": "2026-06-05T22:59:11.000Z",
+      "sourceBuySol": 3.00287908,
+      "pnlSol": 0.743841721,
+      "roiPct": 22.861522584312635,
+      "lead": {
+        "creator": "8EkyDgMH6ki2FZD8Vrf7jwQRY5BB8m5wrSVvSmGQU1j5",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "HtfyeLmKLhbihNSUP1RezBFJD8bUkf6hYLbFikVzpump",
+      "sourceBuySignature": "3TwJZhxmSwoDAQdwRFffbQCxkuN72hoSr2eyPpLxV6UQnZzmCeFeraqaLjyFUpP4kvHMRT4h8KvZucxmgCnTDiwb",
+      "sourceBuyAt": "2026-06-05T22:56:21.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": -1.026896439,
+      "roiPct": -20.526109517721945,
+      "lead": {
+        "creator": "6LvJHJtbnyVEyPA8ok4mWj7WbwcafcEphpv8M8RJdgEr",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "7vm7i9u3sP6YjAq74Egy5Zz33Zw1KaG6Nr5NfSrPbonk",
+      "sourceBuySignature": "Pema74RTuCVQTRjHiFFx6HGtunAaFYpgCk9Gid1vNqnE7E78yvq3tmk3xqcyeAtni89LSiVewwHCsdyfqtoSK9B",
+      "sourceBuyAt": "2026-06-05T22:52:08.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": 0.160243787,
+      "roiPct": 2.9111473310757674,
+      "lead": {
+        "creator": "FS1kS7eXTAUgHTDbzqPMgPsLze2kMmrLRVziKUytvS93",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "9MvxFNPg6GfbWtizoW8GZD2PogZd1YeXH2prkVWpump",
+      "sourceBuySignature": "2iWTc65Kuv6jYACX86m2WX2t8bKbQRszW697XR1rQNNKbHVcpUuYuNSGpAojneEfb9RXMAceJ6XbTtBBsnXY1wCA",
+      "sourceBuyAt": "2026-06-05T22:50:24.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 3.011972247,
+      "roiPct": 45.43039029987577,
+      "lead": {
+        "creator": "HesCZFsE7KQWLuYHxVSbTNAom3VbuWKPZ64Jm2nyhJXw",
+        "sourceOrder": 49,
+        "sourceDelaySec": 2114,
+        "earlierBuys": 48,
+        "earlierBuySol": 31.799303832,
+        "earlierWallets": [
+          {
+            "wallet": "HesCZFsE7KQWLuYHxVSbTNAom3VbuWKPZ64Jm2nyhJXw",
+            "buys": 2,
+            "solLamports": 1015250160,
+            "minLeadSeconds": 1900
+          },
+          {
+            "wallet": "BUr9tR8cXP62s1WqCuZhrpyMM4L5WY9izw4fHUNwFVuu",
+            "buys": 1,
+            "solLamports": 506105000,
+            "minLeadSeconds": 2114
+          },
+          {
+            "wallet": "9MpRE5yQ3UfBJCGELZu5fcj16XbXNZmH8Y9KW8YGGTFk",
+            "buys": 27,
+            "solLamports": 17606698695,
+            "minLeadSeconds": 9
+          },
+          {
+            "wallet": "7H82aKv7ajvNCNT7gGJiX8QQPyQkDNVCfhbdbdBAznQV",
+            "buys": 2,
+            "solLamports": 172001,
+            "minLeadSeconds": 2032
+          },
+          {
+            "wallet": "3ywxvAMf9p2vEsCECJbZ11rWDYhZsYrdfHWKS5CUbJFw",
+            "buys": 1,
+            "solLamports": 20086001,
+            "minLeadSeconds": 2006
+          },
+          {
+            "wallet": "CwYhji2tZLt36G2762E3MDgFjHkVN3U9Bp7iAYK1yaBW",
+            "buys": 1,
+            "solLamports": 230127150,
+            "minLeadSeconds": 1900
+          },
+          {
+            "wallet": "HeQ5zGx4o1sswP3HQYWAnaAVBptu6HSFwd4dMHJ224GB",
+            "buys": 1,
+            "solLamports": 573765106,
+            "minLeadSeconds": 1809
+          },
+          {
+            "wallet": "3pE63LV73uPUcFR9n6FyeNY2m4x4gpCyoCt72UypLvdP",
+            "buys": 1,
+            "solLamports": 617971210,
+            "minLeadSeconds": 1704
+          },
+          {
+            "wallet": "3iUfwfkNJssV1y423AiyXdFk9Dn3hZa9rLeWTYoTE4Uz",
+            "buys": 1,
+            "solLamports": 802196646,
+            "minLeadSeconds": 24
+          },
+          {
+            "wallet": "5d34bSDmtrafUFZoFvpSGxMRHEXdRq9cpnZDXUk1KWWM",
+            "buys": 1,
+            "solLamports": 723961514,
+            "minLeadSeconds": 24
+          },
+          {
+            "wallet": "BXhoFd68Wc75MbmCTxn5d2vK2u7ugCeiw5Mn7gYq9VDv",
+            "buys": 1,
+            "solLamports": 1670745748,
+            "minLeadSeconds": 23
+          },
+          {
+            "wallet": "6jW7NV1LbB6GsaQobh1a6duskKZjzPotRrUDXzt5jwFT",
+            "buys": 1,
+            "solLamports": 1670745748,
+            "minLeadSeconds": 23
+          },
+          {
+            "wallet": "EqaoUD7qMnbEsJTh7PEup3CqJ9i13xmugvpyXT7UzbiT",
+            "buys": 1,
+            "solLamports": 1670745748,
+            "minLeadSeconds": 23
+          },
+          {
+            "wallet": "3USuyHQVNyppevSmNiamBy8eFcjDJKqLWcCuJ6zJMG5H",
+            "buys": 1,
+            "solLamports": 409494283,
+            "minLeadSeconds": 23
+          },
+          {
+            "wallet": "57stAMFvwctAjkBS76RXGoK4QKyS1QoxbGMbzFFe4DyZ",
+            "buys": 1,
+            "solLamports": 3547044280,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "FMdL2mr1qVgxata25DLtR1Um7zdfKRC2vV4oV9HPJcb",
+            "buys": 1,
+            "solLamports": 308244283,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "HBTabnYUSECkdEE6qzy4svpJgt5mVNkMkxeR6JA7H5JW",
+            "buys": 1,
+            "solLamports": 199978211,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "DxVLq8oEizx7Sz5WcbVUiQX8fLL3y1Jj8rMGEXEDi5oH",
+            "buys": 1,
+            "solLamports": 109084080,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "4hSDduuxCCDaLfQAMEckjie4U7zLj4rZpAfaozs1HdYE",
+            "buys": 1,
+            "solLamports": 63308888,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "4LtF24A86sQ92JdUMVaCyxeJ9BuoUzJczK1zPwbBMzJ8",
+            "buys": 1,
+            "solLamports": 53579080,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "57DhppBV8tAiwS6y4EHwpywzHh27oEbPyo1TijZnpump",
+      "sourceBuySignature": "CBBhVnRwNo26MPMSmxp3SMhEQUYBe1aa5qWEBW3Ep7VPjRnVXB39HJeQSAYvPp1HwKokfcW4Nb3cBodr8vtNTj4",
+      "sourceBuyAt": "2026-06-05T22:42:45.000Z",
+      "sourceBuySol": 6.00969195,
+      "pnlSol": 4.170858985,
+      "roiPct": 69.15354295932738,
+      "lead": {
+        "creator": "9dGCUPRMPUfLsn8Fdggy2tPgJ9zN9ULQ4o6PS44oj7u",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "H2eo7pPWJkvSzteseWakRSagsZnpJc78uskKFmzvpump",
+      "sourceBuySignature": "2nwTYM69oqTtEkxJP6uNz2884vXiqkG1sZ8z7zPRKS27yJ57eBpfMTqtzhheBZHpBegTkELyf4vkcRhoN323kdiu",
+      "sourceBuyAt": "2026-06-05T22:41:15.000Z",
+      "sourceBuySol": 3.00287908,
+      "pnlSol": 2.70134838,
+      "roiPct": 89.95861331852231,
+      "lead": {
+        "creator": "8j9fkYSAc1qeQV3J27hooGNsvUAUWXnhHT6qCD3dwerJ",
+        "sourceOrder": 8,
+        "sourceDelaySec": 128,
+        "earlierBuys": 7,
+        "earlierBuySol": 3.997777978,
+        "earlierWallets": [
+          {
+            "wallet": "7mgGoxs3sJtSwBujg8XU484bycX8VqSCaaptPWVMFm1T",
+            "buys": 3,
+            "solLamports": 215558814,
+            "minLeadSeconds": 5
+          },
+          {
+            "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+            "buys": 1,
+            "solLamports": 3611461924,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "DxVLq8oEizx7Sz5WcbVUiQX8fLL3y1Jj8rMGEXEDi5oH",
+            "buys": 1,
+            "solLamports": 109084080,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "4LtF24A86sQ92JdUMVaCyxeJ9BuoUzJczK1zPwbBMzJ8",
+            "buys": 1,
+            "solLamports": 53579080,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "F8ePdsExXQn7Cc6tDVAuUbCzqBgc6rYVuoq5FuyGBoTc",
+            "buys": 1,
+            "solLamports": 8094080,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "Er8MWiCtucDGRxfDzipE4schfFuUJCwAU3veGtoGpump",
+      "sourceBuySignature": "3r99eiSquLhY9PRfgobf5nd7VMe1PT9vH3yRMh7f5PR6SLjXCK4joQ3hrSQS9ixMUZzVrU1SyM8kydhaDMFp8MG9",
+      "sourceBuyAt": "2026-06-05T22:22:13.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 2.677805606,
+      "roiPct": 76.31491174049029,
+      "lead": {
+        "creator": "8dtx2tr4TuJsYpri2suggFu1pg3DVjFLBBVmhtDy1MEF",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "Hag7AS2RHEcs9yhH9KtRX9uteMbdXDbM84zS8heSpump",
+      "sourceBuySignature": "3CobbNHbHQhyf5YFRQG3Ld6Rr6HveiyAsJPpFap6H1KYio5NpHZiksmLqrtEnc2mBKHgArmp7uBgFik9aLPyRaPj",
+      "sourceBuyAt": "2026-06-05T22:04:07.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": 8.016242436,
+      "roiPct": 145.6309989809263,
+      "lead": {
+        "creator": "3hABxPaFS81TSFv7E49VwQaGk9Cv5kBunbWdrYFKPP5R",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "5N2thTKqGbh5ZRXgFLvKMmL794Cfhe5wnThBhJB6pump",
+      "sourceBuySignature": "5j3rCzh6Rdq63K5YpxMkXzhSQfsbJBkPViGWoeahREUU2XQ8cd9aeqzzWpuoGh3yUAJgzhVTeqXg8zafDECURmZE",
+      "sourceBuyAt": "2026-06-05T21:54:26.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": -1.87450592,
+      "roiPct": -28.795606926955436,
+      "lead": {
+        "creator": "55mX9tbeNC6UDo6KLknzgBq7kNVpH4SWKxsAcw6c3emR",
+        "sourceOrder": 8,
+        "sourceDelaySec": 3,
+        "earlierBuys": 7,
+        "earlierBuySol": 7.226405192,
+        "earlierWallets": [
+          {
+            "wallet": "J6AuAn2GLHiz3TzyAGa5itH2kpDbzzfrBhUXYW1hyGER",
+            "buys": 1,
+            "solLamports": 3644265298,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "3XLsY9NonrVtm57PeHPCuP36BCj6V4hJy7xa7ZzxtvrZ",
+            "buys": 1,
+            "solLamports": 3005969961,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "CLD51fthj9vte34V4EQX7RUbePadex76Z8o8LZ3JseHd",
+            "buys": 3,
+            "solLamports": 561886672,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "55mX9tbeNC6UDo6KLknzgBq7kNVpH4SWKxsAcw6c3emR",
+            "buys": 1,
+            "solLamports": 12179081,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "EmChbiWfWWBxnTpacUwN7xcgnhEu4vaJXpAxFjSYpump",
+      "sourceBuySignature": "59i7UU9dbfNHLXA8cEsUQvBNFrcQhN7Dm3aMXUoN9EDWVWbkHBhRyBo2FxeAgXMh2SfoVFNtWUVcpX9mzjGXB3E2",
+      "sourceBuyAt": "2026-06-05T21:53:08.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": -5.951349515,
+      "roiPct": -26.732573014602202,
+      "lead": {
+        "creator": "JB1jKxrpEJMfpRxdZAfybY8rBq6ExznNQGBQ4kKepU8w",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "3fjVnibL9BA4kfY48Gqa1rkCg7g8RZVohdDxw2g1pump",
+      "sourceBuySignature": "475yra53tKdgXx15UQNficR3zVoHJdbxMkaJvF1Y36UXDcyadUNQXB87RvJ4XpQnxBb2zdpeidHqNUqXJntUUKuu",
+      "sourceBuyAt": "2026-06-05T20:28:25.000Z",
+      "sourceBuySol": 44.01037431,
+      "pnlSol": 14.2456186,
+      "roiPct": 32.3687740069121,
+      "lead": {
+        "creator": "4DVRY9adChXwchuX2yuhteTVX7y3KYQYrChGmVTXQpjv",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "7tme6fpYjz8v6iSuratuyPZKXyXsdSuid8V7MYcZysQe",
+      "sourceBuySignature": "5oBg7iPkvWKTkum8rmzRAY3nUwTaxzd4hAV3mzmbKbwStrYoPxcep91C8a5h1ykQqN2XLsafnpktcTMLoaySPonQ",
+      "sourceBuyAt": "2026-06-05T20:19:53.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": -0.839610708,
+      "roiPct": -7.805903439111868,
+      "lead": {
+        "creator": "4jkL4dNkY2UbpYrTgLA3u5FqKwKs1LM46RcE6FQU3qXi",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "FHcx64soe5j1GnN6KKhZzhWgJQvMNPr1RNUPjt2Kpump",
+      "sourceBuySignature": "48hFoiSkaqCEtfdSfZcSFKdkDSjqh89xN5yBYKf6tDTmURxNXXKiMAPACquFh6NCmDrXwcptKLSeWEPzrr9FR7pk",
+      "sourceBuyAt": "2026-06-05T20:17:59.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": -1.940958618,
+      "roiPct": -26.71101894039674,
+      "lead": {
+        "creator": "BBAHEKbbg5UiCbe5UTNXZcvA4znVgo4Dyf2RDfDyhycu",
+        "sourceOrder": 17,
+        "sourceDelaySec": 7,
+        "earlierBuys": 16,
+        "earlierBuySol": 21.371062329,
+        "earlierWallets": [
+          {
+            "wallet": "BBAHEKbbg5UiCbe5UTNXZcvA4znVgo4Dyf2RDfDyhycu",
+            "buys": 1,
+            "solLamports": 1010301509,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "5wn1F7fgvoACk9Rca2uN2nHchh4G2uxj8jk7dMgPzfhX",
+            "buys": 1,
+            "solLamports": 495833515,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "AmeyDYWuEwL4VeXypcgToTPpb9H3Rm7zBZ7HJUoHjk9W",
+            "buys": 1,
+            "solLamports": 82839057,
+            "minLeadSeconds": 5
+          },
+          {
+            "wallet": "3nDtLwqRK4PJjqSphVyqF33C3MA2iyuMLRH4BTYkC8oC",
+            "buys": 1,
+            "solLamports": 2432166405,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "DTbMwEZ6xfouMAbog188p6FGAk2k9LzJgY3Rd4i5MBRX",
+            "buys": 1,
+            "solLamports": 2386020818,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "A8cPBd5R13mtFs6TpFWnHW7St1iZKAQwW7cho73yFEEX",
+            "buys": 1,
+            "solLamports": 1021329640,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "Ez2jYoXp45DZxr7JVhiqbDNirgBT37MErjZGxA8jZkTf",
+            "buys": 1,
+            "solLamports": 319346882,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "9kseZTtBnba5Hioaphx7bBaiGuTYRpjhG1bMFX1epdww",
+            "buys": 3,
+            "solLamports": 5060001244,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "5Pr7D2d5WUM7j8fMF36DuzVDDGEHLtYsF7a6ezyzFG19",
+            "buys": 1,
+            "solLamports": 2157092530,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "2ycurSWTPqY6wcPEboA7ZGRu2xwsZD7b7MxdA74qC3Vo",
+            "buys": 1,
+            "solLamports": 1600594830,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "FhZmTCs7enzPDN1RpgJPUcZPfX6FKJ9uqj7ch2jtggGW",
+            "buys": 1,
+            "solLamports": 1273749881,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+            "buys": 1,
+            "solLamports": 3286544556,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "ayaCRDLwYRqAvPnrpwnkUsxrqx4hniVaWAGHYG5DGBD",
+            "buys": 1,
+            "solLamports": 243137282,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "GkjWvyaQfKCAHabhkqtLnAHYc9roMFvUgk34S1SVpump",
+      "sourceBuySignature": "eJkT2LS8rA2LcidKwR388UWDL1sR73XvkBBxqyBJ5bmY4xr4avYzHYvVrjodm2AkgYqabXNuZEmLCzazg8bRYdC",
+      "sourceBuyAt": "2026-06-05T20:17:34.000Z",
+      "sourceBuySol": 3.00287908,
+      "pnlSol": 1.087317037,
+      "roiPct": 31.026406747413006,
+      "lead": {
+        "creator": "JC1irmi7bWUEjPvqCbZbAoJ9JXh6htDC9uP5tAC2w4k",
+        "sourceOrder": 44,
+        "sourceDelaySec": 10,
+        "earlierBuys": 43,
+        "earlierBuySol": 47.688952709,
+        "earlierWallets": [
+          {
+            "wallet": "JC1irmi7bWUEjPvqCbZbAoJ9JXh6htDC9uP5tAC2w4k",
+            "buys": 1,
+            "solLamports": 3048940800,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "AUVupyCg1aV3UrqmfVCgiKsiUGrBhVUWL1nnTnBPMmXx",
+            "buys": 1,
+            "solLamports": 1322429080,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "J4nkwYMMBaw4R5Av9g6SJSC1gpPDxdjjKZvXsrBqfK4M",
+            "buys": 1,
+            "solLamports": 1302654080,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "CPxTBkv2NKpDKLZuZuF2dGBkuqjycUHPpwRDjD2LkqC3",
+            "buys": 1,
+            "solLamports": 1302654080,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "6jjrNC9GSpcZiVqDS1z5d9HTi7aD8h3SP9XXYazzrP4C",
+            "buys": 1,
+            "solLamports": 811164294,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "6LRCxFtV2HUEj64B43QScgkTJGA7znKaxESvhiABUJNp",
+            "buys": 1,
+            "solLamports": 605164294,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "5jnDRxN67Nm7j5qM9PS6G6ftaGohndQsodDzRxYS44HW",
+            "buys": 1,
+            "solLamports": 400694281,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "FaVx2mNoF8JnceueE1brj4W44a6EBPWpSVbLmJPw4LYx",
+            "buys": 1,
+            "solLamports": 388644281,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "Hn9B5qcoHAQZg6YsjT6twgugzw1YTNF9qahC1n7UKBao",
+            "buys": 1,
+            "solLamports": 344297477,
+            "minLeadSeconds": 10
+          },
+          {
+            "wallet": "74wDnNfJEJhRDWgxMgrCYxd4Ekw4JB7KPhNxHMS2abWH",
+            "buys": 17,
+            "solLamports": 16918871035,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "5ywMefptun2J2oiL539vaTm9mraEnyiwHLYrHNC1zr5G",
+            "buys": 1,
+            "solLamports": 1693616661,
+            "minLeadSeconds": 9
+          },
+          {
+            "wallet": "A3Mpq82gqcqVwgwEEQArApaDvXQBPVeuL27EefYHGhrK",
+            "buys": 1,
+            "solLamports": 1530792060,
+            "minLeadSeconds": 9
+          },
+          {
+            "wallet": "4BKrTf5N5FSkAKYMg4H9oPu4ouPAV4SAQzdix33ex61X",
+            "buys": 1,
+            "solLamports": 1030079080,
+            "minLeadSeconds": 9
+          },
+          {
+            "wallet": "84UBp52FJZ5xwD5sGUqddzujNUUUAjNzNtLBfVeLXW84",
+            "buys": 1,
+            "solLamports": 94069080,
+            "minLeadSeconds": 9
+          },
+          {
+            "wallet": "BLw4fXAc9P7NYhnRH9GyccXKUmvpUSiqc67BGbanxcDp",
+            "buys": 1,
+            "solLamports": 3337279080,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "6X7Ln5KPurRfNiNroyZxxi7VstEzuhd4jMefNEqAu7uV",
+            "buys": 1,
+            "solLamports": 1540867328,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "8fsKLLtvKNanL4ginCaiRS6UfeemY11rSf8U8fN1dJw4",
+            "buys": 1,
+            "solLamports": 1507510832,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "Ayh4WTzQojz4PeutmoszFCY4G8bqFTjvFVY2dbnuNFWr",
+            "buys": 1,
+            "solLamports": 2305971710,
+            "minLeadSeconds": 5
+          },
+          {
+            "wallet": "3pVBCghbuT1aCvAJfnJCvp6hC4bo5kkMddgvQburTK77",
+            "buys": 1,
+            "solLamports": 203179080,
+            "minLeadSeconds": 5
+          },
+          {
+            "wallet": "FUCKpGkamKQQsKjJG9FSRSScZqExyyTp4TXak6EsJT3j",
+            "buys": 1,
+            "solLamports": 252289111,
+            "minLeadSeconds": 4
+          }
+        ]
+      }
+    },
+    {
+      "mint": "9k2CsoymWNF3AGmgo7ZboxNCtaVu5i6sr2r26H6ekjmR",
+      "sourceBuySignature": "4SuCsY5UMN8KtEyErrv4n5sU4bXeeTKPd425WFbwv9eNj42DneEw5T8ngJUywjjmQEPc6cYZLiL9Avs31ruy55jP",
+      "sourceBuyAt": "2026-06-05T20:17:20.000Z",
+      "sourceBuySol": 0.250805001,
+      "pnlSol": -1.375502333,
+      "roiPct": -19.618352256878094,
+      "lead": {
+        "creator": "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa",
+        "sourceOrder": 15,
+        "sourceDelaySec": 5,
+        "earlierBuys": 14,
+        "earlierBuySol": 24.299079959,
+        "earlierWallets": [
+          {
+            "wallet": "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa",
+            "buys": 1,
+            "solLamports": 5010322480,
+            "minLeadSeconds": 5
+          },
+          {
+            "wallet": "ASY5YdzR8GGCGBc9WBH1KifG1MGGAsGodB9KxsfvNznK",
+            "buys": 1,
+            "solLamports": 3004044280,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "ELToezRwFP47tfERydQZxCQysggz7uQAcgAsdzueKnob",
+            "buys": 1,
+            "solLamports": 3004044280,
+            "minLeadSeconds": 3
+          },
+          {
+            "wallet": "35HvU5JZPoabhep1P4tAGQSwXokW6uNzmuoYteiE164o",
+            "buys": 1,
+            "solLamports": 253429641,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "FiDYtgwM3DXgRmZTqAtLd5sjs4ZkKEcGsudisokM4UW5",
+            "buys": 1,
+            "solLamports": 3004044280,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "hpHou1muPkQpcfzuhnqDWkhtEncdex7gKyoKnYKjzd4",
+            "buys": 3,
+            "solLamports": 4504812145,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "2EYEYZJN1EEpMzJzWnrnUMNqgBP4RXZFbMnLTpkFXMr1",
+            "buys": 1,
+            "solLamports": 910079080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "6uwqG7Uog6FVUHZp5rx6jkJ8VjWjNf7svcAzzcCJQh7Q",
+            "buys": 1,
+            "solLamports": 2792162600,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "Hpu8geK6RYXtauxYpgkmnqVLQy3Q3pKtKLHkBrcTL2EF",
+            "buys": 1,
+            "solLamports": 1004362600,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "2ccgxuZv5NEngCwWqj6zjwxHWVc8RDwXgMUfUnmpTYHQ",
+            "buys": 1,
+            "solLamports": 502244280,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "9BEwcMC6p3RfpReeWadiv8wQF1Muyo3vmPycF8VNbSNR",
+            "buys": 1,
+            "solLamports": 307430113,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "Hr9VQUvQ2Q91fCPx9EDFm4HrAdjMawLy4e2b9xLypump",
+      "sourceBuySignature": "2sDsncsFBuH8P45bVASuRhh8qET1V9VMugPKisT6X3e5WJx25Sq3tfhM5NhH5pQ6Zgx2MtA667MCLcfaDR6BkJvp",
+      "sourceBuyAt": "2026-06-05T20:13:01.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 2.292645813,
+      "roiPct": 45.727448482051855,
+      "lead": {
+        "creator": "nW1M745eLMP4cbMJeBLXJ8pLQTGkY3KpsEvMALjNkUt",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "Df5sU93mTvckRVbkNLiNwDuExF7P8Y9eQMsKcnGcpump",
+      "sourceBuySignature": "2xFsQ6VcpPqXT75p5UVtFyejt2cKd6v1X5E9cC4UJetJ1tRKnWbWDUudm1VppZ3JPyCnnRbbVD6YciWD1QivTvfy",
+      "sourceBuyAt": "2026-06-05T20:05:49.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": 3.728513087,
+      "roiPct": 67.73586124809394,
+      "lead": {
+        "creator": "2uf35WqTNDHocvAwQxt7AJ3mPC97mPDrdh48aj6uCBpY",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "9nwxwsuJFHw723TNcAb5aBXcUmo8VpCXsNM2oZMMpump",
+      "sourceBuySignature": "5ZjaeSRZ83iW5X32RNvsRyrqTH68Sps9GFmxjy7wCw2nRZnFUDdhqAajpH9GwcRYiPz124nuDqiinQaC3WEaPYpi",
+      "sourceBuyAt": "2026-06-05T20:05:31.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": -0.050561198,
+      "roiPct": -1.4409460321607281,
+      "lead": {
+        "creator": "7EGXgqR7NM49RReFWE9ykCsa4Kx2x8AiUYQqgCwJLUh5",
+        "sourceOrder": 21,
+        "sourceDelaySec": 4,
+        "earlierBuys": 20,
+        "earlierBuySol": 27.161669436,
+        "earlierWallets": [
+          {
+            "wallet": "7EGXgqR7NM49RReFWE9ykCsa4Kx2x8AiUYQqgCwJLUh5",
+            "buys": 1,
+            "solLamports": 1374910960,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "2ezv4U5HmPpkt2xLsKnw1FyyGmjFBeW7c166p99Hw2xB",
+            "buys": 1,
+            "solLamports": 1226905422,
+            "minLeadSeconds": 3
+          },
+          {
+            "wallet": "BQNRBymvbQTiFJxx5We3mGTa3PyPcUzfK1Rk2Bd5Kjtn",
+            "buys": 1,
+            "solLamports": 1035221974,
+            "minLeadSeconds": 3
+          },
+          {
+            "wallet": "EizsG85CKZKqfQgzGoXsWCEdi7g1aDbXyTJp2jZRjdUE",
+            "buys": 1,
+            "solLamports": 990936187,
+            "minLeadSeconds": 3
+          },
+          {
+            "wallet": "DF9MXmawYzbqskNxL1wTSYRcG2Gv25pqvVxVKD4kvkM4",
+            "buys": 1,
+            "solLamports": 2432166406,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "7ckzBRwypJtjjPDT5yfh6RKcSMu6zUyATWQYjtBitEc2",
+            "buys": 7,
+            "solLamports": 11144109371,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "5U3e1oEPWSADLmGxHsudDEpp1mP2kKoBJcdHRCsVEuTy",
+            "buys": 1,
+            "solLamports": 1938349346,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "Ez2jYoXp45DZxr7JVhiqbDNirgBT37MErjZGxA8jZkTf",
+            "buys": 1,
+            "solLamports": 602194280,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "5vjKSaF7EHSydzSWz7oSSE5WVmzZESMryrM3QBcy1tJK",
+            "buys": 1,
+            "solLamports": 2113955,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "3ntEpydDjraXrnwWTCJM7DvfBvtYUMc7q1oHADMCoFuK",
+            "buys": 1,
+            "solLamports": 3006079081,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "Dxm74DtsrTmgdQXMrffzrRdaRhxpbWVhLcFVgwBbeTLN",
+            "buys": 1,
+            "solLamports": 3005079081,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "9BEwcMC6p3RfpReeWadiv8wQF1Muyo3vmPycF8VNbSNR",
+            "buys": 1,
+            "solLamports": 307430113,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "84UBp52FJZ5xwD5sGUqddzujNUUUAjNzNtLBfVeLXW84",
+            "buys": 1,
+            "solLamports": 94069080,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "FFUxjJyJ5Cd4gHofmWF5Cpk44d82uFkCzwhy8671pump",
+      "sourceBuySignature": "48VuUkcr8i3DxTQLN8sbkKBqRJyXKdoUGeJxXroRrD6AJacbz1bpXbA6AZJKnXmK9GiJx5SJ4h3HtER5jtyQpE3",
+      "sourceBuyAt": "2026-06-05T19:57:13.000Z",
+      "sourceBuySol": 3.00842052,
+      "pnlSol": -0.439338381,
+      "roiPct": -3.0791694797841997,
+      "lead": {
+        "creator": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+        "sourceOrder": 16,
+        "sourceDelaySec": 1,
+        "earlierBuys": 15,
+        "earlierBuySol": 14.674981112,
+        "earlierWallets": [
+          {
+            "wallet": "J6AuAn2GLHiz3TzyAGa5itH2kpDbzzfrBhUXYW1hyGER",
+            "buys": 1,
+            "solLamports": 3314164302,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "FoDiidYW6JhyvVdqedDDgPMENjAYmzmNXcNBMmrJACLr",
+            "buys": 1,
+            "solLamports": 1241079080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "GdgWKG6DxpeJuBN3op1PTuCnrBPq4Yifrp1BnGpBQZDf",
+            "buys": 1,
+            "solLamports": 1231079080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "6uwqG7Uog6FVUHZp5rx6jkJ8VjWjNf7svcAzzcCJQh7Q",
+            "buys": 1,
+            "solLamports": 1031162600,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+            "buys": 1,
+            "solLamports": 1023940800,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "BE7fxjd9MfLBe2EG3GMqUvyPwFkZxcmeZ2qZbmUD9N6A",
+            "buys": 3,
+            "solLamports": 2185710148,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "C5EMTGGE87SqLyuvhShLDMj2jUBwqBLJAZF6ybK8Jyqw",
+            "buys": 1,
+            "solLamports": 831041435,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "ADkquSiH1zS6LmGoJxzwE6x44gpE6S3KWLALqNc3sTDs",
+            "buys": 1,
+            "solLamports": 352356744,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "84UBp52FJZ5xwD5sGUqddzujNUUUAjNzNtLBfVeLXW84",
+            "buys": 1,
+            "solLamports": 94069080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "3XLsY9NonrVtm57PeHPCuP36BCj6V4hJy7xa7ZzxtvrZ",
+            "buys": 1,
+            "solLamports": 3005969961,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "9BEwcMC6p3RfpReeWadiv8wQF1Muyo3vmPycF8VNbSNR",
+            "buys": 1,
+            "solLamports": 307430113,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "CQ25LiZ8qh9HSyPpcvWcy1bGDbjbEKo3438aydzNEgV8",
+            "buys": 1,
+            "solLamports": 54873589,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "6AjB4Ka8ptgBqE9gXbREcAAcsDPaqbkJHKR71obupump",
+      "sourceBuySignature": "344r1ttCN1DETAAfJSwsA7HEFRvpGVnX7bgMyEQSvLwpswrr7qep87uWR5Vr5jQPGx8poD1WoxFcr7fDMiBY5yEe",
+      "sourceBuyAt": "2026-06-05T19:43:50.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": -0.081034541,
+      "roiPct": -2.694613264825425,
+      "lead": {
+        "creator": "8ZN71XTdVo8yRovnGLmNgW3Tgniw6A4J3JGLvPD686FP",
+        "sourceOrder": 26,
+        "sourceDelaySec": 19,
+        "earlierBuys": 25,
+        "earlierBuySol": 41.895996177,
+        "earlierWallets": [
+          {
+            "wallet": "kMqj2TohxRTi2PycAyXnkMoNDeZ8MJq9giFV3hUvAfx",
+            "buys": 1,
+            "solLamports": 4327454079,
+            "minLeadSeconds": 19
+          },
+          {
+            "wallet": "FupEviHtoTjtRcXjNp8WsT1gyppLNXoYskQBkEfRiSqh",
+            "buys": 1,
+            "solLamports": 4094579080,
+            "minLeadSeconds": 19
+          },
+          {
+            "wallet": "8ZN71XTdVo8yRovnGLmNgW3Tgniw6A4J3JGLvPD686FP",
+            "buys": 1,
+            "solLamports": 4061566080,
+            "minLeadSeconds": 19
+          },
+          {
+            "wallet": "4aVQaWL1QUpqVuAkHfNHi6vGerXRcaHYtvMmSfDgPcNs",
+            "buys": 1,
+            "solLamports": 3335204080,
+            "minLeadSeconds": 19
+          },
+          {
+            "wallet": "A3WjFMYjv1k9UbdcV8wKuQpaQPmrgsbmxo4in6XLqg7J",
+            "buys": 1,
+            "solLamports": 172079079,
+            "minLeadSeconds": 19
+          },
+          {
+            "wallet": "BHAv3byUbSeeYP88GUXtagE1CobUaw9cZJt1DAqSKrPi",
+            "buys": 7,
+            "solLamports": 16354137223,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "8PLB6gP2ymxTNPVEYgbjcWFH9nM9F3MYjFcoEhQLwjVs",
+            "buys": 1,
+            "solLamports": 602950530,
+            "minLeadSeconds": 13
+          },
+          {
+            "wallet": "44TeUtvr2umKFJtxdpgtPvET9HjfLe6CUk66WVPqSVfU",
+            "buys": 1,
+            "solLamports": 6102084,
+            "minLeadSeconds": 11
+          },
+          {
+            "wallet": "3yrbGdPFbn1RDTPqetmoU8xFQ7v7QBuemZDjkLyuUFpi",
+            "buys": 1,
+            "solLamports": 7267899,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "6z8f9oPFhxCesv3GPxBXFux1hAoaPVaj7w4VHtdiEPZo",
+            "buys": 1,
+            "solLamports": 713138637,
+            "minLeadSeconds": 6
+          },
+          {
+            "wallet": "2SyCkFh4Vo92it9nzyzzuL6a81vPT3ZsySWbb6RusQDQ",
+            "buys": 1,
+            "solLamports": 659387035,
+            "minLeadSeconds": 6
+          },
+          {
+            "wallet": "aK1AjXTwE8kYZkytRTw9UKNmAbEavpSSoRk42UGPseb",
+            "buys": 1,
+            "solLamports": 651962129,
+            "minLeadSeconds": 6
+          },
+          {
+            "wallet": "57stAMFvwctAjkBS76RXGoK4QKyS1QoxbGMbzFFe4DyZ",
+            "buys": 1,
+            "solLamports": 3778044280,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "6uwqG7Uog6FVUHZp5rx6jkJ8VjWjNf7svcAzzcCJQh7Q",
+            "buys": 1,
+            "solLamports": 2792162600,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "9BEwcMC6p3RfpReeWadiv8wQF1Muyo3vmPycF8VNbSNR",
+            "buys": 1,
+            "solLamports": 307430113,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "8UFBVo6kXvxvRp3VgP6i2QWHGxxTwXu38ZxNycJPDmPt",
+            "buys": 2,
+            "solLamports": 26737872,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "7REhL47HTvumbVjnYwd6Yg3H9EHjWwpdtW5QwXsmTZAe",
+            "buys": 1,
+            "solLamports": 3689197,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "HLi1c1BNP56DzdsYT48tvWXi8nFQ9wMjNDjMw5C4pump",
+      "sourceBuySignature": "5ScvdfAKqZoYnL8s727kXsfKk5EGtkaZ3S3LJ2gLkFzbnC1R1Xz85ab6QxwHjF7xUwvGZL12btkg7fA5zDuBw8kz",
+      "sourceBuyAt": "2026-06-05T19:43:33.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": -2.911386194,
+      "roiPct": -11.408901751161434,
+      "lead": {
+        "creator": "DroePZMvS2tE16M56eNSrx2NADrPwMzhea44hzZ9W32L",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "4w8GmC4UGDmVP4C1UNG4qQ7VaAGUUahx8N6Hm9VZpump",
+      "sourceBuySignature": "3EftU5Jh2z1F6WhVsD5Z1uzZdMbWx6LViweh8a49sKATeKMydWUvcbibSqf4HPQrwEcnczbStNSJrARiueNXJB4G",
+      "sourceBuyAt": "2026-06-05T19:42:49.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 0.893470639,
+      "roiPct": 27.423191577057153,
+      "lead": {
+        "creator": "Aqje5DsN4u2PHmQxGF9PKfpsDGwQRCBhWeLKHCFhSMXk",
+        "sourceOrder": 14,
+        "sourceDelaySec": 7,
+        "earlierBuys": 13,
+        "earlierBuySol": 8.429325702,
+        "earlierWallets": [
+          {
+            "wallet": "nTecsLsPChp54dAEoPwMYt2ERYJ4AQMmYgHSLozAQmT",
+            "buys": 1,
+            "solLamports": 526579080,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "FpZKELRxqp6HTSHgF5d4RnAVTFRf33KPha1thHeYrpz3",
+            "buys": 1,
+            "solLamports": 33262600,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "Aqje5DsN4u2PHmQxGF9PKfpsDGwQRCBhWeLKHCFhSMXk",
+            "buys": 1,
+            "solLamports": 32758480,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "CDmFtQfpLgbeUzD34wtMVHtpF5bPt4FCs7xFCqh2KnAf",
+            "buys": 1,
+            "solLamports": 5379080,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "M9VtmEkbpxnaUv7bsAYmCy21nHyv1CwE1AwfVo9SKZK",
+            "buys": 1,
+            "solLamports": 5379080,
+            "minLeadSeconds": 7
+          },
+          {
+            "wallet": "5H2AFCpPjFsVN2S2AhvV3fcTv8YBfCXA6EKTAMpqoQEB",
+            "buys": 1,
+            "solLamports": 661823522,
+            "minLeadSeconds": 6
+          },
+          {
+            "wallet": "8LYot1iEDnMiZzEG5ynhifMwQxu8LaMCSoKhiCsjAW1F",
+            "buys": 1,
+            "solLamports": 1393763790,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "F5SwwVK9g5qzMGyeR55WC1aTuD9rmf3QPK6G6FP6xcXg",
+            "buys": 1,
+            "solLamports": 1354246888,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "5zTPYkqj5FgpWcEcXFL6SdduT7gxRh32vESJZqCRDTf",
+            "buys": 1,
+            "solLamports": 1258826562,
+            "minLeadSeconds": 4
+          },
+          {
+            "wallet": "69qaveug9QzXysbPRV3SpLuvDkRdJTGGbK9TmAo3yYb3",
+            "buys": 1,
+            "solLamports": 1647294453,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "2HJMgsEqKrcRNDqo1P9g9pCFEXSdi2VtKqDKg9qhikco",
+            "buys": 1,
+            "solLamports": 1416863707,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "57stAMFvwctAjkBS76RXGoK4QKyS1QoxbGMbzFFe4DyZ",
+            "buys": 1,
+            "solLamports": 91044280,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "7sxaUNucR8ahLUAjeg43LGSYzCAxgvrqCDNnRtkCpump",
+      "sourceBuySignature": "qQoXA1CWggGNygHQqBBBJjWRvvDdrt7vGf1NYCuLdqB396frPTyamXV56XdAJoNtNMv9Hw26dF9R8ZWvdzTBJ6k",
+      "sourceBuyAt": "2026-06-05T19:37:38.000Z",
+      "sourceBuySol": 3.00752964,
+      "pnlSol": 0.726848919,
+      "roiPct": 24.16763942515958,
+      "lead": {
+        "creator": "GN6yXHj87cP28qGpYx2v8znNYxjhf9GiDmERDR4B9cTC",
+        "sourceOrder": 22,
+        "sourceDelaySec": 3,
+        "earlierBuys": 21,
+        "earlierBuySol": 12.711817485,
+        "earlierWallets": [
+          {
+            "wallet": "GN6yXHj87cP28qGpYx2v8znNYxjhf9GiDmERDR4B9cTC",
+            "buys": 1,
+            "solLamports": 1012755196,
+            "minLeadSeconds": 3
+          },
+          {
+            "wallet": "9yzDcVC569tYadQqmuNPGNNa3ZmHA6AY7tdgWnSEvDbi",
+            "buys": 1,
+            "solLamports": 304191780,
+            "minLeadSeconds": 3
+          },
+          {
+            "wallet": "FUoY8NrMifG55ZBqxPze3vGKc222dMxnA1vtDS6GwgN",
+            "buys": 1,
+            "solLamports": 243452280,
+            "minLeadSeconds": 3
+          },
+          {
+            "wallet": "CWngwqzuMjCSZ1DCt5xwPSiij4VTqvpcs5o6UAkof1tX",
+            "buys": 4,
+            "solLamports": 2673556945,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "HyhpyZtPWMnQeHwwLTVsUcNLqx2L3Rc5wZxVxsCUb1JY",
+            "buys": 1,
+            "solLamports": 105079080,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "3XLsY9NonrVtm57PeHPCuP36BCj6V4hJy7xa7ZzxtvrZ",
+            "buys": 1,
+            "solLamports": 3005969961,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "6uwqG7Uog6FVUHZp5rx6jkJ8VjWjNf7svcAzzcCJQh7Q",
+            "buys": 1,
+            "solLamports": 2816162600,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "Fkemk4DNp9ncsixH8gJqoysHu8mvG2A1TMVbGTMoYa9d",
+            "buys": 1,
+            "solLamports": 926328272,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "9BEwcMC6p3RfpReeWadiv8wQF1Muyo3vmPycF8VNbSNR",
+            "buys": 1,
+            "solLamports": 509430114,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BHK9uvkX7LE7nYNbBgs9ZocDKXgqVegRvVwgYomPYHe3",
+            "buys": 1,
+            "solLamports": 317084081,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "nya666pQkP3PzWxi7JngU3rRMHuc7zbLK8c8wxQ4qpT",
+            "buys": 1,
+            "solLamports": 296978658,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "Ez2jYoXp45DZxr7JVhiqbDNirgBT37MErjZGxA8jZkTf",
+            "buys": 1,
+            "solLamports": 272333426,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "8oP2ykpuBw9G1q3h9xySnqRDYise6eMUE9grAXCRSq3G",
+            "buys": 1,
+            "solLamports": 206150863,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "5vjKSaF7EHSydzSWz7oSSE5WVmzZESMryrM3QBcy1tJK",
+            "buys": 1,
+            "solLamports": 12100137,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "7REhL47HTvumbVjnYwd6Yg3H9EHjWwpdtW5QwXsmTZAe",
+            "buys": 1,
+            "solLamports": 3680673,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "5opAR6Z3NCPEgXchUvox5nvqTKhFzsykooiR67xxkj6e",
+            "buys": 1,
+            "solLamports": 2289860,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "99j6HWTKqEigSbRpe1uJ1g3EVpRZJNnB7wbKsjhfPz8g",
+            "buys": 1,
+            "solLamports": 2169379,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "3G8zFxHAnuWXiiC9MobE9EUUqV6m6MjL51YnN6tGpump",
+      "sourceBuySignature": "5KnzZiJvwQx9XAdQrXGQrr7Qf41h1LiftnYzQT6KQiuhg7tBvnmLD3W7FwSoTkRjf8mTVMu5WMUEjAo2cZc6iPbV",
+      "sourceBuyAt": "2026-06-05T19:30:21.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": -3.002936719,
+      "roiPct": -30.01830820511077,
+      "lead": {
+        "creator": "KWiSxhsAaEJRV6AhFXK25H5f6QRzrH1VdZPazFtChqN",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "2jGgSEY79H6a821bYfonf8mMy2wPHCDLJBfd2bjCpump",
+      "sourceBuySignature": "5UeKTXCLb8MhFuNCppnePPmf1FrKXTAsWXkmBS4iYj7mBfYzZcmNTn11xzN3CPVC65XBgUbuBwTNce2foq2XVaVt",
+      "sourceBuyAt": "2026-06-05T19:28:21.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": -0.703219606,
+      "roiPct": -18.704170898925902,
+      "lead": {
+        "creator": "FjBcuq3GM5yzcoNx8rP36BZNJPXDsejPJ3j3xV9gkdNk",
+        "sourceOrder": 11,
+        "sourceDelaySec": 1,
+        "earlierBuys": 10,
+        "earlierBuySol": 3.402581292,
+        "earlierWallets": [
+          {
+            "wallet": "37ZVSn9u5APmrrXJxHJGceHM33LG2zK9p5oFEy8eN3nq",
+            "buys": 1,
+            "solLamports": 56493438,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "FjBcuq3GM5yzcoNx8rP36BZNJPXDsejPJ3j3xV9gkdNk",
+            "buys": 1,
+            "solLamports": 54535840,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "DQApNebkK5wCmy92T5c4Z9NePWjP7dC4avpLMzuxadxR",
+            "buys": 1,
+            "solLamports": 15336581,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "58ssrrk6VygmF2Jnt3vRaJsKHtd4HLA4QyBWFHVviYNk",
+            "buys": 1,
+            "solLamports": 1586026069,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "5GStMKiMdt4zZ6wP5v28gBzq8tojvqXUTw5ARxVso11F",
+            "buys": 1,
+            "solLamports": 1555721278,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+            "buys": 1,
+            "solLamports": 119462617,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "8TYZKqAEayX21K8oa9JUnDqcULAPvRhMAp9oH5Vq45yE",
+            "buys": 1,
+            "solLamports": 6044280,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "3Xk2EuuSwKgniGNA4XkB33YY4mnEvcMnTLNpkKgGa14X",
+            "buys": 1,
+            "solLamports": 3438299,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "nya666pQkP3PzWxi7JngU3rRMHuc7zbLK8c8wxQ4qpT",
+            "buys": 1,
+            "solLamports": 3353510,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "99j6HWTKqEigSbRpe1uJ1g3EVpRZJNnB7wbKsjhfPz8g",
+            "buys": 1,
+            "solLamports": 2169380,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "2bQcbtNSwS71oa7Hs7EsyiH82FARoKJkyFmaBKaipump",
+      "sourceBuySignature": "2UtWJMUTFoanVRv7sUu6RPGAWrgGj22qmv4w66pCVjE2jxAbqbUe3tWyMDcgXkyDMFUfs7s8adTshrNLtErPNXHn",
+      "sourceBuyAt": "2026-06-05T19:25:58.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": -0.033735621,
+      "roiPct": -0.9614330983639985,
+      "lead": {
+        "creator": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 2,
+        "earlierBuySol": 0.208255043,
+        "earlierWallets": [
+          {
+            "wallet": "8oP2ykpuBw9G1q3h9xySnqRDYise6eMUE9grAXCRSq3G",
+            "buys": 1,
+            "solLamports": 206150863,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "Htcj637AZmqqmBsvjmYsTqfRM2u2mXoqtLxmH1TXpump",
+      "sourceBuySignature": "yJt6ywbfgjUi7CCXLDNFHNP3iCZRTZAcnNqpmFYuNg4as3DteBm4hBVGy9dw9mxLBTduJtyWvUCFy1SwN7BVcEg",
+      "sourceBuyAt": "2026-06-05T19:18:19.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": 1.069236555,
+      "roiPct": 16.43030660798992,
+      "lead": {
+        "creator": "DbEh3Yah8wPtRNpcxtixHMP8Kw1H2wvfv9D1DLVH2zKH",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "AupzUuJ83SwEMJyqgGjumB7oDuzQm5LBrLNuGxXupump",
+      "sourceBuySignature": "3hEep9uNQzxH6DMjHwtcjUfVcgNreM3V9rfwoFHeruhPNt9wUswJSzUuPXdjA9d3vhEBbFN83YUekdmgv9oaKnes",
+      "sourceBuyAt": "2026-06-05T19:16:06.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 4.467630869,
+      "roiPct": 63.720398060384795,
+      "lead": {
+        "creator": "9FYzJwAHqC8BRaB5nVAAT6B6NvVB2wnrZgz8YBwuhdrU",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "Gv5Vh2FB5p3kByyuUTp2jyXvP6LgEPMMu5dYPDcBpump",
+      "sourceBuySignature": "24kT2UgpSTNUUXiJrGoErgjwV1JvmpaMLshTgfPqGjYskJDe5GYWwXPqun3S8nYh4icXFxc4dWjcBXPsHnSFCs3R",
+      "sourceBuyAt": "2026-06-05T19:15:17.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 1.351911794,
+      "roiPct": 35.95802651049736,
+      "lead": {
+        "creator": "FePSGRavtQty99PFUty5WnaK6M7eibcEEpZRcrmZ6Xi1",
+        "sourceOrder": 10,
+        "sourceDelaySec": 2,
+        "earlierBuys": 9,
+        "earlierBuySol": 6.69169896,
+        "earlierWallets": [
+          {
+            "wallet": "CaR1LqRFNZtkVKs4jjoZcDCgKhNjPdH4mRtCQXtvBW7K",
+            "buys": 1,
+            "solLamports": 207162600,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "3RP2BNVoEEMcTTkeRKqRL6dy76otyiLpnDyjo2FYDfAT",
+            "buys": 1,
+            "solLamports": 105074080,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "FePSGRavtQty99PFUty5WnaK6M7eibcEEpZRcrmZ6Xi1",
+            "buys": 1,
+            "solLamports": 11958500,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "HrtVLLCBM4LXfRGLGcXBYvkkJ9xnbiJ3ob1MxKdmNs7o",
+            "buys": 1,
+            "solLamports": 3006079080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "6EuYEWnwHXE5cwszip5rS2SGk1RiBdu1vsmBUGtur3hX",
+            "buys": 1,
+            "solLamports": 3046119360,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "niggerd597QYedtvjQDVHZTCCGyJrwHNm2i49dkm5zS",
+            "buys": 1,
+            "solLamports": 302044280,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "DF9MXmawYzbqskNxL1wTSYRcG2Gv25pqvVxVKD4kvkM4",
+            "buys": 1,
+            "solLamports": 6044280,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "GtQk3fst7rwMfdbUmeWiUBzUaBzZrJ65cyJnBH2ZpUzb",
+            "buys": 1,
+            "solLamports": 5112600,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "FKXSLBzh2rYWW8Ne99PPGkCC8Cvy59ZjfwBDcX5Gpump",
+      "sourceBuySignature": "y25m4JmQ8BytrivmzLKtLADmF93ptvEB7pjakduutRwsmR2wZEraK1fTeFkP7r5zsE13dUVsuSPy19Umy1v6Jep",
+      "sourceBuyAt": "2026-06-05T19:12:01.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": -0.880567277,
+      "roiPct": -8.802429884411143,
+      "lead": {
+        "creator": "88v5xCnePjDndKVDtDSodPSgLck8t6ZsJNNKB9PVnm1y",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "GFNox1Yy1fsNqWZBd8hy9LYCNz9t7BZBb9B3rLYBpump",
+      "sourceBuySignature": "2nWk5iNkvzAWrjSqfLF8PVkCfrWCUysHigm2Ern6fCRPDufSEzD9ciu3rpSsj7JhbUG5zuzh8sp7eBJM9jqhZJjU",
+      "sourceBuyAt": "2026-06-05T18:34:59.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": -0.339116927,
+      "roiPct": -8.455728823200998,
+      "lead": {
+        "creator": "7REhL47HTvumbVjnYwd6Yg3H9EHjWwpdtW5QwXsmTZAe",
+        "sourceOrder": 11,
+        "sourceDelaySec": 0,
+        "earlierBuys": 10,
+        "earlierBuySol": 16.019232374,
+        "earlierWallets": [
+          {
+            "wallet": "2Z5ofyxu3ZUQGNFuNLgt1w8Qxx2BuDkqHRLBtq5LPbU1",
+            "buys": 4,
+            "solLamports": 6902241713,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "3ntEpydDjraXrnwWTCJM7DvfBvtYUMc7q1oHADMCoFuK",
+            "buys": 1,
+            "solLamports": 3006079081,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "3XLsY9NonrVtm57PeHPCuP36BCj6V4hJy7xa7ZzxtvrZ",
+            "buys": 1,
+            "solLamports": 3005969961,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "3JB7yggTsfwbqK9mio6RcgSZXenpZoWHeGSpzkxedK18",
+            "buys": 1,
+            "solLamports": 3005079162,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "84UBp52FJZ5xwD5sGUqddzujNUUUAjNzNtLBfVeLXW84",
+            "buys": 1,
+            "solLamports": 94069080,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "7REhL47HTvumbVjnYwd6Yg3H9EHjWwpdtW5QwXsmTZAe",
+            "buys": 1,
+            "solLamports": 3689197,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BADJXJn6Ttn8bH7YxmpbTmcd6RtaThwaXiURUDge29To",
+            "buys": 1,
+            "solLamports": 2104180,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "8bK3uLYEKgMWzFq5UCNapK4XkEzJPLn5wpZ7V5R8pump",
+      "sourceBuySignature": "2gn3sdwwH1fQi4zkRmWturHgHJkxKeysCWtPXuV4ZjiHJ5JszfUdD54aoiSwProsKDahZfKzGm2N7mHVH8hbEv8S",
+      "sourceBuyAt": "2026-06-05T18:32:00.000Z",
+      "sourceBuySol": 3.00842052,
+      "pnlSol": -1.24650999,
+      "roiPct": -29.244009869193576,
+      "lead": {
+        "creator": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+        "sourceOrder": 13,
+        "sourceDelaySec": 1,
+        "earlierBuys": 12,
+        "earlierBuySol": 19.981539179,
+        "earlierWallets": [
+          {
+            "wallet": "EZLyofvkhj2RfjXpCmuut2ftpY1g9Do47um5RcDFcLkX",
+            "buys": 1,
+            "solLamports": 3932466616,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+            "buys": 1,
+            "solLamports": 1629212529,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "GdgWKG6DxpeJuBN3op1PTuCnrBPq4Yifrp1BnGpBQZDf",
+            "buys": 1,
+            "solLamports": 1231079080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "FoDiidYW6JhyvVdqedDDgPMENjAYmzmNXcNBMmrJACLr",
+            "buys": 1,
+            "solLamports": 1231079080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+            "buys": 1,
+            "solLamports": 1079680400,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "C5EMTGGE87SqLyuvhShLDMj2jUBwqBLJAZF6ybK8Jyqw",
+            "buys": 1,
+            "solLamports": 910629449,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "3USuyHQVNyppevSmNiamBy8eFcjDJKqLWcCuJ6zJMG5H",
+            "buys": 1,
+            "solLamports": 534130349,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "9e2p6ayBqbMnUiZL68L1kdZdqZqK7aHYxtUXoA3fhrXK",
+            "buys": 1,
+            "solLamports": 518576933,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "2PxjPqaEiqJS4xcRht3CA8j9RzWJ8HT6EgMxEoNk1DyD",
+            "buys": 1,
+            "solLamports": 18363980,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "3ntEpydDjraXrnwWTCJM7DvfBvtYUMc7q1oHADMCoFuK",
+            "buys": 1,
+            "solLamports": 3006079081,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "3JB7yggTsfwbqK9mio6RcgSZXenpZoWHeGSpzkxedK18",
+            "buys": 1,
+            "solLamports": 3005079082,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "6uwqG7Uog6FVUHZp5rx6jkJ8VjWjNf7svcAzzcCJQh7Q",
+            "buys": 1,
+            "solLamports": 2885162600,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "6jzR29wBANveaUB5a2rMNFSFo17ayaadN5otm1N5pump",
+      "sourceBuySignature": "4DBBg2vGLiA6fLgT58jLP7bQondm1uoAnEBM4vjanoePyQ5vio8FobihxNdZUipneJEZAiazPjazdTAqzpQuiowF",
+      "sourceBuyAt": "2026-06-05T18:30:42.000Z",
+      "sourceBuySol": 5.00287908,
+      "pnlSol": -1.178269135,
+      "roiPct": -20.472787628357235,
+      "lead": {
+        "creator": "HesCZFsE7KQWLuYHxVSbTNAom3VbuWKPZ64Jm2nyhJXw",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    },
+    {
+      "mint": "AotEiy5TY5WU4YanxUAMsKMnUQazemLGsSqPiKtfpump",
+      "sourceBuySignature": "28ZiVJTQ3CABh4v9GRPZe8ofE84uJba7HKFxeGqAHjdiYYsxnouGJH3YmXYusBM5unN81eWdt1iusn4DVUrWb5Nr",
+      "sourceBuyAt": "2026-06-05T18:27:53.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 0.98072782,
+      "roiPct": 27.949809671413263,
+      "lead": {
+        "creator": "JC1irmi7bWUEjPvqCbZbAoJ9JXh6htDC9uP5tAC2w4k",
+        "sourceOrder": 45,
+        "sourceDelaySec": 3,
+        "earlierBuys": 44,
+        "earlierBuySol": 46.576423348,
+        "earlierWallets": [
+          {
+            "wallet": "AwGWyWGkeBt8dR84aFxkfLDGuqqt1PPrJsDbU1NRcEjZ",
+            "buys": 20,
+            "solLamports": 22341218499,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "9999huSCf6QpepPHQVFLZ9smhsbwkV4XWPLboiy9qqRj",
+            "buys": 1,
+            "solLamports": 402780495,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "3Dz8tfyay2TdRLChehtzX179NKorQDzLFKe5u1RAPLM4",
+            "buys": 1,
+            "solLamports": 102587836,
+            "minLeadSeconds": 2
+          },
+          {
+            "wallet": "BLw4fXAc9P7NYhnRH9GyccXKUmvpUSiqc67BGbanxcDp",
+            "buys": 1,
+            "solLamports": 3337479080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "2EGMbVVCJb2EAZCB46tXcgXrfSMMxWA3cgtXUUfij2Z6",
+            "buys": 1,
+            "solLamports": 92279080,
+            "minLeadSeconds": 1
+          },
+          {
+            "wallet": "Fim76SuFeKhKaaJey2GTHCwzQm9kAqjFu6ts8dUz9Xtc",
+            "buys": 1,
+            "solLamports": 3074162600,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "3XLsY9NonrVtm57PeHPCuP36BCj6V4hJy7xa7ZzxtvrZ",
+            "buys": 1,
+            "solLamports": 3005969961,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "3JB7yggTsfwbqK9mio6RcgSZXenpZoWHeGSpzkxedK18",
+            "buys": 1,
+            "solLamports": 3002579171,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "8Vceaxp4Xc6VQ4onWWo6ag5zn9s4Zy4GnbEsnTdkyuVy",
+            "buys": 1,
+            "solLamports": 2013042082,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "CCCCQCrL6zVjnDeucDzcxJgxAs5ahNmrhw1CDexPhqrd",
+            "buys": 1,
+            "solLamports": 1937531643,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "2jkNhQTHNPxdzQ7yXtyUtafSsqvv6teAGkEBs68Lw3Qs",
+            "buys": 1,
+            "solLamports": 1750205001,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "8cKTsKRe8TN5QrQJE1pjzU3Ry6iFKF3ua1yf4BBHAv9g",
+            "buys": 1,
+            "solLamports": 1558055690,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "7wER8oDZT3jDGyh5VCweh9b6wb8T2paRxFxFZRGK4Csn",
+            "buys": 1,
+            "solLamports": 1330153899,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "CtoLtp8m54TMisKD6TYjUHDuSR33efjXTn8TZnZkJhqY",
+            "buys": 1,
+            "solLamports": 1095156087,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "Cy78cfePXDG2CtPb2M81DeeGPwRBt6MXHFNYcmKKR9CU",
+            "buys": 1,
+            "solLamports": 503364395,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "Ez2jYoXp45DZxr7JVhiqbDNirgBT37MErjZGxA8jZkTf",
+            "buys": 1,
+            "solLamports": 303008223,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "BbwErTQWesyuVibJZvtqHfuM6zfrhzy15TqtQ8X8kdwR",
+            "buys": 1,
+            "solLamports": 255923481,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "AbcSfurz6EoBhc8jy6ZvPixKimwRYSEveTeKMEhpgz5Y",
+            "buys": 1,
+            "solLamports": 202279080,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "9gF7r1TAHuCTysNgtQwXYJ9EREsYUjd2mdybGxFvTLLZ",
+            "buys": 1,
+            "solLamports": 83079081,
+            "minLeadSeconds": 0
+          },
+          {
+            "wallet": "8P1zsXSFgoajKjTccDhiAtMcXdbUCTmSwMw7RTi5SYQb",
+            "buys": 1,
+            "solLamports": 58329080,
+            "minLeadSeconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "mint": "4U31grwLpWb71pWRHJvsAwiQn3TqKJgtrvxEBbU1pump",
+      "sourceBuySignature": "3j9KytHAbWP1FxnWK9qH7hkM1t7UYwfQscWmzRUMTyP2YyiUm4HNuX5kxFZw2x73DyHZx9Hk7f7njXVXPiepL74s",
+      "sourceBuyAt": "2026-06-05T18:25:17.000Z",
+      "sourceBuySol": 3.00727908,
+      "pnlSol": 1.132308362,
+      "roiPct": 19.637218700261407,
+      "lead": {
+        "creator": "5U3f9qfWvBnM3B72xe47qKU14aWdXuajiTbQ1uyyx6Zc",
+        "sourceOrder": null,
+        "sourceDelaySec": 0,
+        "earlierBuys": 0,
+        "earlierBuySol": 0,
+        "earlierWallets": []
+      }
+    }
+  ]
+}

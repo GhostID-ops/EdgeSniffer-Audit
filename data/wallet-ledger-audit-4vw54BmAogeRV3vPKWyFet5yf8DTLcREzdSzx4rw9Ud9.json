@@ -1,0 +1,36 @@
+{
+  "wallet": "4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9",
+  "txs": 300,
+  "classified": 222,
+  "unclassifiedWithToken": 18,
+  "positions": 55,
+  "solUsd": 79.36,
+  "realizedPnlSol": 15.083466355,
+  "realizedPnlUsd": 1197.0238899328,
+  "realizedRoiPct": 11.098448584690248,
+  "unrealizedPnlSol": 2.07589174,
+  "unrealizedPnlUsd": 164.7427684864,
+  "combinedPnlSol": 17.159358095,
+  "combinedPnlUsd": 1361.7666584192002,
+  "realizedTrades": 67,
+  "winRatePct": 64.17910447761194,
+  "avgRoiPct": 20.528778559188126,
+  "medianRoiPct": 10.376202343207968,
+  "profitFactor": 2.3291294072420228,
+  "sharpeProxy": 0.47801001601125054,
+  "maxDrawdownSol": -2.591669482,
+  "largestWinSol": 1.8239516065208627,
+  "largestLossSol": -2.272286033,
+  "nativeNetSol": 14.262216579,
+  "wsolNetSol": 0,
+  "usdcNet": 6.664271,
+  "topOpen": [
+    {
+      "mint": "5xU43kGDshMWTDUEZ3fKxtqeuVo9yML1bhgSiNw6pump",
+      "symbol": "Diddy",
+      "heldRaw": 15478729734999,
+      "valueSol": 7.45850082,
+      "valueUsd": 591.9066250663617
+    }
+  ]
+}
