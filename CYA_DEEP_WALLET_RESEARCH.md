@@ -2,7 +2,7 @@
 
 Wallet: `CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o`
 
-Last updated: 2026-06-14
+Last updated: 2026-06-15
 
 ## Current Verdict
 
@@ -66,7 +66,7 @@ The stronger bucket data comes from a fresh quant pass over the local CyA cache:
 - Swaps reconstructed: `3709`
 - Buys/sells: `2738 / 971`
 - Campaigns: `511`
-- Candle-enriched entries: `77`
+- Candle-enriched entries: `217`
 - Window covered by wallet cache: `2026-06-12T21:11:58Z` to `2026-06-15T00:07:03Z`
 - CyA wallet realized PnL in this cache: `+509.55 SOL`
 - CyA closed-campaign win rate in this cache: `56.2%`
@@ -74,60 +74,76 @@ The stronger bucket data comes from a fresh quant pass over the local CyA cache:
 - Average CyA source ROI: `+15.7%`
 - Median hold time: `0.62 min`
 - Median entry size: `3.007 SOL`
-- Median pre-5m volume: `$7.1k`
-- P75 pre-5m volume: `$19.8k`
-- Approx entry MC median: `$3.5k`
-- Approx entry MC p25/p75: `$2.2k / $9.1k`
+- Median pre-5m volume: `$6.8k`
+- P75 pre-5m volume: `$14.1k`
+- Approx entry MC median: `$3.4k`
+- Approx entry MC p25/p75: `$2.1k / $8.6k`
 
 Important caveat: "approx entry MC" is `entry candle USD price * 1B token supply`. This is most useful for Pump.fun-style 1B supply tokens. It is better for historical bucket research than live/current DexScreener market cap, but still approximate.
+
+### Strategy Backtest On 217 Entries
+
+| Strategy | Trades | Win % | Avg ROI | Median ROI | Profit factor | Max drawdown |
+|---|---:|---:|---:|---:|---:|---:|
+| Sell when CyA sells | 217 | 58.5% | +17.5% | +5.1% | 3.13 | -201.3% |
+| 50% at +30, 50% CyA exit | 217 | 63.1% | +14.3% | +10.1% | 3.04 | -151.0% |
+| 20% trailing stop | 217 | 25.8% | -2.1% | -5.4% | 0.74 | -671.8% |
+| TP30 SL20 | 217 | 12.0% | -10.7% | -20.0% | 0.15 | -2368.2% |
+| TP50 SL25 | 217 | 12.4% | -11.8% | -25.0% | 0.22 | -2712.3% |
+
+Read: the bigger sample strongly favors source-exit/mirror-sell behavior. Fixed TP/SL and simple trailing do poorly because many entries draw down hard before CyA exits profitably.
 
 ### Approx Entry Market Cap Buckets
 
 | Bucket | n | Win % source exit | Avg source ROI | Median source ROI | Hit +20 | Hit +30 | Hit +50 | Median MFE | Median MAE |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `$0-5k` | 44 | 47.7% | -0.2% | -2.1% | 10.3% | 10.3% | 7.7% | 0.0% | -10.3% |
-| `$5k-10k` | 17 | 76.5% | +13.6% | +10.5% | 47.1% | 41.2% | 35.3% | +15.7% | -68.7% |
-| `$10k-20k` | 3 | 66.7% | +3.6% | +1.9% | 100.0% | 100.0% | 66.7% | +70.4% | -61.0% |
-| `$20k-50k` | 11 | 27.3% | +23.7% | -15.1% | 27.3% | 18.2% | 18.2% | +17.2% | -92.2% |
-| `$50k-100k` | 2 | 100.0% | +215.9% | +215.9% | 50.0% | 50.0% | 50.0% | +36.1% | -60.7% |
+| `$0-5k` | 129 | 51.9% | +2.1% | +0.3% | 9.2% | 6.7% | 4.2% | 0.0% | -7.9% |
+| `$5k-10k` | 42 | 73.8% | +18.6% | +13.9% | 42.9% | 40.5% | 26.2% | +14.3% | -70.6% |
+| `$10k-20k` | 11 | 72.7% | +53.4% | +30.5% | 72.7% | 45.5% | 27.3% | +29.4% | -81.5% |
+| `$20k-50k` | 32 | 56.3% | +47.3% | +6.4% | 43.8% | 37.5% | 25.0% | +18.6% | -92.7% |
+| `$50k-100k` | 3 | 100.0% | +210.5% | +199.7% | 66.7% | 66.7% | 66.7% | +72.2% | -60.6% |
 | `$100k+` | 0 | - | - | - | - | - | - | - | - |
 
-Read: the clearest avoid bucket is `$0-5k`. The `$5k-10k` bucket has the best stable sample. `$20k+` is high variance: average can look good because of large winners, but median and drawdown are ugly.
+Read: `$0-5k` is only slightly positive if we perfectly follow CyA exits, but it has poor scalp potential: only `6.7%` hit `+30%`. `$5k-10k` is the best balanced bucket. `$10k+` improves upside, but sample size falls and drawdowns stay deep.
 
 ### Pre-5m Volume Buckets
 
 | Bucket | n | Win % source exit | Avg source ROI | Median source ROI | Hit +20 | Hit +30 | Hit +50 | Median MFE | Median MAE |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `$0` | 5 | 20.0% | +43.8% | -28.8% | 20.0% | 20.0% | 20.0% | +0.6% | -86.3% |
-| `$0-2.5k` | 6 | 66.7% | +0.9% | +5.5% | 20.0% | 20.0% | 20.0% | +0.9% | -41.0% |
-| `$2.5k-5k` | 14 | 35.7% | -1.4% | -3.4% | 18.2% | 18.2% | 18.2% | +0.1% | -5.5% |
-| `$5k-10k` | 19 | 52.6% | +5.5% | +0.1% | 22.2% | 16.7% | 16.7% | +1.4% | -26.1% |
-| `$10k-20k` | 14 | 64.3% | +1.3% | +3.7% | 21.4% | 21.4% | 7.1% | +12.1% | -53.8% |
-| `$20k-50k` | 12 | 66.7% | +40.7% | +5.1% | 33.3% | 25.0% | 25.0% | +15.9% | -61.6% |
+| `$0` | 21 | 66.7% | +71.8% | +24.3% | 38.1% | 38.1% | 33.3% | +15.2% | -88.5% |
+| `$0-2.5k` | 21 | 71.4% | +7.3% | +4.4% | 22.2% | 22.2% | 5.6% | 0.0% | -27.1% |
+| `$2.5k-5k` | 41 | 43.9% | +2.4% | -2.6% | 16.7% | 11.1% | 8.3% | +0.1% | -6.2% |
+| `$5k-10k` | 53 | 54.7% | +7.2% | +0.8% | 21.6% | 17.6% | 11.8% | +1.0% | -22.9% |
+| `$10k-20k` | 52 | 69.2% | +19.7% | +14.7% | 23.1% | 17.3% | 7.7% | +1.4% | -46.1% |
+| `$20k-50k` | 22 | 50.0% | +23.3% | +1.0% | 36.4% | 27.3% | 22.7% | +15.5% | -63.9% |
 | `$50k+` | 7 | 57.1% | +15.9% | +10.8% | 57.1% | 57.1% | 42.9% | +48.9% | -50.3% |
 
-Read: if we ever use a slower Moralis prebuy volume filter, `$5k` is the minimum defensible volume floor, while `$20k+` is the cleaner momentum/liquidity-confirmed variant. For same-slot live, this remains research-only because the Moralis call costs time.
+Read: volume is messy. `$10k-20k` has the best stable median source ROI, while `$50k+` has the best MFE/scalp behavior but small sample. Moralis volume remains research-only for same-slot because it costs time.
 
 ### Pre-5m Momentum Buckets
 
 | Bucket | n | Win % source exit | Avg source ROI | Median source ROI | Hit +20 | Hit +30 | Hit +50 | Median MFE | Median MAE |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `<= -20%` | 15 | 46.7% | +9.0% | -3.3% | 20.0% | 20.0% | 13.3% | 0.0% | -2.5% |
-| `-20% to -5%` | 14 | 35.7% | -4.6% | -7.9% | 28.6% | 28.6% | 21.4% | +0.4% | -9.0% |
-| `-5% to 0%` | 2 | 100.0% | +12.8% | +12.8% | 50.0% | 50.0% | 0.0% | +19.3% | -39.2% |
-| `0% to +10%` | 14 | 42.9% | -2.5% | -4.2% | 22.2% | 0.0% | 0.0% | +13.1% | -48.3% |
-| `+10% to +30%` | 2 | 50.0% | +13.2% | +13.2% | 0.0% | 0.0% | 0.0% | 0.0% | -23.4% |
-| `+30%+` | 25 | 76.0% | +24.8% | +4.9% | 32.0% | 32.0% | 32.0% | +14.3% | -61.5% |
+| `<= -20%` | 48 | 52.1% | +2.1% | +0.7% | 10.4% | 10.4% | 8.3% | 0.0% | -2.6% |
+| `-20% to -5%` | 36 | 41.7% | +0.8% | -4.7% | 13.9% | 11.1% | 8.3% | 0.0% | -5.5% |
+| `-5% to 0%` | 7 | 85.7% | +59.2% | +16.4% | 28.6% | 28.6% | 14.3% | 0.0% | -13.3% |
+| `0% to +10%` | 26 | 42.3% | -2.8% | -4.2% | 25.0% | 6.3% | 0.0% | +8.0% | -42.3% |
+| `+10% to +30%` | 12 | 58.3% | +9.3% | +3.5% | 33.3% | 25.0% | 0.0% | 0.0% | -30.8% |
+| `+30%+` | 67 | 73.1% | +25.4% | +12.3% | 37.3% | 31.3% | 20.9% | +13.2% | -67.1% |
 
 Read: strong pre-entry momentum, especially `+30%+`, is a real lead. It is not clean enough to replace exits because median MAE is still very deep.
 
 ### CyA Source Buy Size Buckets
 
-In the latest 77 candle-enriched entries, every measured entry was a `3-6 SOL` CyA source buy.
+In the 217 candle-enriched entries, almost every measured entry was a `3-6 SOL` CyA source buy.
 
 | Bucket | n | Win % source exit | Avg source ROI | Median source ROI | Hit +20 | Hit +30 | Hit +50 | Median MFE | Median MAE |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `3-6 SOL` | 77 | 53.2% | +12.0% | +1.3% | 26.4% | 23.6% | 19.4% | +1.9% | -44.7% |
+| `0-1 SOL` | 1 | 100.0% | +11.3% | +11.3% | 0.0% | 0.0% | 0.0% | 0.0% | -6.8% |
+| `1-3 SOL` | 0 | - | - | - | - | - | - | - | - |
+| `3-6 SOL` | 215 | 58.1% | +17.3% | +4.9% | 25.9% | 21.5% | 14.1% | +1.4% | -40.1% |
+| `6-12 SOL` | 1 | 100.0% | +49.0% | +49.0% | 0.0% | 0.0% | 0.0% | 0.0% | -57.3% |
+| `12+ SOL` | 0 | - | - | - | - | - | - | - | - |
 
 Read: a `0.25 SOL` copy is still small relative to CyA's source size. The issue is not relative sizing; it is selecting the right bucket and exiting correctly.
 
@@ -151,9 +167,11 @@ Current liquidity had low coverage in the quant pass, so it is weaker than entry
 
 | Bucket | n | Win % source exit | Avg source ROI | Median source ROI | Hit +20 | Hit +30 | Hit +50 | Median MFE | Median MAE |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `$2.5k-5k` | 10 | 60.0% | +56.4% | +37.6% | 50.0% | 40.0% | 30.0% | +20.3% | -93.6% |
-| `$5k-10k` | 5 | 20.0% | +44.8% | -28.8% | 20.0% | 20.0% | 20.0% | +0.9% | -70.4% |
-| `$10k-25k` | 2 | 50.0% | -7.9% | -7.9% | 100.0% | 100.0% | 100.0% | +195.4% | -38.8% |
+| `$0-2.5k` | 3 | 100.0% | +133.9% | +67.8% | 33.3% | 33.3% | 33.3% | 0.0% | -78.8% |
+| `$2.5k-5k` | 27 | 66.7% | +48.3% | +19.6% | 44.4% | 37.0% | 18.5% | +17.8% | -93.5% |
+| `$5k-10k` | 6 | 16.7% | -7.3% | -12.7% | 33.3% | 33.3% | 33.3% | +17.4% | -73.2% |
+| `$10k-25k` | 5 | 80.0% | +153.0% | +56.0% | 100.0% | 100.0% | 100.0% | +224.5% | -45.5% |
+| `$25k+` | 1 | 100.0% | +199.7% | +199.7% | 100.0% | 100.0% | 100.0% | +133.3% | -60.6% |
 
 Read: do not use current liquidity as the main CyA filter yet.
 
@@ -182,9 +200,10 @@ PREBUY_MAX_MARKET_CAP_USD=
 
 Reasoning:
 
-- The latest 77-entry quant pass says `$0-5k` is the weak bucket: `44` trades, `47.7%` source-exit win rate, `-2.1%` median source ROI, only `10.3%` hit `+30%`.
-- `$5k-10k` is the best stable bucket: `17` trades, `76.5%` source-exit win rate, `+10.5%` median source ROI, `41.2%` hit `+30%`.
-- `15k+` is stricter, but it skips the strongest stable bucket in the current data.
+- The 217-entry quant pass says `$0-5k` is acceptable only if we mirror CyA exits well: `129` trades, `51.9%` source-exit win rate, `+0.3%` median source ROI.
+- `$0-5k` is still weak for bot scalping: only `6.7%` hit `+30%` and `4.2%` hit `+50%`.
+- `$5k-10k` is the best balanced bucket: `42` trades, `73.8%` source-exit win rate, `+13.9%` median source ROI, `40.5%` hit `+30%`.
+- `10k+` improves upside, but samples get smaller and drawdowns remain deep.
 
 Open research item: test `PREBUY_MIN_MARKET_CAP_USD=10000` and `15000` as stricter variants if `$5k` lets through too many thin rugs.
 
@@ -220,7 +239,7 @@ PREBUY_MORALIS_TIMEOUT_MS=750
 PREBUY_FILTER_FAIL_OPEN=false
 ```
 
-Why `5000` volume is a candidate: the 77-entry quant pass shows the `$0`, `$2.5k-5k`, and very low-volume buckets are unreliable. The `$20k+` buckets look cleaner, but are stricter and slower to validate in live same-slot mode.
+Why `5000` volume is a candidate: the 217-entry quant pass shows `$2.5k-5k` volume has weak median ROI and weak hit rates. `$10k-20k` has the best stable median source ROI, while `$50k+` has the best MFE/scalp behavior but small sample.
 
 ### Graduated / PumpSwap Filter
 
@@ -396,7 +415,7 @@ Next build idea: a fast lead-wallet prefilter that only takes CyA buys when one 
 
 ## Open Questions
 
-- Need a refreshed wallet quant audit with candle enrichment completed; the local 5,000-tx wallet cache exists, but the candle-enriched audit timed out during this pass.
+- Completed larger quant audit: `5000` wallet txs, `511` closed campaigns, `217` candle-enriched entries. Next larger step would be expanding beyond the current 5,000-tx cache or increasing candle coverage past the most recent 220 campaigns.
 - Need to shadow-test `0.25 SOL` sizing specifically. Tiny `0.04 SOL` shadow fills exaggerate fee drag and are no longer representative.
 - Need to verify whether `PUMPSWAP_DIRECT_BUY_ENABLED=false` plus `MIRROR_GRADUATED_BUYS=false` fully prevents graduated buys or whether we should add a dedicated `SKIP_GRADUATED_BUYS=true` env gate.
 - Need to compare `MIRROR_SELLS=true/full` versus `MIRROR_SELLS=true/proportional` for CyA.
