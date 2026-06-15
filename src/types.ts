@@ -53,6 +53,11 @@ export type DetectedSwap = {
    */
   sourceIxDataBase64?: string;
   /**
+   * PumpSwap AMM buy instruction form used by the source tx, when the detector can see it.
+   * The two forms share accounts but hit different program math paths.
+   */
+  sourcePumpSwapInstruction?: "buy" | "buy_exact_quote_in";
+  /**
    * Account metas of the source's PumpSwap AMM buy ix accounts, in order. When present, the
    * graduated-token direct path can reuse the source's exact pool/global/fee account privileges
    * without waiting for getTransaction to become available. Older detectors may still send bare

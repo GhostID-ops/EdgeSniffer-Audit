@@ -130,11 +130,11 @@ function accountMetaFromMessage(
  * Capture the exact PumpSwap AMM buy account list from the source tx. This is the graduated-token
  * equivalent of sourceIxAccounts for pump.fun bonding-curve buys.
  */
-function extractPumpSwapBuyIxAccounts(
+function extractPumpSwapBuyIx(
   info: SubscribeUpdateTransactionInfo,
   allKeysBase58: string[],
   mint: string
-): SourcePumpSwapAccountMeta[] | null {
+): { accounts: SourcePumpSwapAccountMeta[]; instruction: "buy" | "buy_exact_quote_in" } | null {
   const message = info.transaction?.message;
   const meta = info.meta;
   if (!message || !meta) return null;
@@ -143,16 +143,15 @@ function extractPumpSwapBuyIxAccounts(
     programIdIndex: number,
     accIndexes: Uint8Array | number[] | undefined,
     dataRaw: unknown
-  ): SourcePumpSwapAccountMeta[] | null => {
+  ): { accounts: SourcePumpSwapAccountMeta[]; instruction: "buy" | "buy_exact_quote_in" } | null => {
     if (!accIndexes) return null;
     const programId = allKeysBase58[programIdIndex];
     if (programId !== PUMPSWAP_PROGRAM_ID_BASE58) return null;
     const data = ixDataToBuffer(dataRaw);
     const discriminator = data.subarray(0, 8);
-    if (
-      !discriminator.equals(PUMPSWAP_BUY_DISCRIMINATOR) &&
-      !discriminator.equals(PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR)
-    ) {
+    const isBuy = discriminator.equals(PUMPSWAP_BUY_DISCRIMINATOR);
+    const isExactQuoteIn = discriminator.equals(PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR);
+    if (!isBuy && !isExactQuoteIn) {
       return null;
     }
     const idxArr = accIndexes instanceof Uint8Array ? Array.from(accIndexes) : accIndexes;
@@ -161,7 +160,10 @@ function extractPumpSwapBuyIxAccounts(
     if (keys[3] !== mint || keys[4] !== WRAPPED_SOL_MINT) return null;
     const accounts = idxArr.map((i) => accountMetaFromMessage(info, allKeysBase58, i));
     if (accounts.some((account) => account == null)) return null;
-    return accounts as SourcePumpSwapAccountMeta[];
+    return {
+      accounts: accounts as SourcePumpSwapAccountMeta[],
+      instruction: isBuy ? "buy" : "buy_exact_quote_in",
+    };
   };
 
   for (const ix of message.instructions ?? []) {
@@ -356,8 +358,8 @@ export function extractSwapFromGrpcTransaction(
     // can use the exact per-coin recipients pump.fun rotates per launch.
     const sourcePumpFunIx =
       extractPumpFunBuyIxAccounts(info, accountKeys, best.mint) ?? undefined;
-    const sourcePumpSwapAccounts =
-      extractPumpSwapBuyIxAccounts(info, accountKeys, best.mint) ?? undefined;
+    const sourcePumpSwapIx =
+      extractPumpSwapBuyIx(info, accountKeys, best.mint) ?? undefined;
     return {
       signature,
       wallet,
@@ -369,7 +371,8 @@ export function extractSwapFromGrpcTransaction(
       counterpartyDecimals: best.decimals,
       sourceIxAccounts: sourcePumpFunIx?.accounts,
       sourceIxDataBase64: sourcePumpFunIx?.dataBase64,
-      sourcePumpSwapAccounts,
+      sourcePumpSwapInstruction: sourcePumpSwapIx?.instruction,
+      sourcePumpSwapAccounts: sourcePumpSwapIx?.accounts,
       sourceQuoteMint: quote.mint ?? WRAPPED_SOL_MINT,
       sourceQuoteAmountRaw: amountRaw,
     };

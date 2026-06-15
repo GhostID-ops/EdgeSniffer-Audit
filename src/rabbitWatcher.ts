@@ -306,6 +306,7 @@ function extractTopLevelPumpSwapBuyFromRabbit(
       counterpartyAmountRaw: Number.isSafeInteger(minOrBaseOut) && minOrBaseOut > 0 ? minOrBaseOut : undefined,
       sourceQuoteMint: quoteMint,
       sourceQuoteAmountRaw: quoteIn,
+      sourcePumpSwapInstruction: isBuy ? "buy" : "buy_exact_quote_in",
       sourcePumpSwapAccounts: sourcePumpSwapAccounts as SourcePumpSwapAccountMeta[],
     };
   }

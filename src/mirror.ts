@@ -489,6 +489,7 @@ export async function mirrorSwap(
         sourceSignature: swap.signature,
         sourceSolInLamports: swap.amountRaw,
         sourceTokensOutRaw: swap.counterpartyAmountRaw,
+        sourcePumpSwapInstruction: swap.sourcePumpSwapInstruction,
         sourcePumpSwapAccounts: swap.sourcePumpSwapAccounts,
         solInLamports: initialAmountRaw,
         slippageBps: mirrorSlippageBps,

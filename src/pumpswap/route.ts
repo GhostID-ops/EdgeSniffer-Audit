@@ -64,6 +64,8 @@ type PumpSwapAccountPlan = {
   diagnostics?: Record<string, unknown>;
 };
 
+type PumpSwapBuyInstruction = "buy" | "buy_exact_quote_in";
+
 export type PumpSwapBuildContext = {
   mint: string;
   pool: string;
@@ -76,6 +78,7 @@ export type PumpSwapBuildContext = {
   solInLamports: number;
   expectedBaseOut: bigint;
   minBaseOut: bigint;
+  buyInstruction: PumpSwapBuyInstruction;
   slippageBps: number;
   accountCount: number;
   baseTokenProgram: string;
@@ -182,6 +185,7 @@ function formatContext(ctx: PumpSwapBuildContext): string {
     `user=${ctx.user}`,
     `spend=${formatSol(ctx.solInLamports)}`,
     `sourceSpend=${formatSol(ctx.sourceSolInLamports)}`,
+    `ix=${ctx.buyInstruction}`,
     `expectedOut=${ctx.expectedBaseOut}`,
     `minOut=${ctx.minBaseOut}`,
     `slippage=${(ctx.slippageBps / 100).toFixed(2)}%`,
@@ -982,6 +986,7 @@ export async function tryPumpSwapDirectBuy(args: {
   sourceSignature: string;
   sourceSolInLamports: number;
   sourceTokensOutRaw?: number;
+  sourcePumpSwapInstruction?: PumpSwapBuyInstruction;
   sourcePumpSwapAccounts?: SourcePumpSwapAccountMeta[] | string[];
   solInLamports: number;
   slippageBps: number;
@@ -990,6 +995,8 @@ export async function tryPumpSwapDirectBuy(args: {
   rebroadcastAttempt?: number;
   canonicalRetryAttempt?: number;
   poolRefreshAttempt?: number;
+  buyInstruction?: PumpSwapBuyInstruction;
+  alternateBuyAttempt?: number;
   onConfirmFailure?: (mint: string, tokensOutRaw: number, solLamports: number, reason: string) => void;
   onConfirmSuccess?: (mint: string, tokensOutRaw: number, solLamports: number, signature: string) => void;
 }): Promise<PumpSwapOutcome> {
@@ -1077,6 +1084,7 @@ export async function tryPumpSwapDirectBuy(args: {
   if (minBaseOut <= 0n) {
     return { ok: false, recoverable: true, reason: "PumpSwap min output is zero" };
   }
+  const buyInstruction = args.buyInstruction ?? args.sourcePumpSwapInstruction ?? "buy_exact_quote_in";
 
   const ctx: PumpSwapBuildContext = {
     mint: args.mint,
@@ -1093,6 +1101,7 @@ export async function tryPumpSwapDirectBuy(args: {
     solInLamports: args.solInLamports,
     expectedBaseOut,
     minBaseOut,
+    buyInstruction,
     slippageBps: args.slippageBps,
     accountCount: accounts.length,
     baseTokenProgram: baseTokenProgramId.toBase58(),
@@ -1123,16 +1132,27 @@ export async function tryPumpSwapDirectBuy(args: {
   }
   computeIxs.push(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: getDynamicPriorityFee() }));
 
-  const swapIx = buildNativeIdlInstructionFromOrderedAccounts({
-    program: "pump_amm",
-    instruction: "buy_exact_quote_in",
-    accounts,
-    data: encodeBuyExactQuoteIn(BigInt(args.solInLamports), minBaseOut),
-    allowExtraAccounts: true,
-  });
+  const swapIx =
+    buyInstruction === "buy"
+      ? buildNativeIdlInstructionFromOrderedAccounts({
+          program: "pump_amm",
+          instruction: "buy",
+          accounts,
+          // The exact-output PumpSwap path spends up to max_quote_amount_in. Use minBaseOut
+          // as the target so it behaves like the slippage guard on exact-quote buys.
+          data: encodeBuy(minBaseOut, BigInt(args.solInLamports)),
+          allowExtraAccounts: true,
+        })
+      : buildNativeIdlInstructionFromOrderedAccounts({
+          program: "pump_amm",
+          instruction: "buy_exact_quote_in",
+          accounts,
+          data: encodeBuyExactQuoteIn(BigInt(args.solInLamports), minBaseOut),
+          allowExtraAccounts: true,
+        });
   assertNativeIdlInstruction({
     program: "pump_amm",
-    instruction: "buy_exact_quote_in",
+    instruction: buyInstruction,
     ix: swapIx,
     allowExtraAccounts: true,
   });
@@ -1286,6 +1306,18 @@ export async function tryPumpSwapDirectBuy(args: {
         return tryPumpSwapDirectBuy({
           ...args,
           poolRefreshAttempt: (args.poolRefreshAttempt ?? 0) + 1,
+        });
+      }
+      if (
+        isPumpSwapOverflowError(reason) &&
+        buyInstruction === "buy_exact_quote_in" &&
+        (args.alternateBuyAttempt ?? 0) < 1
+      ) {
+        args.log("PumpSwap exact-quote overflow persisted; retrying alternate exact-output buy path.");
+        return tryPumpSwapDirectBuy({
+          ...args,
+          buyInstruction: "buy",
+          alternateBuyAttempt: (args.alternateBuyAttempt ?? 0) + 1,
         });
       }
       return {

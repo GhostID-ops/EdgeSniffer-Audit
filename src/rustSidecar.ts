@@ -44,6 +44,7 @@ type RustSidecarEvent = {
   counterpartyAmountRaw?: number;
   sourceIxAccounts?: string[];
   sourceIxDataBase64?: string;
+  sourcePumpSwapInstruction?: "buy" | "buy_exact_quote_in";
   sourcePumpSwapAccounts?: SourcePumpSwapAccountMeta[] | string[];
   sourceQuoteMint?: string;
   sourceQuoteAmountRaw?: number;
@@ -172,6 +173,10 @@ function toSwap(event: RustSidecarEvent, nodeReceivedAtMs: number): DetectedSwap
     sourceIxAccounts: Array.isArray(event.sourceIxAccounts) ? event.sourceIxAccounts : undefined,
     sourceIxDataBase64:
       typeof event.sourceIxDataBase64 === "string" ? event.sourceIxDataBase64 : undefined,
+    sourcePumpSwapInstruction:
+      event.sourcePumpSwapInstruction === "buy" || event.sourcePumpSwapInstruction === "buy_exact_quote_in"
+        ? event.sourcePumpSwapInstruction
+        : undefined,
     sourcePumpSwapAccounts: Array.isArray(event.sourcePumpSwapAccounts)
       ? event.sourcePumpSwapAccounts
       : undefined,
