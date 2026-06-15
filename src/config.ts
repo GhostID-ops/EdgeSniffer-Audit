@@ -156,7 +156,7 @@ export const circuitBreakerPauseMs = Math.max(
  * Steps are sorted ascending by peakPct internally. Effective stop = max(steps that have triggered),
  * starting from the base -STOP_LOSS_PCT.
  */
-type TrailingStep = { peakPct: number; floorPct: number };
+export type TrailingStep = { peakPct: number; floorPct: number };
 function parseTrailingSteps(raw: string | undefined): TrailingStep[] {
   if (!raw || raw.trim() === "") return [];
   const out: TrailingStep[] = [];
@@ -173,6 +173,31 @@ function parseTrailingSteps(raw: string | undefined): TrailingStep[] {
 }
 export const trailingSteps = parseTrailingSteps(process.env.TRAILING_STEPS);
 export const trailingEnabled = trailingSteps.length > 0;
+
+/**
+ * Cluster trigger strategy. When enabled, buys from CLUSTER_WALLETS (the front-runner wallets,
+ * e.g. 5qn / EAz) only mirror when that single source buy is at least CLUSTER_MIN_SOURCE_BUY_SOL.
+ * The entry stays a solo, immediate mirror (no waiting for a partner) so it lands same/next slot.
+ *
+ * CLUSTER_CONFIRM_WALLET (e.g. GUg) is watched but never triggers an entry. If it buys the same
+ * mint within CLUSTER_CONFIRM_WINDOW_MS after our entry, the position keeps normal trailing. If it
+ * does not confirm in that window, the position switches to the tighter CLUSTER_NO_CONFIRM_TRAILING_STEPS.
+ */
+export const clusterTriggerEnabled = parseEnvBool(process.env.CLUSTER_TRIGGER_ENABLED, false);
+/** Front-runner wallets the size gate applies to. Must also be present in TRACKED_WALLETS to be watched. */
+export const clusterWallets: string[] = parseCsvList(process.env.CLUSTER_WALLETS);
+/** Confirmation-only wallet (watched, never triggers a buy). */
+export const clusterConfirmWallet: string = (process.env.CLUSTER_CONFIRM_WALLET ?? "").trim();
+const CLUSTER_MIN_SOURCE_BUY_SOL = parseFloat(process.env.CLUSTER_MIN_SOURCE_BUY_SOL ?? "8");
+/** Minimum SOL the source must spend on a single buy for a cluster wallet to be mirrored. */
+export const clusterMinSourceBuyLamports =
+  Number.isFinite(CLUSTER_MIN_SOURCE_BUY_SOL) && CLUSTER_MIN_SOURCE_BUY_SOL > 0
+    ? Math.round(CLUSTER_MIN_SOURCE_BUY_SOL * LAMPORTS_PER_SOL)
+    : 0;
+/** How long after entry to wait for the confirmation wallet before tightening the trail. */
+export const clusterConfirmWindowMs = parseNonNegativeInteger(process.env.CLUSTER_CONFIRM_WINDOW_MS, 25000);
+/** Tighter trailing steps used when the confirmation wallet does not appear in time. */
+export const clusterNoConfirmTrailingSteps = parseTrailingSteps(process.env.CLUSTER_NO_CONFIRM_TRAILING_STEPS);
 
 /**
  * When true (default), buys whose output mint is a pre-graduation pump.fun bonding-curve token

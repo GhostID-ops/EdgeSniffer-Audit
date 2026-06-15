@@ -53,6 +53,13 @@ import {
   minHoldBeforeStopLossMs,
   trailingSteps,
   trailingEnabled,
+  type TrailingStep,
+  clusterTriggerEnabled,
+  clusterWallets,
+  clusterConfirmWallet,
+  clusterMinSourceBuyLamports,
+  clusterConfirmWindowMs,
+  clusterNoConfirmTrailingSteps,
   pumpfunDirectEnabled,
   shyftGrpcEnabled,
   shyftRabbitStreamEnabled,
@@ -1465,12 +1472,79 @@ function uniqueWallets(wallets: string[]): string[] {
 }
 
 function getWatchedWallets(): string[] {
-  if (!exitSignalSellsEnabled) return trackedWallets;
-  return uniqueWallets([...trackedWallets, ...exitSignalWallets]);
+  const base = exitSignalSellsEnabled
+    ? [...trackedWallets, ...exitSignalWallets]
+    : [...trackedWallets];
+  if (clusterTriggerEnabled && clusterConfirmWallet) base.push(clusterConfirmWallet);
+  return uniqueWallets(base);
 }
 
 function isExitSignalWallet(wallet: string): boolean {
   return exitSignalSellsEnabled && exitSignalWallets.includes(wallet);
+}
+
+// --- Cluster trigger strategy state ---
+const clusterWalletSet = new Set(clusterWallets);
+
+/** Per-mint confirmation state for cluster-entry positions. */
+type ClusterState = { gugConfirmed: boolean; gugDeadlineAt: number };
+const clusterPositionState = new Map<string, ClusterState>();
+
+function isClusterWallet(wallet: string): boolean {
+  return clusterTriggerEnabled && clusterWalletSet.has(wallet);
+}
+
+function isClusterConfirmWallet(wallet: string): boolean {
+  return clusterTriggerEnabled && clusterConfirmWallet !== "" && wallet === clusterConfirmWallet;
+}
+
+/** Record that a cluster front-runner buy passed the size gate, opening the GUg confirmation window. */
+function markClusterEntry(mint: string): void {
+  if (clusterPositionState.has(mint)) return;
+  clusterPositionState.set(mint, {
+    gugConfirmed: false,
+    gugDeadlineAt: Date.now() + clusterConfirmWindowMs,
+  });
+}
+
+/** Handle a buy from the confirmation-only wallet: mark the matching position as confirmed. */
+function handleClusterConfirm(swap: DetectedSwap): void {
+  if (!isBuySignal(swap)) return; // only buys confirm a runner
+  const mint = swap.outputMint;
+  const state = clusterPositionState.get(mint);
+  if (!state) return; // confirmation for a mint we didn't enter via the cluster — ignore
+  if (!state.gugConfirmed) {
+    state.gugConfirmed = true;
+    console.log(
+      `✅ Cluster confirm: ${shortWallet(swap.wallet)} bought ${mint.slice(0, 8)}... — keeping normal trailing.`
+    );
+  }
+}
+
+/**
+ * Trailing steps to use for a mint right now. Normally the global TRAILING_STEPS. For a cluster-entry
+ * position whose confirmation window has elapsed without GUg appearing, switch to the tighter steps.
+ */
+function activeTrailingSteps(mint: string): TrailingStep[] {
+  const base = trailingEnabled ? trailingSteps : [];
+  if (!clusterTriggerEnabled) return base;
+  const state = clusterPositionState.get(mint);
+  if (!state || state.gugConfirmed) return base;
+  if (Date.now() >= state.gugDeadlineAt && clusterNoConfirmTrailingSteps.length > 0) {
+    return clusterNoConfirmTrailingSteps;
+  }
+  return base;
+}
+
+/** Drop cluster state for mints with no open position once their window has long expired. */
+function pruneClusterState(): void {
+  if (clusterPositionState.size === 0) return;
+  const now = Date.now();
+  for (const [mint, state] of clusterPositionState) {
+    if (now < state.gugDeadlineAt + 60_000) continue;
+    const pos = getPosition(mint);
+    if (!pos || pos.heldRaw <= 0) clusterPositionState.delete(mint);
+  }
 }
 
 async function closePositionFromExitSignal(swap: DetectedSwap): Promise<void> {
@@ -1537,12 +1611,18 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     sourceTransactionIndex: swap.sourceTransactionIndex,
   };
   const isTrackedSourceWallet = trackedWallets.includes(swap.wallet);
-  const isExitOnlyWallet = !isTrackedSourceWallet && isExitSignalWallet(swap.wallet);
-  if (!isTrackedSourceWallet && !isExitOnlyWallet) {
+  const isConfirmOnlyWallet = !isTrackedSourceWallet && isClusterConfirmWallet(swap.wallet);
+  const isExitOnlyWallet =
+    !isTrackedSourceWallet && !isConfirmOnlyWallet && isExitSignalWallet(swap.wallet);
+  if (!isTrackedSourceWallet && !isConfirmOnlyWallet && !isExitOnlyWallet) {
     console.warn(
       `Ignoring swap from untracked wallet ${swap.wallet.slice(0, 4)}...${swap.wallet.slice(-4)} ` +
         `(tracked: ${trackedWallets.map(shortWallet).join(", ")}).`
     );
+    return;
+  }
+  if (isConfirmOnlyWallet) {
+    handleClusterConfirm(swap);
     return;
   }
   if (isExitOnlyWallet) {
@@ -1682,6 +1762,20 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       console.log(`⛔ Skipping buy: ${blocked}.`);
       return;
     }
+  }
+
+  // Cluster size gate: only mirror a front-runner wallet when its single source buy is
+  // large enough. In-memory check, no execution-path latency. On pass, open the GUg confirmation window.
+  if (isBuySignal(swap) && isClusterWallet(swap.wallet)) {
+    const sourceLamports = swap.isNativeInput ? swap.amountRaw : 0;
+    if (sourceLamports < clusterMinSourceBuyLamports) {
+      console.log(
+        `Skipping buy: ${shortWallet(swap.wallet)} source buy ${formatSolAmount(sourceLamports)} SOL ` +
+          `< ${formatSolAmount(clusterMinSourceBuyLamports)} SOL cluster minimum.`
+      );
+      return;
+    }
+    markClusterEntry(swap.outputMint);
   }
 
   if (skipSourcePreexistingMints && isBuySignal(swap)) {
@@ -2560,7 +2654,20 @@ export async function startBot(): Promise<void> {
   } else {
     console.log("Exit signal sells: OFF");
   }
-  
+  if (clusterTriggerEnabled) {
+    console.log(
+      `Cluster trigger: ON — wallets ${clusterWallets.map(shortWallet).join(", ") || "(none)"}, ` +
+        `min source buy ${formatSolAmount(clusterMinSourceBuyLamports)} SOL.`
+    );
+    console.log(
+      clusterConfirmWallet
+        ? `Cluster confirm wallet: ${shortWallet(clusterConfirmWallet)} ` +
+            `(window ${clusterConfirmWindowMs}ms, ` +
+            `no-confirm trailing ${clusterNoConfirmTrailingSteps.length > 0 ? clusterNoConfirmTrailingSteps.map((s) => `${s.peakPct}%→${s.floorPct >= 0 ? "+" : ""}${s.floorPct}%`).join(",") : "unchanged"}).`
+        : "Cluster confirm wallet: (none)."
+    );
+  }
+
   // Send Telegram notification
   void telegram.notifyBotStatus("started");
   await updateBalance(keypair.publicKey);
@@ -2970,7 +3077,12 @@ async function sellLivePosition(
       peakPnlPct,
     });
 
-    const freshReason = riskExitReason(freshPnlPct, tickAt - p.firstSeenAt, peakPnlPct);
+    const freshReason = riskExitReason(
+      freshPnlPct,
+      tickAt - p.firstSeenAt,
+      peakPnlPct,
+      activeTrailingSteps(p.mint)
+    );
     if (!freshReason) {
       console.log(
         `Risk exit stale for $${p.symbol}; fresh quote is ${freshPnlPct >= 0 ? "+" : ""}${freshPnlPct.toFixed(1)}% ` +
@@ -3208,16 +3320,14 @@ export async function sellAllWalletDust(): Promise<void> {
  * each step the peak has cleared raises the threshold to its `floorPct`.
  * Returns the threshold as a signed % (e.g. -25 means "exit if pnl <= -25%", +5 means "+5% lock").
  */
-function effectiveStopPct(peakPnlPct: number): number | null {
+function effectiveStopPct(peakPnlPct: number, steps: TrailingStep[] = trailingSteps): number | null {
   if (stopLossPct == null) return null;
   let threshold = -stopLossPct;
-  if (trailingEnabled) {
-    for (const step of trailingSteps) {
-      if (peakPnlPct >= step.peakPct) {
-        threshold = Math.max(threshold, step.floorPct);
-      } else {
-        break; // steps are sorted asc; no later step can have triggered
-      }
+  for (const step of steps) {
+    if (peakPnlPct >= step.peakPct) {
+      threshold = Math.max(threshold, step.floorPct);
+    } else {
+      break; // steps are sorted asc; no later step can have triggered
     }
   }
   return threshold;
@@ -3226,18 +3336,19 @@ function effectiveStopPct(peakPnlPct: number): number | null {
 function riskExitReason(
   pnlPct: number,
   positionAgeMs: number,
-  peakPnlPct: number
+  peakPnlPct: number,
+  steps: TrailingStep[] = trailingSteps
 ): string | null {
   if (takeProfitPct != null && pnlPct >= takeProfitPct) {
     return `Take profit hit (${pnlPct.toFixed(1)}% >= ${takeProfitPct}%)`;
   }
-  const threshold = effectiveStopPct(peakPnlPct);
+  const threshold = effectiveStopPct(peakPnlPct, steps);
   if (
     threshold != null &&
     pnlPct <= threshold &&
     positionAgeMs >= minHoldBeforeStopLossMs
   ) {
-    if (trailingEnabled && threshold > -(stopLossPct ?? 0)) {
+    if (steps.length > 0 && threshold > -(stopLossPct ?? 0)) {
       return `Trailing stop hit (${pnlPct.toFixed(1)}% <= ${threshold >= 0 ? "+" : ""}${threshold.toFixed(1)}%, peak ${peakPnlPct.toFixed(1)}%)`;
     }
     return `Stop loss hit (${pnlPct.toFixed(1)}% <= ${threshold.toFixed(1)}%)`;
@@ -3287,7 +3398,7 @@ function planRiskTick(
   const upperProjection = state.lastPnlPct + drift;
 
   // Effective stop level reflects trailing stair-steps that the peak has cleared.
-  const effSL = effectiveStopPct(state.peakPnlPct);
+  const effSL = effectiveStopPct(state.peakPnlPct, activeTrailingSteps(p.mint));
 
   // Could a trigger have plausibly fired since the last quote?
   const couldHitSL =
@@ -3320,6 +3431,7 @@ function planRiskTick(
 async function checkRiskExits(): Promise<void> {
   if (!riskControlsEnabled) return;
 
+  pruneClusterState();
   const open = getPositions().filter((p) => p.heldRaw > 0);
   if (open.length === 0) return;
 
@@ -3380,7 +3492,12 @@ async function checkRiskExits(): Promise<void> {
         peakPnlPct,
       });
       pushRiskTrace(p, outSolLamports, pnlPct);
-      const reason = riskExitReason(pnlPct, tickAt - p.firstSeenAt, peakPnlPct);
+      const reason = riskExitReason(
+        pnlPct,
+        tickAt - p.firstSeenAt,
+        peakPnlPct,
+        activeTrailingSteps(p.mint)
+      );
       if (!reason) continue;
 
       riskSellsInFlight.add(p.mint);
