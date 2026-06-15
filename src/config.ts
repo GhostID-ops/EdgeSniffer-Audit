@@ -575,9 +575,30 @@ export const localPumpfunMarketCapFilterEnabled = parseEnvBool(
   process.env.LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED,
   false
 );
-export const localPumpfunSolPriceUsd = parseOptionalPositiveNumber(
+export let localPumpfunSolPriceUsd = parseOptionalPositiveNumber(
   process.env.LOCAL_PUMPFUN_SOL_PRICE_USD ?? process.env.SOL_PRICE_USD
 );
+export const localPumpfunSolPriceAutoEnabled = parseEnvBool(
+  process.env.LOCAL_PUMPFUN_SOL_PRICE_AUTO_ENABLED,
+  false
+);
+export const localPumpfunSolPriceUrl =
+  process.env.LOCAL_PUMPFUN_SOL_PRICE_URL ??
+  "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd";
+export const localPumpfunSolPriceRefreshMs = Math.max(
+  30_000,
+  parseInt(process.env.LOCAL_PUMPFUN_SOL_PRICE_REFRESH_MS ?? "300000", 10)
+);
+export const localPumpfunSolPriceTimeoutMs = Math.max(
+  500,
+  parseInt(process.env.LOCAL_PUMPFUN_SOL_PRICE_TIMEOUT_MS ?? "2500", 10)
+);
+export function updateLocalPumpfunSolPriceUsd(value: number): boolean {
+  if (!Number.isFinite(value) || value <= 0) return false;
+  localPumpfunSolPriceUsd = value;
+  process.env.LOCAL_PUMPFUN_SOL_PRICE_USD = value.toFixed(4);
+  return true;
+}
 export const localPumpfunMinMarketCapSol = parseOptionalPositiveNumber(
   process.env.LOCAL_PUMPFUN_MIN_MARKET_CAP_SOL
 );

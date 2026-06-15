@@ -1,6 +1,7 @@
 import { startBot, stopBot, printPnlReport } from "./botService.js";
 import { registerKeyboardShortcuts, restoreTerminal } from "./keyboard.js";
 import { startServer } from "./server.js";
+import { startSolPriceUpdater } from "./solPrice.js";
 
 let shuttingDown = false;
 
@@ -26,6 +27,8 @@ const controlApiEnabled = (process.env.BOT_CONTROL_API_ENABLED ?? "false").trim(
 if (controlApiEnabled === "true" || controlApiEnabled === "1" || controlApiEnabled === "yes") {
   startServer({ optional: true });
 }
+
+startSolPriceUpdater();
 
 startBot().catch((err) => {
   console.error(err);
