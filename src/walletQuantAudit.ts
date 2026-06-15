@@ -332,6 +332,80 @@ function summarizeStrategy(name: string, returns: number[]) {
   };
 }
 
+function entryMarketCapUsdApprox(row: EntryLab): number {
+  return row.entryPrice * 1_000_000_000;
+}
+
+function summarizeReturnSet(returns: number[]): {
+  winRatePct: number;
+  avgPct: number;
+  medianPct: number | null;
+  profitFactor: number;
+} {
+  const xs = returns.filter(Number.isFinite);
+  const wins = xs.filter((r) => r > 0);
+  const losses = xs.filter((r) => r < 0);
+  const profit = wins.reduce((s, r) => s + r, 0);
+  const loss = Math.abs(losses.reduce((s, r) => s + r, 0));
+  return {
+    winRatePct: (wins.length / Math.max(1, xs.length)) * 100,
+    avgPct: avg(xs),
+    medianPct: median(xs),
+    profitFactor: loss > 0 ? profit / loss : profit > 0 ? Infinity : 0,
+  };
+}
+
+function summarizeBucket(
+  name: string,
+  labs: EntryLab[],
+  predicate: (row: EntryLab) => boolean
+): {
+  name: string;
+  n: number;
+  sourceWinRatePct: number;
+  sourceAvgRoiPct: number;
+  sourceMedianRoiPct: number | null;
+  sourceProfitFactor: number;
+  hit20Pct: number;
+  hit30Pct: number;
+  hit40Pct: number;
+  hit50Pct: number;
+  hit100Pct: number;
+  medianMfePct: number | null;
+  medianMaePct: number | null;
+  medianEntryMcUsdApprox: number | null;
+  medianPre5mVolumeUsd: number | null;
+  medianPre5mMomentumPct: number | null;
+  medianCurrentLiquidityUsd: number | null;
+  medianEntrySol: number | null;
+} {
+  const rows = labs.filter(predicate);
+  const paths = rows.map((row) => returnsPath(row));
+  const source = summarizeReturnSet(rows.map(sourceExit));
+  const hit = (target: number) =>
+    (paths.filter((p) => p.mfe >= target).length / Math.max(1, rows.length)) * 100;
+  return {
+    name,
+    n: rows.length,
+    sourceWinRatePct: source.winRatePct,
+    sourceAvgRoiPct: source.avgPct,
+    sourceMedianRoiPct: source.medianPct,
+    sourceProfitFactor: source.profitFactor,
+    hit20Pct: hit(20),
+    hit30Pct: hit(30),
+    hit40Pct: hit(40),
+    hit50Pct: hit(50),
+    hit100Pct: hit(100),
+    medianMfePct: median(paths.map((p) => p.mfe)),
+    medianMaePct: median(paths.map((p) => p.mae)),
+    medianEntryMcUsdApprox: median(rows.map(entryMarketCapUsdApprox)),
+    medianPre5mVolumeUsd: median(rows.map((row) => row.pre5mVolumeUsd)),
+    medianPre5mMomentumPct: median(rows.map((row) => row.pre5mMomentumPct ?? NaN)),
+    medianCurrentLiquidityUsd: median(rows.map((row) => row.currentLiquidityUsd ?? NaN)),
+    medianEntrySol: median(rows.map((row) => row.entrySol)),
+  };
+}
+
 async function buildLabs(campaigns: Campaign[], limit: number): Promise<EntryLab[]> {
   const labs: EntryLab[] = [];
   for (const c of campaigns.sort((a, b) => b.firstBuy.timestamp - a.firstBuy.timestamp).slice(0, limit)) {
@@ -392,6 +466,8 @@ async function main(): Promise<void> {
   const strategies = [
     summarizeStrategy("A TP30 SL20", labs.map((r) => fixedTpSl(r, 30, 20))),
     summarizeStrategy("B TP50 SL25", labs.map((r) => fixedTpSl(r, 50, 25))),
+    summarizeStrategy("B2 TP40 SL25", labs.map((r) => fixedTpSl(r, 40, 25))),
+    summarizeStrategy("B3 TP60 SL30", labs.map((r) => fixedTpSl(r, 60, 30))),
     summarizeStrategy("C Sell When Wallet Sells", labs.map(sourceExit)),
     summarizeStrategy("D 50% at +30, 50% source exit", labs.map(halfTpHalfSource)),
     summarizeStrategy("E 20% trailing stop", labs.map((r) => trailing(r, 20))),
@@ -413,6 +489,49 @@ async function main(): Promise<void> {
     const hits = paths.filter((p) => p.mae <= -t);
     return { target: `-${t}%`, probabilityPct: (hits.length / Math.max(1, paths.length)) * 100 };
   });
+  const buckets = {
+    marketCapUsdApprox: [
+      summarizeBucket("$0-5k", labs, (r) => entryMarketCapUsdApprox(r) < 5_000),
+      summarizeBucket("$5k-10k", labs, (r) => entryMarketCapUsdApprox(r) >= 5_000 && entryMarketCapUsdApprox(r) < 10_000),
+      summarizeBucket("$10k-20k", labs, (r) => entryMarketCapUsdApprox(r) >= 10_000 && entryMarketCapUsdApprox(r) < 20_000),
+      summarizeBucket("$20k-50k", labs, (r) => entryMarketCapUsdApprox(r) >= 20_000 && entryMarketCapUsdApprox(r) < 50_000),
+      summarizeBucket("$50k-100k", labs, (r) => entryMarketCapUsdApprox(r) >= 50_000 && entryMarketCapUsdApprox(r) < 100_000),
+      summarizeBucket("$100k+", labs, (r) => entryMarketCapUsdApprox(r) >= 100_000),
+    ],
+    pre5mVolumeUsd: [
+      summarizeBucket("$0", labs, (r) => r.pre5mVolumeUsd === 0),
+      summarizeBucket("$0-2.5k", labs, (r) => r.pre5mVolumeUsd > 0 && r.pre5mVolumeUsd < 2_500),
+      summarizeBucket("$2.5k-5k", labs, (r) => r.pre5mVolumeUsd >= 2_500 && r.pre5mVolumeUsd < 5_000),
+      summarizeBucket("$5k-10k", labs, (r) => r.pre5mVolumeUsd >= 5_000 && r.pre5mVolumeUsd < 10_000),
+      summarizeBucket("$10k-20k", labs, (r) => r.pre5mVolumeUsd >= 10_000 && r.pre5mVolumeUsd < 20_000),
+      summarizeBucket("$20k-50k", labs, (r) => r.pre5mVolumeUsd >= 20_000 && r.pre5mVolumeUsd < 50_000),
+      summarizeBucket("$50k+", labs, (r) => r.pre5mVolumeUsd >= 50_000),
+    ],
+    pre5mMomentumPct: [
+      summarizeBucket("<= -20%", labs, (r) => (r.pre5mMomentumPct ?? Infinity) <= -20),
+      summarizeBucket("-20% to -5%", labs, (r) => (r.pre5mMomentumPct ?? Infinity) > -20 && (r.pre5mMomentumPct ?? Infinity) <= -5),
+      summarizeBucket("-5% to 0%", labs, (r) => (r.pre5mMomentumPct ?? Infinity) > -5 && (r.pre5mMomentumPct ?? Infinity) <= 0),
+      summarizeBucket("0% to +10%", labs, (r) => (r.pre5mMomentumPct ?? -Infinity) > 0 && (r.pre5mMomentumPct ?? -Infinity) <= 10),
+      summarizeBucket("+10% to +30%", labs, (r) => (r.pre5mMomentumPct ?? -Infinity) > 10 && (r.pre5mMomentumPct ?? -Infinity) <= 30),
+      summarizeBucket("+30%+", labs, (r) => (r.pre5mMomentumPct ?? -Infinity) > 30),
+      summarizeBucket("unknown", labs, (r) => r.pre5mMomentumPct == null),
+    ],
+    sourceBuySol: [
+      summarizeBucket("0-1 SOL", labs, (r) => r.entrySol < 1),
+      summarizeBucket("1-3 SOL", labs, (r) => r.entrySol >= 1 && r.entrySol < 3),
+      summarizeBucket("3-6 SOL", labs, (r) => r.entrySol >= 3 && r.entrySol < 6),
+      summarizeBucket("6-12 SOL", labs, (r) => r.entrySol >= 6 && r.entrySol < 12),
+      summarizeBucket("12+ SOL", labs, (r) => r.entrySol >= 12),
+    ],
+    currentLiquidityUsd: [
+      summarizeBucket("$0-2.5k", labs, (r) => (r.currentLiquidityUsd ?? -Infinity) >= 0 && (r.currentLiquidityUsd ?? -Infinity) < 2_500),
+      summarizeBucket("$2.5k-5k", labs, (r) => (r.currentLiquidityUsd ?? -Infinity) >= 2_500 && (r.currentLiquidityUsd ?? -Infinity) < 5_000),
+      summarizeBucket("$5k-10k", labs, (r) => (r.currentLiquidityUsd ?? -Infinity) >= 5_000 && (r.currentLiquidityUsd ?? -Infinity) < 10_000),
+      summarizeBucket("$10k-25k", labs, (r) => (r.currentLiquidityUsd ?? -Infinity) >= 10_000 && (r.currentLiquidityUsd ?? -Infinity) < 25_000),
+      summarizeBucket("$25k+", labs, (r) => (r.currentLiquidityUsd ?? -Infinity) >= 25_000),
+      summarizeBucket("unknown", labs, (r) => r.currentLiquidityUsd == null),
+    ],
+  };
 
   const out = {
     wallet,
@@ -459,6 +578,7 @@ async function main(): Promise<void> {
     targetProbabilities: thresholds,
     downsideProbabilities: downside,
     strategies,
+    buckets,
     concentration: {
       top5WinSol: sol(realizedPnls.filter((p) => p > 0).sort((a, b) => b - a).slice(0, 5).reduce((s, p) => s + p, 0)),
       totalRealizedSol: sol(realizedPnls.reduce((s, p) => s + p, 0)),
