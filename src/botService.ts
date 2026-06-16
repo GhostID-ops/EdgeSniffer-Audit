@@ -1880,6 +1880,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       }
     }
     if (shouldDeferToRustHotSniperPrimary(swap, executionPlan)) {
+      if (rustHotBuyRecordedByMint.has(mint) || boughtMintsThisSession.has(mint) || (existing && existing.buysCount > 0)) {
+        pendingBuyRetryByMint.delete(mint);
+        console.log(
+          `Skipping TypeScript buy: Rust hot sniper already bought ${mint.slice(0, 8)}... this session.`
+        );
+        return;
+      }
       if (rustHotSniperPrimaryPendingMints.has(mint)) {
         pendingBuyRetryByMint.set(mint, swap);
         console.log(
@@ -1901,7 +1908,6 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       }
       setTimeout(() => {
         const fallback = pendingBuyRetryByMint.get(mint) ?? swap;
-        rustHotSniperPrimaryPendingMints.delete(mint);
         if (
           stopRequested ||
           rustHotBuyRecordedByMint.has(mint) ||
@@ -1909,9 +1915,18 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           quarantinedBuyMints.has(mint) ||
           (getPosition(mint)?.buysCount ?? 0) > 0
         ) {
+          rustHotSniperPrimaryPendingMints.delete(mint);
           pendingBuyRetryByMint.delete(mint);
           return;
         }
+        if (!failedBuyRecoveryInFlightMints.has(mint)) {
+          console.log(
+            `Skipping TypeScript buy: Rust hot sniper primary has no confirmed failure for ${mint.slice(0, 8)}... ` +
+              "keeping fallback queued."
+          );
+          return;
+        }
+        rustHotSniperPrimaryPendingMints.delete(mint);
         pendingBuyRetryByMint.delete(mint);
         rustHotSniperPrimaryFallbackSources.add(fallback.signature);
         processSwap(fallback, kp)
