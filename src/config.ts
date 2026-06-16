@@ -506,6 +506,10 @@ export const rustExecutorTimeoutMs = Math.max(
 );
 export const rustHotSniperEnabled = parseEnvBool(process.env.RUST_HOT_SNIPER_ENABLED, false);
 export const rustHotSniperPrimary = parseEnvBool(process.env.RUST_HOT_SNIPER_PRIMARY, false);
+export const rustHotSniperPrimaryFallbackEnabled = parseEnvBool(
+  process.env.RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED,
+  false
+);
 export const rustHotSniperPrimaryFallbackDelayMs = Math.max(
   0,
   parseInt(process.env.RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS ?? "80", 10)

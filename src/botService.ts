@@ -66,6 +66,7 @@ import {
   rustSidecarEnabled,
   rustHotSniperEnabled,
   rustHotSniperPrimary,
+  rustHotSniperPrimaryFallbackEnabled,
   rustHotSniperPrimaryFallbackDelayMs,
   heliusTxSubscribeEnabled,
   confirmationNullStatusTimeoutMs,
@@ -1862,8 +1863,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       pendingBuyRetryByMint.set(mint, swap);
       console.log(
         `Rust hot sniper primary: deferring TypeScript fallback for ${mint.slice(0, 8)}... ` +
-          `${rustHotSniperPrimaryFallbackDelayMs}ms.`
+          (rustHotSniperPrimaryFallbackEnabled
+            ? `${rustHotSniperPrimaryFallbackDelayMs}ms.`
+            : "disabled; Rust is exclusive for this mint.")
       );
+      if (!rustHotSniperPrimaryFallbackEnabled) {
+        return;
+      }
       setTimeout(() => {
         const fallback = pendingBuyRetryByMint.get(mint) ?? swap;
         rustHotSniperPrimaryPendingMints.delete(mint);
