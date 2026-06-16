@@ -987,7 +987,7 @@ function shouldDeferToRustHotSniperPrimary(
   return executionPlan.route === "pumpfun-bonding-curve" || executionPlan.route === "pumpfun-v2-token2022";
 }
 
-async function handleRustHotBuy(hotBuy: RustHotBuy): Promise<void> {
+async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> {
   if (stopRequested) return;
   const ts = Date.now();
   const route = hotBuy.route ?? "pumpfun-hot-source-replay-buy";
@@ -1084,7 +1084,6 @@ async function handleRustHotBuy(hotBuy: RustHotBuy): Promise<void> {
   );
   rustHotBuyRecordedByMint.add(hotBuy.mint);
   rustHotSniperPrimaryPendingMints.delete(hotBuy.mint);
-  pendingBuyRetryByMint.delete(hotBuy.mint);
   const marketCapUsd = await maybeGetMarketCap(hotBuy.mint);
   const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
   logTrade(result, sourceSwap, marketCapUsd, marketCapCheckedAt);
@@ -1122,6 +1121,7 @@ async function handleRustHotBuy(hotBuy: RustHotBuy): Promise<void> {
         success: true,
         details: { mode: "background", senderPath: hotBuy.senderPath },
       });
+      pendingBuyRetryByMint.delete(hotBuy.mint);
       confirmedFastBuyTokensByMint.set(hotBuy.mint, hotBuy.tokensOutRaw);
       void reconcileFastBuyTokens({
         mint: hotBuy.mint,
@@ -1155,6 +1155,7 @@ async function handleRustHotBuy(hotBuy: RustHotBuy): Promise<void> {
       boughtMintsThisSession.delete(hotBuy.mint);
       rustHotBuyRecordedByMint.delete(hotBuy.mint);
       noteLocalSolCredit(hotBuy.solInLamports);
+      rustHotSniperPrimaryPendingMints.delete(hotBuy.mint);
       if (removed) {
         console.warn(
           `Phantom Rust hot buy cleaned up: ${hotBuy.mint.slice(0, 8)}... ` +
@@ -1163,18 +1164,28 @@ async function handleRustHotBuy(hotBuy: RustHotBuy): Promise<void> {
       }
       const decision = decideRetryAction(reason);
       if (decision.shouldQuarantine) {
+        pendingBuyRetryByMint.delete(hotBuy.mint);
         quarantinedBuyMints.set(hotBuy.mint, `rust hot buy ${decision.action}: ${reason}`);
         console.warn(
           `Buy quarantine set for ${hotBuy.mint.slice(0, 8)}... after Rust hot buy failed ` +
             `(${reason}). No more retries for this mint this session.`
         );
       } else {
+        const fallback = pendingBuyRetryByMint.get(hotBuy.mint);
         pendingBuyRetryByMint.delete(hotBuy.mint);
         failedBuyRecoveryInFlightMints.delete(hotBuy.mint);
-        console.warn(
-          `Rust hot buy failed for ${hotBuy.mint.slice(0, 8)}... with recoverable ` +
-            `${decision.category} failure; a later source signal can retry.`
-        );
+        if (shouldAttemptFailedBuyRecovery(fallback, reason)) {
+          console.warn(
+            `Rust hot buy failed for ${hotBuy.mint.slice(0, 8)}... with recoverable ` +
+              `${decision.category} failure; retrying queued TypeScript fallback now.`
+          );
+          scheduleFailedBuyRecovery(fallback, kp, reason);
+        } else {
+          console.warn(
+            `Rust hot buy failed for ${hotBuy.mint.slice(0, 8)}... with recoverable ` +
+              `${decision.category} failure; a later source signal can retry.`
+          );
+        }
       }
     });
 }
@@ -1296,6 +1307,7 @@ function scheduleFailedBuyRecovery(
   );
   setTimeout(() => {
     if (stopRequested || !failedBuyRecoveryInFlightMints.has(sourceSwap.outputMint)) return;
+    rustHotSniperPrimaryFallbackSources.add(recoverySwap.signature);
     processSwap(recoverySwap, kp).catch((err) => {
       const msg = err instanceof Error ? err.message : String(err);
       const decision = decideRetryAction(msg);
@@ -1319,6 +1331,7 @@ function scheduleFailedBuyRecovery(
         );
       }
     }).finally(() => {
+      rustHotSniperPrimaryFallbackSources.delete(recoverySwap.signature);
       failedBuyRecoveryInFlightMints.delete(sourceSwap.outputMint);
     });
   }, executionRescueDelayMs);
@@ -2730,7 +2743,7 @@ export async function startBot(): Promise<void> {
         });
       },
       (hotBuy) => {
-        handleRustHotBuy(hotBuy).catch((err) => {
+        handleRustHotBuy(hotBuy, kp).catch((err) => {
           console.error("Rust hot sniper bookkeeping error:", err);
         });
       }
