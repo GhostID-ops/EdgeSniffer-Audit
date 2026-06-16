@@ -34,6 +34,12 @@ function parseOptionalPositiveInteger(value: string | undefined): number | null 
   return Number.isFinite(n) && n > 0 ? n : null;
 }
 
+function parseNonNegativeNumber(value: string | undefined, fallback: number): number {
+  if (value == null || value.trim() === "") return fallback;
+  const n = parseFloat(value);
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
+}
+
 function parseNonNegativeInteger(value: string | undefined, fallback: number): number {
   if (value == null || value.trim() === "") return fallback;
   const n = parseInt(value, 10);
@@ -826,6 +832,16 @@ export const pollIntervalMs = Math.max(
 /** Optional risk exits. Percent values are measured against remaining cost basis. Empty/0 = disabled. */
 export const stopLossPct = parseOptionalPositiveNumber(process.env.STOP_LOSS_PCT);
 export const takeProfitPct = parseOptionalPositiveNumber(process.env.TAKE_PROFIT_PCT);
+export const hybridExitEnabled = parseEnvBool(process.env.HYBRID_EXIT_ENABLED, false);
+export const hybridExitTpPct = parseNonNegativeNumber(process.env.HYBRID_EXIT_TP_PCT, 30);
+export const hybridExitTpSellPct = Math.max(
+  0,
+  Math.min(100, parseNonNegativeNumber(process.env.HYBRID_EXIT_TP_SELL_PCT, 50))
+);
+export const hybridExitSourceExitRemaining = parseEnvBool(
+  process.env.HYBRID_EXIT_SOURCE_EXIT_REMAINING,
+  true
+);
 
 /**
  * Tiered risk-check cadence. Each position falls into one of three buckets per loop tick:
@@ -882,7 +898,7 @@ export const minHoldBeforeStopLossMs = Math.max(
   0,
   parseNonNegativeInteger(process.env.MIN_HOLD_BEFORE_STOP_LOSS_MS, 3500)
 );
-export const riskControlsEnabled = stopLossPct != null || takeProfitPct != null;
+export const riskControlsEnabled = stopLossPct != null || takeProfitPct != null || hybridExitEnabled;
 
 /** Shared Jupiter quote throttle/backoff for buys, sells, and risk checks. */
 export const jupiterQuoteMinGapMs = Math.max(

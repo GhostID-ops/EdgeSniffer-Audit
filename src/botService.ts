@@ -50,6 +50,10 @@ import {
   showMarketCap,
   stopLossPct,
   takeProfitPct,
+  hybridExitEnabled,
+  hybridExitTpPct,
+  hybridExitTpSellPct,
+  hybridExitSourceExitRemaining,
   minHoldBeforeStopLossMs,
   trailingSteps,
   trailingEnabled,
@@ -318,6 +322,8 @@ type RiskQuoteState = {
   peakPnlPct: number;
 };
 const riskQuoteStateByMint = new Map<string, RiskQuoteState>();
+const hybridExitTpDoneByMint = new Set<string>();
+const hybridExitTpInFlightByMint = new Set<string>();
 let running = false;
 let startedAt: number | null = null;
 let stopRequested = false;
@@ -1423,6 +1429,7 @@ function logTrade(
 
   if (result.side === "sell") {
     const pos = recordSell(result.input.meta, result.input.amountRaw, result.output.amountRaw);
+    cleanupHybridExitStateIfClosed(pos);
     const tokenMint = result.input.meta.mint;
     const exitPrice = tokenPriceInSol(
       result.output.amountRaw,
@@ -1725,7 +1732,16 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
 
     const sourceSellRaw = sourceSellTokenAmountRaw(swap);
-    if (mirrorSellMode === "proportional" && sourceSellRaw > 0) {
+    if (
+      hybridExitEnabled &&
+      hybridExitSourceExitRemaining &&
+      sourceSellRaw > 0 &&
+      (getPosition(mint)?.heldRaw ?? 0) > 0
+    ) {
+      console.log(
+        `Hybrid source exit: source sold ${mint.slice(0, 8)}...; closing remaining bot position.`
+      );
+    } else if (mirrorSellMode === "proportional" && sourceSellRaw > 0) {
       const position = getPosition(mint);
       if (position && position.heldRaw > 0) {
         const proportional = calculateProportionalSellRaw({
@@ -2703,8 +2719,11 @@ export async function startBot(): Promise<void> {
     const trailDesc = trailingEnabled
       ? ` trailing=${trailingSteps.map((s) => `${s.peakPct}%→${s.floorPct >= 0 ? "+" : ""}${s.floorPct}%`).join(",")},`
       : "";
+    const hybridDesc = hybridExitEnabled
+      ? ` hybrid=${hybridExitTpSellPct}%@+${hybridExitTpPct}% then ${hybridExitSourceExitRemaining ? "source exit" : "normal exits"},`
+      : "";
     console.log(
-      `Risk exits enabled: SL ${stopLossPct ?? "off"}%, TP ${takeProfitPct ?? "off"}%,${trailDesc} ` +
+      `Risk exits enabled: SL ${stopLossPct ?? "off"}%, TP ${takeProfitPct ?? "off"}%,${trailDesc}${hybridDesc} ` +
         `tiers fast=${riskFastIntervalMs}ms (first ${riskFastWindowMs}ms) / near=${riskNearTriggerIntervalMs}ms (within ${riskNearTriggerPct}pp of trigger) / normal=${riskNormalIntervalMs}ms, ` +
         `drift=${riskDriftPctPerSec}pp/s, SL min hold ${minHoldBeforeStopLossMs}ms, max ${maxRiskQuotesPerCheck} quote(s)/tick.`
     );
@@ -2840,6 +2859,8 @@ export function resetTradingState(): void {
   riskSellRetryAfterByMint.clear();
   riskTraceByMint.clear();
   riskQuoteStateByMint.clear();
+  hybridExitTpDoneByMint.clear();
+  hybridExitTpInFlightByMint.clear();
   lastCurveRiskValueByMint.clear();
   captureSessionStartBalance();
   resetCircuitBreaker();
@@ -2872,6 +2893,7 @@ async function sellSimulatedPosition(
     isSol: false,
   };
   const snap = recordSell(meta, sellRaw, outSolLamports);
+  cleanupHybridExitStateIfClosed(snap);
   const avgEntry = position.totalBoughtRaw > 0 ? position.totalSolSpentLamports / position.totalBoughtRaw : 0;
   const sellCostBasisLamports = avgEntry * sellRaw;
   const fillPnlLamports = outSolLamports - sellCostBasisLamports;
@@ -3047,11 +3069,12 @@ async function sellLivePosition(
       `$${p.symbol}: wallet holds 0 on-chain but tracker shows ${formatTokenAmount(p.heldRaw, p.decimals)}. ` +
         `Closing position locally — no broadcast (likely transfer-fee/honeypot token or earlier unrecorded sell).`
     );
-    recordSell(
+    const snap = recordSell(
       { mint: p.mint, symbol: p.symbol, name: p.symbol, decimals: p.decimals, isSol: false },
       p.heldRaw,
       0
     );
+    cleanupHybridExitStateIfClosed(snap);
     return;
   }
   const sellRaw =
@@ -3112,6 +3135,7 @@ async function sellLivePosition(
     effectiveNote = freshReason;
   }
 
+  const isHybridPartialSell = (effectiveNote ?? "").startsWith("Hybrid TP hit");
   let result: MirrorResult;
   try {
     fastSellConfirmPendingByMint.add(p.mint);
@@ -3142,6 +3166,10 @@ async function sellLivePosition(
         onFastSellConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason }) => {
           fastSellConfirmPendingByMint.delete(mint);
           const rolledBack = unrecordSell(mint, tokenAmountRaw, solLamports);
+          if (isHybridPartialSell) {
+            hybridExitTpDoneByMint.delete(mint);
+            hybridExitTpInFlightByMint.delete(mint);
+          }
           if (rolledBack) {
             console.warn(
               `🧹 Phantom sell cleaned up: ${mint.slice(0, 8)}… ` +
@@ -3161,6 +3189,7 @@ async function sellLivePosition(
   const soldRaw = result.input.amountRaw;
   const receivedLamports = result.output.amountRaw;
   const snap = recordSell(result.input.meta, soldRaw, receivedLamports);
+  cleanupHybridExitStateIfClosed(snap);
   const marketCapUsd = await maybeGetMarketCap(p.mint);
   const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
   const exitPrice = tokenPriceInSol(receivedLamports, soldRaw, p.decimals);
@@ -3375,6 +3404,25 @@ function riskExitReason(
   return null;
 }
 
+function hybridExitSellRaw(position: PositionSnapshot, pnlPct: number): number | null {
+  if (!hybridExitEnabled) return null;
+  if (hybridExitTpDoneByMint.has(position.mint) || hybridExitTpInFlightByMint.has(position.mint)) {
+    return null;
+  }
+  if (hybridExitTpPct <= 0 || hybridExitTpSellPct <= 0) return null;
+  if (position.heldRaw <= 1 || pnlPct < hybridExitTpPct) return null;
+
+  const targetRaw = Math.floor((position.heldRaw * hybridExitTpSellPct) / 100);
+  return Math.min(position.heldRaw, Math.max(1, targetRaw));
+}
+
+function cleanupHybridExitStateIfClosed(position: PositionSnapshot): void {
+  if (position.heldRaw <= 0) {
+    hybridExitTpDoneByMint.delete(position.mint);
+    hybridExitTpInFlightByMint.delete(position.mint);
+  }
+}
+
 function isJupiterNoRoutesError(err: unknown): boolean {
   const msg = err instanceof Error ? err.message : String(err);
   return /NO_ROUTES_FOUND|Could not find any route|no routes/i.test(msg);
@@ -3511,6 +3559,47 @@ async function checkRiskExits(): Promise<void> {
         peakPnlPct,
       });
       pushRiskTrace(p, outSolLamports, pnlPct);
+      const hybridSellRaw = hybridExitSellRaw(p, pnlPct);
+      if (hybridSellRaw != null) {
+        const reason =
+          `Hybrid TP hit (${pnlPct.toFixed(1)}% >= ${hybridExitTpPct}%), ` +
+          `selling ${hybridExitTpSellPct.toFixed(1)}%; remaining position follows source exit`;
+        riskSellsInFlight.add(p.mint);
+        hybridExitTpInFlightByMint.add(p.mint);
+        console.log(`Hybrid exit triggered for $${p.symbol}: ${reason}`);
+        console.log(
+          `Selling ${formatTokenAmount(hybridSellRaw, p.decimals)} of ` +
+            `${formatTokenAmount(p.heldRaw, p.decimals)} $${p.symbol}.`
+        );
+        try {
+          if (simulationMode) {
+            await sellSimulatedPosition(p, reason, undefined, hybridSellRaw);
+          } else {
+            await sellLivePosition(p, reason, hybridSellRaw, false);
+          }
+          hybridExitTpDoneByMint.add(p.mint);
+          riskSellRetryAfterByMint.delete(p.mint);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          riskSellRetryAfterByMint.set(p.mint, Date.now() + RISK_SELL_FAILURE_COOLDOWN_MS);
+          void telegram.notifyRiskExit({
+            status: "failed",
+            symbol: p.symbol,
+            reason,
+            quotedSol: "partial",
+            costBasisSol: formatSolAmount(p.costBasisRemainingLamports),
+            pnlPct: `${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(1)}%`,
+            error: msg,
+            tokenAddress: p.mint,
+            isSimulated: simulationMode,
+          });
+          throw err;
+        } finally {
+          hybridExitTpInFlightByMint.delete(p.mint);
+          riskSellsInFlight.delete(p.mint);
+        }
+        continue;
+      }
       const reason = riskExitReason(
         pnlPct,
         tickAt - p.firstSeenAt,
