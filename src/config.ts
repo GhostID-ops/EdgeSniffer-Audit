@@ -511,6 +511,7 @@ export const rustExecutorTimeoutMs = Math.max(
   parseInt(process.env.RUST_EXECUTOR_TIMEOUT_MS ?? "1500", 10)
 );
 export const rustHotSniperEnabled = parseEnvBool(process.env.RUST_HOT_SNIPER_ENABLED, false);
+export const rustOnlyBuys = parseEnvBool(process.env.RUST_ONLY_BUYS, false);
 export const rustHotSniperPrimary = parseEnvBool(process.env.RUST_HOT_SNIPER_PRIMARY, false);
 export const rustHotSniperPrimaryFallbackEnabled = parseEnvBool(
   process.env.RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED,

@@ -68,6 +68,7 @@ import {
   shyftGrpcEnabled,
   shyftRabbitStreamEnabled,
   rustSidecarEnabled,
+  rustOnlyBuys,
   rustHotSniperEnabled,
   rustHotSniperPrimary,
   rustHotSniperPrimaryFallbackEnabled,
@@ -1937,6 +1938,15 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
             rustHotSniperPrimaryFallbackSources.delete(fallback.signature);
           });
       }, rustHotSniperPrimaryFallbackDelayMs);
+      return;
+    }
+    if (rustOnlyBuys) {
+      console.log(
+        `Skipping TypeScript buy: RUST_ONLY_BUYS=true and no Rust primary path accepted ` +
+          `${mint.slice(0, 8)}... (${executionPlan.route}).`
+      );
+      pendingBuyRetryByMint.delete(mint);
+      releaseBuyLocks();
       return;
     }
     if (buyMintsInFlight.has(mint)) {

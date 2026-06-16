@@ -15,6 +15,7 @@ import {
   prebuyMaxMarketCapUsd,
   prebuyMinMarketCapUsd,
   readConnection,
+  rustOnlyBuys,
   usePumpfunToken2022DirectSell,
 } from "../config.js";
 import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
@@ -386,6 +387,11 @@ export async function tryPumpFunDirectBuy(args: {
             (rust.elapsedMs != null ? ` (${rust.elapsedMs}ms)` : "")
         );
       } else {
+        if (rustOnlyBuys) {
+          const reason = rust && !rust.ok ? rust.error : "Rust executor unavailable";
+          args.log(`Rust-only source-replay buy failed; TypeScript fallback disabled: ${reason}`);
+          return { ok: false, recoverable: true, reason: `Rust-only source-replay buy failed: ${reason}` };
+        }
         if (rust && !rust.ok) args.log(`Rust executor source-replay failed; falling back to TypeScript: ${rust.error}`);
       try {
         const replay = await buildPumpFunBuyReplayTransaction({
@@ -648,6 +654,11 @@ export async function tryPumpFunDirectBuy(args: {
         (rust.elapsedMs != null ? ` (${rust.elapsedMs}ms)` : "")
     );
   } else {
+    if (rustOnlyBuys) {
+      const reason = rust && !rust.ok ? rust.error : "Rust executor unavailable";
+      args.log(`Rust-only direct buy failed; TypeScript fallback disabled: ${reason}`);
+      return { ok: false, recoverable: true, reason: `Rust-only direct buy failed: ${reason}` };
+    }
     if (rust && !rust.ok) args.log(`Rust executor direct-buy failed; falling back to TypeScript: ${rust.error}`);
   try {
     tx = await buildPumpFunBuyTransaction({
