@@ -1373,6 +1373,18 @@ export async function tryPumpSwapDirectBuy(args: {
       }
       if (
         isPumpSwapOverflowError(reason) &&
+        buyInstruction === "buy" &&
+        (args.alternateBuyAttempt ?? 0) < 1
+      ) {
+        args.log("PumpSwap exact-output overflow persisted; retrying alternate exact-quote-in buy path.");
+        return tryPumpSwapDirectBuy({
+          ...args,
+          buyInstruction: "buy_exact_quote_in",
+          alternateBuyAttempt: (args.alternateBuyAttempt ?? 0) + 1,
+        });
+      }
+      if (
+        isPumpSwapOverflowError(reason) &&
         buyInstruction === "buy_exact_quote_in" &&
         (args.alternateBuyAttempt ?? 0) < 1
       ) {
