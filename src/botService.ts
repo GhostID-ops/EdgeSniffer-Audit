@@ -68,6 +68,7 @@ import {
   shyftGrpcEnabled,
   shyftRabbitStreamEnabled,
   rustSidecarEnabled,
+  rustExecutorEnabled,
   rustOnlyBuys,
   rustHotSniperEnabled,
   rustHotSniperPrimary,
@@ -1940,14 +1941,21 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       }, rustHotSniperPrimaryFallbackDelayMs);
       return;
     }
-    if (rustOnlyBuys) {
+    const rustExecutorCanHandleBuy =
+      rustExecutorEnabled &&
+      (executionPlan.route === "pumpfun-bonding-curve" || executionPlan.route === "pumpfun-v2-token2022");
+    if (rustOnlyBuys && !rustExecutorCanHandleBuy) {
       console.log(
-        `Skipping TypeScript buy: RUST_ONLY_BUYS=true and no Rust primary path accepted ` +
+        `Skipping buy: RUST_ONLY_BUYS=true and no Rust buy path accepted ` +
           `${mint.slice(0, 8)}... (${executionPlan.route}).`
       );
       pendingBuyRetryByMint.delete(mint);
       releaseBuyLocks();
       return;
+    } else if (rustOnlyBuys) {
+      console.log(
+        `Rust-only buy mode: ${mint.slice(0, 8)}... passed filters; Pump.fun Rust executor will broadcast.`
+      );
     }
     if (buyMintsInFlight.has(mint)) {
       // Keep only the latest duplicate source buy so a dropped first broadcast can retry promptly.
