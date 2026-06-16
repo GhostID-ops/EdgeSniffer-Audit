@@ -609,6 +609,8 @@ export async function mirrorSwap(
         slippageBps: mirrorSlippageBps,
         startedAt,
         log: (m) => console.log(m),
+        sourceSignature: swap.signature,
+        sourcePumpSwapAccounts: swap.sourcePumpSwapAccounts,
         onConfirmFailure: (mint, tokensRaw, solLamports, reason) => {
           options.onFastSellConfirmFailure?.({
             mint,

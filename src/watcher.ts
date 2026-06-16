@@ -9,12 +9,16 @@ import {
 } from "./config.js";
 import type { DetectedSwap, SourcePumpSwapAccountMeta } from "./types.js";
 import { getTokenMeta } from "./tokenRegistry.js";
+import {
+  PUMPSWAP_BUY_DISCRIMINATOR,
+  PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR,
+  PUMPSWAP_PROGRAM_ID,
+  PUMPSWAP_SELL_DISCRIMINATOR,
+} from "./pumpswap/route.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
 const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-const PUMPSWAP_PROGRAM_ID_BASE58 = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
-const PUMPSWAP_BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 235, 234]);
-const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = Buffer.from([198, 46, 21, 82, 180, 217, 232, 112]);
+const PUMPSWAP_PROGRAM_ID_BASE58 = PUMPSWAP_PROGRAM_ID.toBase58();
 const JUPITER_SOURCE = "JUPITER";
 const SWAP_TYPES = new Set(["SWAP", "SWAP_EXACT_OUT", "SWAP_WITH_PRICE_IMPACT"]);
 const wsParseInFlight = new Set<string>();
@@ -693,7 +697,7 @@ function matchesDiscriminator(data: Buffer, discriminator: Buffer): boolean {
   return data.length >= discriminator.length && data.subarray(0, discriminator.length).equals(discriminator);
 }
 
-function extractPumpSwapBuyAccountsFromRawTx(
+function extractPumpSwapAccountsFromRawTx(
   tx: VersionedTransactionResponse,
   accountKeys: string[],
   mint: string
@@ -714,7 +718,7 @@ function extractPumpSwapBuyAccountsFromRawTx(
     }>;
   };
 
-  const matchesPumpSwapBuy = (ix: {
+  const matchesPumpSwapIx = (ix: {
     programIdIndex: number;
     accountKeyIndexes?: number[];
     accounts?: number[] | Uint8Array;
@@ -724,7 +728,8 @@ function extractPumpSwapBuyAccountsFromRawTx(
     const data = instructionDataToBuffer(ix.data);
     if (
       !matchesDiscriminator(data, PUMPSWAP_BUY_DISCRIMINATOR) &&
-      !matchesDiscriminator(data, PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR)
+      !matchesDiscriminator(data, PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR) &&
+      !matchesDiscriminator(data, PUMPSWAP_SELL_DISCRIMINATOR)
     ) {
       return undefined;
     }
@@ -746,13 +751,13 @@ function extractPumpSwapBuyAccountsFromRawTx(
 
   const instructions = message.compiledInstructions ?? message.instructions ?? [];
   for (const ix of instructions) {
-    const keys = matchesPumpSwapBuy(ix);
+    const keys = matchesPumpSwapIx(ix);
     if (keys) return keys;
   }
 
   for (const group of tx.meta?.innerInstructions ?? []) {
     for (const ix of group.instructions) {
-      const keys = matchesPumpSwapBuy(ix as unknown as {
+      const keys = matchesPumpSwapIx(ix as unknown as {
         programIdIndex: number;
         accountKeyIndexes?: number[];
         accounts?: number[] | Uint8Array;
@@ -829,7 +834,7 @@ function extractSwapFromRawTx(
     const quote = getBestQuoteNet(tokenNet, false);
     const inputMint = quote.mint ?? WRAPPED_SOL_MINT;
     const amountRaw = quote.mint ? quote.abs : Math.abs(nativeNet);
-    const sourcePumpSwapAccounts = extractPumpSwapBuyAccountsFromRawTx(tx, accountKeys, bestMint);
+    const sourcePumpSwapAccounts = extractPumpSwapAccountsFromRawTx(tx, accountKeys, bestMint);
     return {
       signature,
       wallet,
@@ -847,6 +852,7 @@ function extractSwapFromRawTx(
 
   // SELL: token out, SOL in.
   if (nativeNet > 0 && bestNet < 0) {
+    const sourcePumpSwapAccounts = extractPumpSwapAccountsFromRawTx(tx, accountKeys, bestMint);
     return {
       signature,
       wallet,
@@ -856,6 +862,7 @@ function extractSwapFromRawTx(
       isNativeInput: false,
       counterpartyAmountRaw: nativeNet, // SOL received
       counterpartyDecimals: 9,
+      sourcePumpSwapAccounts,
     };
   }
 
@@ -863,7 +870,7 @@ function extractSwapFromRawTx(
     const quote = getBestQuoteNet(tokenNet, false);
     if (quote.mint) {
       const decimals = tokenNet.get(bestMint)?.decimals ?? 0;
-      const sourcePumpSwapAccounts = extractPumpSwapBuyAccountsFromRawTx(tx, accountKeys, bestMint);
+      const sourcePumpSwapAccounts = extractPumpSwapAccountsFromRawTx(tx, accountKeys, bestMint);
       return {
         signature,
         wallet,
@@ -883,6 +890,7 @@ function extractSwapFromRawTx(
   if (nativeNet === 0 && bestNet < 0) {
     const quote = getBestQuoteNet(tokenNet, true);
     if (quote.mint) {
+      const sourcePumpSwapAccounts = extractPumpSwapAccountsFromRawTx(tx, accountKeys, bestMint);
       return {
         signature,
         wallet,
@@ -892,6 +900,7 @@ function extractSwapFromRawTx(
         isNativeInput: false,
         counterpartyAmountRaw: quote.net,
         counterpartyDecimals: quote.mint === USDC_MINT ? 6 : 9,
+        sourcePumpSwapAccounts,
       };
     }
   }

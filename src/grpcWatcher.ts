@@ -15,13 +15,16 @@ import {
 } from "./config.js";
 import type { DetectedSwap, SourcePumpSwapAccountMeta } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
+import {
+  PUMPSWAP_BUY_DISCRIMINATOR,
+  PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR,
+  PUMPSWAP_SELL_DISCRIMINATOR,
+} from "./pumpswap/route.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
 const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const PUMP_FUN_PROGRAM_ID_BASE58 = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P";
 const PUMPSWAP_PROGRAM_ID_BASE58 = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
-const PUMPSWAP_BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 235, 234]);
-const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = Buffer.from([198, 46, 21, 82, 180, 217, 232, 112]);
 
 /**
  * Scan the source's tx (top-level + inner via CPI) for a pump.fun buy ix that matches `mint`,
@@ -127,10 +130,10 @@ function accountMetaFromMessage(
 }
 
 /**
- * Capture the exact PumpSwap AMM buy account list from the source tx. This is the graduated-token
- * equivalent of sourceIxAccounts for pump.fun bonding-curve buys.
+ * Capture the exact PumpSwap AMM account list from the source tx. This is the graduated-token
+ * equivalent of sourceIxAccounts for pump.fun bonding-curve routes.
  */
-function extractPumpSwapBuyIx(
+function extractPumpSwapIx(
   info: SubscribeUpdateTransactionInfo,
   allKeysBase58: string[],
   mint: string
@@ -151,7 +154,8 @@ function extractPumpSwapBuyIx(
     const discriminator = data.subarray(0, 8);
     const isBuy = discriminator.equals(PUMPSWAP_BUY_DISCRIMINATOR);
     const isExactQuoteIn = discriminator.equals(PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR);
-    if (!isBuy && !isExactQuoteIn) {
+    const isSell = discriminator.equals(PUMPSWAP_SELL_DISCRIMINATOR);
+    if (!isBuy && !isExactQuoteIn && !isSell) {
       return null;
     }
     const idxArr = accIndexes instanceof Uint8Array ? Array.from(accIndexes) : accIndexes;
@@ -359,7 +363,7 @@ export function extractSwapFromGrpcTransaction(
     const sourcePumpFunIx =
       extractPumpFunBuyIxAccounts(info, accountKeys, best.mint) ?? undefined;
     const sourcePumpSwapIx =
-      extractPumpSwapBuyIx(info, accountKeys, best.mint) ?? undefined;
+      extractPumpSwapIx(info, accountKeys, best.mint) ?? undefined;
     return {
       signature,
       wallet,
@@ -382,6 +386,7 @@ export function extractSwapFromGrpcTransaction(
     const amountRaw = numberFromBigint(-best.net);
     const counterpartyAmountRaw = numberFromBigint(nativeNet);
     if (amountRaw == null || counterpartyAmountRaw == null) return null;
+    const sourcePumpSwapIx = extractPumpSwapIx(info, accountKeys, best.mint) ?? undefined;
     return {
       signature,
       wallet,
@@ -391,6 +396,7 @@ export function extractSwapFromGrpcTransaction(
       isNativeInput: false,
       counterpartyAmountRaw,
       counterpartyDecimals: 9,
+      sourcePumpSwapAccounts: sourcePumpSwapIx?.accounts,
     };
   }
 
@@ -421,6 +427,7 @@ export function extractSwapFromGrpcTransaction(
       const amountRaw = numberFromBigint(-best.net);
       const counterpartyAmountRaw = numberFromBigint(quote.net);
       if (amountRaw == null || counterpartyAmountRaw == null) return null;
+      const sourcePumpSwapIx = extractPumpSwapIx(info, accountKeys, best.mint) ?? undefined;
       return {
         signature,
         wallet,
@@ -430,6 +437,7 @@ export function extractSwapFromGrpcTransaction(
         isNativeInput: false,
         counterpartyAmountRaw,
         counterpartyDecimals: quote.mint === USDC_MINT ? 6 : 9,
+        sourcePumpSwapAccounts: sourcePumpSwapIx?.accounts,
       };
     }
   }

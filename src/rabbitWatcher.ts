@@ -23,12 +23,16 @@ import {
 } from "./pumpfun/constants.js";
 import type { DetectedSwap, SourcePumpSwapAccountMeta } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
+import {
+  PUMPSWAP_BUY_DISCRIMINATOR,
+  PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR,
+  PUMPSWAP_PROGRAM_ID,
+  PUMPSWAP_SELL_DISCRIMINATOR,
+} from "./pumpswap/route.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
 const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-const PUMPSWAP_PROGRAM_ID_BASE58 = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
-const PUMPSWAP_BUY_DISCRIMINATOR = Buffer.from([102, 6, 61, 18, 1, 218, 235, 234]);
-const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = Buffer.from([198, 46, 21, 82, 180, 217, 232, 112]);
+const PUMPSWAP_PROGRAM_ID_BASE58 = PUMPSWAP_PROGRAM_ID.toBase58();
 
 type YellowstoneClientConstructor = new (
   endpoint: string,
@@ -258,7 +262,7 @@ function extractDirectPumpFunSwapFromRabbit(
   return null;
 }
 
-function extractTopLevelPumpSwapBuyFromRabbit(
+function extractTopLevelPumpSwapSwapFromRabbit(
   info: SubscribeUpdateTransactionInfo,
   wallet: string
 ): DetectedSwap | null {
@@ -288,16 +292,36 @@ function extractTopLevelPumpSwapBuyFromRabbit(
     const data = ixDataToBuffer((ix as unknown as { data?: unknown }).data);
     const isBuy = discriminatorMatches(data, PUMPSWAP_BUY_DISCRIMINATOR);
     const isExactQuoteIn = discriminatorMatches(data, PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR);
-    if ((!isBuy && !isExactQuoteIn) || data.length < 24) continue;
+    const isSell = discriminatorMatches(data, PUMPSWAP_SELL_DISCRIMINATOR);
+    if ((!isBuy && !isExactQuoteIn && !isSell) || data.length < 24) continue;
+
+    const sourcePumpSwapAccounts = accountIndexes.map((idx) => accountMetaFromMessage(info, accountKeys, idx));
+    if (sourcePumpSwapAccounts.some((account) => account == null)) continue;
+    const sourceSignature = signatureToBase58(info.signature);
+
+    if (isSell) {
+      const baseIn = Number(data.readBigUInt64LE(8));
+      const minQuoteOut = Number(data.readBigUInt64LE(16));
+      if (!Number.isSafeInteger(baseIn) || baseIn <= 0) continue;
+      return {
+        signature: sourceSignature,
+        wallet,
+        inputMint: baseMint,
+        outputMint: quoteMint,
+        amountRaw: baseIn,
+        isNativeInput: false,
+        counterpartyAmountRaw: Number.isSafeInteger(minQuoteOut) && minQuoteOut > 0 ? minQuoteOut : undefined,
+        counterpartyDecimals: quoteMint === USDC_MINT ? 6 : 9,
+        sourcePumpSwapAccounts: sourcePumpSwapAccounts as SourcePumpSwapAccountMeta[],
+      };
+    }
+
     const quoteIn = Number(data.readBigUInt64LE(isExactQuoteIn ? 8 : 16));
     const minOrBaseOut = Number(data.readBigUInt64LE(isExactQuoteIn ? 16 : 8));
     if (!Number.isSafeInteger(quoteIn) || quoteIn <= 0) continue;
 
-    const sourcePumpSwapAccounts = accountIndexes.map((idx) => accountMetaFromMessage(info, accountKeys, idx));
-    if (sourcePumpSwapAccounts.some((account) => account == null)) continue;
-
     return {
-      signature: signatureToBase58(info.signature),
+      signature: sourceSignature,
       wallet,
       inputMint: quoteMint,
       outputMint: baseMint,
@@ -363,7 +387,7 @@ export async function subscribeRabbitWalletSwaps(
           for (const wallet of trackedWallets) {
             const swap =
               extractDirectPumpFunSwapFromRabbit(info, wallet) ??
-              extractTopLevelPumpSwapBuyFromRabbit(info, wallet);
+              extractTopLevelPumpSwapSwapFromRabbit(info, wallet);
             if (!swap) continue;
             processedSignatures.add(signature);
             const providerCreatedAtMs = update.createdAt?.getTime();

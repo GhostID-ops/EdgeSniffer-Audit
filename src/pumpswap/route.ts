@@ -56,6 +56,7 @@ const PUMPSWAP_USER_BASE_ATA_INDEX = 5;
 const PUMPSWAP_USER_QUOTE_ATA_INDEX = 6;
 const PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX = 20;
 const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT = 23;
+const PUMPSWAP_MIN_SELL_ACCOUNT_COUNT = 21;
 const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 17, 20, 23]);
 
 type PumpSwapAccountPlan = {
@@ -396,6 +397,19 @@ function validatePumpSwapBuyAccountLayout(accounts: AccountMeta[], mint: PublicK
   return null;
 }
 
+function validatePumpSwapSellAccountLayout(accounts: AccountMeta[], mint: PublicKey): string | null {
+  if (accounts.length < PUMPSWAP_MIN_SELL_ACCOUNT_COUNT) {
+    return `PumpSwap sell account list too short: ${accounts.length}`;
+  }
+  if (!accounts[PUMPSWAP_BASE_MINT_INDEX]?.pubkey.equals(mint)) {
+    return "source PumpSwap sell accounts do not match target base mint";
+  }
+  if (accounts[PUMPSWAP_QUOTE_MINT_INDEX]?.pubkey.toBase58() !== WRAPPED_SOL_MINT) {
+    return "source PumpSwap sell accounts do not match SOL quote mint";
+  }
+  return null;
+}
+
 function comparePumpSwapAccounts(
   baseline: AccountMeta[],
   candidate: AccountMeta[],
@@ -480,7 +494,8 @@ async function sourcePumpSwapAccounts(sourceSignature: string, mint: PublicKey):
     const discriminator = data.subarray(0, 8);
     if (
       !discriminator.equals(PUMPSWAP_BUY_DISCRIMINATOR) &&
-      !discriminator.equals(PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR)
+      !discriminator.equals(PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR) &&
+      !discriminator.equals(PUMPSWAP_SELL_DISCRIMINATOR)
     ) {
       return null;
     }
@@ -506,6 +521,54 @@ async function sourcePumpSwapAccounts(sourceSignature: string, mint: PublicKey):
       if (indexes) return toAccountMetas(indexes);
     }
   }
+  return null;
+}
+
+async function resolvePumpSwapSellAccountPlan(args: {
+  sourceSignature?: string;
+  mint: PublicKey;
+  user: PublicKey;
+  baseTokenProgram: PublicKey;
+  sourcePumpSwapAccounts?: SourcePumpSwapAccountMeta[] | string[];
+}): Promise<PumpSwapAccountPlan | null> {
+  const hintedAccounts = sourcePumpSwapHintAccountsToMetas(args.sourcePumpSwapAccounts);
+
+  const canonicalAccounts = await buildCanonicalPumpSwapSellAccounts({
+    user: args.user,
+    mint: args.mint,
+    baseTokenProgram: args.baseTokenProgram,
+  });
+  if (canonicalAccounts) {
+    return {
+      accounts: canonicalAccounts,
+      source: "canonical-pool-state",
+      diagnostics: hintedAccounts
+        ? comparePumpSwapAccounts(canonicalAccounts, hintedAccounts, "detector-pubkey-hints")
+        : { comparedTo: "detector-pubkey-hints", candidateAccounts: 0 },
+    };
+  }
+
+  if (hintedAccounts?.length) {
+    if (!validatePumpSwapSellAccountLayout(hintedAccounts, args.mint)) {
+      return {
+        accounts: hintedAccounts,
+        source: "detector-pubkey-hints",
+        diagnostics: { canonicalUnavailable: true, detectorHintAccounts: hintedAccounts.length },
+      };
+    }
+  }
+
+  if (args.sourceSignature) {
+    const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
+    if (confirmedAccounts && !validatePumpSwapSellAccountLayout(confirmedAccounts, args.mint)) {
+      return {
+        accounts: confirmedAccounts,
+        source: "confirmed-source-metas",
+        diagnostics: { canonicalUnavailable: true },
+      };
+    }
+  }
+
   return null;
 }
 
@@ -1451,6 +1514,8 @@ export async function tryPumpSwapDirectSell(args: {
   slippageBps: number;
   startedAt: number;
   log: (msg: string) => void;
+  sourceSignature?: string;
+  sourcePumpSwapAccounts?: SourcePumpSwapAccountMeta[] | string[];
   rebroadcastAttempt?: number;
   onConfirmFailure?: (mint: string, tokensInRaw: number, solOutLamports: number, reason: string) => void;
   onConfirmSuccess?: (mint: string, tokensInRaw: number, solOutLamports: number, signature: string) => void;
@@ -1462,15 +1527,27 @@ export async function tryPumpSwapDirectSell(args: {
     return { ok: false, recoverable: true, reason: "PumpSwap base mint account not found" };
   }
 
-  const accounts = await buildCanonicalPumpSwapSellAccounts({
+  const accountPlan = await resolvePumpSwapSellAccountPlan({
+    sourceSignature: args.sourceSignature,
     user: args.user.publicKey,
     mint: mintKey,
     baseTokenProgram: baseTokenProgramId,
+    sourcePumpSwapAccounts: args.sourcePumpSwapAccounts,
   });
-  if (!accounts) {
+  if (!accountPlan) {
     return { ok: false, recoverable: true, reason: "canonical PumpSwap sell accounts unavailable" };
   }
+  args.log(`PumpSwap sell account plan: ${accountPlan.source}`);
 
+  const { accounts, userQuoteAta } = replacePumpSwapUserAccounts({
+    accounts: accountPlan.accounts,
+    user: args.user.publicKey,
+    baseMint: mintKey,
+    baseTokenProgram: baseTokenProgramId,
+  });
+  if (accounts.length < PUMPSWAP_MIN_SELL_ACCOUNT_COUNT) {
+    return { ok: false, recoverable: true, reason: `PumpSwap sell account list too short: ${accounts.length}` };
+  }
   const poolAccount = await getCachedPumpSwapPoolAccount(accounts[0]!.pubkey);
   const poolError = validatePumpSwapPoolAccount(accounts[0]!.pubkey, poolAccount);
   if (poolError) return { ok: false, recoverable: true, reason: poolError };
@@ -1495,7 +1572,6 @@ export async function tryPumpSwapDirectSell(args: {
     return { ok: false, recoverable: true, reason: "PumpSwap sell min output is zero" };
   }
 
-  const userQuoteAta = deriveAta(args.user.publicKey, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID);
   args.log(
     `PumpSwap direct sell: mint=${args.mint} pool=${accounts[0]!.pubkey.toBase58()} ` +
       `user=${args.user.publicKey.toBase58()} tokensIn=${tokensIn} expectedOut=${expectedQuoteOut} ` +
