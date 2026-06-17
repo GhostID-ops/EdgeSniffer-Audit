@@ -29,7 +29,7 @@ copy_instance() {
   local dest="$BOT_ROOT/FinalBot-$name"
 
   if [[ ! -d "$dest" ]]; then
-    echo "Creating $dest from $SOURCE_DIR"
+    echo "Creating $dest from $SOURCE_DIR" >&2
     if command -v rsync >/dev/null; then
       rsync -a \
         --exclude node_modules \
@@ -43,7 +43,7 @@ copy_instance() {
     fi
     cp "$SOURCE_DIR/.env" "$dest/.env"
   else
-    echo "Updating code in existing $dest"
+    echo "Updating code in existing $dest" >&2
     cp "$dest/.env" "$dest/.env.backup-before-cya-shadow-$(date +%Y%m%d-%H%M%S)" 2>/dev/null || true
     if command -v rsync >/dev/null; then
       rsync -a \
@@ -53,6 +53,9 @@ copy_instance() {
         --exclude rust-sidecar/target \
         --exclude .restore-backups \
         "$SOURCE_DIR/" "$dest/"
+    fi
+    if [[ ! -f "$dest/.env" ]]; then
+      cp "$SOURCE_DIR/.env" "$dest/.env"
     fi
   fi
 
