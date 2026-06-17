@@ -231,6 +231,45 @@ Stop the test:
 systemctl stop finalbot-4bdk
 ```
 
+## 4BdK Max Same-Slot Performance
+
+This applies an aggressive real-trade 4BdK profile with high Jito tips, high priority fees, Rust hot sniper primary, Shyft gRPC/RabbitStream, ShredStream, and multi-region Jito race.
+
+Default exposure stays small:
+
+- buy size: `0.04 SOL`
+- session cap: `0.16 SOL`
+- default Jito tip: `0.01 SOL`
+- default priority fee: `20,000,000` micro-lamports/CU
+
+Apply from the VPS:
+
+```bash
+cd /root/bot/FinalBot
+git pull origin main
+bash scripts/apply4bdkMaxSameSlotPerformance.sh
+```
+
+Go harder for a short window:
+
+```bash
+cd /root/bot/FinalBot
+JITO_TIP_LAMPORTS=25000000 \
+RUST_HOT_SNIPER_JITO_TIP_LAMPORTS=25000000 \
+PRIORITY_FEE_MICRO_LAMPORTS=30000000 \
+RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS=30000000 \
+bash scripts/apply4bdkMaxSameSlotPerformance.sh
+```
+
+Watch and score:
+
+```bash
+journalctl -u finalbot-4bdk -f
+
+cd /root/bot/FinalBot-4bdk
+npm run telemetry:scan-today
+```
+
 ## CyA Shadow TP Simulations
 
 These run three CyA-only shadow services side by side:
