@@ -77,6 +77,7 @@ import {
   heliusTxSubscribeEnabled,
   confirmationNullStatusTimeoutMs,
   prebuyMoralisFilterEnabled,
+  prebuyInferredMcFilterEnabled,
   copyBuyPercentage,
   minBuyBehavior,
   executionRescueRetries,
@@ -169,6 +170,7 @@ import { warmExecutionAltAccounts } from "./transactionSize.js";
 import { startBlockhashCache, stopBlockhashCache } from "./blockhashCache.js";
 import { validateLicense } from "./licenseClient.js";
 import { checkPrebuyMoralisFilter } from "./prebuyMoralisFilter.js";
+import { checkPrebuyInferredMarketCap } from "./prebuyInferredMarketCap.js";
 import { applyShadowSellLamports, getShadowSolLamports, shadowCanSpend } from "./shadowExecution.js";
 import {
   calculateProportionalSellRaw,
@@ -1993,6 +1995,16 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       openPositionBuyMintsInFlight.add(mint);
       lockedOpenPositionMint = mint;
     }
+  }
+
+  if (prebuyInferredMcFilterEnabled && isBuySignal(swap)) {
+    const filter = checkPrebuyInferredMarketCap(swap);
+    if (!filter.allowed) {
+      console.log(`Skipping buy: ${filter.reason}.`);
+      releaseBuyLocks();
+      return;
+    }
+    console.log(filter.reason);
   }
 
   if (prebuyMoralisFilterEnabled && isBuySignal(swap)) {

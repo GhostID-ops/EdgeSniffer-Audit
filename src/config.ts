@@ -607,6 +607,18 @@ export const prebuyMinMarketCapUsd = parseOptionalPositiveNumber(
 export const prebuyMaxMarketCapUsd = parseOptionalPositiveNumber(
   process.env.PREBUY_MAX_MARKET_CAP_USD
 );
+export const prebuyInferredMcFilterEnabled = parseEnvBool(
+  process.env.PREBUY_INFERRED_MC_FILTER_ENABLED,
+  false
+);
+export const prebuyInferredTokenSupply = Math.max(
+  1,
+  parseFloat(process.env.PREBUY_INFERRED_TOKEN_SUPPLY ?? "1000000000")
+);
+export const prebuyInferredDefaultTokenDecimals = Math.max(
+  0,
+  Math.min(18, parseInt(process.env.PREBUY_INFERRED_DEFAULT_TOKEN_DECIMALS ?? "6", 10))
+);
 export const localPumpfunMarketCapFilterEnabled = parseEnvBool(
   process.env.LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED,
   false

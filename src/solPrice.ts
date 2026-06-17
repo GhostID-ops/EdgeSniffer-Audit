@@ -5,6 +5,7 @@ import {
   localPumpfunSolPriceTimeoutMs,
   localPumpfunSolPriceUrl,
   localPumpfunSolPriceUsd,
+  prebuyInferredMcFilterEnabled,
   prebuyMaxMarketCapUsd,
   prebuyMinMarketCapUsd,
   updateLocalPumpfunSolPriceUsd,
@@ -104,13 +105,13 @@ async function refreshSolPrice(): Promise<void> {
 export function startSolPriceUpdater(): void {
   if (started || !localPumpfunSolPriceAutoEnabled) return;
   const needsUsdPrice = prebuyMinMarketCapUsd != null || prebuyMaxMarketCapUsd != null;
-  if (!localPumpfunMarketCapFilterEnabled || !needsUsdPrice) return;
+  if ((!localPumpfunMarketCapFilterEnabled && !prebuyInferredMcFilterEnabled) || !needsUsdPrice) return;
   started = true;
 
   const fallback =
     localPumpfunSolPriceUsd != null ? `$${localPumpfunSolPriceUsd.toFixed(2)} fallback` : "no fallback";
   console.log(
-    `SOL price auto-refresh enabled for local Pump.fun MC filter (${fallback}, every ${Math.round(
+    `SOL price auto-refresh enabled for local/inferred MC filter (${fallback}, every ${Math.round(
       localPumpfunSolPriceRefreshMs / 1000
     )}s).`
   );
