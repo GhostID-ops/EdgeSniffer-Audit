@@ -182,6 +182,55 @@ journalctl -u finalbot-4bdk -n 100 --no-pager
 journalctl -u finalbot-5qn -n 100 --no-pager
 ```
 
+## 4BdK Same-Slot Tiny Live Test
+
+This applies a 4BdK-only same-slot validation preset to `/root/bot/FinalBot-4bdk`.
+
+It sends real tiny live buys:
+
+- wallet: `4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk`
+- buy size: `0.04 SOL`
+- session cap: `0.16 SOL`
+- exits: proportional mirror sells from 4BdK
+- hot path: Shyft gRPC/RabbitStream, ShredStream, Jito race, Rust hot sniper primary
+
+Install/update code and apply the preset:
+
+```bash
+cd /root/bot/FinalBot
+git pull origin main
+npm install
+npm run build
+npm run rust-sidecar:jito-build
+
+cd /root/bot/FinalBot-4bdk
+git pull origin main
+npm install
+npm run build
+npm run rust-sidecar:jito-build
+npm run env:4bdk-same-slot
+systemctl restart finalbot-4bdk
+```
+
+Watch the test:
+
+```bash
+journalctl -u finalbot-4bdk -f
+```
+
+After one or more copied buys, scan same-slot quality:
+
+```bash
+cd /root/bot/FinalBot-4bdk
+npm run telemetry:scan-today
+```
+
+Stop the test:
+
+```bash
+systemctl stop finalbot-4bdk
+```
+
 ## CyA Shadow TP Simulations
 
 These run three CyA-only shadow services side by side:

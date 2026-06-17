@@ -29,6 +29,7 @@
     "env:vps-tiny-live-test": "node scripts/applyPerformanceEnv.mjs .env.vps-tiny-live-test",
     "env:speed-mode": "node scripts/applyPerformanceEnv.mjs .env.speed-mode",
     "env:cya-same-slot": "node scripts/applyPerformanceEnv.mjs .env.cya-same-slot",
+    "env:4bdk-same-slot": "node scripts/applyPerformanceEnv.mjs .env.4bdk-same-slot",
     "friend:update": "powershell -ExecutionPolicy Bypass -File scripts/updateFriendBot.ps1",
     "friend:update:exposure": "powershell -ExecutionPolicy Bypass -File scripts/updateFriendBot.ps1 -ApplyExposure",
     "friend:update:recommended": "powershell -ExecutionPolicy Bypass -File scripts/updateFriendBot.ps1 -ApplyRecommended",
