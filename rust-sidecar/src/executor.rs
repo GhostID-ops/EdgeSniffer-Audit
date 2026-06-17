@@ -1,7 +1,8 @@
 use std::{
+    collections::HashSet,
     env,
     str::FromStr,
-    sync::OnceLock,
+    sync::{Arc, Mutex, OnceLock},
     time::{Duration, Instant},
 };
 
@@ -72,6 +73,8 @@ const HELIUS_TIP_ACCOUNTS: [&str; 11] = [
 ];
 
 static HTTP_CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
+
+pub type SharedBoughtMints = Arc<Mutex<HashSet<String>>>;
 
 fn http_client() -> reqwest::Client {
     HTTP_CLIENT.get_or_init(reqwest::Client::new).clone()
@@ -169,19 +172,26 @@ struct BuiltTx {
     build_ms: u128,
 }
 
-pub fn start_executor_stdin() {
+pub fn start_executor_stdin(shared_bought_mints: Option<SharedBoughtMints>) {
     tokio::spawn(async move {
         let stdin = BufReader::new(io::stdin());
         let mut lines = stdin.lines();
-        eprintln!("rust-sidecar: Rust executor command channel ready");
+        if shared_bought_mints.is_some() {
+            eprintln!(
+                "rust-sidecar: Rust executor command channel ready (shared buy-once gate enabled)"
+            );
+        } else {
+            eprintln!("rust-sidecar: Rust executor command channel ready");
+        }
         loop {
             match lines.next_line().await {
                 Ok(Some(line)) => {
                     if line.trim().is_empty() {
                         continue;
                     }
+                    let shared_bought_mints = shared_bought_mints.clone();
                     tokio::spawn(async move {
-                        let response = handle_line(&line).await;
+                        let response = handle_line(&line, shared_bought_mints).await;
                         match serde_json::to_string(&response) {
                             Ok(json) => println!("{json}"),
                             Err(err) => eprintln!(
@@ -200,32 +210,61 @@ pub fn start_executor_stdin() {
     });
 }
 
-async fn handle_line(line: &str) -> ExecutorResponse {
+async fn handle_line(
+    line: &str,
+    shared_bought_mints: Option<SharedBoughtMints>,
+) -> ExecutorResponse {
     let started = Instant::now();
     let id = extract_id(line).unwrap_or_else(|| "unknown".to_string());
     match serde_json::from_str::<ExecutorCommand>(line) {
         Ok(ExecutorCommand::ExecutePumpfunBuy(cmd)) => {
             let id = cmd.id.clone();
+            let mint = cmd.mint.clone();
+            let reserved = match reserve_executor_mint(shared_bought_mints.as_ref(), &mint) {
+                Ok(reserved) => reserved,
+                Err(error) => {
+                    return ExecutorResponse {
+                        kind: "execResult",
+                        id,
+                        ok: false,
+                        signature: None,
+                        route: None,
+                        sender_path: None,
+                        sol_in_lamports: None,
+                        tokens_out_raw: None,
+                        elapsed_ms: started.elapsed().as_millis(),
+                        build_ms: None,
+                        broadcast_ms: None,
+                        tx_bytes: None,
+                        error: Some(error),
+                    };
+                }
+            };
             match execute_pumpfun_buy(cmd, started).await {
                 Ok(mut response) => {
                     response.id = id;
                     response
                 }
-                Err(err) => ExecutorResponse {
-                    kind: "execResult",
-                    id,
-                    ok: false,
-                    signature: None,
-                    route: None,
-                    sender_path: None,
-                    sol_in_lamports: None,
-                    tokens_out_raw: None,
-                    elapsed_ms: started.elapsed().as_millis(),
-                    build_ms: None,
-                    broadcast_ms: None,
-                    tx_bytes: None,
-                    error: Some(err.to_string()),
-                },
+                Err(err) => {
+                    if reserved {
+                        release_executor_mint(shared_bought_mints.as_ref(), &mint);
+                    }
+                    ExecutorResponse {
+                        kind: "execResult",
+                        id,
+                        ok: false,
+                        signature: None,
+                        route: None,
+                        sender_path: None,
+                        sol_in_lamports: None,
+                        tokens_out_raw: None,
+                        elapsed_ms: started.elapsed().as_millis(),
+                        build_ms: None,
+                        broadcast_ms: None,
+                        tx_bytes: None,
+                        error: Some(err.to_string()),
+                    }
+                }
             }
         }
         Err(err) => ExecutorResponse {
@@ -243,6 +282,31 @@ async fn handle_line(line: &str) -> ExecutorResponse {
             tx_bytes: None,
             error: Some(format!("invalid executor command: {err}")),
         },
+    }
+}
+
+fn reserve_executor_mint(
+    shared_bought_mints: Option<&SharedBoughtMints>,
+    mint: &str,
+) -> Result<bool, String> {
+    let Some(shared_bought_mints) = shared_bought_mints else {
+        return Ok(false);
+    };
+    let mut bought = shared_bought_mints
+        .lock()
+        .map_err(|_| "buy-once state lock poisoned".to_string())?;
+    if bought.contains(mint) {
+        return Err("mint already bought/reserved by Rust this session".to_string());
+    }
+    bought.insert(mint.to_string());
+    Ok(true)
+}
+
+fn release_executor_mint(shared_bought_mints: Option<&SharedBoughtMints>, mint: &str) {
+    if let Some(shared_bought_mints) = shared_bought_mints {
+        if let Ok(mut bought) = shared_bought_mints.lock() {
+            bought.remove(mint);
+        }
     }
 }
 

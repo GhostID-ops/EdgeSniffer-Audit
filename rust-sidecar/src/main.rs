@@ -150,7 +150,12 @@ async fn main() -> Result<()> {
     let _ = rustls::crypto::ring::default_provider().install_default();
     let cfg = Config::from_env()?;
     if parse_env_bool("RUST_EXECUTOR_ENABLED", false) {
-        executor::start_executor_stdin();
+        let shared_bought_mints = if cfg.hot_sniper.enabled && cfg.hot_sniper.buy_once_per_token {
+            Some(cfg.hot_sniper.bought_mints.clone())
+        } else {
+            None
+        };
+        executor::start_executor_stdin(shared_bought_mints);
     }
     eprintln!(
         "rust-sidecar: starting yellowstone={} jito_shredstream={} hot_sniper={} wallets={}",
