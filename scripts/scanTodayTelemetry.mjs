@@ -93,6 +93,10 @@ function countBy(rows, getKey) {
   return [...counts.entries()].sort((a, b) => b[1] - a[1]);
 }
 
+function isBroadcastRow(row) {
+  return row?.kind === "broadcast" || row?.kind === "stage:broadcast";
+}
+
 function mdTable(entries) {
   if (entries.length === 0) return "_None._";
   return [
@@ -140,7 +144,7 @@ const chains = [];
 for (const [sourceSignature, group] of chainGroups) {
   const sorted = [...group].sort((a, b) => (num(a.tsMs) ?? 0) - (num(b.tsMs) ?? 0));
   const source = sorted.find((row) => row.kind === "source-detected");
-  const broadcast = sorted.find((row) => row.kind === "broadcast" && row.success === true);
+  const broadcast = sorted.find((row) => isBroadcastRow(row) && row.success === true);
   const confirm = sorted.find((row) => row.kind === "stage:confirm");
   const basis = source ?? broadcast ?? confirm ?? sorted[0];
   const sourceSlot = detailNum(source ?? basis, "sourceSlot");
@@ -213,7 +217,7 @@ const section = [
   "",
   "### Routes",
   "",
-  mdTable(countBy(telemetry.filter((row) => row.kind === "broadcast"), (row) => row.route)),
+  mdTable(countBy(telemetry.filter((row) => isBroadcastRow(row)), (row) => row.route)),
   "",
   "### Detectors",
   "",
