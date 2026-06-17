@@ -8,6 +8,10 @@ Fresh runs used:
 
 - Quant audit: `npx tsx src/walletQuantAudit.ts CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 6000 260`
 - Quant artifact: `data/cya-quant.json`
+- Expanded quant audit: `npx tsx src/walletQuantAudit.ts CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 10000 600`
+- Expanded quant artifact: `data/cya-quant-large.json`
+- 100k+ last-7d audit: `node scripts/analyzeCya100kLast7d.mjs 100000 7 24`
+- 100k+ last-7d artifacts: `data/cya-100k-last7d.json`, `data/cya-100k-last7d.md`
 - Recent path audit: `PATH_AUDIT_QUIET=true npx tsx src/pathBasedWalletAudit.ts CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 6000 60 24 20`
 - Generated recent-trade detail: `data/path-wallet-audit-CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o.md`
 
@@ -28,6 +32,91 @@ Best current approach:
 - Mirror CyA sells until the bot has a native hybrid exit rule for `50% at +30%, 50% source exit`.
 - Treat Moralis volume/liquidity/momentum filters as research-only for same-slot copy because they add hot-path latency.
 - Do not use the latest 3-entry path audit as a broad strategy sample; use it only as a last-trades sanity check.
+
+## Expanded 10k-Tx Check
+
+This bigger pass widens wallet-level context to `10,000` txs and `1,022` closed campaigns, covering `2026-06-08T19:58:41Z` to `2026-06-17T13:39:38Z`. Candle enrichment increased from `212` to `268` measured entries, but Moralis hit the daily free-plan usage limit during the run, so this is still not a full 600-entry path sample.
+
+Expanded wallet-level stats:
+
+- Wallet tx cache: `10000` txs
+- Swaps reconstructed: `7329`
+- Buys/sells: `5386 / 1943`
+- Campaigns: `1023`
+- Closed campaigns: `1022`
+- Candle-enriched entries: `268`
+- Realized PnL: `+911.87 SOL`
+- Closed-campaign win rate: `56.0%`
+- Average source ROI: `+32.8%`
+- Median source ROI: `+4.1%`
+- Profit factor: `2.33`
+- Median hold time: `0.62 min`
+- Median entry size: `3.008 SOL`
+- Top 5 winners contributed `31.8%` of total realized SOL
+
+Expanded strategy read:
+
+| Strategy | Trades | Win % | Avg ROI | Median ROI | Profit factor | Max drawdown |
+|---|---:|---:|---:|---:|---:|---:|
+| Sell when CyA sells | 268 | 52.2% | +15.6% | +1.8% | 2.56 | -214.6% |
+| 50% at +30, 50% CyA exit | 268 | 59.3% | +13.3% | +7.8% | 2.63 | -180.0% |
+| 20% trailing stop | 268 | 25.4% | -0.3% | -4.6% | 0.96 | -581.0% |
+| TP30 SL20 | 268 | 14.2% | -9.3% | -20.0% | 0.25 | -2491.9% |
+| TP50 SL25 | 268 | 14.2% | -9.9% | -25.0% | 0.35 | -2683.0% |
+| Time exit 30m | 268 | 12.3% | -28.0% | -24.9% | 0.18 | -7497.6% |
+| Time exit 1h | 268 | 10.4% | -31.2% | -34.2% | 0.18 | -8361.8% |
+| Time exit 4h | 268 | 9.3% | -37.2% | -39.3% | 0.10 | -9975.9% |
+| Time exit 24h | 268 | 7.5% | -40.1% | -42.9% | 0.07 | -10735.6% |
+
+Expanded conclusion:
+
+- The bigger run strengthens the main conclusion: CyA is not a fixed-TP scalp wallet.
+- `Sell when CyA sells` has the highest average ROI in the expanded sample.
+- The hybrid `50% at +30%, 50% CyA exit` has the better win rate, median ROI, profit factor, and drawdown profile.
+- Simple trailing is close to breakeven but still negative.
+- Fixed TP/SL and time exits remain clearly bad.
+- If we implement one new strategy rule for CyA, it should be the hybrid partial-profit plus mirror-exit rule.
+
+## 100k+ Market-Cap Trades, Last 7d
+
+This focused pass avoids Moralis entirely. It reads the local 10,000-tx Helius cache, prefilters last-7d CyA campaigns by source-fill implied market cap, fetches entry/path candles from GeckoTerminal with 429 backoff, then keeps only entries with candle-based approximate entry MC above `$100k`.
+
+Coverage:
+
+- Window: `2026-06-10T13:39:38Z` to `2026-06-17T13:39:38Z`
+- Last-7d campaigns checked: `1021`
+- Source-fill 100k+ candidates: `17`
+- Measured candle-confirmed 100k+ entries: `17`
+- Skipped candidates: `0`
+- Median entry MC: `$359.5k`
+- Median MFE / MAE: `+47.9% / -70.1%`
+- Hit `+30% / +50% / +100%`: `70.6% / 41.2% / 17.6%`
+- Source-exit win rate: `29.4%`
+- Source-exit median ROI: `-7.2%`
+- Realized PnL on this slice: `-33.69 SOL`
+
+100k+ strategy backtest:
+
+| Strategy | Trades | Win % | Avg ROI | Median ROI | Profit factor | Max drawdown |
+|---|---:|---:|---:|---:|---:|---:|
+| 50% at +30, 50% CyA exit | 17 | 64.7% | +9.6% | +5.1% | 4.50 | -26.4% |
+| Sell when CyA sells | 17 | 29.4% | +0.5% | -7.2% | 1.05 | -91.5% |
+| 20% trailing stop | 17 | 35.3% | -1.3% | -5.8% | 0.83 | -87.5% |
+| TP50 SL25 | 17 | 23.5% | -4.9% | -25.0% | 0.71 | -142.4% |
+| TP30 SL20 | 17 | 23.5% | -7.1% | -20.0% | 0.50 | -131.1% |
+| Time exit 30m | 17 | 17.6% | -21.2% | -20.9% | 0.35 | -431.1% |
+| Time exit 24h | 17 | 29.4% | -33.0% | -31.0% | 0.21 | -571.6% |
+| Time exit 1h | 17 | 17.6% | -37.4% | -33.5% | 0.05 | -662.8% |
+| Time exit 4h | 17 | 11.8% | -46.4% | -41.5% | 0.04 | -815.6% |
+
+100k+ read:
+
+- This is the strongest argument yet for a CyA-specific hybrid exit.
+- 100k+ entries often give a tradable move, but CyA's own final exits were weak in this slice.
+- `70.6%` of the 100k+ entries hit `+30%`, but only `29.4%` were source-exit winners.
+- Full mirror sells are still better than fixed TP/SL across the broader samples, but for 100k+ entries specifically, partial profit at `+30%` is doing the heavy lifting.
+- Do not use time exits for this wallet. Even high-MC entries decay violently after the initial opportunity.
+- 100k+ filtering alone is not enough. It needs the hybrid exit rule to turn the MFE into realized edge.
 
 ## Fresh Data Basis
 
