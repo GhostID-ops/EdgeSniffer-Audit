@@ -139,6 +139,8 @@ setup_strategy() {
     MIN_HOLD_BEFORE_STOP_LOSS_MS=0 \
     TAKE_PROFIT_PCT="$take_profit" \
     TRAILING_STEPS= \
+    MIN_BUY_BEHAVIOR=floor \
+    COPY_BUY_PERCENTAGE=100 \
     MIN_BUY_SOL=0.25 \
     MAX_BUY_SOL=0.25 \
     MAX_SOL_PER_TOKEN=0.25 \
