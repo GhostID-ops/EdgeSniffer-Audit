@@ -76,12 +76,26 @@ for (const pair of pairs) {
   updates[pair.slice(0, eq)] = pair.slice(eq + 1);
 }
 let text = fs.readFileSync(path, "utf8");
-for (const [key, value] of Object.entries(updates)) {
-  const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const re = new RegExp(`^#?\\s*${escaped}=.*$`, "m");
-  if (re.test(text)) text = text.replace(re, `${key}=${value}`);
-  else text += `\n${key}=${value}`;
+const updateKeys = new Set(Object.keys(updates));
+const kept = [];
+for (const rawLine of text.split(/\r?\n/)) {
+  const trimmed = rawLine.trim();
+  if (!trimmed || trimmed.startsWith("#")) {
+    kept.push(rawLine);
+    continue;
+  }
+  const eq = trimmed.indexOf("=");
+  if (eq <= 0) {
+    kept.push(rawLine);
+    continue;
+  }
+  const key = trimmed.slice(0, eq).trim();
+  if (!updateKeys.has(key)) kept.push(rawLine);
 }
+for (const [key, value] of Object.entries(updates)) {
+  kept.push(`${key}=${value}`);
+}
+text = kept.join("\n");
 fs.writeFileSync(path, text.endsWith("\n") ? text : `${text}\n`);
 console.log(`Updated ${path}: ${Object.keys(updates).join(", ")}`);
 NODE
