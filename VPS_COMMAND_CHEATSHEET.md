@@ -182,6 +182,52 @@ journalctl -u finalbot-4bdk -n 100 --no-pager
 journalctl -u finalbot-5qn -n 100 --no-pager
 ```
 
+## CyA Shadow TP Simulations
+
+These run three CyA-only shadow services side by side:
+
+- `finalbot-cya-shadow-tp30`: MC >= `$50k`, sell 100% at `+30%`
+- `finalbot-cya-shadow-tp50`: MC >= `$50k`, sell 100% at `+50%`
+- `finalbot-cya-shadow-tp75`: MC >= `$50k`, sell 100% at `+75%`
+
+The MC gate uses the generic prebuy market-cap filter with DexScreener pair metadata. It does not consume Moralis OHLCV quota unless volume/momentum filters are added.
+
+Install/update the services from the VPS:
+
+```bash
+cd /root/bot/FinalBot
+git pull origin main
+bash scripts/setupCyaShadowTpSimulations.sh
+```
+
+Start all three:
+
+```bash
+systemctl start finalbot-cya-shadow-tp30 finalbot-cya-shadow-tp50 finalbot-cya-shadow-tp75
+```
+
+Stop all three:
+
+```bash
+systemctl stop finalbot-cya-shadow-tp30 finalbot-cya-shadow-tp50 finalbot-cya-shadow-tp75
+```
+
+Watch logs:
+
+```bash
+journalctl -u finalbot-cya-shadow-tp30 -f
+journalctl -u finalbot-cya-shadow-tp50 -f
+journalctl -u finalbot-cya-shadow-tp75 -f
+```
+
+Trade logs:
+
+```bash
+/root/bot/FinalBot-cya-shadow-tp30/data/trades.jsonl
+/root/bot/FinalBot-cya-shadow-tp50/data/trades.jsonl
+/root/bot/FinalBot-cya-shadow-tp75/data/trades.jsonl
+```
+
 ## Pull Latest Bot Update On VPS
 
 Main bot:
