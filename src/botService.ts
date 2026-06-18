@@ -170,6 +170,7 @@ import { startJitoTipOracle, stopJitoTipOracle } from "./jitoTipOracle.js";
 import { startJitoConnectionWarmup, stopJitoConnectionWarmup } from "./jitoWarmup.js";
 import { classifyExecutionError } from "./errorClassifier.js";
 import { decideRetryAction } from "./executionRetry.js";
+import { isPostBroadcastBuyUncertainty, shouldHoldBuyOnceAfterFailure } from "./buyOncePolicy.js";
 import { planExecution } from "./executionPlanner.js";
 import { recordExecutionTelemetrySync } from "./executionTelemetry.js";
 import { warmWalletAccounts } from "./walletWarmup.js";
@@ -982,6 +983,20 @@ function shouldQuarantineFailedBuy(reason: string): boolean {
   return decideRetryAction(reason).shouldQuarantine;
 }
 
+function holdBuyOnceMintAfterBroadcastUncertainty(mint: string, reason: string): void {
+  if (!buyOncePerTokenEnabled) return;
+  liveBuyAttemptedMintsThisSession.add(mint);
+  boughtMintsThisSession.add(mint);
+  pendingBuyRetryByMint.delete(mint);
+  fastBuyConfirmRetryScheduledByMint.delete(mint);
+  failedBuyRecoveryInFlightMints.delete(mint);
+  quarantinedBuyMints.set(mint, `broadcast status uncertain: ${reason}`);
+  console.warn(
+    `Buy lock preserved for ${mint.slice(0, 8)}... after broadcast/confirmation uncertainty. ` +
+      "No automatic retry for this mint this session."
+  );
+}
+
 function isPumpFunAccountLayoutFailure(reason: string): boolean {
   const category = classifyExecutionError(reason).category;
   return (
@@ -1226,8 +1241,6 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
       const removed = unrecordBuy(hotBuy.mint, hotBuy.tokensOutRaw, hotBuy.solInLamports);
       mirrorBuySignatureByMint.delete(hotBuy.mint);
       confirmedFastBuyTokensByMint.delete(hotBuy.mint);
-      boughtMintsThisSession.delete(hotBuy.mint);
-      liveBuyAttemptedMintsThisSession.delete(hotBuy.mint);
       rustHotBuyRecordedByMint.delete(hotBuy.mint);
       noteLocalSolCredit(hotBuy.solInLamports);
       rustHotSniperPrimaryPendingMints.delete(hotBuy.mint);
@@ -1238,6 +1251,10 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
         );
       }
       const decision = decideRetryAction(reason);
+      if (shouldHoldBuyOnceAfterFailure({ buyOncePerTokenEnabled, reason })) {
+        holdBuyOnceMintAfterBroadcastUncertainty(hotBuy.mint, reason);
+        return;
+      }
       if (decision.shouldQuarantine) {
         pendingBuyRetryByMint.delete(hotBuy.mint);
         quarantinedBuyMints.set(hotBuy.mint, `rust hot buy ${decision.action}: ${reason}`);
@@ -2289,6 +2306,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         unrecordZeroSell(mint, tokenAmountRaw);
         mirrorBuySignatureByMint.delete(mint);
         confirmedFastBuyTokensByMint.delete(mint);
+        if (shouldHoldBuyOnceAfterFailure({ buyOncePerTokenEnabled, reason })) {
+          holdBuyOnceMintAfterBroadcastUncertainty(mint, reason);
+          return;
+        }
         if (shouldAttemptFailedBuyRecovery(sourceSwap, reason)) {
           boughtMintsThisSession.delete(mint);
           liveBuyAttemptedMintsThisSession.delete(mint);
@@ -2626,7 +2647,11 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       details: { retryAction: retryDecision.action, shouldQuarantine: retryDecision.shouldQuarantine },
     });
     console.error(`?? Mirror failed for ${swap.signature}: ${msg}`);
-    if (isBuySignal(swap) && (swap.skipDirectBuyRoutes || retryDecision.shouldQuarantine || isTerminalBuyFailure(msg))) {
+    if (isBuySignal(swap) && buyOncePerTokenEnabled && isPostBroadcastBuyUncertainty(msg)) {
+      const failedMint = swap.outputMint;
+      holdBuyOnceMintAfterBroadcastUncertainty(failedMint, msg);
+      persistentBuyLockCommitted = true;
+    } else if (isBuySignal(swap) && (swap.skipDirectBuyRoutes || retryDecision.shouldQuarantine || isTerminalBuyFailure(msg))) {
       const failedMint = swap.outputMint;
       quarantinedBuyMints.set(
         failedMint,
