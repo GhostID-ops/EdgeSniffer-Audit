@@ -13,6 +13,7 @@ import {
   maxSourceDriftPct,
   pumpfunDirectEnabled,
   pumpSwapDirectBuyEnabled,
+  jupiterFallbackEnabled,
   mirrorGraduatedBuys,
   jupiterOversizeMaxAccounts,
   mirrorQuoteAsset,
@@ -414,7 +415,7 @@ export async function mirrorSwap(
 
   // Phase 0: Direct pump.fun bonding-curve route. Bypasses Jupiter entirely for pre-graduation
   // pump.fun tokens — solves the "Jupiter says 100% impact" indexing-lag problem and shaves
-  // 150-300ms off the entry path. Falls through to Jupiter on any non-recoverable signal.
+  // 150-300ms off the entry path. Falls through to Jupiter only when fallback is enabled.
   if (
     side === "buy" &&
     pumpfunDirectEnabled &&
@@ -480,8 +481,11 @@ export async function mirrorSwap(
       // Hard fail (broadcast error, curve too thin) — surface it; don't try Jupiter for this trade.
       throw new Error(`Pump.fun direct buy failed: ${direct.reason}`);
     }
-    // Recoverable: graduated token, not on curve, etc. — fall through to Jupiter below.
-    console.log(`Pump.fun direct path skipped: ${direct.reason}; falling back to Jupiter.`);
+    // Recoverable: graduated token, not on curve, etc. Try PumpSwap first, then optional Jupiter.
+    console.log(
+      `Pump.fun direct path skipped: ${direct.reason}; ` +
+        (jupiterFallbackEnabled ? "falling back to local PumpSwap/Jupiter if needed." : "Jupiter fallback disabled.")
+    );
     if (pumpSwapDirectBuyEnabled && shouldTryPumpSwapAfterPumpFunSkip(direct.reason, swap)) {
       const pumpSwap = await tryPumpSwapDirectBuy({
         user: keypair,
@@ -535,14 +539,20 @@ export async function mirrorSwap(
       if (!shouldAllowJupiterAfterPumpSwapFailure(swap)) {
         throw new Error(`PumpSwap direct buy failed for pump mint; not using slow Jupiter fallback: ${pumpSwap.reason}`);
       }
-      console.log(`PumpSwap direct path skipped: ${pumpSwap.reason}; falling back to Jupiter.`);
+      console.log(
+        `PumpSwap direct path skipped: ${pumpSwap.reason}; ` +
+          (jupiterFallbackEnabled ? "falling back to Jupiter." : "Jupiter fallback disabled.")
+      );
       if (!mirrorGraduatedBuys) {
         throw new Error(
           "Skipping graduated buy: MIRROR_GRADUATED_BUYS is false and no direct PumpSwap route was available"
         );
       }
     } else if (shouldTryPumpSwapAfterPumpFunSkip(direct.reason, swap)) {
-      console.log("PumpSwap direct path disabled; falling back to Jupiter.");
+      console.log(
+        "PumpSwap direct path disabled; " +
+          (jupiterFallbackEnabled ? "falling back to Jupiter." : "Jupiter fallback disabled.")
+      );
     }
   }
 
@@ -594,7 +604,10 @@ export async function mirrorSwap(
     if (!direct.recoverable) {
       throw new Error(`Pump.fun direct sell failed: ${direct.reason}`);
     }
-    console.log(`Pump.fun direct sell skipped: ${direct.reason}; falling back to Jupiter.`);
+    console.log(
+      `Pump.fun direct sell skipped: ${direct.reason}; ` +
+        (jupiterFallbackEnabled ? "falling back to Jupiter." : "Jupiter fallback disabled.")
+    );
     if (
       pumpSwapDirectBuyEnabled &&
       mirrorOutputMint === WRAPPED_SOL_MINT &&
@@ -646,8 +659,17 @@ export async function mirrorSwap(
       if (!pumpSwap.recoverable) {
         throw new Error(`PumpSwap direct sell failed: ${pumpSwap.reason}`);
       }
-      console.log(`PumpSwap direct sell skipped: ${pumpSwap.reason}; falling back to Jupiter.`);
+      console.log(
+        `PumpSwap direct sell skipped: ${pumpSwap.reason}; ` +
+          (jupiterFallbackEnabled ? "falling back to Jupiter." : "Jupiter fallback disabled.")
+      );
     }
+  }
+
+  if (!jupiterFallbackEnabled) {
+    throw new Error(
+      `${side} local direct execution unavailable and JUPITER_FALLBACK_ENABLED=false; not using Jupiter fallback.`
+    );
   }
 
   // Phase 1: probe-and-shrink for buys when an impact cap is configured. Throws ImpactTooHighError

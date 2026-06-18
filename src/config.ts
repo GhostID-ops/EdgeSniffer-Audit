@@ -227,6 +227,11 @@ export const pumpSwapDirectPreflight =
   PUMPSWAP_DIRECT_PREFLIGHT_RAW !== "false" &&
   PUMPSWAP_DIRECT_PREFLIGHT_RAW !== "0" &&
   PUMPSWAP_DIRECT_PREFLIGHT_RAW !== "no";
+const JUPITER_FALLBACK_ENABLED_RAW = (process.env.JUPITER_FALLBACK_ENABLED ?? "true").toLowerCase();
+export const jupiterFallbackEnabled =
+  JUPITER_FALLBACK_ENABLED_RAW !== "false" &&
+  JUPITER_FALLBACK_ENABLED_RAW !== "0" &&
+  JUPITER_FALLBACK_ENABLED_RAW !== "no";
 const MIRROR_GRADUATED_BUYS_RAW = (
   process.env.MIRROR_GRADUATED_BUYS ??
   process.env.BUY_GRADUATED_TOKENS ??
@@ -512,6 +517,7 @@ export const rustExecutorTimeoutMs = Math.max(
 );
 export const rustHotSniperEnabled = parseEnvBool(process.env.RUST_HOT_SNIPER_ENABLED, false);
 export const rustOnlyBuys = parseEnvBool(process.env.RUST_ONLY_BUYS, false);
+export const rustOnlySells = parseEnvBool(process.env.RUST_ONLY_SELLS, false);
 export const rustHotSniperPrimary = parseEnvBool(process.env.RUST_HOT_SNIPER_PRIMARY, false);
 export const rustHotSniperPrimaryFallbackEnabled = parseEnvBool(
   process.env.RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED,

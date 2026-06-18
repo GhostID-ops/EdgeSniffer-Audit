@@ -38,6 +38,7 @@ const BUY_EXACT_SOL_IN_DISCRIMINATOR: [u8; 8] = [56, 252, 116, 8, 158, 223, 205,
 const BUY_V2_DISCRIMINATOR: [u8; 8] = [184, 23, 238, 97, 103, 197, 211, 61];
 const BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR: [u8; 8] = [194, 171, 28, 70, 104, 77, 91, 47];
 const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR: [u8; 8] = [198, 46, 21, 82, 180, 217, 232, 112];
+const PUMPSWAP_SELL_DISCRIMINATOR: [u8; 8] = [51, 230, 133, 164, 1, 127, 131, 173];
 const SYNC_NATIVE_DISCRIMINATOR: [u8; 1] = [17];
 const CLOSE_ACCOUNT_DISCRIMINATOR: [u8; 1] = [9];
 
@@ -58,6 +59,7 @@ const PUMPSWAP_USER_QUOTE_ATA_INDEX: usize = 6;
 const PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX: usize = 11;
 const PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX: usize = 20;
 const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT: usize = 23;
+const PUMPSWAP_MIN_SELL_ACCOUNT_COUNT: usize = 21;
 
 const JITO_TIP_ACCOUNTS: [&str; 8] = [
     "96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5",
@@ -97,6 +99,7 @@ fn http_client() -> reqwest::Client {
 enum ExecutorCommand {
     ExecutePumpfunBuy(ExecutePumpfunBuyCommand),
     ExecutePumpSwapBuy(ExecutePumpSwapBuyCommand),
+    ExecutePumpSwapSell(ExecutePumpSwapSellCommand),
     ReleaseBoughtMint(ReleaseBoughtMintCommand),
 }
 
@@ -143,6 +146,34 @@ pub struct ExecutePumpSwapBuyCommand {
     pub expected_base_out_raw: u64,
     pub min_base_out_raw: u64,
     pub buy_instruction: String,
+    pub source_pump_swap_accounts: Vec<SourcePumpSwapAccountMeta>,
+    pub base_token_program_id: String,
+    pub blockhash: String,
+    pub compute_unit_limit: u32,
+    pub priority_fee_micro_lamports: u64,
+    pub jito_tip_lamports: u64,
+    pub helius_tip_lamports: u64,
+    pub use_jito_direct: bool,
+    pub use_jito_fallback: bool,
+    pub sender_rpc_fallback_enabled: bool,
+    pub execution_multi_send_enabled: bool,
+    pub jito_send_mode: String,
+    pub jito_transaction_urls: Vec<String>,
+    pub jito_bundle_urls: Vec<String>,
+    pub sender_endpoint_url: String,
+    pub rpc_fallback_url: String,
+    pub jito_auth_uuid: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ExecutePumpSwapSellCommand {
+    pub id: String,
+    pub route: String,
+    pub mint: String,
+    pub tokens_in_raw: u64,
+    pub expected_quote_out_raw: u64,
+    pub min_quote_out_raw: u64,
     pub source_pump_swap_accounts: Vec<SourcePumpSwapAccountMeta>,
     pub base_token_program_id: String,
     pub blockhash: String,
@@ -262,6 +293,21 @@ impl BroadcastConfig {
     }
 
     fn from_pumpswap(cmd: &ExecutePumpSwapBuyCommand) -> Self {
+        Self {
+            use_jito_direct: cmd.use_jito_direct,
+            use_jito_fallback: cmd.use_jito_fallback,
+            sender_rpc_fallback_enabled: cmd.sender_rpc_fallback_enabled,
+            execution_multi_send_enabled: cmd.execution_multi_send_enabled,
+            jito_send_mode: cmd.jito_send_mode.clone(),
+            jito_transaction_urls: cmd.jito_transaction_urls.clone(),
+            jito_bundle_urls: cmd.jito_bundle_urls.clone(),
+            sender_endpoint_url: cmd.sender_endpoint_url.clone(),
+            rpc_fallback_url: cmd.rpc_fallback_url.clone(),
+            jito_auth_uuid: cmd.jito_auth_uuid.clone(),
+        }
+    }
+
+    fn from_pumpswap_sell(cmd: &ExecutePumpSwapSellCommand) -> Self {
         Self {
             use_jito_direct: cmd.use_jito_direct,
             use_jito_fallback: cmd.use_jito_fallback,
@@ -422,6 +468,30 @@ async fn handle_line(
                 }
             }
         }
+        Ok(ExecutorCommand::ExecutePumpSwapSell(cmd)) => {
+            let id = cmd.id.clone();
+            match execute_pumpswap_sell(cmd, started).await {
+                Ok(mut response) => {
+                    response.id = id;
+                    response
+                }
+                Err(err) => ExecutorResponse {
+                    kind: "execResult",
+                    id,
+                    ok: false,
+                    signature: None,
+                    route: None,
+                    sender_path: None,
+                    sol_in_lamports: None,
+                    tokens_out_raw: None,
+                    elapsed_ms: started.elapsed().as_millis(),
+                    build_ms: None,
+                    broadcast_ms: None,
+                    tx_bytes: None,
+                    error: Some(err.to_string()),
+                },
+            }
+        }
         Ok(ExecutorCommand::ReleaseBoughtMint(cmd)) => {
             release_executor_mint(shared_bought_mints.as_ref(), &cmd.mint);
             let route = cmd
@@ -543,6 +613,35 @@ async fn execute_pumpswap_buy(
         sender_path: Some(sender_path),
         sol_in_lamports: Some(cmd.sol_in_lamports),
         tokens_out_raw: Some(cmd.expected_base_out_raw.max(1)),
+        elapsed_ms: started.elapsed().as_millis(),
+        build_ms: Some(built.build_ms),
+        broadcast_ms: Some(broadcast_started.elapsed().as_millis()),
+        tx_bytes: Some(built.bytes),
+        error: None,
+    })
+}
+
+async fn execute_pumpswap_sell(
+    cmd: ExecutePumpSwapSellCommand,
+    started: Instant,
+) -> Result<ExecutorResponse> {
+    let built = build_pumpswap_sell_tx(&cmd)?;
+    let broadcast_started = Instant::now();
+    let sender_path = broadcast_signed_tx(
+        &BroadcastConfig::from_pumpswap_sell(&cmd),
+        &built.tx,
+        &built.signature,
+    )
+    .await?;
+    Ok(ExecutorResponse {
+        kind: "execResult",
+        id: cmd.id,
+        ok: true,
+        signature: Some(built.signature),
+        route: Some(cmd.route),
+        sender_path: Some(sender_path),
+        sol_in_lamports: Some(0),
+        tokens_out_raw: Some(cmd.expected_quote_out_raw.max(1)),
         elapsed_ms: started.elapsed().as_millis(),
         build_ms: Some(built.build_ms),
         broadcast_ms: Some(broadcast_started.elapsed().as_millis()),
@@ -759,6 +858,87 @@ fn build_pumpswap_buy_tx(cmd: &ExecutePumpSwapBuyCommand) -> Result<BuiltTx> {
     Err(last_error.unwrap_or_else(|| anyhow!("no tip set could build a PumpSwap transaction")))
 }
 
+fn build_pumpswap_sell_tx(cmd: &ExecutePumpSwapSellCommand) -> Result<BuiltTx> {
+    let started = Instant::now();
+    let private_key = env::var("PRIVATE_KEY_BASE58").context("PRIVATE_KEY_BASE58 is not set")?;
+    let keypair_bytes = bs58::decode(private_key.trim())
+        .into_vec()
+        .context("PRIVATE_KEY_BASE58 is not valid base58")?;
+    let keypair = Keypair::from_bytes(&keypair_bytes)
+        .context("PRIVATE_KEY_BASE58 is not a Solana keypair")?;
+    let user = keypair.pubkey();
+    let mint = parse_pubkey(&cmd.mint, "mint")?;
+    let base_token_program = parse_pubkey(&cmd.base_token_program_id, "baseTokenProgramId")?;
+    let token_program = parse_pubkey(TOKEN_PROGRAM_ID, "token program")?;
+    let wsol = parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?;
+    let blockhash = Hash::from_str(&cmd.blockhash).context("invalid blockhash")?;
+    let user_base_ata = derive_ata(&user, &mint, &base_token_program)?;
+    let user_quote_ata = derive_ata(&user, &wsol, &token_program)?;
+
+    let mut instructions = Vec::with_capacity(6);
+    if cmd.compute_unit_limit > 0 {
+        instructions.push(ComputeBudgetInstruction::set_compute_unit_limit(
+            cmd.compute_unit_limit.min(1_400_000),
+        ));
+    }
+    instructions.push(ComputeBudgetInstruction::set_compute_unit_price(
+        cmd.priority_fee_micro_lamports,
+    ));
+    instructions.push(create_ata_idempotent_ix(
+        &user,
+        &user,
+        &wsol,
+        &token_program,
+    )?);
+    instructions.push(build_pumpswap_sell_ix(
+        cmd,
+        &user,
+        &mint,
+        &base_token_program,
+        &user_base_ata,
+        &user_quote_ata,
+    )?);
+    instructions.push(close_token_account_ix(&user_quote_ata, &user)?);
+
+    let tip_sets = tip_instruction_sets(
+        &user,
+        cmd.jito_tip_lamports,
+        cmd.helius_tip_lamports,
+        cmd.use_jito_direct,
+        cmd.use_jito_fallback,
+    )?;
+    let mut last_error: Option<anyhow::Error> = None;
+    for tips in tip_sets {
+        let mut all_ixs = instructions.clone();
+        all_ixs.extend(tips);
+        match compile_and_sign(&keypair, blockhash, &all_ixs) {
+            Ok((tx, bytes)) if bytes <= PACKET_DATA_SIZE => {
+                let signature = tx
+                    .signatures
+                    .first()
+                    .ok_or_else(|| anyhow!("signed transaction has no signature"))?
+                    .to_string();
+                return Ok(BuiltTx {
+                    tx,
+                    signature,
+                    tokens_out_raw: cmd.expected_quote_out_raw.max(1),
+                    bytes,
+                    build_ms: started.elapsed().as_millis(),
+                });
+            }
+            Ok((_tx, bytes)) => {
+                last_error = Some(anyhow!(
+                    "transaction too large: {bytes}B > {PACKET_DATA_SIZE}B"
+                ));
+            }
+            Err(err) => {
+                last_error = Some(err);
+            }
+        }
+    }
+    Err(last_error.unwrap_or_else(|| anyhow!("no tip set could build a PumpSwap sell transaction")))
+}
+
 fn compile_and_sign(
     keypair: &Keypair,
     blockhash: Hash,
@@ -897,6 +1077,70 @@ fn build_pumpswap_buy_ix(
     })
 }
 
+fn build_pumpswap_sell_ix(
+    cmd: &ExecutePumpSwapSellCommand,
+    user: &Pubkey,
+    mint: &Pubkey,
+    base_token_program: &Pubkey,
+    user_base_ata: &Pubkey,
+    user_quote_ata: &Pubkey,
+) -> Result<Instruction> {
+    let source_accounts = parse_pumpswap_account_pubkeys(&cmd.source_pump_swap_accounts)?;
+    if source_accounts.len() < PUMPSWAP_MIN_SELL_ACCOUNT_COUNT {
+        bail!("PumpSwap sell account list too short: {}", source_accounts.len());
+    }
+    if source_accounts.get(PUMPSWAP_BASE_MINT_INDEX) != Some(mint) {
+        bail!("source PumpSwap sell accounts do not match target base mint");
+    }
+    if source_accounts.get(PUMPSWAP_QUOTE_MINT_INDEX)
+        != Some(&parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?)
+    {
+        bail!("source PumpSwap sell accounts do not match SOL quote mint");
+    }
+    if source_accounts.get(PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX) != Some(base_token_program) {
+        bail!("source PumpSwap sell accounts do not match base token program");
+    }
+
+    let user_volume_accumulator = derive_pumpswap_user_volume_accumulator(user)?;
+    let keys = cmd
+        .source_pump_swap_accounts
+        .iter()
+        .enumerate()
+        .map(|(i, source_meta)| {
+            let source = source_accounts
+                .get(i)
+                .copied()
+                .ok_or_else(|| anyhow!("source PumpSwap sell account index {i} missing"))?;
+            let actual = match i {
+                PUMPSWAP_USER_INDEX => *user,
+                PUMPSWAP_USER_BASE_ATA_INDEX => *user_base_ata,
+                PUMPSWAP_USER_QUOTE_ATA_INDEX => *user_quote_ata,
+                PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX => user_volume_accumulator,
+                _ => source,
+            };
+            let is_signer = if i == PUMPSWAP_USER_INDEX {
+                true
+            } else {
+                source_meta.is_signer
+            };
+            let is_writable = match i {
+                PUMPSWAP_USER_INDEX
+                | PUMPSWAP_USER_BASE_ATA_INDEX
+                | PUMPSWAP_USER_QUOTE_ATA_INDEX
+                | PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX => true,
+                _ => source_meta.is_writable,
+            };
+            Ok(meta(actual, is_signer, is_writable))
+        })
+        .collect::<Result<Vec<_>>>()?;
+
+    Ok(Instruction {
+        program_id: parse_pubkey(PUMPSWAP_PROGRAM_ID, "pumpswap program")?,
+        accounts: keys,
+        data: encode_pumpswap_sell_args(cmd),
+    })
+}
+
 fn encode_pumpswap_buy_args(cmd: &ExecutePumpSwapBuyCommand) -> Vec<u8> {
     let mut data = vec![0u8; 25];
     if cmd.buy_instruction == "buy" {
@@ -909,6 +1153,14 @@ fn encode_pumpswap_buy_args(cmd: &ExecutePumpSwapBuyCommand) -> Vec<u8> {
         data[16..24].copy_from_slice(&cmd.min_base_out_raw.max(1).to_le_bytes());
     }
     data[24] = 0;
+    data
+}
+
+fn encode_pumpswap_sell_args(cmd: &ExecutePumpSwapSellCommand) -> Vec<u8> {
+    let mut data = vec![0u8; 24];
+    data[..8].copy_from_slice(&PUMPSWAP_SELL_DISCRIMINATOR);
+    data[8..16].copy_from_slice(&cmd.tokens_in_raw.max(1).to_le_bytes());
+    data[16..24].copy_from_slice(&cmd.min_quote_out_raw.max(1).to_le_bytes());
     data
 }
 

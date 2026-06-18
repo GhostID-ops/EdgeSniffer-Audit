@@ -111,14 +111,14 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
       hint: "Rebuild account metas from canonical route layout.",
     };
   }
-  if (lower.includes("invalidprogramid") || custom === "3008") {
+  if (lower.includes("invalidprogramid") || custom === "3007" || custom === "3008") {
     return {
       ...base,
       category: "account-invalid-program",
       code: custom ?? "3008",
       recoverable: true,
-      summary: "Program account slot mismatch",
-      hint: "Rebuild account list; do not trust source slot hints blindly.",
+      summary: "Program/account ownership slot mismatch",
+      hint: "Rebuild account list from canonical pool state; do not trust source slot hints blindly.",
     };
   }
   if (lower.includes("privilegeescalation") || lower.includes("unauthorized signer or writable")) {
