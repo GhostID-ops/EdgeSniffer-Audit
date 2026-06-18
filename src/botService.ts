@@ -1,4 +1,7 @@
 import { Keypair, PublicKey, LAMPORTS_PER_SOL, type VersionedTransactionResponse } from "@solana/web3.js";
+import { closeSync, mkdirSync, openSync, unlinkSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
 import bs58 from "bs58";
 import {
   getPrivateKeyBase58,
@@ -298,6 +301,7 @@ const fastSellConfirmRetryScheduledByMint = new Set<string>();
 const failedBuyRecoveryInFlightMints = new Set<string>();
 const boughtMintsThisSession = new Set<string>();
 const liveBuyAttemptedMintsThisSession = new Set<string>();
+const persistentBuyLockDir = process.env.BUY_LOCK_DIR || join(tmpdir(), "finalbot-buy-locks");
 const sourcePreexistingBuyMints = new Set<string>();
 const sourceBuySignatureByMint = new Map<string, string>();
 const mirrorBuySignatureByMint = new Map<string, string>();
@@ -319,6 +323,51 @@ type RiskTracePoint = {
   stopLossTrue: boolean;
 };
 const riskTraceByMint = new Map<string, RiskTracePoint[]>();
+
+function buyLockPath(mint: string): string {
+  return join(persistentBuyLockDir, `${mint.replace(/[^1-9A-HJ-NP-Za-km-z]/g, "_")}.lock`);
+}
+
+function acquirePersistentBuyLock(mint: string, sourceSignature: string): { ok: true } | { ok: false; reason: string } {
+  if (simulationMode || !buyOncePerTokenEnabled) return { ok: true };
+  try {
+    mkdirSync(persistentBuyLockDir, { recursive: true });
+    const path = buyLockPath(mint);
+    const fd = openSync(path, "wx");
+    try {
+      writeFileSync(
+        fd,
+        JSON.stringify({
+          mint,
+          sourceSignature,
+          pid: process.pid,
+          createdAt: new Date().toISOString(),
+        }) + "\n"
+      );
+    } finally {
+      closeSync(fd);
+    }
+    return { ok: true };
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "EEXIST") {
+      return { ok: false, reason: `persistent buy lock exists at ${buyLockPath(mint)}` };
+    }
+    return { ok: false, reason: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+function releasePersistentBuyLock(mint: string): void {
+  if (simulationMode || !buyOncePerTokenEnabled) return;
+  try {
+    unlinkSync(buyLockPath(mint));
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code !== "ENOENT") {
+      console.warn(`Could not remove persistent buy lock for ${mint.slice(0, 8)}...: ${err}`);
+    }
+  }
+}
 
 type RiskQuoteState = {
   /** Last Jupiter quote PnL %. */
@@ -1693,6 +1742,8 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   let lockedFastSellMint: string | null = null;
   let fastSellLockShouldPersist = false;
   let retryPendingMint: string | null = null;
+  let persistentBuyLockMint: string | null = null;
+  let persistentBuyLockCommitted = false;
   const releaseBuyLocks = () => {
     if (lockedBuyMint) {
       buyMintsInFlight.delete(lockedBuyMint);
@@ -2202,6 +2253,14 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
 
     if (isBuySignal(swap) && buyOncePerTokenEnabled && !simulationMode) {
+      const lock = acquirePersistentBuyLock(swap.outputMint, swap.signature);
+      if (!lock.ok) {
+        console.log(
+          `Skipping buy: ${swap.outputMint.slice(0, 8)}... already locked by another live buy attempt (${lock.reason}).`
+        );
+        return;
+      }
+      persistentBuyLockMint = swap.outputMint;
       liveBuyAttemptedMintsThisSession.add(swap.outputMint);
     }
 
@@ -2375,6 +2434,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     console.log(`⚡ Mirror path completed in ${elapsed()}`);
     const tokenMint = tokenSideMint(result);
     if (result.side === "buy" && tokenMint) {
+      persistentBuyLockCommitted = true;
       failedBuyRecoveryInFlightMints.delete(tokenMint);
       pendingBuyRetryByMint.delete(tokenMint);
     }
@@ -2618,6 +2678,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   } finally {
     const pendingMint = retryPendingMint;
     releaseBuyLocks();
+    if (persistentBuyLockMint && !persistentBuyLockCommitted) {
+      releasePersistentBuyLock(persistentBuyLockMint);
+      persistentBuyLockMint = null;
+    }
     if (lockedFastSellMint && !fastSellLockShouldPersist) {
       fastSellConfirmPendingByMint.delete(lockedFastSellMint);
       lockedFastSellMint = null;
