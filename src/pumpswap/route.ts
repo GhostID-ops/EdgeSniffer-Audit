@@ -565,6 +565,9 @@ async function resolvePumpSwapSellAccountPlan(args: {
     user: args.user,
     mint: args.mint,
     baseTokenProgram: args.baseTokenProgram,
+    // Account index 0 of the source PumpSwap sell ix is the pool — used only as
+    // a verified-on-chain candidate, never trusted as a ready-made meta list.
+    poolHint: hintedAccounts?.[0]?.pubkey ?? null,
   });
   if (canonicalAccounts) {
     return {
@@ -619,6 +622,9 @@ async function resolvePumpSwapBuyAccountPlan(args: {
     user: args.user,
     mint: args.mint,
     baseTokenProgram: args.baseTokenProgram,
+    // Account index 0 of the source PumpSwap buy ix is the pool — used only as
+    // a verified-on-chain candidate, never trusted as a ready-made meta list.
+    poolHint: hintedAccounts?.[0]?.pubkey ?? null,
   });
   if (canonicalAccounts) {
     return {
@@ -790,13 +796,42 @@ async function getCachedPumpSwapPoolAccount(
   return account;
 }
 
-async function findPumpSwapPoolForMint(mint: PublicKey): Promise<{
+async function findPumpSwapPoolForMint(
+  mint: PublicKey,
+  poolHint?: PublicKey | null
+): Promise<{
   pool: PublicKey;
   baseVault: PublicKey;
   quoteVault: PublicKey;
 } | null> {
   const cached = pumpSwapPoolCache.get(mint.toBase58());
   if (cached) return cached;
+
+  // Prefer a pool address learned from the source/detector tx over a heavy
+  // getProgramAccounts scan. The scan is slow and frequently unavailable right
+  // after graduation or on throttled RPCs — that is the root cause of failed
+  // mirror sells. We never trust the hint blindly: we read the pool account
+  // on-chain and require it to be PumpSwap-owned with base=mint and quote=WSOL
+  // before deriving canonical accounts from its verified state.
+  if (poolHint) {
+    const hintAccount = await getCachedPumpSwapPoolAccount(poolHint);
+    if (!validatePumpSwapPoolAccount(poolHint, hintAccount)) {
+      const hintState = readPoolStateFromAccount(poolHint, hintAccount);
+      if (
+        hintState &&
+        hintState.baseMint.equals(mint) &&
+        hintState.quoteMint.toBase58() === WRAPPED_SOL_MINT
+      ) {
+        const pool = {
+          pool: poolHint,
+          baseVault: hintState.baseVault,
+          quoteVault: hintState.quoteVault,
+        };
+        pumpSwapPoolCache.set(mint.toBase58(), pool);
+        return pool;
+      }
+    }
+  }
 
   const accounts = await readConnection.getProgramAccounts(PUMPSWAP_PROGRAM_ID, {
     commitment: "confirmed",
@@ -861,8 +896,9 @@ export async function buildCanonicalPumpSwapBuyAccounts(args: {
   user: PublicKey;
   mint: PublicKey;
   baseTokenProgram: PublicKey;
+  poolHint?: PublicKey | null;
 }): Promise<AccountMeta[] | null> {
-  const pool = await findPumpSwapPoolForMint(args.mint);
+  const pool = await findPumpSwapPoolForMint(args.mint, args.poolHint);
   if (!pool) return null;
 
   const [poolAccount, globalConfigAccount] = await Promise.all([
@@ -936,8 +972,9 @@ export async function buildCanonicalPumpSwapSellAccounts(args: {
   user: PublicKey;
   mint: PublicKey;
   baseTokenProgram: PublicKey;
+  poolHint?: PublicKey | null;
 }): Promise<AccountMeta[] | null> {
-  const pool = await findPumpSwapPoolForMint(args.mint);
+  const pool = await findPumpSwapPoolForMint(args.mint, args.poolHint);
   if (!pool) return null;
 
   const [poolAccount, globalConfigAccount] = await Promise.all([
