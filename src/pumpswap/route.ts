@@ -905,6 +905,34 @@ async function findPumpSwapPoolForMint(
   return pool;
 }
 
+// Explains, in one line, why pool resolution failed for a mint. Used on the
+// account-plan-unavailable path so the bot log states the real cause instead of
+// a generic message — and its presence in the log proves the new code is live.
+async function describePumpSwapPoolResolution(mint: PublicKey): Promise<string> {
+  try {
+    const derived = derivePumpFunGraduatedPoolPda(mint);
+    const tag = `${derived.toBase58().slice(0, 8)}…`;
+    const account = await getCachedPumpSwapPoolAccount(derived);
+    if (!account) {
+      return `derived pool ${tag} not found on read RPC (graduation indexing lag, or read RPC differs from where the token lives)`;
+    }
+    if (!account.owner.equals(PUMPSWAP_PROGRAM_ID)) {
+      return `derived pool ${tag} owned by ${account.owner.toBase58().slice(0, 8)}…, not PumpSwap`;
+    }
+    const state = readPoolStateFromAccount(derived, account);
+    if (!state) return `derived pool ${tag} data too short (${account.data.length}B)`;
+    if (!state.baseMint.equals(mint)) return `derived pool ${tag} base-mint mismatch`;
+    if (state.quoteMint.toBase58() !== WRAPPED_SOL_MINT) return `derived pool ${tag} quote is not WSOL`;
+    const globalConfig = await getCachedPumpSwapGlobalConfigAccount();
+    if (!readProtocolFeeRecipientFromGlobalConfig(globalConfig)) {
+      return `derived pool ${tag} is valid but PumpSwap global config / protocol fee recipient is unreadable on read RPC`;
+    }
+    return `derived pool ${tag} resolves and validates — account plan should be available (stale cache? rebuild/restart the bot)`;
+  } catch (err) {
+    return `pool diagnostic error: ${err instanceof Error ? err.message : String(err)}`;
+  }
+}
+
 function readPoolVaultsFromAccount(
   pool: PublicKey,
   account: AccountInfo<Buffer> | null
@@ -1188,11 +1216,12 @@ export async function tryPumpSwapDirectBuy(args: {
     canonicalOnly: (args.canonicalRetryAttempt ?? 0) > 0,
   });
   if (!accountPlan) {
+    const diag = await describePumpSwapPoolResolution(mintKey);
+    args.log(`PumpSwap buy account plan unavailable for ${args.mint.slice(0, 8)}…: ${diag}`);
     return {
       ok: false,
       recoverable: true,
-      reason:
-        "PumpSwap account plan unavailable; exact source metas and detector hints missing or invalid",
+      reason: `PumpSwap account plan unavailable: ${diag}`,
     };
   }
   args.log(`PumpSwap account plan: ${accountPlan.source}`);
@@ -1891,7 +1920,9 @@ export async function tryPumpSwapDirectSell(args: {
     sourcePumpSwapAccounts: args.sourcePumpSwapAccounts,
   });
   if (!accountPlan) {
-    return { ok: false, recoverable: true, reason: "canonical PumpSwap sell accounts unavailable" };
+    const diag = await describePumpSwapPoolResolution(mintKey);
+    args.log(`PumpSwap sell account plan unavailable for ${args.mint.slice(0, 8)}…: ${diag}`);
+    return { ok: false, recoverable: true, reason: `canonical PumpSwap sell accounts unavailable: ${diag}` };
   }
   args.log(`PumpSwap sell account plan: ${accountPlan.source}`);
 
