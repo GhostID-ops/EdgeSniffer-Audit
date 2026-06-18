@@ -57,6 +57,7 @@ const PUMPSWAP_BASE_MINT_INDEX = 3;
 const PUMPSWAP_QUOTE_MINT_INDEX = 4;
 const PUMPSWAP_USER_BASE_ATA_INDEX = 5;
 const PUMPSWAP_USER_QUOTE_ATA_INDEX = 6;
+const PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX = 11;
 const PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX = 20;
 const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT = 23;
 const PUMPSWAP_MIN_SELL_ACCOUNT_COUNT = 21;
@@ -64,11 +65,36 @@ const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 17, 2
 
 type PumpSwapAccountPlan = {
   accounts: AccountMeta[];
-  source: "confirmed-source-metas" | "detector-pubkey-hints" | "canonical-pool-state";
+  source: "confirmed-source-metas" | "detector-pubkey-hints" | "canonical-pool-state" | "cached-buy-account-plan";
   diagnostics?: Record<string, unknown>;
 };
 
 type PumpSwapBuyInstruction = "buy" | "buy_exact_quote_in";
+
+const pumpSwapBuyAccountPlanByMint = new Map<string, AccountMeta[]>();
+
+function cloneAccountMetas(accounts: AccountMeta[]): AccountMeta[] {
+  return accounts.map((account) => ({ ...account }));
+}
+
+function rememberPumpSwapBuyAccountPlan(mint: PublicKey, accounts: AccountMeta[]): void {
+  pumpSwapBuyAccountPlanByMint.set(mint.toBase58(), cloneAccountMetas(accounts));
+}
+
+async function cachedPumpSwapBuyAccountPlanForSell(args: {
+  mint: PublicKey;
+  baseTokenProgram: PublicKey;
+}): Promise<AccountMeta[] | null> {
+  const cached = pumpSwapBuyAccountPlanByMint.get(args.mint.toBase58());
+  if (!cached) return null;
+  if (validatePumpSwapSellAccountLayout(cached, args.mint)) return null;
+  if (!cached[PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX]?.pubkey.equals(args.baseTokenProgram)) return null;
+  const pool = cached[0]?.pubkey;
+  if (!pool) return null;
+  const poolAccount = await getCachedPumpSwapPoolAccount(pool);
+  if (validatePumpSwapPoolAccount(pool, poolAccount)) return null;
+  return cloneAccountMetas(cached);
+}
 
 export type PumpSwapBuildContext = {
   mint: string;
@@ -547,6 +573,20 @@ async function resolvePumpSwapSellAccountPlan(args: {
       diagnostics: hintedAccounts
         ? comparePumpSwapAccounts(canonicalAccounts, hintedAccounts, "detector-pubkey-hints")
         : { comparedTo: "detector-pubkey-hints", candidateAccounts: 0 },
+    };
+  }
+
+  const cachedBuyAccounts = await cachedPumpSwapBuyAccountPlanForSell({
+    mint: args.mint,
+    baseTokenProgram: args.baseTokenProgram,
+  });
+  if (cachedBuyAccounts) {
+    return {
+      accounts: cachedBuyAccounts,
+      source: "cached-buy-account-plan",
+      diagnostics: hintedAccounts
+        ? comparePumpSwapAccounts(cachedBuyAccounts, hintedAccounts, "detector-pubkey-hints")
+        : { canonicalUnavailable: true, cachedBuyAccountPlan: true },
     };
   }
 
@@ -1314,6 +1354,7 @@ export async function tryPumpSwapDirectBuy(args: {
   const rust = await executeRustAttempt(buyInstruction, "primary");
   if (rust?.ok) {
     const signature = rust.signature;
+    rememberPumpSwapBuyAccountPlan(mintKey, accountPlan.accounts);
     if (fastMode) {
       const confirmStartedAt = Date.now();
       confirmSignature(signature)
@@ -1335,6 +1376,7 @@ export async function tryPumpSwapDirectBuy(args: {
             },
           });
           args.onConfirmSuccess?.(args.mint, Number(expectedBaseOut), args.solInLamports, signature);
+          rememberPumpSwapBuyAccountPlan(mintKey, accountPlan.accounts);
         })
         .catch(async (err) => {
           const msg = err instanceof Error ? err.message : String(err);
@@ -1385,6 +1427,7 @@ export async function tryPumpSwapDirectBuy(args: {
       }
       finalSignature = retrySignature;
     }
+    rememberPumpSwapBuyAccountPlan(mintKey, accountPlan.accounts);
     return {
       ok: true,
       signature: finalSignature,
