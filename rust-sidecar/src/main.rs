@@ -11,7 +11,8 @@ use std::{
 use anyhow::{bail, Context, Result};
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine as _};
 use futures::{stream, StreamExt};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 #[cfg(feature = "jito-shredstream")]
 use solana_entry::entry::Entry as SolanaEntry;
 #[cfg(feature = "jito-shredstream")]
@@ -69,6 +70,14 @@ struct HotSniperConfig {
     session_deployed_lamports: Arc<AtomicU64>,
     blockhash_cache: Arc<Mutex<Option<CachedBlockhash>>>,
     max_session_deployed_lamports: Option<u64>,
+    min_market_cap_usd: Option<f64>,
+    max_market_cap_usd: Option<f64>,
+    min_market_cap_sol: Option<f64>,
+    max_market_cap_sol: Option<f64>,
+    sol_price_usd: Option<f64>,
+    market_cap_filter_enabled: bool,
+    market_cap_filter_fail_open: bool,
+    market_cap_rpc_timeout_ms: u64,
     min_buy_lamports: u64,
     max_buy_lamports: u64,
     max_sol_per_token_lamports: Option<u64>,
@@ -97,6 +106,18 @@ struct HotSniperConfig {
 struct CachedBlockhash {
     value: String,
     fetched_at_ms: u128,
+}
+
+#[derive(Debug, Deserialize)]
+struct JsonRpcResponse {
+    result: Option<Value>,
+    error: Option<JsonRpcError>,
+}
+
+#[derive(Debug, Deserialize)]
+struct JsonRpcError {
+    code: Option<i64>,
+    message: Option<String>,
 }
 
 #[derive(Serialize)]
@@ -298,6 +319,19 @@ impl HotSniperConfig {
             session_deployed_lamports: Arc::new(AtomicU64::new(0)),
             blockhash_cache: Arc::new(Mutex::new(None)),
             max_session_deployed_lamports: optional_sol_env_lamports("MAX_SESSION_DEPLOYED_SOL"),
+            min_market_cap_usd: parse_env_optional_f64("PREBUY_MIN_MARKET_CAP_USD"),
+            max_market_cap_usd: parse_env_optional_f64("PREBUY_MAX_MARKET_CAP_USD"),
+            min_market_cap_sol: parse_env_optional_f64("LOCAL_PUMPFUN_MIN_MARKET_CAP_SOL"),
+            max_market_cap_sol: parse_env_optional_f64("LOCAL_PUMPFUN_MAX_MARKET_CAP_SOL"),
+            sol_price_usd: parse_env_optional_f64("LOCAL_PUMPFUN_SOL_PRICE_USD")
+                .or_else(|| parse_env_optional_f64("SOL_PRICE_USD")),
+            market_cap_filter_enabled: parse_env_bool(
+                "LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED",
+                false,
+            ),
+            market_cap_filter_fail_open: parse_env_bool("PREBUY_FILTER_FAIL_OPEN", false),
+            market_cap_rpc_timeout_ms: parse_env_u64("RUST_HOT_SNIPER_MC_RPC_TIMEOUT_MS", 80)
+                .clamp(25, 500),
             min_buy_lamports,
             max_buy_lamports,
             max_sol_per_token_lamports,
@@ -380,6 +414,20 @@ fn parse_env_f64(name: &str, fallback: f64) -> f64 {
         .and_then(|v| v.trim().parse::<f64>().ok())
         .filter(|v| v.is_finite())
         .unwrap_or(fallback)
+}
+
+fn parse_env_optional_f64(name: &str) -> Option<f64> {
+    env::var(name)
+        .ok()
+        .and_then(|v| {
+            let trimmed = v.trim();
+            if trimmed.is_empty() {
+                None
+            } else {
+                trimmed.parse::<f64>().ok()
+            }
+        })
+        .filter(|v| v.is_finite() && *v > 0.0)
 }
 
 fn sol_env_lamports(name: &str, fallback_sol: f64) -> u64 {
@@ -607,6 +655,9 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
     let Some(source_ix_data_base64) = line.source_ix_data_base64.clone() else {
         return HotDecision::Fallback(None);
     };
+    if let Some(reason) = hot_market_cap_block_reason(hot, line, &source_ix_accounts).await {
+        return HotDecision::Fallback(Some(reason));
+    }
     let Some(sol_in_lamports) = hot_sized_lamports(hot, line.amount_raw) else {
         return HotDecision::Fallback(Some("copy-sized amount below minimum".to_string()));
     };
@@ -747,6 +798,276 @@ fn hot_sized_lamports(hot: &HotSniperConfig, source_lamports: u64) -> Option<u64
         sized = sized.min(max_per_token);
     }
     Some(sized.max(1))
+}
+
+async fn hot_market_cap_block_reason(
+    hot: &HotSniperConfig,
+    line: &DetectedSwapLine,
+    source_ix_accounts: &[String],
+) -> Option<String> {
+    if !hot.market_cap_filter_enabled {
+        return None;
+    }
+    if hot.min_market_cap_usd.is_none()
+        && hot.max_market_cap_usd.is_none()
+        && hot.min_market_cap_sol.is_none()
+        && hot.max_market_cap_sol.is_none()
+    {
+        return None;
+    }
+    match hot_market_cap_decision(hot, line, source_ix_accounts).await {
+        Ok(None) => None,
+        Ok(Some(reason)) => Some(reason),
+        Err(err) => {
+            let reason = format!(
+                "Rust hot sniper MC unavailable for {}...: {err} ({})",
+                line.output_mint.chars().take(8).collect::<String>(),
+                if hot.market_cap_filter_fail_open {
+                    "fail-open"
+                } else {
+                    "fail-closed"
+                }
+            );
+            if hot.market_cap_filter_fail_open {
+                eprintln!("rust-sidecar: {reason}; allowing buy");
+                None
+            } else {
+                Some(reason)
+            }
+        }
+    }
+}
+
+async fn hot_market_cap_decision(
+    hot: &HotSniperConfig,
+    line: &DetectedSwapLine,
+    source_ix_accounts: &[String],
+) -> Result<Option<String>> {
+    let bonding_curve = source_bonding_curve_for_buy(&line.output_mint, source_ix_accounts)
+        .context("source buy missing bonding curve account")?;
+    let account_data = fetch_account_data_base64(
+        &hot.rpc_fallback_url,
+        &bonding_curve,
+        hot.market_cap_rpc_timeout_ms,
+    )
+    .await?;
+    let state = decode_bonding_curve_state(&account_data)
+        .context("bonding curve account is too short or malformed")?;
+    let market_cap_sol = estimate_market_cap_sol(&state)
+        .context("bonding curve reserves cannot produce market cap")?;
+    let min_sol_from_usd = match (hot.min_market_cap_usd, hot.sol_price_usd) {
+        (Some(min_usd), Some(price)) => Some(min_usd / price),
+        _ => None,
+    };
+    let max_sol_from_usd = match (hot.max_market_cap_usd, hot.sol_price_usd) {
+        (Some(max_usd), Some(price)) => Some(max_usd / price),
+        _ => None,
+    };
+    if (hot.min_market_cap_usd.is_some() || hot.max_market_cap_usd.is_some())
+        && hot.sol_price_usd.is_none()
+        && hot.min_market_cap_sol.is_none()
+        && hot.max_market_cap_sol.is_none()
+    {
+        bail!(
+            "Rust hot sniper MC needs LOCAL_PUMPFUN_SOL_PRICE_USD/SOL_PRICE_USD for USD thresholds"
+        );
+    }
+
+    let min_sol = match (hot.min_market_cap_sol, min_sol_from_usd) {
+        (Some(a), Some(b)) => Some(a.max(b)),
+        (Some(a), None) => Some(a),
+        (None, Some(b)) => Some(b),
+        (None, None) => None,
+    };
+    let max_sol = match (hot.max_market_cap_sol, max_sol_from_usd) {
+        (Some(a), Some(b)) => Some(a.min(b)),
+        (Some(a), None) => Some(a),
+        (None, Some(b)) => Some(b),
+        (None, None) => None,
+    };
+    let label = format_market_cap_label(market_cap_sol, hot.sol_price_usd);
+    if let Some(min_sol) = min_sol {
+        if market_cap_sol < min_sol {
+            return Ok(Some(format!(
+                "Rust hot sniper MC {label} < {}",
+                format_min_max_label(min_sol, hot.min_market_cap_usd, hot.sol_price_usd)
+            )));
+        }
+    }
+    if let Some(max_sol) = max_sol {
+        if market_cap_sol > max_sol {
+            return Ok(Some(format!(
+                "Rust hot sniper MC {label} > {}",
+                format_min_max_label(max_sol, hot.max_market_cap_usd, hot.sol_price_usd)
+            )));
+        }
+    }
+    eprintln!("rust-sidecar: Rust hot sniper MC passed: {label}");
+    Ok(None)
+}
+
+fn source_bonding_curve_for_buy(mint: &str, source_ix_accounts: &[String]) -> Option<String> {
+    let is_v2 = source_ix_accounts.len() >= 27
+        && source_ix_accounts.get(1).is_some_and(|v| v == mint)
+        && source_ix_accounts
+            .get(26)
+            .is_some_and(|v| v == PUMP_FUN_PROGRAM_ID);
+    if is_v2 {
+        return source_ix_accounts.get(10).cloned();
+    }
+    let is_legacy = source_ix_accounts.len() >= 16
+        && source_ix_accounts.get(2).is_some_and(|v| v == mint)
+        && source_ix_accounts
+            .get(11)
+            .is_some_and(|v| v == PUMP_FUN_PROGRAM_ID);
+    if is_legacy {
+        return source_ix_accounts.get(3).cloned();
+    }
+    None
+}
+
+async fn fetch_account_data_base64(
+    rpc_url: &str,
+    pubkey: &str,
+    timeout_ms: u64,
+) -> Result<Vec<u8>> {
+    let body = json!({
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "getAccountInfo",
+        "params": [pubkey, { "encoding": "base64", "commitment": "processed" }],
+    });
+    let response = reqwest::Client::new()
+        .post(rpc_url)
+        .timeout(Duration::from_millis(timeout_ms))
+        .json(&body)
+        .send()
+        .await
+        .context("MC account rpc send failed")?;
+    let json = response
+        .json::<JsonRpcResponse>()
+        .await
+        .context("MC account rpc response parse failed")?;
+    if let Some(error) = json.error {
+        let code = error.code.map(|c| format!(" code {c}")).unwrap_or_default();
+        bail!(
+            "{}{}",
+            error
+                .message
+                .unwrap_or_else(|| "getAccountInfo json-rpc error".to_string()),
+            code
+        );
+    }
+    let data_base64 = json
+        .result
+        .and_then(|v| v.get("value").cloned())
+        .and_then(|v| {
+            let owner_ok = v
+                .get("owner")
+                .and_then(Value::as_str)
+                .is_some_and(|owner| owner == PUMP_FUN_PROGRAM_ID);
+            if !owner_ok {
+                return None;
+            }
+            v.get("data")
+                .and_then(Value::as_array)
+                .and_then(|arr| arr.first())
+                .and_then(Value::as_str)
+                .map(str::to_string)
+        })
+        .context("getAccountInfo returned no Pump.fun account data")?;
+    BASE64_STANDARD
+        .decode(data_base64)
+        .context("MC account data is not valid base64")
+}
+
+struct CurveState {
+    virtual_token_reserves: u64,
+    virtual_sol_reserves: u64,
+    token_total_supply: u64,
+}
+
+fn decode_bonding_curve_state(data: &[u8]) -> Option<CurveState> {
+    if data.len() < 49 {
+        return None;
+    }
+    Some(CurveState {
+        virtual_token_reserves: read_u64_le_slice(data, 8)?,
+        virtual_sol_reserves: read_u64_le_slice(data, 16)?,
+        token_total_supply: read_u64_le_slice(data, 40)?,
+    })
+}
+
+fn read_u64_le_slice(data: &[u8], offset: usize) -> Option<u64> {
+    let bytes = data.get(offset..offset + 8)?;
+    let mut arr = [0u8; 8];
+    arr.copy_from_slice(bytes);
+    Some(u64::from_le_bytes(arr))
+}
+
+fn estimate_market_cap_sol(state: &CurveState) -> Option<f64> {
+    let virtual_sol = state.virtual_sol_reserves as f64 / LAMPORTS_PER_SOL;
+    let virtual_tokens = state.virtual_token_reserves as f64;
+    let total_supply = state.token_total_supply as f64;
+    if !virtual_sol.is_finite()
+        || !virtual_tokens.is_finite()
+        || !total_supply.is_finite()
+        || virtual_sol <= 0.0
+        || virtual_tokens <= 0.0
+        || total_supply <= 0.0
+    {
+        return None;
+    }
+    let market_cap_sol = virtual_sol * (total_supply / virtual_tokens);
+    market_cap_sol.is_finite().then_some(market_cap_sol)
+}
+
+fn format_market_cap_label(market_cap_sol: f64, sol_price_usd: Option<f64>) -> String {
+    if let Some(price) = sol_price_usd {
+        format!(
+            "{} ({})",
+            format_usd(market_cap_sol * price),
+            format_mc_sol(market_cap_sol)
+        )
+    } else {
+        format_mc_sol(market_cap_sol)
+    }
+}
+
+fn format_min_max_label(
+    threshold_sol: f64,
+    threshold_usd: Option<f64>,
+    sol_price_usd: Option<f64>,
+) -> String {
+    if let Some(usd) = threshold_usd {
+        format_usd(usd)
+    } else if let Some(price) = sol_price_usd {
+        format!(
+            "{} ({})",
+            format_usd(threshold_sol * price),
+            format_mc_sol(threshold_sol)
+        )
+    } else {
+        format_mc_sol(threshold_sol)
+    }
+}
+
+fn format_mc_sol(value: f64) -> String {
+    if value >= 100.0 {
+        format!("{value:.1} SOL")
+    } else {
+        format!("{value:.2} SOL")
+    }
+}
+
+fn format_usd(value: f64) -> String {
+    if value >= 1_000_000.0 {
+        format!("${:.2}M", value / 1_000_000.0)
+    } else if value >= 1_000.0 {
+        format!("${:.1}K", value / 1_000.0)
+    } else {
+        format!("${value:.0}")
+    }
 }
 
 fn reserve_hot_session_lamports(hot: &HotSniperConfig, lamports: u64) -> bool {
