@@ -34,7 +34,7 @@ import {
 } from "../idlNativeBuilder.js";
 import { recordExecutionStage } from "../executionTelemetry.js";
 import { classifyExecutionError } from "../errorClassifier.js";
-import { executeRustPumpSwapBuy } from "../rustSidecar.js";
+import { executeRustPumpSwapBuy, releaseRustBoughtMint } from "../rustSidecar.js";
 import type { SourcePumpSwapAccountMeta } from "../types.js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -1196,7 +1196,11 @@ export async function tryPumpSwapDirectBuy(args: {
     minBaseOutRaw: Number(minBaseOut),
     slippageBps: args.slippageBps,
     buyInstruction,
-    sourcePumpSwapAccounts: accountPlan.accounts.map((account) => account.pubkey.toBase58()),
+    sourcePumpSwapAccounts: accountPlan.accounts.map((account) => ({
+      pubkey: account.pubkey.toBase58(),
+      isSigner: account.isSigner,
+      isWritable: account.isWritable,
+    })),
     baseTokenProgramId: baseTokenProgramId.toBase58(),
   });
   if (rust?.ok) {
@@ -1262,6 +1266,7 @@ export async function tryPumpSwapDirectBuy(args: {
             details: { mode: "background", accountPlan: accountPlan.source, executor: "rust" },
           });
           console.warn(`PumpSwap confirmation failed after Rust broadcast: ${msg}`);
+          releaseRustBoughtMint(args.mint, `PumpSwap confirmation failed after Rust broadcast: ${msg}`);
           args.onConfirmFailure?.(args.mint, Number(expectedBaseOut), args.solInLamports, msg);
         });
       return {
@@ -1275,7 +1280,13 @@ export async function tryPumpSwapDirectBuy(args: {
       };
     }
     const confirmStartedAt = Date.now();
-    await confirmSignature(signature);
+    try {
+      await confirmSignature(signature);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      releaseRustBoughtMint(args.mint, `PumpSwap confirmation failed after Rust broadcast: ${msg}`);
+      throw err;
+    }
     recordPumpSwapConfirmStage({
       route: "pumpswap-direct-buy",
       side: "buy",

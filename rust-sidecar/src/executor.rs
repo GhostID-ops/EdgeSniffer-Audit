@@ -97,6 +97,7 @@ fn http_client() -> reqwest::Client {
 enum ExecutorCommand {
     ExecutePumpfunBuy(ExecutePumpfunBuyCommand),
     ExecutePumpSwapBuy(ExecutePumpSwapBuyCommand),
+    ReleaseBoughtMint(ReleaseBoughtMintCommand),
 }
 
 #[derive(Debug, Deserialize)]
@@ -142,7 +143,7 @@ pub struct ExecutePumpSwapBuyCommand {
     pub expected_base_out_raw: u64,
     pub min_base_out_raw: u64,
     pub buy_instruction: String,
-    pub source_pump_swap_accounts: Vec<String>,
+    pub source_pump_swap_accounts: Vec<SourcePumpSwapAccountMeta>,
     pub base_token_program_id: String,
     pub blockhash: String,
     pub compute_unit_limit: u32,
@@ -159,6 +160,22 @@ pub struct ExecutePumpSwapBuyCommand {
     pub sender_endpoint_url: String,
     pub rpc_fallback_url: String,
     pub jito_auth_uuid: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SourcePumpSwapAccountMeta {
+    pub pubkey: String,
+    pub is_signer: bool,
+    pub is_writable: bool,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReleaseBoughtMintCommand {
+    pub id: String,
+    pub mint: String,
+    pub reason: Option<String>,
 }
 
 #[derive(Clone)]
@@ -403,6 +420,28 @@ async fn handle_line(
                         error: Some(err.to_string()),
                     }
                 }
+            }
+        }
+        Ok(ExecutorCommand::ReleaseBoughtMint(cmd)) => {
+            release_executor_mint(shared_bought_mints.as_ref(), &cmd.mint);
+            let route = cmd
+                .reason
+                .as_ref()
+                .map(|_| "release-bought-mint".to_string());
+            ExecutorResponse {
+                kind: "execResult",
+                id: cmd.id,
+                ok: true,
+                signature: None,
+                route,
+                sender_path: None,
+                sol_in_lamports: None,
+                tokens_out_raw: None,
+                elapsed_ms: started.elapsed().as_millis(),
+                build_ms: None,
+                broadcast_ms: None,
+                tx_bytes: None,
+                error: None,
             }
         }
         Err(err) => ExecutorResponse {
@@ -802,7 +841,7 @@ fn build_pumpswap_buy_ix(
     user_base_ata: &Pubkey,
     user_quote_ata: &Pubkey,
 ) -> Result<Instruction> {
-    let source_accounts = parse_pubkeys(&cmd.source_pump_swap_accounts, "sourcePumpSwapAccounts")?;
+    let source_accounts = parse_pumpswap_account_pubkeys(&cmd.source_pump_swap_accounts)?;
     if source_accounts.len() < PUMPSWAP_MIN_BUY_ACCOUNT_COUNT {
         bail!("PumpSwap account list too short: {}", source_accounts.len());
     }
@@ -819,20 +858,37 @@ fn build_pumpswap_buy_ix(
     }
 
     let user_volume_accumulator = derive_pumpswap_user_volume_accumulator(user)?;
-    let keys = source_accounts
+    let keys = cmd
+        .source_pump_swap_accounts
         .iter()
         .enumerate()
-        .map(|(i, source)| {
+        .map(|(i, source_meta)| {
+            let source = source_accounts
+                .get(i)
+                .copied()
+                .ok_or_else(|| anyhow!("source PumpSwap account index {i} missing"))?;
             let actual = match i {
                 PUMPSWAP_USER_INDEX => *user,
                 PUMPSWAP_USER_BASE_ATA_INDEX => *user_base_ata,
                 PUMPSWAP_USER_QUOTE_ATA_INDEX => *user_quote_ata,
                 PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX => user_volume_accumulator,
-                _ => *source,
+                _ => source,
             };
-            meta(actual, i == PUMPSWAP_USER_INDEX, pumpswap_is_writable(i))
+            let is_signer = if i == PUMPSWAP_USER_INDEX {
+                true
+            } else {
+                source_meta.is_signer
+            };
+            let is_writable = match i {
+                PUMPSWAP_USER_INDEX
+                | PUMPSWAP_USER_BASE_ATA_INDEX
+                | PUMPSWAP_USER_QUOTE_ATA_INDEX
+                | PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX => true,
+                _ => source_meta.is_writable,
+            };
+            Ok(meta(actual, is_signer, is_writable))
         })
-        .collect::<Vec<_>>();
+        .collect::<Result<Vec<_>>>()?;
 
     Ok(Instruction {
         program_id: parse_pubkey(PUMPSWAP_PROGRAM_ID, "pumpswap program")?,
@@ -854,10 +910,6 @@ fn encode_pumpswap_buy_args(cmd: &ExecutePumpSwapBuyCommand) -> Vec<u8> {
     }
     data[24] = 0;
     data
-}
-
-fn pumpswap_is_writable(index: usize) -> bool {
-    matches!(index, 0 | 1 | 5 | 6 | 7 | 8 | 10 | 17 | 20 | 23)
 }
 
 struct ScaledBuyData {
@@ -1544,6 +1596,13 @@ fn parse_pubkeys(values: &[String], label: &str) -> Result<Vec<Pubkey>> {
     values
         .iter()
         .map(|value| parse_pubkey(value, label))
+        .collect::<Result<Vec<_>>>()
+}
+
+fn parse_pumpswap_account_pubkeys(values: &[SourcePumpSwapAccountMeta]) -> Result<Vec<Pubkey>> {
+    values
+        .iter()
+        .map(|value| parse_pubkey(&value.pubkey, "sourcePumpSwapAccounts"))
         .collect::<Result<Vec<_>>>()
 }
 

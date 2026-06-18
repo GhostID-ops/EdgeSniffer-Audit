@@ -145,6 +145,21 @@ const executorPending = new Map<
   }
 >();
 
+function normalizePumpSwapAccountMeta(account: SourcePumpSwapAccountMeta | string, index: number): SourcePumpSwapAccountMeta {
+  if (typeof account !== "string") {
+    return {
+      pubkey: account.pubkey,
+      isSigner: account.isSigner,
+      isWritable: account.isWritable,
+    };
+  }
+  return {
+    pubkey: account,
+    isSigner: index === 1,
+    isWritable: [0, 1, 5, 6, 7, 8, 10, 17, 20, 23].includes(index),
+  };
+}
+
 export type RustSidecarUnsubscribe = () => Promise<void>;
 
 function envFlag(name: string, defaultValue = false): boolean {
@@ -573,9 +588,7 @@ export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise
     minBaseOutRaw: Math.max(1, Math.floor(args.minBaseOutRaw)),
     slippageBps: Math.max(0, Math.floor(args.slippageBps)),
     buyInstruction: args.buyInstruction,
-    sourcePumpSwapAccounts: args.sourcePumpSwapAccounts.map((account) =>
-      typeof account === "string" ? account : account.pubkey
-    ),
+    sourcePumpSwapAccounts: args.sourcePumpSwapAccounts.map(normalizePumpSwapAccountMeta),
     baseTokenProgramId: args.baseTokenProgramId,
     blockhash,
     computeUnitLimit,
@@ -602,4 +615,16 @@ export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise
     executorPending.set(id, { resolve, timer });
     executorStdin!.write(`${JSON.stringify(command)}\n`);
   });
+}
+
+export function releaseRustBoughtMint(mint: string, reason: string): void {
+  if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) return;
+  const id = `rust-release-${Date.now()}-${++executorSeq}`;
+  const command = {
+    kind: "releaseBoughtMint",
+    id,
+    mint,
+    reason,
+  };
+  executorStdin.write(`${JSON.stringify(command)}\n`);
 }
