@@ -676,10 +676,14 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
         return HotDecision::Fallback(None);
     }
     let Some(source_ix_accounts) = line.source_ix_accounts.clone() else {
-        return HotDecision::Fallback(None);
+        return HotDecision::Fallback(Some(
+            "source instruction accounts unavailable for Rust hot sniper".to_string(),
+        ));
     };
     let Some(source_ix_data_base64) = line.source_ix_data_base64.clone() else {
-        return HotDecision::Fallback(None);
+        return HotDecision::Fallback(Some(
+            "source instruction data unavailable for Rust hot sniper".to_string(),
+        ));
     };
     if let Some(reason) = hot_market_cap_block_reason(hot, line, &source_ix_accounts).await {
         return HotDecision::Fallback(Some(reason));

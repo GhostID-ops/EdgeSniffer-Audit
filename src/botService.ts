@@ -1288,6 +1288,10 @@ function isTerminalRustHotFallback(reason: string): boolean {
     normalized.includes("rust hot sniper mc ") ||
     normalized.includes("rust hot sniper mc unavailable") ||
     normalized.includes("rust hot sniper mc needs") ||
+    normalized.includes("source instruction accounts unavailable") ||
+    normalized.includes("source instruction data unavailable") ||
+    normalized.includes("rust executor returned no signature") ||
+    normalized.includes("blockhash fetch failed") ||
     normalized.includes("copy-sized amount below minimum") ||
     normalized.includes("copy-sized amount is zero") ||
     normalized.includes("session deployed sol cap would be exceeded")
@@ -1295,14 +1299,16 @@ function isTerminalRustHotFallback(reason: string): boolean {
 }
 
 function handleRustHotBuyFallback(fallback: RustHotBuyFallback): void {
-  if (!isTerminalRustHotFallback(fallback.reason)) return;
   rustHotSniperPrimaryPendingMints.delete(fallback.mint);
-  pendingBuyRetryByMint.delete(fallback.mint);
   failedBuyRecoveryInFlightMints.delete(fallback.mint);
-  console.log(
-    `Rust hot sniper terminal skip for ${fallback.mint.slice(0, 8)}...; ` +
-      `cleared primary pending state (${fallback.reason}).`
-  );
+  const terminal = isTerminalRustHotFallback(fallback.reason);
+  if (terminal || rustOnlyBuys) {
+    pendingBuyRetryByMint.delete(fallback.mint);
+    console.log(
+      `Rust hot sniper ${terminal ? "terminal skip" : "fallback"} for ${fallback.mint.slice(0, 8)}...; ` +
+        `cleared primary pending state (${fallback.reason}).`
+    );
+  }
 }
 
 async function getCurrentSourceHeldMints(wallet: string): Promise<Set<string>> {
@@ -2028,6 +2034,29 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       if (!rustHotSniperPrimaryFallbackEnabled) {
         return;
       }
+      const watchdogDelayMs = Math.max(1_000, rustHotSniperPrimaryFallbackDelayMs + 1_000);
+      setTimeout(() => {
+        if (!rustHotSniperPrimaryPendingMints.has(mint)) return;
+        if (
+          rustHotBuyRecordedByMint.has(mint) ||
+          liveBuyAttemptedMintsThisSession.has(mint) ||
+          boughtMintsThisSession.has(mint) ||
+          quarantinedBuyMints.has(mint) ||
+          (getPosition(mint)?.buysCount ?? 0) > 0
+        ) {
+          rustHotSniperPrimaryPendingMints.delete(mint);
+          pendingBuyRetryByMint.delete(mint);
+          return;
+        }
+        rustHotSniperPrimaryPendingMints.delete(mint);
+        if (rustOnlyBuys) {
+          pendingBuyRetryByMint.delete(mint);
+          console.warn(
+            `Rust hot sniper primary timed out for ${mint.slice(0, 8)}...; ` +
+              "RUST_ONLY_BUYS=true so no TypeScript fallback was sent."
+          );
+        }
+      }, watchdogDelayMs);
       setTimeout(() => {
         const fallback = pendingBuyRetryByMint.get(mint) ?? swap;
         if (
