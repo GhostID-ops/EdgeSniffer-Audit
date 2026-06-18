@@ -1187,55 +1187,154 @@ export async function tryPumpSwapDirectBuy(args: {
     };
   }
 
-  const rustBuildStartedAt = Date.now();
-  const rust = await executeRustPumpSwapBuy({
-    route: "pumpswap-direct-buy",
-    mint: args.mint,
-    solInLamports: args.solInLamports,
-    expectedBaseOutRaw: Number(expectedBaseOut),
-    minBaseOutRaw: Number(minBaseOut),
-    slippageBps: args.slippageBps,
-    buyInstruction,
-    sourcePumpSwapAccounts: accountPlan.accounts.map((account) => ({
+  const rustSourcePumpSwapAccounts = accountPlan.accounts.map((account) => ({
       pubkey: account.pubkey.toBase58(),
       isSigner: account.isSigner,
       isWritable: account.isWritable,
-    })),
-    baseTokenProgramId: baseTokenProgramId.toBase58(),
-  });
+  }));
+  const alternateBuyInstruction: PumpSwapBuyInstruction =
+    buyInstruction === "buy" ? "buy_exact_quote_in" : "buy";
+  const executeRustAttempt = async (
+    attemptInstruction: PumpSwapBuyInstruction,
+    attempt: "primary" | "overflow-retry"
+  ) => {
+    const rustBuildStartedAt = Date.now();
+    const rust = await executeRustPumpSwapBuy({
+      route: "pumpswap-direct-buy",
+      mint: args.mint,
+      solInLamports: args.solInLamports,
+      expectedBaseOutRaw: Number(expectedBaseOut),
+      minBaseOutRaw: Number(minBaseOut),
+      slippageBps: args.slippageBps,
+      buyInstruction: attemptInstruction,
+      sourcePumpSwapAccounts: rustSourcePumpSwapAccounts,
+      baseTokenProgramId: baseTokenProgramId.toBase58(),
+    });
+    if (rust?.ok) {
+      recordExecutionStage({
+        stage: "build",
+        route: "pumpswap-direct-buy",
+        side: "buy",
+        mint: args.mint,
+        sourceSignature: args.sourceSignature,
+        elapsedMs: rust.buildMs ?? Date.now() - rustBuildStartedAt,
+        success: true,
+        details: {
+          executor: "rust",
+          senderPath: rust.senderPath,
+          txBytes: rust.txBytes,
+          broadcastMs: rust.broadcastMs,
+          accountPlan: accountPlan.source,
+          buyInstruction: attemptInstruction,
+          attempt,
+        },
+      });
+      recordExecutionStage({
+        stage: "broadcast",
+        route: "pumpswap-direct-buy",
+        side: "buy",
+        mint: args.mint,
+        sourceSignature: args.sourceSignature,
+        signature: rust.signature,
+        elapsedMs: rust.broadcastMs,
+        success: true,
+        details: {
+          executor: "rust",
+          senderPath: rust.senderPath,
+          accountPlan: accountPlan.source,
+          buyInstruction: attemptInstruction,
+          attempt,
+        },
+      });
+      args.log(
+        `Rust executor PumpSwap buy broadcast${attempt === "overflow-retry" ? " (overflow retry)" : ""}: ` +
+          `${rust.signature}` +
+          (rust.elapsedMs != null ? ` (${rust.elapsedMs}ms)` : "")
+      );
+    }
+    return rust;
+  };
+  const confirmRustAttempt = async (
+    signature: string,
+    mode: "background" | "blocking",
+    attemptInstruction: PumpSwapBuyInstruction,
+    attempt: "primary" | "overflow-retry"
+  ): Promise<{ ok: true } | { ok: false; message: string }> => {
+    const confirmStartedAt = Date.now();
+    try {
+      await confirmSignature(signature);
+      recordPumpSwapConfirmStage({
+        route: "pumpswap-direct-buy",
+        side: "buy",
+        mint: args.mint,
+        sourceSignature: args.sourceSignature,
+        signature,
+        startedAt: confirmStartedAt,
+        success: true,
+        details: {
+          mode,
+          accountPlan: accountPlan.source,
+          executor: "rust",
+          buyInstruction: attemptInstruction,
+          attempt,
+        },
+      });
+      args.onConfirmSuccess?.(args.mint, Number(expectedBaseOut), args.solInLamports, signature);
+      return { ok: true };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      recordPumpSwapConfirmStage({
+        route: "pumpswap-direct-buy",
+        side: "buy",
+        mint: args.mint,
+        sourceSignature: args.sourceSignature,
+        signature,
+        startedAt: confirmStartedAt,
+        success: false,
+        error: msg,
+        details: {
+          mode,
+          accountPlan: accountPlan.source,
+          executor: "rust",
+          buyInstruction: attemptInstruction,
+          attempt,
+        },
+      });
+      console.warn(
+        `PumpSwap confirmation failed after Rust broadcast` +
+          (attempt === "overflow-retry" ? " overflow retry" : "") +
+          `: ${msg}`
+      );
+      return { ok: false, message: msg };
+    }
+  };
+  const retryRustOverflow = async (mode: "background" | "blocking", originalMsg: string): Promise<string | null> => {
+    if (!isPumpSwapOverflowError(originalMsg)) return null;
+    releaseRustBoughtMint(args.mint, `PumpSwap overflow retry after ${buyInstruction} failed: ${originalMsg}`);
+    args.log(
+      `PumpSwap Rust overflow retry: ${buyInstruction} failed with 6023; ` +
+        `retrying ${alternateBuyInstruction}.`
+    );
+    const retry = await executeRustAttempt(alternateBuyInstruction, "overflow-retry");
+    if (!retry?.ok) {
+      args.log(
+        `PumpSwap Rust overflow retry failed before confirmation: ` +
+          `${retry && !retry.ok ? retry.error : "Rust PumpSwap executor unavailable"}`
+      );
+      return null;
+    }
+    const confirmed = await confirmRustAttempt(
+      retry.signature,
+      mode,
+      alternateBuyInstruction,
+      "overflow-retry"
+    );
+    return confirmed.ok ? retry.signature : null;
+  };
+
+  const rust = await executeRustAttempt(buyInstruction, "primary");
   if (rust?.ok) {
     const signature = rust.signature;
-    recordExecutionStage({
-      stage: "build",
-      route: "pumpswap-direct-buy",
-      side: "buy",
-      mint: args.mint,
-      sourceSignature: args.sourceSignature,
-      elapsedMs: rust.buildMs ?? Date.now() - rustBuildStartedAt,
-      success: true,
-      details: {
-        executor: "rust",
-        senderPath: rust.senderPath,
-        txBytes: rust.txBytes,
-        broadcastMs: rust.broadcastMs,
-        accountPlan: accountPlan.source,
-      },
-    });
-    recordExecutionStage({
-      stage: "broadcast",
-      route: "pumpswap-direct-buy",
-      side: "buy",
-      mint: args.mint,
-      sourceSignature: args.sourceSignature,
-      signature,
-      elapsedMs: rust.broadcastMs,
-      success: true,
-      details: { executor: "rust", senderPath: rust.senderPath, accountPlan: accountPlan.source },
-    });
-    args.log(
-      `Rust executor PumpSwap buy broadcast: ${signature}` +
-        (rust.elapsedMs != null ? ` (${rust.elapsedMs}ms)` : "")
-    );
     if (fastMode) {
       const confirmStartedAt = Date.now();
       confirmSignature(signature)
@@ -1248,11 +1347,17 @@ export async function tryPumpSwapDirectBuy(args: {
             signature,
             startedAt: confirmStartedAt,
             success: true,
-            details: { mode: "background", accountPlan: accountPlan.source, executor: "rust" },
+            details: {
+              mode: "background",
+              accountPlan: accountPlan.source,
+              executor: "rust",
+              buyInstruction,
+              attempt: "primary",
+            },
           });
           args.onConfirmSuccess?.(args.mint, Number(expectedBaseOut), args.solInLamports, signature);
         })
-        .catch((err) => {
+        .catch(async (err) => {
           const msg = err instanceof Error ? err.message : String(err);
           recordPumpSwapConfirmStage({
             route: "pumpswap-direct-buy",
@@ -1263,9 +1368,21 @@ export async function tryPumpSwapDirectBuy(args: {
             startedAt: confirmStartedAt,
             success: false,
             error: msg,
-            details: { mode: "background", accountPlan: accountPlan.source, executor: "rust" },
+            details: {
+              mode: "background",
+              accountPlan: accountPlan.source,
+              executor: "rust",
+              buyInstruction,
+              attempt: "primary",
+            },
           });
           console.warn(`PumpSwap confirmation failed after Rust broadcast: ${msg}`);
+          const retrySignature = await retryRustOverflow("background", msg).catch((retryErr) => {
+            const retryMsg = retryErr instanceof Error ? retryErr.message : String(retryErr);
+            console.warn(`PumpSwap Rust overflow retry crashed: ${retryMsg}`);
+            return null;
+          });
+          if (retrySignature) return;
           releaseRustBoughtMint(args.mint, `PumpSwap confirmation failed after Rust broadcast: ${msg}`);
           args.onConfirmFailure?.(args.mint, Number(expectedBaseOut), args.solInLamports, msg);
         });
@@ -1279,27 +1396,19 @@ export async function tryPumpSwapDirectBuy(args: {
         confirmationPending: true,
       };
     }
-    const confirmStartedAt = Date.now();
-    try {
-      await confirmSignature(signature);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      releaseRustBoughtMint(args.mint, `PumpSwap confirmation failed after Rust broadcast: ${msg}`);
-      throw err;
+    let finalSignature = signature;
+    const confirmed = await confirmRustAttempt(signature, "blocking", buyInstruction, "primary");
+    if (!confirmed.ok) {
+      const retrySignature = await retryRustOverflow("blocking", confirmed.message).catch(() => null);
+      if (!retrySignature) {
+        releaseRustBoughtMint(args.mint, "PumpSwap Rust blocking confirmation failed");
+        return { ok: false, recoverable: true, reason: `PumpSwap Rust confirmation failed: ${confirmed.message}` };
+      }
+      finalSignature = retrySignature;
     }
-    recordPumpSwapConfirmStage({
-      route: "pumpswap-direct-buy",
-      side: "buy",
-      mint: args.mint,
-      sourceSignature: args.sourceSignature,
-      signature,
-      startedAt: confirmStartedAt,
-      success: true,
-      details: { mode: "blocking", accountPlan: accountPlan.source, executor: "rust" },
-    });
     return {
       ok: true,
-      signature,
+      signature: finalSignature,
       isSimulated: false,
       baseOut: expectedBaseOut,
       quoteIn: BigInt(args.solInLamports),
