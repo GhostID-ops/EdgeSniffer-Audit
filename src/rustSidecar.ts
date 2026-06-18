@@ -59,6 +59,7 @@ type RustSidecarEvent = {
   buildMs?: number;
   broadcastMs?: number;
   txBytes?: number;
+  reason?: string;
 };
 
 type RustExecutorResponse = {
@@ -122,6 +123,17 @@ export type RustPumpFunBuyResult =
   | { ok: false; error: string };
 
 export type RustPumpSwapBuyResult = RustPumpFunBuyResult;
+
+export type RustHotBuyFallback = {
+  sourceSignature: string;
+  wallet: string;
+  mint: string;
+  reason: string;
+  sourceSlot?: number;
+  sourceTransactionIndex?: number;
+  detectedAtMs?: number;
+  receivedAtMs: number;
+};
 
 let executorStdin: NodeJS.WritableStream | null = null;
 let executorSeq = 0;
@@ -224,7 +236,8 @@ function commandForSidecar(): { command: string; args: string[]; label: string }
 export async function startRustPumpFunSidecar(
   processedSignatures: SignatureDedupe,
   onSwap: (swap: DetectedSwap) => void,
-  onHotBuy?: (hotBuy: RustHotBuy) => void
+  onHotBuy?: (hotBuy: RustHotBuy) => void,
+  onHotBuyFallback?: (fallback: RustHotBuyFallback) => void
 ): Promise<RustSidecarUnsubscribe> {
   const jitoShredstreamEnabled = envFlag("JITO_SHREDSTREAM_ENABLED");
   const jitoShredstreamGrpcUrl = process.env.JITO_SHREDSTREAM_GRPC_URL ?? "http://127.0.0.1:9999";
@@ -328,6 +341,12 @@ export async function startRustPumpFunSidecar(
       return;
     }
 
+    const hotBuyFallback = toHotBuyFallback(event, nodeReceivedAtMs);
+    if (hotBuyFallback) {
+      onHotBuyFallback?.(hotBuyFallback);
+      return;
+    }
+
     const swap = toSwap(event, nodeReceivedAtMs);
     if (!swap) return;
     if (processedSignatures.has(swap.signature)) return;
@@ -376,6 +395,37 @@ export async function startRustPumpFunSidecar(
     }
     rejectAllExecutorPending("Rust sidecar stopped");
     executorStdin = null;
+  };
+}
+
+function toHotBuyFallback(event: RustSidecarEvent, nodeReceivedAtMs: number): RustHotBuyFallback | null {
+  if (event.kind !== "hotBuyFallback") return null;
+  if (
+    typeof event.sourceSignature !== "string" ||
+    typeof event.wallet !== "string" ||
+    typeof event.mint !== "string" ||
+    typeof event.reason !== "string"
+  ) {
+    return null;
+  }
+  return {
+    sourceSignature: event.sourceSignature,
+    wallet: event.wallet,
+    mint: event.mint,
+    reason: event.reason,
+    sourceSlot:
+      typeof event.sourceSlot === "number" && Number.isFinite(event.sourceSlot)
+        ? event.sourceSlot
+        : undefined,
+    sourceTransactionIndex:
+      typeof event.sourceTransactionIndex === "number" && Number.isFinite(event.sourceTransactionIndex)
+        ? event.sourceTransactionIndex
+        : undefined,
+    detectedAtMs:
+      typeof event.detectedAtMs === "number" && Number.isFinite(event.detectedAtMs)
+        ? event.detectedAtMs
+        : undefined,
+    receivedAtMs: nodeReceivedAtMs,
   };
 }
 

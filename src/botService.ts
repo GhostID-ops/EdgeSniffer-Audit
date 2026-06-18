@@ -97,7 +97,11 @@ import {
 import { subscribeGrpcWalletSwaps, type GrpcUnsubscribe } from "./grpcWatcher.js";
 import { subscribeRabbitWalletSwaps, type RabbitUnsubscribe } from "./rabbitWatcher.js";
 import { subscribeHeliusTransactionSwaps, type HeliusTxUnsubscribe } from "./heliusTxWatcher.js";
-import { startRustPumpFunSidecar, type RustSidecarUnsubscribe } from "./rustSidecar.js";
+import {
+  startRustPumpFunSidecar,
+  type RustHotBuyFallback,
+  type RustSidecarUnsubscribe,
+} from "./rustSidecar.js";
 import {
   mirrorSwap,
   NoPositionError,
@@ -1198,6 +1202,29 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
         }
       }
     });
+}
+
+function isTerminalRustHotFallback(reason: string): boolean {
+  const normalized = reason.toLowerCase();
+  return (
+    normalized.includes("rust hot sniper mc ") ||
+    normalized.includes("rust hot sniper mc unavailable") ||
+    normalized.includes("rust hot sniper mc needs") ||
+    normalized.includes("copy-sized amount below minimum") ||
+    normalized.includes("copy-sized amount is zero") ||
+    normalized.includes("session deployed sol cap would be exceeded")
+  );
+}
+
+function handleRustHotBuyFallback(fallback: RustHotBuyFallback): void {
+  if (!isTerminalRustHotFallback(fallback.reason)) return;
+  rustHotSniperPrimaryPendingMints.delete(fallback.mint);
+  pendingBuyRetryByMint.delete(fallback.mint);
+  failedBuyRecoveryInFlightMints.delete(fallback.mint);
+  console.log(
+    `Rust hot sniper terminal skip for ${fallback.mint.slice(0, 8)}...; ` +
+      `cleared primary pending state (${fallback.reason}).`
+  );
 }
 
 async function getCurrentSourceHeldMints(wallet: string): Promise<Set<string>> {
@@ -2812,6 +2839,9 @@ export async function startBot(): Promise<void> {
         handleRustHotBuy(hotBuy, kp).catch((err) => {
           console.error("Rust hot sniper bookkeeping error:", err);
         });
+      },
+      (fallback) => {
+        handleRustHotBuyFallback(fallback);
       }
     );
   } else {

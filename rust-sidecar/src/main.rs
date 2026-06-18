@@ -166,6 +166,20 @@ struct HotBuyLine {
     source_transaction_index: Option<u64>,
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct HotBuyFallbackLine {
+    kind: &'static str,
+    source: &'static str,
+    detected_at_ms: u128,
+    source_signature: String,
+    wallet: String,
+    mint: String,
+    reason: String,
+    source_slot: Option<u64>,
+    source_transaction_index: Option<u64>,
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
     let _ = rustls::crypto::ring::default_provider().install_default();
@@ -629,6 +643,18 @@ async fn emit_detected_line(cfg: &Config, line: DetectedSwapLine) -> Result<()> 
                     "rust-sidecar: hot sniper fallback for {}...: {reason}",
                     line.output_mint.chars().take(8).collect::<String>()
                 );
+                let fallback_line = HotBuyFallbackLine {
+                    kind: "hotBuyFallback",
+                    source: "rust-hot-sniper",
+                    detected_at_ms: now_ms(),
+                    source_signature: line.signature.clone(),
+                    wallet: line.wallet.clone(),
+                    mint: line.output_mint.clone(),
+                    reason,
+                    source_slot: line.source_slot,
+                    source_transaction_index: line.source_transaction_index,
+                };
+                println!("{}", serde_json::to_string(&fallback_line)?);
             }
             println!("{}", serde_json::to_string(&line)?);
         }
