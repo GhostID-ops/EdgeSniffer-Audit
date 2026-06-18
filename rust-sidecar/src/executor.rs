@@ -1,6 +1,9 @@
 use std::{
     collections::HashSet,
     env,
+    fs::{self, OpenOptions},
+    io::{ErrorKind, Write},
+    path::PathBuf,
     str::FromStr,
     sync::{Arc, Mutex, OnceLock},
     time::{Duration, Instant},
@@ -142,6 +145,8 @@ pub struct ExecutePumpSwapBuyCommand {
     pub id: String,
     pub route: String,
     pub mint: String,
+    pub source_signature: String,
+    pub buy_lock_owner: Option<String>,
     pub sol_in_lamports: u64,
     pub expected_base_out_raw: u64,
     pub min_base_out_raw: u64,
@@ -441,6 +446,33 @@ async fn handle_line(
                     };
                 }
             };
+            let persistent_lock = match acquire_persistent_buy_lock(
+                &mint,
+                &cmd.source_signature,
+                cmd.buy_lock_owner.as_deref(),
+            ) {
+                Ok(lock) => lock,
+                Err(err) => {
+                    if reserved {
+                        release_executor_mint(shared_bought_mints.as_ref(), &mint);
+                    }
+                    return ExecutorResponse {
+                        kind: "execResult",
+                        id,
+                        ok: false,
+                        signature: None,
+                        route: None,
+                        sender_path: None,
+                        sol_in_lamports: None,
+                        tokens_out_raw: None,
+                        elapsed_ms: started.elapsed().as_millis(),
+                        build_ms: None,
+                        broadcast_ms: None,
+                        tx_bytes: None,
+                        error: Some(err.to_string()),
+                    };
+                }
+            };
             match execute_pumpswap_buy(cmd, started).await {
                 Ok(mut response) => {
                     response.id = id;
@@ -450,6 +482,7 @@ async fn handle_line(
                     if reserved {
                         release_executor_mint(shared_bought_mints.as_ref(), &mint);
                     }
+                    release_persistent_buy_lock(persistent_lock);
                     ExecutorResponse {
                         kind: "execResult",
                         id,
@@ -555,6 +588,107 @@ fn release_executor_mint(shared_bought_mints: Option<&SharedBoughtMints>, mint: 
             bought.remove(mint);
         }
     }
+}
+
+enum PersistentBuyLock {
+    Owned(PathBuf),
+    Borrowed,
+    Disabled,
+}
+
+fn buy_once_enabled() -> bool {
+    env_flag("BUY_ONCE_PER_TOKEN", true)
+}
+
+fn env_flag(name: &str, default_value: bool) -> bool {
+    match env::var(name) {
+        Ok(value) => {
+            let normalized = value.trim().to_ascii_lowercase();
+            matches!(normalized.as_str(), "true" | "1" | "yes" | "on")
+        }
+        Err(_) => default_value,
+    }
+}
+
+fn persistent_buy_lock_dir() -> PathBuf {
+    env::var("BUY_LOCK_DIR")
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+        .map(PathBuf::from)
+        .unwrap_or_else(|| env::temp_dir().join("finalbot-buy-locks"))
+}
+
+fn sanitize_lock_component(value: &str) -> String {
+    value
+        .chars()
+        .filter(|ch| ch.is_ascii_alphanumeric() || *ch == '-' || *ch == '_')
+        .collect()
+}
+
+fn existing_lock_value(path: &PathBuf, key: &str) -> Option<String> {
+    let text = fs::read_to_string(path).ok()?;
+    let value = serde_json::from_str::<Value>(&text).ok()?;
+    value
+        .get(key)
+        .and_then(Value::as_str)
+        .map(str::to_string)
+}
+
+fn acquire_persistent_buy_lock(
+    mint: &str,
+    source_signature: &str,
+    buy_lock_owner: Option<&str>,
+) -> Result<PersistentBuyLock> {
+    if !buy_once_enabled() {
+        return Ok(PersistentBuyLock::Disabled);
+    }
+
+    let dir = persistent_buy_lock_dir();
+    fs::create_dir_all(&dir)
+        .with_context(|| format!("failed to create buy lock dir {}", dir.display()))?;
+    let lock_name = sanitize_lock_component(mint);
+    if lock_name.is_empty() {
+        bail!("cannot create buy lock for empty mint");
+    }
+    let path = dir.join(format!("{lock_name}.lock"));
+
+    match OpenOptions::new().write(true).create_new(true).open(&path) {
+        Ok(mut file) => {
+            let payload = json!({
+                "mint": mint,
+                "sourceSignature": source_signature,
+                "pid": std::process::id(),
+                "createdAtMs": now_unix_ms(),
+                "owner": buy_lock_owner.unwrap_or("rust-executor")
+            });
+            writeln!(file, "{payload}")
+                .with_context(|| format!("failed to write buy lock {}", path.display()))?;
+            Ok(PersistentBuyLock::Owned(path))
+        }
+        Err(err) if err.kind() == ErrorKind::AlreadyExists => {
+            if buy_lock_owner.is_some()
+                && existing_lock_value(&path, "owner").as_deref() == buy_lock_owner
+            {
+                return Ok(PersistentBuyLock::Borrowed);
+            }
+            bail!("persistent buy lock exists for {mint}; duplicate Rust broadcast blocked")
+        }
+        Err(err) => Err(err)
+            .with_context(|| format!("failed to create buy lock {}", path.display())),
+    }
+}
+
+fn release_persistent_buy_lock(lock: PersistentBuyLock) {
+    if let PersistentBuyLock::Owned(path) = lock {
+        let _ = fs::remove_file(path);
+    }
+}
+
+fn now_unix_ms() -> u128 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_millis())
+        .unwrap_or(0)
 }
 
 fn extract_id(line: &str) -> Option<String> {

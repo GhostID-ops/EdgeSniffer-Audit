@@ -328,18 +328,27 @@ function buyLockPath(mint: string): string {
   return join(persistentBuyLockDir, `${mint.replace(/[^1-9A-HJ-NP-Za-km-z]/g, "_")}.lock`);
 }
 
-function acquirePersistentBuyLock(mint: string, sourceSignature: string): { ok: true } | { ok: false; reason: string } {
+function createBuyLockOwner(): string {
+  return `${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function acquirePersistentBuyLock(
+  mint: string,
+  sourceSignature: string
+): { ok: true; owner?: string } | { ok: false; reason: string } {
   if (simulationMode || !buyOncePerTokenEnabled) return { ok: true };
   try {
     mkdirSync(persistentBuyLockDir, { recursive: true });
     const path = buyLockPath(mint);
     const fd = openSync(path, "wx");
+    const owner = createBuyLockOwner();
     try {
       writeFileSync(
         fd,
         JSON.stringify({
           mint,
           sourceSignature,
+          owner,
           pid: process.pid,
           createdAt: new Date().toISOString(),
         }) + "\n"
@@ -347,7 +356,7 @@ function acquirePersistentBuyLock(mint: string, sourceSignature: string): { ok: 
     } finally {
       closeSync(fd);
     }
-    return { ok: true };
+    return { ok: true, owner };
   } catch (err) {
     const code = (err as NodeJS.ErrnoException).code;
     if (code === "EEXIST") {
@@ -1743,6 +1752,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   let fastSellLockShouldPersist = false;
   let retryPendingMint: string | null = null;
   let persistentBuyLockMint: string | null = null;
+  let persistentBuyLockOwner: string | undefined;
   let persistentBuyLockCommitted = false;
   const releaseBuyLocks = () => {
     if (lockedBuyMint) {
@@ -2260,11 +2270,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         );
         return;
       }
+      persistentBuyLockOwner = lock.owner;
       persistentBuyLockMint = swap.outputMint;
       liveBuyAttemptedMintsThisSession.add(swap.outputMint);
     }
 
     const result = await mirrorSwap(swap, kp, {
+      persistentBuyLockOwner,
       exactAmountRaw: proportionalSellAmountRaw,
       onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, reason, sourceSwap }) => {
         if (rustHotBuyRecordedByMint.has(mint)) {

@@ -98,6 +98,8 @@ export type RustPumpFunBuyArgs = {
 export type RustPumpSwapBuyArgs = {
   route: "pumpswap-direct-buy";
   mint: string;
+  sourceSignature: string;
+  buyLockOwner?: string;
   solInLamports: number;
   expectedBaseOutRaw: number;
   minBaseOutRaw: number;
@@ -594,6 +596,8 @@ export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise
     id,
     route: args.route,
     mint: args.mint,
+    sourceSignature: args.sourceSignature,
+    buyLockOwner: args.buyLockOwner,
     solInLamports: Math.max(1, Math.floor(args.solInLamports)),
     expectedBaseOutRaw: Math.max(1, Math.floor(args.expectedBaseOutRaw)),
     minBaseOutRaw: Math.max(1, Math.floor(args.minBaseOutRaw)),

@@ -52,6 +52,7 @@ export type MirrorResult = {
 };
 
 export type MirrorSwapOptions = {
+  persistentBuyLockOwner?: string;
   exactAmountRaw?: number;
   onFastBuyConfirmFailure?: (args: {
     mint: string;
@@ -491,6 +492,7 @@ export async function mirrorSwap(
         user: keypair,
         mint: swap.outputMint,
         sourceSignature: swap.signature,
+        buyLockOwner: options.persistentBuyLockOwner,
         sourceSolInLamports: swap.amountRaw,
         sourceTokensOutRaw: swap.counterpartyAmountRaw,
         sourcePumpSwapInstruction: swap.sourcePumpSwapInstruction,

@@ -1068,6 +1068,7 @@ export async function tryPumpSwapDirectBuy(args: {
   user: Keypair;
   mint: string;
   sourceSignature: string;
+  buyLockOwner?: string;
   sourceSolInLamports: number;
   sourceTokensOutRaw?: number;
   sourcePumpSwapInstruction?: PumpSwapBuyInstruction;
@@ -1221,6 +1222,8 @@ export async function tryPumpSwapDirectBuy(args: {
     const rust = await executeRustPumpSwapBuy({
       route: "pumpswap-direct-buy",
       mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      buyLockOwner: args.buyLockOwner,
       solInLamports: args.solInLamports,
       expectedBaseOutRaw: Number(expectedBaseOut),
       minBaseOutRaw: Number(minBaseOut),
