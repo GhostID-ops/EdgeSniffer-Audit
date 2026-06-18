@@ -16,6 +16,7 @@ import {
   pumpSwapDirectMinOutBps,
   pumpSwapDirectPreflight,
   readConnection,
+  rustOnlyBuys,
   simulationMode,
   warmWalletMode,
 } from "../config.js";
@@ -33,6 +34,7 @@ import {
 } from "../idlNativeBuilder.js";
 import { recordExecutionStage } from "../executionTelemetry.js";
 import { classifyExecutionError } from "../errorClassifier.js";
+import { executeRustPumpSwapBuy } from "../rustSidecar.js";
 import type { SourcePumpSwapAccountMeta } from "../types.js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -1183,6 +1185,120 @@ export async function tryPumpSwapDirectBuy(args: {
       quoteIn: BigInt(args.solInLamports),
       mintMeta,
     };
+  }
+
+  const rustBuildStartedAt = Date.now();
+  const rust = await executeRustPumpSwapBuy({
+    route: "pumpswap-direct-buy",
+    mint: args.mint,
+    solInLamports: args.solInLamports,
+    expectedBaseOutRaw: Number(expectedBaseOut),
+    minBaseOutRaw: Number(minBaseOut),
+    slippageBps: args.slippageBps,
+    buyInstruction,
+    sourcePumpSwapAccounts: accountPlan.accounts.map((account) => account.pubkey.toBase58()),
+    baseTokenProgramId: baseTokenProgramId.toBase58(),
+  });
+  if (rust?.ok) {
+    const signature = rust.signature;
+    recordExecutionStage({
+      stage: "build",
+      route: "pumpswap-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      elapsedMs: rust.buildMs ?? Date.now() - rustBuildStartedAt,
+      success: true,
+      details: {
+        executor: "rust",
+        senderPath: rust.senderPath,
+        txBytes: rust.txBytes,
+        broadcastMs: rust.broadcastMs,
+        accountPlan: accountPlan.source,
+      },
+    });
+    recordExecutionStage({
+      stage: "broadcast",
+      route: "pumpswap-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      signature,
+      elapsedMs: rust.broadcastMs,
+      success: true,
+      details: { executor: "rust", senderPath: rust.senderPath, accountPlan: accountPlan.source },
+    });
+    args.log(
+      `Rust executor PumpSwap buy broadcast: ${signature}` +
+        (rust.elapsedMs != null ? ` (${rust.elapsedMs}ms)` : "")
+    );
+    if (fastMode) {
+      const confirmStartedAt = Date.now();
+      confirmSignature(signature)
+        .then(() => {
+          recordPumpSwapConfirmStage({
+            route: "pumpswap-direct-buy",
+            side: "buy",
+            mint: args.mint,
+            sourceSignature: args.sourceSignature,
+            signature,
+            startedAt: confirmStartedAt,
+            success: true,
+            details: { mode: "background", accountPlan: accountPlan.source, executor: "rust" },
+          });
+          args.onConfirmSuccess?.(args.mint, Number(expectedBaseOut), args.solInLamports, signature);
+        })
+        .catch((err) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          recordPumpSwapConfirmStage({
+            route: "pumpswap-direct-buy",
+            side: "buy",
+            mint: args.mint,
+            sourceSignature: args.sourceSignature,
+            signature,
+            startedAt: confirmStartedAt,
+            success: false,
+            error: msg,
+            details: { mode: "background", accountPlan: accountPlan.source, executor: "rust" },
+          });
+          console.warn(`PumpSwap confirmation failed after Rust broadcast: ${msg}`);
+          args.onConfirmFailure?.(args.mint, Number(expectedBaseOut), args.solInLamports, msg);
+        });
+      return {
+        ok: true,
+        signature,
+        isSimulated: false,
+        baseOut: expectedBaseOut,
+        quoteIn: BigInt(args.solInLamports),
+        mintMeta: await getTokenMeta(args.mint),
+        confirmationPending: true,
+      };
+    }
+    const confirmStartedAt = Date.now();
+    await confirmSignature(signature);
+    recordPumpSwapConfirmStage({
+      route: "pumpswap-direct-buy",
+      side: "buy",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      signature,
+      startedAt: confirmStartedAt,
+      success: true,
+      details: { mode: "blocking", accountPlan: accountPlan.source, executor: "rust" },
+    });
+    return {
+      ok: true,
+      signature,
+      isSimulated: false,
+      baseOut: expectedBaseOut,
+      quoteIn: BigInt(args.solInLamports),
+      mintMeta: await getTokenMeta(args.mint),
+    };
+  }
+  if (rustOnlyBuys) {
+    const reason = rust && !rust.ok ? rust.error : "Rust PumpSwap executor unavailable";
+    args.log(`Rust-only PumpSwap buy failed; TypeScript fallback disabled: ${reason}`);
+    return { ok: false, recoverable: true, reason: `Rust-only PumpSwap buy failed: ${reason}` };
   }
 
   const computeIxs: TransactionInstruction[] = [];

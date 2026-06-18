@@ -25,6 +25,7 @@ use tokio::io::{self, AsyncBufReadExt, BufReader};
 const PACKET_DATA_SIZE: usize = 1232;
 const WRAPPED_SOL_MINT: &str = "So11111111111111111111111111111111111111112";
 const PUMP_FUN_PROGRAM_ID: &str = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P";
+const PUMPSWAP_PROGRAM_ID: &str = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
 const PUMP_FUN_FEE_PROGRAM_ID: &str = "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ";
 const PUMP_FUN_FEE_RECIPIENT: &str = "CebN5WGQ4jvEPvsVU4EoHEpgzq1VV7AbicfhtW4xC9iM";
 const PUMP_FUN_BUYBACK_FEE_RECIPIENT: &str = "5YxQFdt3Tr9zJLvkFccqXVUwhdTWJQc1fFg2YPbxvxeD";
@@ -36,6 +37,9 @@ const BUY_DISCRIMINATOR: [u8; 8] = [102, 6, 61, 18, 1, 218, 235, 234];
 const BUY_EXACT_SOL_IN_DISCRIMINATOR: [u8; 8] = [56, 252, 116, 8, 158, 223, 205, 95];
 const BUY_V2_DISCRIMINATOR: [u8; 8] = [184, 23, 238, 97, 103, 197, 211, 61];
 const BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR: [u8; 8] = [194, 171, 28, 70, 104, 77, 91, 47];
+const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR: [u8; 8] = [198, 46, 21, 82, 180, 217, 232, 112];
+const SYNC_NATIVE_DISCRIMINATOR: [u8; 1] = [17];
+const CLOSE_ACCOUNT_DISCRIMINATOR: [u8; 1] = [9];
 
 const PUMP_FUN_BUY_WRITABLE_FLAGS: [bool; 16] = [
     false, true, false, true, true, true, true, false, false, true, false, false, false, true,
@@ -46,6 +50,14 @@ const PUMP_FUN_BUY_V2_WRITABLE_FLAGS: [bool; 27] = [
     true, true, true, false, false, true, true, false, false, false, false, false,
 ];
 const PUMP_FUN_BUY_V2_ACCOUNT_COUNT: usize = 27;
+const PUMPSWAP_USER_INDEX: usize = 1;
+const PUMPSWAP_BASE_MINT_INDEX: usize = 3;
+const PUMPSWAP_QUOTE_MINT_INDEX: usize = 4;
+const PUMPSWAP_USER_BASE_ATA_INDEX: usize = 5;
+const PUMPSWAP_USER_QUOTE_ATA_INDEX: usize = 6;
+const PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX: usize = 11;
+const PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX: usize = 20;
+const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT: usize = 23;
 
 const JITO_TIP_ACCOUNTS: [&str; 8] = [
     "96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5",
@@ -84,6 +96,7 @@ fn http_client() -> reqwest::Client {
 #[serde(tag = "kind", rename_all = "camelCase")]
 enum ExecutorCommand {
     ExecutePumpfunBuy(ExecutePumpfunBuyCommand),
+    ExecutePumpSwapBuy(ExecutePumpSwapBuyCommand),
 }
 
 #[derive(Debug, Deserialize)]
@@ -117,6 +130,49 @@ pub struct ExecutePumpfunBuyCommand {
     pub sender_endpoint_url: String,
     pub rpc_fallback_url: String,
     pub jito_auth_uuid: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ExecutePumpSwapBuyCommand {
+    pub id: String,
+    pub route: String,
+    pub mint: String,
+    pub sol_in_lamports: u64,
+    pub expected_base_out_raw: u64,
+    pub min_base_out_raw: u64,
+    pub buy_instruction: String,
+    pub source_pump_swap_accounts: Vec<String>,
+    pub base_token_program_id: String,
+    pub blockhash: String,
+    pub compute_unit_limit: u32,
+    pub priority_fee_micro_lamports: u64,
+    pub jito_tip_lamports: u64,
+    pub helius_tip_lamports: u64,
+    pub use_jito_direct: bool,
+    pub use_jito_fallback: bool,
+    pub sender_rpc_fallback_enabled: bool,
+    pub execution_multi_send_enabled: bool,
+    pub jito_send_mode: String,
+    pub jito_transaction_urls: Vec<String>,
+    pub jito_bundle_urls: Vec<String>,
+    pub sender_endpoint_url: String,
+    pub rpc_fallback_url: String,
+    pub jito_auth_uuid: Option<String>,
+}
+
+#[derive(Clone)]
+struct BroadcastConfig {
+    use_jito_direct: bool,
+    use_jito_fallback: bool,
+    sender_rpc_fallback_enabled: bool,
+    execution_multi_send_enabled: bool,
+    jito_send_mode: String,
+    jito_transaction_urls: Vec<String>,
+    jito_bundle_urls: Vec<String>,
+    sender_endpoint_url: String,
+    rpc_fallback_url: String,
+    jito_auth_uuid: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -170,6 +226,38 @@ struct BuiltTx {
     tokens_out_raw: u64,
     bytes: usize,
     build_ms: u128,
+}
+
+impl BroadcastConfig {
+    fn from_pumpfun(cmd: &ExecutePumpfunBuyCommand) -> Self {
+        Self {
+            use_jito_direct: cmd.use_jito_direct,
+            use_jito_fallback: cmd.use_jito_fallback,
+            sender_rpc_fallback_enabled: cmd.sender_rpc_fallback_enabled,
+            execution_multi_send_enabled: cmd.execution_multi_send_enabled,
+            jito_send_mode: cmd.jito_send_mode.clone(),
+            jito_transaction_urls: cmd.jito_transaction_urls.clone(),
+            jito_bundle_urls: cmd.jito_bundle_urls.clone(),
+            sender_endpoint_url: cmd.sender_endpoint_url.clone(),
+            rpc_fallback_url: cmd.rpc_fallback_url.clone(),
+            jito_auth_uuid: cmd.jito_auth_uuid.clone(),
+        }
+    }
+
+    fn from_pumpswap(cmd: &ExecutePumpSwapBuyCommand) -> Self {
+        Self {
+            use_jito_direct: cmd.use_jito_direct,
+            use_jito_fallback: cmd.use_jito_fallback,
+            sender_rpc_fallback_enabled: cmd.sender_rpc_fallback_enabled,
+            execution_multi_send_enabled: cmd.execution_multi_send_enabled,
+            jito_send_mode: cmd.jito_send_mode.clone(),
+            jito_transaction_urls: cmd.jito_transaction_urls.clone(),
+            jito_bundle_urls: cmd.jito_bundle_urls.clone(),
+            sender_endpoint_url: cmd.sender_endpoint_url.clone(),
+            rpc_fallback_url: cmd.rpc_fallback_url.clone(),
+            jito_auth_uuid: cmd.jito_auth_uuid.clone(),
+        }
+    }
 }
 
 pub fn start_executor_stdin(shared_bought_mints: Option<SharedBoughtMints>) {
@@ -267,6 +355,56 @@ async fn handle_line(
                 }
             }
         }
+        Ok(ExecutorCommand::ExecutePumpSwapBuy(cmd)) => {
+            let id = cmd.id.clone();
+            let mint = cmd.mint.clone();
+            let reserved = match reserve_executor_mint(shared_bought_mints.as_ref(), &mint) {
+                Ok(reserved) => reserved,
+                Err(error) => {
+                    return ExecutorResponse {
+                        kind: "execResult",
+                        id,
+                        ok: false,
+                        signature: None,
+                        route: None,
+                        sender_path: None,
+                        sol_in_lamports: None,
+                        tokens_out_raw: None,
+                        elapsed_ms: started.elapsed().as_millis(),
+                        build_ms: None,
+                        broadcast_ms: None,
+                        tx_bytes: None,
+                        error: Some(error),
+                    };
+                }
+            };
+            match execute_pumpswap_buy(cmd, started).await {
+                Ok(mut response) => {
+                    response.id = id;
+                    response
+                }
+                Err(err) => {
+                    if reserved {
+                        release_executor_mint(shared_bought_mints.as_ref(), &mint);
+                    }
+                    ExecutorResponse {
+                        kind: "execResult",
+                        id,
+                        ok: false,
+                        signature: None,
+                        route: None,
+                        sender_path: None,
+                        sol_in_lamports: None,
+                        tokens_out_raw: None,
+                        elapsed_ms: started.elapsed().as_millis(),
+                        build_ms: None,
+                        broadcast_ms: None,
+                        tx_bytes: None,
+                        error: Some(err.to_string()),
+                    }
+                }
+            }
+        }
         Err(err) => ExecutorResponse {
             kind: "execResult",
             id,
@@ -322,7 +460,12 @@ async fn execute_pumpfun_buy(
 ) -> Result<ExecutorResponse> {
     let built = build_pumpfun_buy_tx(&cmd)?;
     let broadcast_started = Instant::now();
-    let sender_path = broadcast_signed_tx(&cmd, &built.tx, &built.signature).await?;
+    let sender_path = broadcast_signed_tx(
+        &BroadcastConfig::from_pumpfun(&cmd),
+        &built.tx,
+        &built.signature,
+    )
+    .await?;
     Ok(ExecutorResponse {
         kind: "execResult",
         id: cmd.id,
@@ -332,6 +475,35 @@ async fn execute_pumpfun_buy(
         sender_path: Some(sender_path),
         sol_in_lamports: Some(cmd.sol_in_lamports),
         tokens_out_raw: Some(built.tokens_out_raw),
+        elapsed_ms: started.elapsed().as_millis(),
+        build_ms: Some(built.build_ms),
+        broadcast_ms: Some(broadcast_started.elapsed().as_millis()),
+        tx_bytes: Some(built.bytes),
+        error: None,
+    })
+}
+
+async fn execute_pumpswap_buy(
+    cmd: ExecutePumpSwapBuyCommand,
+    started: Instant,
+) -> Result<ExecutorResponse> {
+    let built = build_pumpswap_buy_tx(&cmd)?;
+    let broadcast_started = Instant::now();
+    let sender_path = broadcast_signed_tx(
+        &BroadcastConfig::from_pumpswap(&cmd),
+        &built.tx,
+        &built.signature,
+    )
+    .await?;
+    Ok(ExecutorResponse {
+        kind: "execResult",
+        id: cmd.id,
+        ok: true,
+        signature: Some(built.signature),
+        route: Some(cmd.route),
+        sender_path: Some(sender_path),
+        sol_in_lamports: Some(cmd.sol_in_lamports),
+        tokens_out_raw: Some(cmd.expected_base_out_raw.max(1)),
         elapsed_ms: started.elapsed().as_millis(),
         build_ms: Some(built.build_ms),
         broadcast_ms: Some(broadcast_started.elapsed().as_millis()),
@@ -415,7 +587,13 @@ fn build_pumpfun_buy_tx(cmd: &ExecutePumpfunBuyCommand) -> Result<BuiltTx> {
     )?);
     instructions.push(build_pumpfun_buy_ix(cmd, &user, &mint, &token_program_id)?);
 
-    let tip_sets = tip_instruction_sets(cmd, &user)?;
+    let tip_sets = tip_instruction_sets(
+        &user,
+        cmd.jito_tip_lamports,
+        cmd.helius_tip_lamports,
+        cmd.use_jito_direct,
+        cmd.use_jito_fallback,
+    )?;
     let mut last_error: Option<anyhow::Error> = None;
     for tips in tip_sets {
         let mut all_ixs = instructions.clone();
@@ -447,6 +625,99 @@ fn build_pumpfun_buy_tx(cmd: &ExecutePumpfunBuyCommand) -> Result<BuiltTx> {
         }
     }
     Err(last_error.unwrap_or_else(|| anyhow!("no tip set could build a transaction")))
+}
+
+fn build_pumpswap_buy_tx(cmd: &ExecutePumpSwapBuyCommand) -> Result<BuiltTx> {
+    let started = Instant::now();
+    let private_key = env::var("PRIVATE_KEY_BASE58").context("PRIVATE_KEY_BASE58 is not set")?;
+    let keypair_bytes = bs58::decode(private_key.trim())
+        .into_vec()
+        .context("PRIVATE_KEY_BASE58 is not valid base58")?;
+    let keypair = Keypair::from_bytes(&keypair_bytes)
+        .context("PRIVATE_KEY_BASE58 is not a Solana keypair")?;
+    let user = keypair.pubkey();
+    let mint = parse_pubkey(&cmd.mint, "mint")?;
+    let base_token_program = parse_pubkey(&cmd.base_token_program_id, "baseTokenProgramId")?;
+    let token_program = parse_pubkey(TOKEN_PROGRAM_ID, "token program")?;
+    let wsol = parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?;
+    let blockhash = Hash::from_str(&cmd.blockhash).context("invalid blockhash")?;
+    let user_base_ata = derive_ata(&user, &mint, &base_token_program)?;
+    let user_quote_ata = derive_ata(&user, &wsol, &token_program)?;
+
+    let mut instructions = Vec::with_capacity(8);
+    if cmd.compute_unit_limit > 0 {
+        instructions.push(ComputeBudgetInstruction::set_compute_unit_limit(
+            cmd.compute_unit_limit.min(1_400_000),
+        ));
+    }
+    instructions.push(ComputeBudgetInstruction::set_compute_unit_price(
+        cmd.priority_fee_micro_lamports,
+    ));
+    instructions.push(create_ata_idempotent_ix(
+        &user,
+        &user,
+        &mint,
+        &base_token_program,
+    )?);
+    instructions.push(create_ata_idempotent_ix(
+        &user,
+        &user,
+        &wsol,
+        &token_program,
+    )?);
+    instructions.push(system_instruction::transfer(
+        &user,
+        &user_quote_ata,
+        cmd.sol_in_lamports,
+    ));
+    instructions.push(sync_native_ix(&user_quote_ata)?);
+    instructions.push(build_pumpswap_buy_ix(
+        cmd,
+        &user,
+        &mint,
+        &base_token_program,
+        &user_base_ata,
+        &user_quote_ata,
+    )?);
+    instructions.push(close_token_account_ix(&user_quote_ata, &user)?);
+
+    let tip_sets = tip_instruction_sets(
+        &user,
+        cmd.jito_tip_lamports,
+        cmd.helius_tip_lamports,
+        cmd.use_jito_direct,
+        cmd.use_jito_fallback,
+    )?;
+    let mut last_error: Option<anyhow::Error> = None;
+    for tips in tip_sets {
+        let mut all_ixs = instructions.clone();
+        all_ixs.extend(tips);
+        match compile_and_sign(&keypair, blockhash, &all_ixs) {
+            Ok((tx, bytes)) if bytes <= PACKET_DATA_SIZE => {
+                let signature = tx
+                    .signatures
+                    .first()
+                    .ok_or_else(|| anyhow!("signed transaction has no signature"))?
+                    .to_string();
+                return Ok(BuiltTx {
+                    tx,
+                    signature,
+                    tokens_out_raw: cmd.expected_base_out_raw.max(1),
+                    bytes,
+                    build_ms: started.elapsed().as_millis(),
+                });
+            }
+            Ok((_tx, bytes)) => {
+                last_error = Some(anyhow!(
+                    "transaction too large: {bytes}B > {PACKET_DATA_SIZE}B"
+                ));
+            }
+            Err(err) => {
+                last_error = Some(err);
+            }
+        }
+    }
+    Err(last_error.unwrap_or_else(|| anyhow!("no tip set could build a PumpSwap transaction")))
 }
 
 fn compile_and_sign(
@@ -521,6 +792,72 @@ fn build_pumpfun_buy_ix(
     }
 
     build_derived_buy_ix(cmd, user, mint, token_program_id, data)
+}
+
+fn build_pumpswap_buy_ix(
+    cmd: &ExecutePumpSwapBuyCommand,
+    user: &Pubkey,
+    mint: &Pubkey,
+    base_token_program: &Pubkey,
+    user_base_ata: &Pubkey,
+    user_quote_ata: &Pubkey,
+) -> Result<Instruction> {
+    let source_accounts = parse_pubkeys(&cmd.source_pump_swap_accounts, "sourcePumpSwapAccounts")?;
+    if source_accounts.len() < PUMPSWAP_MIN_BUY_ACCOUNT_COUNT {
+        bail!("PumpSwap account list too short: {}", source_accounts.len());
+    }
+    if source_accounts.get(PUMPSWAP_BASE_MINT_INDEX) != Some(mint) {
+        bail!("source PumpSwap accounts do not match target base mint");
+    }
+    if source_accounts.get(PUMPSWAP_QUOTE_MINT_INDEX)
+        != Some(&parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?)
+    {
+        bail!("source PumpSwap accounts do not match SOL quote mint");
+    }
+    if source_accounts.get(PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX) != Some(base_token_program) {
+        bail!("source PumpSwap accounts do not match base token program");
+    }
+
+    let user_volume_accumulator = derive_pumpswap_user_volume_accumulator(user)?;
+    let keys = source_accounts
+        .iter()
+        .enumerate()
+        .map(|(i, source)| {
+            let actual = match i {
+                PUMPSWAP_USER_INDEX => *user,
+                PUMPSWAP_USER_BASE_ATA_INDEX => *user_base_ata,
+                PUMPSWAP_USER_QUOTE_ATA_INDEX => *user_quote_ata,
+                PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX => user_volume_accumulator,
+                _ => *source,
+            };
+            meta(actual, i == PUMPSWAP_USER_INDEX, pumpswap_is_writable(i))
+        })
+        .collect::<Vec<_>>();
+
+    Ok(Instruction {
+        program_id: parse_pubkey(PUMPSWAP_PROGRAM_ID, "pumpswap program")?,
+        accounts: keys,
+        data: encode_pumpswap_buy_args(cmd),
+    })
+}
+
+fn encode_pumpswap_buy_args(cmd: &ExecutePumpSwapBuyCommand) -> Vec<u8> {
+    let mut data = vec![0u8; 25];
+    if cmd.buy_instruction == "buy" {
+        data[..8].copy_from_slice(&BUY_DISCRIMINATOR);
+        data[8..16].copy_from_slice(&cmd.min_base_out_raw.max(1).to_le_bytes());
+        data[16..24].copy_from_slice(&cmd.sol_in_lamports.to_le_bytes());
+    } else {
+        data[..8].copy_from_slice(&PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR);
+        data[8..16].copy_from_slice(&cmd.sol_in_lamports.to_le_bytes());
+        data[16..24].copy_from_slice(&cmd.min_base_out_raw.max(1).to_le_bytes());
+    }
+    data[24] = 0;
+    data
+}
+
+fn pumpswap_is_writable(index: usize) -> bool {
+    matches!(index, 0 | 1 | 5 | 6 | 7 | 8 | 10 | 17 | 20 | 23)
 }
 
 struct ScaledBuyData {
@@ -910,23 +1247,46 @@ fn create_ata_idempotent_ix(
     })
 }
 
+fn sync_native_ix(account: &Pubkey) -> Result<Instruction> {
+    Ok(Instruction {
+        program_id: parse_pubkey(TOKEN_PROGRAM_ID, "token program")?,
+        accounts: vec![meta(*account, false, true)],
+        data: SYNC_NATIVE_DISCRIMINATOR.to_vec(),
+    })
+}
+
+fn close_token_account_ix(account: &Pubkey, owner: &Pubkey) -> Result<Instruction> {
+    Ok(Instruction {
+        program_id: parse_pubkey(TOKEN_PROGRAM_ID, "token program")?,
+        accounts: vec![
+            meta(*account, false, true),
+            meta(*owner, false, true),
+            meta(*owner, true, false),
+        ],
+        data: CLOSE_ACCOUNT_DISCRIMINATOR.to_vec(),
+    })
+}
+
 fn tip_instruction_sets(
-    cmd: &ExecutePumpfunBuyCommand,
     user: &Pubkey,
+    jito_tip_lamports: u64,
+    helius_tip_lamports: u64,
+    use_jito_direct: bool,
+    use_jito_fallback: bool,
 ) -> Result<Vec<Vec<Instruction>>> {
     let mut all = Vec::new();
-    if cmd.use_jito_direct && cmd.jito_tip_lamports > 0 {
+    if use_jito_direct && jito_tip_lamports > 0 {
         all.push(system_instruction::transfer(
             user,
             &parse_pubkey(JITO_TIP_ACCOUNTS[0], "jito tip account")?,
-            cmd.jito_tip_lamports,
+            jito_tip_lamports,
         ));
     }
-    if (!cmd.use_jito_direct || cmd.use_jito_fallback) && cmd.helius_tip_lamports > 0 {
+    if (!use_jito_direct || use_jito_fallback) && helius_tip_lamports > 0 {
         all.push(system_instruction::transfer(
             user,
             &parse_pubkey(HELIUS_TIP_ACCOUNTS[0], "helius tip account")?,
-            cmd.helius_tip_lamports,
+            helius_tip_lamports,
         ));
     }
 
@@ -940,19 +1300,19 @@ fn tip_instruction_sets(
 }
 
 async fn broadcast_signed_tx(
-    cmd: &ExecutePumpfunBuyCommand,
+    cfg: &BroadcastConfig,
     tx: &VersionedTransaction,
     signature: &str,
 ) -> Result<String> {
     let tx_base64 =
         BASE64_STANDARD.encode(bincode::serialize(tx).context("serialize tx for broadcast")?);
-    let candidates = broadcast_candidates(cmd)?;
-    if cmd.execution_multi_send_enabled {
+    let candidates = broadcast_candidates(cfg)?;
+    if cfg.execution_multi_send_enabled {
         return race_broadcast(
             candidates,
             tx_base64,
             signature.to_string(),
-            cmd.jito_auth_uuid.clone(),
+            cfg.jito_auth_uuid.clone(),
         )
         .await;
     }
@@ -965,7 +1325,7 @@ async fn broadcast_signed_tx(
             &candidate,
             &tx_base64,
             signature,
-            cmd.jito_auth_uuid.as_deref(),
+            cfg.jito_auth_uuid.as_deref(),
         )
         .await
         {
@@ -979,12 +1339,12 @@ async fn broadcast_signed_tx(
     ))
 }
 
-fn broadcast_candidates(cmd: &ExecutePumpfunBuyCommand) -> Result<Vec<BroadcastCandidate>> {
+fn broadcast_candidates(cfg: &BroadcastConfig) -> Result<Vec<BroadcastCandidate>> {
     let mut candidates = Vec::new();
-    if cmd.use_jito_direct {
-        match cmd.jito_send_mode.as_str() {
+    if cfg.use_jito_direct {
+        match cfg.jito_send_mode.as_str() {
             "transaction" | "tx" => {
-                for url in &cmd.jito_transaction_urls {
+                for url in &cfg.jito_transaction_urls {
                     candidates.push(BroadcastCandidate {
                         name: "jito-tx".to_string(),
                         url: url.clone(),
@@ -993,14 +1353,14 @@ fn broadcast_candidates(cmd: &ExecutePumpfunBuyCommand) -> Result<Vec<BroadcastC
                 }
             }
             "race" | "both" => {
-                for url in &cmd.jito_transaction_urls {
+                for url in &cfg.jito_transaction_urls {
                     candidates.push(BroadcastCandidate {
                         name: "jito-tx".to_string(),
                         url: url.clone(),
                         method: BroadcastMethod::JitoTransaction,
                     });
                 }
-                for url in &cmd.jito_bundle_urls {
+                for url in &cfg.jito_bundle_urls {
                     candidates.push(BroadcastCandidate {
                         name: "jito-bundle".to_string(),
                         url: url.clone(),
@@ -1009,7 +1369,7 @@ fn broadcast_candidates(cmd: &ExecutePumpfunBuyCommand) -> Result<Vec<BroadcastC
                 }
             }
             _ => {
-                for url in &cmd.jito_bundle_urls {
+                for url in &cfg.jito_bundle_urls {
                     candidates.push(BroadcastCandidate {
                         name: "jito-bundle".to_string(),
                         url: url.clone(),
@@ -1019,17 +1379,17 @@ fn broadcast_candidates(cmd: &ExecutePumpfunBuyCommand) -> Result<Vec<BroadcastC
             }
         }
     }
-    if !cmd.use_jito_direct || cmd.use_jito_fallback {
+    if !cfg.use_jito_direct || cfg.use_jito_fallback {
         candidates.push(BroadcastCandidate {
             name: "helius-sender".to_string(),
-            url: cmd.sender_endpoint_url.clone(),
+            url: cfg.sender_endpoint_url.clone(),
             method: BroadcastMethod::HeliusSender,
         });
     }
-    if cmd.sender_rpc_fallback_enabled && !cmd.rpc_fallback_url.trim().is_empty() {
+    if cfg.sender_rpc_fallback_enabled && !cfg.rpc_fallback_url.trim().is_empty() {
         candidates.push(BroadcastCandidate {
             name: "rpc-fallback".to_string(),
-            url: cmd.rpc_fallback_url.clone(),
+            url: cfg.rpc_fallback_url.clone(),
             method: BroadcastMethod::RpcFallback,
         });
     }
@@ -1228,6 +1588,13 @@ fn derive_user_volume_accumulator(user: &Pubkey) -> Result<Pubkey> {
     pda(
         &[b"user_volume_accumulator", user.as_ref()],
         PUMP_FUN_PROGRAM_ID,
+    )
+}
+
+fn derive_pumpswap_user_volume_accumulator(user: &Pubkey) -> Result<Pubkey> {
+    pda(
+        &[b"user_volume_accumulator", user.as_ref()],
+        PUMPSWAP_PROGRAM_ID,
     )
 }
 

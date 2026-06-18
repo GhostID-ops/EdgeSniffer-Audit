@@ -1945,7 +1945,9 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
     const rustExecutorCanHandleBuy =
       rustExecutorEnabled &&
-      (executionPlan.route === "pumpfun-bonding-curve" || executionPlan.route === "pumpfun-v2-token2022");
+      (executionPlan.route === "pumpfun-bonding-curve" ||
+        executionPlan.route === "pumpfun-v2-token2022" ||
+        executionPlan.route === "pumpswap-graduated");
     if (rustOnlyBuys && !rustExecutorCanHandleBuy) {
       console.log(
         `Skipping buy: RUST_ONLY_BUYS=true and no Rust buy path accepted ` +
@@ -1956,7 +1958,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       return;
     } else if (rustOnlyBuys) {
       console.log(
-        `Rust-only buy mode: ${mint.slice(0, 8)}... passed filters; Pump.fun Rust executor will broadcast.`
+        `Rust-only buy mode: ${mint.slice(0, 8)}... passed filters; Rust executor will broadcast ${executionPlan.route}.`
       );
     }
     if (buyMintsInFlight.has(mint)) {
