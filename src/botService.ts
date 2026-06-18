@@ -297,6 +297,7 @@ const fastBuyConfirmRetryScheduledByMint = new Set<string>();
 const fastSellConfirmRetryScheduledByMint = new Set<string>();
 const failedBuyRecoveryInFlightMints = new Set<string>();
 const boughtMintsThisSession = new Set<string>();
+const liveBuyAttemptedMintsThisSession = new Set<string>();
 const sourcePreexistingBuyMints = new Set<string>();
 const sourceBuySignatureByMint = new Map<string, string>();
 const mirrorBuySignatureByMint = new Map<string, string>();
@@ -1096,6 +1097,7 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
     `Rust hot sniper recorded buy for ${hotBuy.mint.slice(0, 8)}... ` +
       `(${formatSolAmount(hotBuy.solInLamports)} SOL, ${hotBuy.elapsedMs ?? "?"}ms, ${hotBuy.senderPath ?? "unknown sender"}).`
   );
+  liveBuyAttemptedMintsThisSession.add(hotBuy.mint);
   rustHotBuyRecordedByMint.add(hotBuy.mint);
   rustHotSniperPrimaryPendingMints.delete(hotBuy.mint);
   const marketCapUsd = await maybeGetMarketCap(hotBuy.mint);
@@ -1167,6 +1169,7 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
       mirrorBuySignatureByMint.delete(hotBuy.mint);
       confirmedFastBuyTokensByMint.delete(hotBuy.mint);
       boughtMintsThisSession.delete(hotBuy.mint);
+      liveBuyAttemptedMintsThisSession.delete(hotBuy.mint);
       rustHotBuyRecordedByMint.delete(hotBuy.mint);
       noteLocalSolCredit(hotBuy.solInLamports);
       rustHotSniperPrimaryPendingMints.delete(hotBuy.mint);
@@ -1870,7 +1873,12 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       return;
     }
     const existing = getPosition(mint);
-    if (buyOncePerTokenEnabled && (boughtMintsThisSession.has(mint) || (existing && existing.buysCount > 0))) {
+    if (
+      buyOncePerTokenEnabled &&
+      (liveBuyAttemptedMintsThisSession.has(mint) ||
+        boughtMintsThisSession.has(mint) ||
+        (existing && existing.buysCount > 0))
+    ) {
       console.log(
         `Skipping buy: already bought ${mint.slice(0, 8)}... this session (buy-once ON).`
       );
@@ -1911,7 +1919,12 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       }
     }
     if (shouldDeferToRustHotSniperPrimary(swap, executionPlan)) {
-      if (rustHotBuyRecordedByMint.has(mint) || boughtMintsThisSession.has(mint) || (existing && existing.buysCount > 0)) {
+      if (
+        rustHotBuyRecordedByMint.has(mint) ||
+        liveBuyAttemptedMintsThisSession.has(mint) ||
+        boughtMintsThisSession.has(mint) ||
+        (existing && existing.buysCount > 0)
+      ) {
         pendingBuyRetryByMint.delete(mint);
         console.log(
           `Skipping TypeScript buy: Rust hot sniper already bought ${mint.slice(0, 8)}... this session.`
@@ -1942,6 +1955,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         if (
           stopRequested ||
           rustHotBuyRecordedByMint.has(mint) ||
+          liveBuyAttemptedMintsThisSession.has(mint) ||
           boughtMintsThisSession.has(mint) ||
           quarantinedBuyMints.has(mint) ||
           (getPosition(mint)?.buysCount ?? 0) > 0
@@ -2187,6 +2201,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       lockedFastSellMint = sellMint;
     }
 
+    if (isBuySignal(swap) && buyOncePerTokenEnabled && !simulationMode) {
+      liveBuyAttemptedMintsThisSession.add(swap.outputMint);
+    }
+
     const result = await mirrorSwap(swap, kp, {
       exactAmountRaw: proportionalSellAmountRaw,
       onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, reason, sourceSwap }) => {
@@ -2202,6 +2220,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         confirmedFastBuyTokensByMint.delete(mint);
         if (shouldAttemptFailedBuyRecovery(sourceSwap, reason)) {
           boughtMintsThisSession.delete(mint);
+          liveBuyAttemptedMintsThisSession.delete(mint);
           pendingBuyRetryByMint.delete(mint);
           fastBuyConfirmRetryScheduledByMint.delete(mint);
           scheduleFailedBuyRecovery(sourceSwap, kp, reason);
@@ -2209,6 +2228,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         }
         if (isPumpFunAccountLayoutFailure(reason)) {
           boughtMintsThisSession.delete(mint);
+          liveBuyAttemptedMintsThisSession.delete(mint);
           pendingBuyRetryByMint.delete(mint);
           fastBuyConfirmRetryScheduledByMint.delete(mint);
           failedBuyRecoveryInFlightMints.delete(mint);
@@ -2230,6 +2250,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           );
         } else {
           boughtMintsThisSession.delete(mint);
+          liveBuyAttemptedMintsThisSession.delete(mint);
           failedBuyRecoveryInFlightMints.delete(mint);
           console.warn(
             `Buy failed for ${mint.slice(0, 8)}... with recoverable ${decision.category} failure; ` +
@@ -2549,6 +2570,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     } else if (isBuySignal(swap) && !retryDecision.shouldQuarantine) {
       const failedMint = swap.outputMint;
       boughtMintsThisSession.delete(failedMint);
+      liveBuyAttemptedMintsThisSession.delete(failedMint);
       pendingBuyRetryByMint.delete(failedMint);
       failedBuyRecoveryInFlightMints.delete(failedMint);
       console.warn(
@@ -2928,6 +2950,7 @@ export function resetTradingState(): void {
   fastBuyConfirmRetryScheduledByMint.clear();
   failedBuyRecoveryInFlightMints.clear();
   boughtMintsThisSession.clear();
+  liveBuyAttemptedMintsThisSession.clear();
   quarantinedBuyMints.clear();
   sourceBuySignatureByMint.clear();
   openPositionBuyMintsInFlight.clear();
