@@ -40,6 +40,7 @@ import type { SourcePumpSwapAccountMeta } from "../types.js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   PUMP_FUN_FEE_PROGRAM_ID,
+  PUMP_FUN_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
   deriveAta,
@@ -202,6 +203,32 @@ export function derivePumpSwapFeeConfigPda(): PublicKey {
     PUMP_FUN_FEE_PROGRAM_ID
   );
   return pda;
+}
+
+// The canonical PumpSwap pool for a pump.fun graduated token is fully
+// deterministic — no getProgramAccounts scan or source hint required. Migration
+// creates it (pump.json `migrate`) with index 0, quote=WSOL, and creator equal
+// to the per-mint `pool-authority` PDA owned by the pump.fun program. The pool
+// itself is a PDA owned by the PumpSwap program (pump_amm.json `create_pool`):
+//   pool_authority = PDA(["pool-authority", mint], PUMP_FUN_PROGRAM_ID)
+//   pool           = PDA(["pool", u16le(0), pool_authority, mint, WSOL], PUMPSWAP_PROGRAM_ID)
+export function derivePumpFunGraduatedPoolPda(mint: PublicKey): PublicKey {
+  const [poolAuthority] = PublicKey.findProgramAddressSync(
+    [Buffer.from("pool-authority"), mint.toBuffer()],
+    PUMP_FUN_PROGRAM_ID
+  );
+  const indexLe = Buffer.alloc(2); // canonical migration index = 0
+  const [pool] = PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("pool"),
+      indexLe,
+      poolAuthority.toBuffer(),
+      mint.toBuffer(),
+      new PublicKey(WRAPPED_SOL_MINT).toBuffer(),
+    ],
+    PUMPSWAP_PROGRAM_ID
+  );
+  return pool;
 }
 
 function formatSol(lamports: number): string {
@@ -796,6 +823,23 @@ async function getCachedPumpSwapPoolAccount(
   return account;
 }
 
+// Read a candidate pool address on-chain and accept it only if it is genuinely
+// the PumpSwap pool for this mint (PumpSwap-owned, base=mint, quote=WSOL). This
+// is how we use untrusted hints/derivations safely: the address is only a
+// candidate; the on-chain pool state is the source of truth.
+async function validatedPumpSwapPoolCandidate(
+  mint: PublicKey,
+  candidate: PublicKey
+): Promise<{ pool: PublicKey; baseVault: PublicKey; quoteVault: PublicKey } | null> {
+  const account = await getCachedPumpSwapPoolAccount(candidate);
+  if (validatePumpSwapPoolAccount(candidate, account)) return null;
+  const state = readPoolStateFromAccount(candidate, account);
+  if (!state || !state.baseMint.equals(mint) || state.quoteMint.toBase58() !== WRAPPED_SOL_MINT) {
+    return null;
+  }
+  return { pool: candidate, baseVault: state.baseVault, quoteVault: state.quoteVault };
+}
+
 async function findPumpSwapPoolForMint(
   mint: PublicKey,
   poolHint?: PublicKey | null
@@ -807,39 +851,42 @@ async function findPumpSwapPoolForMint(
   const cached = pumpSwapPoolCache.get(mint.toBase58());
   if (cached) return cached;
 
-  // Prefer a pool address learned from the source/detector tx over a heavy
-  // getProgramAccounts scan. The scan is slow and frequently unavailable right
-  // after graduation or on throttled RPCs — that is the root cause of failed
-  // mirror sells. We never trust the hint blindly: we read the pool account
-  // on-chain and require it to be PumpSwap-owned with base=mint and quote=WSOL
-  // before deriving canonical accounts from its verified state.
-  if (poolHint) {
-    const hintAccount = await getCachedPumpSwapPoolAccount(poolHint);
-    if (!validatePumpSwapPoolAccount(poolHint, hintAccount)) {
-      const hintState = readPoolStateFromAccount(poolHint, hintAccount);
-      if (
-        hintState &&
-        hintState.baseMint.equals(mint) &&
-        hintState.quoteMint.toBase58() === WRAPPED_SOL_MINT
-      ) {
-        const pool = {
-          pool: poolHint,
-          baseVault: hintState.baseVault,
-          quoteVault: hintState.quoteVault,
-        };
-        pumpSwapPoolCache.set(mint.toBase58(), pool);
-        return pool;
-      }
+  // Resolve the pool without the heavy getProgramAccounts scan whenever possible.
+  // The scan is slow and frequently unavailable right after graduation or on
+  // throttled RPCs — the root cause of failed PumpSwap buys/sells. We try, in
+  // order: (1) the pool address carried by the source/detector tx, and (2) the
+  // fully deterministic pump.fun-graduated pool PDA. Both are only candidate
+  // addresses — each is verified against on-chain pool state before use, so a
+  // bad hint or a non-canonical pool simply falls through to the scan.
+  const candidates: PublicKey[] = [];
+  if (poolHint) candidates.push(poolHint);
+  try {
+    candidates.push(derivePumpFunGraduatedPoolPda(mint));
+  } catch {
+    // derivation only fails on an invalid mint; the scan below still covers it.
+  }
+  for (const candidate of candidates) {
+    const resolved = await validatedPumpSwapPoolCandidate(mint, candidate);
+    if (resolved) {
+      pumpSwapPoolCache.set(mint.toBase58(), resolved);
+      return resolved;
     }
   }
 
-  const accounts = await readConnection.getProgramAccounts(PUMPSWAP_PROGRAM_ID, {
-    commitment: "confirmed",
-    filters: [
-      { memcmp: { offset: POOL_BASE_MINT_OFFSET, bytes: mint.toBase58() } },
-      { memcmp: { offset: POOL_QUOTE_MINT_OFFSET, bytes: WRAPPED_SOL_MINT } },
-    ],
-  });
+  let accounts: Awaited<ReturnType<typeof readConnection.getProgramAccounts>>;
+  try {
+    accounts = await readConnection.getProgramAccounts(PUMPSWAP_PROGRAM_ID, {
+      commitment: "confirmed",
+      filters: [
+        { memcmp: { offset: POOL_BASE_MINT_OFFSET, bytes: mint.toBase58() } },
+        { memcmp: { offset: POOL_QUOTE_MINT_OFFSET, bytes: WRAPPED_SOL_MINT } },
+      ],
+    });
+  } catch {
+    // Many fast/cheap RPCs rate-limit or disable getProgramAccounts. The PDA
+    // candidate above already covers canonical pump.fun graduations.
+    return null;
+  }
   if (accounts.length === 0) return null;
 
   const usable = accounts.filter((a) => a.account.data.length >= POOL_QUOTE_TOKEN_ACCOUNT_OFFSET + 32);
