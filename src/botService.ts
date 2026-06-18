@@ -2034,31 +2034,21 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       if (!rustHotSniperPrimaryFallbackEnabled) {
         return;
       }
-      const watchdogDelayMs = Math.max(1_000, rustHotSniperPrimaryFallbackDelayMs + 1_000);
+      // The Rust hot sniper (ShredStream) gets a short head-start to land a
+      // source-replay buy. ShredStream is best-effort: if its shred for the
+      // source tx never arrives, the hot sniper simply never fires — that is a
+      // MISS, not a failure event, so we must not wait for a "confirmed failure"
+      // that will never come. After the head-start window we always back the buy
+      // up through the normal pipeline, which under RUST_ONLY_BUYS still
+      // broadcasts via the Rust executor command bridge (no TypeScript tx is
+      // built). The shared buy-once gate in the Rust sidecar reserves the mint
+      // before broadcasting on both paths, so even if the hot sniper fires late
+      // only one broadcast can ever land — racing the two paths is safe.
       setTimeout(() => {
         if (!rustHotSniperPrimaryPendingMints.has(mint)) return;
-        if (
-          rustHotBuyRecordedByMint.has(mint) ||
-          liveBuyAttemptedMintsThisSession.has(mint) ||
-          boughtMintsThisSession.has(mint) ||
-          quarantinedBuyMints.has(mint) ||
-          (getPosition(mint)?.buysCount ?? 0) > 0
-        ) {
-          rustHotSniperPrimaryPendingMints.delete(mint);
-          pendingBuyRetryByMint.delete(mint);
-          return;
-        }
         rustHotSniperPrimaryPendingMints.delete(mint);
-        if (rustOnlyBuys) {
-          pendingBuyRetryByMint.delete(mint);
-          console.warn(
-            `Rust hot sniper primary timed out for ${mint.slice(0, 8)}...; ` +
-              "RUST_ONLY_BUYS=true so no TypeScript fallback was sent."
-          );
-        }
-      }, watchdogDelayMs);
-      setTimeout(() => {
         const fallback = pendingBuyRetryByMint.get(mint) ?? swap;
+        pendingBuyRetryByMint.delete(mint);
         if (
           stopRequested ||
           rustHotBuyRecordedByMint.has(mint) ||
@@ -2067,23 +2057,17 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           quarantinedBuyMints.has(mint) ||
           (getPosition(mint)?.buysCount ?? 0) > 0
         ) {
-          rustHotSniperPrimaryPendingMints.delete(mint);
-          pendingBuyRetryByMint.delete(mint);
+          // Hot sniper already handled this mint (or it is otherwise resolved).
           return;
         }
-        if (!failedBuyRecoveryInFlightMints.has(mint)) {
-          console.log(
-            `Skipping TypeScript buy: Rust hot sniper primary has no confirmed failure for ${mint.slice(0, 8)}... ` +
-              "keeping fallback queued."
-          );
-          return;
-        }
-        rustHotSniperPrimaryPendingMints.delete(mint);
-        pendingBuyRetryByMint.delete(mint);
         rustHotSniperPrimaryFallbackSources.add(fallback.signature);
+        console.log(
+          `Rust hot sniper head-start elapsed for ${mint.slice(0, 8)}...; ` +
+            "driving Rust executor backstop buy (shared buy-once gate prevents duplicates)."
+        );
         processSwap(fallback, kp)
           .catch((err) => {
-            console.error("Rust hot sniper primary fallback failed:", err);
+            console.error("Rust hot sniper backstop buy failed:", err);
           })
           .finally(() => {
             rustHotSniperPrimaryFallbackSources.delete(fallback.signature);
