@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path";
 import { TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID } from "./config.js";
 import { getPositions, getTotals } from "./pnl.js";
 import {
+  areBuysPaused,
   formatPnl,
   getBotState,
   getSessionWalletPnlSnapshot,
@@ -14,6 +15,8 @@ import {
   sellAllPositions,
   sellPositionByIndex,
   setBotSimulationMode,
+  setBuysPaused,
+  stopBot,
   toggleBuyOncePerToken,
   toggleMirrorSells,
   toggleShowMarketCap,
@@ -195,6 +198,9 @@ class TelegramBotHandler {
       { command: "trades", description: "Show recent transactions" },
       { command: "sell", description: "Close a position by number" },
       { command: "sellall", description: "Sell every open position" },
+      { command: "panic", description: "🛑 Stop the bot and sell everything" },
+      { command: "pause", description: "⏸️ Pause new buys (still manages positions)" },
+      { command: "resume", description: "▶️ Resume new buys" },
       { command: "status", description: "Show bot status" },
       { command: "settings", description: "Show runtime settings" },
       { command: "mode", description: "Switch simulation/live mode" },
@@ -263,6 +269,15 @@ class TelegramBotHandler {
       case "/sellall":
         await this.sendSellAllConfirmation(chatId);
         return;
+      case "/panic":
+        await this.sendPanicConfirmation(chatId);
+        return;
+      case "/pause":
+        await this.setBuysPausedAndRefresh(chatId, true);
+        return;
+      case "/resume":
+        await this.setBuysPausedAndRefresh(chatId, false);
+        return;
       case "/sell": {
         const index = Number.parseInt(parts[1] ?? "", 10);
         if (!Number.isInteger(index) || index < 1) {
@@ -328,6 +343,18 @@ class TelegramBotHandler {
       case "confirm_sell_all":
         await this.executeSellAll(chatId);
         return;
+      case "panic":
+        await this.sendPanicConfirmation(chatId);
+        return;
+      case "confirm_panic":
+        await this.executePanic(chatId);
+        return;
+      case "pause_buys":
+        await this.setBuysPausedAndRefresh(chatId, true);
+        return;
+      case "resume_buys":
+        await this.setBuysPausedAndRefresh(chatId, false);
+        return;
       case "reset":
         await this.sendResetConfirmation(chatId);
         return;
@@ -351,30 +378,43 @@ class TelegramBotHandler {
     }
   }
 
+  private menuStatusLine(): string {
+    const state = getBotState();
+    const open = getPositions().filter((p) => p.heldRaw > 0).length;
+    const bal = state.lastBalanceSol == null ? "?" : `${state.lastBalanceSol.toFixed(3)} SOL`;
+    const walletPnl = getSessionWalletPnlSnapshot();
+    const pnl = walletPnl.deltaLamports != null ? formatPnl(walletPnl.deltaLamports) : "n/a";
+    const mode = state.simulationMode ? "SIM" : "LIVE";
+    const entries = state.buysPaused ? "⏸️ buys PAUSED" : state.running ? "▶️ buying" : "⏹️ stopped";
+    return `💰 ${bal} · 📊 ${open} open · PnL ${escapeHtml(pnl)} · ${mode} · ${entries}`;
+  }
+
   private async sendMainMenu(chatId: number): Promise<void> {
+    const state = getBotState();
+    const pauseToggle = state.buysPaused
+      ? { text: "▶️ Resume buys", callback_data: "resume_buys" }
+      : { text: "⏸️ Pause buys", callback_data: "pause_buys" };
     await this.sendMessage(
       chatId,
-      [
-        "<b>FinalBot Controls</b>",
-        "",
-        "Use the buttons below to monitor and manage the copytrader.",
-      ].join("\n"),
+      ["<b>FinalBot Controls</b>", "", this.menuStatusLine()].join("\n"),
       {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "Positions", callback_data: "positions" },
-              { text: "Recent Trades", callback_data: "trades" },
+              { text: "📊 Positions", callback_data: "positions" },
+              { text: "🧾 Trades", callback_data: "trades" },
             ],
             [
-              { text: "PnL", callback_data: "pnl" },
-              { text: "Status", callback_data: "status" },
+              { text: "💹 PnL", callback_data: "pnl" },
+              { text: "ℹ️ Status", callback_data: "status" },
             ],
+            [pauseToggle, { text: "💸 Sell All", callback_data: "sell_all" }],
+            [{ text: "🛑 PANIC — stop & sell all", callback_data: "panic" }],
             [
-              { text: "Sell All", callback_data: "sell_all" },
-              { text: "Settings", callback_data: "settings" },
+              { text: "⚙️ Settings", callback_data: "settings" },
+              { text: "🔀 Mode", callback_data: "mode" },
             ],
-            [{ text: "Mode", callback_data: "mode" }],
+            [{ text: "🔄 Refresh", callback_data: "menu" }],
           ],
         },
       }
@@ -489,6 +529,7 @@ class TelegramBotHandler {
       "<b>Bot Status</b>",
       "",
       `Running: ${state.running ? "yes" : "no"}`,
+      `Buys: ${areBuysPaused() ? "⏸️ PAUSED" : "active"}`,
       `Mode: ${state.simulationMode ? "SIMULATION" : "LIVE"}`,
       `Wallet: ${state.ourWallet ? `<code>${escapeHtml(shortAddress(state.ourWallet))}</code>` : "not loaded"}`,
       `Tracked wallets: ${state.trackedWallets.length}`,
@@ -668,6 +709,62 @@ class TelegramBotHandler {
     );
   }
 
+  private async sendPanicConfirmation(chatId: number): Promise<void> {
+    const open = getPositions().filter((p) => p.heldRaw > 0).length;
+    await this.sendMessage(
+      chatId,
+      [
+        "🛑 <b>Confirm PANIC</b>",
+        "",
+        this.menuStatusLine(),
+        "",
+        "This emergency kill-switch will immediately:",
+        "• <b>stop the bot</b> (halt every new buy)",
+        `• <b>market-sell all ${open} open position(s)</b>`,
+        "",
+        "You'll need to restart the bot afterwards to trade again.",
+      ].join("\n"),
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🛑 YES — STOP & SELL ALL", callback_data: "confirm_panic" }],
+            [{ text: "Cancel", callback_data: "menu" }],
+          ],
+        },
+      }
+    );
+  }
+
+  private async executePanic(chatId: number): Promise<void> {
+    await this.sendMessage(chatId, "🛑 <b>PANIC</b> — stopping bot and selling everything...");
+    try {
+      setBuysPaused(true);
+      stopBot();
+      await sellAllPositions();
+      await this.sendMessage(
+        chatId,
+        "🛑 PANIC done — bot stopped and sell-all requested.\n\nVerify with /positions, and restart the bot when you want to trade again."
+      );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      await this.sendMessage(
+        chatId,
+        `⚠️ PANIC hit an error: <code>${escapeHtml(msg)}</code>\n\nThe bot is stopped. Check /positions — some sells may need a manual retry.`
+      );
+    }
+  }
+
+  private async setBuysPausedAndRefresh(chatId: number, paused: boolean): Promise<void> {
+    setBuysPaused(paused);
+    await this.sendMessage(
+      chatId,
+      paused
+        ? "⏸️ Buys <b>paused</b> — no new entries. Open positions are still managed and sold."
+        : "▶️ Buys <b>resumed</b> — new entries re-enabled."
+    );
+    await this.sendMainMenu(chatId);
+  }
+
   private async sendResetConfirmation(chatId: number): Promise<void> {
     await this.sendMessage(
       chatId,
@@ -726,6 +823,9 @@ class TelegramBotHandler {
         "/positions - Show open positions with close buttons",
         "/sell 1 - Close position #1",
         "/sellall - Confirm sell all positions",
+        "🛑 /panic - Stop the bot and sell everything",
+        "⏸️ /pause - Pause new buys (positions still managed)",
+        "▶️ /resume - Resume new buys",
         "/trades - Recent copied/manual trades",
         "/pnl - PnL report",
         "/status - Bot status",

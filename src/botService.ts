@@ -225,6 +225,7 @@ export type BotState = {
   exitSignalSellsEnabled: boolean;
   exitSignalWallets: string[];
   simulationMode: boolean;
+  buysPaused: boolean;
   minBuySol: number;
   maxBuySol: number;
   copyBuyPercentage: number;
@@ -744,6 +745,22 @@ export function isShowMarketCapEnabled(): boolean {
 export function setShowMarketCapEnabled(enabled: boolean): void {
   showMarketCapEnabled = enabled;
   console.log(`🔁 Show market cap: ${enabled ? "ON — DexScreener MC shown in logs (may be inaccurate for fresh pump.fun tokens)" : "OFF — MC line skipped, no API call"}`);
+}
+
+let buysPaused = false;
+
+export function areBuysPaused(): boolean {
+  return buysPaused;
+}
+
+export function setBuysPaused(paused: boolean): void {
+  if (buysPaused === paused) return;
+  buysPaused = paused;
+  console.log(
+    paused
+      ? "⏸️ Buys PAUSED — no new entries; open positions are still managed and sold."
+      : "▶️ Buys RESUMED — new entries re-enabled."
+  );
 }
 
 export function toggleShowMarketCap(): void {
@@ -1830,6 +1847,14 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     if (sourceTokenRaw > 0) {
       recordSourceBuyRaw(swap.wallet, swap.outputMint, sourceTokenRaw);
     }
+  }
+
+  if (isBuySignal(swap) && buysPaused) {
+    console.log(
+      `⏸️ Buys paused: skipping buy of ${swap.outputMint.slice(0, 8)}... ` +
+        "(open positions still managed; use Resume to re-enable entries)."
+    );
+    return;
   }
 
   let proportionalSellAmountRaw: number | undefined;
@@ -4270,6 +4295,7 @@ export function getBotState(): BotState {
     exitSignalSellsEnabled,
     exitSignalWallets,
     simulationMode,
+    buysPaused,
     minBuySol: minBuyLamports / LAMPORTS_PER_SOL,
     maxBuySol: maxBuyLamports / LAMPORTS_PER_SOL,
     copyBuyPercentage,
