@@ -582,6 +582,7 @@
       </div>
       <div class="actions">
         <button id="btn-cmdk" class="btn ghost" title="Command palette (Ctrl / ⌘ + K)">⌘K</button>
+        <button id="btn-demo" class="btn ghost" title="Demo mode — synthetic data, no real trades">Demo</button>
         <button id="btn-density" class="btn ghost" title="Toggle layout density">Compact</button>
         <button id="btn-start" class="btn primary">Start Bot</button>
         <button id="btn-stop" class="btn danger" disabled>Stop</button>
@@ -1834,6 +1835,115 @@ async function refreshPosChart() {
 }
 initPosChart();
 setInterval(refreshPosChart, 1000);
+
+/* ===== Demo mode — synthetic data through the real render pipeline ===== */
+const WSOL = "So11111111111111111111111111111111111111112";
+const demo = { on: false, tick: null, realFetch: null, balance: 4.55, startedAt: Date.now(), realizedPnl: 0, tokens: [], swaps: [], series: {}, logs: [], logId: 0, sig: 0, n: 0 };
+const DEMO_NAMES = ["LESBOYS", "CHADCAT", "MOONPIG", "GIGAWIF", "PEPE2", "WAGMI", "BONKJR", "TURBO", "SIGMA", "DEGEN"];
+const rnd = (a, b) => a + Math.random() * (b - a);
+function demoMint(sym) { const s = (sym + "DEMO").replace(/[^A-Za-z0-9]/g, ""); return (s + "1111111111111111111111111111111111111111111").slice(0, 44); }
+function demoLog(message, level) { demo.logs.push({ ts: Date.now(), id: ++demo.logId, message, level: level || "log" }); if (demo.logs.length > 200) demo.logs.shift(); }
+function makeDemoToken(sym) {
+  const entry = rnd(0.02, 0.06);            // SOL cost basis
+  const heldRaw = Math.round(rnd(2e5, 4e6)) * 1e6 / 1e6 * 1e6; // ~millions of tokens (6 decimals)
+  const t = { symbol: sym, mint: demoMint(sym), decimals: 6, heldRaw: Math.round(rnd(4e5, 9e6)) * 1e6, entry, value: entry * rnd(0.85, 1.15), mc: rnd(18000, 240000), createdAt: Date.now(), lastTradeAt: Date.now() };
+  const base = t.value * 1e9, now = Date.now();
+  demo.series[t.mint] = [];
+  for (let i = 90; i > 0; i--) demo.series[t.mint].push({ t: now - i * 1000, valueLamports: base * (0.9 + Math.random() * 0.2), pricePerToken: 0 });
+  return t;
+}
+function demoBuy(sym) {
+  const t = makeDemoToken(sym); demo.tokens.push(t);
+  demo.swaps.unshift({ ts: Date.now(), side: "buy", wallet: demo.wallet || "GaYjpDemoWa11et", isSimulated: false, mirrorSignature: "demo" + (++demo.sig),
+    input: { mint: WSOL, symbol: "SOL", name: "SOL", decimals: 9, amountRaw: Math.round(t.entry * 1e9), display: t.entry.toFixed(3) + " SOL" },
+    output: { mint: t.mint, symbol: t.symbol, name: t.symbol, decimals: 6, amountRaw: t.heldRaw, display: (t.heldRaw / 1e6).toLocaleString() + " " + t.symbol },
+    marketCapUsd: t.mc });
+  if (demo.swaps.length > 30) demo.swaps.pop();
+  demoLog("⚡ Buy " + t.symbol + " " + t.entry.toFixed(3) + " SOL · PumpSwap broadcast");
+}
+function demoSell(t) {
+  demo.realizedPnl += (t.value - t.entry);
+  demo.swaps.unshift({ ts: Date.now(), side: "sell", wallet: demo.wallet || "GaYjpDemoWa11et", isSimulated: false, mirrorSignature: "demo" + (++demo.sig),
+    input: { mint: t.mint, symbol: t.symbol, name: t.symbol, decimals: 6, amountRaw: t.heldRaw, display: (t.heldRaw / 1e6).toLocaleString() + " " + t.symbol },
+    output: { mint: WSOL, symbol: "SOL", name: "SOL", decimals: 9, amountRaw: Math.round(t.value * 1e9), display: t.value.toFixed(3) + " SOL" },
+    marketCapUsd: t.mc });
+  demo.tokens = demo.tokens.filter((x) => x !== t);
+  demoLog((t.value >= t.entry ? "✅" : "🔻") + " Sell " + t.symbol + " " + t.value.toFixed(3) + " SOL (" + (t.value >= t.entry ? "+" : "") + (((t.value - t.entry) / t.entry) * 100).toFixed(0) + "%)", t.value >= t.entry ? "log" : "warn");
+}
+function demoBotState() {
+  const positions = demo.tokens.map((t) => ({ mint: t.mint, symbol: t.symbol, decimals: 6, heldRaw: t.heldRaw,
+    avgCostLamportsPerTokenRaw: (t.entry * 1e9) / t.heldRaw, realizedPnlLamports: 0, costBasisRemainingLamports: Math.round(t.entry * 1e9),
+    totalBoughtRaw: t.heldRaw, totalSolSpentLamports: Math.round(t.entry * 1e9), totalSoldRaw: 0, totalSolReceivedLamports: 0,
+    buysCount: 1, sellsCount: 0, firstSeenAt: t.createdAt, lastTradeAt: t.lastTradeAt }));
+  return { running: true, simulationMode: false, buysPaused: false, startedAt: demo.startedAt,
+    ourWallet: "GaYjpDemoWa11etXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", trackedWallets: ["CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o"],
+    lastBalanceSol: demo.balance, minBuySol: 0.04, maxBuySol: 0.04, copyBuyPercentage: 100,
+    maxOpenPositions: 7, maxSolPerTokenSol: 0.35, maxSessionDeployedSol: 2.1,
+    tipLamports: 2500000, priorityFeeMicroLamports: 300000,
+    totals: { realizedPnlLamports: Math.round(demo.realizedPnl * 1e9), tradesCount: demo.swaps.length, openPositions: demo.tokens.length },
+    positions, recentSwaps: demo.swaps.slice() };
+}
+function demoTokenLive(mint) {
+  const t = demo.tokens.find((x) => x.mint === mint);
+  if (!t) return { pair: null, quote: null, checkedAt: Date.now() };
+  const out = Math.round(t.value * 1e9), pnl = Math.round((t.value - t.entry) * 1e9);
+  return { pair: { pairAddress: mint.slice(0, 40) + "pair", url: dexScreenerUrl(mint), dexId: "pumpswap", liquidityUsd: t.mc * 0.4, marketCapUsd: t.mc },
+    quote: { outSolLamports: out, unrealizedPnlLamports: pnl, unrealizedPnlPct: ((t.value - t.entry) / t.entry) * 100, priceImpactPct: rnd(0.3, 2.5) }, checkedAt: Date.now() };
+}
+function demoFetch(input, init) {
+  const url = typeof input === "string" ? input : (input && input.url) || "";
+  if (!demo.on || url.indexOf("/api/") === -1) return demo.realFetch(input, init);
+  const u = new URL(url, location.origin), path = u.pathname;
+  const J = (obj) => new Response(JSON.stringify(obj), { status: 200, headers: { "Content-Type": "application/json" } });
+  if ((init && init.method ? init.method : "GET").toUpperCase() === "POST") {
+    if (path === "/api/actions/sell-all" || path === "/api/actions/panic") { demo.tokens.slice().forEach(demoSell); }
+    else if (path.indexOf("/api/actions/sell-position") === 0) { const i = parseInt(path.split("/").pop(), 10) - 1; if (demo.tokens[i]) demoSell(demo.tokens[i]); }
+    return J({ ok: true, state: demoBotState() });
+  }
+  if (path === "/api/state") return J(demoBotState());
+  if (path === "/api/price-series") { const m = u.searchParams.get("mint"); return J({ mint: m, sampleMs: 1000, points: demo.series[m] || [] }); }
+  if (path === "/api/token-live") return J(demoTokenLive(u.searchParams.get("mint")));
+  if (path === "/api/token-pair") { const m = u.searchParams.get("mint"); const t = demo.tokens.find((x) => x.mint === m); return J({ pair: t ? { pairAddress: m.slice(0, 40) + "pair", url: dexScreenerUrl(m), dexId: "pumpswap", liquidityUsd: t.mc * 0.4, marketCapUsd: t.mc } : null }); }
+  if (path === "/api/logs") { const since = parseInt(u.searchParams.get("since") || "0", 10); return J({ logs: demo.logs.filter((l) => l.ts > since) }); }
+  if (path === "/api/settings") return J({ minBuySol: 0.04, maxBuySol: 0.04 });
+  return demo.realFetch(input, init);
+}
+function demoStep() {
+  for (const t of demo.tokens) {
+    t.value = Math.max(0.0005, t.value * (1 + (Math.random() - 0.48) * 0.05));
+    t.mc = Math.max(5000, t.mc * (t.value / (t.value / (1 + (Math.random() - 0.48) * 0.05))));
+    const arr = demo.series[t.mint] || (demo.series[t.mint] = []);
+    arr.push({ t: Date.now(), valueLamports: Math.round(t.value * 1e9), pricePerToken: t.value / (t.heldRaw / 1e6) });
+    if (arr.length > 180) arr.shift();
+  }
+  demo.balance = Math.max(0, demo.balance + (Math.random() - 0.5) * 0.004);
+  if (demo.tokens.length < 6 && Math.random() < 0.16) demoBuy(DEMO_NAMES[demo.n++ % DEMO_NAMES.length]);
+  if (demo.tokens.length > 2 && Math.random() < 0.08) demoSell(demo.tokens[Math.floor(Math.random() * demo.tokens.length)]);
+  if (Math.random() < 0.4) demoLog(["gRPC detected swap (age 9ms)", "Rust hot sniper armed", "ShredStream: streaming", "PumpSwap pool resolved", "Jito bundle accepted"][Math.floor(Math.random() * 5)]);
+}
+function setDemo(on) {
+  if (on === demo.on) return;
+  demo.on = on;
+  const btn = $("btn-demo");
+  if (on) {
+    demo.realFetch = window.fetch.bind(window);
+    window.fetch = demoFetch;
+    demo.balance = 4.55; demo.realizedPnl = 0; demo.tokens = []; demo.swaps = []; demo.series = {}; demo.logs = []; demo.startedAt = Date.now(); demo.n = 0;
+    demoBuy("LESBOYS"); demoBuy("CHADCAT"); demoBuy("MOONPIG");
+    demo.tick = setInterval(demoStep, 1000);
+    if (btn) { btn.textContent = "Demo: ON"; btn.classList.remove("ghost"); btn.classList.add("primary"); }
+    toast("Demo mode ON — synthetic data, no real trades.");
+  } else {
+    clearInterval(demo.tick); demo.tick = null;
+    if (demo.realFetch) window.fetch = demo.realFetch;
+    if (btn) { btn.textContent = "Demo"; btn.classList.add("ghost"); btn.classList.remove("primary"); }
+    toast("Demo mode OFF.");
+  }
+  posChartMint = ""; statePrimed = true; // avoid a ping storm on the first demo poll
+  refreshState(); refreshLogs(); refreshPosChart(); showView("overview");
+}
+$("btn-demo")?.addEventListener("click", () => setDemo(!demo.on));
+if (new URLSearchParams(location.search).get("demo") === "1") setDemo(true);
 </script>
 </body>
 </html>
