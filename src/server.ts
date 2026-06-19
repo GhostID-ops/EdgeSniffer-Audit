@@ -11,12 +11,14 @@ import {
   sellPositionPercentByIndex,
   closeAllOpenPositionsSimulated,
   resetTradingState,
+  setBuysPaused,
 } from "./botService.js";
 import { getLogs } from "./logBuffer.js";
 import { getFriendBotSettings } from "./config.js";
 import { normalizeFriendSettings, persistFriendSettings } from "./settingsStore.js";
 import { getTokenPairInfo, WRAPPED_SOL_MINT } from "./tokenRegistry.js";
 import { getQuote } from "./jupiter.js";
+import { getPriceSampleMs, getPriceSeries, startPriceSampler } from "./priceSampler.js";
 
 const PORT = parseInt(process.env.WEB_PORT ?? "3000", 10);
 const TOKEN_LIVE_CACHE_MS = Math.max(
@@ -124,12 +126,37 @@ async function handle(
     return serveIndex(res);
   }
 
+  if (req.method === "GET" && (url === "/dex" || url === "/dex.html")) {
+    return servePublicFile(res, "dex.html", "text/html; charset=utf-8");
+  }
+
   if (req.method === "GET" && url === "/favicon.svg") {
     return servePublicFile(res, "favicon.svg", "image/svg+xml; charset=utf-8");
   }
 
   if (req.method === "GET" && url === "/api/state") {
     return sendJson(res, 200, getBotState());
+  }
+
+  if (req.method === "GET" && url.startsWith("/api/price-series")) {
+    const u = new URL(url, "http://localhost");
+    const mint = (u.searchParams.get("mint") ?? "").trim();
+    if (!mint) return sendError(res, 400, "Missing mint");
+    return sendJson(res, 200, {
+      mint,
+      sampleMs: getPriceSampleMs(),
+      points: getPriceSeries(mint),
+    });
+  }
+
+  if (req.method === "POST" && url === "/api/actions/pause-buys") {
+    setBuysPaused(true);
+    return sendJson(res, 200, { ok: true, state: getBotState() });
+  }
+
+  if (req.method === "POST" && url === "/api/actions/resume-buys") {
+    setBuysPaused(false);
+    return sendJson(res, 200, { ok: true, state: getBotState() });
   }
 
   if (req.method === "GET" && url === "/api/settings") {
@@ -334,6 +361,8 @@ export function startServer(options: StartServerOptions = {}): void {
   });
 
   server.listen(PORT, "127.0.0.1", () => {
-    console.log(`Web UI: http://localhost:${PORT}`);
+    console.log(`Web UI: http://localhost:${PORT}  ·  DEX UI: http://localhost:${PORT}/dex`);
   });
+
+  startPriceSampler();
 }

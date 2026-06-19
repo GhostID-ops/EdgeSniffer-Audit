@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>FinalBot · DEX</title>
+<link rel="icon" href="/favicon.svg" />
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+  :root{
+    --bg:#0a0e14; --panel:#121822; --panel2:#0e141d; --line:#1e2733;
+    --txt:#e6edf3; --dim:#8a98a8; --green:#16c784; --red:#ea3943; --acc:#3b82f6; --warn:#f5a623;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--txt);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{display:flex;flex-direction:column;height:100%}
+  header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line)}
+  header .brand{font-weight:700;letter-spacing:.3px}
+  header .status{color:var(--dim);font-size:13px}
+  header .status b{color:var(--txt)}
+  .pill{padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600}
+  .pill.live{background:rgba(22,199,132,.15);color:var(--green)}
+  .pill.sim{background:rgba(245,166,35,.15);color:var(--warn)}
+  .pill.paused{background:rgba(234,57,67,.15);color:var(--red)}
+  .spacer{flex:1}
+  button{font:inherit;color:var(--txt);background:#1b2430;border:1px solid var(--line);border-radius:8px;padding:7px 11px;cursor:pointer}
+  button:hover{border-color:#2c3a4c}
+  button:active{transform:translateY(1px)}
+  button.ghost{background:transparent}
+  button.warn{background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.4);color:var(--warn)}
+  button.danger{background:rgba(234,57,67,.14);border-color:rgba(234,57,67,.45);color:#ff6b76;font-weight:700}
+  button.go{background:rgba(59,130,246,.16);border-color:rgba(59,130,246,.5);color:#8ab4ff}
+  .main{display:flex;flex:1;min-height:0}
+  .positions{width:340px;max-width:42vw;border-right:1px solid var(--line);overflow:auto;background:var(--panel2)}
+  .chartwrap{flex:1;display:flex;flex-direction:column;min-width:0}
+  .chartbar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .chartbar .sym{font-weight:700;font-size:15px}
+  .chartbar .px{color:var(--dim)}
+  #chart{flex:1;min-height:0}
+  .pos{padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+  .pos:hover{background:#0f1620}
+  .pos.sel{background:#101a27;border-left:3px solid var(--acc);padding-left:9px}
+  .pos .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .pos .sym{font-weight:700}
+  .pos .mint{color:var(--dim);font-size:11px}
+  .pos .val{text-align:right}
+  .pos .pnl{font-weight:700;font-size:13px}
+  .pos .sub{color:var(--dim);font-size:12px;margin-top:2px;display:flex;justify-content:space-between}
+  .pos .sells{display:flex;gap:6px;margin-top:8px}
+  .pos .sells button{flex:1;padding:6px 0;font-size:12px}
+  .up{color:var(--green)} .down{color:var(--red)}
+  .empty{color:var(--dim);padding:24px;text-align:center}
+  .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f1620;border:1px solid var(--line);padding:10px 16px;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.4);max-width:90vw;z-index:50;display:none}
+  /* modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:60}
+  .modal .box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;max-width:380px;width:90vw}
+  .modal h3{margin:0 0 8px}
+  .modal p{color:var(--dim);margin:.3em 0}
+  .modal .row{display:flex;gap:10px;margin-top:14px}
+  .modal .row button{flex:1;padding:11px}
+  @media(max-width:760px){
+    .main{flex-direction:column}
+    .positions{width:100%;max-width:none;max-height:46vh;border-right:none;border-bottom:1px solid var(--line);order:2}
+    .chartwrap{order:1;min-height:42vh}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">⚡ FinalBot</span>
+    <span id="modePill" class="pill sim">…</span>
+    <span class="status">💰 <b id="bal">—</b> · 📊 <b id="open">0</b> open · PnL <b id="pnl">—</b></span>
+    <span class="spacer"></span>
+    <button id="pauseBtn" class="warn ghost">⏸️ Pause</button>
+    <button id="sellAllBtn" class="warn">💸 Sell All</button>
+    <button id="panicBtn" class="danger">🛑 PANIC</button>
+  </header>
+
+  <div class="main">
+    <div class="positions" id="positions"><div class="empty">Loading positions…</div></div>
+    <div class="chartwrap">
+      <div class="chartbar">
+        <span class="sym" id="cSym">Select a token</span>
+        <span class="px" id="cPx"></span>
+        <span class="spacer"></span>
+        <button id="modeValue" class="go">Bag SOL</button>
+        <button id="modePrice" class="ghost">Price/token</button>
+      </div>
+      <div id="chart"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="box">
+  <h3 id="mTitle">Confirm</h3>
+  <p id="mBody"></p>
+  <div class="row">
+    <button class="ghost" id="mCancel">Cancel</button>
+    <button class="danger" id="mOk">Confirm</button>
+  </div>
+</div></div>
+
+<script>
+const fmtSol = (lamports) => (lamports/1e9);
+const sol = (lamports, d=4) => fmtSol(lamports).toFixed(d);
+const short = (m) => m ? m.slice(0,4)+"…"+m.slice(-4) : "";
+let state = { positions: [] };
+let selected = null;       // selected mint
+let chartMode = "value";   // "value" | "price"
+let positionsByMint = {};  // mint -> {position, index}
+
+// ---- toast + modal ----
+let toastT;
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toastT); toastT=setTimeout(()=>t.style.display='none', 3200); }
+function confirmModal(title, body, okLabel){
+  return new Promise((res)=>{
+    document.getElementById('mTitle').textContent=title;
+    document.getElementById('mBody').innerHTML=body;
+    const ok=document.getElementById('mOk'), cancel=document.getElementById('mCancel'), modal=document.getElementById('modal');
+    ok.textContent=okLabel||'Confirm';
+    modal.style.display='flex';
+    const done=(v)=>{ modal.style.display='none'; ok.onclick=null; cancel.onclick=null; res(v); };
+    ok.onclick=()=>done(true); cancel.onclick=()=>done(false);
+  });
+}
+
+// ---- API ----
+async function api(path, method='GET'){
+  const r = await fetch(path, { method });
+  if(!r.ok){ let e; try{ e=(await r.json()).error; }catch{} throw new Error(e||('HTTP '+r.status)); }
+  return r.json();
+}
+
+// ---- chart ----
+const chartEl = document.getElementById('chart');
+const chart = LightweightCharts.createChart(chartEl, {
+  layout:{ background:{color:'#0a0e14'}, textColor:'#8a98a8' },
+  grid:{ vertLines:{color:'#141c26'}, horzLines:{color:'#141c26'} },
+  rightPriceScale:{ borderColor:'#1e2733' },
+  timeScale:{ borderColor:'#1e2733', timeVisible:true, secondsVisible:true },
+  crosshair:{ mode: LightweightCharts.CrosshairMode.Normal },
+  autoSize:true,
+});
+const area = chart.addAreaSeries({
+  lineColor:'#3b82f6', topColor:'rgba(59,130,246,.35)', bottomColor:'rgba(59,130,246,0)', lineWidth:2,
+  priceFormat:{ type:'price', precision:6, minMove:0.000001 },
+});
+
+function pointVal(p){ return chartMode==='value' ? p.valueLamports/1e9 : p.pricePerToken; }
+async function refreshChart(){
+  if(!selected){ area.setData([]); return; }
+  let data;
+  try{ data = await api('/api/price-series?mint='+selected); }catch{ return; }
+  const bySec = new Map();
+  for(const p of data.points){ bySec.set(Math.floor(p.t/1000), pointVal(p)); } // dedupe per second, last wins
+  const series = [...bySec.entries()].sort((a,b)=>a[0]-b[0]).map(([time,value])=>({time, value}));
+  area.setData(series);
+  const last = data.points[data.points.length-1];
+  const pos = positionsByMint[selected]?.position;
+  document.getElementById('cSym').textContent = pos ? ('$'+pos.symbol) : short(selected);
+  if(last){
+    const v = chartMode==='value' ? sol(last.valueLamports,4)+' SOL' : last.pricePerToken.toPrecision(4)+' SOL';
+    document.getElementById('cPx').textContent = (chartMode==='value'?'Bag ':'Price ')+v;
+  } else {
+    document.getElementById('cPx').textContent = 'waiting for samples…';
+  }
+}
+
+// ---- positions ----
+function pnlOf(pos){
+  // unrealized = (live bag value from latest sample) - remaining cost basis
+  const s = lastSeries[pos.mint];
+  const live = s && s.length ? s[s.length-1].valueLamports : null;
+  if(live==null || !pos.costBasisRemainingLamports) return { lamports:null, pct:null, live };
+  const lamports = live - pos.costBasisRemainingLamports;
+  const pct = (lamports / pos.costBasisRemainingLamports) * 100;
+  return { lamports, pct, live };
+}
+const lastSeries = {}; // mint -> points (cached for pnl/value display)
+
+async function pullSeriesFor(mints){
+  await Promise.all(mints.map(async (m)=>{
+    try{ const d = await api('/api/price-series?mint='+m); lastSeries[m]=d.points; }catch{}
+  }));
+}
+
+function renderPositions(){
+  const el = document.getElementById('positions');
+  const open = state.positions || [];
+  positionsByMint = {};
+  open.forEach((p,i)=> positionsByMint[p.mint] = { position:p, index:i+1 });
+  if(!open.length){ el.innerHTML = '<div class="empty">No open positions.</div>'; return; }
+  if(selected && !positionsByMint[selected]) selected=null;
+  if(!selected) selected = open[0].mint;
+
+  el.innerHTML = open.map((p)=>{
+    const { lamports, pct, live } = pnlOf(p);
+    const valTxt = live!=null ? sol(live,4)+' SOL' : '—';
+    const pnlCls = pct==null ? '' : (pct>=0?'up':'down');
+    const pnlTxt = pct==null ? '—' : (pct>=0?'+':'')+pct.toFixed(1)+'%';
+    const sub = (lamports==null?'':((lamports>=0?'+':'')+sol(lamports,4)+' SOL'));
+    return `<div class="pos ${p.mint===selected?'sel':''}" data-mint="${p.mint}">
+      <div class="top">
+        <div><span class="sym">$${p.symbol||''}</span> <span class="mint">${short(p.mint)}</span></div>
+        <div class="val"><div class="pnl ${pnlCls}">${pnlTxt}</div></div>
+      </div>
+      <div class="sub"><span>Value ${valTxt}</span><span class="${pnlCls}">${sub}</span></div>
+      <div class="sells">
+        <button data-sell="0.25">25%</button>
+        <button data-sell="0.5">50%</button>
+        <button class="danger" data-sell="1">100%</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  el.querySelectorAll('.pos').forEach((node)=>{
+    const mint = node.getAttribute('data-mint');
+    node.addEventListener('click',(e)=>{
+      if(e.target.closest('[data-sell]')) return;
+      selected = mint; renderPositions(); refreshChart();
+    });
+    node.querySelectorAll('[data-sell]').forEach((b)=>{
+      b.addEventListener('click', (e)=>{ e.stopPropagation(); sellFraction(mint, parseFloat(b.getAttribute('data-sell'))); });
+    });
+  });
+}
+
+async function sellFraction(mint, fraction){
+  // resolve a FRESH index by mint right before selling, to avoid stale-index mis-sells
+  let st;
+  try{ st = await api('/api/state'); }catch(err){ return toast('State unavailable: '+err.message); }
+  const idx = (st.positions||[]).findIndex(p=>p.mint===mint);
+  if(idx<0) return toast('Position no longer open.');
+  const pos = st.positions[idx];
+  if(fraction>=1){
+    const ok = await confirmModal('Sell 100% of $'+(pos.symbol||short(mint)),
+      'Market-sell the entire position now?', '🛑 Sell all of it');
+    if(!ok) return;
+  }
+  try{
+    await api(`/api/actions/sell-position-percent/${idx+1}?fraction=${fraction}`, 'POST');
+    toast(`Sell ${Math.round(fraction*100)}% sent for $${pos.symbol||short(mint)}`);
+    setTimeout(refreshAll, 600);
+  }catch(err){ toast('Sell failed: '+err.message); }
+}
+
+// ---- header status ----
+function renderHeader(){
+  const s = state;
+  const modePill = document.getElementById('modePill');
+  if(s.buysPaused){ modePill.className='pill paused'; modePill.textContent='⏸️ PAUSED'; }
+  else if(s.simulationMode){ modePill.className='pill sim'; modePill.textContent='SIM'; }
+  else { modePill.className='pill live'; modePill.textContent='LIVE'; }
+  document.getElementById('bal').textContent = s.lastBalanceSol!=null ? s.lastBalanceSol.toFixed(3)+' SOL' : '—';
+  document.getElementById('open').textContent = (s.positions||[]).length;
+  // aggregate unrealized pnl across positions we have a sample for
+  let agg=0, any=false;
+  for(const p of (s.positions||[])){ const {lamports}=pnlOf(p); if(lamports!=null){ agg+=lamports; any=true; } }
+  const pnlEl=document.getElementById('pnl');
+  pnlEl.textContent = any ? ((agg>=0?'+':'')+sol(agg,4)+' SOL') : '—';
+  pnlEl.className = any ? (agg>=0?'up':'down') : '';
+  const pauseBtn=document.getElementById('pauseBtn');
+  pauseBtn.textContent = s.buysPaused ? '▶️ Resume' : '⏸️ Pause';
+  pauseBtn.classList.toggle('go', !!s.buysPaused);
+}
+
+async function refreshAll(){
+  try{ state = await api('/api/state'); }catch(err){ return; }
+  await pullSeriesFor((state.positions||[]).map(p=>p.mint));
+  renderHeader();
+  renderPositions();
+}
+
+// ---- global buttons ----
+document.getElementById('pauseBtn').addEventListener('click', async ()=>{
+  try{ await api(state.buysPaused ? '/api/actions/resume-buys' : '/api/actions/pause-buys','POST');
+    toast(state.buysPaused?'Buys resumed':'Buys paused'); refreshAll(); }catch(e){ toast(e.message); }
+});
+document.getElementById('sellAllBtn').addEventListener('click', async ()=>{
+  const n=(state.positions||[]).length;
+  if(!n) return toast('No open positions.');
+  const ok = await confirmModal('Sell All', `Market-sell <b>all ${n}</b> open position(s) now?`, '💸 Sell everything');
+  if(!ok) return;
+  try{ await api('/api/actions/sell-all','POST'); toast('Sell-all sent'); setTimeout(refreshAll,800); }catch(e){ toast('Failed: '+e.message); }
+});
+document.getElementById('panicBtn').addEventListener('click', async ()=>{
+  const ok = await confirmModal('🛑 PANIC',
+    'This <b>stops the bot</b> and <b>market-sells every position</b>. You will need to restart the bot to trade again.', '🛑 STOP & SELL ALL');
+  if(!ok) return;
+  try{ await api('/api/actions/panic','POST'); toast('🛑 PANIC sent — bot stopping, selling all'); setTimeout(refreshAll,800); }catch(e){ toast('Failed: '+e.message); }
+});
+document.getElementById('modeValue').addEventListener('click', ()=>{ chartMode='value';
+  document.getElementById('modeValue').className='go'; document.getElementById('modePrice').className='ghost'; refreshChart(); });
+document.getElementById('modePrice').addEventListener('click', ()=>{ chartMode='price';
+  document.getElementById('modePrice').className='go'; document.getElementById('modeValue').className='ghost'; refreshChart(); });
+
+// ---- loops ----
+refreshAll();
+refreshChart();
+setInterval(refreshAll, 2000);   // positions + status + pnl
+setInterval(refreshChart, 1000); // 1s chart updates
+</script>
+</body>
+</html>
