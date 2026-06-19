@@ -82,20 +82,11 @@ function rememberPumpSwapBuyAccountPlan(mint: PublicKey, accounts: AccountMeta[]
   pumpSwapBuyAccountPlanByMint.set(mint.toBase58(), cloneAccountMetas(accounts));
 }
 
-async function cachedPumpSwapBuyAccountPlanForSell(args: {
-  mint: PublicKey;
-  baseTokenProgram: PublicKey;
-}): Promise<AccountMeta[] | null> {
-  const cached = pumpSwapBuyAccountPlanByMint.get(args.mint.toBase58());
-  if (!cached) return null;
-  if (validatePumpSwapSellAccountLayout(cached, args.mint)) return null;
-  if (!cached[PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX]?.pubkey.equals(args.baseTokenProgram)) return null;
-  const pool = cached[0]?.pubkey;
-  if (!pool) return null;
-  const poolAccount = await getCachedPumpSwapPoolAccount(pool);
-  if (validatePumpSwapPoolAccount(pool, poolAccount)) return null;
-  return cloneAccountMetas(cached);
-}
+// NOTE: a cached PumpSwap BUY account list must never be replayed as a SELL —
+// the layouts differ (buy has extra volume-accumulator accounts), which caused
+// on-chain AccountOwnedByWrongProgram (3007) failures. resolvePumpSwapSellAccountPlan
+// now reuses only the buy plan's pool address and rebuilds the canonical sell
+// layout from on-chain state.
 
 export type PumpSwapBuildContext = {
   mint: string;
@@ -588,13 +579,22 @@ async function resolvePumpSwapSellAccountPlan(args: {
 }): Promise<PumpSwapAccountPlan | null> {
   const hintedAccounts = sourcePumpSwapHintAccountsToMetas(args.sourcePumpSwapAccounts);
 
+  // Pool-address candidates, most-trusted first: the source sell ix pool (index
+  // 0), then the pool from a successful buy of this mint this session. A
+  // PumpSwap BUY account list is NOT a valid SELL layout — buy carries two extra
+  // volume-accumulator accounts, so reusing it verbatim shifts the trailing
+  // accounts and the program rejects the tx with AccountOwnedByWrongProgram
+  // (3007). We therefore never reuse buy metas; we only take the buy plan's pool
+  // address (index 0) and rebuild the correct canonical SELL layout from
+  // verified on-chain pool state.
+  const cachedBuyPool = pumpSwapBuyAccountPlanByMint.get(args.mint.toBase58())?.[0]?.pubkey ?? null;
+  const poolHint = hintedAccounts?.[0]?.pubkey ?? cachedBuyPool;
+
   const canonicalAccounts = await buildCanonicalPumpSwapSellAccounts({
     user: args.user,
     mint: args.mint,
     baseTokenProgram: args.baseTokenProgram,
-    // Account index 0 of the source PumpSwap sell ix is the pool — used only as
-    // a verified-on-chain candidate, never trusted as a ready-made meta list.
-    poolHint: hintedAccounts?.[0]?.pubkey ?? null,
+    poolHint,
   });
   if (canonicalAccounts) {
     return {
@@ -603,20 +603,6 @@ async function resolvePumpSwapSellAccountPlan(args: {
       diagnostics: hintedAccounts
         ? comparePumpSwapAccounts(canonicalAccounts, hintedAccounts, "detector-pubkey-hints")
         : { comparedTo: "detector-pubkey-hints", candidateAccounts: 0 },
-    };
-  }
-
-  const cachedBuyAccounts = await cachedPumpSwapBuyAccountPlanForSell({
-    mint: args.mint,
-    baseTokenProgram: args.baseTokenProgram,
-  });
-  if (cachedBuyAccounts) {
-    return {
-      accounts: cachedBuyAccounts,
-      source: "cached-buy-account-plan",
-      diagnostics: hintedAccounts
-        ? comparePumpSwapAccounts(cachedBuyAccounts, hintedAccounts, "detector-pubkey-hints")
-        : { canonicalUnavailable: true, cachedBuyAccountPlan: true },
     };
   }
 
