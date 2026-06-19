@@ -21,6 +21,11 @@ import { getQuote } from "./jupiter.js";
 import { getPriceSampleMs, getPriceSeries, startPriceSampler } from "./priceSampler.js";
 
 const PORT = parseInt(process.env.WEB_PORT ?? "3000", 10);
+// Interface to bind. Default 127.0.0.1 (localhost only). Set WEB_HOST to your
+// Tailscale IP (e.g. 100.x.y.z) to reach it from your tailnet devices WITHOUT
+// exposing it publicly. Avoid 0.0.0.0 unless the port is firewalled — the UI has
+// no auth, so a public bind lets anyone drain the wallet.
+const HOST = (process.env.WEB_HOST ?? "127.0.0.1").trim() || "127.0.0.1";
 const TOKEN_LIVE_CACHE_MS = Math.max(
   5_000,
   parseInt(process.env.UI_TOKEN_LIVE_CACHE_MS ?? "20000", 10)
@@ -349,10 +354,15 @@ export function startServer(options: StartServerOptions = {}): void {
   });
 
   server.on("error", (err: NodeJS.ErrnoException) => {
-    if (options.optional && (err.code === "EADDRINUSE" || err.code === "EACCES")) {
+    if (
+      options.optional &&
+      (err.code === "EADDRINUSE" || err.code === "EACCES" || err.code === "EADDRNOTAVAIL")
+    ) {
       console.warn(
-        `Web UI disabled: cannot listen on 127.0.0.1:${PORT} (${err.code}). ` +
-          "Set WEB_PORT to a free port, or set BOT_CONTROL_API_ENABLED=false."
+        `Web UI disabled: cannot listen on ${HOST}:${PORT} (${err.code}). ` +
+          (err.code === "EADDRNOTAVAIL"
+            ? "WEB_HOST is not an address on this machine (is Tailscale up? check `tailscale ip -4`)."
+            : "Set WEB_PORT to a free port, or set BOT_CONTROL_API_ENABLED=false.")
       );
       server.close();
       return;
@@ -360,8 +370,8 @@ export function startServer(options: StartServerOptions = {}): void {
     throw err;
   });
 
-  server.listen(PORT, "127.0.0.1", () => {
-    console.log(`Web UI: http://localhost:${PORT}  ·  DEX UI: http://localhost:${PORT}/dex`);
+  server.listen(PORT, HOST, () => {
+    console.log(`Web UI: http://${HOST}:${PORT}  ·  DEX UI: http://${HOST}:${PORT}/dex`);
   });
 
   startPriceSampler();
