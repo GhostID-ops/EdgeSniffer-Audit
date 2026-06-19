@@ -150,8 +150,10 @@ const chart = LightweightCharts.createChart(chartEl, {
 });
 let tf = 1;                 // seconds per candle; 1 => area line
 let currentSeries = null;
+let priceLines = [];        // entry / TP / SL horizontal lines on the current series
 function buildSeries(){
   if(currentSeries){ chart.removeSeries(currentSeries); currentSeries=null; }
+  priceLines = [];          // old lines died with the old series
   if(tf===1){
     currentSeries = chart.addAreaSeries({
       lineColor:'#3b82f6', topColor:'rgba(59,130,246,.35)', bottomColor:'rgba(59,130,246,0)', lineWidth:2,
@@ -167,9 +169,41 @@ function buildSeries(){
 }
 buildSeries();
 
+function clearOverlays(){
+  for(const l of priceLines){ try{ currentSeries.removePriceLine(l); }catch{} }
+  priceLines = [];
+  try{ currentSeries.setMarkers([]); }catch{}
+}
+// Draw entry line, TP/SL lines and buy/sell fill markers for the selected token.
+// Units match the active chart mode: "value" => bag SOL (vs remaining cost basis);
+// "price" => SOL per whole token (vs average entry).
+function applyOverlays(pos){
+  clearOverlays();
+  if(!pos) return;
+  let entry = null;
+  if(chartMode==='value'){
+    if(pos.costBasisRemainingLamports>0) entry = pos.costBasisRemainingLamports/1e9;
+  } else {
+    if(pos.avgCostLamportsPerTokenRaw>0) entry = pos.avgCostLamportsPerTokenRaw * Math.pow(10, pos.decimals||0) / 1e9;
+  }
+  if(entry!=null && entry>0){
+    priceLines.push(currentSeries.createPriceLine({ price:entry, color:'#8a98a8', lineWidth:1, lineStyle:2, axisLabelVisible:true, title:'entry' }));
+    const tp = state.takeProfitPct, sl = state.stopLossPct;
+    if(tp!=null) priceLines.push(currentSeries.createPriceLine({ price:entry*(1+tp/100), color:'#16c784', lineWidth:1, lineStyle:2, axisLabelVisible:true, title:'TP +'+tp+'%' }));
+    if(sl!=null) priceLines.push(currentSeries.createPriceLine({ price:entry*(1-sl/100), color:'#ea3943', lineWidth:1, lineStyle:2, axisLabelVisible:true, title:'SL -'+sl+'%' }));
+  }
+  const markers = (state.recentSwaps||[])
+    .filter(r => (r.side==='buy' && r.output && r.output.mint===selected) || (r.side==='sell' && r.input && r.input.mint===selected))
+    .map(r => ({ time:Math.floor(r.ts/1000), position:r.side==='buy'?'belowBar':'aboveBar',
+                 color:r.side==='buy'?'#16c784':'#ea3943', shape:r.side==='buy'?'arrowUp':'arrowDown',
+                 text:r.side==='buy'?'BUY':'SELL' }))
+    .sort((a,b)=>a.time-b.time);
+  if(markers.length) currentSeries.setMarkers(markers);
+}
+
 function pointVal(p){ return chartMode==='value' ? p.valueLamports/1e9 : p.pricePerToken; }
 async function refreshChart(){
-  if(!selected){ currentSeries.setData([]); return; }
+  if(!selected){ currentSeries.setData([]); clearOverlays(); return; }
   let data;
   try{ data = await api('/api/price-series?mint='+selected); }catch{ return; }
   const pts = data.points.map(p=>({ t:Math.floor(p.t/1000), v:pointVal(p) }));
@@ -196,6 +230,7 @@ async function refreshChart(){
   } else {
     document.getElementById('cPx').textContent = 'waiting for samples…';
   }
+  applyOverlays(pos);
 }
 
 // ---- positions ----
