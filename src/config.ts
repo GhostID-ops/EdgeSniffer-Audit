@@ -232,6 +232,8 @@ export const jupiterFallbackEnabled =
   JUPITER_FALLBACK_ENABLED_RAW !== "false" &&
   JUPITER_FALLBACK_ENABLED_RAW !== "0" &&
   JUPITER_FALLBACK_ENABLED_RAW !== "no";
+export const bagsDirectEnabled = parseEnvBool(process.env.BAGS_DIRECT_ENABLED, false);
+export const bagsMintSuffixFilter = (process.env.BAGS_MINT_SUFFIX_FILTER ?? "BAGS").trim();
 const MIRROR_GRADUATED_BUYS_RAW = (
   process.env.MIRROR_GRADUATED_BUYS ??
   process.env.BUY_GRADUATED_TOKENS ??

@@ -172,6 +172,7 @@ import { classifyExecutionError } from "./errorClassifier.js";
 import { decideRetryAction } from "./executionRetry.js";
 import { isPostBroadcastBuyUncertainty, shouldHoldBuyOnceAfterFailure } from "./buyOncePolicy.js";
 import { planExecution } from "./executionPlanner.js";
+import { shouldUseBagsDirectLane } from "./bagsRoute.js";
 import { recordExecutionTelemetrySync } from "./executionTelemetry.js";
 import { warmWalletAccounts } from "./walletWarmup.js";
 import { warmExecutionAltAccounts } from "./transactionSize.js";
@@ -1821,6 +1822,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   });
 
   const executionPlan = planExecution(swap);
+  const useBagsDirectLane = shouldUseBagsDirectLane(executionPlan);
   const decisionAtMs = Date.now();
   console.log(
     `Execution plan: ${executionPlan.route} (${executionPlan.reason}) for ${executionPlan.mint.slice(0, 8)}...`
@@ -2105,7 +2107,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       (executionPlan.route === "pumpfun-bonding-curve" ||
         executionPlan.route === "pumpfun-v2-token2022" ||
         executionPlan.route === "pumpswap-graduated");
-    if (rustOnlyBuys && !rustExecutorCanHandleBuy) {
+    if (useBagsDirectLane) {
+      console.log(
+        `BAGS direct lane: allowing ${mint.slice(0, 8)}... through Jupiter/Sender ` +
+          "because BAGS_DIRECT_ENABLED=true; global Jupiter fallback remains unchanged."
+      );
+    }
+    if (rustOnlyBuys && !rustExecutorCanHandleBuy && !useBagsDirectLane) {
       console.log(
         `Skipping buy: RUST_ONLY_BUYS=true and no Rust buy path accepted ` +
           `${mint.slice(0, 8)}... (${executionPlan.route}).`
@@ -2330,9 +2338,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       liveBuyAttemptedMintsThisSession.add(swap.outputMint);
     }
 
-    const result = await mirrorSwap(swap, kp, {
+    const result = await mirrorSwap(useBagsDirectLane ? { ...swap, skipDirectBuyRoutes: true } : swap, kp, {
       persistentBuyLockOwner,
       exactAmountRaw: proportionalSellAmountRaw,
+      allowBagsDirectJupiter: useBagsDirectLane,
       onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, reason, sourceSwap }) => {
         if (rustHotBuyRecordedByMint.has(mint)) {
           console.warn(

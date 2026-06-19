@@ -54,6 +54,7 @@ export type MirrorResult = {
 export type MirrorSwapOptions = {
   persistentBuyLockOwner?: string;
   exactAmountRaw?: number;
+  allowBagsDirectJupiter?: boolean;
   onFastBuyConfirmFailure?: (args: {
     mint: string;
     tokenAmountRaw: number;
@@ -668,7 +669,8 @@ export async function mirrorSwap(
     }
   }
 
-  if (!jupiterFallbackEnabled) {
+  const jupiterAllowed = jupiterFallbackEnabled || options.allowBagsDirectJupiter === true;
+  if (!jupiterAllowed) {
     throw new Error(
       `${side} local direct execution unavailable and JUPITER_FALLBACK_ENABLED=false; not using Jupiter fallback.`
     );
