@@ -492,6 +492,23 @@
   body.compact main { padding: 16px; }
   body.compact .position-row { padding: 12px; }
   body.compact .grid { gap: 10px; }
+
+  /* ===== pass 2.1 polish ===== */
+  /* Activity: equal-height columns, logs fills its card */
+  .activity-grid { align-items: stretch; }
+  .activity-grid > .card { display: flex; flex-direction: column; }
+  .activity-grid .table-wrap { flex: 1; }
+  .activity-grid .logs { flex: 1; height: auto; min-height: 320px; }
+  #logs:empty::before { content: "Waiting for log output…"; color: var(--muted); display: block; padding: 6px 2px; }
+
+  /* friendlier empty states */
+  .positions-list > .sub { padding: 48px 16px; opacity: .85; }
+  .positions-list > .sub::before { content: "📭"; display:block; font-size: 26px; margin-bottom: 8px; filter: grayscale(.2); }
+  #swaps .sub { padding: 40px 16px; opacity: .85; }
+
+  /* metric figures a touch crisper */
+  .metric .value { font-weight: 800; }
+  .eyebrow { letter-spacing: .1em; }
 </style>
 </head>
 <body>
