@@ -446,6 +446,52 @@
 
   /* keep token name / chips on one line */
   .token-name strong { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
+
+  /* ===== COCKPIT: tabbed views ===== */
+  .view { display: none; }
+  .view.active { display: block; animation: viewIn .28s ease both; }
+  @keyframes viewIn { from { opacity:0; transform: translateY(6px);} to { opacity:1; transform:none; } }
+  .setup-grid { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap: 14px; align-items: start; }
+  .activity-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; align-items: start; }
+  .single-col { max-width: 560px; }
+  @media (max-width: 980px) { .setup-grid, .activity-grid { grid-template-columns: 1fr; } .single-col { max-width:none; } }
+
+  .btn.ghost { background: rgba(255,255,255,.03); border-color: var(--line-soft); color: var(--muted); font-weight: 700; }
+  .btn.ghost:hover:not(:disabled) { color: var(--text); }
+  #btn-cmdk { font-family: "JetBrains Mono", monospace; letter-spacing: .04em; }
+
+  /* exposure meter */
+  .exposure-card { margin-bottom: 14px; }
+  .meter { height: 12px; border-radius: 999px; background: #0a0c10; border: 1px solid var(--line-soft); overflow: hidden; }
+  .meter-fill { height: 100%; width: 0; border-radius: 999px; transition: width .5s cubic-bezier(.2,.7,.2,1), background .3s; }
+  .meter-fill.ok   { background: linear-gradient(90deg, #1fb97f, #34e89e); }
+  .meter-fill.warn { background: linear-gradient(90deg, #d39322, #ffbf47); }
+  .meter-fill.bad  { background: linear-gradient(90deg, #cc3344, #ff5f6d); box-shadow: 0 0 18px -2px rgba(255,95,109,.6); }
+  .exposure-legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; color: var(--muted); font-size: 12px; }
+  .exposure-legend strong { color: var(--text); margin-left: 4px; font-variant-numeric: tabular-nums; }
+
+  /* per-position sparkline */
+  .spark { width: 100%; height: 34px; margin-top: 8px; display: block; }
+
+  /* command palette */
+  .cmdk-backdrop { position: fixed; inset: 0; z-index: 40; display: none; background: rgba(0,0,0,.6); backdrop-filter: blur(4px); padding-top: 12vh; }
+  .cmdk-backdrop.show { display: block; }
+  .cmdk { width: min(560px, calc(100vw - 32px)); margin: 0 auto; background: linear-gradient(180deg, rgba(19,22,27,.98), rgba(10,11,13,.98)); border: 1px solid var(--line-soft); border-radius: 14px; box-shadow: 0 40px 120px -30px #000; overflow: hidden; }
+  #cmdk-input { width: 100%; border: 0; border-bottom: 1px solid var(--line-soft); background: transparent; color: var(--text); padding: 16px 18px; font-size: 15px; border-radius: 0; box-shadow: none; }
+  #cmdk-input:focus { box-shadow: none; }
+  .cmdk-list { max-height: 50vh; overflow-y: auto; padding: 6px; }
+  .cmdk-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 12px; border-radius: 9px; cursor: pointer; color: var(--soft); }
+  .cmdk-item .k { color: var(--muted); font-size: 11px; }
+  .cmdk-item.sel, .cmdk-item:hover { background: linear-gradient(90deg, rgba(52,232,158,.14), transparent); color: #fff; }
+  .cmdk-empty { padding: 18px; color: var(--muted); text-align: center; }
+
+  /* density: compact */
+  body.compact .card { padding: 12px; }
+  body.compact .metric { min-height: 96px; }
+  body.compact .metric .value { font-size: clamp(18px,1.5vw,22px); }
+  body.compact main { padding: 16px; }
+  body.compact .position-row { padding: 12px; }
+  body.compact .grid { gap: 10px; }
 </style>
 </head>
 <body>
@@ -500,17 +546,20 @@
   </aside>
 
   <main>
-    <section id="overview" class="topbar">
+    <header class="topbar">
       <div>
-        <h1>Obsidian Copy Console</h1>
-        <p class="sub">Set size, fees, wallets, and manage positions without opening a terminal.</p>
+        <h1 id="view-title">Obsidian Copy Console</h1>
+        <p class="sub" id="view-sub">Set size, fees, wallets, and manage positions without opening a terminal.</p>
       </div>
       <div class="actions">
+        <button id="btn-cmdk" class="btn ghost" title="Command palette (Ctrl / ⌘ + K)">⌘K</button>
+        <button id="btn-density" class="btn ghost" title="Toggle layout density">Compact</button>
         <button id="btn-start" class="btn primary">Start Bot</button>
         <button id="btn-stop" class="btn danger" disabled>Stop</button>
       </div>
-    </section>
+    </header>
 
+    <section class="view active" data-view="overview">
     <section class="grid metrics">
       <div class="card metric">
         <div class="eyebrow">Realized PnL</div>
@@ -534,8 +583,32 @@
       </div>
     </section>
 
-    <section class="grid main-grid">
-      <div class="grid">
+    <div class="card exposure-card">
+      <div class="section-head">
+        <div><h2>Exposure</h2><div class="sub">Capital deployed across open positions vs. free balance.</div></div>
+        <span id="exposure-pct" class="badge">0%</span>
+      </div>
+      <div class="meter"><div id="exposure-bar" class="meter-fill ok" style="width:0%"></div></div>
+      <div class="exposure-legend">
+        <span>Deployed <strong id="exposure-deployed">0 SOL</strong></span>
+        <span>Free <strong id="exposure-free">0 SOL</strong></span>
+        <span>Open <strong id="exposure-open">0</strong></span>
+      </div>
+    </div>
+
+    <div class="card positions-card">
+      <div class="section-head">
+        <h2>Positions &amp; PnL</h2>
+        <span id="position-count" class="badge">0 tokens</span>
+      </div>
+      <div id="positions" class="positions-list">
+        <div class="sub">No positions yet.</div>
+      </div>
+    </div>
+    </section><!-- /overview -->
+
+    <section class="view" data-view="settings">
+      <div class="setup-grid">
         <div id="settings" class="card">
           <div class="section-head">
             <div>
@@ -596,6 +669,39 @@
           </details>
         </div>
 
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h2>Fee Wizard</h2>
+              <div class="sub">Estimate tip, priority fee, and total SOL before a run.</div>
+            </div>
+            <span id="fee-mode" class="badge">Estimate</span>
+          </div>
+          <details class="disclosure" open>
+            <summary>Budget Estimate</summary>
+            <div class="form-grid" style="margin-top:12px;">
+              <label>
+                <span class="label-row">Expected buys<span class="help" title="How many buy transactions you expect the bot to send. Sells have fees too, so treat this as a planning estimate.">?</span></span>
+                <input id="feeTradeCount" type="number" min="1" step="1" value="10" />
+              </label>
+              <label>
+                <span class="label-row">Avg buy size (SOL)<span class="help" title="Used only for total budget planning. Defaults to your max buy size.">?</span></span>
+                <input id="feeAvgBuySol" type="number" min="0" step="0.01" />
+              </label>
+            </div>
+            <div class="calc-grid">
+              <div class="calc-cell"><span class="eyebrow">Per Trade Fees</span><strong id="fee-per-trade">--</strong></div>
+              <div class="calc-cell"><span class="eyebrow">Total Fees</span><strong id="fee-total">--</strong></div>
+              <div class="calc-cell"><span class="eyebrow">Fees + Buys</span><strong id="fee-grand-total">--</strong></div>
+            </div>
+            <div id="fee-breakdown" class="field-note" style="margin-top:10px;"></div>
+          </details>
+        </div>
+      </div>
+    </section><!-- /settings -->
+
+    <section class="view" data-view="controls">
+      <div class="single-col">
         <div id="controls" class="card">
           <div class="section-head">
             <div>
@@ -626,48 +732,11 @@
             </div>
           </details>
         </div>
-
-        <div class="card">
-          <div class="section-head">
-            <div>
-              <h2>Fee Wizard</h2>
-              <div class="sub">Estimate tip, priority fee, and total SOL before a run.</div>
-            </div>
-            <span id="fee-mode" class="badge">Estimate</span>
-          </div>
-          <details class="disclosure" open>
-            <summary>Budget Estimate</summary>
-            <div class="form-grid" style="margin-top:12px;">
-              <label>
-                <span class="label-row">Expected buys<span class="help" title="How many buy transactions you expect the bot to send. Sells have fees too, so treat this as a planning estimate.">?</span></span>
-                <input id="feeTradeCount" type="number" min="1" step="1" value="10" />
-              </label>
-              <label>
-                <span class="label-row">Avg buy size (SOL)<span class="help" title="Used only for total budget planning. Defaults to your max buy size.">?</span></span>
-                <input id="feeAvgBuySol" type="number" min="0" step="0.01" />
-              </label>
-            </div>
-            <div class="calc-grid">
-              <div class="calc-cell"><span class="eyebrow">Per Trade Fees</span><strong id="fee-per-trade">--</strong></div>
-              <div class="calc-cell"><span class="eyebrow">Total Fees</span><strong id="fee-total">--</strong></div>
-              <div class="calc-cell"><span class="eyebrow">Fees + Buys</span><strong id="fee-grand-total">--</strong></div>
-            </div>
-            <div id="fee-breakdown" class="field-note" style="margin-top:10px;"></div>
-          </details>
-        </div>
-
-        <div class="card positions-card">
-          <div class="section-head">
-            <h2>Positions & PnL</h2>
-            <span id="position-count" class="badge">0 tokens</span>
-          </div>
-          <div id="positions" class="positions-list">
-            <div class="sub">No positions yet.</div>
-          </div>
-        </div>
       </div>
+    </section><!-- /controls -->
 
-      <div class="grid">
+    <section class="view" data-view="activity">
+      <div class="activity-grid">
         <div class="card">
           <div class="section-head">
             <h2>Recent Swaps</h2>
@@ -685,8 +754,15 @@
           <div id="logs" class="logs mono"></div>
         </div>
       </div>
-    </section>
+    </section><!-- /activity -->
   </main>
+
+  <div id="cmdk" class="cmdk-backdrop">
+    <div class="cmdk">
+      <input id="cmdk-input" placeholder="Type a command…  (start, panic, sell all, setup, activity)" autocomplete="off" />
+      <div id="cmdk-list" class="cmdk-list"></div>
+    </div>
+  </div>
 </div>
 <div id="toast-stack" class="toast-stack"></div>
 <div id="confirm-backdrop" class="modal-backdrop">
@@ -1151,10 +1227,11 @@ function applyState(s) {
   $("btn-stop").disabled = !s.running;
 
   const pnl = s.totals?.realizedPnlLamports || 0;
-  $("pnl").textContent = fmtSolLamports(pnl, true);
+  animateText($("pnl"), pnl, (v) => fmtSolLamports(Math.round(v), true));
   $("pnl").className = "value " + pnlClass(pnl);
   $("trade-count").textContent = `${s.totals?.tradesCount || 0} trades, ${s.totals?.openPositions || 0} open`;
-  $("balance").textContent = s.lastBalanceSol != null ? s.lastBalanceSol.toFixed(4) + " SOL" : "--";
+  if (s.lastBalanceSol != null) animateText($("balance"), s.lastBalanceSol, (v) => v.toFixed(4) + " SOL");
+  else $("balance").textContent = "--";
   $("wallet").textContent = shortAddr(s.ourWallet);
   $("wallet").title = s.ourWallet || "";
   $("buy-range").textContent = `${s.minBuySol} - ${s.maxBuySol}`;
@@ -1168,6 +1245,7 @@ function applyState(s) {
   renderSwaps(s.recentSwaps || []);
   updateFeeWizard();
   updateHealthAndChecklist(s);
+  updateExposure(s);
 }
 
 async function refreshState() {
@@ -1203,6 +1281,7 @@ function renderPositions(positions) {
                   <span class="token-ca mono" data-ca="${escapeHtml(p.mint)}">${shortAddr(p.mint)}</span>
                 </div>
               </div>
+              <svg class="spark" data-mint="${escapeHtml(p.mint)}" viewBox="0 0 120 34" preserveAspectRatio="none"></svg>
               <div class="pair-meta field-note">Resolving pair...</div>
               <div class="token-actions" data-mint="${escapeHtml(p.mint)}">
                 <a class="mini-btn accent axiom-link" href="${axiomUrl(p.mint)}" target="_blank" rel="noopener noreferrer">Axiom</a>
@@ -1314,6 +1393,7 @@ function renderPositions(positions) {
     const row = document.querySelector(`.position-row[data-mint="${CSS.escape(p.mint)}"]`);
     if (row) void hydrateTokenLive(row, p);
   });
+  renderSparklines(openPositions);
 }
 
 function renderSwaps(swaps) {
@@ -1407,11 +1487,7 @@ function closeConfirm() {
 }
 
 document.querySelectorAll(".nav button").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".nav button").forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-    document.getElementById(btn.dataset.scroll).scrollIntoView({ behavior: "smooth", block: "start" });
-  });
+  btn.addEventListener("click", () => showView(btn.dataset.scroll));
 });
 $("btn-save").addEventListener("click", saveSettings);
 $("btn-start").addEventListener("click", startBot);
@@ -1467,6 +1543,138 @@ refreshState();
 refreshLogs();
 setInterval(refreshState, 2000);
 setInterval(refreshLogs, 1500);
+
+/* ===== Cockpit: tabbed views ===== */
+const VIEW_META = {
+  overview: ["Obsidian Copy Console", "Live positions, exposure, and PnL at a glance."],
+  settings: ["Setup", "Size, wallets, fees, and safety — saved straight to the bot."],
+  controls: ["Controls", "Manual position actions. Live mode sends real transactions."],
+  activity: ["Activity", "Recent swaps and the live log stream."],
+};
+function showView(name) {
+  if (!VIEW_META[name]) name = "overview";
+  document.querySelectorAll(".view").forEach((v) => v.classList.toggle("active", v.dataset.view === name));
+  document.querySelectorAll(".nav button").forEach((b) => b.classList.toggle("active", b.dataset.scroll === name));
+  const m = VIEW_META[name];
+  if (m && $("view-title")) { $("view-title").textContent = m[0]; $("view-sub").textContent = m[1]; }
+  try { localStorage.setItem("obsidian-view", name); } catch {}
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ===== Animated number counters ===== */
+function animateText(el, target, fmt) {
+  if (!el) return;
+  target = Number(target) || 0;
+  const from = Number(el.dataset.v);
+  if (!isFinite(from) || from === target) { el.dataset.v = target; el.textContent = fmt(target); return; }
+  el.dataset.v = target;
+  cancelAnimationFrame(el.__raf || 0);
+  const start = performance.now(), dur = 450;
+  const step = (t) => {
+    const k = Math.min(1, (t - start) / dur);
+    el.textContent = fmt(from + (target - from) * (1 - Math.pow(1 - k, 3)));
+    if (k < 1) el.__raf = requestAnimationFrame(step);
+  };
+  el.__raf = requestAnimationFrame(step);
+}
+
+/* ===== Exposure meter ===== */
+function updateExposure(s) {
+  const bar = $("exposure-bar"); if (!bar) return;
+  const open = (s.positions || []).filter((p) => Number(p.heldRaw || 0) > 0);
+  const deployed = open.reduce((a, p) => a + (p.costBasisRemainingLamports || 0), 0);
+  const free = Math.max(0, (s.lastBalanceSol || 0) * 1e9);
+  const total = deployed + free;
+  const pct = total > 0 ? Math.min(100, (deployed / total) * 100) : 0;
+  bar.style.width = pct.toFixed(1) + "%";
+  bar.className = "meter-fill " + (pct >= 80 ? "bad" : pct >= 50 ? "warn" : "ok");
+  $("exposure-pct").textContent = pct.toFixed(0) + "%";
+  $("exposure-deployed").textContent = (deployed / 1e9).toFixed(4) + " SOL";
+  $("exposure-free").textContent = (free / 1e9).toFixed(4) + " SOL";
+  $("exposure-open").textContent = String(open.length);
+}
+
+/* ===== Per-position 1s sparklines (local pool quotes) ===== */
+async function renderSparklines(positions) {
+  for (const p of positions) {
+    const svg = document.querySelector(`.spark[data-mint="${CSS.escape(p.mint)}"]`);
+    if (!svg) continue;
+    let pts;
+    try { pts = (await (await fetch("/api/price-series?mint=" + p.mint)).json()).points; } catch { continue; }
+    if (!pts || pts.length < 2) { svg.innerHTML = ""; continue; }
+    const vals = pts.map((x) => x.valueLamports);
+    const min = Math.min(...vals), max = Math.max(...vals), span = (max - min) || 1, n = vals.length;
+    const line = vals.map((v, i) => `${(i / (n - 1) * 120).toFixed(1)},${(31 - (v - min) / span * 28).toFixed(1)}`).join(" ");
+    const up = vals[n - 1] >= vals[0];
+    const col = up ? "#34e89e" : "#ff5f6d";
+    svg.innerHTML =
+      `<polyline points="0,34 ${line} 120,34" fill="${up ? "rgba(52,232,158,.10)" : "rgba(255,95,109,.10)"}" stroke="none"/>` +
+      `<polyline points="${line}" fill="none" stroke="${col}" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/>`;
+  }
+}
+
+/* ===== Density toggle ===== */
+function applyDensity(compact) {
+  document.body.classList.toggle("compact", compact);
+  const b = $("btn-density"); if (b) b.textContent = compact ? "Comfortable" : "Compact";
+  try { localStorage.setItem("obsidian-density", compact ? "1" : "0"); } catch {}
+}
+$("btn-density")?.addEventListener("click", () => applyDensity(!document.body.classList.contains("compact")));
+
+/* ===== Command palette (Ctrl/⌘ + K) ===== */
+const CMDK_ACTIONS = [
+  { label: "Start Bot", k: "↵", run: () => $("btn-start").click() },
+  { label: "Stop Bot", run: () => $("btn-stop").click() },
+  { label: "🛑 Panic — Stop & Sell All", run: () => $("btn-panic").click() },
+  { label: "Sell All Positions", run: () => $("btn-sell-all").click() },
+  { label: "Close Sim Positions", run: () => $("btn-close-sim").click() },
+  { label: "Reset Session", run: () => $("btn-reset-session").click() },
+  { label: "Refresh", run: () => $("btn-refresh").click() },
+  { label: "Save Settings", run: () => $("btn-save").click() },
+  { label: "Go to Overview", run: () => showView("overview") },
+  { label: "Go to Setup", run: () => showView("settings") },
+  { label: "Go to Controls", run: () => showView("controls") },
+  { label: "Go to Activity", run: () => showView("activity") },
+  { label: "Toggle Simulation mode", run: () => $("simulationMode").click() },
+  { label: "Toggle density (compact)", run: () => $("btn-density").click() },
+];
+let cmdkSel = 0, cmdkFiltered = CMDK_ACTIONS.slice();
+function openCmdk() { $("cmdk").classList.add("show"); const i = $("cmdk-input"); i.value = ""; renderCmdk(""); setTimeout(() => i.focus(), 10); }
+function closeCmdk() { $("cmdk").classList.remove("show"); }
+function highlightCmdk() { $("cmdk-list").querySelectorAll(".cmdk-item").forEach((el, i) => el.classList.toggle("sel", i === cmdkSel)); }
+function runCmdk() { const a = cmdkFiltered[cmdkSel]; closeCmdk(); if (a) a.run(); }
+function renderCmdk(q) {
+  q = (q || "").trim().toLowerCase();
+  cmdkFiltered = CMDK_ACTIONS.filter((a) => a.label.toLowerCase().includes(q));
+  cmdkSel = 0;
+  const list = $("cmdk-list");
+  if (!cmdkFiltered.length) { list.innerHTML = '<div class="cmdk-empty">No matching command.</div>'; return; }
+  list.innerHTML = cmdkFiltered.map((a, i) =>
+    `<div class="cmdk-item ${i === 0 ? "sel" : ""}" data-i="${i}"><span>${escapeHtml(a.label)}</span>${a.k ? `<span class="k">${a.k}</span>` : ""}</div>`).join("");
+  list.querySelectorAll(".cmdk-item").forEach((el) => {
+    el.addEventListener("mouseenter", () => { cmdkSel = Number(el.dataset.i); highlightCmdk(); });
+    el.addEventListener("click", runCmdk);
+  });
+}
+$("cmdk-input")?.addEventListener("input", (e) => renderCmdk(e.target.value));
+$("cmdk-input")?.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowDown") { e.preventDefault(); cmdkSel = Math.min(cmdkFiltered.length - 1, cmdkSel + 1); highlightCmdk(); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); cmdkSel = Math.max(0, cmdkSel - 1); highlightCmdk(); }
+  else if (e.key === "Enter") { e.preventDefault(); runCmdk(); }
+  else if (e.key === "Escape") closeCmdk();
+});
+$("cmdk")?.addEventListener("click", (e) => { if (e.target.id === "cmdk") closeCmdk(); });
+$("btn-cmdk")?.addEventListener("click", openCmdk);
+document.addEventListener("keydown", (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    $("cmdk").classList.contains("show") ? closeCmdk() : openCmdk();
+  }
+});
+
+/* ===== restore persisted view + density ===== */
+try { applyDensity(localStorage.getItem("obsidian-density") === "1"); } catch {}
+try { showView(localStorage.getItem("obsidian-view") || "overview"); } catch (e) { showView("overview"); }
 </script>
 </body>
 </html>
