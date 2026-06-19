@@ -1235,7 +1235,11 @@ fn build_pumpswap_sell_ix(
         bail!("source PumpSwap sell accounts do not match base token program");
     }
 
-    let user_volume_accumulator = derive_pumpswap_user_volume_accumulator(user)?;
+    // NOTE: unlike buys, the PumpSwap SELL layout has no user_volume_accumulator.
+    // In the current on-chain layout index 20 is fee_program, so we must NOT
+    // substitute it — only the user, user base ATA and user quote ATA are
+    // user-specific; everything else (incl. the per-token fee-program accounts)
+    // is carried verbatim from the template.
     let keys = cmd
         .source_pump_swap_accounts
         .iter()
@@ -1249,7 +1253,6 @@ fn build_pumpswap_sell_ix(
                 PUMPSWAP_USER_INDEX => *user,
                 PUMPSWAP_USER_BASE_ATA_INDEX => *user_base_ata,
                 PUMPSWAP_USER_QUOTE_ATA_INDEX => *user_quote_ata,
-                PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX => user_volume_accumulator,
                 _ => source,
             };
             let is_signer = if i == PUMPSWAP_USER_INDEX {
@@ -1258,10 +1261,9 @@ fn build_pumpswap_sell_ix(
                 source_meta.is_signer
             };
             let is_writable = match i {
-                PUMPSWAP_USER_INDEX
-                | PUMPSWAP_USER_BASE_ATA_INDEX
-                | PUMPSWAP_USER_QUOTE_ATA_INDEX
-                | PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX => true,
+                PUMPSWAP_USER_INDEX | PUMPSWAP_USER_BASE_ATA_INDEX | PUMPSWAP_USER_QUOTE_ATA_INDEX => {
+                    true
+                }
                 _ => source_meta.is_writable,
             };
             Ok(meta(actual, is_signer, is_writable))

@@ -47,7 +47,15 @@ import {
 } from "../pumpfun/constants.js";
 
 export const PUMPSWAP_PROGRAM_ID = new PublicKey("pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA");
-export const PUMPSWAP_GLOBAL_CONFIG = new PublicKey("ADyA8hBd1ckwkgdC5fC4bKBS32sNeuHuJecF8GWqV7Zb");
+// Canonical global config PDA = findProgramAddress(["global_config"], program).
+// Derive it instead of hardcoding: the previous literal (ADyA8hBd1ckwk...WqV7Zb)
+// was a lookalike that does not exist on-chain, so every canonical buy/sell read
+// a dead account ("protocol fee recipient unreadable") and only source-hint
+// trades worked. Resolves to ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw.
+export const PUMPSWAP_GLOBAL_CONFIG = PublicKey.findProgramAddressSync(
+  [Buffer.from("global_config")],
+  PUMPSWAP_PROGRAM_ID
+)[0];
 export const PUMPSWAP_BUY_DISCRIMINATOR = getNativeIdlDiscriminator("pump_amm", "buy");
 export const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR = getNativeIdlDiscriminator("pump_amm", "buy_exact_quote_in");
 export const PUMPSWAP_SELL_DISCRIMINATOR = getNativeIdlDiscriminator("pump_amm", "sell");
@@ -590,18 +598,22 @@ async function resolvePumpSwapSellAccountPlan(args: {
   const cachedBuyPool = pumpSwapBuyAccountPlanByMint.get(args.mint.toBase58())?.[0]?.pubkey ?? null;
   const poolHint = hintedAccounts?.[0]?.pubkey ?? cachedBuyPool;
 
-  const canonicalAccounts = await buildCanonicalPumpSwapSellAccounts({
-    user: args.user,
+  // AGENTS.md: do not trust source/detector metas for PumpSwap sells. Build the
+  // account list from a recent real on-chain SELL on the verified pool — that is
+  // the current layout (incl. the per-token fee-program accounts), and the user
+  // accounts are substituted downstream by the Rust executor.
+  const template = await fetchPumpSwapPoolTradeTemplate({
     mint: args.mint,
+    side: "sell",
     baseTokenProgram: args.baseTokenProgram,
     poolHint,
   });
-  if (canonicalAccounts) {
+  if (template) {
     return {
-      accounts: canonicalAccounts,
+      accounts: template,
       source: "canonical-pool-state",
       diagnostics: hintedAccounts
-        ? comparePumpSwapAccounts(canonicalAccounts, hintedAccounts, "detector-pubkey-hints")
+        ? comparePumpSwapAccounts(template, hintedAccounts, "detector-pubkey-hints")
         : { comparedTo: "detector-pubkey-hints", candidateAccounts: 0 },
     };
   }
@@ -621,6 +633,103 @@ async function sourcePumpSwapAccountsWithShortRetry(
   return null;
 }
 
+type PumpSwapTxResponse = NonNullable<Awaited<ReturnType<typeof readConnection.getTransaction>>>;
+
+// Extract a PumpSwap buy- or sell-instruction's full account meta list from a
+// confirmed transaction (top-level or via inner CPI), preserving the on-chain
+// signer/writable flags. Used to template the CURRENT on-chain account layout.
+function pumpSwapAccountMetasFromTx(
+  tx: PumpSwapTxResponse,
+  mint: PublicKey,
+  side: "buy" | "sell"
+): AccountMeta[] | null {
+  const message = tx.transaction.message;
+  const loaded = tx.meta?.loadedAddresses
+    ? [...tx.meta.loadedAddresses.writable, ...tx.meta.loadedAddresses.readonly]
+    : [];
+  const allKeys = [...message.staticAccountKeys, ...loaded];
+
+  const match = (ix: {
+    programIdIndex: number;
+    accountKeyIndexes?: number[];
+    accounts?: number[] | Uint8Array;
+    data?: unknown;
+  }): AccountMeta[] | null => {
+    if (!allKeys[ix.programIdIndex]?.equals(PUMPSWAP_PROGRAM_ID)) return null;
+    const disc = compiledInstructionDataToBuffer(ix.data).subarray(0, 8);
+    const isBuy =
+      disc.equals(PUMPSWAP_BUY_DISCRIMINATOR) || disc.equals(PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR);
+    const isSell = disc.equals(PUMPSWAP_SELL_DISCRIMINATOR);
+    if (side === "buy" ? !isBuy : !isSell) return null;
+    const indexes = ix.accountKeyIndexes ?? Array.from(ix.accounts ?? []);
+    const keys = indexes.map((idx) => allKeys[idx]);
+    if (!keys[PUMPSWAP_BASE_MINT_INDEX]?.equals(mint)) return null;
+    if (keys[PUMPSWAP_QUOTE_MINT_INDEX]?.toBase58() !== WRAPPED_SOL_MINT) return null;
+    return indexes.map((idx) => ({
+      pubkey: allKeys[idx]!,
+      isSigner: message.isAccountSigner(idx),
+      isWritable: message.isAccountWritable(idx),
+    }));
+  };
+
+  for (const ix of message.compiledInstructions) {
+    const found = match(ix);
+    if (found) return found;
+  }
+  for (const group of tx.meta?.innerInstructions ?? []) {
+    for (const ix of group.instructions) {
+      const found = match(ix as Parameters<typeof match>[0]);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+// Build a PumpSwap account list for the current on-chain layout by templating a
+// recent real trade on the resolved pool. This auto-adapts to pump's evolving
+// account set (e.g. the per-token fee-program accounts that the hand-built
+// canonical builder does not know about). Only user-specific accounts are
+// substituted downstream (by the Rust executor / replacePumpSwapUserAccounts),
+// so reusing another trader's template is safe; we still verify pool, mints and
+// base token program before trusting it. Cached per (pool, side) for the session.
+async function fetchPumpSwapPoolTradeTemplate(args: {
+  mint: PublicKey;
+  side: "buy" | "sell";
+  baseTokenProgram: PublicKey;
+  poolHint?: PublicKey | null;
+}): Promise<AccountMeta[] | null> {
+  const pool = await findPumpSwapPoolForMint(args.mint, args.poolHint);
+  if (!pool) return null;
+  const cacheKey = `${pool.pool.toBase58()}|${args.side}`;
+  const cached = pumpSwapPoolTemplateCache.get(cacheKey);
+  if (cached) return cloneAccountMetas(cached);
+
+  let signatures;
+  try {
+    signatures = await readConnection.getSignaturesForAddress(pool.pool, {
+      limit: PUMPSWAP_TEMPLATE_SIG_LIMIT,
+    });
+  } catch {
+    return null;
+  }
+  const minCount =
+    args.side === "buy" ? PUMPSWAP_MIN_BUY_ACCOUNT_COUNT : PUMPSWAP_MIN_SELL_ACCOUNT_COUNT;
+  for (const sig of signatures) {
+    if (sig.err) continue;
+    const tx = await readConnection
+      .getTransaction(sig.signature, { commitment: "confirmed", maxSupportedTransactionVersion: 0 })
+      .catch(() => null);
+    if (!tx) continue;
+    const accounts = pumpSwapAccountMetasFromTx(tx, args.mint, args.side);
+    if (!accounts || accounts.length < minCount) continue;
+    if (!accounts[0]?.pubkey.equals(pool.pool)) continue;
+    if (!accounts[PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX]?.pubkey.equals(args.baseTokenProgram)) continue;
+    pumpSwapPoolTemplateCache.set(cacheKey, cloneAccountMetas(accounts));
+    return cloneAccountMetas(accounts);
+  }
+  return null;
+}
+
 async function resolvePumpSwapBuyAccountPlan(args: {
   sourceSignature: string;
   mint: PublicKey;
@@ -630,43 +739,41 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   canonicalOnly?: boolean;
 }): Promise<PumpSwapAccountPlan | null> {
   const hintedAccounts = sourcePumpSwapHintAccountsToMetas(args.sourcePumpSwapAccounts);
+  const poolHint = hintedAccounts?.[0]?.pubkey ?? null;
 
-  const canonicalAccounts = await buildCanonicalPumpSwapBuyAccounts({
-    user: args.user,
-    mint: args.mint,
-    baseTokenProgram: args.baseTokenProgram,
-    // Account index 0 of the source PumpSwap buy ix is the pool — used only as
-    // a verified-on-chain candidate, never trusted as a ready-made meta list.
-    poolHint: hintedAccounts?.[0]?.pubkey ?? null,
-  });
-  if (canonicalAccounts) {
-    return {
-      accounts: canonicalAccounts,
-      source: "canonical-pool-state",
-      diagnostics: hintedAccounts
-        ? comparePumpSwapAccounts(canonicalAccounts, hintedAccounts, "detector-pubkey-hints")
-        : { comparedTo: "detector-pubkey-hints", candidateAccounts: 0 },
-    };
-  }
-
-  if (args.canonicalOnly) return null;
-
-  if (hintedAccounts?.length) {
-    if (!validatePumpSwapBuyAccountLayout(hintedAccounts, args.mint)) {
+  // Fast paths (no extra RPC): the source's own PumpSwap metas already carry the
+  // exact current on-chain account layout. Trusted for buys. Skipped in
+  // canonicalOnly retry mode, which forces the authoritative pool template.
+  if (!args.canonicalOnly) {
+    if (hintedAccounts?.length && !validatePumpSwapBuyAccountLayout(hintedAccounts, args.mint)) {
       return {
         accounts: hintedAccounts,
         source: "detector-pubkey-hints",
-        diagnostics: { canonicalUnavailable: true, detectorHintAccounts: hintedAccounts.length },
+        diagnostics: { detectorHintAccounts: hintedAccounts.length },
       };
+    }
+    const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
+    if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint)) {
+      return { accounts: confirmedAccounts, source: "confirmed-source-metas", diagnostics: {} };
     }
   }
 
-  const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
-  if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint)) {
+  // Authoritative fallback when the source carries no PumpSwap metas (e.g. it
+  // routed through an aggregator): template a recent real buy on the resolved
+  // pool. The Rust executor substitutes our user accounts downstream.
+  const template = await fetchPumpSwapPoolTradeTemplate({
+    mint: args.mint,
+    side: "buy",
+    baseTokenProgram: args.baseTokenProgram,
+    poolHint,
+  });
+  if (template) {
     return {
-      accounts: confirmedAccounts,
-      source: "confirmed-source-metas",
-      diagnostics: { canonicalUnavailable: true },
+      accounts: template,
+      source: "canonical-pool-state",
+      diagnostics: hintedAccounts
+        ? comparePumpSwapAccounts(template, hintedAccounts, "detector-pubkey-hints")
+        : { comparedTo: "detector-pubkey-hints", candidateAccounts: 0 },
     };
   }
   return null;
@@ -677,6 +784,10 @@ export function replacePumpSwapUserAccounts(args: {
   user: PublicKey;
   baseMint: PublicKey;
   baseTokenProgram: PublicKey;
+  // Only PumpSwap BUYS carry a user_volume_accumulator at index 20. In the
+  // current SELL layout index 20 is fee_program, so substituting it there would
+  // corrupt the instruction. Defaults to true (buy behavior).
+  replaceUserVolumeAccumulator?: boolean;
 }): { accounts: AccountMeta[]; userBaseAta: PublicKey; userQuoteAta: PublicKey } {
   const accounts = args.accounts.map((a) => ({ ...a }));
   const userBaseAta = deriveAta(args.user, args.baseMint, args.baseTokenProgram);
@@ -685,7 +796,10 @@ export function replacePumpSwapUserAccounts(args: {
   accounts[PUMPSWAP_USER_INDEX] = { pubkey: args.user, isSigner: true, isWritable: true };
   accounts[PUMPSWAP_USER_BASE_ATA_INDEX] = { pubkey: userBaseAta, isSigner: false, isWritable: true };
   accounts[PUMPSWAP_USER_QUOTE_ATA_INDEX] = { pubkey: userQuoteAta, isSigner: false, isWritable: true };
-  if (accounts.length > PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX) {
+  if (
+    (args.replaceUserVolumeAccumulator ?? true) &&
+    accounts.length > PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX
+  ) {
     accounts[PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX] = {
       pubkey: derivePumpSwapUserVolumeAccumulatorPda(args.user),
       isSigner: false,
@@ -710,6 +824,10 @@ const PUMPSWAP_DIRECT_BUY_QUOTE_HAIRCUT_BPS = 300;
 const PUMPSWAP_ACCOUNT_CACHE_TTL_MS = 30_000;
 const PUMPSWAP_SOURCE_META_ATTEMPTS = 3;
 const PUMPSWAP_SOURCE_META_RETRY_MS = 35;
+const PUMPSWAP_STATIC_ACCOUNT_READ_ATTEMPTS = 3;
+const PUMPSWAP_STATIC_ACCOUNT_READ_RETRY_MS = 40;
+const PUMPSWAP_TEMPLATE_SIG_LIMIT = 12;
+const pumpSwapPoolTemplateCache = new Map<string, AccountMeta[]>();
 const pumpSwapPoolCache = new Map<string, { pool: PublicKey; baseVault: PublicKey; quoteVault: PublicKey }>();
 const pumpSwapMintOwnerCache = new Map<string, { owner: PublicKey; cachedAt: number }>();
 const pumpSwapPoolAccountCache = new Map<string, { account: AccountInfo<Buffer>; cachedAt: number }>();
@@ -741,9 +859,24 @@ async function getCachedPumpSwapGlobalConfigAccount(): Promise<AccountInfo<Buffe
     return pumpSwapGlobalConfigCache.account;
   }
 
-  const account = await readConnection.getAccountInfo(PUMPSWAP_GLOBAL_CONFIG, "processed");
-  if (account) pumpSwapGlobalConfigCache = { account, cachedAt: now };
-  return account;
+  // The global config is effectively immutable; a transient RPC read failure
+  // must never break a buy/sell. Retry briefly, then fall back to the
+  // last-known-good value (ignoring TTL) rather than returning null.
+  for (let attempt = 0; attempt < PUMPSWAP_STATIC_ACCOUNT_READ_ATTEMPTS; attempt++) {
+    try {
+      const account = await readConnection.getAccountInfo(PUMPSWAP_GLOBAL_CONFIG, "processed");
+      if (account) {
+        pumpSwapGlobalConfigCache = { account, cachedAt: now };
+        return account;
+      }
+    } catch {
+      // fall through to retry / sticky fallback
+    }
+    if (attempt < PUMPSWAP_STATIC_ACCOUNT_READ_ATTEMPTS - 1) {
+      await sleep(PUMPSWAP_STATIC_ACCOUNT_READ_RETRY_MS);
+    }
+  }
+  return pumpSwapGlobalConfigCache?.account ?? null;
 }
 
 function readProtocolFeeRecipientFromGlobalConfig(account: AccountInfo<Buffer> | null): PublicKey | null {
@@ -1917,6 +2050,7 @@ export async function tryPumpSwapDirectSell(args: {
     user: args.user.publicKey,
     baseMint: mintKey,
     baseTokenProgram: baseTokenProgramId,
+    replaceUserVolumeAccumulator: false, // sells have no user_volume_accumulator
   });
   if (accounts.length < PUMPSWAP_MIN_SELL_ACCOUNT_COUNT) {
     return { ok: false, recoverable: true, reason: `PumpSwap sell account list too short: ${accounts.length}` };
@@ -1965,7 +2099,10 @@ export async function tryPumpSwapDirectSell(args: {
     };
   }
 
-  const rustSourcePumpSwapAccounts = accounts.map((account) => ({
+  // Pass the raw (template) account list to the Rust executor; it performs the
+  // single, side-correct user substitution (and does NOT touch index 20 for
+  // sells). Mirrors the buy path, which also hands Rust the raw plan.
+  const rustSourcePumpSwapAccounts = accountPlan.accounts.map((account) => ({
     pubkey: account.pubkey.toBase58(),
     isSigner: account.isSigner,
     isWritable: account.isWritable,
