@@ -58,6 +58,8 @@ function knownErrorName(program: "pump" | "pump_amm" | "unknown", code: string |
     return {
       "6004": "ExceededSlippage",
       "6023": "Overflow",
+      "6024": "Truncation",
+      "6025": "DivisionByZero",
       "6040": "BuySlippageBelowMinBaseAmountOut",
     }[code];
   }
@@ -170,7 +172,7 @@ export function classifyExecutionError(err: unknown): ClassifiedExecutionError {
     };
   }
   if (
-    (program === "pump_amm" && custom === "6023") ||
+    (program === "pump_amm" && (custom === "6023" || custom === "6024" || custom === "6025")) ||
     (program === "pump" && (custom === "6021" || custom === "6023" || custom === "6024"))
   ) {
     return {
