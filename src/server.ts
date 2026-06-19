@@ -139,6 +139,10 @@ async function handle(
     return servePublicFile(res, "favicon.svg", "image/svg+xml; charset=utf-8");
   }
 
+  if (req.method === "GET" && url === "/manifest.webmanifest") {
+    return servePublicFile(res, "manifest.webmanifest", "application/manifest+json; charset=utf-8");
+  }
+
   if (req.method === "GET" && url === "/api/state") {
     return sendJson(res, 200, getBotState());
   }

@@ -10,6 +10,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <style>
   :root {
     --bg: #050607;
@@ -509,6 +513,14 @@
   /* metric figures a touch crisper */
   .metric .value { font-weight: 800; }
   .eyebrow { letter-spacing: .1em; }
+
+  /* ===== pass 3 ===== */
+  .head-tools { display: flex; gap: 8px; align-items: center; }
+  .chart-card #pos-chart { height: 260px; width: 100%; }
+  .chart-card select { min-width: 170px; }
+  @keyframes rowFlash { 0% { background: rgba(52,232,158,.22); } 100% { background: transparent; } }
+  .position-row.flash { animation: rowFlash 1.4s ease-out; }
+  .positions-card.flash { box-shadow: var(--shadow-card), 0 0 0 1px rgba(52,232,158,.55); }
 </style>
 </head>
 <body>
@@ -613,10 +625,26 @@
       </div>
     </div>
 
+    <div class="card chart-card">
+      <div class="section-head">
+        <div><h2 id="chart-title">Live Chart</h2><div class="sub" id="chart-sub">Select a position to chart its 1-second price.</div></div>
+        <select id="chart-mint" class="tag-select"><option value="">No open positions</option></select>
+      </div>
+      <div id="pos-chart"></div>
+    </div>
+
     <div class="card positions-card">
       <div class="section-head">
         <h2>Positions &amp; PnL</h2>
-        <span id="position-count" class="badge">0 tokens</span>
+        <div class="head-tools">
+          <select id="pos-sort" class="tag-select" title="Sort positions">
+            <option value="recent">Recent</option>
+            <option value="pnl">PnL</option>
+            <option value="value">Value</option>
+            <option value="age">Age</option>
+          </select>
+          <span id="position-count" class="badge">0 tokens</span>
+        </div>
       </div>
       <div id="positions" class="positions-list">
         <div class="sub">No positions yet.</div>
@@ -959,6 +987,7 @@ function notifyNewSwaps(swaps) {
   const fresh = swaps.filter((r) => !seenSwapKeys.has(swapKey(r))).reverse();
   seenSwapKeys = currentKeys;
   fresh.forEach(showTradeToast);
+  if (fresh.length) onFreshSwaps(fresh);
 }
 function axiomUrl(mint) {
   return "https://axiom.trade/meme/" + encodeURIComponent(mint);
@@ -1276,6 +1305,8 @@ async function refreshState() {
 
 function renderPositions(positions) {
   const openPositions = (positions || []).filter((p) => Number(p.heldRaw || 0) > 0);
+  sortPositions(openPositions);
+  populateChartSelect(openPositions);
   $("position-count").textContent = `${openPositions.length} tokens`;
   if (!openPositions.length) {
     $("positions").innerHTML = '<div class="sub">No positions yet.</div>';
@@ -1595,20 +1626,31 @@ function animateText(el, target, fmt) {
   el.__raf = requestAnimationFrame(step);
 }
 
-/* ===== Exposure meter ===== */
+/* ===== Exposure meter (vs your real caps when configured) ===== */
 function updateExposure(s) {
   const bar = $("exposure-bar"); if (!bar) return;
   const open = (s.positions || []).filter((p) => Number(p.heldRaw || 0) > 0);
-  const deployed = open.reduce((a, p) => a + (p.costBasisRemainingLamports || 0), 0);
-  const free = Math.max(0, (s.lastBalanceSol || 0) * 1e9);
-  const total = deployed + free;
-  const pct = total > 0 ? Math.min(100, (deployed / total) * 100) : 0;
+  const deployedSol = open.reduce((a, p) => a + (p.costBasisRemainingLamports || 0), 0) / 1e9;
+  const freeSol = Math.max(0, s.lastBalanceSol || 0);
+
+  // Ceiling = your configured max deployable, when available; else total capital.
+  const capFromPerToken = s.maxOpenPositions != null && s.maxSolPerTokenSol != null
+    ? s.maxOpenPositions * s.maxSolPerTokenSol : null;
+  const ceiling = s.maxSessionDeployedSol || capFromPerToken || (deployedSol + freeSol);
+  const limited = !!(s.maxSessionDeployedSol || capFromPerToken);
+
+  const pct = ceiling > 0 ? Math.min(100, (deployedSol / ceiling) * 100) : 0;
   bar.style.width = pct.toFixed(1) + "%";
-  bar.className = "meter-fill " + (pct >= 80 ? "bad" : pct >= 50 ? "warn" : "ok");
+  bar.className = "meter-fill " + (pct >= 85 ? "bad" : pct >= 60 ? "warn" : "ok");
   $("exposure-pct").textContent = pct.toFixed(0) + "%";
-  $("exposure-deployed").textContent = (deployed / 1e9).toFixed(4) + " SOL";
-  $("exposure-free").textContent = (free / 1e9).toFixed(4) + " SOL";
-  $("exposure-open").textContent = String(open.length);
+  $("exposure-deployed").textContent = deployedSol.toFixed(4) + " SOL";
+  $("exposure-free").textContent = freeSol.toFixed(4) + " SOL";
+  const openEl = $("exposure-open");
+  openEl.textContent = s.maxOpenPositions != null ? `${open.length} / ${s.maxOpenPositions}` : String(open.length);
+  const sub = document.querySelector(".exposure-card .sub");
+  if (sub) sub.textContent = limited
+    ? `Capital deployed vs. your configured limit (${ceiling.toFixed(2)} SOL).`
+    : "Capital deployed across open positions vs. free balance.";
 }
 
 /* ===== Per-position 1s sparklines (local pool quotes) ===== */
@@ -1692,6 +1734,106 @@ document.addEventListener("keydown", (e) => {
 /* ===== restore persisted view + density ===== */
 try { applyDensity(localStorage.getItem("obsidian-density") === "1"); } catch {}
 try { showView(localStorage.getItem("obsidian-view") || "overview"); } catch (e) { showView("overview"); }
+
+/* ===== Sortable positions ===== */
+let posSort = "recent";
+function sortPositions(list) {
+  const k = posSort;
+  list.sort((a, b) => {
+    if (k === "pnl") return (b.realizedPnlLamports || 0) - (a.realizedPnlLamports || 0);
+    if (k === "value") return (b.costBasisRemainingLamports || 0) - (a.costBasisRemainingLamports || 0);
+    if (k === "age") return (a.firstSeenAt || 0) - (b.firstSeenAt || 0);
+    return (b.lastTradeAt || 0) - (a.lastTradeAt || 0);
+  });
+}
+$("pos-sort")?.addEventListener("change", (e) => { posSort = e.target.value; if (lastState) renderPositions(lastState.positions || []); });
+
+/* ===== New-entry ping + row flash ===== */
+function ping() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext; if (!Ctx) return;
+    const ac = ping._ac || (ping._ac = new Ctx());
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = "sine"; o.frequency.setValueAtTime(720, ac.currentTime);
+    o.frequency.exponentialRampToValueAtTime(1040, ac.currentTime + 0.12);
+    g.gain.setValueAtTime(0.0001, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.16, ac.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.28);
+    o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime + 0.3);
+  } catch {}
+}
+function onFreshSwaps(fresh) {
+  const buys = fresh.filter((r) => r.side === "buy" && !r.isSimulated);
+  if (!buys.length) return;
+  if (alertsEnabled()) ping();
+  const card = document.querySelector(".positions-card");
+  if (card) { card.classList.add("flash"); setTimeout(() => card.classList.remove("flash"), 900); }
+  for (const b of buys) {
+    const mint = b.output && b.output.mint;
+    const row = mint && document.querySelector(`.position-row[data-mint="${CSS.escape(mint)}"]`);
+    if (row) { row.classList.add("flash"); setTimeout(() => { try { row.classList.remove("flash"); } catch {} }, 1400); }
+  }
+}
+
+/* ===== Embedded live 1s chart (lives outside the position list so the 2s
+   re-render never destroys it) ===== */
+let posChart = null, posSeries = null, posChartMint = "", posLines = [];
+function initPosChart() {
+  if (posChart || typeof LightweightCharts === "undefined") return;
+  const el = $("pos-chart"); if (!el) return;
+  posChart = LightweightCharts.createChart(el, {
+    layout: { background: { color: "transparent" }, textColor: "#8b929d" },
+    grid: { vertLines: { color: "#141c26" }, horzLines: { color: "#141c26" } },
+    rightPriceScale: { borderColor: "#20242b" },
+    timeScale: { borderColor: "#20242b", timeVisible: true, secondsVisible: true },
+    autoSize: true,
+  });
+  posSeries = posChart.addAreaSeries({
+    lineColor: "#34e89e", topColor: "rgba(52,232,158,.30)", bottomColor: "rgba(52,232,158,0)", lineWidth: 2,
+    priceFormat: { type: "price", precision: 6, minMove: 0.000001 },
+  });
+}
+function populateChartSelect(open) {
+  const sel = $("chart-mint"); if (!sel) return;
+  const want = open.map((p) => p.mint).join();
+  const have = Array.from(sel.options).map((o) => o.value).filter(Boolean).join();
+  if (want !== have) {
+    const cur = sel.value;
+    sel.innerHTML = open.length
+      ? open.map((p) => `<option value="${escapeHtml(p.mint)}">$${escapeHtml(p.symbol)} · ${shortAddr(p.mint)}</option>`).join("")
+      : '<option value="">No open positions</option>';
+    if (open.some((p) => p.mint === cur)) sel.value = cur;
+    posChartMint = sel.value || "";
+  } else if (!posChartMint && sel.value) {
+    posChartMint = sel.value;
+  }
+}
+$("chart-mint")?.addEventListener("change", (e) => { posChartMint = e.target.value; refreshPosChart(); });
+function clearPosLines() { posLines.forEach((l) => { try { posSeries.removePriceLine(l); } catch {} }); posLines = []; }
+async function refreshPosChart() {
+  initPosChart();
+  if (!posSeries) return;
+  const sub = $("chart-sub");
+  if (!posChartMint) { posSeries.setData([]); clearPosLines(); try { posSeries.setMarkers([]); } catch {} if (sub) sub.textContent = "Select a position to chart its 1-second price."; return; }
+  let data; try { data = await (await fetch("/api/price-series?mint=" + posChartMint)).json(); } catch { return; }
+  const bySec = new Map();
+  for (const pt of (data.points || [])) bySec.set(Math.floor(pt.t / 1000), pt.valueLamports / 1e9);
+  posSeries.setData([...bySec.entries()].sort((a, b) => a[0] - b[0]).map(([time, value]) => ({ time, value })));
+  clearPosLines();
+  const pos = (lastState && lastState.positions || []).find((p) => p.mint === posChartMint);
+  if (pos && pos.costBasisRemainingLamports > 0) {
+    posLines.push(posSeries.createPriceLine({ price: pos.costBasisRemainingLamports / 1e9, color: "#8b929d", lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: "entry" }));
+  }
+  const markers = ((lastState && lastState.recentSwaps) || [])
+    .filter((r) => (r.side === "buy" && r.output && r.output.mint === posChartMint) || (r.side === "sell" && r.input && r.input.mint === posChartMint))
+    .map((r) => ({ time: Math.floor(r.ts / 1000), position: r.side === "buy" ? "belowBar" : "aboveBar", color: r.side === "buy" ? "#34e89e" : "#ff5f6d", shape: r.side === "buy" ? "arrowUp" : "arrowDown", text: r.side === "buy" ? "BUY" : "SELL" }))
+    .sort((a, b) => a.time - b.time);
+  try { posSeries.setMarkers(markers); } catch {}
+  const last = (data.points || [])[(data.points || []).length - 1];
+  if (sub) sub.textContent = last ? `Bag value ${(last.valueLamports / 1e9).toFixed(4)} SOL · live 1s` : "Waiting for price samples…";
+}
+initPosChart();
+setInterval(refreshPosChart, 1000);
 </script>
 </body>
 </html>

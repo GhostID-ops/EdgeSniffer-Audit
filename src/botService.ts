@@ -227,6 +227,9 @@ export type BotState = {
   exitSignalWallets: string[];
   simulationMode: boolean;
   buysPaused: boolean;
+  maxOpenPositions: number | null;
+  maxSolPerTokenSol: number | null;
+  maxSessionDeployedSol: number | null;
   minBuySol: number;
   maxBuySol: number;
   copyBuyPercentage: number;
@@ -4305,6 +4308,10 @@ export function getBotState(): BotState {
     exitSignalWallets,
     simulationMode,
     buysPaused,
+    maxOpenPositions: maxOpenPositions ?? null,
+    maxSolPerTokenSol: maxSolPerTokenLamports != null ? maxSolPerTokenLamports / LAMPORTS_PER_SOL : null,
+    maxSessionDeployedSol:
+      maxSessionDeployedLamports != null ? maxSessionDeployedLamports / LAMPORTS_PER_SOL : null,
     minBuySol: minBuyLamports / LAMPORTS_PER_SOL,
     maxBuySol: maxBuyLamports / LAMPORTS_PER_SOL,
     copyBuyPercentage,
