@@ -1,5 +1,6 @@
 import { getPositions } from "./pnl.js";
 import { estimatePumpSwapSellQuote } from "./pumpswap/route.js";
+import { telegram } from "./telegram.js";
 
 // Local 1-second price feed for the DEX UI. For each OPEN position we sample the
 // realizable PumpSwap sell value (what the bag is actually worth right now, read
@@ -25,6 +26,36 @@ const lastSeen = new Map<string, number>();
 let started = false;
 let sampling = false;
 
+// Telegram price alerts: fire once when a position's unrealized PnL crosses each
+// configured threshold (%), re-arming after it falls back below so a re-pump can
+// alert again. Set PRICE_ALERT_PCTS="" to disable. Negative values are downside
+// alerts. notifyInfo no-ops when Telegram isn't configured.
+const ALERT_PCTS = (process.env.PRICE_ALERT_PCTS ?? "50,100,200,500,-50")
+  .split(",")
+  .map((s) => parseFloat(s.trim()))
+  .filter((n) => Number.isFinite(n));
+const firedAlerts = new Map<string, Set<number>>();
+
+function maybeAlert(mint: string, symbol: string, costBasisRemainingLamports: number, valueLamports: number): void {
+  if (ALERT_PCTS.length === 0 || !(costBasisRemainingLamports > 0)) return;
+  const pct = ((valueLamports - costBasisRemainingLamports) / costBasisRemainingLamports) * 100;
+  const fired = firedAlerts.get(mint) ?? new Set<number>();
+  for (const thr of ALERT_PCTS) {
+    const beyond = thr >= 0 ? pct >= thr : pct <= thr;
+    if (beyond && !fired.has(thr)) {
+      fired.add(thr);
+      const dir = thr >= 0 ? "🟢" : "🔴";
+      void telegram.notifyInfo(
+        `${dir} $${symbol} ${pct >= 0 ? "+" : ""}${pct.toFixed(0)}%`,
+        `Bag worth ${(valueLamports / 1e9).toFixed(4)} SOL\n<code>${mint}</code>`
+      );
+    } else if (!beyond && fired.has(thr)) {
+      fired.delete(thr); // re-arm so a later re-cross alerts again
+    }
+  }
+  firedAlerts.set(mint, fired);
+}
+
 export function getPriceSeries(mint: string): PricePoint[] {
   return series.get(mint) ?? [];
 }
@@ -45,6 +76,7 @@ async function sampleOnce(): Promise<void> {
       if (now - (lastSeen.get(mint) ?? 0) > STALE_PRUNE_MS) {
         series.delete(mint);
         lastSeen.delete(mint);
+        firedAlerts.delete(mint);
       }
     }
 
@@ -59,6 +91,7 @@ async function sampleOnce(): Promise<void> {
         buf.push({ t: now, valueLamports: out, pricePerToken });
         if (buf.length > MAX_POINTS) buf.splice(0, buf.length - MAX_POINTS);
         series.set(p.mint, buf);
+        maybeAlert(p.mint, p.symbol, p.costBasisRemainingLamports, out);
       })
     );
   } finally {

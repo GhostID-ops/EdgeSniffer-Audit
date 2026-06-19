@@ -85,6 +85,10 @@
         <span class="sym" id="cSym">Select a token</span>
         <span class="px" id="cPx"></span>
         <span class="spacer"></span>
+        <button id="tf1" class="go">1s</button>
+        <button id="tf5" class="ghost">5s</button>
+        <button id="tf15" class="ghost">15s</button>
+        <span style="width:1px;height:18px;background:var(--line);margin:0 4px"></span>
         <button id="modeValue" class="go">Bag SOL</button>
         <button id="modePrice" class="ghost">Price/token</button>
       </div>
@@ -144,20 +148,45 @@ const chart = LightweightCharts.createChart(chartEl, {
   crosshair:{ mode: LightweightCharts.CrosshairMode.Normal },
   autoSize:true,
 });
-const area = chart.addAreaSeries({
-  lineColor:'#3b82f6', topColor:'rgba(59,130,246,.35)', bottomColor:'rgba(59,130,246,0)', lineWidth:2,
-  priceFormat:{ type:'price', precision:6, minMove:0.000001 },
-});
+let tf = 1;                 // seconds per candle; 1 => area line
+let currentSeries = null;
+function buildSeries(){
+  if(currentSeries){ chart.removeSeries(currentSeries); currentSeries=null; }
+  if(tf===1){
+    currentSeries = chart.addAreaSeries({
+      lineColor:'#3b82f6', topColor:'rgba(59,130,246,.35)', bottomColor:'rgba(59,130,246,0)', lineWidth:2,
+      priceFormat:{ type:'price', precision:6, minMove:0.000001 },
+    });
+  } else {
+    currentSeries = chart.addCandlestickSeries({
+      upColor:'#16c784', downColor:'#ea3943', borderVisible:false,
+      wickUpColor:'#16c784', wickDownColor:'#ea3943',
+      priceFormat:{ type:'price', precision:6, minMove:0.000001 },
+    });
+  }
+}
+buildSeries();
 
 function pointVal(p){ return chartMode==='value' ? p.valueLamports/1e9 : p.pricePerToken; }
 async function refreshChart(){
-  if(!selected){ area.setData([]); return; }
+  if(!selected){ currentSeries.setData([]); return; }
   let data;
   try{ data = await api('/api/price-series?mint='+selected); }catch{ return; }
-  const bySec = new Map();
-  for(const p of data.points){ bySec.set(Math.floor(p.t/1000), pointVal(p)); } // dedupe per second, last wins
-  const series = [...bySec.entries()].sort((a,b)=>a[0]-b[0]).map(([time,value])=>({time, value}));
-  area.setData(series);
+  const pts = data.points.map(p=>({ t:Math.floor(p.t/1000), v:pointVal(p) }));
+  if(tf===1){
+    const bySec = new Map();
+    for(const p of pts){ bySec.set(p.t, p.v); } // dedupe per second, last wins
+    currentSeries.setData([...bySec.entries()].sort((a,b)=>a[0]-b[0]).map(([time,value])=>({time, value})));
+  } else {
+    const buckets = new Map();
+    for(const p of pts){
+      const b = Math.floor(p.t/tf)*tf;
+      const c = buckets.get(b);
+      if(!c){ buckets.set(b,{time:b,open:p.v,high:p.v,low:p.v,close:p.v}); }
+      else { c.high=Math.max(c.high,p.v); c.low=Math.min(c.low,p.v); c.close=p.v; }
+    }
+    currentSeries.setData([...buckets.values()].sort((a,b)=>a.time-b.time));
+  }
   const last = data.points[data.points.length-1];
   const pos = positionsByMint[selected]?.position;
   document.getElementById('cSym').textContent = pos ? ('$'+pos.symbol) : short(selected);
@@ -296,6 +325,11 @@ document.getElementById('modeValue').addEventListener('click', ()=>{ chartMode='
   document.getElementById('modeValue').className='go'; document.getElementById('modePrice').className='ghost'; refreshChart(); });
 document.getElementById('modePrice').addEventListener('click', ()=>{ chartMode='price';
   document.getElementById('modePrice').className='go'; document.getElementById('modeValue').className='ghost'; refreshChart(); });
+function setTf(n){ tf=n; ['tf1','tf5','tf15'].forEach(id=>document.getElementById(id).className='ghost');
+  document.getElementById('tf'+n).className='go'; buildSeries(); refreshChart(); }
+document.getElementById('tf1').addEventListener('click', ()=>setTf(1));
+document.getElementById('tf5').addEventListener('click', ()=>setTf(5));
+document.getElementById('tf15').addEventListener('click', ()=>setTf(15));
 
 // ---- loops ----
 refreshAll();
