@@ -422,6 +422,30 @@
     body::after, .mark, .btn.panic, .dot.on::after, .metrics .card, .main-grid .card { animation: none !important; }
   }
   :focus-visible { outline: 2px solid rgba(52,232,158,.7); outline-offset: 2px; }
+
+  /* ---- LAYOUT & SIZING FIXES — single-line buttons, even heights ---- */
+  .btn { white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 8px; line-height: 1; }
+  .control-stack { display: grid; gap: 10px; }
+  .control-utils { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+  .btn.panic.full { min-height: 54px; font-size: 15px; letter-spacing: -.01em; }
+  .btn.danger.full { min-height: 46px; font-size: 14px; }
+  .control-utils .btn { min-height: 40px; font-size: 13px; font-weight: 600; padding: 0 8px; }
+  .actions .btn { min-height: 40px; padding: 0 18px; font-weight: 700; }
+
+  /* metric figures never wrap; scale down gracefully on narrow widths */
+  .metric { min-height: 118px; }
+  .metric .value { font-size: clamp(20px, 1.7vw, 26px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .metric .hint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .eyebrow, .badge, .tag, .live-pill, h2 { white-space: nowrap; }
+
+  /* per-KPI accent color on the metric top hairline */
+  .metrics .card:nth-child(1)::before { background: linear-gradient(90deg, transparent, var(--green),  transparent); }
+  .metrics .card:nth-child(2)::before { background: linear-gradient(90deg, transparent, #e8edf2,        transparent); }
+  .metrics .card:nth-child(3)::before { background: linear-gradient(90deg, transparent, var(--blue),   transparent); }
+  .metrics .card:nth-child(4)::before { background: linear-gradient(90deg, transparent, var(--purple), transparent); }
+
+  /* keep token name / chips on one line */
+  .token-name strong { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
 </style>
 </head>
 <body>
@@ -580,12 +604,14 @@
             </div>
             <span class="badge">Live buttons</span>
           </div>
-          <div class="control-grid">
-            <button id="btn-panic" class="btn panic full">Panic: Stop + Sell All</button>
-            <button id="btn-sell-all" class="btn danger full">Sell All Positions</button>
-            <button id="btn-close-sim" class="btn full">Close All Sim Positions</button>
-            <button id="btn-reset-session" class="btn full">Reset Session</button>
-            <button id="btn-refresh" class="btn full">Refresh</button>
+          <div class="control-stack">
+            <button id="btn-panic" class="btn panic full">🛑&nbsp; Panic — Stop &amp; Sell All</button>
+            <button id="btn-sell-all" class="btn danger full">💸&nbsp; Sell All Positions</button>
+            <div class="control-utils">
+              <button id="btn-close-sim" class="btn">Close Sim</button>
+              <button id="btn-reset-session" class="btn">Reset</button>
+              <button id="btn-refresh" class="btn">Refresh</button>
+            </div>
           </div>
           <div class="field-note" style="margin-top:10px;">
             Sell buttons use the same bot functions as keyboard shortcuts. Live mode can send real transactions.
