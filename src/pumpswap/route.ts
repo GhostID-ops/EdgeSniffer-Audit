@@ -685,13 +685,34 @@ function pumpSwapAccountMetasFromTx(
   return null;
 }
 
+// Convert a PumpSwap BUY account template into the SELL layout. Per the pump_amm
+// IDL the sell account list is identical to the buy list except it omits
+// global_volume_accumulator (index 19) and user_volume_accumulator (index 20);
+// the trailing per-token fee-program accounts are the same for both. This lets
+// us produce a sell template from the much-more-common buy activity (e.g. a
+// freshly graduated token that has no sells yet). We validate that indices 19/20
+// really are the two volume accumulators before removing them, so any future
+// layout drift fails closed instead of corrupting the sell.
+function buyTemplateToSellTemplate(buy: AccountMeta[]): AccountMeta[] | null {
+  if (buy.length < PUMPSWAP_MIN_BUY_ACCOUNT_COUNT) return null;
+  const user = buy[PUMPSWAP_USER_INDEX]?.pubkey;
+  if (!user) return null;
+  const globalVol = buy[19]?.pubkey;
+  const userVol = buy[PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX]?.pubkey;
+  if (!globalVol?.equals(derivePumpSwapGlobalVolumeAccumulatorPda())) return null;
+  if (!userVol?.equals(derivePumpSwapUserVolumeAccumulatorPda(user))) return null;
+  return [...buy.slice(0, 19), ...buy.slice(PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX + 1)];
+}
+
 // Build a PumpSwap account list for the current on-chain layout by templating a
 // recent real trade on the resolved pool. This auto-adapts to pump's evolving
 // account set (e.g. the per-token fee-program accounts that the hand-built
 // canonical builder does not know about). Only user-specific accounts are
 // substituted downstream (by the Rust executor / replacePumpSwapUserAccounts),
 // so reusing another trader's template is safe; we still verify pool, mints and
-// base token program before trusting it. Cached per (pool, side) for the session.
+// base token program before trusting it. For sells, when no recent sell exists
+// (common right after graduation) we derive the sell layout from a buy. Cached
+// per (pool, side) for the session.
 async function fetchPumpSwapPoolTradeTemplate(args: {
   mint: PublicKey;
   side: "buy" | "sell";
@@ -720,7 +741,14 @@ async function fetchPumpSwapPoolTradeTemplate(args: {
       .getTransaction(sig.signature, { commitment: "confirmed", maxSupportedTransactionVersion: 0 })
       .catch(() => null);
     if (!tx) continue;
-    const accounts = pumpSwapAccountMetasFromTx(tx, args.mint, args.side);
+    let accounts = pumpSwapAccountMetasFromTx(tx, args.mint, args.side);
+    // For sells, fall back to converting a buy on the same pool — a freshly
+    // graduated token often has buys but no sells yet, and sell = buy minus the
+    // two volume-accumulator accounts (pump_amm IDL).
+    if (!accounts && args.side === "sell") {
+      const buy = pumpSwapAccountMetasFromTx(tx, args.mint, "buy");
+      if (buy) accounts = buyTemplateToSellTemplate(buy);
+    }
     if (!accounts || accounts.length < minCount) continue;
     if (!accounts[0]?.pubkey.equals(pool.pool)) continue;
     if (!accounts[PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX]?.pubkey.equals(args.baseTokenProgram)) continue;
