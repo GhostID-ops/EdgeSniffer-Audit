@@ -322,6 +322,7 @@ const sourcePreexistingBuyMints = new Set<string>();
 const sourceBuySignatureByMint = new Map<string, string>();
 const mirrorBuySignatureByMint = new Map<string, string>();
 const confirmedFastBuyTokensByMint = new Map<string, number>();
+const pendingFastBuyConfirmSignaturesByMint = new Map<string, Set<string>>();
 const fastSellConfirmPendingByMint = new Set<string>();
 const quarantinedBuyMints = new Map<string, string>();
 const openPositionBuyMintsInFlight = new Set<string>();
@@ -349,6 +350,30 @@ function sleep(ms: number): Promise<void> {
 
 function isSourceSoldWhileBuyPendingQuarantine(reason: string | undefined): boolean {
   return reason === SOURCE_SOLD_WHILE_BUY_PENDING_REASON;
+}
+
+function markFastBuyConfirmationPending(mint: string, signature: string): void {
+  let signatures = pendingFastBuyConfirmSignaturesByMint.get(mint);
+  if (!signatures) {
+    signatures = new Set<string>();
+    pendingFastBuyConfirmSignaturesByMint.set(mint, signatures);
+  }
+  signatures.add(signature);
+}
+
+function clearFastBuyConfirmationPending(mint: string, signature?: string): void {
+  if (!signature) {
+    pendingFastBuyConfirmSignaturesByMint.delete(mint);
+    return;
+  }
+  const signatures = pendingFastBuyConfirmSignaturesByMint.get(mint);
+  if (!signatures) return;
+  signatures.delete(signature);
+  if (signatures.size === 0) pendingFastBuyConfirmSignaturesByMint.delete(mint);
+}
+
+function hasFastBuyConfirmationPending(mint: string): boolean {
+  return (pendingFastBuyConfirmSignaturesByMint.get(mint)?.size ?? 0) > 0;
 }
 
 function buyLockPath(mint: string): string {
@@ -1347,6 +1372,7 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
         details: { mode: "background", senderPath: hotBuy.senderPath },
       });
       pendingBuyRetryByMint.delete(hotBuy.mint);
+      clearFastBuyConfirmationPending(hotBuy.mint, hotBuy.signature);
       confirmedFastBuyTokensByMint.set(hotBuy.mint, hotBuy.tokensOutRaw);
       void reconcileFastBuyTokens({
         mint: hotBuy.mint,
@@ -1376,6 +1402,7 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
       });
       const removed = unrecordBuy(hotBuy.mint, hotBuy.tokensOutRaw, hotBuy.solInLamports);
       mirrorBuySignatureByMint.delete(hotBuy.mint);
+      clearFastBuyConfirmationPending(hotBuy.mint, hotBuy.signature);
       confirmedFastBuyTokensByMint.delete(hotBuy.mint);
       rustHotBuyRecordedByMint.delete(hotBuy.mint);
       noteLocalSolCredit(hotBuy.solInLamports);
@@ -1628,6 +1655,9 @@ function logTrade(
     const costBasisLamports = result.costBasisLamports ?? result.input.amountRaw;
     const pos = recordBuy(result.output.meta, result.output.amountRaw, costBasisLamports);
     const tokenMint = result.output.meta.mint;
+    if (result.confirmationPending && !result.isSimulated) {
+      markFastBuyConfirmationPending(tokenMint, result.signature);
+    }
     boughtMintsThisSession.add(tokenMint);
     sourceBuySignatureByMint.set(tokenMint, swap.signature);
     if (!result.isSimulated) mirrorBuySignatureByMint.set(tokenMint, result.signature);
@@ -2550,6 +2580,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         }
         unrecordZeroSell(mint, tokenAmountRaw);
         mirrorBuySignatureByMint.delete(mint);
+        clearFastBuyConfirmationPending(mint);
         confirmedFastBuyTokensByMint.delete(mint);
         if (shouldHoldBuyOnceAfterFailure({ buyOncePerTokenEnabled, reason })) {
           holdBuyOnceMintAfterBroadcastUncertainty(mint, reason);
@@ -2652,6 +2683,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         fastBuyConfirmRetryScheduledByMint.delete(mint);
         failedBuyRecoveryInFlightMints.delete(mint);
         pendingBuyRetryByMint.delete(mint);
+        clearFastBuyConfirmationPending(mint, signature);
         mirrorBuySignatureByMint.set(mint, signature);
         void reconcileFastBuyTokens({
           mint,
@@ -3320,6 +3352,7 @@ export function resetTradingState(): void {
   liveBuyAttemptedMintsThisSession.clear();
   quarantinedBuyMints.clear();
   sourceBuySignatureByMint.clear();
+  pendingFastBuyConfirmSignaturesByMint.clear();
   openPositionBuyMintsInFlight.clear();
   riskSellsInFlight.clear();
   exitSignalSellsInFlight.clear();
@@ -3585,9 +3618,16 @@ async function sellLivePosition(
   // we'd broadcast a doomed swap that fails on-chain with Custom(6024) at the destination AMM.
   // Close the ghost position locally instead so the risk loop drops it from the candidate pool.
   if (liveHeldRaw === 0 && p.heldRaw > 0) {
+    if (hasFastBuyConfirmationPending(p.mint)) {
+      console.warn(
+        `$${p.symbol}: wallet holds 0 on-chain while fast-mode buy confirmation is still pending; ` +
+          "leaving optimistic position open for background confirmation cleanup."
+      );
+      return;
+    }
     if (p.sellsCount === 0 && Date.now() - p.lastTradeAt < confirmationNullStatusTimeoutMs) {
       console.warn(
-        `$${p.symbol}: wallet holds 0 on-chain while fast-mode buy is still pending confirmation; ` +
+        `$${p.symbol}: wallet holds 0 on-chain during fast-mode confirmation grace window; ` +
           "leaving optimistic position open for background confirmation cleanup."
       );
       return;
@@ -3863,6 +3903,12 @@ export async function sellAllWalletDust(): Promise<void> {
 
   const balances = (await getWalletTokenBalances(keypair.publicKey)).filter((b) => {
     if (b.mint === WRAPPED_SOL_MINT || b.mint === USDC_MINT || b.amountRaw <= 0) return false;
+    if (hasFastBuyConfirmationPending(b.mint)) {
+      console.log(
+        `Dust cleanup skipping ${b.mint.slice(0, 8)}... because a fast buy confirmation is still pending.`
+      );
+      return false;
+    }
     const tracked = getPosition(b.mint);
     if (tracked && tracked.heldRaw > 0) {
       console.log(
