@@ -3663,20 +3663,21 @@ async function sellLivePosition(
     return;
   }
   const isSourceHoldExit = effectiveNote?.startsWith("Source-hold exit:") ?? false;
-  if (amountRawOverride == null && isSourceHoldExit && liveHeldRaw != null && liveHeldRaw > p.heldRaw) {
+  const isFullExitIntent = amountRawOverride == null;
+  if (isFullExitIntent && liveHeldRaw != null && liveHeldRaw > p.heldRaw) {
     if (adjustBuyTokenAmount(p.mint, p.heldRaw, liveHeldRaw)) {
       const latest = getPosition(p.mint);
       if (latest) p = latest;
     }
     console.warn(
-      `Source-hold exit will sell full live $${p.symbol} balance. ` +
+      `Full exit will sell full live $${p.symbol} balance. ` +
         `live=${formatTokenAmount(liveHeldRaw, p.decimals)}, tracked=${formatTokenAmount(p.heldRaw, p.decimals)}.`
     );
   }
   const sellRaw =
     amountRawOverride != null
       ? Math.min(Math.max(1, Math.floor(amountRawOverride)), liveHeldRaw ?? p.heldRaw, p.heldRaw)
-      : isSourceHoldExit && liveHeldRaw != null && liveHeldRaw > 0
+      : isFullExitIntent && liveHeldRaw != null && liveHeldRaw > 0
       ? liveHeldRaw
       : liveHeldRaw != null && liveHeldRaw > 0
       ? Math.min(liveHeldRaw, p.heldRaw)
