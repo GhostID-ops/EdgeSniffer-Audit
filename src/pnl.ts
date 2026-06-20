@@ -17,7 +17,10 @@ export type Position = {
 export type PositionSnapshot = Position & {
   heldRaw: number;
   avgCostLamportsPerTokenRaw: number | null;
+  realizedCostBasisLamports: number;
+  realizedProceedsLamports: number;
   realizedPnlLamports: number;
+  uncostedProceedsLamports: number;
   costBasisRemainingLamports: number;
   soldRawCosted: number;
   soldRawUncosted: number;
@@ -83,14 +86,22 @@ function snapshot(p: Position): PositionSnapshot {
   const soldRawCosted = Math.min(p.totalSoldRaw, p.totalBoughtRaw);
   const soldRawUncosted = Math.max(0, p.totalSoldRaw - p.totalBoughtRaw);
   const soldCostBasis = avgCost != null ? avgCost * soldRawCosted : 0;
-  const realizedPnl = p.totalSolReceivedLamports - soldCostBasis;
+  const realizedProceeds =
+    p.totalSoldRaw > 0
+      ? p.totalSolReceivedLamports * (soldRawCosted / p.totalSoldRaw)
+      : 0;
+  const uncostedProceeds = p.totalSolReceivedLamports - realizedProceeds;
+  const realizedPnl = realizedProceeds - soldCostBasis;
   const held = p.totalBoughtRaw - p.totalSoldRaw;
   const remainingCost = avgCost != null ? avgCost * Math.max(held, 0) : 0;
   return {
     ...p,
     heldRaw: held,
     avgCostLamportsPerTokenRaw: avgCost,
+    realizedCostBasisLamports: soldCostBasis,
+    realizedProceedsLamports: realizedProceeds,
     realizedPnlLamports: realizedPnl,
+    uncostedProceedsLamports: uncostedProceeds,
     costBasisRemainingLamports: remainingCost,
     soldRawCosted,
     soldRawUncosted,
@@ -258,7 +269,10 @@ export type PnlTotals = {
   tradesCount: number;
   totalSolSpentLamports: number;
   totalSolReceivedLamports: number;
+  realizedCostBasisLamports: number;
+  realizedProceedsLamports: number;
   realizedPnlLamports: number;
+  uncostedProceedsLamports: number;
   openCostBasisLamports: number;
   openPositions: number;
   trackedTokens: number;
@@ -269,6 +283,9 @@ export function getTotals(): PnlTotals {
   let sells = 0;
   let spent = 0;
   let received = 0;
+  let realizedCostBasis = 0;
+  let realizedProceeds = 0;
+  let uncostedProceeds = 0;
   let pnl = 0;
   let openCostBasis = 0;
   let open = 0;
@@ -280,7 +297,16 @@ export function getTotals(): PnlTotals {
     const avgCost =
       p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
     const heldRaw = p.totalBoughtRaw - p.totalSoldRaw;
-    pnl += p.totalSolReceivedLamports - avgCost * Math.min(p.totalSoldRaw, p.totalBoughtRaw);
+    const soldRawCosted = Math.min(p.totalSoldRaw, p.totalBoughtRaw);
+    const soldCostBasis = avgCost * soldRawCosted;
+    const soldProceedsCosted =
+      p.totalSoldRaw > 0
+        ? p.totalSolReceivedLamports * (soldRawCosted / p.totalSoldRaw)
+        : 0;
+    realizedCostBasis += soldCostBasis;
+    realizedProceeds += soldProceedsCosted;
+    uncostedProceeds += p.totalSolReceivedLamports - soldProceedsCosted;
+    pnl += soldProceedsCosted - soldCostBasis;
     if (heldRaw > 0) {
       open++;
       openCostBasis += avgCost * heldRaw;
@@ -292,7 +318,10 @@ export function getTotals(): PnlTotals {
     tradesCount: buys + sells,
     totalSolSpentLamports: spent,
     totalSolReceivedLamports: received,
+    realizedCostBasisLamports: realizedCostBasis,
+    realizedProceedsLamports: realizedProceeds,
     realizedPnlLamports: pnl,
+    uncostedProceedsLamports: uncostedProceeds,
     openCostBasisLamports: openCostBasis,
     openPositions: open,
     trackedTokens: positions.size,

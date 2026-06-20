@@ -18,7 +18,10 @@ Example:
 ## Current Report Definitions
 
 - `Realized PnL`: SOL proceeds minus cost basis for sold tokens.
-- `Realized ROI`: realized PnL divided by sold cost basis.
+- `Realized proceeds`: sell proceeds attributed to tokens that have recorded cost basis.
+- `Realized ROI`: realized PnL divided by sold cost basis. Open inventory is excluded.
+- `Open cost basis`: cost basis still sitting in open positions. This is not realized PnL.
+- `Uncosted sell proceeds`: sell proceeds from token amount that exceeded recorded inventory. These are shown separately and excluded from realized PnL.
 - `Avg ROI`: arithmetic mean of per-trade ROI values.
 - `Median ROI`: median per-trade ROI.
 - `Profit Factor`: gross winning ROI divided by absolute gross losing ROI for strategy simulations, or gross winning SOL divided by gross losing SOL for ledger audits.
@@ -35,10 +38,12 @@ The live bot ledger in `src/pnl.ts` uses average-cost accounting:
 - Sell-fill PnL is the incremental PnL for that specific sell.
 - Position PnL is the cumulative realized PnL for that token after all recorded sells.
 - Session realized PnL is the sum of cumulative token realized PnL across tracked positions.
+- Session realized ROI is calculated on sold cost basis only, not total session spend.
+- Open position cost basis is shown separately so pressing `R` does not imply unrealized bags are closed PnL.
 - Circuit breaker outcomes are fed sell-fill PnL, not cumulative position PnL.
 - `trades.jsonl` sell rows use `realizedPnlLamports` for fill PnL and `positionRealizedPnlLamports` for cumulative token PnL.
 - Realized PnL uses cost basis only for tokens that were actually recorded as bought.
-- If a sell exceeds recorded inventory, the excess sold amount is tracked as `soldRawUncosted` and does not fabricate extra cost basis.
+- If a sell exceeds recorded inventory, the excess sold amount is tracked as `soldRawUncosted`; its proceeds are reported as uncosted proceeds and excluded from realized PnL.
 
 This keeps optimistic logs, missed buys, dust cleanup, or transfer-driven drift from creating impossible accounting.
 

@@ -76,14 +76,35 @@ function testPnlCalculation() {
   console.log("-".repeat(30));
   resetPositions();
   recordBuy(tokenMeta, 100, 1_000_000_000);
+  assert.equal(getTotals().realizedCostBasisLamports, 0);
   assert.equal(getTotals().openCostBasisLamports, 1_000_000_000);
   const oversell = recordSell(tokenMeta, 150, 1_500_000_000);
   assert.equal(oversell.soldRawCosted, 100);
   assert.equal(oversell.soldRawUncosted, 50);
-  assert.equal(oversell.realizedPnlLamports, 500_000_000);
-  assert.equal(getTotals().realizedPnlLamports, 500_000_000);
+  assert.equal(oversell.realizedCostBasisLamports, 1_000_000_000);
+  assert.equal(oversell.realizedProceedsLamports, 1_000_000_000);
+  assert.equal(oversell.uncostedProceedsLamports, 500_000_000);
+  assert.equal(oversell.realizedPnlLamports, 0);
+  assert.equal(getTotals().realizedCostBasisLamports, 1_000_000_000);
+  assert.equal(getTotals().realizedProceedsLamports, 1_000_000_000);
+  assert.equal(getTotals().uncostedProceedsLamports, 500_000_000);
+  assert.equal(getTotals().realizedPnlLamports, 0);
   assert.equal(getTotals().openCostBasisLamports, 0);
   console.log("   Oversold raw is tracked as uncosted instead of fabricating extra cost basis.");
+
+  console.log("\nPartial open accounting guard:");
+  console.log("-".repeat(30));
+  resetPositions();
+  recordBuy(tokenMeta, 100, 1_000_000_000);
+  const partial = recordSell(tokenMeta, 40, 600_000_000);
+  assert.equal(partial.realizedCostBasisLamports, 400_000_000);
+  assert.equal(partial.realizedProceedsLamports, 600_000_000);
+  assert.equal(partial.realizedPnlLamports, 200_000_000);
+  assert.equal(partial.costBasisRemainingLamports, 600_000_000);
+  assert.equal(getTotals().realizedCostBasisLamports, 400_000_000);
+  assert.equal(getTotals().realizedPnlLamports, 200_000_000);
+  assert.equal(getTotals().openCostBasisLamports, 600_000_000);
+  console.log("   Realized ROI uses sold cost basis while open inventory stays separate.");
   
   console.log(`\n✅ PnL calculation working correctly: ${gainResult.realizedPnlLamports === 19_000_000_000 ? 'YES' : 'NO'}`);
 }

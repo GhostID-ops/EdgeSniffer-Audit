@@ -495,14 +495,22 @@ class TelegramBotHandler {
     const totals = getTotals();
     const positions = getPositions();
     const walletPnl = getSessionWalletPnlSnapshot();
+    const realizedRoiPct =
+      totals.realizedCostBasisLamports > 0
+        ? (totals.realizedPnlLamports / totals.realizedCostBasisLamports) * 100
+        : null;
     const lines = [
       "<b>PnL Report</b>",
       "",
       `Trades: ${totals.tradesCount} (${totals.buysCount} buys, ${totals.sellsCount} sells)`,
       `SOL spent: ${formatSolAmount(totals.totalSolSpentLamports)} SOL`,
       `SOL received: ${formatSolAmount(totals.totalSolReceivedLamports)} SOL`,
-      `Realized PnL: ${escapeHtml(formatPnl(totals.realizedPnlLamports))}`,
-      `Open cost basis: ${formatSolAmount(totals.openCostBasisLamports)} SOL`,
+      `Realized proceeds: ${formatSolAmount(totals.realizedProceedsLamports)} SOL`,
+      `Realized PnL: ${escapeHtml(formatPnl(totals.realizedPnlLamports))} (${realizedRoiPct == null ? "n/a" : `${realizedRoiPct >= 0 ? "+" : ""}${realizedRoiPct.toFixed(1)}%`} on ${formatSolAmount(totals.realizedCostBasisLamports)} SOL sold cost)`,
+      `Open cost basis: ${formatSolAmount(totals.openCostBasisLamports)} SOL (not counted in realized PnL)`,
+      ...(totals.uncostedProceedsLamports > 0
+        ? [`Uncosted proceeds: ${formatSolAmount(totals.uncostedProceedsLamports)} SOL excluded from realized PnL`]
+        : []),
       walletPnl.deltaLamports != null
         ? `Wallet SOL delta: ${escapeHtml(formatPnl(walletPnl.deltaLamports))}`
         : "Wallet SOL delta: unavailable",
@@ -517,7 +525,17 @@ class TelegramBotHandler {
     if (top.length > 0) {
       lines.push("<b>Top Positions</b>");
       for (const p of top) {
-        lines.push(`$${escapeHtml(p.symbol)}: ${escapeHtml(formatPnl(p.realizedPnlLamports))}`);
+        const pct =
+          p.realizedCostBasisLamports > 0
+            ? ` (${p.realizedPnlLamports >= 0 ? "+" : ""}${((p.realizedPnlLamports / p.realizedCostBasisLamports) * 100).toFixed(1)}%)`
+            : "";
+        const open = p.heldRaw > 0 ? ` | open cost ${formatSolAmount(p.costBasisRemainingLamports)} SOL` : "";
+        const uncosted = p.uncostedProceedsLamports > 0
+          ? ` | uncosted ${formatSolAmount(p.uncostedProceedsLamports)} SOL`
+          : "";
+        lines.push(
+          `$${escapeHtml(p.symbol)}: ${escapeHtml(formatPnl(p.realizedPnlLamports))}${pct} | sold cost ${formatSolAmount(p.realizedCostBasisLamports)} SOL${open}${uncosted}`
+        );
       }
     }
 

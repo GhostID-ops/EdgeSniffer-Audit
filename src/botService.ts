@@ -4419,10 +4419,25 @@ export async function printPnlReport(): Promise<void> {
   const pnlBasisLabel =
     pnlAccountingBasis === "dex" ? "DEX/trade basis" : "wallet cashflow basis";
   console.log(`PnL basis: ${pnlBasisLabel}`);
-  console.log(`Open cost basis: ${formatSolAmount(totals.openCostBasisLamports)} SOL (not mark-to-market)`);
   console.log(`💸 SOL spent: ${formatSolAmount(totals.totalSolSpentLamports)} SOL`);
   console.log(`💰 SOL received: ${formatSolAmount(totals.totalSolReceivedLamports)} SOL`);
-  console.log(`📊 Realized PnL: ${formatPnl(totals.realizedPnlLamports)} (${pnlBasisLabel})`);
+  console.log(`Realized proceeds: ${formatSolAmount(totals.realizedProceedsLamports)} SOL (costed sells only)`);
+  const realizedRoiPct =
+    totals.realizedCostBasisLamports > 0
+      ? (totals.realizedPnlLamports / totals.realizedCostBasisLamports) * 100
+      : null;
+  console.log(
+    `📊 Realized PnL: ${formatPnl(totals.realizedPnlLamports)} ` +
+      `(sold cost ${formatSolAmount(totals.realizedCostBasisLamports)} SOL` +
+      `${realizedRoiPct == null ? "" : `, ${realizedRoiPct >= 0 ? "+" : ""}${realizedRoiPct.toFixed(1)}%`}; ${pnlBasisLabel})`
+  );
+  console.log(`Open cost basis: ${formatSolAmount(totals.openCostBasisLamports)} SOL (open positions not counted in realized PnL)`);
+  if (totals.uncostedProceedsLamports > 0) {
+    console.log(
+      `Uncosted sell proceeds: ${formatSolAmount(totals.uncostedProceedsLamports)} SOL ` +
+        `(excluded from realized PnL; sell exceeded recorded inventory)`
+    );
+  }
 
   if (walletPnl.deltaLamports != null) {
     console.log(`Wallet SOL delta: ${formatPnl(walletPnl.deltaLamports)} (all-in fees/tips/rent included)`);
@@ -4457,11 +4472,11 @@ export async function printPnlReport(): Promise<void> {
         : "⚫ CLOSED";
 
       const pctNum =
-        p.totalSolSpentLamports > 0
-          ? (pnlLamports / p.totalSolSpentLamports) * 100
+        p.realizedCostBasisLamports > 0
+          ? (pnlLamports / p.realizedCostBasisLamports) * 100
           : 0;
       const pctStr =
-        p.totalSolSpentLamports > 0
+        p.realizedCostBasisLamports > 0
           ? ` (${pctNum >= 0 ? "+" : ""}${pctNum.toFixed(1)}%)`
           : "";
 
@@ -4470,6 +4485,11 @@ export async function printPnlReport(): Promise<void> {
       console.log(`   PnL:       ${formatPnl(pnlLamports)}${pctStr} (${pnlBasisLabel})`);
       console.log(`   Spent:     ${formatSolAmount(p.totalSolSpentLamports)} SOL  (${p.buysCount} buy${p.buysCount === 1 ? "" : "s"})`);
       console.log(`   Received:  ${formatSolAmount(p.totalSolReceivedLamports)} SOL  (${p.sellsCount} sell${p.sellsCount === 1 ? "" : "s"})`);
+      console.log(`   Sold cost: ${formatSolAmount(p.realizedCostBasisLamports)} SOL`);
+      if (p.uncostedProceedsLamports > 0) {
+        console.log(`   Uncosted:  ${formatSolAmount(p.uncostedProceedsLamports)} SOL proceeds excluded from PnL`);
+      }
+      if (isOpen) console.log(`   Open cost: ${formatSolAmount(p.costBasisRemainingLamports)} SOL`);
       console.log(`   CA:        ${p.mint}`);
       if (i < sorted.length - 1) console.log("");
     }
