@@ -308,6 +308,10 @@ const pendingBuyRetryByMint = new Map<string, DetectedSwap>();
 const rustHotSniperPrimaryPendingMints = new Set<string>();
 const rustHotSniperPrimaryFallbackSources = new Set<string>();
 const rustHotBuyRecordedByMint = new Set<string>();
+// Source signatures already booked from a Rust hot buy this session. Belt-and-suspenders
+// against the Rust sidecar emitting the same hotBuy event twice (the primary guard is the
+// per-source-signature gate in the sidecar, which stops the duplicate broadcast itself).
+const rustHotBuyRecordedSourceSignatures = new Set<string>();
 const fastBuyConfirmRetryScheduledByMint = new Set<string>();
 const fastSellConfirmRetryScheduledByMint = new Set<string>();
 const failedBuyRecoveryInFlightMints = new Set<string>();
@@ -1175,6 +1179,14 @@ function shouldDeferToRustHotSniperPrimary(
 
 async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> {
   if (stopRequested) return;
+  if (rustHotBuyRecordedSourceSignatures.has(hotBuy.sourceSignature)) {
+    console.log(
+      `Skipping duplicate Rust hot buy bookkeeping for ${hotBuy.mint.slice(0, 8)}...; ` +
+        `source tx ${hotBuy.sourceSignature.slice(0, 8)}... already recorded this session.`
+    );
+    return;
+  }
+  rustHotBuyRecordedSourceSignatures.add(hotBuy.sourceSignature);
   const ts = Date.now();
   const route = hotBuy.route ?? "pumpfun-hot-source-replay-buy";
   const sourceSwap: DetectedSwap = {
@@ -3255,6 +3267,7 @@ export function resetTradingState(): void {
   rustHotSniperPrimaryPendingMints.clear();
   rustHotSniperPrimaryFallbackSources.clear();
   rustHotBuyRecordedByMint.clear();
+  rustHotBuyRecordedSourceSignatures.clear();
   fastBuyConfirmRetryScheduledByMint.clear();
   failedBuyRecoveryInFlightMints.clear();
   boughtMintsThisSession.clear();
