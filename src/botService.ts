@@ -331,6 +331,7 @@ const riskSellRetryAfterByMint = new Map<string, number>();
 const sourceHoldMissingByMint = new Map<string, number>();
 const RISK_SELL_FAILURE_COOLDOWN_MS = 15_000;
 const ZERO_TOKEN_BALANCE_RECHECK_MS = 250;
+const SOURCE_SOLD_WHILE_BUY_PENDING_REASON = "source sold while buy was pending";
 const GRADUATION_TRANSIENT_FLOOR_MS = 2 * 60_000;
 const lastCurveRiskValueByMint = new Map<string, { outSolLamports: number; quotedAt: number }>();
 type RiskTracePoint = {
@@ -344,6 +345,10 @@ const riskTraceByMint = new Map<string, RiskTracePoint[]>();
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isSourceSoldWhileBuyPendingQuarantine(reason: string | undefined): boolean {
+  return reason === SOURCE_SOLD_WHILE_BUY_PENDING_REASON;
 }
 
 function buyLockPath(mint: string): string {
@@ -1201,6 +1206,13 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
     return;
   }
   rustHotBuyRecordedSourceSignatures.add(hotBuy.sourceSignature);
+  const quarantineReason = quarantinedBuyMints.get(hotBuy.mint);
+  if (isSourceSoldWhileBuyPendingQuarantine(quarantineReason)) {
+    quarantinedBuyMints.delete(hotBuy.mint);
+    console.log(
+      `Rust hot buy superseded stale source-sold quarantine for ${hotBuy.mint.slice(0, 8)}...; recording broadcast.`
+    );
+  }
   const ts = Date.now();
   const route = hotBuy.route ?? "pumpfun-hot-source-replay-buy";
   const sourceSwap: DetectedSwap = {
@@ -1390,6 +1402,8 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
         const fallback = pendingBuyRetryByMint.get(hotBuy.mint);
         pendingBuyRetryByMint.delete(hotBuy.mint);
         failedBuyRecoveryInFlightMints.delete(hotBuy.mint);
+        boughtMintsThisSession.delete(hotBuy.mint);
+        liveBuyAttemptedMintsThisSession.delete(hotBuy.mint);
         if (shouldAttemptFailedBuyRecovery(fallback, reason)) {
           console.warn(
             `Rust hot buy failed for ${hotBuy.mint.slice(0, 8)}... with recoverable ` +
@@ -1989,7 +2003,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       pendingBuyRetryByMint.delete(mint);
       failedBuyRecoveryInFlightMints.delete(mint);
       fastBuyConfirmRetryScheduledByMint.delete(mint);
-      quarantinedBuyMints.set(mint, "source sold while buy was pending");
+      quarantinedBuyMints.set(mint, SOURCE_SOLD_WHILE_BUY_PENDING_REASON);
       console.warn(
         `Canceled pending buy for ${mint.slice(0, 8)}... because the source wallet already sold it.`
       );
@@ -2088,10 +2102,17 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     const mint = swap.outputMint;
     const quarantineReason = quarantinedBuyMints.get(mint);
     if (quarantineReason) {
-      console.log(
-        `Skipping buy: ${mint.slice(0, 8)}... quarantined this session after failed on-chain buy (${quarantineReason}).`
-      );
-      return;
+      if (isSourceSoldWhileBuyPendingQuarantine(quarantineReason)) {
+        quarantinedBuyMints.delete(mint);
+        console.log(
+          `Clearing stale source-sold quarantine for ${mint.slice(0, 8)}... after fresh source buy signal.`
+        );
+      } else {
+        console.log(
+          `Skipping buy: ${mint.slice(0, 8)}... quarantined this session after failed on-chain buy (${quarantineReason}).`
+        );
+        return;
+      }
     }
     if (
       !swap.skipDirectBuyRoutes &&
