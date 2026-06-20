@@ -625,6 +625,15 @@ async function reconcileOpenPositionWithConfirmedBuy(
 ): Promise<PositionSnapshot> {
   const signature = mirrorBuySignatureByMint.get(position.mint);
   if (!signature || position.buysCount <= 0) return position;
+  // mirrorBuySignatureByMint only holds the most recent buy's signature, so the
+  // single-tx execution lookup below represents ONE buy. For a multi-buy (DCA)
+  // position, comparing that one buy's tokens/cost against the position TOTAL would
+  // wrongly shrink it to a single buy's size — and a later "sell all" sells
+  // min(live, tracked), stranding the rest on-chain (observed on $$SLY: live
+  // 736,939 vs clobbered tracked 366,909). Each buy is already reconciled
+  // individually via reconcileFastBuyTokens at its own confirmation, so skip the
+  // position-level reconcile once more than one buy is recorded.
+  if (position.buysCount > 1) return position;
 
   const execution = await actualBuyExecutionFromTx(signature, position.mint);
   if (execution == null || execution.tokenAmountRaw <= 0) return position;
