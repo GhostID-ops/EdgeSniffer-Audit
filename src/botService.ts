@@ -2389,6 +2389,17 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       releaseBuyLocks();
       return;
     }
+    // Guard against a malformed source amount (e.g. a re-fed backstop swap with a
+    // missing amountRaw) producing NaN downstream in the gas-reserve math.
+    if (!Number.isFinite(mirroredAmount) || mirroredAmount <= 0) {
+      console.log(
+        `Skipping buy: invalid copy-sized amount for ${swap.outputMint.slice(0, 8)}... ` +
+          `(source amountRaw=${swap.amountRaw}).`
+      );
+      recordMirrorSkip(swap, "invalid copy-sized amount");
+      releaseBuyLocks();
+      return;
+    }
     let currentBalance = getCachedBalance() ?? lastBalanceLamports ?? 0;
     if (currentBalance <= 0) {
       currentBalance = await updateBalanceCache(readConnection, kp.publicKey);

@@ -194,7 +194,11 @@ async fn main() -> Result<()> {
         } else {
             None
         };
-        executor::start_executor_stdin(shared_bought_mints);
+        // Always share the per-source-signature set so the executor command bridge
+        // and the ShredStream hot sniper mirror each source tx at most once,
+        // regardless of BUY_ONCE_PER_TOKEN (which only gates the per-mint set).
+        let shared_bought_signatures = Some(cfg.hot_sniper.bought_signatures.clone());
+        executor::start_executor_stdin(shared_bought_mints, shared_bought_signatures);
     }
     eprintln!(
         "rust-sidecar: starting yellowstone={} jito_shredstream={} hot_sniper={} wallets={}",
@@ -767,6 +771,9 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
         mode: "source-replay".to_string(),
         route: "pumpfun-hot-source-replay-buy".to_string(),
         mint: line.output_mint.clone(),
+        // The hot path already reserved this signature in bought_signatures and calls
+        // the executor directly (bypassing the stdin gate), so this is informational.
+        source_signature: Some(line.signature.clone()),
         sol_in_lamports,
         tokens_out_raw: None,
         slippage_bps: hot.slippage_bps,

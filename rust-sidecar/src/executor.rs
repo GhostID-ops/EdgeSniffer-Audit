@@ -113,6 +113,12 @@ pub struct ExecutePumpfunBuyCommand {
     pub mode: String,
     pub route: String,
     pub mint: String,
+    /// Source (tracked-wallet) tx being mirrored. Used for the always-on
+    /// per-source-signature buy-once gate so the executor bridge and the
+    /// ShredStream hot sniper can never both land a buy for the same source tx.
+    /// Optional/absent for manual or legacy callers (gate is then skipped).
+    #[serde(default)]
+    pub source_signature: Option<String>,
     pub sol_in_lamports: u64,
     pub tokens_out_raw: Option<u64>,
     pub slippage_bps: u64,
@@ -328,11 +334,18 @@ impl BroadcastConfig {
     }
 }
 
-pub fn start_executor_stdin(shared_bought_mints: Option<SharedBoughtMints>) {
+pub fn start_executor_stdin(
+    shared_bought_mints: Option<SharedBoughtMints>,
+    shared_bought_signatures: Option<SharedBoughtMints>,
+) {
     tokio::spawn(async move {
         let stdin = BufReader::new(io::stdin());
         let mut lines = stdin.lines();
-        if shared_bought_mints.is_some() {
+        if shared_bought_signatures.is_some() {
+            eprintln!(
+                "rust-sidecar: Rust executor command channel ready (per-source-signature buy-once gate enabled)"
+            );
+        } else if shared_bought_mints.is_some() {
             eprintln!(
                 "rust-sidecar: Rust executor command channel ready (shared buy-once gate enabled)"
             );
@@ -346,8 +359,10 @@ pub fn start_executor_stdin(shared_bought_mints: Option<SharedBoughtMints>) {
                         continue;
                     }
                     let shared_bought_mints = shared_bought_mints.clone();
+                    let shared_bought_signatures = shared_bought_signatures.clone();
                     tokio::spawn(async move {
-                        let response = handle_line(&line, shared_bought_mints).await;
+                        let response =
+                            handle_line(&line, shared_bought_mints, shared_bought_signatures).await;
                         match serde_json::to_string(&response) {
                             Ok(json) => println!("{json}"),
                             Err(err) => eprintln!(
@@ -369,6 +384,7 @@ pub fn start_executor_stdin(shared_bought_mints: Option<SharedBoughtMints>) {
 async fn handle_line(
     line: &str,
     shared_bought_mints: Option<SharedBoughtMints>,
+    shared_bought_signatures: Option<SharedBoughtMints>,
 ) -> ExecutorResponse {
     let started = Instant::now();
     let id = extract_id(line).unwrap_or_else(|| "unknown".to_string());
@@ -376,9 +392,36 @@ async fn handle_line(
         Ok(ExecutorCommand::ExecutePumpfunBuy(cmd)) => {
             let id = cmd.id.clone();
             let mint = cmd.mint.clone();
+            let source_signature = cmd.source_signature.clone();
             let reserved = match reserve_executor_mint(shared_bought_mints.as_ref(), &mint) {
                 Ok(reserved) => reserved,
                 Err(error) => {
+                    return ExecutorResponse {
+                        kind: "execResult",
+                        id,
+                        ok: false,
+                        signature: None,
+                        route: None,
+                        sender_path: None,
+                        sol_in_lamports: None,
+                        tokens_out_raw: None,
+                        elapsed_ms: started.elapsed().as_millis(),
+                        build_ms: None,
+                        broadcast_ms: None,
+                        tx_bytes: None,
+                        error: Some(error),
+                    };
+                }
+            };
+            let signature_reserved = match reserve_executor_signature(
+                shared_bought_signatures.as_ref(),
+                source_signature.as_deref(),
+            ) {
+                Ok(reserved) => reserved,
+                Err(error) => {
+                    if reserved {
+                        release_executor_mint(shared_bought_mints.as_ref(), &mint);
+                    }
                     return ExecutorResponse {
                         kind: "execResult",
                         id,
@@ -405,6 +448,12 @@ async fn handle_line(
                     if reserved {
                         release_executor_mint(shared_bought_mints.as_ref(), &mint);
                     }
+                    if signature_reserved {
+                        release_executor_signature(
+                            shared_bought_signatures.as_ref(),
+                            source_signature.as_deref(),
+                        );
+                    }
                     ExecutorResponse {
                         kind: "execResult",
                         id,
@@ -426,9 +475,36 @@ async fn handle_line(
         Ok(ExecutorCommand::ExecutePumpSwapBuy(cmd)) => {
             let id = cmd.id.clone();
             let mint = cmd.mint.clone();
+            let source_signature = cmd.source_signature.clone();
             let reserved = match reserve_executor_mint(shared_bought_mints.as_ref(), &mint) {
                 Ok(reserved) => reserved,
                 Err(error) => {
+                    return ExecutorResponse {
+                        kind: "execResult",
+                        id,
+                        ok: false,
+                        signature: None,
+                        route: None,
+                        sender_path: None,
+                        sol_in_lamports: None,
+                        tokens_out_raw: None,
+                        elapsed_ms: started.elapsed().as_millis(),
+                        build_ms: None,
+                        broadcast_ms: None,
+                        tx_bytes: None,
+                        error: Some(error),
+                    };
+                }
+            };
+            let signature_reserved = match reserve_executor_signature(
+                shared_bought_signatures.as_ref(),
+                Some(source_signature.as_str()),
+            ) {
+                Ok(reserved) => reserved,
+                Err(error) => {
+                    if reserved {
+                        release_executor_mint(shared_bought_mints.as_ref(), &mint);
+                    }
                     return ExecutorResponse {
                         kind: "execResult",
                         id,
@@ -456,6 +532,12 @@ async fn handle_line(
                     if reserved {
                         release_executor_mint(shared_bought_mints.as_ref(), &mint);
                     }
+                    if signature_reserved {
+                        release_executor_signature(
+                            shared_bought_signatures.as_ref(),
+                            Some(source_signature.as_str()),
+                        );
+                    }
                     return ExecutorResponse {
                         kind: "execResult",
                         id,
@@ -481,6 +563,12 @@ async fn handle_line(
                 Err(err) => {
                     if reserved {
                         release_executor_mint(shared_bought_mints.as_ref(), &mint);
+                    }
+                    if signature_reserved {
+                        release_executor_signature(
+                            shared_bought_signatures.as_ref(),
+                            Some(source_signature.as_str()),
+                        );
                     }
                     release_persistent_buy_lock(persistent_lock);
                     ExecutorResponse {
@@ -586,6 +674,42 @@ fn release_executor_mint(shared_bought_mints: Option<&SharedBoughtMints>, mint: 
     if let Some(shared_bought_mints) = shared_bought_mints {
         if let Ok(mut bought) = shared_bought_mints.lock() {
             bought.remove(mint);
+        }
+    }
+}
+
+/// Reserve a source signature in the shared set (same set the ShredStream hot
+/// sniper uses). Always-on, independent of BUY_ONCE_PER_TOKEN: each source tx
+/// can only be mirrored once across both buy paths. Returns Ok(true) if newly
+/// reserved here, Ok(false) if there is nothing to gate on (no shared set or no
+/// signature), Err if it was already mirrored this session.
+fn reserve_executor_signature(
+    shared_bought_signatures: Option<&SharedBoughtMints>,
+    source_signature: Option<&str>,
+) -> Result<bool, String> {
+    let (Some(shared), Some(signature)) = (shared_bought_signatures, source_signature) else {
+        return Ok(false);
+    };
+    if signature.is_empty() {
+        return Ok(false);
+    }
+    let mut seen = shared
+        .lock()
+        .map_err(|_| "buy-once signature lock poisoned".to_string())?;
+    if seen.contains(signature) {
+        return Err("source signature already mirrored by Rust this session".to_string());
+    }
+    seen.insert(signature.to_string());
+    Ok(true)
+}
+
+fn release_executor_signature(
+    shared_bought_signatures: Option<&SharedBoughtMints>,
+    source_signature: Option<&str>,
+) {
+    if let (Some(shared), Some(signature)) = (shared_bought_signatures, source_signature) {
+        if let Ok(mut seen) = shared.lock() {
+            seen.remove(signature);
         }
     }
 }

@@ -84,6 +84,8 @@ export type RustPumpFunBuyArgs = {
   mode: RustPumpFunBuyMode;
   route: "pumpfun-source-replay-buy" | "pumpfun-direct-buy";
   mint: string;
+  /** Source (tracked-wallet) tx being mirrored; feeds the executor's per-source-signature buy-once gate. */
+  sourceSignature?: string;
   solInLamports: number;
   tokensOutRaw?: number;
   slippageBps: number;
@@ -548,6 +550,7 @@ export async function executeRustPumpFunBuy(args: RustPumpFunBuyArgs): Promise<R
     mode: args.mode,
     route: args.route,
     mint: args.mint,
+    sourceSignature: args.sourceSignature,
     solInLamports: Math.max(1, Math.floor(args.solInLamports)),
     tokensOutRaw: args.tokensOutRaw == null ? undefined : Math.max(1, Math.floor(args.tokensOutRaw)),
     slippageBps: Math.max(0, Math.floor(args.slippageBps)),
