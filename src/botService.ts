@@ -383,6 +383,13 @@ function hasFastBuyConfirmationPending(mint: string): boolean {
   return (pendingFastBuyConfirmSignaturesByMint.get(mint)?.size ?? 0) > 0;
 }
 
+function clearFastSellConfirmationPendingSoon(mint: string): void {
+  const timer = setTimeout(() => {
+    fastSellConfirmPendingByMint.delete(mint);
+  }, 2_000);
+  timer.unref?.();
+}
+
 function buyLockPath(mint: string): string {
   return join(persistentBuyLockDir, `${mint.replace(/[^1-9A-HJ-NP-Za-km-z]/g, "_")}.lock`);
 }
@@ -2712,7 +2719,6 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           });
       },
       onFastSellConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature }) => {
-        fastSellConfirmPendingByMint.delete(mint);
         reconcileFastSellExecution({
           mint,
           expectedTokenAmountRaw: tokenAmountRaw,
@@ -2721,6 +2727,8 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         }).catch((err) => {
           const msg = err instanceof Error ? err.message : String(err);
           console.warn(`Fast mirrored sell reconciliation failed for ${mint.slice(0, 8)}…: ${msg}`);
+        }).finally(() => {
+          clearFastSellConfirmationPendingSoon(mint);
         });
       },
       onFastSellConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason }) => {
@@ -3751,7 +3759,6 @@ async function sellLivePosition(
       {
         exactAmountRaw: sellRaw,
         onFastSellConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature }) => {
-          fastSellConfirmPendingByMint.delete(mint);
           reconcileFastSellExecution({
             mint,
             expectedTokenAmountRaw: tokenAmountRaw,
@@ -3760,6 +3767,8 @@ async function sellLivePosition(
           }).catch((err) => {
             const msg = err instanceof Error ? err.message : String(err);
             console.warn(`Fast sell reconciliation failed for ${mint.slice(0, 8)}…: ${msg}`);
+          }).finally(() => {
+            clearFastSellConfirmationPendingSoon(mint);
           });
         },
         onFastSellConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason }) => {
