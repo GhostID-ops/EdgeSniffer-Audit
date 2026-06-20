@@ -324,6 +324,7 @@ const mirrorBuySignatureByMint = new Map<string, string>();
 const confirmedFastBuyTokensByMint = new Map<string, number>();
 const pendingFastBuyConfirmSignaturesByMint = new Map<string, Set<string>>();
 const fastSellConfirmPendingByMint = new Set<string>();
+const recoveredBalanceSellFailureUntilByMint = new Map<string, number>();
 const quarantinedBuyMints = new Map<string, string>();
 const openPositionBuyMintsInFlight = new Set<string>();
 const riskSellsInFlight = new Set<string>();
@@ -381,6 +382,16 @@ function clearFastBuyConfirmationPendingSoon(mint: string, signature: string): v
 
 function hasFastBuyConfirmationPending(mint: string): boolean {
   return (pendingFastBuyConfirmSignaturesByMint.get(mint)?.size ?? 0) > 0;
+}
+
+function suppressRecoveredBalanceAfterSellFailure(mint: string, reason: string): void {
+  const classified = classifyExecutionError(reason);
+  if (classified.code !== "6023" && classified.code !== "6024") return;
+  recoveredBalanceSellFailureUntilByMint.set(mint, Date.now() + 60_000);
+  console.warn(
+    `Sell failed for ${mint.slice(0, 8)}... with ${classified.errorName ?? `Custom:${classified.code}`}; ` +
+      "suppressing buy-tx balance recovery for this mint temporarily."
+  );
 }
 
 function clearFastSellConfirmationPendingSoon(mint: string): void {
@@ -2733,6 +2744,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       },
       onFastSellConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason }) => {
         fastSellConfirmPendingByMint.delete(mint);
+        suppressRecoveredBalanceAfterSellFailure(mint, reason);
         const rolledBack = unrecordSell(mint, tokenAmountRaw, solLamports);
         if (rolledBack) {
           console.warn(
@@ -3622,7 +3634,17 @@ async function sellLivePosition(
     console.warn(`Token balance lookup failed for $${p.symbol}: ${msg}; attempting tracked amount.`);
     liveHeldRaw = null;
   }
-  if (liveHeldRaw === 0 && Date.now() - p.lastTradeAt < 120_000) {
+  if (liveHeldRaw != null && liveHeldRaw > 0) {
+    recoveredBalanceSellFailureUntilByMint.delete(p.mint);
+  }
+  const suppressRecoveredBalanceUntil = recoveredBalanceSellFailureUntilByMint.get(p.mint) ?? 0;
+  if (liveHeldRaw === 0 && Date.now() < suppressRecoveredBalanceUntil) {
+    console.warn(
+      `$${p.symbol}: wallet balance is 0 and prior recovered-balance sell failed; ` +
+        "not reusing historical buy-tx token amount."
+    );
+  }
+  if (liveHeldRaw === 0 && Date.now() >= suppressRecoveredBalanceUntil && Date.now() - p.lastTradeAt < 120_000) {
     const signature = mirrorBuySignatureByMint.get(p.mint);
     const execution = signature ? await actualBuyExecutionFromTx(signature, p.mint) : null;
     const recovered = confirmedFastBuyTokensByMint.get(p.mint) ?? execution?.tokenAmountRaw ?? null;
@@ -3773,6 +3795,7 @@ async function sellLivePosition(
         },
         onFastSellConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason }) => {
           fastSellConfirmPendingByMint.delete(mint);
+          suppressRecoveredBalanceAfterSellFailure(mint, reason);
           const rolledBack = unrecordSell(mint, tokenAmountRaw, solLamports);
           if (isHybridPartialSell) {
             hybridExitTpDoneByMint.delete(mint);
