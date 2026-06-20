@@ -2,7 +2,68 @@
 
 Wallet: `omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq`
 
-Last updated: 2026-06-15
+Last updated: 2026-06-20
+
+## 2026-06-20 Fresh Audit Update
+
+Two fresh audits were run after the missed-sell concern:
+
+- Path audit: latest `3000` txs, covering `2026-06-19T17:17:41Z` to `2026-06-20T05:57:20Z`.
+- Ledger audit: latest `10000` txs, covering `2026-06-18T12:04:04Z` to `2026-06-20T06:01:27Z`.
+
+Fresh path audit:
+
+- Swaps reconstructed: `2976`
+- Campaigns: `201`
+- Candle-measured entries: `74`
+- Realized PnL over this short path window: `+15.798 SOL`
+- Closed campaigns: `198`
+- Source-exit win rate: `42.9%`
+- Avg / median source exit: `+0.2% / -0.8%`
+- Median MFE / MAE: `+30.9% / -48.6%`
+- Hit rates: `+30% = 38/74`, `+50% = 25/74`, `+100% = 10/74`, `+200% = 4/74`
+- Median approximate entry MC: `$6.9k`
+
+Fresh ledger audit:
+
+- Transactions fetched: `10000`
+- Classified buy/sell token-flow txs: `9928`
+- Positions touched: `600`
+- Realized trades: `4854`
+- Realized PnL: `+72.790 SOL`
+- Realized ROI on sold cost basis: `+2.0%`
+- Win rate: `45.8%`
+- Median ROI/trade: `-1.2%`
+- Profit factor: `1.33`
+- Priced unrealized PnL: `-54.042 SOL`
+- Combined realized + priced unrealized: `+18.748 SOL`
+
+Fresh strategy result:
+
+| Strategy | Trades | Avg ROI | Median ROI | Win Rate | Profit Factor |
+|---|---:|---:|---:|---:|---:|
+| Mirror source exit | 74 | `+0.2%` | `-0.8%` | `43.2%` | `1.07` |
+| TP30 SL25 | 74 | `-1.4%` | `-12.1%` | `43.2%` | `0.89` |
+| Trail arm45 give30 SL35 | 74 | `-4.1%` | `-24.0%` | `39.2%` | `0.78` |
+| TP50 SL30 | 74 | `-5.1%` | `-30.0%` | `32.4%` | `0.72` |
+
+Read:
+
+- Omego is profitable in aggregate because the volume is enormous and winners pay for many tiny scratches/losses.
+- Source exits are still only barely positive on this short sample, and median source exit remains negative.
+- The main live risk is not just strategy quality; it is operational drift. Missing a small percentage of Omego sells matters because he trades constantly and often exits quickly.
+- The new `SOURCE_HOLD_EXIT_*` guard should be enabled for Omego live testing so the bot can self-close if it holds a token that the tracked source wallet no longer holds.
+
+Recommended source-hold guard for Omego:
+
+```env
+SOURCE_HOLD_EXIT_ENABLED=true
+SOURCE_HOLD_EXIT_INTERVAL_MS=10000
+SOURCE_HOLD_EXIT_CONSECUTIVE_MISSES=2
+SOURCE_HOLD_EXIT_MIN_POSITION_AGE_MS=15000
+```
+
+This is not a hot-path entry filter. It is a post-entry safety loop using RPC token-balance checks. It should reduce stale positions when a sell signal is missed, without adding latency to buys.
 
 The working conclusions below are based mainly on a fresh `5000` transaction quant pass with `214` candle-enriched entries. I also reference the older path/lead-order audit with `6000` transactions and `119` measured entries because it has earlier-buyer/source-order clues that the newer quant pass does not include.
 

@@ -57,6 +57,10 @@ import {
   hybridExitTpPct,
   hybridExitTpSellPct,
   hybridExitSourceExitRemaining,
+  sourceHoldExitEnabled,
+  sourceHoldExitIntervalMs,
+  sourceHoldExitConsecutiveMisses,
+  sourceHoldExitMinPositionAgeMs,
   minHoldBeforeStopLossMs,
   trailingSteps,
   trailingEnabled,
@@ -318,6 +322,7 @@ const openPositionBuyMintsInFlight = new Set<string>();
 const riskSellsInFlight = new Set<string>();
 const exitSignalSellsInFlight = new Set<string>();
 const riskSellRetryAfterByMint = new Map<string, number>();
+const sourceHoldMissingByMint = new Map<string, number>();
 const RISK_SELL_FAILURE_COOLDOWN_MS = 15_000;
 const GRADUATION_TRANSIENT_FLOOR_MS = 2 * 60_000;
 const lastCurveRiskValueByMint = new Map<string, { outSolLamports: number; quotedAt: number }>();
@@ -412,6 +417,19 @@ let unsubscribeRabbit: RabbitUnsubscribe | null = null;
 let unsubscribeRustSidecar: RustSidecarUnsubscribe | null = null;
 let unsubscribeHeliusTx: HeliusTxUnsubscribe | null = null;
 let riskPositionCursor = 0;
+
+function trackedSourcePublicKeys(): PublicKey[] {
+  return trackedWallets
+    .map((wallet) => {
+      try {
+        return new PublicKey(wallet);
+      } catch {
+        console.warn(`Source-hold exit skipped invalid tracked wallet: ${wallet}`);
+        return null;
+      }
+    })
+    .filter((value): value is PublicKey => value != null);
+}
 
 async function quoteRiskExitLamports(mint: string, amountRaw: number): Promise<number> {
   if (!Number.isFinite(amountRaw) || amountRaw <= 0) return 0;
@@ -2805,6 +2823,7 @@ async function loop(): Promise<void> {
   let lastWarm = 0;
   let lastBalanceLog = 0;
   let lastRiskCheck = 0;
+  let lastSourceHoldCheck = 0;
   let lastPoll = 0;
 
   while (!stopRequested) {
@@ -2839,20 +2858,23 @@ async function loop(): Promise<void> {
         await checkRiskExits();
         lastRiskCheck = now;
       }
+      if (sourceHoldExitEnabled && now - lastSourceHoldCheck >= sourceHoldExitIntervalMs) {
+        await checkSourceHoldExits();
+        lastSourceHoldCheck = Date.now();
+      }
     } catch (err) {
       console.error("Watcher error:", err);
     }
 
     if (stopRequested) break;
     // Loop floor must be small enough to honor the fastest tier; fall back to pollIntervalMs when risk is off.
-    const sleepMs = riskControlsEnabled
-      ? Math.min(
-          pollIntervalMs,
-          riskFastIntervalMs,
-          riskNearTriggerIntervalMs,
-          riskNormalIntervalMs
-        )
-      : pollIntervalMs;
+    const sleepMs = Math.min(
+      pollIntervalMs,
+      riskControlsEnabled
+        ? Math.min(riskFastIntervalMs, riskNearTriggerIntervalMs, riskNormalIntervalMs)
+        : pollIntervalMs,
+      sourceHoldExitEnabled ? sourceHoldExitIntervalMs : pollIntervalMs
+    );
     await interruptibleSleep(Math.max(100, sleepMs));
   }
 
@@ -2973,6 +2995,13 @@ export async function startBot(): Promise<void> {
       `Risk exits enabled: SL ${stopLossPct ?? "off"}%, TP ${takeProfitPct ?? "off"}%,${trailDesc}${hybridDesc} ` +
         `tiers fast=${riskFastIntervalMs}ms (first ${riskFastWindowMs}ms) / near=${riskNearTriggerIntervalMs}ms (within ${riskNearTriggerPct}pp of trigger) / normal=${riskNormalIntervalMs}ms, ` +
         `drift=${riskDriftPctPerSec}pp/s, SL min hold ${minHoldBeforeStopLossMs}ms, max ${maxRiskQuotesPerCheck} quote(s)/tick.`
+    );
+  }
+  if (sourceHoldExitEnabled) {
+    console.log(
+      `Source-hold exits enabled: check every ${sourceHoldExitIntervalMs}ms, ` +
+        `${sourceHoldExitConsecutiveMisses} consecutive zero-balance checks, ` +
+        `min position age ${sourceHoldExitMinPositionAgeMs}ms.`
     );
   }
   if (maxOpenPositions != null) {
@@ -3108,6 +3137,7 @@ export function resetTradingState(): void {
   riskSellsInFlight.clear();
   exitSignalSellsInFlight.clear();
   riskSellRetryAfterByMint.clear();
+  sourceHoldMissingByMint.clear();
   riskTraceByMint.clear();
   riskQuoteStateByMint.clear();
   hybridExitTpDoneByMint.clear();
@@ -3896,6 +3926,115 @@ async function checkRiskExits(): Promise<void> {
         `Risk check skipped $${p.symbol}: ${msg}. Retrying after ${Math.round(RISK_SELL_FAILURE_COOLDOWN_MS / 1000)}s.`
       );
       if (isJupiterRateLimitError(err)) break;
+    }
+  }
+}
+
+async function sourceWalletTotalTokenBalance(sourceWallets: PublicKey[], mint: string): Promise<{
+  totalRaw: number;
+  checked: number;
+  errors: number;
+}> {
+  let totalRaw = 0;
+  let checked = 0;
+  let errors = 0;
+  for (const source of sourceWallets) {
+    try {
+      const fast = await getTokenBalanceFast(source, mint);
+      const balance = fast ?? (await getTokenBalance(source, mint));
+      totalRaw += balance;
+      checked++;
+    } catch (err) {
+      errors++;
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Source-hold balance check failed for ${shortWallet(source.toBase58())} ${mint.slice(0, 8)}...: ${msg}`);
+    }
+  }
+  return { totalRaw, checked, errors };
+}
+
+async function checkSourceHoldExits(): Promise<void> {
+  if (!sourceHoldExitEnabled) return;
+  if (!keypair) return;
+
+  const sourceWallets = trackedSourcePublicKeys();
+  if (sourceWallets.length === 0) return;
+
+  const now = Date.now();
+  const open = getPositions().filter((p) => p.heldRaw > 0);
+  if (open.length === 0) {
+    sourceHoldMissingByMint.clear();
+    return;
+  }
+
+  const openMints = new Set(open.map((p) => p.mint));
+  for (const mint of [...sourceHoldMissingByMint.keys()]) {
+    if (!openMints.has(mint)) sourceHoldMissingByMint.delete(mint);
+  }
+
+  for (let p of open) {
+    if (now - p.firstSeenAt < sourceHoldExitMinPositionAgeMs) continue;
+    if (riskSellsInFlight.has(p.mint)) continue;
+    if (exitSignalSellsInFlight.has(p.mint)) continue;
+    if (fastSellConfirmPendingByMint.has(p.mint)) continue;
+    if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > now) continue;
+
+    p = await reconcileOpenPositionWithConfirmedBuy(p);
+    if (p.heldRaw <= 0) {
+      sourceHoldMissingByMint.delete(p.mint);
+      continue;
+    }
+
+    const sourceBalance = await sourceWalletTotalTokenBalance(sourceWallets, p.mint);
+    if (sourceBalance.checked === 0) {
+      console.warn(
+        `Source-hold exit: no successful source balance reads for ${p.mint.slice(0, 8)}...; not counting as a miss.`
+      );
+      continue;
+    }
+
+    if (sourceBalance.totalRaw > 0) {
+      sourceHoldMissingByMint.delete(p.mint);
+      continue;
+    }
+
+    const misses = (sourceHoldMissingByMint.get(p.mint) ?? 0) + 1;
+    sourceHoldMissingByMint.set(p.mint, misses);
+    console.log(
+      `Source-hold exit check: tracked source holds 0 $${p.symbol} ` +
+        `(${misses}/${sourceHoldExitConsecutiveMisses} consecutive misses).`
+    );
+
+    if (misses < sourceHoldExitConsecutiveMisses) continue;
+
+    const reason =
+      `Source-hold exit: tracked source wallet no longer holds token ` +
+      `(${misses}/${sourceHoldExitConsecutiveMisses} checks)`;
+    riskSellsInFlight.add(p.mint);
+    console.log(`Source-hold exit triggered for $${p.symbol}: ${reason}`);
+    try {
+      if (simulationMode) {
+        await sellSimulatedPosition(p, reason);
+      } else {
+        await sellLivePosition(p, reason, undefined, false);
+      }
+      sourceHoldMissingByMint.delete(p.mint);
+      riskSellRetryAfterByMint.delete(p.mint);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      riskSellRetryAfterByMint.set(p.mint, Date.now() + RISK_SELL_FAILURE_COOLDOWN_MS);
+      void telegram.notifyRiskExit({
+        status: "failed",
+        symbol: p.symbol,
+        reason,
+        costBasisSol: formatSolAmount(p.costBasisRemainingLamports),
+        error: msg,
+        tokenAddress: p.mint,
+        isSimulated: simulationMode,
+      });
+      throw err;
+    } finally {
+      riskSellsInFlight.delete(p.mint);
     }
   }
 }

@@ -863,6 +863,19 @@ export const hybridExitSourceExitRemaining = parseEnvBool(
   process.env.HYBRID_EXIT_SOURCE_EXIT_REMAINING,
   true
 );
+export const sourceHoldExitEnabled = parseEnvBool(process.env.SOURCE_HOLD_EXIT_ENABLED, false);
+export const sourceHoldExitIntervalMs = Math.max(
+  1000,
+  parseNonNegativeInteger(process.env.SOURCE_HOLD_EXIT_INTERVAL_MS, 10_000)
+);
+export const sourceHoldExitConsecutiveMisses = Math.max(
+  1,
+  parseNonNegativeInteger(process.env.SOURCE_HOLD_EXIT_CONSECUTIVE_MISSES, 2)
+);
+export const sourceHoldExitMinPositionAgeMs = Math.max(
+  0,
+  parseNonNegativeInteger(process.env.SOURCE_HOLD_EXIT_MIN_POSITION_AGE_MS, 15_000)
+);
 
 /**
  * Tiered risk-check cadence. Each position falls into one of three buckets per loop tick:
