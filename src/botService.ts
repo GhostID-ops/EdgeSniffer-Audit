@@ -372,6 +372,13 @@ function clearFastBuyConfirmationPending(mint: string, signature?: string): void
   if (signatures.size === 0) pendingFastBuyConfirmSignaturesByMint.delete(mint);
 }
 
+function clearFastBuyConfirmationPendingSoon(mint: string, signature: string): void {
+  const timer = setTimeout(() => {
+    clearFastBuyConfirmationPending(mint, signature);
+  }, 2_000);
+  timer.unref?.();
+}
+
 function hasFastBuyConfirmationPending(mint: string): boolean {
   return (pendingFastBuyConfirmSignaturesByMint.get(mint)?.size ?? 0) > 0;
 }
@@ -1357,7 +1364,7 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
 
   const confirmStartedAt = Date.now();
   confirmSignature(hotBuy.signature)
-    .then(() => {
+    .then(async () => {
       recordExecutionTelemetrySync({
         kind: "stage:confirm",
         route,
@@ -1372,15 +1379,20 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
         details: { mode: "background", senderPath: hotBuy.senderPath },
       });
       pendingBuyRetryByMint.delete(hotBuy.mint);
-      clearFastBuyConfirmationPending(hotBuy.mint, hotBuy.signature);
       confirmedFastBuyTokensByMint.set(hotBuy.mint, hotBuy.tokensOutRaw);
-      void reconcileFastBuyTokens({
-        mint: hotBuy.mint,
-        expectedTokenAmountRaw: hotBuy.tokensOutRaw,
-        expectedSolLamports: hotBuy.solInLamports,
-        quoteMint: WRAPPED_SOL_MINT,
-        signature: hotBuy.signature,
-      });
+      try {
+        await reconcileFastBuyTokens({
+          mint: hotBuy.mint,
+          expectedTokenAmountRaw: hotBuy.tokensOutRaw,
+          expectedSolLamports: hotBuy.solInLamports,
+          quoteMint: WRAPPED_SOL_MINT,
+          signature: hotBuy.signature,
+        });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`Fast Rust hot buy reconciliation failed for ${hotBuy.mint.slice(0, 8)}…: ${msg}`);
+      }
+      clearFastBuyConfirmationPendingSoon(hotBuy.mint, hotBuy.signature);
     })
     .catch((err) => {
       const reason = err instanceof Error ? err.message : String(err);
@@ -2683,15 +2695,21 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         fastBuyConfirmRetryScheduledByMint.delete(mint);
         failedBuyRecoveryInFlightMints.delete(mint);
         pendingBuyRetryByMint.delete(mint);
-        clearFastBuyConfirmationPending(mint, signature);
         mirrorBuySignatureByMint.set(mint, signature);
-        void reconcileFastBuyTokens({
+        reconcileFastBuyTokens({
           mint,
           expectedTokenAmountRaw: tokenAmountRaw,
           expectedSolLamports: solLamports,
           quoteMint: sourceSwap?.inputMint,
           signature,
-        });
+        })
+          .catch((err) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.warn(`Fast mirrored buy reconciliation failed for ${mint.slice(0, 8)}…: ${msg}`);
+          })
+          .finally(() => {
+            clearFastBuyConfirmationPendingSoon(mint, signature);
+          });
       },
       onFastSellConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature }) => {
         fastSellConfirmPendingByMint.delete(mint);
@@ -3596,7 +3614,7 @@ async function sellLivePosition(
     console.warn(`Token balance lookup failed for $${p.symbol}: ${msg}; attempting tracked amount.`);
     liveHeldRaw = null;
   }
-  if (liveHeldRaw === 0 && p.sellsCount === 0 && Date.now() - p.firstSeenAt < 120_000) {
+  if (liveHeldRaw === 0 && Date.now() - p.lastTradeAt < 120_000) {
     const signature = mirrorBuySignatureByMint.get(p.mint);
     const execution = signature ? await actualBuyExecutionFromTx(signature, p.mint) : null;
     const recovered = confirmedFastBuyTokensByMint.get(p.mint) ?? execution?.tokenAmountRaw ?? null;
@@ -3625,7 +3643,7 @@ async function sellLivePosition(
       );
       return;
     }
-    if (p.sellsCount === 0 && Date.now() - p.lastTradeAt < confirmationNullStatusTimeoutMs) {
+    if (Date.now() - p.lastTradeAt < confirmationNullStatusTimeoutMs) {
       console.warn(
         `$${p.symbol}: wallet holds 0 on-chain during fast-mode confirmation grace window; ` +
           "leaving optimistic position open for background confirmation cleanup."
@@ -3644,9 +3662,22 @@ async function sellLivePosition(
     cleanupHybridExitStateIfClosed(snap);
     return;
   }
+  const isSourceHoldExit = effectiveNote?.startsWith("Source-hold exit:") ?? false;
+  if (amountRawOverride == null && isSourceHoldExit && liveHeldRaw != null && liveHeldRaw > p.heldRaw) {
+    if (adjustBuyTokenAmount(p.mint, p.heldRaw, liveHeldRaw)) {
+      const latest = getPosition(p.mint);
+      if (latest) p = latest;
+    }
+    console.warn(
+      `Source-hold exit will sell full live $${p.symbol} balance. ` +
+        `live=${formatTokenAmount(liveHeldRaw, p.decimals)}, tracked=${formatTokenAmount(p.heldRaw, p.decimals)}.`
+    );
+  }
   const sellRaw =
     amountRawOverride != null
       ? Math.min(Math.max(1, Math.floor(amountRawOverride)), liveHeldRaw ?? p.heldRaw, p.heldRaw)
+      : isSourceHoldExit && liveHeldRaw != null && liveHeldRaw > 0
+      ? liveHeldRaw
       : liveHeldRaw != null && liveHeldRaw > 0
       ? Math.min(liveHeldRaw, p.heldRaw)
       : p.heldRaw;
