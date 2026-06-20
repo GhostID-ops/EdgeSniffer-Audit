@@ -324,6 +324,7 @@ const mirrorBuySignatureByMint = new Map<string, string>();
 const confirmedFastBuyTokensByMint = new Map<string, number>();
 const pendingFastBuyConfirmSignaturesByMint = new Map<string, Set<string>>();
 const fastSellConfirmPendingByMint = new Set<string>();
+const fastBuyBalanceRecoveryUntilByMint = new Map<string, number>();
 const recoveredBalanceSellFailureUntilByMint = new Map<string, number>();
 const quarantinedBuyMints = new Map<string, string>();
 const openPositionBuyMintsInFlight = new Set<string>();
@@ -333,6 +334,8 @@ const riskSellRetryAfterByMint = new Map<string, number>();
 const sourceHoldMissingByMint = new Map<string, number>();
 const RISK_SELL_FAILURE_COOLDOWN_MS = 15_000;
 const ZERO_TOKEN_BALANCE_RECHECK_MS = 250;
+const FAST_BUY_BALANCE_RECOVERY_SETTLE_MS = 5_000;
+const RECOVERED_BALANCE_SELL_FAILURE_SUPPRESS_MS = 10 * 60_000;
 const SOURCE_SOLD_WHILE_BUY_PENDING_REASON = "source sold while buy was pending";
 const GRADUATION_TRANSIENT_FLOOR_MS = 2 * 60_000;
 const lastCurveRiskValueByMint = new Map<string, { outSolLamports: number; quotedAt: number }>();
@@ -360,6 +363,7 @@ function markFastBuyConfirmationPending(mint: string, signature: string): void {
     pendingFastBuyConfirmSignaturesByMint.set(mint, signatures);
   }
   signatures.add(signature);
+  fastBuyBalanceRecoveryUntilByMint.set(mint, Date.now() + confirmationNullStatusTimeoutMs);
 }
 
 function clearFastBuyConfirmationPending(mint: string, signature?: string): void {
@@ -374,6 +378,7 @@ function clearFastBuyConfirmationPending(mint: string, signature?: string): void
 }
 
 function clearFastBuyConfirmationPendingSoon(mint: string, signature: string): void {
+  fastBuyBalanceRecoveryUntilByMint.set(mint, Date.now() + FAST_BUY_BALANCE_RECOVERY_SETTLE_MS);
   const timer = setTimeout(() => {
     clearFastBuyConfirmationPending(mint, signature);
   }, 2_000);
@@ -387,7 +392,9 @@ function hasFastBuyConfirmationPending(mint: string): boolean {
 function suppressRecoveredBalanceAfterSellFailure(mint: string, reason: string): void {
   const classified = classifyExecutionError(reason);
   if (classified.code !== "6023" && classified.code !== "6024") return;
-  recoveredBalanceSellFailureUntilByMint.set(mint, Date.now() + 60_000);
+  recoveredBalanceSellFailureUntilByMint.set(mint, Date.now() + RECOVERED_BALANCE_SELL_FAILURE_SUPPRESS_MS);
+  fastBuyBalanceRecoveryUntilByMint.delete(mint);
+  confirmedFastBuyTokensByMint.delete(mint);
   console.warn(
     `Sell failed for ${mint.slice(0, 8)}... with ${classified.errorName ?? `Custom:${classified.code}`}; ` +
       "suppressing buy-tx balance recovery for this mint temporarily."
@@ -3391,6 +3398,8 @@ export function resetTradingState(): void {
   quarantinedBuyMints.clear();
   sourceBuySignatureByMint.clear();
   pendingFastBuyConfirmSignaturesByMint.clear();
+  fastBuyBalanceRecoveryUntilByMint.clear();
+  recoveredBalanceSellFailureUntilByMint.clear();
   openPositionBuyMintsInFlight.clear();
   riskSellsInFlight.clear();
   exitSignalSellsInFlight.clear();
@@ -3636,7 +3645,11 @@ async function sellLivePosition(
   }
   if (liveHeldRaw != null && liveHeldRaw > 0) {
     recoveredBalanceSellFailureUntilByMint.delete(p.mint);
+    fastBuyBalanceRecoveryUntilByMint.delete(p.mint);
   }
+  const recoveryAllowedUntil = fastBuyBalanceRecoveryUntilByMint.get(p.mint) ?? 0;
+  const canUseBuyTxBalanceRecovery =
+    hasFastBuyConfirmationPending(p.mint) || Date.now() < recoveryAllowedUntil;
   const suppressRecoveredBalanceUntil = recoveredBalanceSellFailureUntilByMint.get(p.mint) ?? 0;
   if (liveHeldRaw === 0 && Date.now() < suppressRecoveredBalanceUntil) {
     console.warn(
@@ -3644,7 +3657,13 @@ async function sellLivePosition(
         "not reusing historical buy-tx token amount."
     );
   }
-  if (liveHeldRaw === 0 && Date.now() >= suppressRecoveredBalanceUntil && Date.now() - p.lastTradeAt < 120_000) {
+  if (liveHeldRaw === 0 && !canUseBuyTxBalanceRecovery && Date.now() >= suppressRecoveredBalanceUntil) {
+    console.warn(
+      `$${p.symbol}: wallet balance is 0 and fast-buy settle window has ended; ` +
+        "not reusing historical buy-tx token amount."
+    );
+  }
+  if (liveHeldRaw === 0 && canUseBuyTxBalanceRecovery && Date.now() >= suppressRecoveredBalanceUntil) {
     const signature = mirrorBuySignatureByMint.get(p.mint);
     const execution = signature ? await actualBuyExecutionFromTx(signature, p.mint) : null;
     const recovered = confirmedFastBuyTokensByMint.get(p.mint) ?? execution?.tokenAmountRaw ?? null;
