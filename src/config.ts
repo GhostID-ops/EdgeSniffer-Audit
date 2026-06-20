@@ -565,6 +565,10 @@ const MAX_SESSION_DEPLOYED_SOL = parseOptionalPositiveNumber(process.env.MAX_SES
 /** Optional cap on total gross SOL deployed into buys during this bot session. */
 export const maxSessionDeployedLamports =
   MAX_SESSION_DEPLOYED_SOL != null ? Math.round(MAX_SESSION_DEPLOYED_SOL * LAMPORTS_PER_SOL) : null;
+const MAX_OPEN_DEPLOYED_SOL = parseOptionalPositiveNumber(process.env.MAX_OPEN_DEPLOYED_SOL);
+/** Optional cap on currently open SOL cost basis plus the next buy. Better for high-turnover copy sources. */
+export const maxOpenDeployedLamports =
+  MAX_OPEN_DEPLOYED_SOL != null ? Math.round(MAX_OPEN_DEPLOYED_SOL * LAMPORTS_PER_SOL) : null;
 
 /**
  * Startup-only source wallet prefilter. When enabled, the bot builds an in-memory set of mints

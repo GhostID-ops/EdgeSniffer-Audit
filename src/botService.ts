@@ -50,6 +50,7 @@ import {
   maxBuysPerToken,
   maxSolPerTokenLamports,
   maxSessionDeployedLamports,
+  maxOpenDeployedLamports,
   showMarketCap,
   stopLossPct,
   takeProfitPct,
@@ -234,6 +235,7 @@ export type BotState = {
   maxOpenPositions: number | null;
   maxSolPerTokenSol: number | null;
   maxSessionDeployedSol: number | null;
+  maxOpenDeployedSol: number | null;
   minBuySol: number;
   maxBuySol: number;
   copyBuyPercentage: number;
@@ -1097,6 +1099,26 @@ function isSellSignal(swap: DetectedSwap): boolean {
   return swap.outputMint === WRAPPED_SOL_MINT || swap.outputMint === USDC_MINT;
 }
 
+function recordMirrorSkip(
+  swap: DetectedSwap,
+  reason: string,
+  details: Record<string, unknown> = {}
+): void {
+  const isSell = isSellSignal(swap);
+  recordExecutionTelemetrySync({
+    kind: "mirror-skip",
+    route: "skip",
+    side: isSell ? "sell" : isBuySignal(swap) ? "buy" : "swap",
+    mint: isSell ? swap.inputMint : isBuySignal(swap) ? swap.outputMint : swap.outputMint,
+    sourceSignature: swap.signature,
+    wallet: swap.wallet,
+    detector: swap.detector,
+    success: false,
+    errorSummary: reason,
+    details,
+  });
+}
+
 function sourceBuyTokenAmountRaw(swap: DetectedSwap): number {
   if (!isBuySignal(swap)) return 0;
   const raw = swap.counterpartyAmountRaw ?? 0;
@@ -1777,6 +1799,7 @@ async function closePositionFromExitSignal(swap: DetectedSwap): Promise<void> {
     console.log(
       `Exit signal from ${walletTag} for ${mint.slice(0, 8)}... ignored: no matching open position.`
     );
+    recordMirrorSkip(swap, "exit signal no open position");
     return;
   }
 
@@ -1841,6 +1864,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       `Ignoring swap from untracked wallet ${swap.wallet.slice(0, 4)}...${swap.wallet.slice(-4)} ` +
         `(tracked: ${trackedWallets.map(shortWallet).join(", ")}).`
     );
+    recordMirrorSkip(swap, "untracked wallet");
     return;
   }
   if (isConfirmOnlyWallet) {
@@ -1924,6 +1948,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       `⏸️ Buys paused: skipping buy of ${swap.outputMint.slice(0, 8)}... ` +
         "(open positions still managed; use Resume to re-enable entries)."
     );
+    recordMirrorSkip(swap, "buys paused");
     return;
   }
 
@@ -1977,6 +2002,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
             `Proportional mirror sell skipped for ${mint.slice(0, 8)}...: source position history unavailable.`
           );
           recordSourceSellRaw(swap.wallet, mint, sourceSellRaw);
+          recordMirrorSkip(swap, "proportional mirror sell unavailable");
           return;
         } else {
           console.log(
@@ -2061,6 +2087,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       console.log(
         `Skipping buy: already bought ${mint.slice(0, 8)}... this session (buy-once ON).`
       );
+      recordMirrorSkip(swap, "buy-once already bought");
       return;
     }
     if (!buyOncePerTokenEnabled && maxBuysPerToken != null && existing && existing.buysCount >= maxBuysPerToken) {
@@ -2068,6 +2095,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         `Skipping buy: ${mint.slice(0, 8)}... max buys per token reached ` +
           `(${existing.buysCount}/${maxBuysPerToken}).`
       );
+      recordMirrorSkip(swap, "max buys per token reached", {
+        buysCount: existing.buysCount,
+        maxBuysPerToken,
+      });
       return;
     }
     if (maxSolPerTokenLamports != null) {
@@ -2080,6 +2111,11 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
             `(${formatSolAmount(existing?.totalSolSpentLamports ?? 0)} + ${formatSolAmount(nextBuyLamports)} > ` +
             `${formatSolAmount(maxSolPerTokenLamports)} SOL).`
         );
+        recordMirrorSkip(swap, "max SOL per token exceeded", {
+          currentLamports: existing?.totalSolSpentLamports ?? 0,
+          nextBuyLamports,
+          maxSolPerTokenLamports,
+        });
         return;
       }
     }
@@ -2094,6 +2130,30 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
             `(${formatSolAmount(deployedLamports)} + ${formatSolAmount(nextBuyLamports)} > ` +
             `${formatSolAmount(maxSessionDeployedLamports)} SOL).`
         );
+        recordMirrorSkip(swap, "max session deployed SOL exceeded", {
+          deployedLamports,
+          nextBuyLamports,
+          maxSessionDeployedLamports,
+        });
+        return;
+      }
+    }
+    if (maxOpenDeployedLamports != null) {
+      const nextBuyLamports =
+        mirrorQuoteMintForBuy(swap) === WRAPPED_SOL_MINT ? mirroredBuyAmountRaw(swap) : null;
+      const openDeployedLamports = getTotals().openCostBasisLamports;
+      const projectedOpenLamports = openDeployedLamports + (nextBuyLamports ?? 0);
+      if (nextBuyLamports != null && projectedOpenLamports > maxOpenDeployedLamports) {
+        console.log(
+          `Skipping buy: open deployed SOL cap would be exceeded ` +
+            `(${formatSolAmount(openDeployedLamports)} + ${formatSolAmount(nextBuyLamports)} > ` +
+            `${formatSolAmount(maxOpenDeployedLamports)} SOL).`
+        );
+        recordMirrorSkip(swap, "max open deployed SOL exceeded", {
+          openDeployedLamports,
+          nextBuyLamports,
+          maxOpenDeployedLamports,
+        });
         return;
       }
     }
@@ -2186,6 +2246,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         `Skipping buy: RUST_ONLY_BUYS=true and no Rust buy path accepted ` +
           `${mint.slice(0, 8)}... (${executionPlan.route}).`
       );
+      recordMirrorSkip(swap, "rust-only no accepted buy path", { route: executionPlan.route });
       pendingBuyRetryByMint.delete(mint);
       releaseBuyLocks();
       return;
@@ -2204,6 +2265,9 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           ? `Skipping buy: ${mint.slice(0, 8)}... buy already in flight and rescue pending.`
           : `Skipping buy: ${mint.slice(0, 8)}... buy already in flight (queued one retry signal).`
       );
+      recordMirrorSkip(swap, "buy already in flight", {
+        rescuePending: failedBuyRecoveryInFlightMints.has(mint),
+      });
       return;
     }
     buyMintsInFlight.add(mint);
@@ -2223,6 +2287,11 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         console.log(
           `Skipping buy: max open positions reached (${openCount}/${maxOpenPositions}, ${pendingCount} pending).`
         );
+        recordMirrorSkip(swap, "max open positions reached", {
+          openCount,
+          pendingCount,
+          maxOpenPositions,
+        });
         releaseBuyLocks();
         return;
       }
@@ -2236,6 +2305,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     const filter = checkPrebuyInferredMarketCap(swap);
     if (!filter.allowed) {
       console.log(`Skipping buy: ${filter.reason}.`);
+      recordMirrorSkip(swap, "prebuy inferred market-cap filter", { reason: filter.reason });
       releaseBuyLocks();
       return;
     }
@@ -2246,6 +2316,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     const filter = await checkPrebuyMoralisFilter(swap.outputMint);
     if (!filter.allowed) {
       console.log(`Skipping buy: ${filter.reason}.`);
+      recordMirrorSkip(swap, "prebuy Moralis filter", { reason: filter.reason });
       releaseBuyLocks();
       return;
     }
@@ -2387,6 +2458,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       }
       if (fastSellConfirmPendingByMint.has(sellMint)) {
         console.log(`Skipping sell: ${sellMint.slice(0, 8)}... sell already awaiting confirmation.`);
+        recordMirrorSkip(swap, "sell already awaiting confirmation");
         return;
       }
       fastSellConfirmPendingByMint.add(sellMint);
@@ -3065,6 +3137,9 @@ export async function startBot(): Promise<void> {
   }
   if (maxSessionDeployedLamports != null) {
     console.log(`Max session deployed SOL enabled: ${formatSolAmount(maxSessionDeployedLamports)} SOL.`);
+  }
+  if (maxOpenDeployedLamports != null) {
+    console.log(`Max open deployed SOL enabled: ${formatSolAmount(maxOpenDeployedLamports)} SOL.`);
   }
   if (blockPumpfunMayhem) {
     console.log(`Pump.fun Mayhem Mode filter enabled${pumpfunMayhemStrict ? " (strict)" : ""}.`);
@@ -4528,6 +4603,8 @@ export function getBotState(): BotState {
     maxSolPerTokenSol: maxSolPerTokenLamports != null ? maxSolPerTokenLamports / LAMPORTS_PER_SOL : null,
     maxSessionDeployedSol:
       maxSessionDeployedLamports != null ? maxSessionDeployedLamports / LAMPORTS_PER_SOL : null,
+    maxOpenDeployedSol:
+      maxOpenDeployedLamports != null ? maxOpenDeployedLamports / LAMPORTS_PER_SOL : null,
     minBuySol: minBuyLamports / LAMPORTS_PER_SOL,
     maxBuySol: maxBuyLamports / LAMPORTS_PER_SOL,
     copyBuyPercentage,
