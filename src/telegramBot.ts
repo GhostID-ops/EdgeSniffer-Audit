@@ -502,6 +502,7 @@ class TelegramBotHandler {
       `SOL spent: ${formatSolAmount(totals.totalSolSpentLamports)} SOL`,
       `SOL received: ${formatSolAmount(totals.totalSolReceivedLamports)} SOL`,
       `Realized PnL: ${escapeHtml(formatPnl(totals.realizedPnlLamports))}`,
+      `Open cost basis: ${formatSolAmount(totals.openCostBasisLamports)} SOL`,
       walletPnl.deltaLamports != null
         ? `Wallet SOL delta: ${escapeHtml(formatPnl(walletPnl.deltaLamports))}`
         : "Wallet SOL delta: unavailable",

@@ -251,7 +251,8 @@ class TelegramService {
       }
     }
 
-    if (!riskKind && trade.pnl) lines.push(`📈 <b>PnL</b>: ${escapeHtml(trade.pnl)}`);
+    if (!riskKind && trade.pnl) lines.push(`📈 <b>Fill PnL</b>: ${escapeHtml(trade.pnl)}`);
+    if (!riskKind && trade.positionPnl) lines.push(`📊 <b>Position PnL</b>: ${escapeHtml(trade.positionPnl)}`);
     if (!riskKind && trade.note) lines.push(`📝 <b>Note</b>: ${escapeHtml(trade.note)}`);
 
     lines.push("");
@@ -278,7 +279,7 @@ class TelegramService {
     message += `ðŸ“ˆ Total PnL: <b>${pnl.totalPnl}</b>\n`;
     if (pnl.walletPnl) message += `ðŸ§¾ Wallet SOL delta: <b>${pnl.walletPnl}</b>\n`;
     message += `ðŸ’° Realized: ${pnl.realizedPnl}\n`;
-    message += `ðŸ“Š Unrealized: ${pnl.unrealizedPnl}\n\n`;
+    message += `ðŸ“Š Open mark: ${pnl.unrealizedPnl}\n\n`;
     
     message += `ðŸ“Š Stats:\n`;
     message += `â€¢ Total Trades: ${pnl.totalTrades}\n`;

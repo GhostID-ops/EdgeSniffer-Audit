@@ -259,6 +259,7 @@ export type PnlTotals = {
   totalSolSpentLamports: number;
   totalSolReceivedLamports: number;
   realizedPnlLamports: number;
+  openCostBasisLamports: number;
   openPositions: number;
   trackedTokens: number;
 };
@@ -269,6 +270,7 @@ export function getTotals(): PnlTotals {
   let spent = 0;
   let received = 0;
   let pnl = 0;
+  let openCostBasis = 0;
   let open = 0;
   for (const p of positions.values()) {
     buys += p.buysCount;
@@ -277,8 +279,12 @@ export function getTotals(): PnlTotals {
     received += p.totalSolReceivedLamports;
     const avgCost =
       p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
+    const heldRaw = p.totalBoughtRaw - p.totalSoldRaw;
     pnl += p.totalSolReceivedLamports - avgCost * Math.min(p.totalSoldRaw, p.totalBoughtRaw);
-    if (p.totalBoughtRaw - p.totalSoldRaw > 0) open++;
+    if (heldRaw > 0) {
+      open++;
+      openCostBasis += avgCost * heldRaw;
+    }
   }
   return {
     buysCount: buys,
@@ -287,6 +293,7 @@ export function getTotals(): PnlTotals {
     totalSolSpentLamports: spent,
     totalSolReceivedLamports: received,
     realizedPnlLamports: pnl,
+    openCostBasisLamports: openCostBasis,
     openPositions: open,
     trackedTokens: positions.size,
   };

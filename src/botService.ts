@@ -831,6 +831,7 @@ export function setBotSimulationMode(enabled: boolean): ModeChangeResult {
 type TradeLogExtras = {
   realizedPnlLamports?: number;
   realizedPnlPct?: number;
+  positionRealizedPnlLamports?: number;
   exitReason?: string;
   priceImpactPct?: number | null;
 };
@@ -856,6 +857,7 @@ function pushSwap(rec: MirrorRecord, extras?: TradeLogExtras): void {
     marketCapUsd: rec.marketCapUsd ?? null,
     realizedPnlLamports: extras?.realizedPnlLamports ?? null,
     realizedPnlPct: extras?.realizedPnlPct ?? null,
+    positionRealizedPnlLamports: extras?.positionRealizedPnlLamports ?? null,
     exitReason: extras?.exitReason ?? null,
     error: rec.error,
   });
@@ -1009,13 +1011,48 @@ function tokenSideMint(result: MirrorResult): string | null {
 
 function pnlArrow(lamports: number): string {
   if (lamports > 0) return "+";
-  if (lamports < 0) return "−";
+  if (lamports < 0) return "-";
   return "";
 }
 
 export function formatPnl(lamports: number): string {
   const abs = Math.abs(lamports);
   return `${pnlArrow(lamports)}${formatSolAmount(abs)} SOL`;
+}
+
+type SellFillAccounting = {
+  costedRaw: number;
+  uncostedRaw: number;
+  attributedProceedsLamports: number;
+  costBasisLamports: number;
+  pnlLamports: number;
+  pnlPct: number | undefined;
+};
+
+function sellFillAccounting(
+  position: PositionSnapshot | null,
+  soldRaw: number,
+  proceedsLamports: number
+): SellFillAccounting {
+  const heldRaw = Math.max(0, position?.heldRaw ?? 0);
+  const costedRaw = Math.min(Math.max(0, soldRaw), heldRaw);
+  const uncostedRaw = Math.max(0, soldRaw - costedRaw);
+  const avgEntryLamportsPerRaw =
+    position && position.totalBoughtRaw > 0 ? position.totalSolSpentLamports / position.totalBoughtRaw : 0;
+  const attributedProceedsLamports =
+    soldRaw > 0 && costedRaw < soldRaw
+      ? Math.floor((proceedsLamports * costedRaw) / soldRaw)
+      : proceedsLamports;
+  const costBasisLamports = avgEntryLamportsPerRaw * costedRaw;
+  const pnlLamports = attributedProceedsLamports - costBasisLamports;
+  return {
+    costedRaw,
+    uncostedRaw,
+    attributedProceedsLamports,
+    costBasisLamports,
+    pnlLamports,
+    pnlPct: costBasisLamports > 0 ? (pnlLamports / costBasisLamports) * 100 : undefined,
+  };
 }
 
 function shouldQuarantineFailedBuy(reason: string): boolean {
@@ -1582,6 +1619,8 @@ function logTrade(
   }
 
   if (result.side === "sell") {
+    const before = getPosition(result.input.meta.mint);
+    const fill = sellFillAccounting(before, result.input.amountRaw, result.output.amountRaw);
     const pos = recordSell(result.input.meta, result.input.amountRaw, result.output.amountRaw);
     cleanupHybridExitStateIfClosed(pos);
     const tokenMint = result.input.meta.mint;
@@ -1609,9 +1648,16 @@ function logTrade(
     console.log(`🔗 CA: ${tokenMint}`);
     if (mcLine) console.log(mcLine);
     if (!result.isSimulated) console.log(`📝 Tx: ${result.signature}`);
+    console.log(`Fill PnL on $${pos.symbol}: ${formatPnl(fill.pnlLamports)}`);
     console.log(
-      `📊 Realized PnL on $${pos.symbol}: ${formatPnl(pos.realizedPnlLamports)} (held: ${formatTokenAmount(Math.max(pos.heldRaw, 0), pos.decimals)})`
+      `Position PnL on $${pos.symbol}: ${formatPnl(pos.realizedPnlLamports)} (held: ${formatTokenAmount(Math.max(pos.heldRaw, 0), pos.decimals)})`
     );
+    if (fill.uncostedRaw > 0) {
+      console.warn(
+        `PnL warning: sell included ${formatTokenAmount(fill.uncostedRaw, pos.decimals)} uncosted $${pos.symbol}; ` +
+          "fill PnL only attributes tracked inventory."
+      );
+    }
     console.log("");
 
     // Send Telegram notification
@@ -1625,7 +1671,8 @@ function logTrade(
       isSimulated: result.isSimulated,
       wallet: walletTag,
       tokenAddress: tokenMint,
-      pnl: formatPnl(pos.realizedPnlLamports),
+      pnl: formatPnl(fill.pnlLamports),
+      positionPnl: formatPnl(pos.realizedPnlLamports),
       txSignature: result.isSimulated ? undefined : result.signature,
     };
     void telegram.notifyTrade(notification);
@@ -2553,7 +2600,9 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       );
       return;
     }
+    const preSellPosition = result.side === "sell" ? getPosition(result.input.meta.mint) : null;
     logTrade(result, swap, marketCapUsd, marketCapCheckedAt);
+    const postSellPosition = result.side === "sell" ? getPosition(result.input.meta.mint) : null;
     if (!simulationMode) {
       if (result.side === "buy" && result.input.meta.mint === WRAPPED_SOL_MINT) {
         noteLocalSolDebit(result.input.amountRaw);
@@ -2574,11 +2623,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     let realizedPnlLamports: number | undefined;
     let realizedPnlPct: number | undefined;
     if (result.side === "sell") {
-      const pos = getPosition(result.input.meta.mint);
-      if (pos) {
-        realizedPnlLamports = pos.realizedPnlLamports;
-        const cost = pos.totalSolSpentLamports;
-        if (cost > 0) realizedPnlPct = (pos.realizedPnlLamports / cost) * 100;
+      if (preSellPosition) {
+        const fill = sellFillAccounting(preSellPosition, result.input.amountRaw, result.output.amountRaw);
+        realizedPnlLamports = fill.pnlLamports;
+        realizedPnlPct = fill.pnlPct;
       }
     }
     pushSwap(
@@ -2594,7 +2642,12 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         marketCapUsd,
         marketCapCheckedAt,
       },
-      { priceImpactPct: impactPct, realizedPnlLamports, realizedPnlPct }
+      {
+        priceImpactPct: impactPct,
+        realizedPnlLamports,
+        realizedPnlPct,
+        positionRealizedPnlLamports: postSellPosition?.realizedPnlLamports,
+      }
     );
     if (result.side === "sell" && realizedPnlLamports != null) {
       // Feed the breaker only on actual closes — opens (buys) aren't outcomes yet.
@@ -3223,6 +3276,7 @@ async function sellSimulatedPosition(
     {
       realizedPnlLamports: fillPnlLamports,
       realizedPnlPct: finalPnlPct,
+      positionRealizedPnlLamports: snap.realizedPnlLamports,
       exitReason: note,
     }
   );
@@ -3531,6 +3585,7 @@ async function sellLivePosition(
     {
       realizedPnlLamports: filledPnlLamports,
       realizedPnlPct: filledPnlPct,
+      positionRealizedPnlLamports: snap.realizedPnlLamports,
       exitReason: effectiveNote,
       priceImpactPct: result.priceImpactPct ? parseFloat(result.priceImpactPct) * 100 : null,
     }
@@ -3598,6 +3653,7 @@ async function sellLiveWalletTokenBalance(mint: string, amountRaw: number): Prom
     {
       realizedPnlLamports,
       realizedPnlPct,
+      positionRealizedPnlLamports: getPosition(mint)?.realizedPnlLamports,
       exitReason: "manual wallet dust cleanup",
       priceImpactPct: result.priceImpactPct ? parseFloat(result.priceImpactPct) * 100 : null,
     }
@@ -4363,6 +4419,7 @@ export async function printPnlReport(): Promise<void> {
   const pnlBasisLabel =
     pnlAccountingBasis === "dex" ? "DEX/trade basis" : "wallet cashflow basis";
   console.log(`PnL basis: ${pnlBasisLabel}`);
+  console.log(`Open cost basis: ${formatSolAmount(totals.openCostBasisLamports)} SOL (not mark-to-market)`);
   console.log(`💸 SOL spent: ${formatSolAmount(totals.totalSolSpentLamports)} SOL`);
   console.log(`💰 SOL received: ${formatSolAmount(totals.totalSolReceivedLamports)} SOL`);
   console.log(`📊 Realized PnL: ${formatPnl(totals.realizedPnlLamports)} (${pnlBasisLabel})`);
@@ -4427,8 +4484,8 @@ export async function printPnlReport(): Promise<void> {
     totalSells: totals.sellsCount,
     realizedPnl: formatPnl(totals.realizedPnlLamports),
     walletPnl: walletPnl.deltaLamports != null ? formatPnl(walletPnl.deltaLamports) : undefined,
-    unrealizedPnl: formatPnl(totals.totalSolReceivedLamports - totals.totalSolSpentLamports - totals.realizedPnlLamports),
-    totalPnl: formatPnl(totals.totalSolReceivedLamports - totals.totalSolSpentLamports),
+    unrealizedPnl: "not marked",
+    totalPnl: formatPnl(totals.realizedPnlLamports),
     winRate: "N/A",
     avgWin: "N/A",
     avgLoss: "N/A",

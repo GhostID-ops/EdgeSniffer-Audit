@@ -32,10 +32,17 @@ The live bot ledger in `src/pnl.ts` uses average-cost accounting:
 
 - Buys add token raw amount and SOL cost.
 - Sells add token raw sold and SOL proceeds.
+- Sell-fill PnL is the incremental PnL for that specific sell.
+- Position PnL is the cumulative realized PnL for that token after all recorded sells.
+- Session realized PnL is the sum of cumulative token realized PnL across tracked positions.
+- Circuit breaker outcomes are fed sell-fill PnL, not cumulative position PnL.
+- `trades.jsonl` sell rows use `realizedPnlLamports` for fill PnL and `positionRealizedPnlLamports` for cumulative token PnL.
 - Realized PnL uses cost basis only for tokens that were actually recorded as bought.
 - If a sell exceeds recorded inventory, the excess sold amount is tracked as `soldRawUncosted` and does not fabricate extra cost basis.
 
 This keeps optimistic logs, missed buys, dust cleanup, or transfer-driven drift from creating impossible accounting.
+
+Live session reports now show `Open cost basis` instead of pretending to know unrealized PnL without quoting open positions.
 
 ## Remaining Limitations
 

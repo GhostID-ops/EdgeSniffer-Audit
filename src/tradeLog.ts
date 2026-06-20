@@ -38,10 +38,12 @@ export type TradeLogEntry = {
   outputSymbol?: string;
   priceImpactPct?: number | null;
   marketCapUsd?: number | null;
-  /** Realized PnL in lamports for sells. Buys have null. */
+  /** Incremental realized PnL in lamports for this sell fill. Buys have null. */
   realizedPnlLamports?: number | null;
-  /** Realized PnL % for sells (computed against avg cost). Buys have null. */
+  /** Incremental realized PnL % for this sell fill. Buys have null. */
   realizedPnlPct?: number | null;
+  /** Cumulative realized PnL for this token position after this sell. */
+  positionRealizedPnlLamports?: number | null;
   /** Risk-exit reason, if any (e.g. "Stop loss hit (-25%)"). */
   exitReason?: string | null;
   /** Snapshot of key config at trade time — so we can correlate behaviour with settings later. */
