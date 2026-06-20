@@ -3518,6 +3518,16 @@ async function sellLivePosition(
   requireFreshRiskReason = true
 ): Promise<void> {
   p = await reconcileOpenPositionWithConfirmedBuy(p);
+  if (amountRawOverride == null) {
+    const latest = getPosition(p.mint);
+    if (latest && latest.heldRaw > p.heldRaw) {
+      console.warn(
+        `$${p.symbol}: position grew while sell was pending; refreshing full-sell amount ` +
+          `${formatTokenAmount(p.heldRaw, p.decimals)} -> ${formatTokenAmount(latest.heldRaw, latest.decimals)}.`
+      );
+      p = latest;
+    }
+  }
   let effectiveNote = note;
   let liveHeldRaw: number | null;
   try {
