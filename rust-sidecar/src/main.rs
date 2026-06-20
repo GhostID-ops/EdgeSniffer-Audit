@@ -67,6 +67,10 @@ struct HotSniperConfig {
     enabled: bool,
     buy_once_per_token: bool,
     bought_mints: Arc<Mutex<HashSet<String>>>,
+    /// Source signatures already mirrored this session. Always enforced (independent of
+    /// `buy_once_per_token`) so a single source tx surfaced multiple times by ShredStream
+    /// only ever produces one real buy.
+    bought_signatures: Arc<Mutex<HashSet<String>>>,
     session_deployed_lamports: Arc<AtomicU64>,
     blockhash_cache: Arc<Mutex<Option<CachedBlockhash>>>,
     max_session_deployed_lamports: Option<u64>,
@@ -190,7 +194,11 @@ async fn main() -> Result<()> {
         } else {
             None
         };
-        executor::start_executor_stdin(shared_bought_mints);
+        // Always share the per-source-signature set so the executor command bridge
+        // and the ShredStream hot sniper mirror each source tx at most once,
+        // regardless of BUY_ONCE_PER_TOKEN (which only gates the per-mint set).
+        let shared_bought_signatures = Some(cfg.hot_sniper.bought_signatures.clone());
+        executor::start_executor_stdin(shared_bought_mints, shared_bought_signatures);
     }
     eprintln!(
         "rust-sidecar: starting yellowstone={} jito_shredstream={} hot_sniper={} wallets={}",
@@ -330,6 +338,7 @@ impl HotSniperConfig {
             enabled,
             buy_once_per_token: parse_env_bool("BUY_ONCE_PER_TOKEN", true),
             bought_mints: Arc::new(Mutex::new(HashSet::new())),
+            bought_signatures: Arc::new(Mutex::new(HashSet::new())),
             session_deployed_lamports: Arc::new(AtomicU64::new(0)),
             blockhash_cache: Arc::new(Mutex::new(None)),
             max_session_deployed_lamports: optional_sol_env_lamports("MAX_SESSION_DEPLOYED_SOL"),
@@ -695,6 +704,25 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
         return HotDecision::Fallback(Some("copy-sized amount is zero".to_string()));
     }
 
+    // Reserve this source signature before broadcasting. ShredStream can surface the
+    // same tx multiple times (extra entries, FEC recovery, reconnects); without this
+    // every re-sighting would build and broadcast another real buy for one Omego tx.
+    // Enforced regardless of BUY_ONCE_PER_TOKEN so DCA scale-ins (distinct signatures)
+    // are still each mirrored exactly once.
+    match hot.bought_signatures.lock() {
+        Ok(mut seen) => {
+            if seen.contains(&line.signature) {
+                return HotDecision::Fallback(None);
+            }
+            seen.insert(line.signature.clone());
+        }
+        Err(_) => {
+            return HotDecision::Fallback(Some(
+                "hot signature state lock poisoned".to_string(),
+            ));
+        }
+    }
+
     if hot.buy_once_per_token {
         let mut bought = match hot.bought_mints.lock() {
             Ok(guard) => guard,
@@ -712,6 +740,9 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
 
     let session_reserved = reserve_hot_session_lamports(hot, sol_in_lamports);
     if !session_reserved {
+        if let Ok(mut seen) = hot.bought_signatures.lock() {
+            seen.remove(&line.signature);
+        }
         if hot.buy_once_per_token {
             if let Ok(mut bought) = hot.bought_mints.lock() {
                 bought.remove(&line.output_mint);
@@ -726,7 +757,7 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
     let blockhash = match hot_blockhash(hot).await {
         Ok(blockhash) => blockhash,
         Err(err) => {
-            release_hot_reservations(hot, &line.output_mint, sol_in_lamports);
+            release_hot_reservations(hot, &line.signature, &line.output_mint, sol_in_lamports);
             return HotDecision::Fallback(Some(format!("blockhash fetch failed: {err}")));
         }
     };
@@ -740,6 +771,9 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
         mode: "source-replay".to_string(),
         route: "pumpfun-hot-source-replay-buy".to_string(),
         mint: line.output_mint.clone(),
+        // The hot path already reserved this signature in bought_signatures and calls
+        // the executor directly (bypassing the stdin gate), so this is informational.
+        source_signature: Some(line.signature.clone()),
         sol_in_lamports,
         tokens_out_raw: None,
         slippage_bps: hot.slippage_bps,
@@ -770,7 +804,7 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
         Ok(response) if response.ok => {
             let signature = response.signature.unwrap_or_default();
             if signature.is_empty() {
-                release_hot_reservations(hot, &line.output_mint, sol_in_lamports);
+                release_hot_reservations(hot, &line.signature, &line.output_mint, sol_in_lamports);
                 return HotDecision::Fallback(Some(
                     "Rust executor returned no signature".to_string(),
                 ));
@@ -799,7 +833,7 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
             })
         }
         Ok(response) => {
-            release_hot_reservations(hot, &line.output_mint, sol_in_lamports);
+            release_hot_reservations(hot, &line.signature, &line.output_mint, sol_in_lamports);
             HotDecision::Fallback(Some(
                 response
                     .error
@@ -807,7 +841,7 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
             ))
         }
         Err(err) => {
-            release_hot_reservations(hot, &line.output_mint, sol_in_lamports);
+            release_hot_reservations(hot, &line.signature, &line.output_mint, sol_in_lamports);
             HotDecision::Fallback(Some(format!("{err:#}")))
         }
     }
@@ -1122,7 +1156,15 @@ fn reserve_hot_session_lamports(hot: &HotSniperConfig, lamports: u64) -> bool {
     }
 }
 
-fn release_hot_reservations(hot: &HotSniperConfig, mint: &str, lamports: u64) {
+fn release_hot_reservations(
+    hot: &HotSniperConfig,
+    source_signature: &str,
+    mint: &str,
+    lamports: u64,
+) {
+    if let Ok(mut seen) = hot.bought_signatures.lock() {
+        seen.remove(source_signature);
+    }
     if hot.buy_once_per_token {
         if let Ok(mut bought) = hot.bought_mints.lock() {
             bought.remove(mint);

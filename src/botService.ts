@@ -308,6 +308,10 @@ const pendingBuyRetryByMint = new Map<string, DetectedSwap>();
 const rustHotSniperPrimaryPendingMints = new Set<string>();
 const rustHotSniperPrimaryFallbackSources = new Set<string>();
 const rustHotBuyRecordedByMint = new Set<string>();
+// Source signatures already booked from a Rust hot buy this session. Belt-and-suspenders
+// against the Rust sidecar emitting the same hotBuy event twice (the primary guard is the
+// per-source-signature gate in the sidecar, which stops the duplicate broadcast itself).
+const rustHotBuyRecordedSourceSignatures = new Set<string>();
 const fastBuyConfirmRetryScheduledByMint = new Set<string>();
 const fastSellConfirmRetryScheduledByMint = new Set<string>();
 const failedBuyRecoveryInFlightMints = new Set<string>();
@@ -621,6 +625,15 @@ async function reconcileOpenPositionWithConfirmedBuy(
 ): Promise<PositionSnapshot> {
   const signature = mirrorBuySignatureByMint.get(position.mint);
   if (!signature || position.buysCount <= 0) return position;
+  // mirrorBuySignatureByMint only holds the most recent buy's signature, so the
+  // single-tx execution lookup below represents ONE buy. For a multi-buy (DCA)
+  // position, comparing that one buy's tokens/cost against the position TOTAL would
+  // wrongly shrink it to a single buy's size — and a later "sell all" sells
+  // min(live, tracked), stranding the rest on-chain (observed on $$SLY: live
+  // 736,939 vs clobbered tracked 366,909). Each buy is already reconciled
+  // individually via reconcileFastBuyTokens at its own confirmation, so skip the
+  // position-level reconcile once more than one buy is recorded.
+  if (position.buysCount > 1) return position;
 
   const execution = await actualBuyExecutionFromTx(signature, position.mint);
   if (execution == null || execution.tokenAmountRaw <= 0) return position;
@@ -1175,6 +1188,14 @@ function shouldDeferToRustHotSniperPrimary(
 
 async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> {
   if (stopRequested) return;
+  if (rustHotBuyRecordedSourceSignatures.has(hotBuy.sourceSignature)) {
+    console.log(
+      `Skipping duplicate Rust hot buy bookkeeping for ${hotBuy.mint.slice(0, 8)}...; ` +
+        `source tx ${hotBuy.sourceSignature.slice(0, 8)}... already recorded this session.`
+    );
+    return;
+  }
+  rustHotBuyRecordedSourceSignatures.add(hotBuy.sourceSignature);
   const ts = Date.now();
   const route = hotBuy.route ?? "pumpfun-hot-source-replay-buy";
   const sourceSwap: DetectedSwap = {
@@ -2377,6 +2398,17 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       releaseBuyLocks();
       return;
     }
+    // Guard against a malformed source amount (e.g. a re-fed backstop swap with a
+    // missing amountRaw) producing NaN downstream in the gas-reserve math.
+    if (!Number.isFinite(mirroredAmount) || mirroredAmount <= 0) {
+      console.log(
+        `Skipping buy: invalid copy-sized amount for ${swap.outputMint.slice(0, 8)}... ` +
+          `(source amountRaw=${swap.amountRaw}).`
+      );
+      recordMirrorSkip(swap, "invalid copy-sized amount");
+      releaseBuyLocks();
+      return;
+    }
     let currentBalance = getCachedBalance() ?? lastBalanceLamports ?? 0;
     if (currentBalance <= 0) {
       currentBalance = await updateBalanceCache(readConnection, kp.publicKey);
@@ -3255,6 +3287,7 @@ export function resetTradingState(): void {
   rustHotSniperPrimaryPendingMints.clear();
   rustHotSniperPrimaryFallbackSources.clear();
   rustHotBuyRecordedByMint.clear();
+  rustHotBuyRecordedSourceSignatures.clear();
   fastBuyConfirmRetryScheduledByMint.clear();
   failedBuyRecoveryInFlightMints.clear();
   boughtMintsThisSession.clear();
