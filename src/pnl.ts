@@ -19,6 +19,8 @@ export type PositionSnapshot = Position & {
   avgCostLamportsPerTokenRaw: number | null;
   realizedPnlLamports: number;
   costBasisRemainingLamports: number;
+  soldRawCosted: number;
+  soldRawUncosted: number;
 };
 
 const positions = new Map<string, Position>();
@@ -78,7 +80,9 @@ export function recordSell(
 function snapshot(p: Position): PositionSnapshot {
   const avgCost =
     p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : null;
-  const soldCostBasis = avgCost != null ? avgCost * p.totalSoldRaw : 0;
+  const soldRawCosted = Math.min(p.totalSoldRaw, p.totalBoughtRaw);
+  const soldRawUncosted = Math.max(0, p.totalSoldRaw - p.totalBoughtRaw);
+  const soldCostBasis = avgCost != null ? avgCost * soldRawCosted : 0;
   const realizedPnl = p.totalSolReceivedLamports - soldCostBasis;
   const held = p.totalBoughtRaw - p.totalSoldRaw;
   const remainingCost = avgCost != null ? avgCost * Math.max(held, 0) : 0;
@@ -88,6 +92,8 @@ function snapshot(p: Position): PositionSnapshot {
     avgCostLamportsPerTokenRaw: avgCost,
     realizedPnlLamports: realizedPnl,
     costBasisRemainingLamports: remainingCost,
+    soldRawCosted,
+    soldRawUncosted,
   };
 }
 
@@ -271,7 +277,7 @@ export function getTotals(): PnlTotals {
     received += p.totalSolReceivedLamports;
     const avgCost =
       p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
-    pnl += p.totalSolReceivedLamports - avgCost * p.totalSoldRaw;
+    pnl += p.totalSolReceivedLamports - avgCost * Math.min(p.totalSoldRaw, p.totalBoughtRaw);
     if (p.totalBoughtRaw - p.totalSoldRaw > 0) open++;
   }
   return {

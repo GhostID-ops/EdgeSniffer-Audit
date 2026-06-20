@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { maxCumulativeDrawdownPctPoints, summarizeReturns } from "./accountingMetrics.js";
 import { heliusAddressTransactionsUrl } from "./config.js";
 import { getTokenPairInfo } from "./tokenRegistry.js";
 
@@ -84,12 +85,6 @@ function median(values: number[]): number | null {
   if (xs.length === 0) return null;
   const mid = Math.floor(xs.length / 2);
   return xs.length % 2 ? xs[mid]! : (xs[mid - 1]! + xs[mid]!) / 2;
-}
-
-function std(values: number[]): number {
-  if (values.length < 2) return 0;
-  const m = avg(values);
-  return Math.sqrt(avg(values.map((v) => (v - m) ** 2)));
 }
 
 function quantile(values: number[], q: number): number | null {
@@ -300,35 +295,15 @@ function halfTpHalfSource(row: EntryLab): number {
   return hit30 ? 0.5 * 30 + 0.5 * sourceExit(row) : sourceExit(row);
 }
 
-function maxDrawdown(returns: number[]): number {
-  let equity = 0;
-  let peak = 0;
-  let dd = 0;
-  for (const r of returns) {
-    equity += r;
-    peak = Math.max(peak, equity);
-    dd = Math.min(dd, equity - peak);
-  }
-  return dd;
-}
-
 function summarizeStrategy(name: string, returns: number[]) {
-  const wins = returns.filter((r) => r > 0);
-  const losses = returns.filter((r) => r < 0);
-  const profit = wins.reduce((s, r) => s + r, 0);
-  const loss = Math.abs(losses.reduce((s, r) => s + r, 0));
-  const sigma = std(returns);
+  const summary = summarizeReturns(returns);
   return {
     name,
-    trades: returns.length,
-    totalRoiPct: returns.reduce((s, r) => s + r, 0),
-    winRatePct: (wins.length / Math.max(1, returns.length)) * 100,
-    avgPct: avg(returns),
-    medianPct: median(returns),
-    maxDrawdownPct: maxDrawdown(returns),
-    sharpe: sigma > 0 ? avg(returns) / sigma : 0,
-    profitFactor: loss > 0 ? profit / loss : profit > 0 ? Infinity : 0,
-    evPct: avg(returns),
+    ...summary,
+    totalRoiPct: summary.cumulativeReturnPctPoints,
+    maxDrawdownPctPoints: summary.maxCumulativeDrawdownPctPoints,
+    sharpe: summary.sharpeProxy,
+    evPct: summary.avgPct,
   };
 }
 
@@ -560,8 +535,8 @@ async function main(): Promise<void> {
           ? realizedPnls.filter((p) => p > 0).reduce((s, p) => s + p, 0) /
             Math.abs(realizedPnls.filter((p) => p < 0).reduce((s, p) => s + p, 0))
           : null,
-      sharpe: std(realizedRois) > 0 ? avg(realizedRois) / std(realizedRois) : 0,
-      maxDrawdownPct: maxDrawdown(realizedRois),
+      sharpe: summarizeReturns(realizedRois).sharpeProxy,
+      maxDrawdownPctPoints: maxCumulativeDrawdownPctPoints(realizedRois),
       largestWinSol: sol(Math.max(...realizedPnls)),
       largestLossSol: sol(Math.min(...realizedPnls)),
     },

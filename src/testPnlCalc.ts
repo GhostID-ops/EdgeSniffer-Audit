@@ -1,6 +1,7 @@
 // Test PnL calculation with your example scenario
 
-import { recordBuy, recordSell, resetPositions } from "./pnl.js";
+import assert from "node:assert/strict";
+import { getTotals, recordBuy, recordSell, resetPositions } from "./pnl.js";
 import { TokenMeta } from "./tokenRegistry.js";
 
 function testPnlCalculation() {
@@ -70,6 +71,17 @@ function testPnlCalculation() {
   
   const actualPct = (gainResult.realizedPnlLamports / smallBuySol) * 100;
   console.log(`   Actual %: ${actualPct.toFixed(1)}%`);
+
+  console.log("\nOversell accounting guard:");
+  console.log("-".repeat(30));
+  resetPositions();
+  recordBuy(tokenMeta, 100, 1_000_000_000);
+  const oversell = recordSell(tokenMeta, 150, 1_500_000_000);
+  assert.equal(oversell.soldRawCosted, 100);
+  assert.equal(oversell.soldRawUncosted, 50);
+  assert.equal(oversell.realizedPnlLamports, 500_000_000);
+  assert.equal(getTotals().realizedPnlLamports, 500_000_000);
+  console.log("   Oversold raw is tracked as uncosted instead of fabricating extra cost basis.");
   
   console.log(`\n✅ PnL calculation working correctly: ${gainResult.realizedPnlLamports === 19_000_000_000 ? 'YES' : 'NO'}`);
 }

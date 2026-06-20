@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { summarizeReturns, type ReturnSummary } from "./accountingMetrics.js";
 import { heliusAddressTransactionsUrl } from "./config.js";
 import { getTokenPairInfo } from "./tokenRegistry.js";
 
@@ -111,15 +112,14 @@ function median(values: number[]): number | null {
   return xs.length % 2 ? xs[mid]! : (xs[mid - 1]! + xs[mid]!) / 2;
 }
 
-function std(values: number[]): number {
-  if (values.length < 2) return 0;
-  const m = avg(values);
-  return Math.sqrt(avg(values.map((v) => (v - m) ** 2)));
-}
-
 function fmtPct(value: number | null): string {
   if (value == null || !Number.isFinite(value)) return "-";
   return `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`;
+}
+
+function fmtPctPoints(value: number | null): string {
+  if (value == null || !Number.isFinite(value)) return "-";
+  return `${value >= 0 ? "+" : ""}${value.toFixed(1)}pp`;
 }
 
 function fmtUsd(value: number | null): string {
@@ -456,20 +456,11 @@ function simulateTime(row: PathRow, minutes: number): number {
 }
 
 function summarizeStrategy(name: string, returns: number[]) {
-  const wins = returns.filter((r) => r > 0);
-  const losses = returns.filter((r) => r < 0);
-  const profit = wins.reduce((s, r) => s + r, 0);
-  const loss = Math.abs(losses.reduce((s, r) => s + r, 0));
-  const sigma = std(returns);
+  const summary = summarizeReturns(returns);
   return {
     name,
-    trades: returns.length,
-    avgPct: avg(returns),
-    medianPct: median(returns),
-    winRatePct: (wins.length / Math.max(1, returns.length)) * 100,
-    profitFactor: loss > 0 ? profit / loss : profit > 0 ? Infinity : 0,
-    sharpeProxy: sigma > 0 ? avg(returns) / sigma : 0,
-    totalPct: returns.reduce((s, r) => s + r, 0),
+    ...summary,
+    totalPct: summary.cumulativeReturnPctPoints,
   };
 }
 
@@ -477,7 +468,7 @@ function makeMarkdown(wallet: string, out: {
   sample: Record<string, unknown>;
   performance: Record<string, unknown>;
   pathStats: Record<string, unknown>;
-  strategies: ReturnType<typeof summarizeStrategy>[];
+  strategies: Array<ReturnSummary & { name: string; totalPct: number }>;
   leadStats: Record<string, unknown>;
   rows: PathRow[];
 }): string {
@@ -505,9 +496,11 @@ function makeMarkdown(wallet: string, out: {
     ``,
     `## Strategy Backtest`,
     ``,
-    `| Strategy | Trades | Avg | Median | Win Rate | Profit Factor | Sharpe Proxy |`,
-    `|---|---:|---:|---:|---:|---:|---:|`,
-    ...out.strategies.map((s) => `| ${s.name} | ${s.trades} | ${fmtPct(s.avgPct)} | ${fmtPct(s.medianPct)} | ${fmtPct(s.winRatePct)} | ${s.profitFactor.toFixed(2)} | ${s.sharpeProxy.toFixed(2)} |`),
+    `Returns are per-trade ROI. Cumulative DD is the worst drop in the cumulative return curve, expressed in percentage points, not bankroll percent.`,
+    ``,
+    `| Strategy | Trades | Avg ROI | Median ROI | Win Rate | Profit Factor | Cumulative ROI | Cumulative DD |`,
+    `|---|---:|---:|---:|---:|---:|---:|---:|`,
+    ...out.strategies.map((s) => `| ${s.name} | ${s.trades} | ${fmtPct(s.avgPct)} | ${fmtPct(s.medianPct)} | ${fmtPct(s.winRatePct)} | ${s.profitFactor.toFixed(2)} | ${fmtPctPoints(s.cumulativeReturnPctPoints)} | ${fmtPctPoints(s.maxCumulativeDrawdownPctPoints)} |`),
     ``,
     `## Lead Wallet / Sniping Clues`,
     ``,
@@ -529,7 +522,7 @@ async function writeAuditFiles(wallet: string, output: {
   sample: Record<string, unknown>;
   performance: Record<string, unknown>;
   pathStats: Record<string, unknown>;
-  strategies: ReturnType<typeof summarizeStrategy>[];
+  strategies: Array<ReturnSummary & { name: string; totalPct: number }>;
   leadStats: Record<string, unknown>;
   rows: PathRow[];
 }): Promise<void> {

@@ -121,17 +121,19 @@ Important caveat: "approx entry MC" is `entry candle USD price * 1B token supply
 
 ## Strategy Backtest
 
-| Strategy | Trades | Win % | Avg ROI | Median ROI | Profit factor | Max drawdown |
+Important accounting note: the old `Max drawdown` column below was a cumulative per-trade ROI drawdown, not bankroll drawdown. It can go below `-100%` because it is summing repeated trade ROI losses. Treat it as percentage points (`pp`) and use it only for strategy ordering, not capital loss.
+
+| Strategy | Trades | Win % | Avg ROI | Median ROI | Profit factor | Cumulative DD |
 |---|---:|---:|---:|---:|---:|---:|
-| 20% trailing stop | 214 | 36.4% | +9.4% | -2.2% | 2.26 | -160.1% |
-| 50% at +30, 50% source exit | 214 | 57.0% | +1.5% | +3.7% | 1.25 | -265.8% |
-| TP60 SL30 | 214 | 29.0% | -1.0% | -23.5% | 0.94 | -525.2% |
-| TP50 SL25 | 214 | 28.5% | -1.3% | -25.0% | 0.91 | -458.1% |
-| TP30 SL20 | 214 | 31.3% | -2.3% | -20.0% | 0.79 | -602.4% |
-| Sell when Omego sells | 214 | 42.5% | -4.4% | -1.8% | 0.41 | -989.0% |
-| Time exit 30m | 214 | 29.0% | -12.1% | -16.6% | 0.51 | -2607.4% |
-| Time exit 1h | 214 | 23.4% | -17.3% | -24.2% | 0.39 | -3715.7% |
-| Time exit 4h | 214 | 15.9% | -26.8% | -32.4% | 0.20 | -5749.8% |
+| 20% trailing stop | 214 | 36.4% | +9.4% | -2.2% | 2.26 | -160.1pp |
+| 50% at +30, 50% source exit | 214 | 57.0% | +1.5% | +3.7% | 1.25 | -265.8pp |
+| TP60 SL30 | 214 | 29.0% | -1.0% | -23.5% | 0.94 | -525.2pp |
+| TP50 SL25 | 214 | 28.5% | -1.3% | -25.0% | 0.91 | -458.1pp |
+| TP30 SL20 | 214 | 31.3% | -2.3% | -20.0% | 0.79 | -602.4pp |
+| Sell when Omego sells | 214 | 42.5% | -4.4% | -1.8% | 0.41 | -989.0pp |
+| Time exit 30m | 214 | 29.0% | -12.1% | -16.6% | 0.51 | -2607.4pp |
+| Time exit 1h | 214 | 23.4% | -17.3% | -24.2% | 0.39 | -3715.7pp |
+| Time exit 4h | 214 | 15.9% | -26.8% | -32.4% | 0.20 | -5749.8pp |
 
 Read:
 
