@@ -330,6 +330,7 @@ const exitSignalSellsInFlight = new Set<string>();
 const riskSellRetryAfterByMint = new Map<string, number>();
 const sourceHoldMissingByMint = new Map<string, number>();
 const RISK_SELL_FAILURE_COOLDOWN_MS = 15_000;
+const ZERO_TOKEN_BALANCE_RECHECK_MS = 250;
 const GRADUATION_TRANSIENT_FLOOR_MS = 2 * 60_000;
 const lastCurveRiskValueByMint = new Map<string, { outSolLamports: number; quotedAt: number }>();
 type RiskTracePoint = {
@@ -340,6 +341,10 @@ type RiskTracePoint = {
   stopLossTrue: boolean;
 };
 const riskTraceByMint = new Map<string, RiskTracePoint[]>();
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function buyLockPath(mint: string): string {
   return join(persistentBuyLockDir, `${mint.replace(/[^1-9A-HJ-NP-Za-km-z]/g, "_")}.lock`);
@@ -3458,6 +3463,51 @@ export async function sellPositionPercentByIndex(index: number, fraction: number
   return;
 }
 
+async function getVerifiedTokenBalance(
+  owner: PublicKey,
+  mint: string,
+  opts: {
+    symbol?: string;
+    expectedRaw?: number;
+    decimals?: number;
+    ownerLabel?: string;
+  } = {}
+): Promise<number> {
+  const fast = await getTokenBalanceFast(owner, mint);
+  if (fast == null) return getTokenBalance(owner, mint);
+  if (fast > 0) return fast;
+
+  const scanned = await getTokenBalance(owner, mint);
+  if (scanned > 0) {
+    const label = opts.symbol ? `$${opts.symbol}` : mint.slice(0, 8);
+    console.warn(
+      `${label}: fast ${opts.ownerLabel ?? "wallet"} token balance read 0, ` +
+        `but full account scan found ${
+          opts.decimals == null ? scanned.toString() : formatTokenAmount(scanned, opts.decimals)
+        }. Using scanned balance.`
+    );
+    return scanned;
+  }
+
+  if ((opts.expectedRaw ?? 0) > 0) {
+    await sleep(ZERO_TOKEN_BALANCE_RECHECK_MS);
+    const retryFast = await getTokenBalanceFast(owner, mint);
+    if (retryFast != null && retryFast > 0) return retryFast;
+    const retryScanned = await getTokenBalance(owner, mint);
+    if (retryScanned > 0) {
+      const label = opts.symbol ? `$${opts.symbol}` : mint.slice(0, 8);
+      console.warn(
+        `${label}: zero-balance recheck recovered ${
+          opts.decimals == null ? retryScanned.toString() : formatTokenAmount(retryScanned, opts.decimals)
+        } on ${opts.ownerLabel ?? "wallet"}.`
+      );
+      return retryScanned;
+    }
+  }
+
+  return 0;
+}
+
 /**
  * Sell all open positions (simulated or live based on mode)
  */
@@ -3471,9 +3521,12 @@ async function sellLivePosition(
   let effectiveNote = note;
   let liveHeldRaw: number | null;
   try {
-    // Fast path: direct ATA read. Falls back to scan-all on null (unusual token program / closed ATA).
-    const fast = await getTokenBalanceFast(keypair!.publicKey, p.mint);
-    liveHeldRaw = fast ?? (await getTokenBalance(keypair!.publicKey, p.mint));
+    liveHeldRaw = await getVerifiedTokenBalance(keypair!.publicKey, p.mint, {
+      symbol: p.symbol,
+      expectedRaw: p.heldRaw,
+      decimals: p.decimals,
+      ownerLabel: "our wallet",
+    });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.warn(`Token balance lookup failed for $${p.symbol}: ${msg}; attempting tracked amount.`);
@@ -4104,8 +4157,9 @@ async function sourceWalletTotalTokenBalance(sourceWallets: PublicKey[], mint: s
   let errors = 0;
   for (const source of sourceWallets) {
     try {
-      const fast = await getTokenBalanceFast(source, mint);
-      const balance = fast ?? (await getTokenBalance(source, mint));
+      const balance = await getVerifiedTokenBalance(source, mint, {
+        ownerLabel: `source ${shortWallet(source.toBase58())}`,
+      });
       totalRaw += balance;
       checked++;
     } catch (err) {
