@@ -123,6 +123,7 @@ import {
 import { getQuote, getSwap, isJupiterRateLimitError } from "./jupiter.js";
 import type { DetectedSwap, RustHotBuy } from "./types.js";
 import {
+  confirmedPostSellRemainderRaw,
   shouldCancelPostSellRemainder,
   type PostSellRemainderIntent,
   type SourceSignalState,
@@ -346,6 +347,10 @@ const exitSignalSellsInFlight = new Set<string>();
 const riskSellRetryAfterByMint = new Map<string, number>();
 const sourceHoldMissingByMint = new Map<string, number>();
 const sourceSignalStateByMint = new Map<string, SourceSignalState>();
+const confirmedPostSellStateByMint = new Map<
+  string,
+  { signature: string; postTokenBalanceRaw: number; slot: number }
+>();
 const postSellRemainderChecksInFlight = new Set<string>();
 const queuedPostSellRemainderByMint = new Map<
   string,
@@ -543,6 +548,16 @@ async function reconcilePostSellRemainder(
     return true;
   }
 
+  const confirmedState = confirmedPostSellStateByMint.get(mint);
+  const provenRemainderRaw = confirmedPostSellRemainderRaw(
+    confirmedState?.postTokenBalanceRaw
+  );
+  if (provenRemainderRaw <= 0) {
+    confirmedPostSellStateByMint.delete(mint);
+    fastSellConfirmPendingByMint.delete(mint);
+    return false;
+  }
+
   let liveRaw: number;
   try {
     liveRaw = await getVerifiedTokenBalance(keypair.publicKey, mint, {
@@ -558,29 +573,33 @@ async function reconcilePostSellRemainder(
   }
 
   if (liveRaw <= 0) {
+    confirmedPostSellStateByMint.delete(mint);
     fastSellConfirmPendingByMint.delete(mint);
     return false;
   }
   if (sourceReenteredAfterFullSell(mint, intent)) {
+    confirmedPostSellStateByMint.delete(mint);
     fastSellConfirmPendingByMint.delete(mint);
     return false;
   }
 
+  const drainRaw = Math.min(liveRaw, provenRemainderRaw);
+  confirmedPostSellStateByMint.delete(mint);
   fastSellConfirmPendingByMint.delete(mint);
   console.warn(
-    `Post-sell remainder detected for ${mint.slice(0, 8)}...: ` +
-      `${position ? formatTokenAmount(liveRaw, position.decimals) : liveRaw.toString()} still held; draining now.`
+    `Confirmed post-sell remainder for ${mint.slice(0, 8)}...: ` +
+      `${position ? formatTokenAmount(drainRaw, position.decimals) : drainRaw.toString()} remained in the confirmed sell transaction; draining proven amount.`
   );
 
   if (position && position.heldRaw > 0) {
     await sellLivePosition(
       position,
       "Post-sell remainder drain after confirmed full exit",
-      undefined,
+      drainRaw,
       false
     );
   } else {
-    await sellLiveWalletTokenBalance(mint, liveRaw);
+    await sellLiveWalletTokenBalance(mint, drainRaw);
   }
   return false;
 }
@@ -768,10 +787,17 @@ async function actualBuyExecutionFromTx(
   }
 }
 
+type ConfirmedSellExecution = {
+  tokenAmountRaw: number;
+  solReceivedLamports: number | null;
+  postTokenBalanceRaw: number;
+  slot: number;
+};
+
 async function actualSellExecutionFromTx(
   signature: string,
   mint: string
-): Promise<{ tokenAmountRaw: number; solReceivedLamports: number | null } | null> {
+): Promise<ConfirmedSellExecution | null> {
   if (!keypair) return null;
   try {
     const tx = await readConnection.getTransaction(signature, {
@@ -790,12 +816,15 @@ async function actualSellExecutionFromTx(
 
     const seen = new Set<number>();
     let soldRaw = 0;
+    let postTokenBalanceRaw = 0;
     for (const balance of tx.meta?.postTokenBalances ?? []) {
       if (balance.mint !== mint || balance.owner !== owner) continue;
       seen.add(balance.accountIndex);
       const pre = preByIndex.get(balance.accountIndex) ?? 0;
       const post = parseInt(balance.uiTokenAmount.amount ?? "0", 10);
-      if (Number.isFinite(post) && pre > post) soldRaw += pre - post;
+      if (!Number.isFinite(post)) continue;
+      postTokenBalanceRaw += post;
+      if (pre > post) soldRaw += pre - post;
     }
     for (const [idx, pre] of preByIndex) {
       if (!seen.has(idx)) soldRaw += pre;
@@ -809,7 +838,12 @@ async function actualSellExecutionFromTx(
       typeof pre === "number" && typeof post === "number" && post > pre ? post - pre : null;
 
     if (soldRaw <= 0 && (solReceivedLamports == null || solReceivedLamports <= 0)) return null;
-    return { tokenAmountRaw: soldRaw, solReceivedLamports };
+    return {
+      tokenAmountRaw: soldRaw,
+      solReceivedLamports,
+      postTokenBalanceRaw,
+      slot: tx.slot,
+    };
   } catch {
     return null;
   }
@@ -934,9 +968,9 @@ async function reconcileFastSellExecution(args: {
   expectedTokenAmountRaw: number;
   expectedSolLamports: number;
   signature: string;
-}): Promise<void> {
+}): Promise<ConfirmedSellExecution | null> {
   const execution = await actualSellExecutionFromTx(args.signature, args.mint);
-  if (execution == null) return;
+  if (execution == null) return null;
   const actualTokens =
     execution.tokenAmountRaw > 0 ? execution.tokenAmountRaw : args.expectedTokenAmountRaw;
   const actualSol =
@@ -987,6 +1021,12 @@ async function reconcileFastSellExecution(args: {
       );
     }
   }
+  confirmedPostSellStateByMint.set(args.mint, {
+    signature: args.signature,
+    postTokenBalanceRaw: execution.postTokenBalanceRaw,
+    slot: execution.slot,
+  });
+  return execution;
 }
 let mirrorSellsEnabled = mirrorSells; // initialized from MIRROR_SELLS env, runtime-toggleable
 let buyOncePerTokenEnabled = buyOncePerToken; // initialized from BUY_ONCE_PER_TOKEN env
@@ -3600,6 +3640,7 @@ export function resetTradingState(): void {
   riskSellRetryAfterByMint.clear();
   sourceHoldMissingByMint.clear();
   sourceSignalStateByMint.clear();
+  confirmedPostSellStateByMint.clear();
   postSellRemainderChecksInFlight.clear();
   queuedPostSellRemainderByMint.clear();
   fastSellConfirmPendingByMint.clear();
