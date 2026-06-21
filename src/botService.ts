@@ -323,6 +323,7 @@ const sourceBuySignatureByMint = new Map<string, string>();
 const mirrorBuySignatureByMint = new Map<string, string>();
 const confirmedFastBuyTokensByMint = new Map<string, number>();
 const pendingFastBuyConfirmSignaturesByMint = new Map<string, Set<string>>();
+const fastBuyLocalCloseGuardUntilByMint = new Map<string, number>();
 const fastSellConfirmPendingByMint = new Set<string>();
 const quarantinedBuyMints = new Map<string, string>();
 const openPositionBuyMintsInFlight = new Set<string>();
@@ -332,6 +333,7 @@ const riskSellRetryAfterByMint = new Map<string, number>();
 const sourceHoldMissingByMint = new Map<string, number>();
 const RISK_SELL_FAILURE_COOLDOWN_MS = 15_000;
 const ZERO_TOKEN_BALANCE_RECHECK_MS = 250;
+const FAST_BUY_LOCAL_CLOSE_GUARD_MS = Math.max(90_000, confirmationNullStatusTimeoutMs * 3);
 const SOURCE_SOLD_WHILE_BUY_PENDING_REASON = "source sold while buy was pending";
 const GRADUATION_TRANSIENT_FLOOR_MS = 2 * 60_000;
 const lastCurveRiskValueByMint = new Map<string, { outSolLamports: number; quotedAt: number }>();
@@ -359,6 +361,7 @@ function markFastBuyConfirmationPending(mint: string, signature: string): void {
     pendingFastBuyConfirmSignaturesByMint.set(mint, signatures);
   }
   signatures.add(signature);
+  extendFastBuyLocalCloseGuard(mint);
 }
 
 function clearFastBuyConfirmationPending(mint: string, signature?: string): void {
@@ -381,6 +384,23 @@ function clearFastBuyConfirmationPendingSoon(mint: string, signature: string): v
 
 function hasFastBuyConfirmationPending(mint: string): boolean {
   return (pendingFastBuyConfirmSignaturesByMint.get(mint)?.size ?? 0) > 0;
+}
+
+function extendFastBuyLocalCloseGuard(mint: string): void {
+  const until = Date.now() + FAST_BUY_LOCAL_CLOSE_GUARD_MS;
+  fastBuyLocalCloseGuardUntilByMint.set(
+    mint,
+    Math.max(fastBuyLocalCloseGuardUntilByMint.get(mint) ?? 0, until)
+  );
+}
+
+function hasFastBuyLocalCloseGuard(mint: string): boolean {
+  const until = fastBuyLocalCloseGuardUntilByMint.get(mint) ?? 0;
+  if (until <= Date.now()) {
+    fastBuyLocalCloseGuardUntilByMint.delete(mint);
+    return false;
+  }
+  return true;
 }
 
 function clearFastSellConfirmationPendingSoon(mint: string): void {
@@ -634,6 +654,7 @@ async function reconcileFastBuyTokens(args: {
 }): Promise<void> {
   const execution = await actualBuyExecutionFromTx(args.signature, args.mint);
   if (execution == null || execution.tokenAmountRaw <= 0) return;
+  extendFastBuyLocalCloseGuard(args.mint);
   const actualTokens = execution.tokenAmountRaw;
   if (actualTokens !== args.expectedTokenAmountRaw && adjustBuyTokenAmount(args.mint, args.expectedTokenAmountRaw, actualTokens)) {
     confirmedFastBuyTokensByMint.set(args.mint, actualTokens);
@@ -686,6 +707,7 @@ async function reconcileOpenPositionWithConfirmedBuy(
 
   const execution = await actualBuyExecutionFromTx(signature, position.mint);
   if (execution == null || execution.tokenAmountRaw <= 0) return position;
+  extendFastBuyLocalCloseGuard(position.mint);
 
   let changed = false;
   if (
@@ -3379,6 +3401,7 @@ export function resetTradingState(): void {
   quarantinedBuyMints.clear();
   sourceBuySignatureByMint.clear();
   pendingFastBuyConfirmSignaturesByMint.clear();
+  fastBuyLocalCloseGuardUntilByMint.clear();
   openPositionBuyMintsInFlight.clear();
   riskSellsInFlight.clear();
   exitSignalSellsInFlight.clear();
@@ -3644,6 +3667,13 @@ async function sellLivePosition(
       console.warn(
         `$${p.symbol}: wallet holds 0 on-chain during fast-mode confirmation grace window; ` +
           "leaving optimistic position open for background confirmation cleanup."
+      );
+      return;
+    }
+    if (hasFastBuyLocalCloseGuard(p.mint)) {
+      console.warn(
+        `$${p.symbol}: wallet holds 0 on-chain during recent fast-buy settle guard; ` +
+          "leaving optimistic position open instead of closing locally."
       );
       return;
     }
