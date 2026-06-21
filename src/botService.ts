@@ -324,6 +324,7 @@ const mirrorBuySignatureByMint = new Map<string, string>();
 const confirmedFastBuyTokensByMint = new Map<string, number>();
 const pendingFastBuyConfirmSignaturesByMint = new Map<string, Set<string>>();
 const fastBuyLocalCloseGuardUntilByMint = new Map<string, number>();
+const loggedFastBuyDebitBySignature = new Set<string>();
 const fastSellConfirmPendingByMint = new Set<string>();
 const quarantinedBuyMints = new Map<string, string>();
 const openPositionBuyMintsInFlight = new Set<string>();
@@ -400,6 +401,12 @@ function hasFastBuyLocalCloseGuard(mint: string): boolean {
     fastBuyLocalCloseGuardUntilByMint.delete(mint);
     return false;
   }
+  return true;
+}
+
+function shouldLogFastBuyDebit(signature: string): boolean {
+  if (loggedFastBuyDebitBySignature.has(signature)) return false;
+  loggedFastBuyDebitBySignature.add(signature);
   return true;
 }
 
@@ -682,6 +689,7 @@ async function reconcileFastBuyTokens(args: {
     execution.solSpentLamports > 0 &&
     execution.solSpentLamports !== args.expectedSolLamports
   ) {
+    if (!shouldLogFastBuyDebit(args.signature)) return;
     console.warn(
       `🧾 Fast buy wallet debit observed for ${args.mint.slice(0, 8)}…: ` +
         `${formatSolAmount(execution.solSpentLamports)} SOL all-in vs ${formatSolAmount(args.expectedSolLamports)} SOL trade basis ` +
@@ -742,6 +750,7 @@ async function reconcileOpenPositionWithConfirmedBuy(
     !useWalletPnlAccounting &&
     execution.solSpentLamports !== position.totalSolSpentLamports
   ) {
+    if (!shouldLogFastBuyDebit(signature)) return changed ? getPosition(position.mint) ?? position : position;
     console.warn(
       `Fast buy wallet debit observed for ${position.mint.slice(0, 8)}...: ` +
         `${formatSolAmount(execution.solSpentLamports)} SOL all-in vs ` +
@@ -3402,6 +3411,7 @@ export function resetTradingState(): void {
   sourceBuySignatureByMint.clear();
   pendingFastBuyConfirmSignaturesByMint.clear();
   fastBuyLocalCloseGuardUntilByMint.clear();
+  loggedFastBuyDebitBySignature.clear();
   openPositionBuyMintsInFlight.clear();
   riskSellsInFlight.clear();
   exitSignalSellsInFlight.clear();
