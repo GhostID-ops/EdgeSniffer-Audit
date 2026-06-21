@@ -1,0 +1,221 @@
+{
+  "wallet": "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq",
+  "generatedAt": "2026-06-21T00:41:10.414Z",
+  "method": "FIFO per mint from Helius account deltas. Gross excludes fees; net includes wallet-paid tx fees in buy cost and sell proceeds.",
+  "anchor": "newest",
+  "coverage": {
+    "transactions": 25997,
+    "swaps": 25390,
+    "realizedSells": 12556,
+    "uncostedSells": 148,
+    "oldestIso": "2026-05-30T18:05:45.000Z",
+    "newestIso": "2026-06-20T06:01:27.000Z",
+    "sources": [
+      {
+        "file": "data\\wallet-ledger-cache\\wallet-omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq-10000.json",
+        "rows": 10000
+      },
+      {
+        "file": "data\\wallet-quant-audit-cache\\wallet-omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq-5000.json",
+        "rows": 5000
+      },
+      {
+        "file": "data\\path-audit-cache\\wallet-omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq-1200.json",
+        "rows": 1200
+      },
+      {
+        "file": "data\\path-audit-cache\\wallet-omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq-3000.json",
+        "rows": 3000
+      },
+      {
+        "file": "data\\path-audit-cache\\wallet-omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq-5000.json",
+        "rows": 5000
+      },
+      {
+        "file": "data\\path-audit-cache\\wallet-omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq-6000.json",
+        "rows": 6000
+      }
+    ]
+  },
+  "windows": [
+    {
+      "name": "1d",
+      "startIso": "2026-06-19T06:01:27.000Z",
+      "endIso": "2026-06-20T06:01:27.000Z",
+      "buys": 2840,
+      "sells": 2841,
+      "uniqueBuyMints": 340,
+      "uniqueSellMints": 341,
+      "deployedSol": 2221.070039314,
+      "grossPnlSol": 25.864675947261027,
+      "netPnlSol": 23.583705474429383,
+      "netRoiPct": 1.0705506303610974,
+      "realizedSells": 2815,
+      "winRatePct": 46.03907637655417,
+      "avgTradePnlSol": 0.008377870506013987,
+      "medianTradePnlSol": -0.007667775,
+      "profitFactor": 1.1877619184755972,
+      "feesSol": 2.301895141
+    },
+    {
+      "name": "7d",
+      "startIso": "2026-06-13T06:01:27.000Z",
+      "endIso": "2026-06-20T06:01:27.000Z",
+      "buys": 7263,
+      "sells": 7264,
+      "uniqueBuyMints": 897,
+      "uniqueSellMints": 898,
+      "deployedSol": 5582.133660858,
+      "grossPnlSol": 79.11254705580212,
+      "netPnlSol": 73.29876566335344,
+      "netRoiPct": 1.3271925703183916,
+      "realizedSells": 7180,
+      "winRatePct": 45.84958217270195,
+      "avgTradePnlSol": 0.010208741735843149,
+      "medianTradePnlSol": -0.008285391999999999,
+      "profitFactor": 1.2350252266415056,
+      "feesSol": 5.883491731
+    },
+    {
+      "name": "30d",
+      "startIso": "2026-05-21T06:01:27.000Z",
+      "endIso": "2026-06-20T06:01:27.000Z",
+      "buys": 12692,
+      "sells": 12698,
+      "uniqueBuyMints": 1685,
+      "uniqueSellMints": 1685,
+      "deployedSol": 9690.233767145,
+      "grossPnlSol": 154.46071439241538,
+      "netPnlSol": 144.29342702731532,
+      "netRoiPct": 1.5045499603764907,
+      "realizedSells": 12556,
+      "winRatePct": 45.4683020070086,
+      "avgTradePnlSol": 0.011491990046775626,
+      "medianTradePnlSol": -0.00882443610777408,
+      "profitFactor": 1.2664181837415835,
+      "feesSol": 10.283174286
+    }
+  ],
+  "uncostedSellExamples": [
+    {
+      "signature": "5B6krNpBq6m4qCneF21hf5D6Gk7BiewMNWzTvfKt4bKVhHLBGNq2UJJG6YeG62vZgdGrr3xkBxosP6DfEwWWi37C",
+      "mint": "5kuTkFHSha6Dc4po34fhHVYfUf9XzqFSGxRN41rmpump",
+      "timestamp": 1781872092,
+      "rawUncosted": 4820435760505
+    },
+    {
+      "signature": "3TEuQdUqYc468gPRyjaqxiMPGAF74ZmZCHf3kjniS45deb8GPzdHRJP67KydyJLhikaVgvT85bRmF5Hy8KDo3sBG",
+      "mint": "CPYrgdAYWFQD74ZtsR8mEBWW7qnrXnegcn7gDMobpump",
+      "timestamp": 1781877897,
+      "rawUncosted": 3848585737518
+    },
+    {
+      "signature": "d1TU7eYQ87gKdb7bJ6EwMKc1TNTBuS1HurqSvqVdSfZgWe3qDyL8cQJrZJVsCSqaVvLZG12dbimNjU5imSwiwC7",
+      "mint": "9nygnJYHeVYw8qVAfzCexh1UHZhtaiCGntUykGGdpump",
+      "timestamp": 1781881709,
+      "rawUncosted": 7602504569843
+    },
+    {
+      "signature": "3GtgmGeKLQRpyD57Mr1StDsZ8JhCswehxKbweZskoVgXoVQsGXBth3apwm3iaj6JTNYQRkwaRuANjdLZtCweJNAB",
+      "mint": "661HKCo3MfE7eeuGTXdUz4JUxiZecWg2cMXU6ACwGQNa",
+      "timestamp": 1781887650,
+      "rawUncosted": 4784703312567
+    },
+    {
+      "signature": "5V3b6ys6KASUKG6C5Wu8aG57WGLF9PAWFaivzPvP1ETeD9wVXfzzAg4b6mLYB2afKKz1bxqqrav9VGY8CRcsunh6",
+      "mint": "HxUSmuRMQLfsHQGhtwg3L19BcxfyvHrR5uUcBdKDpump",
+      "timestamp": 1781887862,
+      "rawUncosted": 6244358406054
+    },
+    {
+      "signature": "4wCAt6nqX9Uy4KSKrBGsqaQgnWkBa1Ptgmi7yVzVu5MU32N1qBpMsfH2dngcmnqJpuHyejn79ko61sXATVCz7wcf",
+      "mint": "9GfYs5Bjf3Z83sxwR5A7EZqXisg16SL478jfqhQFpump",
+      "timestamp": 1781889732,
+      "rawUncosted": 5821323045794
+    },
+    {
+      "signature": "3mUHLMqUq4mhxtKqoaXKxvyJ2MT5XsqBM5NSfH7P8LKQ5Vp3bSQChNVhWwm3Qk8V6GbbA3odMGBmtwcUfcpoKpjH",
+      "mint": "6kN7YnZPoxVZxE4YWjAZyxX2KNweE8LbNJCQTz2ExmoT",
+      "timestamp": 1781890228,
+      "rawUncosted": 4647635015942
+    },
+    {
+      "signature": "WWMdpUQSwaS51shXfhYPDCWxnWxDXCEuYEczNtrdqHZT2JRTzFbtrbymxtf99C7vKYWtRbXddvKGC79GTBQWcSs",
+      "mint": "GxsEZJbMRzc9BiKz79W1PrpEcBArVDa2DNvYZ6DKpump",
+      "timestamp": 1781890556,
+      "rawUncosted": 4992442083031
+    },
+    {
+      "signature": "3BaWosK7StXbWRjhqFSzGbKuPdeXjCnXmC5w5KGoAQFq62Femj8M78K5SrfdCpDKkG7McBAruEeyrVVx92VzZNHg",
+      "mint": "ASLo2cbFkpE7vVcZf5q69zMy6UfzsbivjP9Lm2S9pump",
+      "timestamp": 1781898476,
+      "rawUncosted": 6645030426069
+    },
+    {
+      "signature": "4p7LPcEe2cjr27cggWFvjY4FhobZKsacjfuq4UbXghwW46k1AVQoYy7pUy1HbXxMvX9wBAHHXsAG17yVUzc8STVF",
+      "mint": "ASLo2cbFkpE7vVcZf5q69zMy6UfzsbivjP9Lm2S9pump",
+      "timestamp": 1781898910,
+      "rawUncosted": 1422140953177
+    },
+    {
+      "signature": "4ceBL1J5VarEuWwbWARkYaCfSbe2udyWMidQVCXrW5T3FBjQb1ybNkTe5PoYmbTcuBbxAJSctgMnyU7gnyHBmqdV",
+      "mint": "FguAFTwadxSVfbQ9PRqCraVPz77AUJFgdWDdVRMLpump",
+      "timestamp": 1781899838,
+      "rawUncosted": 3395084475755
+    },
+    {
+      "signature": "5UXSewR4QoSENJSgQZi4x3UYPrCeeVXADKv8XDirXgKkkPqvA7oGrwHDJkNWkBptwwkrmgCARGZTT6VzA9qjRp3L",
+      "mint": "2WhtDtUxWtJFS71PKuozvTKqmdfUatH2dhiu8G4Lpump",
+      "timestamp": 1781899853,
+      "rawUncosted": 7497950492843
+    },
+    {
+      "signature": "5EogeMfM6WUAKyXJC9LkTtbhAnLMvVXi7m1W921w52QPsf1fFt5dTYjBMSzHwKeLzgpJhofE1zFPCVjYaEzbfAwX",
+      "mint": "U1uAaZnodwYW9mpPv8LjzqGfUjwHW7tUvCzjXcNpump",
+      "timestamp": 1781899887,
+      "rawUncosted": 7196640049338
+    },
+    {
+      "signature": "2Ro9uVcvEhtbTbCGayN7ERiJfaooeYQmwz1eSHwRUiaib3jgPGqVwKRb3vi82kozuqAmrH4W3NS9KSSQjQitFgyS",
+      "mint": "xbJmegC7NiwbHMywTXbhVsvsuX1dWvvLcQQngskpump",
+      "timestamp": 1781904530,
+      "rawUncosted": 4871456691237
+    },
+    {
+      "signature": "3iWeMQmNs1gqAsWj4b3KK6G7JjhYU87fc5wuSNRDrW2XpeuHAoHj6xski9h3ffJ3mG7QHcXHMakwwFSw73SPtm2i",
+      "mint": "BABcJ2eMWhePhPh5tsJcobQQhfjHaD6gmvNtcjefpump",
+      "timestamp": 1781906959,
+      "rawUncosted": 8311974936718
+    },
+    {
+      "signature": "4RAkizkx4s4fJCUUeYwm7FyW6fzsfcXSpk1oGrZ6KukPWYYqahKC9vAqCxez1ZDEU33voaMTQc9Lvy2EtAiLLuvi",
+      "mint": "F5kvY6s43VzMghGmmRm1pyAPhvZik8hRR4BQTYeSpump",
+      "timestamp": 1781913433,
+      "rawUncosted": 9813369611581
+    },
+    {
+      "signature": "34psw79Cx1ropvF2uEJuv9m1ukcDKYhBJ5Zpdf9K31ap4id633nLsX349crQqjf8Lrh1uoabcRSVtL8f925uGeLu",
+      "mint": "AC3tcFnWg4vVzLS1RG7WK3WdNCn6bQxJASHCcfARpump",
+      "timestamp": 1781922076,
+      "rawUncosted": 7826966004278
+    },
+    {
+      "signature": "43SwcT4sfuRbDd47xDrHpaYLKex74BgFxQxfQS3LuTuovXu6V4MnYkHjam21mfAocLuTby4k64aZ6dmGtYRSsGUs",
+      "mint": "C4Pj5vnFabo4yRibKg2ZXTvHwXmM42LMh4jJkTyNpump",
+      "timestamp": 1781927848,
+      "rawUncosted": 7180519225310
+    },
+    {
+      "signature": "2sQupkjc5x1RhY1o6BrF5YLhh1TtAG8MfhQZXyrahQVdBvhsH8KrEhcTe7Lw8G77MAys41Z5YMUW3bYYdF7xxKYq",
+      "mint": "EYEbPgsQU43H66Tg7qW5nhwR9vhKJRdRaauhrrXhpump",
+      "timestamp": 1781929331,
+      "rawUncosted": 6360172830307
+    },
+    {
+      "signature": "3HLXqM1A6tpRCxnhUJcaDqqptLAyBa6yoFf9TtscudYUmoCMP38sTjCy7ycBhxExoNxy5YiVA4ehVcWy6NsRKizD",
+      "mint": "FvFUR4gTV5zcytmiQSeGRzkoC8kVDG4tPVFChghVpump",
+      "timestamp": 1781932878,
+      "rawUncosted": 6313748496018
+    }
+  ]
+}
