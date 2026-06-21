@@ -4,6 +4,7 @@ import {
   PUMPSWAP_PROGRAM_ID,
   PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR,
   PUMPSWAP_SELL_DISCRIMINATOR,
+  buyTemplateToSellTemplate,
   derivePumpSwapUserVolumeAccumulatorPda,
   encodeBuyExactQuoteIn,
   encodeSell,
@@ -201,6 +202,47 @@ function testSellEncoding(): void {
   assert.equal(data.readBigUInt64LE(16), 180_000_000n);
 }
 
+function testCashbackBuyToSellConversion(): void {
+  const sourceUser = key("cashback-source-user");
+  const mirrorUser = key("cashback-mirror-user");
+  const baseMint = key("cashback-base-mint");
+  const buy = metas(27);
+  buy[1] = { pubkey: sourceUser, isSigner: true, isWritable: true };
+  const [globalVolume] = PublicKey.findProgramAddressSync(
+    [Buffer.from("global_volume_accumulator")],
+    PUMPSWAP_PROGRAM_ID
+  );
+  buy[19] = { pubkey: globalVolume, isSigner: false, isWritable: true };
+  const sourceVolume = derivePumpSwapUserVolumeAccumulatorPda(sourceUser);
+  buy[20] = { pubkey: sourceVolume, isSigner: false, isWritable: true };
+  buy[23] = {
+    pubkey: deriveAta(sourceVolume, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID),
+    isSigner: false,
+    isWritable: true,
+  };
+
+  const sell = buyTemplateToSellTemplate(buy);
+  assert.ok(sell);
+  assert.equal(sell.length, 26, "cashback sell has the required 26 accounts");
+  assert.equal(sell[21]!.pubkey.toBase58(), buy[23]!.pubkey.toBase58());
+  assert.equal(sell[22]!.pubkey.toBase58(), sourceVolume.toBase58());
+
+  const replaced = replacePumpSwapUserAccounts({
+    accounts: sell,
+    user: mirrorUser,
+    baseMint,
+    baseTokenProgram: TOKEN_2022_PROGRAM_ID,
+    replaceUserVolumeAccumulator: false,
+    replaceSellCashbackAccounts: true,
+  }).accounts;
+  const mirrorVolume = derivePumpSwapUserVolumeAccumulatorPda(mirrorUser);
+  assert.equal(replaced[22]!.pubkey.toBase58(), mirrorVolume.toBase58());
+  assert.equal(
+    replaced[21]!.pubkey.toBase58(),
+    deriveAta(mirrorVolume, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID).toBase58()
+  );
+}
+
 function run(): void {
   testUserAccountReplacement();
   testPumpSwapHintAccountFlags();
@@ -210,6 +252,7 @@ function run(): void {
   testPoolPrecheckSimulationCases();
   testBuyExactQuoteInEncoding();
   testSellEncoding();
+  testCashbackBuyToSellConversion();
   console.log("PumpSwap tests passed");
 }
 

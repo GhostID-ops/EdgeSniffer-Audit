@@ -68,6 +68,8 @@ const PUMPSWAP_USER_BASE_ATA_INDEX = 5;
 const PUMPSWAP_USER_QUOTE_ATA_INDEX = 6;
 const PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX = 11;
 const PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX = 20;
+const PUMPSWAP_SELL_CASHBACK_ATA_INDEX = 21;
+const PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX = 22;
 const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT = 23;
 const PUMPSWAP_MIN_SELL_ACCOUNT_COUNT = 21;
 const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 17, 20, 23]);
@@ -693,7 +695,7 @@ function pumpSwapAccountMetasFromTx(
 // freshly graduated token that has no sells yet). We validate that indices 19/20
 // really are the two volume accumulators before removing them, so any future
 // layout drift fails closed instead of corrupting the sell.
-function buyTemplateToSellTemplate(buy: AccountMeta[]): AccountMeta[] | null {
+export function buyTemplateToSellTemplate(buy: AccountMeta[]): AccountMeta[] | null {
   if (buy.length < PUMPSWAP_MIN_BUY_ACCOUNT_COUNT) return null;
   const user = buy[PUMPSWAP_USER_INDEX]?.pubkey;
   if (!user) return null;
@@ -701,7 +703,23 @@ function buyTemplateToSellTemplate(buy: AccountMeta[]): AccountMeta[] | null {
   const userVol = buy[PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX]?.pubkey;
   if (!globalVol?.equals(derivePumpSwapGlobalVolumeAccumulatorPda())) return null;
   if (!userVol?.equals(derivePumpSwapUserVolumeAccumulatorPda(user))) return null;
-  return [...buy.slice(0, 19), ...buy.slice(PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX + 1)];
+  const sell = [...buy.slice(0, 19), ...buy.slice(PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX + 1, 23)];
+  const remaining = buy.slice(23);
+  const userVolume = derivePumpSwapUserVolumeAccumulatorPda(user);
+  const cashbackAta = deriveAta(userVolume, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID);
+  if (remaining[0]?.pubkey.equals(cashbackAta)) {
+    // Cashback buys append only the WSOL cashback ATA. Cashback sells require
+    // that ATA followed by the matching PumpSwap user-volume PDA. Omitting the
+    // PDA shifts the remaining-account tail and caused on-chain 6023 failures.
+    sell.push(
+      remaining[0],
+      { pubkey: userVolume, isSigner: false, isWritable: true },
+      ...remaining.slice(1)
+    );
+  } else {
+    sell.push(...remaining);
+  }
+  return sell;
 }
 
 // Build a PumpSwap account list for the current on-chain layout by templating a
@@ -816,8 +834,10 @@ export function replacePumpSwapUserAccounts(args: {
   // current SELL layout index 20 is fee_program, so substituting it there would
   // corrupt the instruction. Defaults to true (buy behavior).
   replaceUserVolumeAccumulator?: boolean;
+  replaceSellCashbackAccounts?: boolean;
 }): { accounts: AccountMeta[]; userBaseAta: PublicKey; userQuoteAta: PublicKey } {
   const accounts = args.accounts.map((a) => ({ ...a }));
+  const templateUser = accounts[PUMPSWAP_USER_INDEX]?.pubkey;
   const userBaseAta = deriveAta(args.user, args.baseMint, args.baseTokenProgram);
   const userQuoteAta = deriveAta(args.user, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID);
 
@@ -833,6 +853,30 @@ export function replacePumpSwapUserAccounts(args: {
       isSigner: false,
       isWritable: true,
     };
+  }
+  if (args.replaceSellCashbackAccounts && templateUser) {
+    const templateVolume = derivePumpSwapUserVolumeAccumulatorPda(templateUser);
+    const templateCashbackAta = deriveAta(
+      templateVolume,
+      new PublicKey(WRAPPED_SOL_MINT),
+      TOKEN_PROGRAM_ID
+    );
+    const hasCashbackSellTail =
+      accounts[PUMPSWAP_SELL_CASHBACK_ATA_INDEX]?.pubkey.equals(templateCashbackAta) &&
+      accounts[PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX]?.pubkey.equals(templateVolume);
+    if (hasCashbackSellTail) {
+      const userVolume = derivePumpSwapUserVolumeAccumulatorPda(args.user);
+      accounts[PUMPSWAP_SELL_CASHBACK_ATA_INDEX] = {
+        pubkey: deriveAta(userVolume, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID),
+        isSigner: false,
+        isWritable: true,
+      };
+      accounts[PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX] = {
+        pubkey: userVolume,
+        isSigner: false,
+        isWritable: true,
+      };
+    }
   }
 
   return { accounts, userBaseAta, userQuoteAta };
@@ -2079,6 +2123,7 @@ export async function tryPumpSwapDirectSell(args: {
     baseMint: mintKey,
     baseTokenProgram: baseTokenProgramId,
     replaceUserVolumeAccumulator: false, // sells have no user_volume_accumulator
+    replaceSellCashbackAccounts: true,
   });
   if (accounts.length < PUMPSWAP_MIN_SELL_ACCOUNT_COUNT) {
     return { ok: false, recoverable: true, reason: `PumpSwap sell account list too short: ${accounts.length}` };

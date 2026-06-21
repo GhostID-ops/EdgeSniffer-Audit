@@ -61,6 +61,8 @@ const PUMPSWAP_USER_BASE_ATA_INDEX: usize = 5;
 const PUMPSWAP_USER_QUOTE_ATA_INDEX: usize = 6;
 const PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX: usize = 11;
 const PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX: usize = 20;
+const PUMPSWAP_SELL_CASHBACK_ATA_INDEX: usize = 21;
+const PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX: usize = 22;
 const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT: usize = 23;
 const PUMPSWAP_MIN_SELL_ACCOUNT_COUNT: usize = 21;
 
@@ -1364,6 +1366,19 @@ fn build_pumpswap_sell_ix(
     // substitute it — only the user, user base ATA and user quote ATA are
     // user-specific; everything else (incl. the per-token fee-program accounts)
     // is carried verbatim from the template.
+    let template_user = source_accounts[PUMPSWAP_USER_INDEX];
+    let template_volume = derive_pumpswap_user_volume_accumulator(&template_user)?;
+    let wsol = parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?;
+    let token_program = parse_pubkey(TOKEN_PROGRAM_ID, "token program")?;
+    let template_cashback_ata = derive_ata(&template_volume, &wsol, &token_program)?;
+    let has_cashback_sell_tail = source_accounts
+        .get(PUMPSWAP_SELL_CASHBACK_ATA_INDEX)
+        == Some(&template_cashback_ata)
+        && source_accounts
+            .get(PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX)
+            == Some(&template_volume);
+    let user_volume = derive_pumpswap_user_volume_accumulator(user)?;
+    let user_cashback_ata = derive_ata(&user_volume, &wsol, &token_program)?;
     let keys = cmd
         .source_pump_swap_accounts
         .iter()
@@ -1377,6 +1392,8 @@ fn build_pumpswap_sell_ix(
                 PUMPSWAP_USER_INDEX => *user,
                 PUMPSWAP_USER_BASE_ATA_INDEX => *user_base_ata,
                 PUMPSWAP_USER_QUOTE_ATA_INDEX => *user_quote_ata,
+                PUMPSWAP_SELL_CASHBACK_ATA_INDEX if has_cashback_sell_tail => user_cashback_ata,
+                PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX if has_cashback_sell_tail => user_volume,
                 _ => source,
             };
             let is_signer = if i == PUMPSWAP_USER_INDEX {
@@ -1388,6 +1405,8 @@ fn build_pumpswap_sell_ix(
                 PUMPSWAP_USER_INDEX | PUMPSWAP_USER_BASE_ATA_INDEX | PUMPSWAP_USER_QUOTE_ATA_INDEX => {
                     true
                 }
+                PUMPSWAP_SELL_CASHBACK_ATA_INDEX | PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX
+                    if has_cashback_sell_tail => true,
                 _ => source_meta.is_writable,
             };
             Ok(meta(actual, is_signer, is_writable))
