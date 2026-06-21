@@ -137,6 +137,10 @@ import {
   type PostSellRemainderIntent,
   type SourceSignalState,
 } from "./postSellLifecycle.js";
+import {
+  observeSourceHoldZero,
+  type SourceHoldZeroState,
+} from "./sourceHoldExit.js";
 import { warmConnection, createSenderTransactionFromSwapResponse, broadcastTransactionWithSender } from "./sender.js";
 import { confirmSignature } from "./confirm.js";
 import {
@@ -355,7 +359,7 @@ const openPositionBuyMintsInFlight = new Set<string>();
 const riskSellsInFlight = new Set<string>();
 const exitSignalSellsInFlight = new Set<string>();
 const riskSellRetryAfterByMint = new Map<string, number>();
-const sourceHoldMissingByMint = new Map<string, number>();
+const sourceHoldMissingByMint = new Map<string, SourceHoldZeroState>();
 const sourceSignalStateByMint = new Map<string, SourceSignalState>();
 const confirmedInventoryByMint = new Map<string, ConfirmedInventoryLedger>();
 const queuedSourceSellByMint = new Map<
@@ -4813,28 +4817,51 @@ function sourceWalletTotalTokenBalance(
   sourceWallets: PublicKey[],
   snapshots: Map<string, WalletTokenBalanceSnapshot>,
   mint: string
-): {
+): number {
+  let totalRaw = 0;
+  for (const source of sourceWallets) {
+    const snapshot = snapshots.get(source.toBase58());
+    totalRaw += snapshot?.balancesByMint.get(mint) ?? 0;
+  }
+  return totalRaw;
+}
+
+async function verifySourceWalletTokenBalance(
+  sourceWallets: PublicKey[],
+  mint: string
+): Promise<{
   totalRaw: number;
   checked: number;
   errors: number;
-} {
+  confirmedSlot: number | null;
+}> {
   let totalRaw = 0;
   let checked = 0;
   let errors = 0;
+  let confirmedSlot = Number.MAX_SAFE_INTEGER;
+
   for (const source of sourceWallets) {
-    const snapshot = snapshots.get(source.toBase58());
-    if (!snapshot) {
+    try {
+      const balance = await getTokenBalanceAtOrAfterSlot(source, mint, 0);
+      totalRaw += balance.amountRaw;
+      checked++;
+      confirmedSlot = Math.min(confirmedSlot, balance.contextSlot);
+    } catch (err) {
       errors++;
-      continue;
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(
+        `Source-hold confirmed balance check failed for ${shortWallet(source.toBase58())} ` +
+          `${mint.slice(0, 8)}...: ${msg}`
+      );
     }
-    totalRaw += snapshot.balancesByMint.get(mint) ?? 0;
-    if (snapshot.failedPrograms > 0 || snapshot.successfulPrograms < 2) {
-      errors++;
-      continue;
-    }
-    checked++;
   }
-  return { totalRaw, checked, errors };
+
+  return {
+    totalRaw,
+    checked,
+    errors,
+    confirmedSlot: checked > 0 ? confirmedSlot : null,
+  };
 }
 
 async function checkSourceHoldExits(): Promise<void> {
@@ -4871,22 +4898,51 @@ async function checkSourceHoldExits(): Promise<void> {
   const snapshots = await sourceWalletTokenBalanceSnapshots(sourceWallets);
 
   for (const p of eligible) {
-    const sourceBalance = sourceWalletTotalTokenBalance(sourceWallets, snapshots, p.mint);
-    if (sourceBalance.totalRaw > 0) {
+    const snapshotBalanceRaw = sourceWalletTotalTokenBalance(sourceWallets, snapshots, p.mint);
+    if (snapshotBalanceRaw > 0) {
       sourceHoldMissingByMint.delete(p.mint);
       continue;
     }
 
-    if (sourceBalance.checked === 0 || sourceBalance.errors > 0) {
+    // A whole-wallet parsed scan is only a positive-presence optimization. A
+    // missing mint is not authoritative zero: parsing/index lag can omit a
+    // Token-2022 account even when the RPC call itself succeeds.
+    const verified = await verifySourceWalletTokenBalance(sourceWallets, p.mint);
+    if (verified.totalRaw > 0) {
+      sourceHoldMissingByMint.delete(p.mint);
       console.warn(
-        `Source-hold exit: source wallet snapshot incomplete for ${p.mint.slice(0, 8)}...; ` +
-          `not counting as a miss.`
+        `Source-hold snapshot false zero recovered for ${p.mint.slice(0, 8)}...: ` +
+          `confirmed raw account read found ${verified.totalRaw} token units.`
       );
       continue;
     }
 
-    const misses = (sourceHoldMissingByMint.get(p.mint) ?? 0) + 1;
-    sourceHoldMissingByMint.set(p.mint, misses);
+    if (
+      verified.checked !== sourceWallets.length ||
+      verified.errors > 0 ||
+      verified.confirmedSlot == null
+    ) {
+      console.warn(
+        `Source-hold exit: confirmed source balance verification incomplete for ` +
+          `${p.mint.slice(0, 8)}...; not counting as a miss.`
+      );
+      continue;
+    }
+
+    const zeroObservation = observeSourceHoldZero(
+      sourceHoldMissingByMint.get(p.mint),
+      verified.confirmedSlot
+    );
+    if (!zeroObservation.counted) {
+      console.warn(
+        `Source-hold exit: RPC repeated stale confirmed slot ${verified.confirmedSlot} for ` +
+          `${p.mint.slice(0, 8)}...; not counting as another miss.`
+      );
+      continue;
+    }
+
+    sourceHoldMissingByMint.set(p.mint, zeroObservation.state);
+    const misses = zeroObservation.state.misses;
     console.log(
       `Source-hold exit check: tracked source holds 0 $${p.symbol} ` +
         `(${misses}/${sourceHoldExitConsecutiveMisses} consecutive misses).`

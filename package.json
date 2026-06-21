@@ -48,7 +48,8 @@
     "test:idl": "tsx src/testIdlBuilders.ts",
     "test:retry": "tsx src/testExecutionRetry.ts",
     "test:post-sell-lifecycle": "tsx src/testPostSellLifecycle.ts",
-    "test:confirmed-inventory": "tsx src/testConfirmedInventory.ts"
+    "test:confirmed-inventory": "tsx src/testConfirmedInventory.ts",
+    "test:source-hold-exit": "tsx src/testSourceHoldExit.ts"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.0",
