@@ -46,7 +46,8 @@
     "test:buy-once": "node dist/testBuyOncePolicy.js",
     "test:source-positions": "tsx src/testSourcePositions.ts",
     "test:idl": "tsx src/testIdlBuilders.ts",
-    "test:retry": "tsx src/testExecutionRetry.ts"
+    "test:retry": "tsx src/testExecutionRetry.ts",
+    "test:post-sell-lifecycle": "tsx src/testPostSellLifecycle.ts"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.0",
