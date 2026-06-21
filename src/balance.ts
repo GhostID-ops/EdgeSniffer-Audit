@@ -21,6 +21,11 @@ export type WalletTokenBalanceSnapshot = {
   failedPrograms: number;
 };
 
+export type ContextualTokenBalance = {
+  amountRaw: number;
+  contextSlot: number;
+};
+
 /** Derive the ATA for (owner, mint, tokenProgram). Returns null on derivation failure. */
 function deriveAta(owner: PublicKey, mint: string, tokenProgramId: PublicKey): PublicKey | null {
   try {
@@ -143,6 +148,43 @@ export async function getTokenBalance(
   }
 
   return total;
+}
+
+/**
+ * Read token inventory from a bank that has processed at least minContextSlot.
+ * The raw account layout stores amount as u64 at offset 64 for both Token and
+ * Token-2022 accounts. Mint-filtered owner queries can return multiple accounts,
+ * so the result is summed instead of assuming one ATA.
+ */
+export async function getTokenBalanceAtOrAfterSlot(
+  owner: PublicKey,
+  mint: string,
+  minContextSlot: number
+): Promise<ContextualTokenBalance> {
+  const response = await readConnection.getTokenAccountsByOwner(
+    owner,
+    { mint: new PublicKey(mint) },
+    {
+      commitment: "confirmed",
+      minContextSlot: Math.max(0, Math.floor(minContextSlot)),
+    }
+  );
+
+  let amountRaw = 0;
+  for (const account of response.value) {
+    const data = account.account.data;
+    if (!Buffer.isBuffer(data) || data.length < 72) continue;
+    const raw = data.readBigUInt64LE(64);
+    if (raw > BigInt(Number.MAX_SAFE_INTEGER)) {
+      throw new Error(`Token balance exceeds safe integer range for ${mint}`);
+    }
+    amountRaw += Number(raw);
+  }
+
+  return {
+    amountRaw,
+    contextSlot: response.context.slot,
+  };
 }
 
 /**

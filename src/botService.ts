@@ -123,6 +123,15 @@ import {
 import { getQuote, getSwap, isJupiterRateLimitError } from "./jupiter.js";
 import type { DetectedSwap, RustHotBuy } from "./types.js";
 import {
+  applyConfirmedTransactionState,
+  applyContextualInventorySnapshot,
+  authoritativeBalanceRaw,
+  cappedQueuedSellRaw,
+  emptyConfirmedInventoryLedger,
+  shouldExpandQueuedSellAfterFailure,
+  type ConfirmedInventoryLedger,
+} from "./confirmedInventory.js";
+import {
   confirmedPostSellRemainderRaw,
   shouldCancelPostSellRemainder,
   type PostSellRemainderIntent,
@@ -135,6 +144,7 @@ import {
   formatSol,
   getTokenBalance,
   getTokenBalanceFast,
+  getTokenBalanceAtOrAfterSlot,
   getWalletTokenBalances,
   getWalletTokenBalanceSnapshot,
   type WalletTokenBalanceSnapshot,
@@ -347,6 +357,18 @@ const exitSignalSellsInFlight = new Set<string>();
 const riskSellRetryAfterByMint = new Map<string, number>();
 const sourceHoldMissingByMint = new Map<string, number>();
 const sourceSignalStateByMint = new Map<string, SourceSignalState>();
+const confirmedInventoryByMint = new Map<string, ConfirmedInventoryLedger>();
+const queuedSourceSellByMint = new Map<
+  string,
+  {
+    swap: DetectedSwap;
+    sourceVersion: number;
+    targetRaw: number;
+    retryAfter: number;
+    attempts: number;
+  }
+>();
+const queuedSellCapBySignature = new Map<string, number>();
 const confirmedPostSellStateByMint = new Map<
   string,
   { signature: string; postTokenBalanceRaw: number; slot: number }
@@ -395,18 +417,22 @@ function markFastBuyConfirmationPending(mint: string, signature: string): void {
 function clearFastBuyConfirmationPending(mint: string, signature?: string): void {
   if (!signature) {
     pendingFastBuyConfirmSignaturesByMint.delete(mint);
+    drainQueuedSourceSell(mint);
     return;
   }
   const signatures = pendingFastBuyConfirmSignaturesByMint.get(mint);
   if (!signatures) return;
   signatures.delete(signature);
-  if (signatures.size === 0) pendingFastBuyConfirmSignaturesByMint.delete(mint);
+  if (signatures.size === 0) {
+    pendingFastBuyConfirmSignaturesByMint.delete(mint);
+    drainQueuedSourceSell(mint);
+  }
 }
 
 function clearFastBuyConfirmationPendingSoon(mint: string, signature: string): void {
   const timer = setTimeout(() => {
     clearFastBuyConfirmationPending(mint, signature);
-  }, 2_000);
+  }, 100);
   timer.unref?.();
 }
 
@@ -439,9 +465,111 @@ function shouldLogFastBuyDebit(signature: string): boolean {
 
 function clearFastSellConfirmationPendingSoon(mint: string): void {
   const timer = setTimeout(() => {
-    fastSellConfirmPendingByMint.delete(mint);
-  }, 2_000);
+    releaseFastSellLifecycle(mint);
+  }, 100);
   timer.unref?.();
+}
+
+function releaseFastSellLifecycle(mint: string): void {
+  fastSellConfirmPendingByMint.delete(mint);
+  drainQueuedSourceSell(mint);
+}
+
+function inventoryLedger(mint: string): ConfirmedInventoryLedger {
+  return confirmedInventoryByMint.get(mint) ?? emptyConfirmedInventoryLedger();
+}
+
+function noteConfirmedInventory(
+  mint: string,
+  state: { slot: number; balanceRaw: number; signature: string }
+): void {
+  confirmedInventoryByMint.set(
+    mint,
+    applyConfirmedTransactionState(inventoryLedger(mint), state)
+  );
+}
+
+async function refreshConfirmedInventory(mint: string): Promise<number> {
+  if (!keypair) throw new Error("Wallet is not loaded.");
+  const ledger = inventoryLedger(mint);
+  const snapshot = await getTokenBalanceAtOrAfterSlot(
+    keypair.publicKey,
+    mint,
+    ledger.refreshFloorSlot
+  );
+  const next = applyContextualInventorySnapshot(ledger, {
+    slot: snapshot.contextSlot,
+    balanceRaw: snapshot.amountRaw,
+    signature: `account-snapshot-${snapshot.contextSlot}`,
+  });
+  confirmedInventoryByMint.set(mint, next);
+  const amount = authoritativeBalanceRaw(next);
+  if (amount == null) {
+    throw new Error(`Could not establish confirmed inventory for ${mint}`);
+  }
+  return amount;
+}
+
+function queueSourceSell(swap: DetectedSwap, retryDelayMs = 0): void {
+  const previous = queuedSourceSellByMint.get(swap.inputMint);
+  const replayCap = queuedSellCapBySignature.get(swap.signature);
+  queuedSellCapBySignature.delete(swap.signature);
+  const targetRaw = Math.max(
+    0,
+    Math.floor(
+      replayCap ??
+        (previous?.swap.signature === swap.signature ? previous.targetRaw : undefined) ??
+        getPosition(swap.inputMint)?.heldRaw ??
+        0
+    )
+  );
+  const attempts = retryDelayMs > 0 ? (previous?.attempts ?? 0) + 1 : previous?.attempts ?? 0;
+  const backoff =
+    retryDelayMs > 0
+      ? Math.min(4_000, retryDelayMs * 2 ** Math.max(0, attempts - 1))
+      : 0;
+  queuedSourceSellByMint.set(swap.inputMint, {
+    swap,
+    sourceVersion: sourceSignalStateByMint.get(swap.inputMint)?.version ?? 0,
+    targetRaw,
+    retryAfter: Date.now() + backoff,
+    attempts,
+  });
+}
+
+function drainQueuedSourceSell(mint: string): void {
+  if (stopRequested || !keypair || fastSellConfirmPendingByMint.has(mint)) return;
+  const queued = queuedSourceSellByMint.get(mint);
+  if (!queued) return;
+  const waitMs = queued.retryAfter - Date.now();
+  if (waitMs > 0) {
+    const timer = setTimeout(() => drainQueuedSourceSell(mint), waitMs);
+    timer.unref?.();
+    return;
+  }
+  queuedSourceSellByMint.delete(mint);
+  queuedSellCapBySignature.set(queued.swap.signature, queued.targetRaw);
+  const timer = setTimeout(() => {
+    if (!keypair || stopRequested) return;
+    void processSwap(queued.swap, keypair).catch((err) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Queued source sell failed for ${mint.slice(0, 8)}...: ${msg}`);
+    });
+  }, 0);
+  timer.unref?.();
+}
+
+function expandQueuedSellAfterFailure(mint: string): void {
+  const queued = queuedSourceSellByMint.get(mint);
+  if (!queued) return;
+  if (
+    shouldExpandQueuedSellAfterFailure(
+      queued.sourceVersion,
+      sourceSignalStateByMint.get(mint)
+    )
+  ) {
+    queued.targetRaw = Math.max(queued.targetRaw, getPosition(mint)?.heldRaw ?? 0);
+  }
 }
 
 function noteTrackedSourceMintSignal(
@@ -523,11 +651,11 @@ async function reconcilePostSellRemainder(
   attempt: number
 ): Promise<boolean> {
   if (!keypair || stopRequested) {
-    fastSellConfirmPendingByMint.delete(mint);
+    releaseFastSellLifecycle(mint);
     return false;
   }
   if (sourceReenteredAfterFullSell(mint, intent)) {
-    fastSellConfirmPendingByMint.delete(mint);
+    releaseFastSellLifecycle(mint);
     console.log(
       `Post-sell remainder drain canceled for ${mint.slice(0, 8)}...: ` +
         `fresh tracked-source buy arrived after the full-sell signal.`
@@ -542,7 +670,7 @@ async function reconcilePostSellRemainder(
         `(${attempt}/${POST_SELL_REMAINDER_MAX_ATTEMPTS}).`
     );
     if (attempt >= POST_SELL_REMAINDER_MAX_ATTEMPTS) {
-      fastSellConfirmPendingByMint.delete(mint);
+      releaseFastSellLifecycle(mint);
       return false;
     }
     return true;
@@ -554,7 +682,7 @@ async function reconcilePostSellRemainder(
   );
   if (provenRemainderRaw <= 0) {
     confirmedPostSellStateByMint.delete(mint);
-    fastSellConfirmPendingByMint.delete(mint);
+    releaseFastSellLifecycle(mint);
     return false;
   }
 
@@ -574,12 +702,12 @@ async function reconcilePostSellRemainder(
 
   if (liveRaw <= 0) {
     confirmedPostSellStateByMint.delete(mint);
-    fastSellConfirmPendingByMint.delete(mint);
+    releaseFastSellLifecycle(mint);
     return false;
   }
   if (sourceReenteredAfterFullSell(mint, intent)) {
     confirmedPostSellStateByMint.delete(mint);
-    fastSellConfirmPendingByMint.delete(mint);
+    releaseFastSellLifecycle(mint);
     return false;
   }
 
@@ -747,10 +875,17 @@ function resolveTxAccountKeys(tx: VersionedTransactionResponse): string[] {
   );
 }
 
+type ConfirmedBuyExecution = {
+  tokenAmountRaw: number;
+  solSpentLamports: number | null;
+  postTokenBalanceRaw: number;
+  slot: number;
+};
+
 async function actualBuyExecutionFromTx(
   signature: string,
   mint: string
-): Promise<{ tokenAmountRaw: number; solSpentLamports: number | null } | null> {
+): Promise<ConfirmedBuyExecution | null> {
   if (!keypair) return null;
   try {
     const tx = await readConnection.getTransaction(signature, {
@@ -767,9 +902,11 @@ async function actualBuyExecutionFromTx(
     }
 
     let best = 0;
+    let postTokenBalanceRaw = 0;
     for (const balance of tx.meta?.postTokenBalances ?? []) {
       if (balance.mint !== mint || balance.owner !== owner) continue;
       const raw = parseInt(balance.uiTokenAmount.amount ?? "0", 10);
+      if (Number.isFinite(raw) && raw >= 0) postTokenBalanceRaw += raw;
       const pre = preByIndex.get(balance.accountIndex) ?? 0;
       const delta = raw - pre;
       if (Number.isFinite(delta) && delta > best) best = delta;
@@ -781,7 +918,12 @@ async function actualBuyExecutionFromTx(
     const post = ownerIndex >= 0 ? tx.meta?.postBalances?.[ownerIndex] : undefined;
     const solSpentLamports =
       typeof pre === "number" && typeof post === "number" && pre > post ? pre - post : null;
-    return { tokenAmountRaw: best, solSpentLamports };
+    return {
+      tokenAmountRaw: best,
+      solSpentLamports,
+      postTokenBalanceRaw,
+      slot: tx.slot,
+    };
   } catch {
     return null;
   }
@@ -863,6 +1005,11 @@ async function reconcileFastBuyTokens(args: {
 }): Promise<void> {
   const execution = await actualBuyExecutionFromTx(args.signature, args.mint);
   if (execution == null || execution.tokenAmountRaw <= 0) return;
+  noteConfirmedInventory(args.mint, {
+    slot: execution.slot,
+    balanceRaw: execution.postTokenBalanceRaw,
+    signature: args.signature,
+  });
   extendFastBuyLocalCloseGuard(args.mint);
   const actualTokens = execution.tokenAmountRaw;
   if (actualTokens !== args.expectedTokenAmountRaw && adjustBuyTokenAmount(args.mint, args.expectedTokenAmountRaw, actualTokens)) {
@@ -917,6 +1064,11 @@ async function reconcileOpenPositionWithConfirmedBuy(
 
   const execution = await actualBuyExecutionFromTx(signature, position.mint);
   if (execution == null || execution.tokenAmountRaw <= 0) return position;
+  noteConfirmedInventory(position.mint, {
+    slot: execution.slot,
+    balanceRaw: execution.postTokenBalanceRaw,
+    signature,
+  });
   extendFastBuyLocalCloseGuard(position.mint);
 
   let changed = false;
@@ -1025,6 +1177,11 @@ async function reconcileFastSellExecution(args: {
     signature: args.signature,
     postTokenBalanceRaw: execution.postTokenBalanceRaw,
     slot: execution.slot,
+  });
+  noteConfirmedInventory(args.mint, {
+    slot: execution.slot,
+    balanceRaw: execution.postTokenBalanceRaw,
+    signature: args.signature,
   });
   return execution;
 }
@@ -2283,8 +2440,20 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
   }
 
   let proportionalSellAmountRaw: number | undefined;
+  let confirmedSellAmountRaw: number | undefined;
+  const queuedSellCapRaw = isSellSignal(swap)
+    ? queuedSellCapBySignature.get(swap.signature)
+    : undefined;
   if (isSellSignal(swap)) {
     const mint = swap.inputMint;
+    if (!simulationMode && hasFastBuyConfirmationPending(mint)) {
+      queueSourceSell(swap);
+      console.log(
+        `Queued sell: ${mint.slice(0, 8)}... waiting for pending buy confirmation.`
+      );
+      recordMirrorSkip(swap, "sell queued behind pending buy confirmation");
+      return;
+    }
     if (
       buyMintsInFlight.has(mint) ||
       pendingBuyRetryByMint.has(mint) ||
@@ -2813,12 +2982,44 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         await reconcileOpenPositionWithConfirmedBuy(currentPosition);
       }
       if (fastSellConfirmPendingByMint.has(sellMint)) {
-        console.log(`Skipping sell: ${sellMint.slice(0, 8)}... sell already awaiting confirmation.`);
-        recordMirrorSkip(swap, "sell already awaiting confirmation");
+        queueSourceSell(swap);
+        console.log(
+          `Queued sell: ${sellMint.slice(0, 8)}... another sell is awaiting confirmation.`
+        );
+        recordMirrorSkip(swap, "sell queued behind pending confirmation");
         return;
       }
       fastSellConfirmPendingByMint.add(sellMint);
       lockedFastSellMint = sellMint;
+      let confirmedBalance: number;
+      try {
+        confirmedBalance = await refreshConfirmedInventory(sellMint);
+      } catch (err) {
+        queueSourceSell(swap, 500);
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(
+          `Confirmed sell inventory unavailable for ${sellMint.slice(0, 8)}...; ` +
+            `sell retained for retry (${msg}).`
+        );
+        return;
+      }
+      if (confirmedBalance <= 0) {
+        console.log(
+          `Skipping sell: confirmed wallet inventory is 0 for ${sellMint.slice(0, 8)}...`
+        );
+        recordMirrorSkip(swap, "confirmed wallet inventory is zero");
+        return;
+      }
+      confirmedSellAmountRaw =
+        proportionalSellAmountRaw == null
+          ? cappedQueuedSellRaw(confirmedBalance, queuedSellCapRaw ?? confirmedBalance)
+          : Math.min(proportionalSellAmountRaw, confirmedBalance);
+      if (confirmedSellAmountRaw <= 0) {
+        console.log(
+          `Skipping queued sell: no pre-reentry inventory remains for ${sellMint.slice(0, 8)}...`
+        );
+        return;
+      }
     }
 
     if (isBuySignal(swap) && buyOncePerTokenEnabled && !simulationMode) {
@@ -2836,7 +3037,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
 
     const result = await mirrorSwap(useBagsDirectLane ? { ...swap, skipDirectBuyRoutes: true } : swap, kp, {
       persistentBuyLockOwner,
-      exactAmountRaw: proportionalSellAmountRaw,
+      exactAmountRaw: confirmedSellAmountRaw,
       allowBagsDirectJupiter: useBagsDirectLane,
       onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, reason, sourceSwap }) => {
         if (rustHotBuyRecordedByMint.has(mint)) {
@@ -2993,6 +3194,11 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
               `(reason: ${reason}). Sell removed from tracking.`
           );
         }
+        if (queuedSourceSellByMint.has(mint)) {
+          expandQueuedSellAfterFailure(mint);
+          drainQueuedSourceSell(mint);
+          return;
+        }
         const retryPosition = getPosition(mint);
         if (
           retryPosition &&
@@ -3008,7 +3214,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
               fastSellConfirmRetryScheduledByMint.delete(mint);
               return;
             }
-            sellLivePosition(position, "retry after failed mirror sell")
+            sellLivePosition(position, "retry after failed mirror sell", undefined, false)
               .catch((err) => {
                 const msg = err instanceof Error ? err.message : String(err);
                 console.warn(`Fast mirrored sell retry failed for ${mint.slice(0, 8)}…: ${msg}`);
@@ -3283,8 +3489,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
     if (lockedFastSellMint && !fastSellLockShouldPersist) {
       fastSellConfirmPendingByMint.delete(lockedFastSellMint);
+      drainQueuedSourceSell(lockedFastSellMint);
       lockedFastSellMint = null;
     }
+    queuedSellCapBySignature.delete(swap.signature);
     if (pendingMint) {
       const pending = pendingBuyRetryByMint.get(pendingMint);
       const existing = getPosition(pendingMint);
@@ -3640,6 +3848,9 @@ export function resetTradingState(): void {
   riskSellRetryAfterByMint.clear();
   sourceHoldMissingByMint.clear();
   sourceSignalStateByMint.clear();
+  confirmedInventoryByMint.clear();
+  queuedSourceSellByMint.clear();
+  queuedSellCapBySignature.clear();
   confirmedPostSellStateByMint.clear();
   postSellRemainderChecksInFlight.clear();
   queuedPostSellRemainderByMint.clear();
@@ -3869,18 +4080,14 @@ async function sellLivePosition(
     }
   }
   let effectiveNote = note;
-  let liveHeldRaw: number | null;
+  let liveHeldRaw: number;
   try {
-    liveHeldRaw = await getVerifiedTokenBalance(keypair!.publicKey, p.mint, {
-      symbol: p.symbol,
-      expectedRaw: p.heldRaw,
-      decimals: p.decimals,
-      ownerLabel: "our wallet",
-    });
+    liveHeldRaw = await refreshConfirmedInventory(p.mint);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.warn(`Token balance lookup failed for $${p.symbol}: ${msg}; attempting tracked amount.`);
-    liveHeldRaw = null;
+    throw new Error(
+      `Confirmed inventory lookup failed for $${p.symbol}; sell not broadcast: ${msg}`
+    );
   }
   if (liveHeldRaw === 0) {
     console.warn(
@@ -3934,7 +4141,7 @@ async function sellLivePosition(
         sourceSellVersion: sourceSignalStateByMint.get(p.mint)?.version ?? 0,
       }
     : null;
-  if (isFullExitIntent && liveHeldRaw != null && liveHeldRaw > p.heldRaw) {
+  if (isFullExitIntent && liveHeldRaw > p.heldRaw) {
     if (adjustBuyTokenAmount(p.mint, p.heldRaw, liveHeldRaw)) {
       const latest = getPosition(p.mint);
       if (latest) p = latest;
@@ -3946,16 +4153,13 @@ async function sellLivePosition(
   }
   const sellRaw =
     amountRawOverride != null
-      ? Math.min(Math.max(1, Math.floor(amountRawOverride)), liveHeldRaw ?? p.heldRaw, p.heldRaw)
-      : isFullExitIntent && liveHeldRaw != null && liveHeldRaw > 0
+      ? Math.min(Math.max(1, Math.floor(amountRawOverride)), liveHeldRaw, p.heldRaw)
+      : isFullExitIntent && liveHeldRaw > 0
       ? liveHeldRaw
-      : liveHeldRaw != null && liveHeldRaw > 0
+      : liveHeldRaw > 0
       ? Math.min(liveHeldRaw, p.heldRaw)
       : p.heldRaw;
-  if (liveHeldRaw == null && p.heldRaw > 0) {
-    console.warn(`Token balance lookup failed for $${p.symbol}; attempting tracked amount.`);
-  }
-  if (liveHeldRaw != null && liveHeldRaw > p.heldRaw) {
+  if (liveHeldRaw > p.heldRaw) {
     console.warn(
       `Live balance for $${p.symbol} exceeds tracked position; selling tracked amount only. ` +
         `live=${formatTokenAmount(liveHeldRaw, p.decimals)}, tracked=${formatTokenAmount(p.heldRaw, p.decimals)}`
@@ -4038,7 +4242,6 @@ async function sellLivePosition(
           });
         },
         onFastSellConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason }) => {
-          fastSellConfirmPendingByMint.delete(mint);
           const rolledBack = unrecordSell(mint, tokenAmountRaw, solLamports);
           if (isHybridPartialSell) {
             hybridExitTpDoneByMint.delete(mint);
@@ -4047,9 +4250,11 @@ async function sellLivePosition(
           if (rolledBack) {
             console.warn(
               `🧹 Phantom sell cleaned up: ${mint.slice(0, 8)}… ` +
-                `(reason: ${reason}). Sell removed from tracking.`
+              `(reason: ${reason}). Sell removed from tracking.`
             );
           }
+          expandQueuedSellAfterFailure(mint);
+          releaseFastSellLifecycle(mint);
         },
       }
     );
@@ -4138,20 +4343,75 @@ async function sellLiveWalletTokenBalance(mint: string, amountRaw: number): Prom
   }
   const meta = await getTokenMeta(mint);
   const tracked = getPosition(mint);
-  console.log(`Dust sell: ${formatTokenAmount(amountRaw, meta.decimals)} $${meta.symbol} (${mint})`);
+  if (fastSellConfirmPendingByMint.has(mint)) {
+    console.log(
+      `Wallet-balance sell skipped for ${mint.slice(0, 8)}...: another sell is awaiting confirmation.`
+    );
+    return;
+  }
+  fastSellConfirmPendingByMint.add(mint);
+  let confirmedBalance: number;
+  try {
+    confirmedBalance = await refreshConfirmedInventory(mint);
+  } catch (err) {
+    releaseFastSellLifecycle(mint);
+    throw err;
+  }
+  const exactRaw = Math.min(Math.max(0, Math.floor(amountRaw)), confirmedBalance);
+  if (exactRaw <= 0) {
+    releaseFastSellLifecycle(mint);
+    return;
+  }
+  const optimisticTrackedRaw = tracked
+    ? Math.min(exactRaw, Math.max(0, tracked.heldRaw))
+    : 0;
+  console.log(`Dust sell: ${formatTokenAmount(exactRaw, meta.decimals)} $${meta.symbol} (${mint})`);
 
-  const result = await mirrorSwap(
-    {
-      signature: `manual-dust-sell-${mint}`,
-      wallet: "manual-dust-sell",
-      inputMint: mint,
-      outputMint: WRAPPED_SOL_MINT,
-      amountRaw,
-      isNativeInput: false,
-    },
-    keypair,
-    { exactAmountRaw: amountRaw }
-  );
+  let result: MirrorResult;
+  try {
+    result = await mirrorSwap(
+      {
+        signature: `manual-dust-sell-${mint}`,
+        wallet: "manual-dust-sell",
+        inputMint: mint,
+        outputMint: WRAPPED_SOL_MINT,
+        amountRaw: exactRaw,
+        isNativeInput: false,
+      },
+      keypair,
+      {
+        exactAmountRaw: exactRaw,
+        onFastSellConfirmSuccess: ({ mint: confirmedMint, tokenAmountRaw, solLamports, signature }) => {
+          void reconcileFastSellExecution({
+            mint: confirmedMint,
+            expectedTokenAmountRaw: tokenAmountRaw,
+            expectedSolLamports: solLamports,
+            signature,
+          }).finally(() => clearFastSellConfirmationPendingSoon(confirmedMint));
+        },
+        onFastSellConfirmFailure: ({ mint: failedMint, tokenAmountRaw, solLamports, reason }) => {
+          const trackedSol =
+            tokenAmountRaw > 0
+              ? Math.floor((solLamports * optimisticTrackedRaw) / tokenAmountRaw)
+              : 0;
+          if (
+            optimisticTrackedRaw > 0 &&
+            unrecordSell(failedMint, optimisticTrackedRaw, trackedSol)
+          ) {
+            console.warn(
+              `Phantom wallet-balance sell cleaned up: ${failedMint.slice(0, 8)}... (${reason}).`
+            );
+          }
+          expandQueuedSellAfterFailure(failedMint);
+          releaseFastSellLifecycle(failedMint);
+        },
+      }
+    );
+    if (!result.confirmationPending) releaseFastSellLifecycle(mint);
+  } catch (err) {
+    releaseFastSellLifecycle(mint);
+    throw err;
+  }
 
   const soldRaw = result.input.amountRaw;
   const receivedLamports = result.output.amountRaw;
