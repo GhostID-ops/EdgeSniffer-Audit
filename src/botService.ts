@@ -124,7 +124,15 @@ import { getQuote, getSwap, isJupiterRateLimitError } from "./jupiter.js";
 import type { DetectedSwap, RustHotBuy } from "./types.js";
 import { warmConnection, createSenderTransactionFromSwapResponse, broadcastTransactionWithSender } from "./sender.js";
 import { confirmSignature } from "./confirm.js";
-import { getSolBalance, formatSol, getTokenBalance, getTokenBalanceFast, getWalletTokenBalances } from "./balance.js";
+import {
+  getSolBalance,
+  formatSol,
+  getTokenBalance,
+  getTokenBalanceFast,
+  getWalletTokenBalances,
+  getWalletTokenBalanceSnapshot,
+  type WalletTokenBalanceSnapshot,
+} from "./balance.js";
 import { telegram, type TradeNotification, type PnlNotification, formatPnlForTelegram } from "./telegram.js";
 import "./telegramBot.js"; // Initialize Telegram bot handler
 import {
@@ -4294,26 +4302,48 @@ async function checkRiskExits(): Promise<void> {
   }
 }
 
-async function sourceWalletTotalTokenBalance(sourceWallets: PublicKey[], mint: string): Promise<{
+async function sourceWalletTokenBalanceSnapshots(
+  sourceWallets: PublicKey[]
+): Promise<Map<string, WalletTokenBalanceSnapshot>> {
+  const snapshots = new Map<string, WalletTokenBalanceSnapshot>();
+  for (const source of sourceWallets) {
+    const wallet = source.toBase58();
+    const snapshot = await getWalletTokenBalanceSnapshot(source);
+    snapshots.set(wallet, snapshot);
+    if (snapshot.failedPrograms > 0) {
+      console.warn(
+        `Source-hold wallet snapshot incomplete for ${shortWallet(wallet)}: ` +
+          `${snapshot.successfulPrograms}/2 token programs read successfully.`
+      );
+    }
+  }
+  return snapshots;
+}
+
+function sourceWalletTotalTokenBalance(
+  sourceWallets: PublicKey[],
+  snapshots: Map<string, WalletTokenBalanceSnapshot>,
+  mint: string
+): {
   totalRaw: number;
   checked: number;
   errors: number;
-}> {
+} {
   let totalRaw = 0;
   let checked = 0;
   let errors = 0;
   for (const source of sourceWallets) {
-    try {
-      const balance = await getVerifiedTokenBalance(source, mint, {
-        ownerLabel: `source ${shortWallet(source.toBase58())}`,
-      });
-      totalRaw += balance;
-      checked++;
-    } catch (err) {
+    const snapshot = snapshots.get(source.toBase58());
+    if (!snapshot) {
       errors++;
-      const msg = err instanceof Error ? err.message : String(err);
-      console.warn(`Source-hold balance check failed for ${shortWallet(source.toBase58())} ${mint.slice(0, 8)}...: ${msg}`);
+      continue;
     }
+    totalRaw += snapshot.balancesByMint.get(mint) ?? 0;
+    if (snapshot.failedPrograms > 0 || snapshot.successfulPrograms < 2) {
+      errors++;
+      continue;
+    }
+    checked++;
   }
   return { totalRaw, checked, errors };
 }
@@ -4337,29 +4367,32 @@ async function checkSourceHoldExits(): Promise<void> {
     if (!openMints.has(mint)) sourceHoldMissingByMint.delete(mint);
   }
 
-  for (let p of open) {
+  const eligible: PositionSnapshot[] = [];
+  for (const p of open) {
     if (now - p.firstSeenAt < sourceHoldExitMinPositionAgeMs) continue;
     if (riskSellsInFlight.has(p.mint)) continue;
     if (exitSignalSellsInFlight.has(p.mint)) continue;
     if (fastSellConfirmPendingByMint.has(p.mint)) continue;
     if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > now) continue;
+    eligible.push(p);
+  }
 
-    p = await reconcileOpenPositionWithConfirmedBuy(p);
-    if (p.heldRaw <= 0) {
-      sourceHoldMissingByMint.delete(p.mint);
-      continue;
-    }
+  if (eligible.length === 0) return;
 
-    const sourceBalance = await sourceWalletTotalTokenBalance(sourceWallets, p.mint);
-    if (sourceBalance.checked === 0) {
-      console.warn(
-        `Source-hold exit: no successful source balance reads for ${p.mint.slice(0, 8)}...; not counting as a miss.`
-      );
-      continue;
-    }
+  const snapshots = await sourceWalletTokenBalanceSnapshots(sourceWallets);
 
+  for (const p of eligible) {
+    const sourceBalance = sourceWalletTotalTokenBalance(sourceWallets, snapshots, p.mint);
     if (sourceBalance.totalRaw > 0) {
       sourceHoldMissingByMint.delete(p.mint);
+      continue;
+    }
+
+    if (sourceBalance.checked === 0 || sourceBalance.errors > 0) {
+      console.warn(
+        `Source-hold exit: source wallet snapshot incomplete for ${p.mint.slice(0, 8)}...; ` +
+          `not counting as a miss.`
+      );
       continue;
     }
 

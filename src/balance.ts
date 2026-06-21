@@ -15,6 +15,12 @@ export type WalletTokenBalance = {
   tokenProgram: string;
 };
 
+export type WalletTokenBalanceSnapshot = {
+  balancesByMint: Map<string, number>;
+  successfulPrograms: number;
+  failedPrograms: number;
+};
+
 /** Derive the ATA for (owner, mint, tokenProgram). Returns null on derivation failure. */
 function deriveAta(owner: PublicKey, mint: string, tokenProgramId: PublicKey): PublicKey | null {
   try {
@@ -137,6 +143,51 @@ export async function getTokenBalance(
   }
 
   return total;
+}
+
+/**
+ * Read every token balance for an owner with one account scan per token program.
+ * Source-hold monitoring reuses this snapshot for all open positions instead of
+ * issuing several ATA/account reads for every mint.
+ */
+export async function getWalletTokenBalanceSnapshot(
+  owner: PublicKey
+): Promise<WalletTokenBalanceSnapshot> {
+  const balancesByMint = new Map<string, number>();
+  let successfulPrograms = 0;
+  let failedPrograms = 0;
+
+  for (const programId of TOKEN_PROGRAM_IDS) {
+    try {
+      const resp = await readConnection.getParsedTokenAccountsByOwner(owner, {
+        programId,
+      });
+      successfulPrograms++;
+      for (const acct of resp.value) {
+        const parsed = acct.account.data as
+          | {
+              parsed?: {
+                info?: {
+                  mint?: string;
+                  tokenAmount?: { amount?: string };
+                };
+              };
+            }
+          | undefined;
+        const info = parsed?.parsed?.info;
+        const mint = info?.mint;
+        const amountStr = info?.tokenAmount?.amount;
+        if (!mint || typeof amountStr !== "string") continue;
+        const amountRaw = parseInt(amountStr, 10);
+        if (!Number.isFinite(amountRaw) || amountRaw <= 0) continue;
+        balancesByMint.set(mint, (balancesByMint.get(mint) ?? 0) + amountRaw);
+      }
+    } catch {
+      failedPrograms++;
+    }
+  }
+
+  return { balancesByMint, successfulPrograms, failedPrograms };
 }
 
 /**
