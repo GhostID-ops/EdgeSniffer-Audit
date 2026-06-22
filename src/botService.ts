@@ -515,6 +515,30 @@ async function refreshConfirmedInventory(mint: string): Promise<number> {
   return amount;
 }
 
+/**
+ * Confirmed-inventory read with short backoff retries on rate-limit (429) errors only.
+ * Non-rate-limit errors throw immediately. Used by the exit path so a transient 429 can
+ * self-heal before we fall back to the tracked balance.
+ */
+async function refreshConfirmedInventoryWithRetry(mint: string, attempts = 3): Promise<number> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await refreshConfirmedInventory(mint);
+    } catch (err) {
+      lastErr = err;
+      const msg = err instanceof Error ? err.message : String(err);
+      const isRateLimit = /429|too many requests|ratelimit/i.test(msg);
+      if (i < attempts - 1 && isRateLimit) {
+        await new Promise((r) => setTimeout(r, 250 * (i + 1)));
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
+}
+
 function queueSourceSell(swap: DetectedSwap, retryDelayMs = 0): void {
   const previous = queuedSourceSellByMint.get(swap.inputMint);
   const replayCap = queuedSellCapBySignature.get(swap.signature);
@@ -4113,15 +4137,29 @@ async function sellLivePosition(
   }
   let effectiveNote = note;
   let liveHeldRaw: number;
+  let inventoryReadFailed = false;
   try {
-    liveHeldRaw = await refreshConfirmedInventory(p.mint);
+    liveHeldRaw = await refreshConfirmedInventoryWithRetry(p.mint);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    throw new Error(
-      `Confirmed inventory lookup failed for $${p.symbol}; sell not broadcast: ${msg}`
-    );
+    // A rate-limited/unavailable inventory read must NOT trap us in a position Omego has
+    // already exited. When we have a tracked balance, fall back to it and broadcast the sell
+    // anyway. The read FAILED (unknown balance) — distinct from a successful read of 0, so we
+    // skip the ghost-cleanup branch below and actually attempt the exit.
+    if (p.heldRaw > 0) {
+      inventoryReadFailed = true;
+      liveHeldRaw = p.heldRaw;
+      console.warn(
+        `$${p.symbol}: confirmed inventory read failed (${msg}); ` +
+          `falling back to tracked balance ${formatTokenAmount(p.heldRaw, p.decimals)} and selling anyway (429-resilient exit).`
+      );
+    } else {
+      throw new Error(
+        `Confirmed inventory lookup failed for $${p.symbol}; sell not broadcast: ${msg}`
+      );
+    }
   }
-  if (liveHeldRaw === 0) {
+  if (!inventoryReadFailed && liveHeldRaw === 0) {
     console.warn(
       `$${p.symbol}: verified wallet balance is 0; historical buy transactions will not be used as sell inventory.`
     );
@@ -4131,7 +4169,7 @@ async function sellLivePosition(
   // Falling back to the tracked amount here is what was burning gas on every 15s risk-exit retry —
   // we'd broadcast a doomed swap that fails on-chain with Custom(6024) at the destination AMM.
   // Close the ghost position locally instead so the risk loop drops it from the candidate pool.
-  if (liveHeldRaw === 0 && p.heldRaw > 0) {
+  if (!inventoryReadFailed && liveHeldRaw === 0 && p.heldRaw > 0) {
     if (hasFastBuyConfirmationPending(p.mint)) {
       console.warn(
         `$${p.symbol}: wallet holds 0 on-chain while fast-mode buy confirmation is still pending; ` +
