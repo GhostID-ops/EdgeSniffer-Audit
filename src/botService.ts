@@ -216,6 +216,12 @@ import { checkPrebuyMoralisFilter } from "./prebuyMoralisFilter.js";
 import { checkPrebuyInferredMarketCap } from "./prebuyInferredMarketCap.js";
 import { applyShadowSellLamports, getShadowSolLamports, shadowCanSpend } from "./shadowExecution.js";
 import {
+  needsHybridPriceCheck,
+  planHybridPartialSellRaw,
+  shouldCloseHybridRemainderOnSourceSell,
+  waitsForSourceExit,
+} from "./hybridExit.js";
+import {
   calculateProportionalSellRaw,
   recordSourceBuyRaw,
   recordSourceSellRaw,
@@ -284,6 +290,10 @@ export type BotState = {
   minHoldBeforeStopLossMs: number;
   stopLossPct: number | null;
   takeProfitPct: number | null;
+  hybridExitEnabled: boolean;
+  hybridExitTpPct: number;
+  hybridExitTpSellPct: number;
+  hybridExitSourceExitRemaining: boolean;
   lastBalanceLamports: number | null;
   lastBalanceSol: number | null;
   lastBalanceAt: number | null;
@@ -2525,12 +2535,12 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
 
     const sourceSellRaw = sourceSellTokenAmountRaw(swap);
-    if (
-      hybridExitEnabled &&
-      hybridExitSourceExitRemaining &&
-      sourceSellRaw > 0 &&
-      (getPosition(mint)?.heldRaw ?? 0) > 0
-    ) {
+    if (shouldCloseHybridRemainderOnSourceSell({
+      enabled: hybridExitEnabled,
+      sourceExitRemaining: hybridExitSourceExitRemaining,
+      sourceSellRaw,
+      botHeldRaw: getPosition(mint)?.heldRaw ?? 0,
+    })) {
       console.log(
         `Hybrid source exit: source sold ${mint.slice(0, 8)}...; closing remaining bot position.`
       );
@@ -3749,8 +3759,11 @@ export async function startBot(): Promise<void> {
     const hybridDesc = hybridExitEnabled
       ? ` hybrid=${hybridExitTpSellPct}%@+${hybridExitTpPct}% then ${hybridExitSourceExitRemaining ? "source exit" : "normal exits"},`
       : "";
+    const normalRiskDesc = waitsForSourceExit(hybridExitEnabled, hybridExitSourceExitRemaining)
+      ? "SL/TP/trailing suppressed while hybrid source-exit mode is active"
+      : `SL ${stopLossPct ?? "off"}%, TP ${takeProfitPct ?? "off"}%,${trailDesc}`;
     console.log(
-      `Risk exits enabled: SL ${stopLossPct ?? "off"}%, TP ${takeProfitPct ?? "off"}%,${trailDesc}${hybridDesc} ` +
+      `Risk exits enabled: ${normalRiskDesc},${hybridDesc} ` +
         `tiers fast=${riskFastIntervalMs}ms (first ${riskFastWindowMs}ms) / near=${riskNearTriggerIntervalMs}ms (within ${riskNearTriggerPct}pp of trigger) / normal=${riskNormalIntervalMs}ms, ` +
         `drift=${riskDriftPctPerSec}pp/s, SL min hold ${minHoldBeforeStopLossMs}ms, max ${maxRiskQuotesPerCheck} quote(s)/tick.`
     );
@@ -4617,15 +4630,15 @@ function riskExitReason(
 }
 
 function hybridExitSellRaw(position: PositionSnapshot, pnlPct: number): number | null {
-  if (!hybridExitEnabled) return null;
-  if (hybridExitTpDoneByMint.has(position.mint) || hybridExitTpInFlightByMint.has(position.mint)) {
-    return null;
-  }
-  if (hybridExitTpPct <= 0 || hybridExitTpSellPct <= 0) return null;
-  if (position.heldRaw <= 1 || pnlPct < hybridExitTpPct) return null;
-
-  const targetRaw = Math.floor((position.heldRaw * hybridExitTpSellPct) / 100);
-  return Math.min(position.heldRaw, Math.max(1, targetRaw));
+  return planHybridPartialSellRaw({
+    enabled: hybridExitEnabled,
+    tpDone: hybridExitTpDoneByMint.has(position.mint),
+    tpInFlight: hybridExitTpInFlightByMint.has(position.mint),
+    tpPct: hybridExitTpPct,
+    tpSellPct: hybridExitTpSellPct,
+    heldRaw: position.heldRaw,
+    pnlPct,
+  });
 }
 
 function cleanupHybridExitStateIfClosed(position: PositionSnapshot): void {
@@ -4676,19 +4689,33 @@ function planRiskTick(
   const lowerProjection = state.lastPnlPct - drift;
   const upperProjection = state.lastPnlPct + drift;
 
-  // Effective stop level reflects trailing stair-steps that the peak has cleared.
-  const effSL = effectiveStopPct(state.peakPnlPct, activeTrailingSteps(p.mint));
+  const sourceOnlyHybrid = waitsForSourceExit(hybridExitEnabled, hybridExitSourceExitRemaining);
+  const hybridTpPending =
+    hybridExitEnabled &&
+    !hybridExitTpDoneByMint.has(p.mint) &&
+    !hybridExitTpInFlightByMint.has(p.mint) &&
+    hybridExitTpPct > 0 &&
+    hybridExitTpSellPct > 0;
+
+  // Exact source-remainder mode deliberately ignores ordinary SL/trailing exits.
+  const effSL = sourceOnlyHybrid
+    ? null
+    : effectiveStopPct(state.peakPnlPct, activeTrailingSteps(p.mint));
 
   // Could a trigger have plausibly fired since the last quote?
   const couldHitSL =
     effSL != null && ageMs >= minHoldBeforeStopLossMs && lowerProjection <= effSL;
-  const couldHitTP = takeProfitPct != null && upperProjection >= takeProfitPct;
+  const normalTp = sourceOnlyHybrid ? null : takeProfitPct;
+  const couldHitTP =
+    (normalTp != null && upperProjection >= normalTp) ||
+    (hybridTpPending && upperProjection >= hybridExitTpPct);
   const triggerInRange = couldHitSL || couldHitTP;
 
   // Distance to nearest trigger using last known PnL.
   const distances: number[] = [];
   if (effSL != null) distances.push(Math.abs(state.lastPnlPct - effSL));
-  if (takeProfitPct != null) distances.push(Math.abs(state.lastPnlPct - takeProfitPct));
+  if (normalTp != null) distances.push(Math.abs(state.lastPnlPct - normalTp));
+  if (hybridTpPending) distances.push(Math.abs(state.lastPnlPct - hybridExitTpPct));
   const nearestTriggerDist = distances.length ? Math.min(...distances) : Infinity;
   const nearTrigger = nearestTriggerDist <= riskNearTriggerPct;
 
@@ -4719,6 +4746,15 @@ async function checkRiskExits(): Promise<void> {
   const candidates: { p: PositionSnapshot; bucket: RiskBucket }[] = [];
   for (let i = 0; i < open.length; i++) {
     const p = open[(riskPositionCursor + i) % open.length]!;
+    if (
+      !needsHybridPriceCheck(
+        hybridExitEnabled,
+        hybridExitSourceExitRemaining,
+        hybridExitTpDoneByMint.has(p.mint)
+      )
+    ) {
+      continue;
+    }
     if (riskSellsInFlight.has(p.mint)) continue;
     if (fastSellConfirmPendingByMint.has(p.mint)) continue;
     if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > now) continue;
@@ -4810,6 +4846,9 @@ async function checkRiskExits(): Promise<void> {
           hybridExitTpInFlightByMint.delete(p.mint);
           riskSellsInFlight.delete(p.mint);
         }
+        continue;
+      }
+      if (waitsForSourceExit(hybridExitEnabled, hybridExitSourceExitRemaining)) {
         continue;
       }
       const reason = riskExitReason(
@@ -5502,6 +5541,10 @@ export function getBotState(): BotState {
     minHoldBeforeStopLossMs,
     stopLossPct,
     takeProfitPct,
+    hybridExitEnabled,
+    hybridExitTpPct,
+    hybridExitTpSellPct,
+    hybridExitSourceExitRemaining,
     lastBalanceLamports,
     lastBalanceSol:
       lastBalanceLamports != null
@@ -5515,5 +5558,3 @@ export function getBotState(): BotState {
     totals: getTotals(),
   };
 }
-
-

@@ -123,6 +123,16 @@ export type RustPumpSwapSellArgs = {
   baseTokenProgramId: string;
 };
 
+export type RustPumpFunSellArgs = {
+  route: "pumpfun-direct-sell" | "pumpfun-direct-sell-v2";
+  mint: string;
+  tokensInRaw: number;
+  expectedSolOutLamports: number;
+  minSolOutLamports: number;
+  sellV2: boolean;
+  accounts: SourcePumpSwapAccountMeta[];
+};
+
 export type RustPumpFunBuyResult =
   | {
       ok: true;
@@ -140,6 +150,7 @@ export type RustPumpFunBuyResult =
 
 export type RustPumpSwapBuyResult = RustPumpFunBuyResult;
 export type RustPumpSwapSellResult = RustPumpFunBuyResult;
+export type RustPumpFunSellResult = RustPumpFunBuyResult;
 
 export type RustHotBuyFallback = {
   sourceSignature: string;
@@ -674,6 +685,47 @@ export async function executeRustPumpSwapSell(args: RustPumpSwapSellArgs): Promi
     const timer = setTimeout(() => {
       executorPending.delete(id);
       resolve({ ok: false, error: `Rust PumpSwap sell executor timed out after ${rustExecutorTimeoutMs}ms` });
+    }, rustExecutorTimeoutMs);
+    executorPending.set(id, { resolve, timer });
+    executorStdin!.write(`${JSON.stringify(command)}\n`);
+  });
+}
+
+export async function executeRustPumpFunSell(args: RustPumpFunSellArgs): Promise<RustPumpFunSellResult | null> {
+  if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) return null;
+  const id = `rust-pumpfun-sell-${Date.now()}-${++executorSeq}`;
+  const { blockhash } = await getCachedBlockhash();
+  const command = {
+    kind: "executePumpfunSell",
+    id,
+    route: args.route,
+    mint: args.mint,
+    tokensInRaw: Math.max(1, Math.floor(args.tokensInRaw)),
+    expectedSolOutLamports: Math.max(1, Math.floor(args.expectedSolOutLamports)),
+    minSolOutLamports: Math.max(1, Math.floor(args.minSolOutLamports)),
+    sellV2: args.sellV2,
+    accounts: args.accounts,
+    blockhash,
+    computeUnitLimit,
+    priorityFeeMicroLamports: getDynamicPriorityFee(),
+    jitoTipLamports: getJitoTipLamportsForRoute(args.route),
+    heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
+    useJitoDirect,
+    useJitoFallback,
+    senderRpcFallbackEnabled,
+    executionMultiSendEnabled: executionMultiSendEnabled || broadcastRaceEnabled,
+    jitoSendMode,
+    jitoTransactionUrls,
+    jitoBundleUrls,
+    senderEndpointUrl,
+    rpcFallbackUrl: readRpcUrl,
+    jitoAuthUuid,
+  };
+
+  return await new Promise<RustPumpFunSellResult>((resolve) => {
+    const timer = setTimeout(() => {
+      executorPending.delete(id);
+      resolve({ ok: false, error: `Rust Pump.fun sell executor timed out after ${rustExecutorTimeoutMs}ms` });
     }, rustExecutorTimeoutMs);
     executorPending.set(id, { resolve, timer });
     executorStdin!.write(`${JSON.stringify(command)}\n`);

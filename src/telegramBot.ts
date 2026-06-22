@@ -558,8 +558,15 @@ class TelegramBotHandler {
       `SOL reserve: ${getSOLReserveAmount().toFixed(3)} SOL`,
       `Poll interval: ${state.pollIntervalMs} ms`,
       `Risk exits: ${state.riskControlsEnabled ? "ON" : "OFF"}`,
-      `Stop loss: ${state.stopLossPct == null ? "off" : `${state.stopLossPct}%`}`,
-      `Take profit: ${state.takeProfitPct == null ? "off" : `${state.takeProfitPct}%`}`,
+      `Stop loss: ${state.hybridExitEnabled && state.hybridExitSourceExitRemaining ? "suppressed by hybrid" : state.stopLossPct == null ? "off" : `${state.stopLossPct}%`}`,
+      `Take profit: ${state.hybridExitEnabled && state.hybridExitSourceExitRemaining ? "suppressed by hybrid" : state.takeProfitPct == null ? "off" : `${state.takeProfitPct}%`}`,
+      `Hybrid exit: ${
+        state.hybridExitEnabled
+          ? `${state.hybridExitTpSellPct}% at +${state.hybridExitTpPct}%, then ${
+              state.hybridExitSourceExitRemaining ? "source sell" : "normal exits"
+            }`
+          : "off"
+      }`,
       `Risk check interval: ${state.riskCheckIntervalMs} ms`,
       `Mirror sells: ${isMirrorSellsEnabled() ? "ON" : "OFF"}`,
       `Buy once/token: ${isBuyOncePerTokenEnabled() ? "ON" : "OFF"}`,
@@ -590,7 +597,7 @@ class TelegramBotHandler {
         `Mirror sells: ${isMirrorSellsEnabled() ? "ON" : "OFF"}`,
         `Buy once/token: ${isBuyOncePerTokenEnabled() ? "ON" : "OFF"}`,
         `Market cap display: ${isShowMarketCapEnabled() ? "ON" : "OFF"}`,
-        `Risk exits: ${state.riskControlsEnabled ? "ON" : "OFF"} (set STOP_LOSS_PCT / TAKE_PROFIT_PCT in .env)`,
+        `Risk exits: ${state.riskControlsEnabled ? "ON" : "OFF"} (set STOP_LOSS_PCT / TAKE_PROFIT_PCT / HYBRID_EXIT_* in .env)`,
         "",
         "These toggles affect the current running session. Persistent defaults still come from .env.",
       ].join("\n"),

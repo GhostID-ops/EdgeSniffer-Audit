@@ -16,6 +16,7 @@ import {
   prebuyMinMarketCapUsd,
   readConnection,
   rustOnlyBuys,
+  rustOnlySells,
   usePumpfunToken2022DirectSell,
 } from "../config.js";
 import { getTokenMeta, type TokenMeta, USDC_MINT, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
@@ -32,9 +33,13 @@ import {
   maxSolForImpact,
 } from "./curve.js";
 import { buildPumpFunBuyReplayTransaction, buildPumpFunBuyTransaction, scalePumpFunSourceBuyData } from "./buy.js";
-import { buildPumpFunSellTransaction } from "./sell.js";
+import {
+  buildPumpFunSellIx,
+  buildPumpFunSellTransaction,
+  buildPumpFunSellV2Ix,
+} from "./sell.js";
 import { recordExecutionStage } from "../executionTelemetry.js";
-import { executeRustPumpFunBuy } from "../rustSidecar.js";
+import { executeRustPumpFunBuy, executeRustPumpFunSell } from "../rustSidecar.js";
 
 const DIRECT_CURVE_RETRY_DELAYS_MS = [25, 50, 100];
 
@@ -918,6 +923,147 @@ export async function tryPumpFunDirectSell(args: {
     args.log("Using pump.fun sell_v2 for Token-2022 mint.");
   } else if (remainingAccounts.length > 0) {
     args.log(`Using ${remainingAccounts.length} source pump.fun remaining account(s) for fee/buyback routing.`);
+  }
+  const minSolOutput =
+    (quote.solOut * BigInt(10_000 - Math.max(0, Math.min(10_000, args.slippageBps)))) / 10_000n;
+  const rustSellIx = useSellV2
+    ? buildPumpFunSellV2Ix({
+        user: args.user.publicKey,
+        mint: mintKey,
+        bondingCurve: curve.pda,
+        creator: curve.state.creator,
+        baseTokenProgramId: curve.tokenProgramId,
+        amount: args.tokensInRaw,
+        minSolOutput,
+        buybackFeeRecipient: PUMP_FUN_BUYBACK_FEE_RECIPIENT,
+      })
+    : buildPumpFunSellIx({
+        user: args.user.publicKey,
+        mint: mintKey,
+        bondingCurve: curve.pda,
+        creator: curve.state.creator,
+        tokenProgramId: curve.tokenProgramId,
+        amount: args.tokensInRaw,
+        minSolOutput,
+        remainingAccounts,
+      });
+  const rust = await executeRustPumpFunSell({
+    route: useSellV2 ? "pumpfun-direct-sell-v2" : "pumpfun-direct-sell",
+    mint: args.mint,
+    tokensInRaw: Number(quote.tokensIn),
+    expectedSolOutLamports: Number(quote.solOut),
+    minSolOutLamports: Number(minSolOutput),
+    sellV2: useSellV2,
+    accounts: rustSellIx.keys.map((account) => ({
+      pubkey: account.pubkey.toBase58(),
+      isSigner: account.isSigner,
+      isWritable: account.isWritable,
+    })),
+  });
+  if (rust?.ok) {
+    const signature = rust.signature;
+    args.log(
+      `Rust executor Pump.fun sell broadcast: ${signature}` +
+        (rust.senderPath ? ` via ${rust.senderPath}` : "") +
+        (rust.elapsedMs != null ? ` (${rust.elapsedMs}ms)` : "")
+    );
+    recordExecutionStage({
+      stage: "build",
+      route: useSellV2 ? "pumpfun-direct-sell-v2" : "pumpfun-direct-sell",
+      side: "sell",
+      mint: args.mint,
+      sourceSignature: args.sourceSignature,
+      elapsedMs: rust.buildMs ?? Date.now() - buildStartedAt,
+      success: true,
+      details: { executor: "rust", txBytes: rust.txBytes, senderPath: rust.senderPath },
+    });
+    if (fastMode) {
+      const confirmStartedAt = Date.now();
+      confirmSignature(signature)
+        .then(() => {
+          recordConfirmStage({
+            route: useSellV2 ? "pumpfun-direct-sell-v2" : "pumpfun-direct-sell",
+            side: "sell",
+            mint: args.mint,
+            sourceSignature: args.sourceSignature,
+            signature,
+            startedAt: confirmStartedAt,
+            success: true,
+            details: { mode: "background", executor: "rust" },
+          });
+          args.onConfirmSuccess?.(args.mint, Number(quote.tokensIn), Number(quote.solOut), signature);
+        })
+        .catch((err) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          recordConfirmStage({
+            route: useSellV2 ? "pumpfun-direct-sell-v2" : "pumpfun-direct-sell",
+            side: "sell",
+            mint: args.mint,
+            sourceSignature: args.sourceSignature,
+            signature,
+            startedAt: confirmStartedAt,
+            success: false,
+            error: msg,
+            details: { mode: "background", executor: "rust" },
+          });
+          args.onConfirmFailure?.(args.mint, Number(quote.tokensIn), Number(quote.solOut), msg);
+        });
+      return {
+        ok: true,
+        signature,
+        isSimulated: false,
+        tokensIn: quote.tokensIn,
+        solOut: quote.solOut,
+        priceImpactPct: quote.priceImpactPct,
+        mintMeta: await getTokenMeta(args.mint),
+        confirmationPending: true,
+      };
+    }
+    const confirmStartedAt = Date.now();
+    try {
+      await confirmSignature(signature);
+      recordConfirmStage({
+        route: useSellV2 ? "pumpfun-direct-sell-v2" : "pumpfun-direct-sell",
+        side: "sell",
+        mint: args.mint,
+        sourceSignature: args.sourceSignature,
+        signature,
+        startedAt: confirmStartedAt,
+        success: true,
+        details: { mode: "blocking", executor: "rust" },
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      recordConfirmStage({
+        route: useSellV2 ? "pumpfun-direct-sell-v2" : "pumpfun-direct-sell",
+        side: "sell",
+        mint: args.mint,
+        sourceSignature: args.sourceSignature,
+        signature,
+        startedAt: confirmStartedAt,
+        success: false,
+        error: msg,
+        details: { mode: "blocking", executor: "rust" },
+      });
+      return { ok: false, recoverable: false, reason: `Pump.fun Rust sell confirmation failed: ${msg}` };
+    }
+    return {
+      ok: true,
+      signature,
+      isSimulated: false,
+      tokensIn: quote.tokensIn,
+      solOut: quote.solOut,
+      priceImpactPct: quote.priceImpactPct,
+      mintMeta: await getTokenMeta(args.mint),
+    };
+  }
+  if (rustOnlySells) {
+    const reason = rust && !rust.ok ? rust.error : "Rust Pump.fun sell executor unavailable";
+    args.log(`Rust-only Pump.fun sell failed; TypeScript fallback disabled: ${reason}`);
+    return { ok: false, recoverable: false, reason: `Rust-only Pump.fun sell failed: ${reason}` };
+  }
+  if (rust && !rust.ok) {
+    args.log(`Rust executor Pump.fun sell failed; falling back to TypeScript: ${rust.error}`);
   }
   let tx;
   try {

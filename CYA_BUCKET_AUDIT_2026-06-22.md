@@ -1,18 +1,28 @@
-# CyA Bucket Audit — 2026-06-22
+# CyA Bucket Audit - 2026-06-22
 
 Wallet: `CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o`
 
-Artifact: `data/cya-quant-20260622.json`
+Artifacts:
+
+- `data/cya-ledger-buckets-30000.json` / `.md`: full ledger-first MC/source-exit study.
+- `data/cya-quant-20260622.json`: candle-enriched path/exit study.
 
 ## Coverage
 
-- Fresh Helius snapshot: 12,001 transactions, 8,854 reconstructed swaps, 1,260 campaigns, 1,259 closed campaigns.
-- Window: 2026-06-14 01:35 UTC through 2026-06-22 18:39 UTC.
-- Candle-enriched bucket sample: 223 entries. The requested ceiling was 600; provider quota/data availability limited enrichment.
-- Wallet realized PnL: +1,008.53 SOL; win rate 51.8%; median ROI +1.3%; profit factor 2.06.
-- Median hold: 0.62 minutes. Median source entry: 3.008 SOL.
+Expanded ledger-first pass:
 
-## Strategy Result
+- 30,000 transactions from 2026-05-29 through 2026-06-22.
+- 21,292 reconstructed fills, 3,046 unique-mint campaigns, and 3,045/3,045 closed campaigns measured.
+- 2,498 Pump-route, 62 BAGS, and 485 other-route campaigns.
+- Entry MC comes from CyA's own first-fill price and historical SOL/USD, matching the live inferred-MC gate. It does not require a surviving pool or candles.
+
+Candle path pass:
+
+- Fresh 12,001-transaction snapshot, 1,260 campaigns, and 1,259 closed campaigns.
+- 223 entries had external candle paths. Provider quota and historical pool availability limit this subset.
+- Use this subset for MFE/MAE, target-hit, and exit-policy comparisons, not for live inferred-MC thresholds.
+
+## Exit Strategy
 
 | Exit | n | Win | Avg ROI | Median ROI | PF | Max cumulative drawdown |
 |---|---:|---:|---:|---:|---:|---:|
@@ -25,33 +35,41 @@ Artifact: `data/cya-quant-20260622.json`
 
 CyA remains exit-led. Full mirror has the highest mean; the hybrid has the better win rate, median, profit factor, and essentially the same drawdown. Fixed TP/SL and time exits are rejected.
 
-## Entry Market-Cap Buckets
+## Ledger-First Entry Market-Cap Buckets
 
-| Approx entry MC | n | Source win | Avg source ROI | Median source ROI | PF | Hit +30 | Median MAE | Verdict |
-|---|---:|---:|---:|---:|---:|---:|---:|---|
-| $0–5k | 100 | 49.0% | +5.3% | -0.5% | 1.57 | 15.0% | -12.3% | Skip |
-| $5–10k | 38 | 55.3% | +23.6% | +1.9% | 3.93 | 34.2% | -64.1% | Copy |
-| $10–20k | 21 | 52.4% | +13.2% | +5.5% | 2.36 | 57.1% | -80.3% | Copy |
-| $20–50k | 50 | 64.0% | +77.7% | +8.7% | 14.32 | 62.0% | -92.9% | Best supported bucket |
-| $50–100k | 7 | 71.4% | +100.7% | +11.6% | 10.74 | 28.6% | -59.2% | Too thin |
-| $100k+ | 7 | 42.9% | +29.7% | -1.9% | 3.41 | 57.1% | -59.9% | Too thin / hybrid only |
+Pump-route results, which are the relevant Rust Pump.fun/PumpSwap cohort:
 
-Recommended initial live range: `$5k–$50k`. Shadow `$50k+` separately until it has at least 30–50 measured trades.
+| Source-fill entry MC | n | Win | Avg ROI | Median ROI | Equal-size PF | Source PnL |
+|---|---:|---:|---:|---:|---:|---:|
+| $0-5k | 1,542 | 62.8% | +32.6% | +7.8% | 7.47 | +1,561.77 SOL |
+| $5k-10k | 560 | 48.6% | +10.2% | -1.2% | 1.96 | +294.24 SOL |
+| $10k-20k | 242 | 47.9% | +9.2% | -2.6% | 1.76 | +227.49 SOL |
+| $20k-50k | 96 | 35.4% | -1.2% | -8.8% | 0.93 | +25.89 SOL |
+| $50k-100k | 30 | 26.7% | -9.2% | -11.8% | 0.50 | -22.24 SOL |
+| $100k+ | 28 | 17.9% | -8.5% | -7.7% | 0.38 | -55.02 SOL |
 
-## Other Buckets
+Live inferred-MC recommendation: no minimum and a `$10k` maximum. The `<$5k` cohort is strongest by a wide margin. `$5k-10k` remains positive but has a slightly negative median. `$20k+` should be rejected.
 
-- Pre-5m momentum `+30%+`: n=76, 63.2% wins, +16.6% median ROI, PF 7.39. This is a strong research signal, but Moralis must stay off the hot path.
-- Pre-5m volume `$20k–$50k`: n=38, 76.3% wins, +25.5% median ROI, PF 19.33. Also research/shadow only because an HTTP gate would cost latency.
-- Source buy size is not selective: 219 of 223 measured trades are in the 3–6 SOL bucket.
-- Drawdowns are violent in the winning MC buckets. A tight stop destroys the source-exit edge.
+## Why The Earlier 223-Trade MC Result Differed
 
-## Recommended CyA Shadow Configuration
+The smaller audit used the first available external candle price and only retained mints with usable historical candles. The live inferred filter instead calculates MC from CyA's source fill. Candle availability is non-random, and candle-open MC is not equivalent to source-fill MC.
+
+The earlier apparent `$20k-50k` strength does not survive the 3,045-campaign source-fill study. The ledger-first result is the correct one for configuring `PREBUY_INFERRED_MC_FILTER_ENABLED`.
+
+## Finalized CyA Hybrid Behavior
+
+- Sell 50% of current bot inventory once quoted PnL reaches +30%.
+- Execute the partial sell once only.
+- Suppress ordinary TP, SL, and trailing exits when `HYBRID_EXIT_SOURCE_EXIT_REMAINING=true`.
+- Stop price polling after the partial TP lands.
+- Close all remaining confirmed inventory on CyA's first sell signal.
+- Queue the source sell if the partial TP is awaiting confirmation, then drain the remainder afterward.
+- Use the existing local Rust sell route under `RUST_ONLY_SELLS=true`; no Jupiter fallback is required.
+
+## Recommended CyA Configuration
 
 ```env
 TRACKED_WALLETS=CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o
-
-SIMULATION_MODE=true
-SHADOW_EXECUTION_MODE=true
 
 RUST_ONLY_BUYS=true
 RUST_ONLY_SELLS=true
@@ -61,31 +79,32 @@ BUY_ONCE_PER_TOKEN=true
 MIRROR_SELLS=true
 MIRROR_SELL_MODE=full
 
-MIN_BUY_SOL=0.25
-MAX_BUY_SOL=0.25
-MAX_SOL_PER_TOKEN=0.25
-MAX_SESSION_DEPLOYED_SOL=0.75
-MAX_OPEN_POSITIONS=2
+HYBRID_EXIT_ENABLED=true
+HYBRID_EXIT_TP_PCT=30
+HYBRID_EXIT_TP_SELL_PCT=50
+HYBRID_EXIT_SOURCE_EXIT_REMAINING=true
+STOP_LOSS_PCT=
+TAKE_PROFIT_PCT=
+TRAILING_STEPS=
 
-LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=true
-PREBUY_MIN_MARKET_CAP_USD=5000
-PREBUY_MAX_MARKET_CAP_USD=50000
-PREBUY_FILTER_FAIL_OPEN=false
+PREBUY_INFERRED_MC_FILTER_ENABLED=true
 PREBUY_MORALIS_FILTER_ENABLED=false
-
-MAX_ENTRY_PRICE_IMPACT_PCT=60
-MAX_SOURCE_DRIFT_PCT=25
-
-PUMPSWAP_DIRECT_BUY_ENABLED=true
-MIRROR_GRADUATED_BUYS=false
+LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=false
+LOCAL_PUMPFUN_SOL_PRICE_USD=72.80
+LOCAL_PUMPFUN_SOL_PRICE_AUTO_ENABLED=true
+LOCAL_PUMPFUN_SOL_PRICE_REFRESH_MS=300000
+PREBUY_MIN_MARKET_CAP_USD=
+PREBUY_MAX_MARKET_CAP_USD=10000
+PREBUY_FILTER_FAIL_OPEN=false
 ```
 
-The last two flags do **not** currently form a strict graduated-buy exclusion: the direct PumpSwap attempt occurs before the `MIRROR_GRADUATED_BUYS` fallback guard. Keep PumpSwap direct enabled because it is also needed for local sells. A dedicated pre-buy `SKIP_GRADUATED_BUYS` gate is still needed if the strategy must exclude all graduated entries without compromising exits.
+The inferred-MC calculation uses data already present in the detected source swap plus the background-refreshed SOL price. It adds no HTTP request to the buy hot path.
 
 ## Caveats
 
-- Entry MC is an approximation from historical USD price and an assumed 1B supply. It is useful for Pump.fun-style buckets, not a precise cross-route valuation.
-- The enriched sample mixes routes. Prior BAGS-only research (57 closed campaigns through June 19) was negative: -24.09 SOL, -10.2% median ROI, PF 0.80.
-- Candle availability is not random, so bucket results can be selection-biased.
-- Average ROI is winner-sensitive. Use median, PF, sample size, and drawdown together.
-- No `.env` values were changed. This audit was not live-tested on the VPS.
+- Ledger entry MC is source first-fill price x historical SOL/USD x assumed 1B supply. It aligns with the live inferred filter but includes CyA's fill impact.
+- The MC table measures source-exit ROI. Hybrid MFE/MAE and target-hit behavior still comes from the smaller candle subset.
+- Campaigns are unique-mint aggregates, matching the intended `BUY_ONCE_PER_TOKEN=true` policy.
+- BAGS remains weak and thin; Rust-only routing naturally keeps the strategy focused on accepted local routes.
+- `.env` was not changed. `.env.cya-same-slot` was updated with the Rust-only hybrid preset.
+- This has not been live-tested on the VPS.

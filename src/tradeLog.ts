@@ -4,6 +4,10 @@ import {
   simulationMode,
   stopLossPct,
   takeProfitPct,
+  hybridExitEnabled,
+  hybridExitTpPct,
+  hybridExitTpSellPct,
+  hybridExitSourceExitRemaining,
   minHoldBeforeStopLossMs,
   mirrorSlippageBps,
   maxEntryPriceImpactPct,
@@ -50,6 +54,10 @@ export type TradeLogEntry = {
   config: {
     stopLossPct: number | null;
     takeProfitPct: number | null;
+    hybridExitEnabled: boolean;
+    hybridExitTpPct: number;
+    hybridExitTpSellPct: number;
+    hybridExitSourceExitRemaining: boolean;
     minHoldBeforeStopLossMs: number;
     mirrorSlippageBps: number;
     maxEntryPriceImpactPct: number | null;
@@ -72,6 +80,10 @@ export async function appendTradeLog(entry: Omit<TradeLogEntry, "isoTs" | "mode"
     config: {
       stopLossPct,
       takeProfitPct,
+      hybridExitEnabled,
+      hybridExitTpPct,
+      hybridExitTpSellPct,
+      hybridExitSourceExitRemaining,
       minHoldBeforeStopLossMs,
       mirrorSlippageBps,
       maxEntryPriceImpactPct,
