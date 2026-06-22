@@ -24,6 +24,7 @@ import {
   priorityFeeMicroLamports,
   mirrorSlippageBps,
   mirrorQuoteAsset,
+  mirrorUsdcQuoteBuysEnabled,
   pollIntervalMs,
   blockPumpfunMayhem,
   riskCheckIntervalMs,
@@ -2458,6 +2459,15 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         "(open positions still managed; use Resume to re-enable entries)."
     );
     recordMirrorSkip(swap, "buys paused");
+    return;
+  }
+
+  if (isBuySignal(swap) && !mirrorUsdcQuoteBuysEnabled && swap.inputMint === USDC_MINT) {
+    console.log(
+      `Skipping USDC-quote buy of ${swap.outputMint.slice(0, 8)}...: ` +
+        "MIRROR_USDC_QUOTE_BUYS=false (USDC-paired tokens have no reliable sell route)."
+    );
+    recordMirrorSkip(swap, "usdc-quote buys disabled");
     return;
   }
 

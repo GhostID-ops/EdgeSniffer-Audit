@@ -113,6 +113,17 @@ export const mirrorQuoteAsset: MirrorQuoteAsset =
     : "SOL";
 
 /**
+ * When false, the bot ignores source buys paid in USDC (i.e. USDC-quoted pools).
+ * These tokens often have no pump.fun/PumpSwap sell route, so with Jupiter fallback
+ * disabled they can be bought but never sold — leaving untradeable bags. Default false
+ * keeps behavior "normal" (SOL-quoted snipes only). Set MIRROR_USDC_QUOTE_BUYS=true to opt in.
+ */
+export const mirrorUsdcQuoteBuysEnabled = parseEnvBool(
+  process.env.MIRROR_USDC_QUOTE_BUYS,
+  false
+);
+
+/**
  * Soft cap on entry price impact (percent). When a buy quote exceeds this, the bot reduces size
  * and re-quotes (rather than skipping the trade outright). If the reduced quote still exceeds
  * the cap and the trade can't fit at MIN_BUY_SOL, the trade is skipped. Empty/0 = disabled.
