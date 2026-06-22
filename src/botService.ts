@@ -1642,19 +1642,26 @@ function mirrorQuoteMintForBuy(swap: DetectedSwap): string {
 function mirroredBuyAmountRaw(swap: DetectedSwap): number | null {
   const quoteMint = mirrorQuoteMintForBuy(swap);
   const calculatedRaw = Math.floor(swap.amountRaw * (copyBuyPercentage / 100));
-  if (calculatedRaw <= 0) return null;
+  if (!Number.isFinite(calculatedRaw) || calculatedRaw <= 0) return null;
+  // Blank MIN_BUY_*/MAX_BUY_* env values parse to NaN. Treat an unset cap as "no cap"
+  // (use the percentage-sized amount as-is) and an unset minimum as 0, so empty sizing
+  // falls back to pure percentage copying instead of producing NaN and skipping the buy.
   if (quoteMint === USDC_MINT) {
-    if (calculatedRaw < minBuyUsdcRaw) {
+    const minUsdc = Number.isFinite(minBuyUsdcRaw) ? minBuyUsdcRaw : 0;
+    const maxUsdc = Number.isFinite(maxBuyUsdcRaw) ? maxBuyUsdcRaw : calculatedRaw;
+    if (calculatedRaw < minUsdc) {
       if (minBuyBehavior === "skip") return null;
-      if (minBuyBehavior === "floor") return Math.min(maxBuyUsdcRaw, minBuyUsdcRaw);
+      if (minBuyBehavior === "floor") return Math.min(maxUsdc, minUsdc);
     }
-    return Math.min(maxBuyUsdcRaw, calculatedRaw);
+    return Math.min(maxUsdc, calculatedRaw);
   }
-  if (calculatedRaw < minBuyLamports) {
+  const minLamports = Number.isFinite(minBuyLamports) ? minBuyLamports : 0;
+  const maxLamports = Number.isFinite(maxBuyLamports) ? maxBuyLamports : calculatedRaw;
+  if (calculatedRaw < minLamports) {
     if (minBuyBehavior === "skip") return null;
-    if (minBuyBehavior === "floor") return Math.min(maxBuyLamports, minBuyLamports);
+    if (minBuyBehavior === "floor") return Math.min(maxLamports, minLamports);
   }
-  return Math.min(maxBuyLamports, calculatedRaw);
+  return Math.min(maxLamports, calculatedRaw);
 }
 
 function shouldDeferToRustHotSniperPrimary(
