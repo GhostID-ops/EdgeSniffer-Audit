@@ -389,7 +389,7 @@ export async function startRustPumpFunSidecar(
         ? nodeReceivedAtMs - event.detectedAtMs
         : null;
     console.log(
-      `Rust sidecar detected ${swap.inputMint === "So11111111111111111111111111111111111111112" ? "buy" : "sell"} ` +
+      `Rust sidecar detected ${swap.inputMint === "So11111111111111111111111111111111111111112" || swap.inputMint === "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" ? "buy" : "sell"} ` +
         `${swap.signature.slice(0, 8)}...` +
         (ageMs != null ? ` (handoff ${ageMs}ms)` : "")
     );

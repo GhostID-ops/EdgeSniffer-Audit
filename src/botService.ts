@@ -142,7 +142,7 @@ import {
   type SourceHoldZeroState,
 } from "./sourceHoldExit.js";
 import { warmConnection, createSenderTransactionFromSwapResponse, broadcastTransactionWithSender } from "./sender.js";
-import { confirmSignature } from "./confirm.js";
+import { confirmSignature, isConfirmationTimeoutError } from "./confirm.js";
 import {
   getSolBalance,
   formatSol,
@@ -1820,6 +1820,18 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
         errorCode: classifyExecutionError(reason).code,
         details: { mode: "background", senderPath: hotBuy.senderPath },
       });
+      if (isConfirmationTimeoutError(err)) {
+        // Status absence is not proof of failure. A Sender/Jito transaction may
+        // land after this read RPC's status window. Keep its costed lot until
+        // wallet/transaction reconciliation proves otherwise.
+        clearFastBuyConfirmationPending(hotBuy.mint, hotBuy.signature);
+        rustHotSniperPrimaryPendingMints.delete(hotBuy.mint);
+        console.warn(
+          `Rust hot buy confirmation uncertain for ${hotBuy.mint.slice(0, 8)}... ` +
+            `(${reason}). Retaining optimistic position pending wallet reconciliation.`
+        );
+        return;
+      }
       const removed = unrecordBuy(hotBuy.mint, hotBuy.tokensOutRaw, hotBuy.solInLamports);
       mirrorBuySignatureByMint.delete(hotBuy.mint);
       clearFastBuyConfirmationPending(hotBuy.mint, hotBuy.signature);
@@ -2087,7 +2099,13 @@ function logTrade(
       swap.counterpartyAmountRaw != null
         ? `${formatTokenAmount(swap.counterpartyAmountRaw, result.output.meta.decimals)} $${result.output.meta.symbol}`
         : undefined;
-    const clamped = swap.amountRaw !== result.input.amountRaw;
+    const percentageSizedRaw = Math.floor(swap.amountRaw * (copyBuyPercentage / 100));
+    const clamped = result.input.amountRaw !== percentageSizedRaw;
+    const sizingNote = clamped
+      ? ` (adjusted from ${quoteAmountDisplay(percentageSizedRaw, result.input.meta.mint)}; source ${sourceQuote})`
+      : copyBuyPercentage !== 100
+        ? ` (${copyBuyPercentage}% of ${sourceQuote})`
+        : "";
     const entryPrice = tokenPriceInSol(
       costBasisLamports,
       result.output.amountRaw,
@@ -2096,7 +2114,7 @@ function logTrade(
     const impactStr = result.priceImpactPct
       ? ` · impact ${(parseFloat(result.priceImpactPct) * 100).toFixed(2)}%`
       : "";
-    console.log(`✅ Buy${simTag} (${walletTag}): ${mirroredQuote}${clamped ? ` (capped from ${sourceQuote})` : ""}`);
+    console.log(`✅ Buy${simTag} (${walletTag}): ${mirroredQuote}${sizingNote}`);
     console.log(`🪙 Tokens: ${outputDisplay}`);
     console.log(`💹 Entry: ${formatPrice(entryPrice)} SOL per $${pos.symbol}${impactStr}`);
     console.log(`🔗 CA: ${tokenMint}`);

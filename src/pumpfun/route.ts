@@ -441,7 +441,7 @@ export async function tryPumpFunDirectBuy(args: {
       }
       }
       args.log(`Broadcast: ${signature} (${elapsed()})`);
-      if (fastMode && !isUsdcQuote) {
+      if (fastMode) {
         const confirmStartedAt = Date.now();
         confirmSignature(signature)
           .then(() => {

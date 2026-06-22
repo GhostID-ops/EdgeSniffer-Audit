@@ -287,7 +287,7 @@ function shouldAllowJupiterAfterPumpSwapFailure(swap: DetectedSwap): boolean {
   return !swap.outputMint.endsWith("pump");
 }
 
-async function estimateCostBasisLamports(inputMint: string, inputAmountRaw: number): Promise<number> {
+function estimateCostBasisLamports(inputMint: string, inputAmountRaw: number): number {
   if (inputMint === WRAPPED_SOL_MINT) return inputAmountRaw;
   if (inputMint !== USDC_MINT || inputAmountRaw <= 0) return inputAmountRaw;
   // Keep accounting conversion local. One raw USDC unit is 1e-6 USD and one
@@ -455,7 +455,7 @@ export async function mirrorSwap(
         side: "buy",
         input: { meta: usdcMeta, amountRaw: Number(pumpSwap.quoteIn) },
         output: { meta: pumpSwap.mintMeta, amountRaw: Number(pumpSwap.baseOut) },
-        costBasisLamports: await estimateCostBasisLamports(USDC_MINT, Number(pumpSwap.quoteIn)),
+        costBasisLamports: estimateCostBasisLamports(USDC_MINT, Number(pumpSwap.quoteIn)),
         confirmationPending: pumpSwap.confirmationPending,
       }, swap.signature);
     }
@@ -485,7 +485,8 @@ export async function mirrorSwap(
       sourceSignature: swap.forceDerivedPumpFunBuy ? undefined : swap.signature,
       sourceIxAccounts: swap.forceDerivedPumpFunBuy ? undefined : swap.sourceIxAccounts,
       sourceIxDataBase64: swap.forceDerivedPumpFunBuy ? undefined : swap.sourceIxDataBase64,
-      onConfirmFailure: mirrorInputMint === WRAPPED_SOL_MINT ? (mint, tokensRaw, solLamports, reason) => {
+      onConfirmFailure: (mint, tokensRaw, quoteAmountRaw, reason) => {
+        const solLamports = estimateCostBasisLamports(mirrorInputMint, quoteAmountRaw);
         // Phantom-position cleanup: in fastMode we recorded the buy before confirmation.
         // If the tx failed on chain, roll back so the risk loop stops trying to sell
         // tokens we never actually received.
@@ -505,8 +506,9 @@ export async function mirrorSwap(
           positionRemoved: removed,
           sourceSwap: swap,
         });
-      } : undefined,
-      onConfirmSuccess: mirrorInputMint === WRAPPED_SOL_MINT ? (mint, tokensRaw, solLamports, signature) => {
+      },
+      onConfirmSuccess: (mint, tokensRaw, quoteAmountRaw, signature) => {
+        const solLamports = estimateCostBasisLamports(mirrorInputMint, quoteAmountRaw);
         options.onFastBuyConfirmSuccess?.({
           mint,
           tokenAmountRaw: tokensRaw,
@@ -514,7 +516,7 @@ export async function mirrorSwap(
           signature,
           sourceSwap: swap,
         });
-      } : undefined,
+      },
     });
     if (direct.ok) {
       const quoteMeta = await getTokenMeta(mirrorInputMint);
@@ -526,7 +528,7 @@ export async function mirrorSwap(
         side: "buy",
         input: { meta: quoteMeta, amountRaw: Number(direct.solIn) },
         output: { meta: direct.mintMeta, amountRaw: Number(direct.tokensOut) },
-        costBasisLamports: await estimateCostBasisLamports(mirrorInputMint, Number(direct.solIn)),
+        costBasisLamports: estimateCostBasisLamports(mirrorInputMint, Number(direct.solIn)),
         priceImpactPct: (direct.priceImpactPct / 100).toString(),
         confirmationPending: direct.confirmationPending,
       }, swap.signature);
@@ -945,7 +947,7 @@ export async function mirrorSwap(
           input: { meta: inputMeta, amountRaw: inAmountRaw },
           output: { meta: outputMeta, amountRaw: outAmountRaw },
           priceImpactPct: quote.priceImpactPct,
-          costBasisLamports: side === "buy" ? await estimateCostBasisLamports(mirrorSwap.inputMint, inAmountRaw) : undefined,
+          costBasisLamports: side === "buy" ? estimateCostBasisLamports(mirrorSwap.inputMint, inAmountRaw) : undefined,
         }, swap.signature);
       }
 
@@ -962,7 +964,7 @@ export async function mirrorSwap(
       console.log(`Transaction broadcast: ${signature} (${elapsed()})`);
 
       const buyCostBasisLamports =
-        side === "buy" ? await estimateCostBasisLamports(mirrorSwap.inputMint, inAmountRaw) : undefined;
+        side === "buy" ? estimateCostBasisLamports(mirrorSwap.inputMint, inAmountRaw) : undefined;
 
       if (fastMode) {
         // Fast mode returns after broadcast; dropped buys/sells are cleaned up by the background confirmer.

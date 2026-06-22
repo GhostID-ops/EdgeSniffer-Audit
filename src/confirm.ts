@@ -65,9 +65,21 @@ export async function confirmSignature(
     options.nullStatusTimeoutMs ?? confirmationNullStatusTimeoutMs
   );
   let sawStatus = false;
+  let lastPollError: unknown = null;
 
   while (Date.now() - start < timeoutMs) {
-    const result = await readConnection.getSignatureStatuses([signature]);
+    let result;
+    try {
+      result = await readConnection.getSignatureStatuses([signature]);
+      lastPollError = null;
+    } catch (err) {
+      // readConnection deliberately disables web3.js's unbounded 429 retry.
+      // Keep this retry bounded, and never turn a transient RPC failure into
+      // an alleged on-chain transaction failure.
+      lastPollError = err;
+      await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
+      continue;
+    }
     const status = result.value[0];
     const elapsedMs = Date.now() - start;
 
@@ -95,7 +107,13 @@ export async function confirmSignature(
 
   // Final check - maybe the transaction confirmed but we missed it.
   console.log(`Confirmation timed out, doing final check for ${signature}...`);
-  const finalResult = await readConnection.getSignatureStatuses([signature]);
+  let finalResult;
+  try {
+    finalResult = await readConnection.getSignatureStatuses([signature]);
+  } catch (err) {
+    lastPollError = err;
+    throw new ConfirmationTimeoutError(signature, Date.now() - start, sawStatus);
+  }
   const finalStatus = finalResult.value[0];
 
   if (finalStatus?.err) {
@@ -112,7 +130,10 @@ export async function confirmSignature(
     return "confirmed";
   }
 
-  console.log(`Transaction was submitted but did not confirm after ${timeoutMs}ms`);
+  console.log(
+    `Transaction was submitted but did not confirm after ${timeoutMs}ms` +
+      (lastPollError ? ` (last status poll error: ${String(lastPollError)})` : "")
+  );
   console.log(`Solscan: https://solscan.io/tx/${signature}`);
   console.log(`Solana Explorer: https://explorer.solana.com/tx/${signature}`);
   throw new ConfirmationTimeoutError(signature, timeoutMs, sawStatus);

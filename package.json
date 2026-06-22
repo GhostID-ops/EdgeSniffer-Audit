@@ -49,7 +49,8 @@
     "test:retry": "tsx src/testExecutionRetry.ts",
     "test:post-sell-lifecycle": "tsx src/testPostSellLifecycle.ts",
     "test:confirmed-inventory": "tsx src/testConfirmedInventory.ts",
-    "test:source-hold-exit": "tsx src/testSourceHoldExit.ts"
+    "test:source-hold-exit": "tsx src/testSourceHoldExit.ts",
+    "test:execution-planner": "tsx src/testExecutionPlanner.ts"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.0",

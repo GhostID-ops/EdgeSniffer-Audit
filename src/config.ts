@@ -1059,15 +1059,15 @@ export const HELIUS_TIP_MIN_LAMPORTS = 200_000;
 export const TIP_ACCOUNTS: readonly string[] = JITO_TIP_ACCOUNTS;
 
 /** Connection to Helius staked RPC. Use for getLatestBlockhash, getAddressLookupTable, and any read-only RPC. */
-export const readConnection = new Connection(readRpcUrl);
+export const readConnection = new Connection(readRpcUrl, { disableRetryOnRateLimit: true });
 
 /** Connection wired to Helius WebSocket endpoint. Use for onLogs / logsSubscribe. Falls back to readRpcUrl if WS not set. */
 export const wsConnection = websocketUrl
-  ? new Connection(readRpcUrl, { wsEndpoint: websocketUrl, commitment: "confirmed" })
+  ? new Connection(readRpcUrl, { wsEndpoint: websocketUrl, commitment: "confirmed", disableRetryOnRateLimit: true })
   : readConnection;
 
 /** Connection to Sender endpoint. Use for sendTransaction (via fetch) and all confirmation (getSignatureStatuses). */
-export const sendConnection = new Connection(senderEndpointUrl);
+export const sendConnection = new Connection(senderEndpointUrl, { disableRetryOnRateLimit: true });
 
 export function getPrivateKeyBase58(): string {
   const key = process.env.PRIVATE_KEY_BASE58;

@@ -28,10 +28,8 @@ export function planExecution(swap: DetectedSwap): ExecutionPlan {
     return { side, mint, route: "unsafe-unknown", reason: "token-to-token swap" };
   }
 
-  if (!mint.endsWith("pump")) {
-    return { side, mint, route: "jupiter-non-pump", reason: "non-pump mint" };
-  }
-
+  // Protocol evidence is authoritative. New Pump.fun/Token-2022 mints do
+  // not always retain the legacy "pump" suffix, so name heuristics come last.
   if (swap.sourcePumpSwapAccounts?.length) {
     return {
       side,
@@ -48,6 +46,10 @@ export function planExecution(swap: DetectedSwap): ExecutionPlan {
       route: "pumpfun-v2-token2022",
       reason: "source pump.fun v2 account layout",
     };
+  }
+
+  if (!mint.endsWith("pump")) {
+    return { side, mint, route: "jupiter-non-pump", reason: "non-pump mint without local protocol evidence" };
   }
 
   return {
