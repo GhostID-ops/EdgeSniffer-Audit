@@ -1488,10 +1488,18 @@ export async function tryPumpSwapDirectBuy(args: {
     return { ok: false, recoverable: false, reason: "PumpSwap pool state does not match requested base/quote pair" };
   }
 
+  // Guard every BigInt input: a blank/unparsed source amount is NaN, and BigInt(NaN)
+  // throws "cannot be converted to a BigInt". This must not crash the buy — fall back to
+  // the live pool quote below instead. (NaN here previously aborted graduated buys.)
+  const srcTokensOut = args.sourceTokensOutRaw;
+  const solIn = args.solInLamports;
+  const srcSolIn = args.sourceSolInLamports;
   const sourceRatioOut =
-    args.sourceTokensOutRaw && args.sourceTokensOutRaw > 0
-      ? (BigInt(Math.floor(args.sourceTokensOutRaw)) * BigInt(args.solInLamports)) /
-        BigInt(Math.floor(args.sourceSolInLamports))
+    typeof srcTokensOut === "number" && Number.isFinite(srcTokensOut) && srcTokensOut > 0 &&
+    typeof solIn === "number" && Number.isFinite(solIn) && solIn > 0 &&
+    typeof srcSolIn === "number" && Number.isFinite(srcSolIn) && srcSolIn > 0
+      ? (BigInt(Math.floor(srcTokensOut)) * BigInt(Math.floor(solIn))) /
+        BigInt(Math.floor(srcSolIn))
       : null;
   const livePoolOut = await estimatePumpSwapBuyQuoteFromPool({
     pool: accounts[0]!.pubkey,
