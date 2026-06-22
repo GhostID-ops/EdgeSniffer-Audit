@@ -198,7 +198,8 @@ function extractDirectPumpFunSwapFromRabbit(
     if (!isLegacyLayout && !isV2Layout) continue;
     if (!isDirectPumpFunUser(sourceIxAccounts, isV2Layout, wallet)) continue;
     const mint = isV2Layout ? sourceIxAccounts[1] : sourceIxAccounts[2];
-    if (!mint) continue;
+    const quoteMint = isV2Layout ? sourceIxAccounts[2] : WRAPPED_SOL_MINT;
+    if (!mint || !isMirrorQuoteMint(quoteMint)) continue;
 
     const data = ixDataToBuffer((ix as unknown as { data?: unknown }).data);
     const signature = signatureToBase58(info.signature);
@@ -213,10 +214,10 @@ function extractDirectPumpFunSwapFromRabbit(
       return {
         signature,
         wallet,
-        inputMint: WRAPPED_SOL_MINT,
+        inputMint: quoteMint,
         outputMint: mint,
         amountRaw: maxSolCost,
-        isNativeInput: true,
+        isNativeInput: quoteMint === WRAPPED_SOL_MINT,
         sourceIxAccounts,
         sourceIxDataBase64: data.toString("base64"),
       };
@@ -232,10 +233,10 @@ function extractDirectPumpFunSwapFromRabbit(
       return {
         signature,
         wallet,
-        inputMint: WRAPPED_SOL_MINT,
+        inputMint: quoteMint,
         outputMint: mint,
         amountRaw: spendableSol,
-        isNativeInput: true,
+        isNativeInput: quoteMint === WRAPPED_SOL_MINT,
         sourceIxAccounts,
         sourceIxDataBase64: data.toString("base64"),
       };

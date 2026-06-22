@@ -27,6 +27,7 @@ use tokio::io::{self, AsyncBufReadExt, BufReader};
 
 const PACKET_DATA_SIZE: usize = 1232;
 const WRAPPED_SOL_MINT: &str = "So11111111111111111111111111111111111111112";
+const USDC_MINT: &str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const PUMP_FUN_PROGRAM_ID: &str = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P";
 const PUMPSWAP_PROGRAM_ID: &str = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
 const PUMP_FUN_FEE_PROGRAM_ID: &str = "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ";
@@ -121,6 +122,8 @@ pub struct ExecutePumpfunBuyCommand {
     /// Optional/absent for manual or legacy callers (gate is then skipped).
     #[serde(default)]
     pub source_signature: Option<String>,
+    #[serde(default)]
+    pub quote_mint: Option<String>,
     pub sol_in_lamports: u64,
     pub tokens_out_raw: Option<u64>,
     pub slippage_bps: u64,
@@ -155,7 +158,8 @@ pub struct ExecutePumpSwapBuyCommand {
     pub mint: String,
     pub source_signature: String,
     pub buy_lock_owner: Option<String>,
-    pub sol_in_lamports: u64,
+    pub quote_mint: String,
+    pub quote_amount_in_raw: u64,
     pub expected_base_out_raw: u64,
     pub min_base_out_raw: u64,
     pub buy_instruction: String,
@@ -754,10 +758,7 @@ fn sanitize_lock_component(value: &str) -> String {
 fn existing_lock_value(path: &PathBuf, key: &str) -> Option<String> {
     let text = fs::read_to_string(path).ok()?;
     let value = serde_json::from_str::<Value>(&text).ok()?;
-    value
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
+    value.get(key).and_then(Value::as_str).map(str::to_string)
 }
 
 fn acquire_persistent_buy_lock(
@@ -799,8 +800,9 @@ fn acquire_persistent_buy_lock(
             }
             bail!("persistent buy lock exists for {mint}; duplicate Rust broadcast blocked")
         }
-        Err(err) => Err(err)
-            .with_context(|| format!("failed to create buy lock {}", path.display())),
+        Err(err) => {
+            Err(err).with_context(|| format!("failed to create buy lock {}", path.display()))
+        }
     }
 }
 
@@ -871,7 +873,7 @@ async fn execute_pumpswap_buy(
         signature: Some(built.signature),
         route: Some(cmd.route),
         sender_path: Some(sender_path),
-        sol_in_lamports: Some(cmd.sol_in_lamports),
+        sol_in_lamports: Some(cmd.quote_amount_in_raw),
         tokens_out_raw: Some(cmd.expected_base_out_raw.max(1)),
         elapsed_ms: started.elapsed().as_millis(),
         build_ms: Some(built.build_ms),
@@ -1036,11 +1038,11 @@ fn build_pumpswap_buy_tx(cmd: &ExecutePumpSwapBuyCommand) -> Result<BuiltTx> {
     let user = keypair.pubkey();
     let mint = parse_pubkey(&cmd.mint, "mint")?;
     let base_token_program = parse_pubkey(&cmd.base_token_program_id, "baseTokenProgramId")?;
-    let token_program = parse_pubkey(TOKEN_PROGRAM_ID, "token program")?;
-    let wsol = parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?;
+    let quote_token_program = parse_pubkey(TOKEN_PROGRAM_ID, "quote token program")?;
+    let quote_mint = parse_supported_quote_mint(&cmd.quote_mint)?;
     let blockhash = Hash::from_str(&cmd.blockhash).context("invalid blockhash")?;
     let user_base_ata = derive_ata(&user, &mint, &base_token_program)?;
-    let user_quote_ata = derive_ata(&user, &wsol, &token_program)?;
+    let user_quote_ata = derive_ata(&user, &quote_mint, &quote_token_program)?;
 
     let mut instructions = Vec::with_capacity(8);
     if cmd.compute_unit_limit > 0 {
@@ -1060,15 +1062,17 @@ fn build_pumpswap_buy_tx(cmd: &ExecutePumpSwapBuyCommand) -> Result<BuiltTx> {
     instructions.push(create_ata_idempotent_ix(
         &user,
         &user,
-        &wsol,
-        &token_program,
+        &quote_mint,
+        &quote_token_program,
     )?);
-    instructions.push(system_instruction::transfer(
-        &user,
-        &user_quote_ata,
-        cmd.sol_in_lamports,
-    ));
-    instructions.push(sync_native_ix(&user_quote_ata)?);
+    if cmd.quote_mint == WRAPPED_SOL_MINT {
+        instructions.push(system_instruction::transfer(
+            &user,
+            &user_quote_ata,
+            cmd.quote_amount_in_raw,
+        ));
+        instructions.push(sync_native_ix(&user_quote_ata)?);
+    }
     instructions.push(build_pumpswap_buy_ix(
         cmd,
         &user,
@@ -1077,7 +1081,9 @@ fn build_pumpswap_buy_tx(cmd: &ExecutePumpSwapBuyCommand) -> Result<BuiltTx> {
         &user_base_ata,
         &user_quote_ata,
     )?);
-    instructions.push(close_token_account_ix(&user_quote_ata, &user)?);
+    if cmd.quote_mint == WRAPPED_SOL_MINT {
+        instructions.push(close_token_account_ix(&user_quote_ata, &user)?);
+    }
 
     let tip_sets = tip_instruction_sets(
         &user,
@@ -1226,12 +1232,14 @@ fn build_pumpfun_buy_ix(
         let source_data = decode_source_data(cmd)?;
         let scaled = scale_source_buy_data(&source_data, cmd.sol_in_lamports, cmd.slippage_bps)?;
         let exact_sol_in = scaled.exact_sol_in;
+        let quote_mint = source_replay_quote_mint(cmd, &source_accounts, mint)?;
         return build_source_replay_buy_ix(
             &source_accounts,
             &source_data_for_scaled(&source_data, &scaled),
             user,
             mint,
             token_program_id,
+            &quote_mint,
             exact_sol_in,
         );
     }
@@ -1265,6 +1273,7 @@ fn build_pumpfun_buy_ix(
                 user,
                 mint,
                 token_program_id,
+                &parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?,
                 cmd.exact_sol_in,
             );
         }
@@ -1288,10 +1297,9 @@ fn build_pumpswap_buy_ix(
     if source_accounts.get(PUMPSWAP_BASE_MINT_INDEX) != Some(mint) {
         bail!("source PumpSwap accounts do not match target base mint");
     }
-    if source_accounts.get(PUMPSWAP_QUOTE_MINT_INDEX)
-        != Some(&parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?)
-    {
-        bail!("source PumpSwap accounts do not match SOL quote mint");
+    let quote_mint = parse_supported_quote_mint(&cmd.quote_mint)?;
+    if source_accounts.get(PUMPSWAP_QUOTE_MINT_INDEX) != Some(&quote_mint) {
+        bail!("source PumpSwap accounts do not match requested quote mint");
     }
     if source_accounts.get(PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX) != Some(base_token_program) {
         bail!("source PumpSwap accounts do not match base token program");
@@ -1347,7 +1355,10 @@ fn build_pumpswap_sell_ix(
 ) -> Result<Instruction> {
     let source_accounts = parse_pumpswap_account_pubkeys(&cmd.source_pump_swap_accounts)?;
     if source_accounts.len() < PUMPSWAP_MIN_SELL_ACCOUNT_COUNT {
-        bail!("PumpSwap sell account list too short: {}", source_accounts.len());
+        bail!(
+            "PumpSwap sell account list too short: {}",
+            source_accounts.len()
+        );
     }
     if source_accounts.get(PUMPSWAP_BASE_MINT_INDEX) != Some(mint) {
         bail!("source PumpSwap sell accounts do not match target base mint");
@@ -1371,12 +1382,9 @@ fn build_pumpswap_sell_ix(
     let wsol = parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?;
     let token_program = parse_pubkey(TOKEN_PROGRAM_ID, "token program")?;
     let template_cashback_ata = derive_ata(&template_volume, &wsol, &token_program)?;
-    let has_cashback_sell_tail = source_accounts
-        .get(PUMPSWAP_SELL_CASHBACK_ATA_INDEX)
+    let has_cashback_sell_tail = source_accounts.get(PUMPSWAP_SELL_CASHBACK_ATA_INDEX)
         == Some(&template_cashback_ata)
-        && source_accounts
-            .get(PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX)
-            == Some(&template_volume);
+        && source_accounts.get(PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX) == Some(&template_volume);
     let user_volume = derive_pumpswap_user_volume_accumulator(user)?;
     let user_cashback_ata = derive_ata(&user_volume, &wsol, &token_program)?;
     let keys = cmd
@@ -1402,11 +1410,14 @@ fn build_pumpswap_sell_ix(
                 source_meta.is_signer
             };
             let is_writable = match i {
-                PUMPSWAP_USER_INDEX | PUMPSWAP_USER_BASE_ATA_INDEX | PUMPSWAP_USER_QUOTE_ATA_INDEX => {
+                PUMPSWAP_USER_INDEX
+                | PUMPSWAP_USER_BASE_ATA_INDEX
+                | PUMPSWAP_USER_QUOTE_ATA_INDEX => true,
+                PUMPSWAP_SELL_CASHBACK_ATA_INDEX | PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX
+                    if has_cashback_sell_tail =>
+                {
                     true
                 }
-                PUMPSWAP_SELL_CASHBACK_ATA_INDEX | PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX
-                    if has_cashback_sell_tail => true,
                 _ => source_meta.is_writable,
             };
             Ok(meta(actual, is_signer, is_writable))
@@ -1421,15 +1432,27 @@ fn build_pumpswap_sell_ix(
 }
 
 fn encode_pumpswap_buy_args(cmd: &ExecutePumpSwapBuyCommand) -> Vec<u8> {
+    encode_pumpswap_buy_data(
+        &cmd.buy_instruction,
+        cmd.quote_amount_in_raw,
+        cmd.min_base_out_raw,
+    )
+}
+
+fn encode_pumpswap_buy_data(
+    buy_instruction: &str,
+    quote_amount_in_raw: u64,
+    min_base_out_raw: u64,
+) -> Vec<u8> {
     let mut data = vec![0u8; 25];
-    if cmd.buy_instruction == "buy" {
+    if buy_instruction == "buy" {
         data[..8].copy_from_slice(&BUY_DISCRIMINATOR);
-        data[8..16].copy_from_slice(&cmd.min_base_out_raw.max(1).to_le_bytes());
-        data[16..24].copy_from_slice(&cmd.sol_in_lamports.to_le_bytes());
+        data[8..16].copy_from_slice(&min_base_out_raw.max(1).to_le_bytes());
+        data[16..24].copy_from_slice(&quote_amount_in_raw.to_le_bytes());
     } else {
         data[..8].copy_from_slice(&PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR);
-        data[8..16].copy_from_slice(&cmd.sol_in_lamports.to_le_bytes());
-        data[16..24].copy_from_slice(&cmd.min_base_out_raw.max(1).to_le_bytes());
+        data[8..16].copy_from_slice(&quote_amount_in_raw.to_le_bytes());
+        data[16..24].copy_from_slice(&min_base_out_raw.max(1).to_le_bytes());
     }
     data[24] = 0;
     data
@@ -1565,21 +1588,16 @@ fn build_source_replay_buy_ix(
     user: &Pubkey,
     mint: &Pubkey,
     token_program_id: &Pubkey,
+    quote_mint: &Pubkey,
     exact_sol_in: bool,
 ) -> Result<Instruction> {
     let program_id = parse_pubkey(PUMP_FUN_PROGRAM_ID, "pump program")?;
     let associated_user = derive_ata(user, mint, token_program_id)?;
     let user_volume_accumulator = derive_user_volume_accumulator(user)?;
-    let associated_quote_user = derive_ata(
-        user,
-        &parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?,
-        &parse_pubkey(TOKEN_PROGRAM_ID, "token program")?,
-    )?;
-    let associated_user_volume_accumulator = derive_ata(
-        &user_volume_accumulator,
-        &parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?,
-        &parse_pubkey(TOKEN_PROGRAM_ID, "token program")?,
-    )?;
+    let quote_token_program = parse_pubkey(TOKEN_PROGRAM_ID, "quote token program")?;
+    let associated_quote_user = derive_ata(user, quote_mint, &quote_token_program)?;
+    let associated_user_volume_accumulator =
+        derive_ata(&user_volume_accumulator, quote_mint, &quote_token_program)?;
 
     let mut keys = Vec::new();
     if is_v2_source_accounts(source_accounts, mint) {
@@ -2141,6 +2159,36 @@ fn parse_pubkey(value: &str, label: &str) -> Result<Pubkey> {
     Pubkey::from_str(value).with_context(|| format!("invalid {label} pubkey: {value}"))
 }
 
+fn source_replay_quote_mint(
+    cmd: &ExecutePumpfunBuyCommand,
+    source_accounts: &[Pubkey],
+    mint: &Pubkey,
+) -> Result<Pubkey> {
+    let account_quote = if is_v2_source_accounts(source_accounts, mint) {
+        source_accounts
+            .get(2)
+            .copied()
+            .context("source V2 accounts missing quote mint")?
+    } else {
+        parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?
+    };
+    let account_quote_text = account_quote.to_string();
+    parse_supported_quote_mint(&account_quote_text)?;
+    if let Some(command_quote) = cmd.quote_mint.as_deref() {
+        if parse_supported_quote_mint(command_quote)? != account_quote {
+            bail!("source Pump.fun quote mint does not match command quote mint");
+        }
+    }
+    Ok(account_quote)
+}
+
+fn parse_supported_quote_mint(value: &str) -> Result<Pubkey> {
+    if value != WRAPPED_SOL_MINT && value != USDC_MINT {
+        bail!("unsupported PumpSwap quote mint: {value}");
+    }
+    parse_pubkey(value, "quoteMint")
+}
+
 fn is_v2_source_accounts(source_accounts: &[Pubkey], mint: &Pubkey) -> bool {
     source_accounts.len() >= 27
         && source_accounts.get(1) == Some(mint)
@@ -2229,4 +2277,33 @@ fn scale_u64(value: u64, numerator: u64, denominator: u64) -> u64 {
         .saturating_mul(numerator as u128)
         .saturating_div(denominator as u128);
     scaled.max(1).min(u64::MAX as u128) as u64
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn pumpswap_accepts_only_supported_quote_mints() {
+        assert!(parse_supported_quote_mint(WRAPPED_SOL_MINT).is_ok());
+        assert!(parse_supported_quote_mint(USDC_MINT).is_ok());
+        assert!(parse_supported_quote_mint("11111111111111111111111111111111").is_err());
+    }
+
+    #[test]
+    fn pumpswap_exact_quote_in_encodes_raw_usdc_units() {
+        let quote_raw = 12_345_678u64;
+        let min_base_out = 987_654_321u64;
+        let data = encode_pumpswap_buy_data("buy_exact_quote_in", quote_raw, min_base_out);
+        assert_eq!(&data[..8], &PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR);
+        assert_eq!(
+            u64::from_le_bytes(data[8..16].try_into().unwrap()),
+            quote_raw
+        );
+        assert_eq!(
+            u64::from_le_bytes(data[16..24].try_into().unwrap()),
+            min_base_out
+        );
+        assert_eq!(data[24], 0);
+    }
 }

@@ -19,13 +19,14 @@ import {
   mirrorQuoteAsset,
   copyBuyPercentage,
   minBuyBehavior,
+  localPumpfunSolPriceUsd,
 } from "./config.js";
 import { getQuote, getSwap, type QuoteResponse } from "./jupiter.js";
 import {
   createSenderTransactionFromSwapResponse,
   broadcastTransactionWithSender,
 } from "./sender.js";
-import { confirmSignature } from "./confirm.js";
+import { confirmSignature, isConfirmationTimeoutError } from "./confirm.js";
 import { getTokenBalance, getTokenBalanceFast } from "./balance.js";
 import { getTokenMeta, WRAPPED_SOL_MINT, USDC_MINT, type TokenMeta } from "./tokenRegistry.js";
 import { getPosition, unrecordBuy } from "./pnl.js";
@@ -50,6 +51,14 @@ export type MirrorResult = {
   /** Fast mode may return after broadcast before the signature lands on chain. */
   confirmationPending?: boolean;
 };
+
+function isUncertainConfirmationReason(reason: string): boolean {
+  const normalized = reason.toLowerCase();
+  return (
+    normalized.includes("not found in status polling") ||
+    normalized.includes("confirmation timed out")
+  );
+}
 
 export type MirrorSwapOptions = {
   persistentBuyLockOwner?: string;
@@ -281,15 +290,12 @@ function shouldAllowJupiterAfterPumpSwapFailure(swap: DetectedSwap): boolean {
 async function estimateCostBasisLamports(inputMint: string, inputAmountRaw: number): Promise<number> {
   if (inputMint === WRAPPED_SOL_MINT) return inputAmountRaw;
   if (inputMint !== USDC_MINT || inputAmountRaw <= 0) return inputAmountRaw;
-  try {
-    const quote = await getQuote(USDC_MINT, WRAPPED_SOL_MINT, inputAmountRaw, 50, {
-      onlyDirectRoutes: true,
-    });
-    const out = parseInt(quote.outAmount ?? "0", 10);
-    return Number.isFinite(out) && out > 0 ? out : inputAmountRaw;
-  } catch {
-    return inputAmountRaw;
+  // Keep accounting conversion local. One raw USDC unit is 1e-6 USD and one
+  // lamport is 1e-9 SOL, hence raw * 1000 / USD-per-SOL.
+  if (localPumpfunSolPriceUsd != null && localPumpfunSolPriceUsd > 0) {
+    return Math.max(1, Math.round((inputAmountRaw * 1000) / localPumpfunSolPriceUsd));
   }
+  return inputAmountRaw;
 }
 
 export class BuyAmountBelowMinimumError extends Error {
@@ -415,18 +421,61 @@ export async function mirrorSwap(
   };
   const initialAmountRaw = await getMirrorAmount(side, swap, keypair, options);
 
+  // USDC-quoted PumpSwap buys bypass Pump.fun (bonding curves are SOL-only).
+  // Rust debits the existing USDC ATA directly; no Jupiter or HTTP quote is used.
+  if (
+    side === "buy" &&
+    mirrorInputMint === USDC_MINT &&
+    pumpSwapDirectBuyEnabled &&
+    Boolean(swap.sourcePumpSwapAccounts?.length) &&
+    !swap.skipDirectBuyRoutes
+  ) {
+    const pumpSwap = await tryPumpSwapDirectBuy({
+      user: keypair,
+      mint: swap.outputMint,
+      sourceSignature: swap.signature,
+      buyLockOwner: options.persistentBuyLockOwner,
+      sourceSolInLamports: swap.amountRaw,
+      sourceTokensOutRaw: swap.counterpartyAmountRaw,
+      sourcePumpSwapInstruction: swap.sourcePumpSwapInstruction,
+      sourcePumpSwapAccounts: swap.sourcePumpSwapAccounts,
+      quoteMint: USDC_MINT,
+      solInLamports: initialAmountRaw,
+      slippageBps: mirrorSlippageBps,
+      startedAt,
+      log: (m) => console.log(m),
+    });
+    if (pumpSwap.ok) {
+      const usdcMeta = await getTokenMeta(USDC_MINT);
+      console.log(`PumpSwap USDC direct path complete (${elapsed()})`);
+      await shadowDelay();
+      return applyShadowExecution({
+        signature: pumpSwap.signature,
+        isSimulated: pumpSwap.isSimulated,
+        side: "buy",
+        input: { meta: usdcMeta, amountRaw: Number(pumpSwap.quoteIn) },
+        output: { meta: pumpSwap.mintMeta, amountRaw: Number(pumpSwap.baseOut) },
+        costBasisLamports: await estimateCostBasisLamports(USDC_MINT, Number(pumpSwap.quoteIn)),
+        confirmationPending: pumpSwap.confirmationPending,
+      }, swap.signature);
+    }
+    throw new Error(`Rust PumpSwap USDC buy failed: ${pumpSwap.reason}`);
+  }
+
   // Phase 0: Direct pump.fun bonding-curve route. Bypasses Jupiter entirely for pre-graduation
   // pump.fun tokens — solves the "Jupiter says 100% impact" indexing-lag problem and shaves
   // 150-300ms off the entry path. Falls through to Jupiter only when fallback is enabled.
   if (
     side === "buy" &&
     pumpfunDirectEnabled &&
-    mirrorInputMint === WRAPPED_SOL_MINT &&
+    (mirrorInputMint === WRAPPED_SOL_MINT ||
+      (mirrorInputMint === USDC_MINT && (swap.sourceIxAccounts?.length ?? 0) >= 27)) &&
     !swap.skipDirectBuyRoutes
   ) {
     const direct = await tryPumpFunDirectBuy({
       user: keypair,
       mint: swap.outputMint,
+      quoteMint: mirrorInputMint,
       solInLamports: initialAmountRaw,
       slippageBps: mirrorSlippageBps,
       maxImpactPct: maxEntryPriceImpactPct,
@@ -436,11 +485,13 @@ export async function mirrorSwap(
       sourceSignature: swap.forceDerivedPumpFunBuy ? undefined : swap.signature,
       sourceIxAccounts: swap.forceDerivedPumpFunBuy ? undefined : swap.sourceIxAccounts,
       sourceIxDataBase64: swap.forceDerivedPumpFunBuy ? undefined : swap.sourceIxDataBase64,
-      onConfirmFailure: (mint, tokensRaw, solLamports, reason) => {
+      onConfirmFailure: mirrorInputMint === WRAPPED_SOL_MINT ? (mint, tokensRaw, solLamports, reason) => {
         // Phantom-position cleanup: in fastMode we recorded the buy before confirmation.
         // If the tx failed on chain, roll back so the risk loop stops trying to sell
         // tokens we never actually received.
-        const removed = unrecordBuy(mint, tokensRaw, solLamports);
+        const removed = isUncertainConfirmationReason(reason)
+          ? false
+          : unrecordBuy(mint, tokensRaw, solLamports);
         if (removed) {
           console.warn(
             `🧹 Phantom buy cleaned up: ${mint.slice(0, 8)}… (reason: ${reason}). Position removed from tracking.`
@@ -454,8 +505,8 @@ export async function mirrorSwap(
           positionRemoved: removed,
           sourceSwap: swap,
         });
-      },
-      onConfirmSuccess: (mint, tokensRaw, solLamports, signature) => {
+      } : undefined,
+      onConfirmSuccess: mirrorInputMint === WRAPPED_SOL_MINT ? (mint, tokensRaw, solLamports, signature) => {
         options.onFastBuyConfirmSuccess?.({
           mint,
           tokenAmountRaw: tokensRaw,
@@ -463,21 +514,25 @@ export async function mirrorSwap(
           signature,
           sourceSwap: swap,
         });
-      },
+      } : undefined,
     });
     if (direct.ok) {
-      const solMeta = await getTokenMeta(WRAPPED_SOL_MINT);
+      const quoteMeta = await getTokenMeta(mirrorInputMint);
       console.log(`Pump.fun direct path complete (${elapsed()})`);
       await shadowDelay();
       return applyShadowExecution({
         signature: direct.signature,
         isSimulated: direct.isSimulated,
         side: "buy",
-        input: { meta: solMeta, amountRaw: Number(direct.solIn) },
+        input: { meta: quoteMeta, amountRaw: Number(direct.solIn) },
         output: { meta: direct.mintMeta, amountRaw: Number(direct.tokensOut) },
+        costBasisLamports: await estimateCostBasisLamports(mirrorInputMint, Number(direct.solIn)),
         priceImpactPct: (direct.priceImpactPct / 100).toString(),
         confirmationPending: direct.confirmationPending,
       }, swap.signature);
+    }
+    if (mirrorInputMint === USDC_MINT) {
+      throw new Error(`Rust Pump.fun V2 USDC buy failed: ${direct.reason}`);
     }
     if (!direct.recoverable) {
       // Hard fail (broadcast error, curve too thin) — surface it; don't try Jupiter for this trade.
@@ -503,7 +558,9 @@ export async function mirrorSwap(
         startedAt,
         log: (m) => console.log(m),
         onConfirmFailure: (mint, tokensRaw, solLamports, reason) => {
-          const removed = unrecordBuy(mint, tokensRaw, solLamports);
+          const removed = isUncertainConfirmationReason(reason)
+            ? false
+            : unrecordBuy(mint, tokensRaw, solLamports);
           options.onFastBuyConfirmFailure?.({
             mint,
             tokenAmountRaw: tokensRaw,
@@ -934,7 +991,9 @@ export async function mirrorSwap(
           .catch((err) => {
             const reason = err instanceof Error ? err.message : String(err);
             if (side === "buy") {
-              const removed = unrecordBuy(mirrorSwap.outputMint, outAmountRaw, buyCostBasisLamports ?? inAmountRaw);
+              const removed = isConfirmationTimeoutError(err)
+                ? false
+                : unrecordBuy(mirrorSwap.outputMint, outAmountRaw, buyCostBasisLamports ?? inAmountRaw);
               options.onFastBuyConfirmFailure?.({
                 mint: mirrorSwap.outputMint,
                 tokenAmountRaw: outAmountRaw,

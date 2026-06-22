@@ -18,7 +18,7 @@ import {
   rustOnlyBuys,
   usePumpfunToken2022DirectSell,
 } from "../config.js";
-import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
+import { getTokenMeta, type TokenMeta, USDC_MINT, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
 import {
   PUMP_FUN_PROGRAM_ID,
   PUMP_FUN_BUYBACK_FEE_RECIPIENT,
@@ -254,6 +254,7 @@ async function getSourcePumpRemainingAccounts(
 export async function tryPumpFunDirectBuy(args: {
   user: Keypair;
   mint: string;
+  quoteMint?: string;
   solInLamports: number;
   slippageBps: number;
   maxImpactPct?: number | null;
@@ -284,13 +285,15 @@ export async function tryPumpFunDirectBuy(args: {
   const sourceAccountsPromise: Promise<AccountMeta[]> = haveGrpcAccounts
     ? Promise.resolve([])
     : getSourcePumpRemainingAccounts(args.sourceSignature, mintKey);
-  let curve = await getBondingCurveState(mintKey);
+  const quoteMint = args.quoteMint ?? WRAPPED_SOL_MINT;
+  const isUsdcQuote = quoteMint === USDC_MINT;
+  let curve = isUsdcQuote ? null : await getBondingCurveState(mintKey);
   const canSourceReplay =
     args.sourceIxAccounts !== undefined &&
     args.sourceIxAccounts.length >= 16 &&
     Boolean(args.sourceIxDataBase64);
 
-  if (!curve && canSourceReplay) {
+  if (!curve && canSourceReplay && !isUsdcQuote) {
     for (const delayMs of DIRECT_CURVE_RETRY_DELAYS_MS) {
       await sleep(delayMs);
       curve = await getBondingCurveState(mintKey);
@@ -303,7 +306,7 @@ export async function tryPumpFunDirectBuy(args: {
     }
   }
   if (!curve) {
-    if (localPumpfunMarketCapFilterEnabled) {
+    if (localPumpfunMarketCapFilterEnabled && !isUsdcQuote) {
       const mcGate = localPumpfunMarketCapGate({ marketCapSol: null });
       if (mcGate.reason) args.log(`${mcGate.reason}; curve unavailable before source replay.`);
       if (!mcGate.allowed) {
@@ -348,6 +351,7 @@ export async function tryPumpFunDirectBuy(args: {
         route,
         mint: args.mint,
         sourceSignature: args.sourceSignature,
+        quoteMint,
         solInLamports: Number(solIn),
         slippageBps: args.slippageBps,
         exactSolIn: false,
@@ -437,7 +441,7 @@ export async function tryPumpFunDirectBuy(args: {
       }
       }
       args.log(`Broadcast: ${signature} (${elapsed()})`);
-      if (fastMode) {
+      if (fastMode && !isUsdcQuote) {
         const confirmStartedAt = Date.now();
         confirmSignature(signature)
           .then(() => {

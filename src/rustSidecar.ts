@@ -86,6 +86,7 @@ export type RustPumpFunBuyArgs = {
   mint: string;
   /** Source (tracked-wallet) tx being mirrored; feeds the executor's per-source-signature buy-once gate. */
   sourceSignature?: string;
+  quoteMint?: string;
   solInLamports: number;
   tokensOutRaw?: number;
   slippageBps: number;
@@ -102,7 +103,8 @@ export type RustPumpSwapBuyArgs = {
   mint: string;
   sourceSignature: string;
   buyLockOwner?: string;
-  solInLamports: number;
+  quoteMint: string;
+  quoteAmountInRaw: number;
   expectedBaseOutRaw: number;
   minBaseOutRaw: number;
   slippageBps: number;
@@ -551,6 +553,7 @@ export async function executeRustPumpFunBuy(args: RustPumpFunBuyArgs): Promise<R
     route: args.route,
     mint: args.mint,
     sourceSignature: args.sourceSignature,
+    quoteMint: args.quoteMint,
     solInLamports: Math.max(1, Math.floor(args.solInLamports)),
     tokensOutRaw: args.tokensOutRaw == null ? undefined : Math.max(1, Math.floor(args.tokensOutRaw)),
     slippageBps: Math.max(0, Math.floor(args.slippageBps)),
@@ -601,7 +604,8 @@ export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise
     mint: args.mint,
     sourceSignature: args.sourceSignature,
     buyLockOwner: args.buyLockOwner,
-    solInLamports: Math.max(1, Math.floor(args.solInLamports)),
+    quoteMint: args.quoteMint,
+    quoteAmountInRaw: Math.max(1, Math.floor(args.quoteAmountInRaw)),
     expectedBaseOutRaw: Math.max(1, Math.floor(args.expectedBaseOutRaw)),
     minBaseOutRaw: Math.max(1, Math.floor(args.minBaseOutRaw)),
     slippageBps: Math.max(0, Math.floor(args.slippageBps)),

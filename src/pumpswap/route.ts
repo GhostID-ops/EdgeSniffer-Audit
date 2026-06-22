@@ -26,7 +26,7 @@ import { getCachedBlockhash } from "../blockhashCache.js";
 import { broadcastTransactionWithSender } from "../sender.js";
 import { buildSizeSafeV0Transaction } from "../transactionSize.js";
 import { confirmSignature, isConfirmationTimeoutError } from "../confirm.js";
-import { getTokenMeta, type TokenMeta, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
+import { getTokenMeta, type TokenMeta, USDC_MINT, WRAPPED_SOL_MINT } from "../tokenRegistry.js";
 import { accountExistsCached, knownAccountExists } from "../walletWarmup.js";
 import {
   assertNativeIdlInstruction,
@@ -441,15 +441,15 @@ export function sourcePumpSwapHintAccountsToMetas(
   return pubkeys.length ? pumpSwapPubkeyHintsToMetas(pubkeys) : null;
 }
 
-function validatePumpSwapBuyAccountLayout(accounts: AccountMeta[], mint: PublicKey): string | null {
+function validatePumpSwapBuyAccountLayout(accounts: AccountMeta[], mint: PublicKey, quoteMint = WRAPPED_SOL_MINT): string | null {
   if (accounts.length < PUMPSWAP_MIN_BUY_ACCOUNT_COUNT) {
     return `PumpSwap account list too short: ${accounts.length}`;
   }
   if (!accounts[PUMPSWAP_BASE_MINT_INDEX]?.pubkey.equals(mint)) {
     return "source PumpSwap accounts do not match target base mint";
   }
-  if (accounts[PUMPSWAP_QUOTE_MINT_INDEX]?.pubkey.toBase58() !== WRAPPED_SOL_MINT) {
-    return "source PumpSwap accounts do not match SOL quote mint";
+  if (accounts[PUMPSWAP_QUOTE_MINT_INDEX]?.pubkey.toBase58() !== quoteMint) {
+    return "source PumpSwap accounts do not match requested quote mint";
   }
   return null;
 }
@@ -620,6 +620,26 @@ async function resolvePumpSwapSellAccountPlan(args: {
     };
   }
 
+  // A newly graduated pool can be fully readable before any recent PumpSwap
+  // sell is indexed. Do not fail that race after pool validation succeeds:
+  // build the authoritative sell layout directly from canonical pool state.
+  // Source/detector sell metas remain untrusted and are used only as a pool hint.
+  const canonical = await buildCanonicalPumpSwapSellAccounts({
+    user: args.user,
+    mint: args.mint,
+    baseTokenProgram: args.baseTokenProgram,
+    poolHint,
+  });
+  if (canonical) {
+    return {
+      accounts: canonical,
+      source: "canonical-pool-state",
+      diagnostics: hintedAccounts
+        ? comparePumpSwapAccounts(canonical, hintedAccounts, "detector-pubkey-hints")
+        : { comparedTo: "detector-pubkey-hints", candidateAccounts: 0 },
+    };
+  }
+
   return null;
 }
 
@@ -782,6 +802,7 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   user: PublicKey;
   baseTokenProgram: PublicKey;
   sourcePumpSwapAccounts?: SourcePumpSwapAccountMeta[] | string[];
+  quoteMint?: string;
   canonicalOnly?: boolean;
 }): Promise<PumpSwapAccountPlan | null> {
   const hintedAccounts = sourcePumpSwapHintAccountsToMetas(args.sourcePumpSwapAccounts);
@@ -791,7 +812,7 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   // exact current on-chain account layout. Trusted for buys. Skipped in
   // canonicalOnly retry mode, which forces the authoritative pool template.
   if (!args.canonicalOnly) {
-    if (hintedAccounts?.length && !validatePumpSwapBuyAccountLayout(hintedAccounts, args.mint)) {
+    if (hintedAccounts?.length && !validatePumpSwapBuyAccountLayout(hintedAccounts, args.mint, args.quoteMint)) {
       return {
         accounts: hintedAccounts,
         source: "detector-pubkey-hints",
@@ -799,10 +820,14 @@ async function resolvePumpSwapBuyAccountPlan(args: {
       };
     }
     const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
-    if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint)) {
+    if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint, args.quoteMint)) {
       return { accounts: confirmedAccounts, source: "confirmed-source-metas", diagnostics: {} };
     }
   }
+
+  // USDC pools are not the deterministic WSOL graduation pool. Without source
+  // or confirmed metas, fail closed instead of silently selecting a WSOL pool.
+  if (args.quoteMint === USDC_MINT) return null;
 
   // Authoritative fallback when the source carries no PumpSwap metas (e.g. it
   // routed through an aggregator): template a recent real buy on the resolved
@@ -830,6 +855,7 @@ export function replacePumpSwapUserAccounts(args: {
   user: PublicKey;
   baseMint: PublicKey;
   baseTokenProgram: PublicKey;
+  quoteMint?: PublicKey;
   // Only PumpSwap BUYS carry a user_volume_accumulator at index 20. In the
   // current SELL layout index 20 is fee_program, so substituting it there would
   // corrupt the instruction. Defaults to true (buy behavior).
@@ -839,7 +865,7 @@ export function replacePumpSwapUserAccounts(args: {
   const accounts = args.accounts.map((a) => ({ ...a }));
   const templateUser = accounts[PUMPSWAP_USER_INDEX]?.pubkey;
   const userBaseAta = deriveAta(args.user, args.baseMint, args.baseTokenProgram);
-  const userQuoteAta = deriveAta(args.user, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID);
+  const userQuoteAta = deriveAta(args.user, args.quoteMint ?? new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID);
 
   accounts[PUMPSWAP_USER_INDEX] = { pubkey: args.user, isSigner: true, isWritable: true };
   accounts[PUMPSWAP_USER_BASE_ATA_INDEX] = { pubkey: userBaseAta, isSigner: false, isWritable: true };
@@ -1376,6 +1402,7 @@ export async function tryPumpSwapDirectBuy(args: {
   sourceTokensOutRaw?: number;
   sourcePumpSwapInstruction?: PumpSwapBuyInstruction;
   sourcePumpSwapAccounts?: SourcePumpSwapAccountMeta[] | string[];
+  quoteMint?: string;
   solInLamports: number;
   slippageBps: number;
   startedAt: number;
@@ -1388,6 +1415,10 @@ export async function tryPumpSwapDirectBuy(args: {
   onConfirmFailure?: (mint: string, tokensOutRaw: number, solLamports: number, reason: string) => void;
   onConfirmSuccess?: (mint: string, tokensOutRaw: number, solLamports: number, signature: string) => void;
 }): Promise<PumpSwapOutcome> {
+  const quoteMint = args.quoteMint ?? WRAPPED_SOL_MINT;
+  if (quoteMint !== WRAPPED_SOL_MINT && quoteMint !== USDC_MINT) {
+    return { ok: false, recoverable: false, reason: "unsupported PumpSwap quote mint" };
+  }
   if (args.sourceSolInLamports <= 0) {
     return { ok: false, recoverable: true, reason: "source PumpSwap spend unavailable" };
   }
@@ -1404,6 +1435,7 @@ export async function tryPumpSwapDirectBuy(args: {
     user: args.user.publicKey,
     baseTokenProgram: baseTokenProgramId,
     sourcePumpSwapAccounts: args.sourcePumpSwapAccounts,
+    quoteMint,
     canonicalOnly: (args.canonicalRetryAttempt ?? 0) > 0,
   });
   if (!accountPlan) {
@@ -1438,6 +1470,7 @@ export async function tryPumpSwapDirectBuy(args: {
     user: args.user.publicKey,
     baseMint: mintKey,
     baseTokenProgram: baseTokenProgramId,
+    quoteMint: new PublicKey(quoteMint),
   });
 
   if (accounts.length < PUMPSWAP_MIN_BUY_ACCOUNT_COUNT) {
@@ -1450,6 +1483,10 @@ export async function tryPumpSwapDirectBuy(args: {
   );
   const poolError = validatePumpSwapPoolAccount(accounts[0]!.pubkey, poolAccount);
   if (poolError) return { ok: false, recoverable: true, reason: poolError };
+  const poolState = readPoolStateFromAccount(accounts[0]!.pubkey, poolAccount);
+  if (!poolState || !poolState.baseMint.equals(mintKey) || poolState.quoteMint.toBase58() !== quoteMint) {
+    return { ok: false, recoverable: false, reason: "PumpSwap pool state does not match requested base/quote pair" };
+  }
 
   const sourceRatioOut =
     args.sourceTokensOutRaw && args.sourceTokensOutRaw > 0
@@ -1528,7 +1565,8 @@ export async function tryPumpSwapDirectBuy(args: {
       mint: args.mint,
       sourceSignature: args.sourceSignature,
       buyLockOwner: args.buyLockOwner,
-      solInLamports: args.solInLamports,
+      quoteMint,
+      quoteAmountInRaw: args.solInLamports,
       expectedBaseOutRaw: Number(expectedBaseOut),
       minBaseOutRaw: Number(minBaseOut),
       slippageBps: args.slippageBps,
@@ -1662,7 +1700,7 @@ export async function tryPumpSwapDirectBuy(args: {
   if (rust?.ok) {
     const signature = rust.signature;
     rememberPumpSwapBuyAccountPlan(mintKey, accountPlan.accounts);
-    if (fastMode) {
+    if (fastMode && quoteMint === WRAPPED_SOL_MINT) {
       const confirmStartedAt = Date.now();
       confirmSignature(signature)
         .then(() => {

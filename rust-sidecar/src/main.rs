@@ -717,9 +717,7 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
             seen.insert(line.signature.clone());
         }
         Err(_) => {
-            return HotDecision::Fallback(Some(
-                "hot signature state lock poisoned".to_string(),
-            ));
+            return HotDecision::Fallback(Some("hot signature state lock poisoned".to_string()));
         }
     }
 
@@ -774,6 +772,7 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
         // The hot path already reserved this signature in bought_signatures and calls
         // the executor directly (bypassing the stdin gate), so this is informational.
         source_signature: Some(line.signature.clone()),
+        quote_mint: Some(line.input_mint.clone()),
         sol_in_lamports,
         tokens_out_raw: None,
         slippage_bps: hot.slippage_bps,
@@ -1267,6 +1266,10 @@ fn extract_swap(
         } else {
             source_ix_accounts.get(2)?.clone()
         };
+        let quote_mint = source_pumpfun_quote_mint(&source_ix_accounts, is_v2)?;
+        if quote_mint != WRAPPED_SOL_MINT && quote_mint != USDC_MINT {
+            continue;
+        }
         let data = ix.data.as_slice();
 
         if starts_with(data, &BUY_DISCRIMINATOR) || starts_with(data, &BUY_V2_DISCRIMINATOR) {
@@ -1280,16 +1283,16 @@ fn extract_swap(
                 detected_at_ms: now_ms(),
                 signature,
                 wallet,
-                input_mint: WRAPPED_SOL_MINT.to_string(),
+                input_mint: quote_mint.clone(),
                 output_mint: mint,
                 amount_raw: max_sol_cost,
-                is_native_input: true,
+                is_native_input: quote_mint == WRAPPED_SOL_MINT,
                 counterparty_amount_raw: None,
                 source_ix_accounts: Some(source_ix_accounts),
                 source_ix_data_base64: Some(BASE64_STANDARD.encode(data)),
                 source_pump_swap_instruction: None,
                 source_pump_swap_accounts: None,
-                source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
+                source_quote_mint: Some(quote_mint.clone()),
                 source_quote_amount_raw: Some(max_sol_cost),
                 source_slot,
                 source_transaction_index,
@@ -1309,16 +1312,16 @@ fn extract_swap(
                 detected_at_ms: now_ms(),
                 signature,
                 wallet,
-                input_mint: WRAPPED_SOL_MINT.to_string(),
+                input_mint: quote_mint.clone(),
                 output_mint: mint,
                 amount_raw: spendable_sol,
-                is_native_input: true,
+                is_native_input: quote_mint == WRAPPED_SOL_MINT,
                 counterparty_amount_raw: None,
                 source_ix_accounts: Some(source_ix_accounts),
                 source_ix_data_base64: Some(BASE64_STANDARD.encode(data)),
                 source_pump_swap_instruction: None,
                 source_pump_swap_accounts: None,
-                source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
+                source_quote_mint: Some(quote_mint.clone()),
                 source_quote_amount_raw: Some(spendable_sol),
                 source_slot,
                 source_transaction_index,
@@ -1421,6 +1424,10 @@ fn extract_shred_swap(
         } else {
             source_ix_accounts.get(2)?.clone()
         };
+        let quote_mint = source_pumpfun_quote_mint(&source_ix_accounts, is_v2)?;
+        if quote_mint != WRAPPED_SOL_MINT && quote_mint != USDC_MINT {
+            continue;
+        }
         let data = ix.data.as_slice();
 
         if starts_with(data, &BUY_DISCRIMINATOR) || starts_with(data, &BUY_V2_DISCRIMINATOR) {
@@ -1434,16 +1441,16 @@ fn extract_shred_swap(
                 detected_at_ms: now_ms(),
                 signature,
                 wallet,
-                input_mint: WRAPPED_SOL_MINT.to_string(),
+                input_mint: quote_mint.clone(),
                 output_mint: mint,
                 amount_raw: max_sol_cost,
-                is_native_input: true,
+                is_native_input: quote_mint == WRAPPED_SOL_MINT,
                 counterparty_amount_raw: None,
                 source_ix_accounts: Some(source_ix_accounts),
                 source_ix_data_base64: Some(BASE64_STANDARD.encode(data)),
                 source_pump_swap_instruction: None,
                 source_pump_swap_accounts: None,
-                source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
+                source_quote_mint: Some(quote_mint.clone()),
                 source_quote_amount_raw: Some(max_sol_cost),
                 source_slot,
                 source_transaction_index,
@@ -1463,16 +1470,16 @@ fn extract_shred_swap(
                 detected_at_ms: now_ms(),
                 signature,
                 wallet,
-                input_mint: WRAPPED_SOL_MINT.to_string(),
+                input_mint: quote_mint.clone(),
                 output_mint: mint,
                 amount_raw: spendable_sol,
-                is_native_input: true,
+                is_native_input: quote_mint == WRAPPED_SOL_MINT,
                 counterparty_amount_raw: None,
                 source_ix_accounts: Some(source_ix_accounts),
                 source_ix_data_base64: Some(BASE64_STANDARD.encode(data)),
                 source_pump_swap_instruction: None,
                 source_pump_swap_accounts: None,
-                source_quote_mint: Some(WRAPPED_SOL_MINT.to_string()),
+                source_quote_mint: Some(quote_mint.clone()),
                 source_quote_amount_raw: Some(spendable_sol),
                 source_slot,
                 source_transaction_index,
@@ -1481,6 +1488,14 @@ fn extract_shred_swap(
     }
 
     None
+}
+
+fn source_pumpfun_quote_mint(source_ix_accounts: &[String], is_v2: bool) -> Option<String> {
+    if is_v2 {
+        source_ix_accounts.get(2).cloned()
+    } else {
+        Some(WRAPPED_SOL_MINT.to_string())
+    }
 }
 
 fn extract_top_level_pumpswap_buy(
@@ -1602,4 +1617,63 @@ fn now_ms() -> u128 {
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_millis())
         .unwrap_or(0)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn detects_pumpfun_v2_usdc_buy_quote_asset() {
+        let wallet = "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq";
+        let mint = "q4dAfeqkkhMpKFs2aeAQpgvT5iA1sL38hdsUeGEpump";
+        let accounts = vec![
+            "4wTV1YmiEkRvAtNtsSGPtUrqRYQMe5SKy2uB4Jjaxnjf",
+            mint,
+            USDC_MINT,
+            TOKEN_2022_PROGRAM_ID,
+            TOKEN_PROGRAM_ID,
+            ASSOCIATED_TOKEN_PROGRAM_ID,
+            "FWsW1xNtWscwNmKv6wVsU1iTzRN6wmmk3MjxRP5tT7hz",
+            "2yC9PAQvtxFjdV2G79N7cGsFhitbNiEQmZ3Z6dmLWfQg",
+            "3BpXnfJaUTiwXnJNe7Ej1rcbzqTTQUvLShZaWazebsVR",
+            "9JR4rG7BK32TVENGAcKMseS7tdoz3Y5pXeSq234MEowH",
+            "A69ypmTwsmj1et6xWEaz7YioLpFX4VX5zQDzyNEWL17",
+            "9AoEshVnGddHjS9JfQjmwV7syA8bwky94TyEhDGmrk61",
+            "8sRf3VcJtspQK2ySq39K8wsXtXx6wAPM4p3UKxmMbaWd",
+            wallet,
+            "FctN6nqtpVPJGKToEk6VHCDYhK8vZP9ehQKAgjL99hxn",
+            "DEQQNgGZDtfBk9B1qpJR5GDGdH9RUfDzKNs9rrmP1fLH",
+            "B1DDVTJFJvi1MsrEx49fFWP9ELH4sHd8rV8XeCWphyn1",
+            "BCrPjRZ5yievZi57sAAXXkjE94o8VBeM6ZQMnEnrHunP",
+            "AcKouGz7spajkDJseX4K2D31GDN5WjrTCnxjm6EZcnfM",
+            "Hq2wp8uJ9jCPsYgNHex8RtqdvMPfVGoYwjvF1ATiwn2Y",
+            "CKFkZtNhXUY1BTyNCAQq7NrfbHBTYLJ1GMAjvdkhRKBB",
+            "FtY6z4VZxYxRRxHL6KjEo3rSKN6eKH5VDTzSSs1kw6Tc",
+            "8Wf5TiAheLUqBrKXeYg2JtAFFMWtKdG2BSFgqUcPVwTt",
+            PUMP_FUN_FEE_PROGRAM_ID,
+            "11111111111111111111111111111111",
+            "Ce6TQqeHC9p8KetsN6JsjHK7UTZk7nasjjnr7XxXp9F1",
+            PUMP_FUN_PROGRAM_ID,
+        ]
+        .into_iter()
+        .map(str::to_string)
+        .collect::<Vec<_>>();
+        let data = bs58::decode("HnQ14hy6fxGW2V5S6E5thtWdkf6VMdvko")
+            .into_vec()
+            .unwrap();
+        assert_eq!(
+            source_pumpfun_quote_mint(&accounts, true).as_deref(),
+            Some(USDC_MINT)
+        );
+        assert_eq!(
+            source_pumpfun_quote_mint(&accounts, false).as_deref(),
+            Some(WRAPPED_SOL_MINT)
+        );
+
+        let spend = read_u64_le(&data, 8).unwrap();
+        assert_eq!(spend, 96_677_834);
+        assert_eq!(&data[..8], &BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR);
+        assert_eq!(accounts[2], USDC_MINT);
+    }
 }
