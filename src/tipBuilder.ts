@@ -58,19 +58,20 @@ function routeTipLamports(route?: string, baseLamports = tipLamports): number {
   return Math.max(0, Math.round(baseLamports * routeMultiplier(route)));
 }
 
-function jitoTip(user: PublicKey, route?: string): TransactionInstruction {
+function jitoTip(user: PublicKey, route?: string): TransactionInstruction | null {
+  const lamports = routeTipLamports(route, getDynamicJitoTipLamports());
+  if (lamports <= 0) return null;
   return SystemProgram.transfer({
     fromPubkey: user,
     toPubkey: randomAccount(JITO_TIP_ACCOUNTS),
-    lamports: routeTipLamports(route, getDynamicJitoTipLamports()),
+    lamports,
   });
 }
 
-function heliusTip(user: PublicKey, route?: string): TransactionInstruction {
+function heliusTip(user: PublicKey, route?: string): TransactionInstruction | null {
   const routeLamports = routeTipLamports(route);
-  const heliusLamports = useJitoDirect
-    ? HELIUS_TIP_MIN_LAMPORTS
-    : Math.max(routeLamports, HELIUS_TIP_MIN_LAMPORTS);
+  if (routeLamports <= 0) return null;
+  const heliusLamports = Math.max(routeLamports, HELIUS_TIP_MIN_LAMPORTS);
   return SystemProgram.transfer({
     fromPubkey: user,
     toPubkey: randomAccount(HELIUS_TIP_ACCOUNTS),
@@ -84,7 +85,8 @@ export function getJitoTipLamportsForRoute(route?: string): number {
 
 export function getHeliusTipLamportsForRoute(route?: string): number {
   const routeLamports = routeTipLamports(route);
-  return useJitoDirect ? HELIUS_TIP_MIN_LAMPORTS : Math.max(routeLamports, HELIUS_TIP_MIN_LAMPORTS);
+  if (routeLamports <= 0) return 0;
+  return Math.max(routeLamports, HELIUS_TIP_MIN_LAMPORTS);
 }
 
 /**
@@ -100,22 +102,24 @@ export function buildTipInstructions(
   if (selection === "none") return [];
 
   if (selection === "primary") {
-    return [useJitoDirect ? jitoTip(user, options.route) : heliusTip(user, options.route)];
+    const ix = useJitoDirect ? jitoTip(user, options.route) : heliusTip(user, options.route);
+    return ix ? [ix] : [];
   }
 
   if (selection === "fallback") {
-    return [
-      useJitoDirect && useJitoFallback
-        ? heliusTip(user, options.route)
-        : useJitoDirect
-          ? jitoTip(user, options.route)
-          : heliusTip(user, options.route),
-    ];
+    const ix = useJitoDirect && useJitoFallback
+      ? heliusTip(user, options.route)
+      : useJitoDirect
+        ? jitoTip(user, options.route)
+        : heliusTip(user, options.route);
+    return ix ? [ix] : [];
   }
 
   const ixs: TransactionInstruction[] = [];
-  if (useJitoDirect) ixs.push(jitoTip(user, options.route));
-  if (!useJitoDirect || useJitoFallback) ixs.push(heliusTip(user, options.route));
+  const jitoIx = useJitoDirect ? jitoTip(user, options.route) : null;
+  const heliusIx = !useJitoDirect || useJitoFallback ? heliusTip(user, options.route) : null;
+  if (jitoIx) ixs.push(jitoIx);
+  if (heliusIx) ixs.push(heliusIx);
   return ixs;
 }
 

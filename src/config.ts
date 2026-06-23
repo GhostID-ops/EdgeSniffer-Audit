@@ -369,13 +369,32 @@ const configuredExecutionTipMultipliers = (process.env.EXECUTION_TIP_MULTIPLIERS
     .map((piece): [string, number] | null => {
       const [route, value] = piece.split(":");
       const multiplier = parseFloat(value ?? "");
-      if (!route || !Number.isFinite(multiplier) || multiplier <= 0) return null;
+      if (!route || !Number.isFinite(multiplier) || multiplier < 0) return null;
       return [route.trim(), multiplier];
     })
     .filter((entry): entry is [string, number] => entry != null);
 export const executionTipMultipliers = new Map([
   ...DEFAULT_EXECUTION_TIP_MULTIPLIERS,
   ...configuredExecutionTipMultipliers,
+]);
+const DEFAULT_EXECUTION_PRIORITY_FEE_MULTIPLIERS: Array<[string, number]> = [
+  ["buy", 1],
+  ["sell", 1],
+];
+const configuredExecutionPriorityFeeMultipliers = (process.env.EXECUTION_PRIORITY_FEE_MULTIPLIERS ?? "")
+  .split(",")
+  .map((piece) => piece.trim())
+  .filter(Boolean)
+  .map((piece): [string, number] | null => {
+    const [route, value] = piece.split(":");
+    const multiplier = parseFloat(value ?? "");
+    if (!route || !Number.isFinite(multiplier) || multiplier < 0) return null;
+    return [route.trim(), multiplier];
+  })
+  .filter((entry): entry is [string, number] => entry != null);
+export const executionPriorityFeeMultipliers = new Map([
+  ...DEFAULT_EXECUTION_PRIORITY_FEE_MULTIPLIERS,
+  ...configuredExecutionPriorityFeeMultipliers,
 ]);
 const WARM_WALLET_MODE_RAW = (process.env.WARM_WALLET_MODE ?? "true").toLowerCase();
 export const warmWalletMode =

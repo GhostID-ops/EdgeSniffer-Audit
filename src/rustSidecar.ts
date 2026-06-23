@@ -21,7 +21,7 @@ import {
   useJitoFallback,
 } from "./config.js";
 import { getCachedBlockhash } from "./blockhashCache.js";
-import { getDynamicPriorityFee } from "./feeOracle.js";
+import { getDynamicPriorityFeeForRoute } from "./feeOracle.js";
 import { getHeliusTipLamportsForRoute, getJitoTipLamportsForRoute } from "./tipBuilder.js";
 import type { DetectedSwap, RustHotBuy, SourcePumpSwapAccountMeta } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
@@ -319,9 +319,12 @@ export async function startRustPumpFunSidecar(
       `, Rust hot sniper=${rustHotSniperEnabled ? "ON" : "OFF"}`
   );
   console.log(
-    `Execution fee config: priority=${getDynamicPriorityFee()} microLamports/CU, ` +
+    `Execution fee config: buy priority=${getDynamicPriorityFeeForRoute("buy")} microLamports/CU, ` +
+      `sell priority=${getDynamicPriorityFeeForRoute("sell")} microLamports/CU, ` +
       `buy Jito tip=${getJitoTipLamportsForRoute("buy")} lamports, ` +
+      `sell Jito tip=${getJitoTipLamportsForRoute("sell")} lamports, ` +
       `buy Helius tip=${getHeliusTipLamportsForRoute("buy")} lamports, ` +
+      `sell Helius tip=${getHeliusTipLamportsForRoute("sell")} lamports, ` +
       `Jito direct=${useJitoDirect ? "ON" : "OFF"}, fallback=${useJitoFallback ? "ON" : "OFF"}, ` +
       `sendMode=${jitoSendMode}, race=${(executionMultiSendEnabled || broadcastRaceEnabled) ? "ON" : "OFF"}`
   );
@@ -624,7 +627,7 @@ export async function executeRustPumpFunBuy(args: RustPumpFunBuyArgs): Promise<R
     tokenProgramId: args.tokenProgramId,
     blockhash,
     computeUnitLimit,
-    priorityFeeMicroLamports: getDynamicPriorityFee(),
+    priorityFeeMicroLamports: getDynamicPriorityFeeForRoute(args.route),
     jitoTipLamports: getJitoTipLamportsForRoute(args.route),
     heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
     useJitoDirect,
@@ -685,7 +688,7 @@ export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise
     baseTokenProgramId: args.baseTokenProgramId,
     blockhash,
     computeUnitLimit,
-    priorityFeeMicroLamports: getDynamicPriorityFee(),
+    priorityFeeMicroLamports: getDynamicPriorityFeeForRoute(args.route),
     jitoTipLamports: getJitoTipLamportsForRoute(args.route),
     heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
     useJitoDirect,
@@ -736,7 +739,7 @@ export async function executeRustPumpSwapSell(args: RustPumpSwapSellArgs): Promi
     baseTokenProgramId: args.baseTokenProgramId,
     blockhash,
     computeUnitLimit,
-    priorityFeeMicroLamports: getDynamicPriorityFee(),
+    priorityFeeMicroLamports: getDynamicPriorityFeeForRoute(args.route),
     jitoTipLamports: getJitoTipLamportsForRoute(args.route),
     heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
     useJitoDirect,
@@ -787,7 +790,7 @@ export async function executeRustPumpFunSell(args: RustPumpFunSellArgs): Promise
     accounts: args.accounts,
     blockhash,
     computeUnitLimit,
-    priorityFeeMicroLamports: getDynamicPriorityFee(),
+    priorityFeeMicroLamports: getDynamicPriorityFeeForRoute(args.route),
     jitoTipLamports: getJitoTipLamportsForRoute(args.route),
     heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
     useJitoDirect,

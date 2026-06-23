@@ -5,6 +5,7 @@ import {
   dynamicPriorityFeeEnabled,
   dynamicPriorityFeeRefreshMs,
   dynamicPriorityFeeMaxMicroLamports,
+  executionPriorityFeeMultipliers,
 } from "./config.js";
 import { PUMP_FUN_PROGRAM_ID } from "./pumpfun/constants.js";
 
@@ -88,6 +89,27 @@ export function getDynamicPriorityFee(): number {
   return Math.max(cachedFee, priorityFeeMicroLamports);
 }
 
+
+function routePriorityMultiplier(route?: string): number {
+  if (!route) return 1;
+  const candidates = [
+    route,
+    route.replace(/-v\d+$/i, ""),
+    route.includes("buy") ? "buy" : "",
+    route.includes("sell") ? "sell" : "",
+    route.split("-")[0] ?? "",
+  ].filter(Boolean);
+  for (const candidate of candidates) {
+    const multiplier = executionPriorityFeeMultipliers.get(candidate);
+    if (multiplier != null) return multiplier;
+  }
+  return 1;
+}
+
+/** Route-aware priority fee. Allows buy-only priority while keeping sells at zero. */
+export function getDynamicPriorityFeeForRoute(route?: string): number {
+  return Math.max(0, Math.round(getDynamicPriorityFee() * routePriorityMultiplier(route)));
+}
 /** Diagnostic snapshot for status displays. */
 export function getFeeOracleSnapshot(): {
   enabled: boolean;
