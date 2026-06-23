@@ -180,6 +180,7 @@ export const circuitBreakerPauseMs = Math.max(
  * starting from the base -STOP_LOSS_PCT.
  */
 export type TrailingStep = { peakPct: number; floorPct: number };
+export type ProfitLadderStep = { triggerPct: number; sellPct: number };
 function parseTrailingSteps(raw: string | undefined): TrailingStep[] {
   if (!raw || raw.trim() === "") return [];
   const out: TrailingStep[] = [];
@@ -194,8 +195,28 @@ function parseTrailingSteps(raw: string | undefined): TrailingStep[] {
   out.sort((a, b) => a.peakPct - b.peakPct);
   return out;
 }
+function parseProfitLadderSteps(raw: string | undefined): ProfitLadderStep[] {
+  if (!raw || raw.trim() === "") return [];
+  const out: ProfitLadderStep[] = [];
+  for (const piece of raw.split(",")) {
+    const [triggerRaw, sellRaw] = piece.split(":");
+    if (triggerRaw == null || sellRaw == null) continue;
+    const triggerPct = parseFloat(triggerRaw);
+    const sellPct = parseFloat(sellRaw);
+    if (!Number.isFinite(triggerPct) || !Number.isFinite(sellPct)) continue;
+    if (triggerPct <= 0 || sellPct <= 0) continue;
+    out.push({ triggerPct, sellPct: Math.min(100, sellPct) });
+  }
+  out.sort((a, b) => a.triggerPct - b.triggerPct);
+  return out;
+}
 export const trailingSteps = parseTrailingSteps(process.env.TRAILING_STEPS);
 export const trailingEnabled = trailingSteps.length > 0;
+export const profitLadderSteps = parseProfitLadderSteps(process.env.PROFIT_LADDER_STEPS);
+export const profitLadderEnabled = parseEnvBool(
+  process.env.PROFIT_LADDER_ENABLED,
+  profitLadderSteps.length > 0
+) && profitLadderSteps.length > 0;
 
 /**
  * Cluster trigger strategy. When enabled, buys from CLUSTER_WALLETS (the front-runner wallets,
@@ -953,7 +974,7 @@ export const minHoldBeforeStopLossMs = Math.max(
   0,
   parseNonNegativeInteger(process.env.MIN_HOLD_BEFORE_STOP_LOSS_MS, 3500)
 );
-export const riskControlsEnabled = stopLossPct != null || takeProfitPct != null || hybridExitEnabled;
+export const riskControlsEnabled = stopLossPct != null || takeProfitPct != null || hybridExitEnabled || profitLadderEnabled;
 
 /** Shared Jupiter quote throttle/backoff for buys, sells, and risk checks. */
 export const jupiterQuoteMinGapMs = Math.max(

@@ -59,6 +59,8 @@ import {
   hybridExitTpPct,
   hybridExitTpSellPct,
   hybridExitSourceExitRemaining,
+  profitLadderEnabled,
+  profitLadderSteps,
   sourceHoldExitEnabled,
   sourceHoldExitIntervalMs,
   sourceHoldExitConsecutiveMisses,
@@ -67,6 +69,7 @@ import {
   trailingSteps,
   trailingEnabled,
   type TrailingStep,
+  type ProfitLadderStep,
   clusterTriggerEnabled,
   clusterWallets,
   clusterConfirmWallet,
@@ -218,6 +221,7 @@ import { applyShadowSellLamports, getShadowSolLamports, shadowCanSpend } from ".
 import {
   needsHybridPriceCheck,
   planHybridPartialSellRaw,
+  planProfitLadderPartialSellRaw,
   shouldCloseHybridRemainderOnSourceSell,
   waitsForSourceExit,
 } from "./hybridExit.js";
@@ -838,6 +842,8 @@ type RiskQuoteState = {
 const riskQuoteStateByMint = new Map<string, RiskQuoteState>();
 const hybridExitTpDoneByMint = new Set<string>();
 const hybridExitTpInFlightByMint = new Set<string>();
+const profitLadderDoneByMint = new Map<string, Set<number>>();
+const profitLadderInFlightByMint = new Map<string, Set<number>>();
 let running = false;
 let startedAt: number | null = null;
 let stopRequested = false;
@@ -3791,11 +3797,14 @@ export async function startBot(): Promise<void> {
     const hybridDesc = hybridExitEnabled
       ? ` hybrid=${hybridExitTpSellPct}%@+${hybridExitTpPct}% then ${hybridExitSourceExitRemaining ? "source exit" : "normal exits"},`
       : "";
+    const ladderDesc = profitLadderEnabled
+      ? ` ladder=${profitLadderSteps.map((s) => `${s.triggerPct}% sells ${s.sellPct}%`).join(",")},`
+      : "";
     const normalRiskDesc = waitsForSourceExit(hybridExitEnabled, hybridExitSourceExitRemaining)
       ? "SL/TP/trailing suppressed while hybrid source-exit mode is active"
       : `SL ${stopLossPct ?? "off"}%, TP ${takeProfitPct ?? "off"}%,${trailDesc}`;
     console.log(
-      `Risk exits enabled: ${normalRiskDesc},${hybridDesc} ` +
+      `Risk exits enabled: ${normalRiskDesc},${hybridDesc}${ladderDesc} ` +
         `tiers fast=${riskFastIntervalMs}ms (first ${riskFastWindowMs}ms) / near=${riskNearTriggerIntervalMs}ms (within ${riskNearTriggerPct}pp of trigger) / normal=${riskNormalIntervalMs}ms, ` +
         `drift=${riskDriftPctPerSec}pp/s, SL min hold ${minHoldBeforeStopLossMs}ms, max ${maxRiskQuotesPerCheck} quote(s)/tick.`
     );
@@ -3960,6 +3969,8 @@ export function resetTradingState(): void {
   riskQuoteStateByMint.clear();
   hybridExitTpDoneByMint.clear();
   hybridExitTpInFlightByMint.clear();
+  profitLadderDoneByMint.clear();
+  profitLadderInFlightByMint.clear();
   lastCurveRiskValueByMint.clear();
   captureSessionStartBalance();
   resetCircuitBreaker();
@@ -4324,6 +4335,7 @@ async function sellLivePosition(
   }
 
   const isHybridPartialSell = (effectiveNote ?? "").startsWith("Hybrid TP hit");
+  const isProfitLadderPartialSell = (effectiveNote ?? "").startsWith("Profit ladder hit");
   let result: MirrorResult;
   try {
     fastSellConfirmPendingByMint.add(p.mint);
@@ -4361,6 +4373,10 @@ async function sellLivePosition(
           if (isHybridPartialSell) {
             hybridExitTpDoneByMint.delete(mint);
             hybridExitTpInFlightByMint.delete(mint);
+          }
+          if (isProfitLadderPartialSell) {
+            profitLadderDoneByMint.delete(mint);
+            profitLadderInFlightByMint.delete(mint);
           }
           if (rolledBack) {
             console.warn(
@@ -4673,10 +4689,51 @@ function hybridExitSellRaw(position: PositionSnapshot, pnlPct: number): number |
   });
 }
 
+function ladderSet(map: Map<string, Set<number>>, mint: string): Set<number> {
+  let set = map.get(mint);
+  if (!set) {
+    set = new Set<number>();
+    map.set(mint, set);
+  }
+  return set;
+}
+
+function profitLadderStepKey(step: ProfitLadderStep): number {
+  return step.triggerPct;
+}
+
+function nextProfitLadderSell(
+  position: PositionSnapshot,
+  pnlPct: number
+): { step: ProfitLadderStep; sellRaw: number } | null {
+  if (!profitLadderEnabled || profitLadderSteps.length === 0) return null;
+  if (hybridExitEnabled && !hybridExitTpDoneByMint.has(position.mint)) return null;
+
+  const done = profitLadderDoneByMint.get(position.mint);
+  const inFlight = profitLadderInFlightByMint.get(position.mint);
+  for (const step of profitLadderSteps) {
+    const key = profitLadderStepKey(step);
+    const sellRaw = planProfitLadderPartialSellRaw({
+      enabled: true,
+      stepDone: done?.has(key) ?? false,
+      stepInFlight: inFlight?.has(key) ?? false,
+      triggerPct: step.triggerPct,
+      sellPct: step.sellPct,
+      totalBoughtRaw: position.totalBoughtRaw,
+      heldRaw: position.heldRaw,
+      pnlPct,
+    });
+    if (sellRaw != null) return { step, sellRaw };
+  }
+  return null;
+}
+
 function cleanupHybridExitStateIfClosed(position: PositionSnapshot): void {
   if (position.heldRaw <= 0) {
     hybridExitTpDoneByMint.delete(position.mint);
     hybridExitTpInFlightByMint.delete(position.mint);
+    profitLadderDoneByMint.delete(position.mint);
+    profitLadderInFlightByMint.delete(position.mint);
   }
 }
 
@@ -4728,6 +4785,15 @@ function planRiskTick(
     !hybridExitTpInFlightByMint.has(p.mint) &&
     hybridExitTpPct > 0 &&
     hybridExitTpSellPct > 0;
+  const ladderPending =
+    profitLadderEnabled &&
+    !sourceOnlyHybrid &&
+    (!hybridExitEnabled || hybridExitTpDoneByMint.has(p.mint)) &&
+    profitLadderSteps.some((step) => {
+      const key = profitLadderStepKey(step);
+      return !(profitLadderDoneByMint.get(p.mint)?.has(key) ?? false) &&
+        !(profitLadderInFlightByMint.get(p.mint)?.has(key) ?? false);
+    });
 
   // Exact source-remainder mode deliberately ignores ordinary SL/trailing exits.
   const effSL = sourceOnlyHybrid
@@ -4738,9 +4804,17 @@ function planRiskTick(
   const couldHitSL =
     effSL != null && ageMs >= minHoldBeforeStopLossMs && lowerProjection <= effSL;
   const normalTp = sourceOnlyHybrid ? null : takeProfitPct;
+  const couldHitLadder =
+    ladderPending && profitLadderSteps.some((step) => {
+      const key = profitLadderStepKey(step);
+      return !(profitLadderDoneByMint.get(p.mint)?.has(key) ?? false) &&
+        !(profitLadderInFlightByMint.get(p.mint)?.has(key) ?? false) &&
+        upperProjection >= step.triggerPct;
+    });
   const couldHitTP =
     (normalTp != null && upperProjection >= normalTp) ||
-    (hybridTpPending && upperProjection >= hybridExitTpPct);
+    (hybridTpPending && upperProjection >= hybridExitTpPct) ||
+    couldHitLadder;
   const triggerInRange = couldHitSL || couldHitTP;
 
   // Distance to nearest trigger using last known PnL.
@@ -4748,6 +4822,15 @@ function planRiskTick(
   if (effSL != null) distances.push(Math.abs(state.lastPnlPct - effSL));
   if (normalTp != null) distances.push(Math.abs(state.lastPnlPct - normalTp));
   if (hybridTpPending) distances.push(Math.abs(state.lastPnlPct - hybridExitTpPct));
+  if (ladderPending) {
+    for (const step of profitLadderSteps) {
+      const key = profitLadderStepKey(step);
+      if (profitLadderDoneByMint.get(p.mint)?.has(key) || profitLadderInFlightByMint.get(p.mint)?.has(key)) {
+        continue;
+      }
+      distances.push(Math.abs(state.lastPnlPct - step.triggerPct));
+    }
+  }
   const nearestTriggerDist = distances.length ? Math.min(...distances) : Infinity;
   const nearTrigger = nearestTriggerDist <= riskNearTriggerPct;
 
@@ -4876,6 +4959,49 @@ async function checkRiskExits(): Promise<void> {
           throw err;
         } finally {
           hybridExitTpInFlightByMint.delete(p.mint);
+          riskSellsInFlight.delete(p.mint);
+        }
+        continue;
+      }
+      const ladderSell = nextProfitLadderSell(p, pnlPct);
+      if (ladderSell) {
+        const key = profitLadderStepKey(ladderSell.step);
+        const reason =
+          `Profit ladder hit (${pnlPct.toFixed(1)}% >= ${ladderSell.step.triggerPct}%), ` +
+          `selling ${ladderSell.step.sellPct.toFixed(1)}% of original position`;
+        riskSellsInFlight.add(p.mint);
+        ladderSet(profitLadderInFlightByMint, p.mint).add(key);
+        console.log(`Profit ladder exit triggered for $${p.symbol}: ${reason}`);
+        console.log(
+          `Selling ${formatTokenAmount(ladderSell.sellRaw, p.decimals)} of ` +
+            `${formatTokenAmount(p.heldRaw, p.decimals)} $${p.symbol}.`
+        );
+        try {
+          if (simulationMode) {
+            await sellSimulatedPosition(p, reason, undefined, ladderSell.sellRaw);
+          } else {
+            await sellLivePosition(p, reason, ladderSell.sellRaw, false);
+          }
+          ladderSet(profitLadderDoneByMint, p.mint).add(key);
+          riskSellRetryAfterByMint.delete(p.mint);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          profitLadderInFlightByMint.get(p.mint)?.delete(key);
+          riskSellRetryAfterByMint.set(p.mint, Date.now() + RISK_SELL_FAILURE_COOLDOWN_MS);
+          void telegram.notifyRiskExit({
+            status: "failed",
+            symbol: p.symbol,
+            reason,
+            quotedSol: "partial",
+            costBasisSol: formatSolAmount(p.costBasisRemainingLamports),
+            pnlPct: `${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(1)}%`,
+            error: msg,
+            tokenAddress: p.mint,
+            isSimulated: simulationMode,
+          });
+          throw err;
+        } finally {
+          profitLadderInFlightByMint.get(p.mint)?.delete(key);
           riskSellsInFlight.delete(p.mint);
         }
         continue;

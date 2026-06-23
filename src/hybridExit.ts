@@ -49,3 +49,24 @@ export function shouldCloseHybridRemainderOnSourceSell(input: {
     input.botHeldRaw > 0
   );
 }
+
+export type ProfitLadderPlanInput = {
+  enabled: boolean;
+  stepDone: boolean;
+  stepInFlight: boolean;
+  triggerPct: number;
+  sellPct: number;
+  totalBoughtRaw: number;
+  heldRaw: number;
+  pnlPct: number;
+};
+
+/** Return one ladder-rung sell amount. sellPct is incremental % of original bought size. */
+export function planProfitLadderPartialSellRaw(input: ProfitLadderPlanInput): number | null {
+  if (!input.enabled || input.stepDone || input.stepInFlight) return null;
+  if (input.triggerPct <= 0 || input.sellPct <= 0) return null;
+  if (input.totalBoughtRaw <= 1 || input.heldRaw <= 1 || input.pnlPct < input.triggerPct) return null;
+
+  const targetRaw = Math.floor((input.totalBoughtRaw * Math.min(100, input.sellPct)) / 100);
+  return Math.min(input.heldRaw, Math.max(1, targetRaw));
+}

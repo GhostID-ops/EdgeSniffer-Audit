@@ -66,6 +66,8 @@ const ENV_KEYS = [
   "HYBRID_EXIT_TP_PCT",
   "HYBRID_EXIT_TP_SELL_PCT",
   "HYBRID_EXIT_SOURCE_EXIT_REMAINING",
+  "PROFIT_LADDER_ENABLED",
+  "PROFIT_LADDER_STEPS",
   "SOURCE_HOLD_EXIT_ENABLED",
   "SOURCE_HOLD_EXIT_INTERVAL_MS",
   "SOURCE_HOLD_EXIT_CONSECUTIVE_MISSES",
@@ -400,7 +402,7 @@ const keys=${JSON.stringify(ENV_KEYS)};
 const ids=["main","4bdk","5qn","cya"];
 function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.hidden=false;setTimeout(()=>el.hidden=true,4500)}
 async function api(url, opts){const res=await fetch(url,opts);const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||res.statusText);return data}
-function field(id,key,val){const area=key==="TRAILING_STEPS"||key==="TRACKED_WALLETS"||key==="EXECUTION_TIP_MULTIPLIERS"||key.endsWith("_URL");return '<label class="'+(area?'wide':'')+'"><span>'+key+'</span>'+(area?'<textarea data-i="'+id+'" data-k="'+key+'">'+(val||'')+'</textarea>':'<input data-i="'+id+'" data-k="'+key+'" value="'+(val||'').replaceAll('"','&quot;')+'">')+'</label>'}
+function field(id,key,val){const area=key==="TRAILING_STEPS"||key==="PROFIT_LADDER_STEPS"||key==="TRACKED_WALLETS"||key==="EXECUTION_TIP_MULTIPLIERS"||key.endsWith("_URL");return '<label class="'+(area?'wide':'')+'"><span>'+key+'</span>'+(area?'<textarea data-i="'+id+'" data-k="'+key+'">'+(val||'')+'</textarea>':'<input data-i="'+id+'" data-k="'+key+'" value="'+(val||'').replaceAll('"','&quot;')+'">')+'</label>'}
 function card(s){const pill=s.active==="active"?"active":"inactive";return '<section class="inst"><div class="head"><div><div class="name">'+s.label+'</div><div class="sub">'+s.service+' · '+s.dir+' · API '+s.apiPort+'</div></div><div class="pill '+pill+'">'+s.active+'</div></div><div class="actions"><button onclick="act(\\''+s.id+'\\',\\'start\\')">Start</button><button class="danger" onclick="act(\\''+s.id+'\\',\\'stop\\')">Stop</button><button onclick="act(\\''+s.id+'\\',\\'restart\\')">Restart</button><button onclick="deploy(\\''+s.id+'\\')">Deploy</button><button onclick="speedMode(\\''+s.id+'\\')">Speed Mode</button><button onclick="save(\\''+s.id+'\\')">Save Env</button><button onclick="save(\\''+s.id+'\\',true)">Save + Restart</button></div><div class="actions trade"><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'sell-all\\')">Sell All</button><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'panic\\')">Panic</button><button onclick="botAction(\\''+s.id+'\\',\\'close-all-sim\\')">Close Sim</button><button onclick="botAction(\\''+s.id+'\\',\\'reset-session\\')">Reset Session</button></div><div class="grid">'+keys.map(k=>field(s.id,k,s.env?.[k]||"")).join("")+'</div><div class="logs"><pre>'+String(s.logs||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))+'</pre></div></section>'}
 async function load(){try{const data=await api("/api/instances");document.getElementById("app").innerHTML=data.instances.map(card).join("")}catch(e){toast(e.message)}}
 async function act(id,action){try{await api("/api/instances/"+id+"/"+action,{method:"POST"});toast(id+" "+action+" ok");await load()}catch(e){toast(e.message)}}
