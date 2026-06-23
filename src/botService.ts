@@ -3131,7 +3131,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       persistentBuyLockOwner,
       exactAmountRaw: confirmedSellAmountRaw,
       allowBagsDirectJupiter: useBagsDirectLane,
-      onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, reason, sourceSwap }) => {
+      onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason, sourceSwap }) => {
         if (rustHotBuyRecordedByMint.has(mint)) {
           console.warn(
             `Ignoring TypeScript buy confirmation failure for ${mint.slice(0, 8)}... ` +
@@ -3148,10 +3148,16 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           return;
         }
         if (shouldAttemptFailedBuyRecovery(sourceSwap, reason)) {
+          const removed = unrecordBuy(mint, tokenAmountRaw, solLamports);
           boughtMintsThisSession.delete(mint);
           liveBuyAttemptedMintsThisSession.delete(mint);
           pendingBuyRetryByMint.delete(mint);
           fastBuyConfirmRetryScheduledByMint.delete(mint);
+          if (removed) {
+            console.warn(
+              `Rolled back optimistic buy for ${mint.slice(0, 8)}... before scheduling direct rescue.`
+            );
+          }
           scheduleFailedBuyRecovery(sourceSwap, kp, reason);
           return;
         }
