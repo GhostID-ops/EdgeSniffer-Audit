@@ -318,6 +318,20 @@ export async function startRustPumpFunSidecar(
       `, Rust executor=${rustExecutorEnabled ? "ON" : "OFF"}` +
       `, Rust hot sniper=${rustHotSniperEnabled ? "ON" : "OFF"}`
   );
+  console.log(
+    `Execution fee config: priority=${getDynamicPriorityFee()} microLamports/CU, ` +
+      `buy Jito tip=${getJitoTipLamportsForRoute("buy")} lamports, ` +
+      `buy Helius tip=${getHeliusTipLamportsForRoute("buy")} lamports, ` +
+      `Jito direct=${useJitoDirect ? "ON" : "OFF"}, fallback=${useJitoFallback ? "ON" : "OFF"}, ` +
+      `sendMode=${jitoSendMode}, race=${(executionMultiSendEnabled || broadcastRaceEnabled) ? "ON" : "OFF"}`
+  );
+  if (rustHotSniperEnabled) {
+    console.log(
+      `Rust hot sniper fee env: priority=${process.env.RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS ?? "auto"} microLamports/CU, ` +
+        `Jito tip=${process.env.RUST_HOT_SNIPER_JITO_TIP_LAMPORTS ?? "auto"} lamports, ` +
+        `Helius tip=${process.env.RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS ?? "auto"} lamports`
+    );
+  }
 
   const command = commandForSidecar();
   if (!command) {

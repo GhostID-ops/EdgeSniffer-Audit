@@ -341,6 +341,10 @@ impl HotSniperConfig {
             parse_env_optional_u64("RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS")
                 .or_else(|| parse_env_optional_u64("DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS"))
                 .unwrap_or_else(|| parse_env_u64("PRIORITY_FEE_MICRO_LAMPORTS", 50_000));
+        eprintln!(
+            "rust-sidecar: hot sniper fees priority={} microLamports/CU jito_tip={} helius_tip={}",
+            priority_fee_micro_lamports, jito_tip_lamports, helius_tip_lamports
+        );
         let configured_regions = configured_jito_regions();
         Self {
             enabled,
