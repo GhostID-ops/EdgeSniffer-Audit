@@ -407,7 +407,9 @@ export function extractSwapFromGrpcTransaction(
     const quote = getBestQuoteNet(tokenNet, false);
     if (quote.mint) {
       const amountRaw = numberFromBigint(quote.abs);
-      if (amountRaw == null) return null;
+      const counterpartyAmountRaw = numberFromBigint(best.net);
+      if (amountRaw == null || counterpartyAmountRaw == null) return null;
+      const sourcePumpSwapIx = extractPumpSwapIx(info, accountKeys, best.mint) ?? undefined;
       return {
         signature,
         wallet,
@@ -415,6 +417,10 @@ export function extractSwapFromGrpcTransaction(
         outputMint: best.mint,
         amountRaw,
         isNativeInput: quote.mint === WRAPPED_SOL_MINT,
+        counterpartyAmountRaw,
+        counterpartyDecimals: best.decimals,
+        sourcePumpSwapInstruction: sourcePumpSwapIx?.instruction,
+        sourcePumpSwapAccounts: sourcePumpSwapIx?.accounts,
         sourceQuoteMint: quote.mint,
         sourceQuoteAmountRaw: amountRaw,
       };
