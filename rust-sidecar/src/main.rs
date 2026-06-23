@@ -40,6 +40,14 @@ const WRAPPED_SOL_MINT: &str = "So11111111111111111111111111111111111111112";
 const USDC_MINT: &str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const PUMP_FUN_PROGRAM_ID: &str = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P";
 const PUMPSWAP_PROGRAM_ID: &str = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
+#[cfg(test)]
+const TOKEN_PROGRAM_ID: &str = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+#[cfg(test)]
+const TOKEN_2022_PROGRAM_ID: &str = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
+#[cfg(test)]
+const ASSOCIATED_TOKEN_PROGRAM_ID: &str = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
+#[cfg(test)]
+const PUMP_FUN_FEE_PROGRAM_ID: &str = "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ";
 const BUY_DISCRIMINATOR: [u8; 8] = [102, 6, 61, 18, 1, 218, 235, 234];
 const PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR: [u8; 8] = [198, 46, 21, 82, 180, 217, 232, 112];
 const BUY_EXACT_SOL_IN_DISCRIMINATOR: [u8; 8] = [56, 252, 116, 8, 158, 223, 205, 95];
@@ -1671,9 +1679,11 @@ mod tests {
             Some(WRAPPED_SOL_MINT)
         );
 
-        let spend = read_u64_le(&data, 8).unwrap();
-        assert_eq!(spend, 96_677_834);
-        assert_eq!(&data[..8], &BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR);
+        let token_amount = read_u64_le(&data, 8).unwrap();
+        let max_quote_cost = read_u64_le(&data, 16).unwrap();
+        assert_eq!(token_amount, 6_589_576_041_720);
+        assert_eq!(max_quote_cost, 97_456_322);
+        assert_eq!(&data[..8], &BUY_V2_DISCRIMINATOR);
         assert_eq!(accounts[2], USDC_MINT);
     }
 }

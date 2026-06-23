@@ -188,6 +188,30 @@ function normalizePumpSwapAccountMeta(account: SourcePumpSwapAccountMeta | strin
   };
 }
 
+function integerCommandField(value: number, field: string, min: number): number {
+  if (!Number.isFinite(value)) {
+    throw new Error(`${field} must be finite, got ${String(value)}`);
+  }
+  const integer = Math.floor(value);
+  if (!Number.isSafeInteger(integer)) {
+    throw new Error(`${field} exceeds JavaScript safe integer range, got ${String(value)}`);
+  }
+  if (integer < min) {
+    throw new Error(`${field} must be >= ${min}, got ${String(value)}`);
+  }
+  return integer;
+}
+
+function optionalPositiveIntegerCommandField(value: number | undefined, field: string): number | undefined {
+  if (value == null) return undefined;
+  return integerCommandField(value, field, 1);
+}
+
+function commandValidationFailure(err: unknown): RustPumpFunBuyResult {
+  const message = err instanceof Error ? err.message : String(err);
+  return { ok: false, error: `Rust executor command validation failed: ${message}` };
+}
+
 export type RustSidecarUnsubscribe = () => Promise<void>;
 
 function envFlag(name: string, defaultValue = false): boolean {
@@ -557,6 +581,16 @@ export async function executeRustPumpFunBuy(args: RustPumpFunBuyArgs): Promise<R
   if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) return null;
   const id = `rust-exec-${Date.now()}-${++executorSeq}`;
   const { blockhash } = await getCachedBlockhash();
+  let solInLamports: number;
+  let tokensOutRaw: number | undefined;
+  let slippageBps: number;
+  try {
+    solInLamports = integerCommandField(args.solInLamports, "solInLamports", 1);
+    tokensOutRaw = optionalPositiveIntegerCommandField(args.tokensOutRaw, "tokensOutRaw");
+    slippageBps = integerCommandField(args.slippageBps, "slippageBps", 0);
+  } catch (err) {
+    return commandValidationFailure(err);
+  }
   const command = {
     kind: "executePumpfunBuy",
     id,
@@ -565,9 +599,9 @@ export async function executeRustPumpFunBuy(args: RustPumpFunBuyArgs): Promise<R
     mint: args.mint,
     sourceSignature: args.sourceSignature,
     quoteMint: args.quoteMint,
-    solInLamports: Math.max(1, Math.floor(args.solInLamports)),
-    tokensOutRaw: args.tokensOutRaw == null ? undefined : Math.max(1, Math.floor(args.tokensOutRaw)),
-    slippageBps: Math.max(0, Math.floor(args.slippageBps)),
+    solInLamports,
+    tokensOutRaw,
+    slippageBps,
     exactSolIn: args.exactSolIn,
     sourceIxAccounts: args.sourceIxAccounts,
     sourceIxDataBase64: args.sourceIxDataBase64,
@@ -608,6 +642,18 @@ export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise
   if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) return null;
   const id = `rust-pumpswap-${Date.now()}-${++executorSeq}`;
   const { blockhash } = await getCachedBlockhash();
+  let quoteAmountInRaw: number;
+  let expectedBaseOutRaw: number;
+  let minBaseOutRaw: number;
+  let slippageBps: number;
+  try {
+    quoteAmountInRaw = integerCommandField(args.quoteAmountInRaw, "quoteAmountInRaw", 1);
+    expectedBaseOutRaw = integerCommandField(args.expectedBaseOutRaw, "expectedBaseOutRaw", 1);
+    minBaseOutRaw = integerCommandField(args.minBaseOutRaw, "minBaseOutRaw", 1);
+    slippageBps = integerCommandField(args.slippageBps, "slippageBps", 0);
+  } catch (err) {
+    return commandValidationFailure(err);
+  }
   const command = {
     kind: "executePumpSwapBuy",
     id,
@@ -616,10 +662,10 @@ export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise
     sourceSignature: args.sourceSignature,
     buyLockOwner: args.buyLockOwner,
     quoteMint: args.quoteMint,
-    quoteAmountInRaw: Math.max(1, Math.floor(args.quoteAmountInRaw)),
-    expectedBaseOutRaw: Math.max(1, Math.floor(args.expectedBaseOutRaw)),
-    minBaseOutRaw: Math.max(1, Math.floor(args.minBaseOutRaw)),
-    slippageBps: Math.max(0, Math.floor(args.slippageBps)),
+    quoteAmountInRaw,
+    expectedBaseOutRaw,
+    minBaseOutRaw,
+    slippageBps,
     buyInstruction: args.buyInstruction,
     sourcePumpSwapAccounts: args.sourcePumpSwapAccounts.map(normalizePumpSwapAccountMeta),
     baseTokenProgramId: args.baseTokenProgramId,
@@ -654,14 +700,24 @@ export async function executeRustPumpSwapSell(args: RustPumpSwapSellArgs): Promi
   if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) return null;
   const id = `rust-pumpswap-sell-${Date.now()}-${++executorSeq}`;
   const { blockhash } = await getCachedBlockhash();
+  let tokensInRaw: number;
+  let expectedQuoteOutRaw: number;
+  let minQuoteOutRaw: number;
+  try {
+    tokensInRaw = integerCommandField(args.tokensInRaw, "tokensInRaw", 1);
+    expectedQuoteOutRaw = integerCommandField(args.expectedQuoteOutRaw, "expectedQuoteOutRaw", 1);
+    minQuoteOutRaw = integerCommandField(args.minQuoteOutRaw, "minQuoteOutRaw", 1);
+  } catch (err) {
+    return commandValidationFailure(err);
+  }
   const command = {
     kind: "executePumpSwapSell",
     id,
     route: args.route,
     mint: args.mint,
-    tokensInRaw: Math.max(1, Math.floor(args.tokensInRaw)),
-    expectedQuoteOutRaw: Math.max(1, Math.floor(args.expectedQuoteOutRaw)),
-    minQuoteOutRaw: Math.max(1, Math.floor(args.minQuoteOutRaw)),
+    tokensInRaw,
+    expectedQuoteOutRaw,
+    minQuoteOutRaw,
     sourcePumpSwapAccounts: args.sourcePumpSwapAccounts.map(normalizePumpSwapAccountMeta),
     baseTokenProgramId: args.baseTokenProgramId,
     blockhash,
@@ -695,14 +751,24 @@ export async function executeRustPumpFunSell(args: RustPumpFunSellArgs): Promise
   if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) return null;
   const id = `rust-pumpfun-sell-${Date.now()}-${++executorSeq}`;
   const { blockhash } = await getCachedBlockhash();
+  let tokensInRaw: number;
+  let expectedSolOutLamports: number;
+  let minSolOutLamports: number;
+  try {
+    tokensInRaw = integerCommandField(args.tokensInRaw, "tokensInRaw", 1);
+    expectedSolOutLamports = integerCommandField(args.expectedSolOutLamports, "expectedSolOutLamports", 1);
+    minSolOutLamports = integerCommandField(args.minSolOutLamports, "minSolOutLamports", 1);
+  } catch (err) {
+    return commandValidationFailure(err);
+  }
   const command = {
     kind: "executePumpfunSell",
     id,
     route: args.route,
     mint: args.mint,
-    tokensInRaw: Math.max(1, Math.floor(args.tokensInRaw)),
-    expectedSolOutLamports: Math.max(1, Math.floor(args.expectedSolOutLamports)),
-    minSolOutLamports: Math.max(1, Math.floor(args.minSolOutLamports)),
+    tokensInRaw,
+    expectedSolOutLamports,
+    minSolOutLamports,
     sellV2: args.sellV2,
     accounts: args.accounts,
     blockhash,

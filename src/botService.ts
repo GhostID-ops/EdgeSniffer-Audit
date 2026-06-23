@@ -2925,6 +2925,25 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
   }
 
+  if (isBuySignal(swap) && rustHotSniperPrimaryFallbackSources.has(swap.signature)) {
+    const mint = swap.outputMint;
+    const existingAfterFilters = getPosition(mint);
+    if (
+      rustHotBuyRecordedByMint.has(mint) ||
+      liveBuyAttemptedMintsThisSession.has(mint) ||
+      boughtMintsThisSession.has(mint) ||
+      (existingAfterFilters?.buysCount ?? 0) > 0
+    ) {
+      pendingBuyRetryByMint.delete(mint);
+      console.log(
+        `Skipping Rust executor backstop buy: Rust hot sniper already resolved ${mint.slice(0, 8)}... this session.`
+      );
+      recordMirrorSkip(swap, "rust hot sniper already resolved backstop");
+      releaseBuyLocks();
+      return;
+    }
+  }
+
   if (isBuySignal(swap) && simulationMode) {
     const quoteMint = mirrorQuoteMintForBuy(swap);
     const mirroredAmount = mirroredBuyAmountRaw(swap);

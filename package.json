@@ -36,6 +36,7 @@
     "telemetry:execution": "tsx src/executionTelemetryReport.ts",
     "telemetry:scan-today": "node scripts/scanTodayTelemetry.mjs",
     "audit:source-coverage": "node scripts/auditSourceCoverage.mjs",
+    "audit:wallet-ledger-buckets": "tsx src/walletLedgerBucketAudit.ts",
     "audit:omego-weekly": "bash scripts/runOmegoWeeklyAuditSlow.sh",
     "sim:omego-env": "node scripts/simulateOmegoEnvStrategies.mjs",
     "test:license": "tsx src/testLicense.ts",
@@ -50,6 +51,7 @@
     "test:post-sell-lifecycle": "tsx src/testPostSellLifecycle.ts",
     "test:confirmed-inventory": "tsx src/testConfirmedInventory.ts",
     "test:source-hold-exit": "tsx src/testSourceHoldExit.ts",
+    "test:hybrid-exit": "tsx src/testHybridExit.ts",
     "test:execution-planner": "tsx src/testExecutionPlanner.ts"
   },
   "dependencies": {
