@@ -756,8 +756,11 @@ async function fetchPumpSwapPoolTradeTemplate(args: {
   side: "buy" | "sell";
   baseTokenProgram: PublicKey;
   poolHint?: PublicKey | null;
+  retryOnIndexingLag?: boolean;
 }): Promise<AccountMeta[] | null> {
-  const pool = await findPumpSwapPoolForMint(args.mint, args.poolHint);
+  const pool = await findPumpSwapPoolForMint(args.mint, args.poolHint, {
+    retryOnIndexingLag: args.retryOnIndexingLag,
+  });
   if (!pool) return null;
   const cacheKey = `${pool.pool.toBase58()}|${args.side}`;
   const cached = pumpSwapPoolTemplateCache.get(cacheKey);
@@ -837,6 +840,7 @@ async function resolvePumpSwapBuyAccountPlan(args: {
     side: "buy",
     baseTokenProgram: args.baseTokenProgram,
     poolHint,
+    retryOnIndexingLag: true,
   });
   if (template) {
     return {
@@ -925,6 +929,14 @@ const PUMPSWAP_SOURCE_META_RETRY_MS = 35;
 const PUMPSWAP_STATIC_ACCOUNT_READ_ATTEMPTS = 3;
 const PUMPSWAP_STATIC_ACCOUNT_READ_RETRY_MS = 40;
 const PUMPSWAP_TEMPLATE_SIG_LIMIT = 12;
+const PUMPSWAP_POOL_RESOLUTION_ATTEMPTS = Math.max(
+  1,
+  Number.parseInt(process.env.PUMPSWAP_POOL_RESOLUTION_ATTEMPTS ?? "4", 10) || 4
+);
+const PUMPSWAP_POOL_RESOLUTION_RETRY_MS = Math.max(
+  0,
+  Number.parseInt(process.env.PUMPSWAP_POOL_RESOLUTION_RETRY_MS ?? "35", 10) || 35
+);
 const pumpSwapPoolTemplateCache = new Map<string, AccountMeta[]>();
 const pumpSwapPoolCache = new Map<string, { pool: PublicKey; baseVault: PublicKey; quoteVault: PublicKey }>();
 const pumpSwapMintOwnerCache = new Map<string, { owner: PublicKey; cachedAt: number }>();
@@ -1046,9 +1058,10 @@ async function getCachedPumpSwapPoolAccount(
 // candidate; the on-chain pool state is the source of truth.
 async function validatedPumpSwapPoolCandidate(
   mint: PublicKey,
-  candidate: PublicKey
+  candidate: PublicKey,
+  forceRefresh = false
 ): Promise<{ pool: PublicKey; baseVault: PublicKey; quoteVault: PublicKey } | null> {
-  const account = await getCachedPumpSwapPoolAccount(candidate);
+  const account = await getCachedPumpSwapPoolAccount(candidate, forceRefresh);
   if (validatePumpSwapPoolAccount(candidate, account)) return null;
   const state = readPoolStateFromAccount(candidate, account);
   if (!state || !state.baseMint.equals(mint) || state.quoteMint.toBase58() !== WRAPPED_SOL_MINT) {
@@ -1059,7 +1072,8 @@ async function validatedPumpSwapPoolCandidate(
 
 async function findPumpSwapPoolForMint(
   mint: PublicKey,
-  poolHint?: PublicKey | null
+  poolHint?: PublicKey | null,
+  options: { retryOnIndexingLag?: boolean } = {}
 ): Promise<{
   pool: PublicKey;
   baseVault: PublicKey;
@@ -1082,11 +1096,15 @@ async function findPumpSwapPoolForMint(
   } catch {
     // derivation only fails on an invalid mint; the scan below still covers it.
   }
-  for (const candidate of candidates) {
-    const resolved = await validatedPumpSwapPoolCandidate(mint, candidate);
-    if (resolved) {
-      pumpSwapPoolCache.set(mint.toBase58(), resolved);
-      return resolved;
+  const candidateAttempts = options.retryOnIndexingLag ? PUMPSWAP_POOL_RESOLUTION_ATTEMPTS : 1;
+  for (let attempt = 0; attempt < candidateAttempts; attempt++) {
+    if (attempt > 0) await sleep(PUMPSWAP_POOL_RESOLUTION_RETRY_MS);
+    for (const candidate of candidates) {
+      const resolved = await validatedPumpSwapPoolCandidate(mint, candidate, attempt > 0);
+      if (resolved) {
+        pumpSwapPoolCache.set(mint.toBase58(), resolved);
+        return resolved;
+      }
     }
   }
 
