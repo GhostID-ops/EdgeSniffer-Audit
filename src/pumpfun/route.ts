@@ -281,6 +281,20 @@ export async function tryPumpFunDirectBuy(args: {
 }): Promise<PumpFunBuyOutcome> {
   const elapsed = () => `${Date.now() - args.startedAt}ms`;
   const mintKey = new PublicKey(args.mint);
+  if (!Number.isFinite(args.solInLamports) || args.solInLamports <= 0) {
+    return {
+      ok: false,
+      recoverable: true,
+      reason: `invalid Pump.fun buy amount: ${String(args.solInLamports)}`,
+    };
+  }
+  if (!Number.isFinite(args.minSolLamports) || args.minSolLamports <= 0) {
+    return {
+      ok: false,
+      recoverable: false,
+      reason: `invalid Pump.fun min buy amount: ${String(args.minSolLamports)}`,
+    };
+  }
 
   // 1. Detect curve. Fire the getTransaction fallback for source accounts in parallel ONLY
   // when gRPC didn't already provide them — otherwise it's a wasted RPC that competes with
@@ -328,7 +342,7 @@ export async function tryPumpFunDirectBuy(args: {
       const sourceIxDataBase64 = args.sourceIxDataBase64!;
       const sourceIxPubkeys = sourceIxAccounts.map((k) => new PublicKey(k));
       const sourceIxData = Buffer.from(sourceIxDataBase64, "base64");
-      const solIn = BigInt(args.solInLamports);
+      const solIn = BigInt(Math.floor(args.solInLamports));
       const route = "pumpfun-source-replay-buy";
       if (simulationMode) {
         const mintMeta = await getTokenMeta(args.mint);
@@ -549,11 +563,11 @@ export async function tryPumpFunDirectBuy(args: {
   }
 
   // 2. Liquidity-aware sizing: if size exceeds the impact cap, shrink to fit using exact curve math.
-  let solIn = BigInt(args.solInLamports);
+  let solIn = BigInt(Math.floor(args.solInLamports));
   if (args.maxImpactPct != null && args.maxImpactPct > 0) {
     const maxFit = maxSolForImpact(curve.state, args.maxImpactPct);
     if (maxFit < solIn) {
-      if (maxFit < BigInt(args.minSolLamports)) {
+      if (maxFit < BigInt(Math.floor(args.minSolLamports))) {
         return {
           ok: false,
           recoverable: false,

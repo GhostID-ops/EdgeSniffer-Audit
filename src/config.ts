@@ -40,6 +40,12 @@ function parseNonNegativeNumber(value: string | undefined, fallback: number): nu
   return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
 
+function parsePositiveNumber(value: string | undefined, fallback: number): number {
+  if (value == null || value.trim() === "") return fallback;
+  const n = parseFloat(value);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
 function parseNonNegativeInteger(value: string | undefined, fallback: number): number {
   if (value == null || value.trim() === "") return fallback;
   const n = parseInt(value, 10);
@@ -73,9 +79,9 @@ export const exitSignalSellsEnabled = parseEnvBool(process.env.EXIT_SIGNAL_SELLS
 export const exitSignalWallets: string[] = parseCsvList(process.env.EXIT_SIGNAL_WALLETS);
 
 /** Min buy size in SOL. Behavior for smaller copy-sized buys is controlled by MIN_BUY_BEHAVIOR. */
-let MIN_BUY_SOL = parseFloat(process.env.MIN_BUY_SOL ?? "0.01");
+let MIN_BUY_SOL = parsePositiveNumber(process.env.MIN_BUY_SOL, 0.01);
 /** Max buy size in SOL. Mirror trades are capped to this. Default 1 SOL. */
-let MAX_BUY_SOL = parseFloat(process.env.MAX_BUY_SOL ?? "1");
+let MAX_BUY_SOL = parsePositiveNumber(process.env.MAX_BUY_SOL, 1);
 export type MinBuyBehavior = "skip" | "floor" | "allow";
 function parseMinBuyBehavior(raw: string | undefined): MinBuyBehavior {
   const value = (raw ?? "skip").trim().toLowerCase();
@@ -101,8 +107,8 @@ if (COPY_BUY_PERCENTAGE_PARSED < 0) {
 /** Percentage of source wallet buy size to copy. Values above 100 are clamped to 100. */
 let COPY_BUY_PERCENTAGE = Math.min(100, COPY_BUY_PERCENTAGE_PARSED);
 export let copyBuyPercentage = COPY_BUY_PERCENTAGE;
-const MIN_BUY_USDC = parseFloat(process.env.MIN_BUY_USDC ?? "50");
-const MAX_BUY_USDC = parseFloat(process.env.MAX_BUY_USDC ?? "60");
+const MIN_BUY_USDC = parsePositiveNumber(process.env.MIN_BUY_USDC, 50);
+const MAX_BUY_USDC = parsePositiveNumber(process.env.MAX_BUY_USDC, 60);
 /** SOL reserve amount to keep for gas fees. Prevents wallet from going to 0 SOL. Default 0.1 SOL. */
 let SOL_RESERVE = parseFloat(process.env.SOL_RESERVE ?? "0.1");
 const MIRROR_QUOTE_ASSET_RAW = (process.env.MIRROR_QUOTE_ASSET ?? "SOL").toUpperCase();

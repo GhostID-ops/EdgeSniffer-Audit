@@ -332,8 +332,14 @@ async function getMirrorAmount(
     console.log(`Copy Percentage: ${copyBuyPercentage}%`);
     console.log(`Bot Buy Amount: ${formatQuoteAmount(calculatedRaw, quoteMint)}`);
 
-    if (calculatedRaw <= 0) {
+    if (!Number.isFinite(calculatedRaw) || calculatedRaw <= 0) {
       throw new BuyAmountBelowMinimumError(swap.outputMint, calculatedRaw, minRaw, quoteMint);
+    }
+
+    if (!Number.isFinite(minRaw) || minRaw <= 0 || !Number.isFinite(maxRaw) || maxRaw <= 0) {
+      throw new Error(
+        `Invalid buy sizing config for ${swap.outputMint}: min=${String(minRaw)} max=${String(maxRaw)}`
+      );
     }
 
     if (calculatedRaw < minRaw) {
@@ -350,6 +356,11 @@ async function getMirrorAmount(
     const unclampedRaw =
       calculatedRaw < minRaw && minBuyBehavior === "floor" ? minRaw : calculatedRaw;
     const amountRaw = Math.min(maxRaw, unclampedRaw);
+    if (!Number.isFinite(amountRaw) || amountRaw <= 0) {
+      throw new Error(
+        `Invalid mirrored buy amount for ${swap.outputMint}: source=${String(swap.amountRaw)} calculated=${String(calculatedRaw)} amount=${String(amountRaw)}`
+      );
+    }
 
     if (calculatedRaw < minRaw && minBuyBehavior === "floor") {
       console.log(
