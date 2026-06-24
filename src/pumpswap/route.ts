@@ -1574,22 +1574,25 @@ export async function tryPumpSwapDirectBuy(args: {
     };
   }
 
-  const rustSourcePumpSwapAccounts = accountPlan.accounts.map((account) => ({
+  const rustAccountsForPlan = (plan: PumpSwapAccountPlan) =>
+    plan.accounts.map((account) => ({
       pubkey: account.pubkey.toBase58(),
       isSigner: account.isSigner,
       isWritable: account.isWritable,
-  }));
+    }));
   const alternateBuyInstruction: PumpSwapBuyInstruction =
     buyInstruction === "buy" ? "buy_exact_quote_in" : "buy";
   const executeRustAttempt = async (
     attemptInstruction: PumpSwapBuyInstruction,
-    attempt: "primary" | "overflow-retry"
+    attempt: "primary" | "overflow-retry" | "canonical-overflow-retry",
+    plan: PumpSwapAccountPlan = accountPlan,
+    sourceSignature: string = attempt === "primary" ? args.sourceSignature : `${args.sourceSignature}:${attempt}`
   ) => {
     const rustBuildStartedAt = Date.now();
     const rust = await executeRustPumpSwapBuy({
       route: "pumpswap-direct-buy",
       mint: args.mint,
-      sourceSignature: attempt === "overflow-retry" ? `${args.sourceSignature}:overflow-retry` : args.sourceSignature,
+      sourceSignature,
       buyLockOwner: args.buyLockOwner,
       quoteMint,
       quoteAmountInRaw: args.solInLamports,
@@ -1597,7 +1600,7 @@ export async function tryPumpSwapDirectBuy(args: {
       minBaseOutRaw: Number(minBaseOut),
       slippageBps: args.slippageBps,
       buyInstruction: attemptInstruction,
-      sourcePumpSwapAccounts: rustSourcePumpSwapAccounts,
+      sourcePumpSwapAccounts: rustAccountsForPlan(plan),
       baseTokenProgramId: baseTokenProgramId.toBase58(),
     });
     if (rust?.ok) {
@@ -1614,7 +1617,7 @@ export async function tryPumpSwapDirectBuy(args: {
           senderPath: rust.senderPath,
           txBytes: rust.txBytes,
           broadcastMs: rust.broadcastMs,
-          accountPlan: accountPlan.source,
+          accountPlan: plan.source,
           buyInstruction: attemptInstruction,
           attempt,
         },
@@ -1631,13 +1634,13 @@ export async function tryPumpSwapDirectBuy(args: {
         details: {
           executor: "rust",
           senderPath: rust.senderPath,
-          accountPlan: accountPlan.source,
+          accountPlan: plan.source,
           buyInstruction: attemptInstruction,
           attempt,
         },
       });
       args.log(
-        `Rust executor PumpSwap buy broadcast${attempt === "overflow-retry" ? " (overflow retry)" : ""}: ` +
+        `Rust executor PumpSwap buy broadcast${attempt === "overflow-retry" ? " (overflow retry)" : attempt === "canonical-overflow-retry" ? " (canonical overflow retry)" : ""}: ` +
           `${rust.signature}` +
           (rust.elapsedMs != null ? ` (${rust.elapsedMs}ms)` : "")
       );
@@ -1648,7 +1651,8 @@ export async function tryPumpSwapDirectBuy(args: {
     signature: string,
     mode: "background" | "blocking",
     attemptInstruction: PumpSwapBuyInstruction,
-    attempt: "primary" | "overflow-retry"
+    attempt: "primary" | "overflow-retry" | "canonical-overflow-retry",
+    plan: PumpSwapAccountPlan = accountPlan
   ): Promise<{ ok: true } | { ok: false; message: string }> => {
     const confirmStartedAt = Date.now();
     try {
@@ -1663,7 +1667,7 @@ export async function tryPumpSwapDirectBuy(args: {
         success: true,
         details: {
           mode,
-          accountPlan: accountPlan.source,
+          accountPlan: plan.source,
           executor: "rust",
           buyInstruction: attemptInstruction,
           attempt,
@@ -1684,7 +1688,7 @@ export async function tryPumpSwapDirectBuy(args: {
         error: msg,
         details: {
           mode,
-          accountPlan: accountPlan.source,
+          accountPlan: plan.source,
           executor: "rust",
           buyInstruction: attemptInstruction,
           attempt,
@@ -1719,7 +1723,49 @@ export async function tryPumpSwapDirectBuy(args: {
       alternateBuyInstruction,
       "overflow-retry"
     );
-    return confirmed.ok ? retry.signature : null;
+    if (confirmed.ok) return retry.signature;
+    if (!isPumpSwapOverflowError(confirmed.message) || accountPlan.source === "canonical-pool-state") {
+      return null;
+    }
+
+    releaseRustBoughtMint(args.mint, `PumpSwap canonical overflow retry after ${alternateBuyInstruction} failed: ${confirmed.message}`);
+    const canonicalPlan = await resolvePumpSwapBuyAccountPlan({
+      sourceSignature: args.sourceSignature,
+      mint: mintKey,
+      user: args.user.publicKey,
+      baseTokenProgram: baseTokenProgramId,
+      sourcePumpSwapAccounts: args.sourcePumpSwapAccounts,
+      quoteMint,
+      canonicalOnly: true,
+    });
+    if (!canonicalPlan) {
+      args.log("PumpSwap canonical overflow retry unavailable: canonical account plan could not be built.");
+      return null;
+    }
+    args.log(
+      `PumpSwap canonical overflow retry: ${alternateBuyInstruction} still failed with 6023; ` +
+        `retrying buy_exact_quote_in with ${canonicalPlan.source}.`
+    );
+    const canonicalRetry = await executeRustAttempt(
+      "buy_exact_quote_in",
+      "canonical-overflow-retry",
+      canonicalPlan
+    );
+    if (!canonicalRetry?.ok) {
+      args.log(
+        `PumpSwap canonical overflow retry failed before confirmation: ` +
+          `${canonicalRetry && !canonicalRetry.ok ? canonicalRetry.error : "Rust PumpSwap executor unavailable"}`
+      );
+      return null;
+    }
+    const canonicalConfirmed = await confirmRustAttempt(
+      canonicalRetry.signature,
+      mode,
+      "buy_exact_quote_in",
+      "canonical-overflow-retry",
+      canonicalPlan
+    );
+    return canonicalConfirmed.ok ? canonicalRetry.signature : null;
   };
 
   const rust = await executeRustAttempt(buyInstruction, "primary");
