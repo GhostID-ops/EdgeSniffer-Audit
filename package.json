@@ -56,7 +56,16 @@
     "test:confirmed-inventory": "tsx src/testConfirmedInventory.ts",
     "test:source-hold-exit": "tsx src/testSourceHoldExit.ts",
     "test:hybrid-exit": "tsx src/testHybridExit.ts",
-    "test:execution-planner": "tsx src/testExecutionPlanner.ts"
+    "test:execution-planner": "tsx src/testExecutionPlanner.ts",
+    "env:wallet": "node scripts/applyWalletPreset.mjs",
+    "env:wallet:cya": "node scripts/applyWalletPreset.mjs cya",
+    "env:wallet:cented": "node scripts/applyWalletPreset.mjs cented",
+    "env:wallet:4vw54": "node scripts/applyWalletPreset.mjs 4vw54",
+    "env:wallet:tefs": "node scripts/applyWalletPreset.mjs tefs",
+    "env:wallet:omego": "node scripts/applyWalletPreset.mjs omego",
+    "env:wallet:5qn-eaz": "node scripts/applyWalletPreset.mjs 5qn-eaz",
+    "env:wallet:4bdk": "node scripts/applyWalletPreset.mjs 4bdk",
+    "env:wallet:gug": "node scripts/applyWalletPreset.mjs gug"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.0",
