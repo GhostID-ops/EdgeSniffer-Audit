@@ -66,6 +66,8 @@ const PUMPSWAP_BASE_MINT_INDEX = 3;
 const PUMPSWAP_QUOTE_MINT_INDEX = 4;
 const PUMPSWAP_USER_BASE_ATA_INDEX = 5;
 const PUMPSWAP_USER_QUOTE_ATA_INDEX = 6;
+const PUMPSWAP_PROTOCOL_FEE_RECIPIENT_INDEX = 9;
+const PUMPSWAP_PROTOCOL_FEE_RECIPIENT_ATA_INDEX = 10;
 const PUMPSWAP_BASE_TOKEN_PROGRAM_INDEX = 11;
 const PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX = 20;
 const PUMPSWAP_SELL_CASHBACK_ATA_INDEX = 21;
@@ -90,6 +92,32 @@ function cloneAccountMetas(accounts: AccountMeta[]): AccountMeta[] {
 
 function rememberPumpSwapBuyAccountPlan(mint: PublicKey, accounts: AccountMeta[]): void {
   pumpSwapBuyAccountPlanByMint.set(mint.toBase58(), cloneAccountMetas(accounts));
+}
+
+function applySourceProtocolFeeAccounts(
+  accounts: AccountMeta[],
+  hintedAccounts: AccountMeta[] | null | undefined
+): AccountMeta[] {
+  const recipient = hintedAccounts?.[PUMPSWAP_PROTOCOL_FEE_RECIPIENT_INDEX];
+  const recipientAta = hintedAccounts?.[PUMPSWAP_PROTOCOL_FEE_RECIPIENT_ATA_INDEX];
+  if (!recipient || !recipientAta) return accounts;
+
+  const expectedAta = deriveAta(recipient.pubkey, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID);
+  if (!recipientAta.pubkey.equals(expectedAta)) return accounts;
+
+  const next = cloneAccountMetas(accounts);
+  if (next.length <= PUMPSWAP_PROTOCOL_FEE_RECIPIENT_ATA_INDEX) return accounts;
+  next[PUMPSWAP_PROTOCOL_FEE_RECIPIENT_INDEX] = {
+    pubkey: recipient.pubkey,
+    isSigner: false,
+    isWritable: false,
+  };
+  next[PUMPSWAP_PROTOCOL_FEE_RECIPIENT_ATA_INDEX] = {
+    pubkey: recipientAta.pubkey,
+    isSigner: false,
+    isWritable: true,
+  };
+  return next;
 }
 
 // NOTE: a cached PumpSwap BUY account list must never be replayed as a SELL —
@@ -612,7 +640,7 @@ async function resolvePumpSwapSellAccountPlan(args: {
   });
   if (template) {
     return {
-      accounts: template,
+      accounts: applySourceProtocolFeeAccounts(template, hintedAccounts),
       source: "canonical-pool-state",
       diagnostics: hintedAccounts
         ? comparePumpSwapAccounts(template, hintedAccounts, "detector-pubkey-hints")
@@ -632,7 +660,7 @@ async function resolvePumpSwapSellAccountPlan(args: {
   });
   if (canonical) {
     return {
-      accounts: canonical,
+      accounts: applySourceProtocolFeeAccounts(canonical, hintedAccounts),
       source: "canonical-pool-state",
       diagnostics: hintedAccounts
         ? comparePumpSwapAccounts(canonical, hintedAccounts, "detector-pubkey-hints")
@@ -842,7 +870,7 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   });
   if (template) {
     return {
-      accounts: template,
+      accounts: applySourceProtocolFeeAccounts(template, hintedAccounts),
       source: "canonical-pool-state",
       diagnostics: hintedAccounts
         ? comparePumpSwapAccounts(template, hintedAccounts, "detector-pubkey-hints")
@@ -858,7 +886,7 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   });
   if (canonical) {
     return {
-      accounts: canonical,
+      accounts: applySourceProtocolFeeAccounts(canonical, hintedAccounts),
       source: "canonical-pool-state",
       diagnostics: hintedAccounts
         ? comparePumpSwapAccounts(canonical, hintedAccounts, "detector-pubkey-hints")
@@ -1567,7 +1595,7 @@ export async function tryPumpSwapDirectBuy(args: {
   if (minBaseOut <= 0n) {
     return { ok: false, recoverable: true, reason: "PumpSwap min output is zero" };
   }
-  const buyInstruction = args.buyInstruction ?? args.sourcePumpSwapInstruction ?? "buy_exact_quote_in";
+  const buyInstruction = args.buyInstruction ?? "buy_exact_quote_in";
 
   const ctx: PumpSwapBuildContext = {
     mint: args.mint,
