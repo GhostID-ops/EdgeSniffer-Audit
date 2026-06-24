@@ -75,6 +75,10 @@ const PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX = 22;
 const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT = 23;
 const PUMPSWAP_MIN_SELL_ACCOUNT_COUNT = 21;
 const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 17, 20, 23]);
+const PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS = Math.max(
+  1,
+  Math.min(10_000, Number.parseInt(process.env.PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS ?? "1", 10) || 1)
+);
 
 type PumpSwapAccountPlan = {
   accounts: AccountMeta[];
@@ -1639,13 +1643,15 @@ export async function tryPumpSwapDirectBuy(args: {
       isSigner: account.isSigner,
       isWritable: account.isWritable,
     }));
-  const alternateBuyInstruction: PumpSwapBuyInstruction =
-    buyInstruction === "buy" ? "buy_exact_quote_in" : "buy";
+  const overflowRetryBuyInstruction: PumpSwapBuyInstruction = "buy_exact_quote_in";
+  const overflowRetryMinBaseOut = (expectedBaseOut * BigInt(PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS)) / 10_000n;
+  const safeOverflowRetryMinBaseOut = overflowRetryMinBaseOut > 0n ? overflowRetryMinBaseOut : 1n;
   const executeRustAttempt = async (
     attemptInstruction: PumpSwapBuyInstruction,
     attempt: "primary" | "overflow-retry" | "canonical-overflow-retry",
     plan: PumpSwapAccountPlan = accountPlan,
-    sourceSignature: string = attempt === "primary" ? args.sourceSignature : `${args.sourceSignature}:${attempt}`
+    sourceSignature: string = attempt === "primary" ? args.sourceSignature : `${args.sourceSignature}:${attempt}`,
+    minBaseOutForAttempt: bigint = minBaseOut
   ) => {
     const rustBuildStartedAt = Date.now();
     const rust = await executeRustPumpSwapBuy({
@@ -1656,7 +1662,7 @@ export async function tryPumpSwapDirectBuy(args: {
       quoteMint,
       quoteAmountInRaw: args.solInLamports,
       expectedBaseOutRaw: Number(expectedBaseOut),
-      minBaseOutRaw: Number(minBaseOut),
+      minBaseOutRaw: Number(minBaseOutForAttempt),
       slippageBps: args.slippageBps,
       buyInstruction: attemptInstruction,
       sourcePumpSwapAccounts: rustAccountsForPlan(plan),
@@ -1766,9 +1772,15 @@ export async function tryPumpSwapDirectBuy(args: {
     releaseRustBoughtMint(args.mint, `PumpSwap overflow retry after ${buyInstruction} failed: ${originalMsg}`);
     args.log(
       `PumpSwap Rust overflow retry: ${buyInstruction} failed with 6023; ` +
-        `retrying ${alternateBuyInstruction}.`
+        `retrying ${overflowRetryBuyInstruction} with minOutBps=${PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS}.`
     );
-    const retry = await executeRustAttempt(alternateBuyInstruction, "overflow-retry");
+    const retry = await executeRustAttempt(
+      overflowRetryBuyInstruction,
+      "overflow-retry",
+      accountPlan,
+      `${args.sourceSignature}:overflow-retry`,
+      safeOverflowRetryMinBaseOut
+    );
     if (!retry?.ok) {
       args.log(
         `PumpSwap Rust overflow retry failed before confirmation: ` +
@@ -1779,7 +1791,7 @@ export async function tryPumpSwapDirectBuy(args: {
     const confirmed = await confirmRustAttempt(
       retry.signature,
       mode,
-      alternateBuyInstruction,
+      overflowRetryBuyInstruction,
       "overflow-retry"
     );
     if (confirmed.ok) return retry.signature;
@@ -1787,7 +1799,7 @@ export async function tryPumpSwapDirectBuy(args: {
       return null;
     }
 
-    releaseRustBoughtMint(args.mint, `PumpSwap canonical overflow retry after ${alternateBuyInstruction} failed: ${confirmed.message}`);
+    releaseRustBoughtMint(args.mint, `PumpSwap canonical overflow retry after ${overflowRetryBuyInstruction} failed: ${confirmed.message}`);
     const canonicalPlan = await resolvePumpSwapBuyAccountPlan({
       sourceSignature: args.sourceSignature,
       mint: mintKey,
@@ -1802,13 +1814,15 @@ export async function tryPumpSwapDirectBuy(args: {
       return null;
     }
     args.log(
-      `PumpSwap canonical overflow retry: ${alternateBuyInstruction} still failed with 6023; ` +
+      `PumpSwap canonical overflow retry: ${overflowRetryBuyInstruction} still failed with 6023; ` +
         `retrying buy_exact_quote_in with ${canonicalPlan.source}.`
     );
     const canonicalRetry = await executeRustAttempt(
       "buy_exact_quote_in",
       "canonical-overflow-retry",
-      canonicalPlan
+      canonicalPlan,
+      `${args.sourceSignature}:canonical-overflow-retry`,
+      safeOverflowRetryMinBaseOut
     );
     if (!canonicalRetry?.ok) {
       args.log(
