@@ -1481,11 +1481,7 @@ fn build_pumpswap_buy_ix(
                 PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX => user_volume_accumulator,
                 _ => source,
             };
-            let is_signer = if i == PUMPSWAP_USER_INDEX {
-                true
-            } else {
-                source_meta.is_signer
-            };
+            let is_signer = i == PUMPSWAP_USER_INDEX;
             let is_writable = match i {
                 PUMPSWAP_USER_INDEX
                 | PUMPSWAP_USER_BASE_ATA_INDEX
@@ -1644,11 +1640,7 @@ fn build_pumpswap_sell_ix(
                 PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX if has_cashback_sell_tail => user_volume,
                 _ => source,
             };
-            let is_signer = if i == PUMPSWAP_USER_INDEX {
-                true
-            } else {
-                source_meta.is_signer
-            };
+            let is_signer = i == PUMPSWAP_USER_INDEX;
             let is_writable = match i {
                 PUMPSWAP_USER_INDEX
                 | PUMPSWAP_USER_BASE_ATA_INDEX

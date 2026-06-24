@@ -1589,7 +1589,7 @@ export async function tryPumpSwapDirectBuy(args: {
     const rust = await executeRustPumpSwapBuy({
       route: "pumpswap-direct-buy",
       mint: args.mint,
-      sourceSignature: attempt === "overflow-retry" ? undefined : args.sourceSignature,
+      sourceSignature: attempt === "overflow-retry" ? `${args.sourceSignature}:overflow-retry` : args.sourceSignature,
       buyLockOwner: args.buyLockOwner,
       quoteMint,
       quoteAmountInRaw: args.solInLamports,

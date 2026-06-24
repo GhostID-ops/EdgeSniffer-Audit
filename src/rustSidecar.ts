@@ -101,7 +101,7 @@ export type RustPumpFunBuyArgs = {
 export type RustPumpSwapBuyArgs = {
   route: "pumpswap-direct-buy";
   mint: string;
-  sourceSignature?: string;
+  sourceSignature: string;
   buyLockOwner?: string;
   quoteMint: string;
   quoteAmountInRaw: number;
