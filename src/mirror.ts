@@ -281,6 +281,18 @@ function shouldTryPumpSwapAfterPumpFunSkip(reason: string, swap: DetectedSwap): 
   );
 }
 
+/**
+ * The Rust hot sniper buys/reserves a mint via the shared buy-once gate. When the TypeScript
+ * pump.fun direct path is skipped for that reason, the position is already owned by Rust — the
+ * mirror must NOT chase it with a PumpSwap/Jupiter fallback (which fails with "pool not found"
+ * on fresh pump mints and surfaces a false "Buy failed" + Telegram alert).
+ */
+function isRustAlreadyBoughtReason(reason: string): boolean {
+  return /already bought\/reserved by rust|already hot-bought by rust|already bought .* this session/i.test(
+    reason
+  );
+}
+
 function shouldAllowJupiterAfterPumpSwapFailure(swap: DetectedSwap): boolean {
   // Pump.fun mints that have graduated should still be copied through PumpSwap. Jupiter often
   // has no route yet, and the constrained-route ladder adds seconds of dead latency on hot coins.
@@ -543,6 +555,12 @@ export async function mirrorSwap(
         priceImpactPct: (direct.priceImpactPct / 100).toString(),
         confirmationPending: direct.confirmationPending,
       }, swap.signature);
+    }
+    if (isRustAlreadyBoughtReason(direct.reason)) {
+      // Rust hot sniper already owns this mint this session. Treat as a benign skip
+      // (handled by AlreadyBoughtError in the caller) instead of chasing a PumpSwap
+      // fallback that fails with "pool not found" and emits a false buy failure.
+      throw new AlreadyBoughtError(swap.outputMint);
     }
     if (mirrorInputMint === USDC_MINT) {
       throw new Error(`Rust Pump.fun V2 USDC buy failed: ${direct.reason}`);
