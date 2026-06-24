@@ -12,7 +12,7 @@ import {
   computeUnitLimit,
   pumpfunExactSolInBuys,
 } from "../config.js";
-import { getDynamicPriorityFee } from "../feeOracle.js";
+import { getDynamicPriorityFeeForRoute } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
 import { buildCompactV0Transaction } from "../transactionSize.js";
 import { knownAccountExists } from "../walletWarmup.js";
@@ -454,7 +454,7 @@ export async function buildPumpFunBuyTransaction(args: {
   }
   computeIxs.push(
     ComputeBudgetProgram.setComputeUnitPrice({
-      microLamports: getDynamicPriorityFee(),
+      microLamports: getDynamicPriorityFeeForRoute("pumpfun-direct-buy"),
     })
   );
 
@@ -527,7 +527,7 @@ export async function buildPumpFunBuyReplayTransaction(args: {
   }
   computeIxs.push(
     ComputeBudgetProgram.setComputeUnitPrice({
-      microLamports: getDynamicPriorityFee(),
+      microLamports: getDynamicPriorityFeeForRoute("pumpfun-source-replay-buy"),
     })
   );
 

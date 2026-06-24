@@ -9,7 +9,7 @@ import {
 import {
   computeUnitLimit,
 } from "../config.js";
-import { getDynamicPriorityFee } from "../feeOracle.js";
+import { getDynamicPriorityFeeForRoute } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
 import { buildCompactV0Transaction } from "../transactionSize.js";
 import {
@@ -193,7 +193,7 @@ export async function buildPumpFunSellTransaction(args: {
   }
   computeIxs.push(
     ComputeBudgetProgram.setComputeUnitPrice({
-      microLamports: getDynamicPriorityFee(),
+      microLamports: getDynamicPriorityFeeForRoute(args.useV2 ? "pumpfun-direct-sell-v2" : "pumpfun-direct-sell"),
     })
   );
 

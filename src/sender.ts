@@ -21,7 +21,7 @@ import {
   executionMultiSendEnabled,
   executionAltAddresses,
 } from "./config.js";
-import { getDynamicPriorityFee } from "./feeOracle.js";
+import { getDynamicPriorityFeeForRoute } from "./feeOracle.js";
 import {
   getConfiguredAltAccounts,
   diagnoseV0Transaction,
@@ -137,7 +137,7 @@ export async function createSenderTransactionFromSwapResponse(
   );
 
   const priorityFeeIx = ComputeBudgetProgram.setComputeUnitPrice({
-    microLamports: getDynamicPriorityFee(),
+    microLamports: getDynamicPriorityFeeForRoute(options.route),
   });
   const tipIxs = buildTipInstructions(keypair.publicKey, { route: options.route });
 

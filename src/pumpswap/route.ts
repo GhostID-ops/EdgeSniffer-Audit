@@ -21,7 +21,7 @@ import {
   simulationMode,
   warmWalletMode,
 } from "../config.js";
-import { getDynamicPriorityFee } from "../feeOracle.js";
+import { getDynamicPriorityFeeForRoute } from "../feeOracle.js";
 import { getCachedBlockhash } from "../blockhashCache.js";
 import { broadcastTransactionWithSender } from "../sender.js";
 import { buildSizeSafeV0Transaction } from "../transactionSize.js";
@@ -1978,7 +1978,7 @@ export async function tryPumpSwapDirectBuy(args: {
       })
     );
   }
-  computeIxs.push(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: getDynamicPriorityFee() }));
+  computeIxs.push(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: getDynamicPriorityFeeForRoute("pumpswap-direct-buy") }));
 
   const swapIx =
     buyInstruction === "buy"
@@ -2540,7 +2540,7 @@ export async function tryPumpSwapDirectSell(args: {
       })
     );
   }
-  computeIxs.push(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: getDynamicPriorityFee() }));
+  computeIxs.push(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: getDynamicPriorityFeeForRoute("pumpswap-direct-sell") }));
 
   const swapIx = buildNativeIdlInstructionFromOrderedAccounts({
     program: "pump_amm",
