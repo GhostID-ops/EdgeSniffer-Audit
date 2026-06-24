@@ -811,10 +811,10 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   const hintedAccounts = sourcePumpSwapHintAccountsToMetas(args.sourcePumpSwapAccounts);
   const poolHint = hintedAccounts?.[0]?.pubkey ?? null;
 
-  // Fast paths (no extra RPC): the source's own PumpSwap metas already carry the
-  // exact current on-chain account layout. Trusted for buys. Skipped in
-  // canonicalOnly retry mode, which forces the authoritative pool template.
-  if (!args.canonicalOnly) {
+  // USDC pools are not the deterministic WSOL graduation pool. Without source
+  // or confirmed metas, fail closed instead of silently selecting a WSOL pool.
+  if (args.quoteMint === USDC_MINT) {
+    if (args.canonicalOnly) return null;
     if (hintedAccounts?.length && !validatePumpSwapBuyAccountLayout(hintedAccounts, args.mint, args.quoteMint)) {
       return {
         accounts: hintedAccounts,
@@ -826,15 +826,13 @@ async function resolvePumpSwapBuyAccountPlan(args: {
     if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint, args.quoteMint)) {
       return { accounts: confirmedAccounts, source: "confirmed-source-metas", diagnostics: {} };
     }
+    return null;
   }
 
-  // USDC pools are not the deterministic WSOL graduation pool. Without source
-  // or confirmed metas, fail closed instead of silently selecting a WSOL pool.
-  if (args.quoteMint === USDC_MINT) return null;
-
-  // Authoritative fallback when the source carries no PumpSwap metas (e.g. it
-  // routed through an aggregator): template a recent real buy on the resolved
-  // pool. The Rust executor substitutes our user accounts downstream.
+  // Prefer authoritative PumpSwap account plans for WSOL graduated buys. Detector
+  // hints are fast, but this wallet repeatedly produced PrivilegeEscalation/6023
+  // with detector-pubkey-hints; pool-state templates avoid trusting unverified
+  // signer/writable/layout flags from the source payload.
   const template = await fetchPumpSwapPoolTradeTemplate({
     mint: args.mint,
     side: "buy",
@@ -850,6 +848,39 @@ async function resolvePumpSwapBuyAccountPlan(args: {
         ? comparePumpSwapAccounts(template, hintedAccounts, "detector-pubkey-hints")
         : { comparedTo: "detector-pubkey-hints", candidateAccounts: 0 },
     };
+  }
+
+  const canonical = await buildCanonicalPumpSwapBuyAccounts({
+    user: args.user,
+    mint: args.mint,
+    baseTokenProgram: args.baseTokenProgram,
+    poolHint,
+  });
+  if (canonical) {
+    return {
+      accounts: canonical,
+      source: "canonical-pool-state",
+      diagnostics: hintedAccounts
+        ? comparePumpSwapAccounts(canonical, hintedAccounts, "detector-pubkey-hints")
+        : { comparedTo: "detector-pubkey-hints", candidateAccounts: 0 },
+    };
+  }
+
+  if (args.canonicalOnly) return null;
+
+  // Last resort: if pool-state is not readable/indexed yet, use validated source
+  // metas rather than missing the buy entirely. This is no longer the primary
+  // path for graduated WSOL tokens.
+  if (hintedAccounts?.length && !validatePumpSwapBuyAccountLayout(hintedAccounts, args.mint, args.quoteMint)) {
+    return {
+      accounts: hintedAccounts,
+      source: "detector-pubkey-hints",
+      diagnostics: { detectorHintAccounts: hintedAccounts.length, canonicalUnavailable: true },
+    };
+  }
+  const confirmedAccounts = await sourcePumpSwapAccountsWithShortRetry(args.sourceSignature, args.mint);
+  if (confirmedAccounts && !validatePumpSwapBuyAccountLayout(confirmedAccounts, args.mint, args.quoteMint)) {
+    return { accounts: confirmedAccounts, source: "confirmed-source-metas", diagnostics: { canonicalUnavailable: true } };
   }
   return null;
 }
