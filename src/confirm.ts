@@ -51,6 +51,19 @@ export function isConfirmationTimeoutError(err: unknown): boolean {
 }
 
 /**
+ * String-based variant for call sites that only have the error *message* (e.g. failure
+ * callbacks that receive `reason: string`). Matches the messages thrown by
+ * `ConfirmationTimeoutError` and the "submitted but did not confirm" fallback. Status
+ * absence is not proof of failure: a Sender/Jito transaction can land after this read
+ * RPC's status window, so callers should retain the optimistic lot rather than roll back.
+ */
+export function isConfirmationTimeoutMessage(reason: string): boolean {
+  return /confirmation timed out after \d+ms|not found in status polling after \d+ms|suspected dropped transaction|did not confirm after \d+ms/i.test(
+    reason
+  );
+}
+
+/**
  * Confirm a transaction by polling getSignatureStatuses.
  * Stops on confirmed/finalized, throws on failure or timeout.
  */

@@ -146,7 +146,11 @@ import {
   type SourceHoldZeroState,
 } from "./sourceHoldExit.js";
 import { warmConnection, createSenderTransactionFromSwapResponse, broadcastTransactionWithSender } from "./sender.js";
-import { confirmSignature, isConfirmationTimeoutError } from "./confirm.js";
+import {
+  confirmSignature,
+  isConfirmationTimeoutError,
+  isConfirmationTimeoutMessage,
+} from "./confirm.js";
 import {
   getSolBalance,
   formatSol,
@@ -3149,6 +3153,25 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         mirrorBuySignatureByMint.delete(mint);
         clearFastBuyConfirmationPending(mint);
         confirmedFastBuyTokensByMint.delete(mint);
+        if (isConfirmationTimeoutMessage(reason)) {
+          // A confirmation null-status timeout is NOT proof of failure: a Sender/Jito
+          // transaction can land after this read RPC's status window. Roll-back +
+          // rescue here strands the (successfully landed) buy as an untracked lot that
+          // later gets dust-sold, and the rescue can double-buy. Retain the optimistic
+          // lot instead and let wallet reconciliation correct it if it truly failed.
+          // This mirrors the Rust hot-sniper background-confirm handler.
+          pendingBuyRetryByMint.delete(mint);
+          fastBuyConfirmRetryScheduledByMint.delete(mint);
+          if (buyOncePerTokenEnabled) {
+            holdBuyOnceMintAfterBroadcastUncertainty(mint, reason);
+          } else {
+            console.warn(
+              `Buy confirmation uncertain for ${mint.slice(0, 8)}... (${reason}). ` +
+                "Retaining optimistic position pending wallet reconciliation."
+            );
+          }
+          return;
+        }
         if (shouldHoldBuyOnceAfterFailure({ buyOncePerTokenEnabled, reason })) {
           holdBuyOnceMintAfterBroadcastUncertainty(mint, reason);
           return;
