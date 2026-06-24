@@ -831,6 +831,31 @@ async function fetchPumpSwapPoolTradeTemplate(args: {
   return null;
 }
 
+/**
+ * pump-amm reads extra "cashback coin" accounts as `remaining_accounts` beyond the canonical
+ * 23-account buy layout (the on-chain IDL still only declares 23). When the source's buy carried
+ * more than the canonical count, omitting the tail makes the fee/volume math overflow on-chain
+ * (AnchorError buy.rs Overflow / custom 6023), so the buy is missed entirely.
+ *
+ * The canonical/template plan correctly derives indices 0..22 for OUR wallet, and the Rust
+ * executor substitutes the user-specific accounts by fixed index. The tail accounts are
+ * pool/coin-level for these coins, so we clone them from the source template (the proven
+ * on-chain account set). This only affects coins whose source buy exceeded the canonical
+ * count, so normal (non-cashback) buys are unchanged.
+ */
+function appendSourceRemainingAccounts(
+  plan: AccountMeta[],
+  hinted: AccountMeta[] | null
+): AccountMeta[] {
+  if (!hinted || hinted.length <= plan.length) return plan;
+  const remaining = hinted.slice(plan.length).map((a) => ({
+    pubkey: a.pubkey,
+    isSigner: false,
+    isWritable: a.isWritable,
+  }));
+  return [...plan, ...remaining];
+}
+
 async function resolvePumpSwapBuyAccountPlan(args: {
   sourceSignature: string;
   mint: PublicKey;
@@ -874,7 +899,10 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   });
   if (template) {
     return {
-      accounts: applySourceProtocolFeeAccounts(template, hintedAccounts),
+      accounts: appendSourceRemainingAccounts(
+        applySourceProtocolFeeAccounts(template, hintedAccounts),
+        hintedAccounts
+      ),
       source: "canonical-pool-state",
       diagnostics: hintedAccounts
         ? comparePumpSwapAccounts(template, hintedAccounts, "detector-pubkey-hints")
@@ -890,7 +918,10 @@ async function resolvePumpSwapBuyAccountPlan(args: {
   });
   if (canonical) {
     return {
-      accounts: applySourceProtocolFeeAccounts(canonical, hintedAccounts),
+      accounts: appendSourceRemainingAccounts(
+        applySourceProtocolFeeAccounts(canonical, hintedAccounts),
+        hintedAccounts
+      ),
       source: "canonical-pool-state",
       diagnostics: hintedAccounts
         ? comparePumpSwapAccounts(canonical, hintedAccounts, "detector-pubkey-hints")
