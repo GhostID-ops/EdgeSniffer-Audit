@@ -69,6 +69,16 @@ const PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX: usize = 22;
 const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT: usize = 23;
 const PUMPSWAP_MIN_SELL_ACCOUNT_COUNT: usize = 21;
 
+fn pumpswap_canonical_buy_writable(index: usize) -> bool {
+    matches!(index, 0 | 1 | 5 | 6 | 7 | 8 | 10 | 17 | 20 | 23)
+}
+
+fn pumpswap_canonical_sell_writable(index: usize, has_cashback_sell_tail: bool) -> bool {
+    matches!(index, 0 | 1 | 5 | 6 | 7 | 8 | 10 | 17)
+        || (has_cashback_sell_tail
+            && matches!(index, PUMPSWAP_SELL_CASHBACK_ATA_INDEX | PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX))
+}
+
 const JITO_TIP_ACCOUNTS: [&str; 8] = [
     "96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5",
     "ADuUkR4vqLUMWXxW9gh6D6L8pMSawimctcNZ5pGwDcEt",
@@ -1482,13 +1492,7 @@ fn build_pumpswap_buy_ix(
                 _ => source,
             };
             let is_signer = i == PUMPSWAP_USER_INDEX;
-            let is_writable = match i {
-                PUMPSWAP_USER_INDEX
-                | PUMPSWAP_USER_BASE_ATA_INDEX
-                | PUMPSWAP_USER_QUOTE_ATA_INDEX
-                | PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX => true,
-                _ => source_meta.is_writable,
-            };
+            let is_writable = source_meta.is_writable || pumpswap_canonical_buy_writable(i);
             Ok(meta(actual, is_signer, is_writable))
         })
         .collect::<Result<Vec<_>>>()?;
@@ -1641,17 +1645,7 @@ fn build_pumpswap_sell_ix(
                 _ => source,
             };
             let is_signer = i == PUMPSWAP_USER_INDEX;
-            let is_writable = match i {
-                PUMPSWAP_USER_INDEX
-                | PUMPSWAP_USER_BASE_ATA_INDEX
-                | PUMPSWAP_USER_QUOTE_ATA_INDEX => true,
-                PUMPSWAP_SELL_CASHBACK_ATA_INDEX | PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX
-                    if has_cashback_sell_tail =>
-                {
-                    true
-                }
-                _ => source_meta.is_writable,
-            };
+            let is_writable = source_meta.is_writable || pumpswap_canonical_sell_writable(i, has_cashback_sell_tail);
             Ok(meta(actual, is_signer, is_writable))
         })
         .collect::<Result<Vec<_>>>()?;
