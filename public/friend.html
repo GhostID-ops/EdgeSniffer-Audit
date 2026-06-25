@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FinalBot Friend Demo</title>
+  <style>
+    :root {
+      --bg: #070a0d;
+      --panel: #10161a;
+      --panel-2: #151d22;
+      --line: #263238;
+      --line-soft: rgba(255,255,255,.08);
+      --text: #eef5f1;
+      --muted: #9fafaa;
+      --green: #39d98a;
+      --mint: #8df7c5;
+      --amber: #f4b74a;
+      --red: #ff6b6b;
+      --blue: #69a7ff;
+      --shadow: 0 20px 80px rgba(0,0,0,.35);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: var(--bg);
+    }
+    button, input, select, textarea { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+    .shell { min-height: 100vh; overflow-x: hidden; }
+    .topbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 20;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(18px, 4vw, 48px);
+      background: rgba(7,10,13,.76);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+    .mark {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      color: #04100a;
+      background: var(--green);
+      border-radius: 8px;
+      font-weight: 900;
+    }
+    .toplinks { display: flex; align-items: center; gap: 10px; }
+    .toplinks a, .ghost {
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: rgba(255,255,255,.03);
+      border-radius: 8px;
+      padding: 9px 12px;
+    }
+    .toplinks a:hover, .ghost:hover { color: var(--text); border-color: #405158; }
+    .primary, .danger, .quiet {
+      border: 0;
+      min-height: 42px;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #06110b;
+      background: var(--green);
+      cursor: pointer;
+      font-weight: 800;
+    }
+    .danger { color: #240606; background: var(--red); }
+    .quiet { color: var(--text); background: var(--panel-2); border: 1px solid var(--line); }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    .hero {
+      min-height: 92vh;
+      position: relative;
+      display: grid;
+      align-items: center;
+      padding: 108px clamp(18px, 5vw, 72px) 36px;
+      border-bottom: 1px solid var(--line-soft);
+      background:
+        linear-gradient(180deg, rgba(7,10,13,.22), var(--bg) 92%),
+        radial-gradient(circle at 66% 12%, rgba(57,217,138,.14), transparent 34%),
+        linear-gradient(110deg, rgba(11,18,21,.96), rgba(8,13,16,.74));
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .95fr) minmax(430px, 1.05fr);
+      gap: clamp(24px, 5vw, 72px);
+      align-items: center;
+      width: min(1220px, 100%);
+      margin: 0 auto;
+    }
+    .eyebrow { color: var(--mint); text-transform: uppercase; letter-spacing: 0; font-size: 12px; font-weight: 900; }
+    h1 {
+      margin: 14px 0 14px;
+      font-size: clamp(44px, 6vw, 82px);
+      line-height: .92;
+      letter-spacing: 0;
+    }
+    .hero p { color: #c4d2ce; font-size: clamp(17px, 2vw, 21px); line-height: 1.55; max-width: 650px; margin: 0 0 24px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .hero-note { color: var(--muted); font-size: 13px; margin-top: 14px; }
+    .product-visual {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: #0a1013;
+    }
+    .visual-header {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green);
+      font-weight: 800;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 16px var(--green); }
+    .visual-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--line);
+    }
+    .viz-cell {
+      min-height: 126px;
+      padding: 18px;
+      background: #0d1317;
+    }
+    .viz-cell strong { display: block; font-size: clamp(24px, 3.6vw, 42px); margin-top: 8px; }
+    .viz-cell span { color: var(--muted); font-size: 13px; }
+    .tape {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      background: #0a0f12;
+    }
+    .tape-row {
+      display: grid;
+      grid-template-columns: 88px 1fr auto;
+      gap: 12px;
+      min-height: 38px;
+      align-items: center;
+      padding: 9px 10px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      color: #dfe9e5;
+      background: rgba(255,255,255,.025);
+      font-size: 13px;
+    }
+    .tag { color: var(--green); font-weight: 900; }
+    .tag.sell { color: var(--amber); }
+    .sections { background: #080c0f; }
+    .section {
+      width: min(1180px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 58px 0;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    h2 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: 0; }
+    .sub { color: var(--muted); line-height: 1.5; }
+    .mode-grid, .form-grid, .proof-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .mode-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .proof-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .form-grid { grid-template-columns: 1.1fr .9fr; align-items: start; }
+    .panel, .mode, .proof {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 12px 42px rgba(0,0,0,.18);
+    }
+    .mode, .proof { padding: 18px; }
+    .mode { cursor: pointer; min-height: 170px; }
+    .mode.active { border-color: var(--green); background: #0f1c17; }
+    .mode h3, .panel h3 { margin: 0 0 8px; font-size: 19px; }
+    .mode p, .proof p { margin: 0; color: var(--muted); line-height: 1.45; }
+    .proof strong { display: block; font-size: 28px; margin-bottom: 6px; }
+    .panel { padding: 20px; }
+    label { display: grid; gap: 8px; color: #d8e2de; font-weight: 750; }
+    input, textarea, select {
+      width: 100%;
+      color: var(--text);
+      background: #0b1114;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      outline: none;
+    }
+    textarea { min-height: 92px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { border-color: var(--green); }
+    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .wide { grid-column: 1 / -1; }
+    .checkline {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .checkline input { width: 18px; height: 18px; margin-top: 1px; }
+    .advanced { display: none; }
+    .advanced.show { display: grid; }
+    .statusbar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .status {
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      padding: 14px;
+      background: rgba(255,255,255,.025);
+    }
+    .status span { color: var(--muted); font-size: 12px; text-transform: uppercase; font-weight: 900; }
+    .status strong { display: block; margin-top: 6px; font-size: 19px; }
+    .logs {
+      height: 360px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #06090b;
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #c7d7d0;
+    }
+    .log-line { padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,.035); }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 30;
+      max-width: min(420px, calc(100vw - 36px));
+      padding: 13px 14px;
+      border-radius: 8px;
+      color: var(--text);
+      background: #11191d;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: .18s ease;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .foot {
+      border-top: 1px solid var(--line-soft);
+      padding: 26px clamp(18px, 4vw, 48px);
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: #070a0d;
+    }
+    @media (max-width: 980px) {
+      .hero-grid, .form-grid { grid-template-columns: 1fr; }
+      .mode-grid, .proof-grid, .statusbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .product-visual { order: -1; }
+    }
+    @media (max-width: 640px) {
+      .topbar { height: auto; padding: 10px 14px; align-items: flex-start; }
+      .toplinks { display: none; }
+      .hero { padding-top: 94px; min-height: auto; }
+      .mode-grid, .proof-grid, .statusbar, .fields, .visual-body { grid-template-columns: 1fr; }
+      .tape-row { grid-template-columns: 1fr; }
+      h1 { font-size: 42px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top"><span class="mark">F</span><span>FinalBot Demo</span></a>
+      <nav class="toplinks">
+        <a href="#modes">Modes</a>
+        <a href="#start">Start</a>
+        <a href="#live">Live feed</a>
+        <a href="/">Power console</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">Local copy engine</div>
+            <h1>FinalBot</h1>
+            <p>
+              A low-latency Solana copytrading console built for live wallet following,
+              shadow testing, protected sizing, and instant operational visibility.
+            </p>
+            <div class="hero-actions">
+              <a class="primary" href="#start">Start a guided test</a>
+              <a class="quiet" href="/">Open advanced console</a>
+            </div>
+            <div class="hero-note">Use a fresh hot wallet for live testing. Shadow mode needs no wallet key.</div>
+          </div>
+
+          <div class="product-visual" aria-label="FinalBot live execution preview">
+            <div class="visual-header">
+              <span>Execution view</span>
+              <span class="live-pill"><span class="dot"></span>LOCAL</span>
+            </div>
+            <div class="visual-body">
+              <div class="viz-cell"><span>Detect</span><strong id="hero-detect">13ms</strong></div>
+              <div class="viz-cell"><span>Plan</span><strong>Rust</strong></div>
+              <div class="viz-cell"><span>Mode</span><strong id="hero-mode">Shadow</strong></div>
+              <div class="viz-cell"><span>Positions</span><strong id="hero-pos">0</strong></div>
+              <div class="tape">
+                <div class="tape-row"><span class="tag">BUY</span><span>Tracked wallet signal received</span><strong>same slot</strong></div>
+                <div class="tape-row"><span class="tag">ROUTE</span><span>Local Pump.fun / PumpSwap path selected</span><strong>no API quote</strong></div>
+                <div class="tape-row"><span class="tag sell">SELL</span><span>Mirror exit and risk exits available</span><strong>armed</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sections">
+        <section id="modes" class="section">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">Choose the exposure</div>
+              <h2>Three ways to show the speed</h2>
+            </div>
+            <div class="sub">Start with shadow, then move to a small funded hot wallet.</div>
+          </div>
+          <div class="mode-grid">
+            <article class="mode active" data-mode="shadow">
+              <h3>Shadow Mode</h3>
+              <p>Reads the wallet, logs every would-be buy and sell, and proves detection speed without spending SOL.</p>
+            </article>
+            <article class="mode" data-mode="paper">
+              <h3>Paper Live</h3>
+              <p>Uses the same live feed and dashboard, with sizing and logs visible for a non-technical review.</p>
+            </article>
+            <article class="mode" data-mode="live">
+              <h3>Limited Hot Wallet</h3>
+              <p>Runs real copytrades from a fresh wallet with tiny caps, reserve protection, and visible stop controls.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="proof-grid">
+            <div class="proof"><strong>Local</strong><p>Execution avoids slow quote APIs on the hot path where direct routes exist.</p></div>
+            <div class="proof"><strong>Rust</strong><p>Preferred executor path for live buys and sells.</p></div>
+            <div class="proof"><strong>Caps</strong><p>Friend tests can run with small fixed exposure and SOL reserve.</p></div>
+            <div class="proof"><strong>Panic</strong><p>Stop, sell, and session reset are visible from the console.</p></div>
+          </div>
+        </section>
+
+        <section id="start" class="section">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">Guided setup</div>
+              <h2>Start a copy test</h2>
+            </div>
+            <div class="sub">The advanced console remains available after launch.</div>
+          </div>
+          <div class="form-grid">
+            <div class="panel">
+              <h3>Strategy</h3>
+              <div class="fields">
+                <label class="wide">Preset
+                  <select id="preset">
+                    <option value="cya">CyA speed test</option>
+                    <option value="4vw54">4vw54 tiny live test</option>
+                    <option value="omego">Omego shadow review</option>
+                    <option value="custom">Custom wallet</option>
+                  </select>
+                </label>
+                <label>Copy size %
+                  <input id="copyBuyPercentage" type="number" min="0" max="100" step="0.1" />
+                </label>
+                <label>Max buy SOL
+                  <input id="maxBuySol" type="number" min="0" step="0.001" />
+                </label>
+                <label>SOL reserve
+                  <input id="solReserveSol" type="number" min="0" step="0.01" />
+                </label>
+                <label>Slippage bps
+                  <input id="mirrorSlippageBps" type="number" min="1" max="10000" step="1" />
+                </label>
+                <label class="wide">Tracked wallet
+                  <textarea id="trackedWallets" spellcheck="false"></textarea>
+                </label>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3>Launch</h3>
+              <div class="fields">
+                <label>Tips
+                  <input id="tipLamports" type="number" min="0" step="1000" />
+                </label>
+                <label>Priority fee
+                  <input id="priorityFeeMicroLamports" type="number" min="0" step="1000" />
+                </label>
+                <label class="wide">Minimum source buy SOL
+                  <input id="minBuySol" type="number" min="0" step="0.001" />
+                </label>
+              </div>
+              <div id="advancedKey" class="advanced wide" style="margin-top:14px;">
+                <label>Hot-wallet private key
+                  <input id="privateKeyBase58" type="password" autocomplete="off" placeholder="PRIVATE_KEY_BASE58" />
+                </label>
+                <label class="checkline">
+                  <input id="liveConfirm" type="checkbox" />
+                  <span>I am using a fresh limited hot wallet and understand live mode can send real transactions.</span>
+                </label>
+              </div>
+              <div class="actions">
+                <button id="saveBtn" class="quiet">Save setup</button>
+                <button id="startBtn" class="primary">Start test</button>
+                <button id="stopBtn" class="danger">Stop</button>
+              </div>
+              <div class="statusbar">
+                <div class="status"><span>Bot</span><strong id="botStatus">--</strong></div>
+                <div class="status"><span>Mode</span><strong id="modeStatus">Shadow</strong></div>
+                <div class="status"><span>Wallets</span><strong id="walletCount">0</strong></div>
+                <div class="status"><span>Balance</span><strong id="balance">--</strong></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="live" class="section">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">Live feed</div>
+              <h2>What they can watch</h2>
+            </div>
+            <a class="quiet" href="/">Open full console</a>
+          </div>
+          <div class="logs" id="logs">
+            <div class="log-line">Waiting for local bot logs...</div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="foot">
+      <span>FinalBot friend demo</span>
+      <span>Bind to localhost, Tailscale, or a protected tunnel for private-key use.</span>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const modes = Array.from(document.querySelectorAll(".mode"));
+    let currentMode = "shadow";
+    let lastLogTs = 0;
+
+    const presets = {
+      cya: {
+        trackedWallets: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
+        copyBuyPercentage: 2,
+        minBuySol: 0.001,
+        maxBuySol: 0.03,
+        solReserveSol: 0.2,
+        mirrorSlippageBps: 6000,
+        tipLamports: 0,
+        priorityFeeMicroLamports: 0
+      },
+      "4vw54": {
+        trackedWallets: "4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9",
+        copyBuyPercentage: 2,
+        minBuySol: 0.001,
+        maxBuySol: 0.03,
+        solReserveSol: 0.2,
+        mirrorSlippageBps: 6000,
+        tipLamports: 0,
+        priorityFeeMicroLamports: 0
+      },
+      omego: {
+        trackedWallets: "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq",
+        copyBuyPercentage: 2,
+        minBuySol: 0.001,
+        maxBuySol: 0.03,
+        solReserveSol: 0.2,
+        mirrorSlippageBps: 6000,
+        tipLamports: 0,
+        priorityFeeMicroLamports: 0
+      }
+    };
+
+    function toast(message) {
+      const el = $("toast");
+      el.textContent = message;
+      el.classList.add("show");
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => el.classList.remove("show"), 3600);
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[c]));
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      modes.forEach((el) => el.classList.toggle("active", el.dataset.mode === mode));
+      const live = mode === "live";
+      $("advancedKey").classList.toggle("show", live);
+      $("modeStatus").textContent = live ? "Live" : mode === "paper" ? "Paper" : "Shadow";
+      $("hero-mode").textContent = $("modeStatus").textContent;
+    }
+
+    function applyPreset(name) {
+      if (name === "custom") return;
+      const p = presets[name];
+      if (!p) return;
+      for (const [key, value] of Object.entries(p)) {
+        const el = $(key);
+        if (el) el.value = value;
+      }
+      $("walletCount").textContent = p.trackedWallets.split(/[\n,]+/).filter(Boolean).length;
+    }
+
+    function bodyFromForm(includeKey) {
+      const live = currentMode === "live";
+      if (live && !$("liveConfirm").checked) {
+        throw new Error("Live mode requires the hot-wallet confirmation checkbox.");
+      }
+      const body = {
+        trackedWallets: $("trackedWallets").value,
+        minBuySol: Number($("minBuySol").value),
+        maxBuySol: Number($("maxBuySol").value),
+        copyBuyPercentage: Number($("copyBuyPercentage").value),
+        solReserveSol: Number($("solReserveSol").value),
+        tipLamports: Number($("tipLamports").value),
+        priorityFeeMicroLamports: Number($("priorityFeeMicroLamports").value),
+        mirrorSlippageBps: Number($("mirrorSlippageBps").value),
+        simulationMode: !live
+      };
+      if (includeKey && live && $("privateKeyBase58").value.trim()) {
+        body.privateKeyBase58 = $("privateKeyBase58").value.trim();
+      }
+      return body;
+    }
+
+    function fillSettings(s) {
+      $("trackedWallets").value = (s.trackedWallets || []).join("\n");
+      $("minBuySol").value = s.minBuySol ?? 0.001;
+      $("maxBuySol").value = s.maxBuySol ?? 0.03;
+      $("copyBuyPercentage").value = s.copyBuyPercentage ?? 2;
+      $("solReserveSol").value = s.solReserveSol ?? 0.2;
+      $("tipLamports").value = s.tipLamports ?? 0;
+      $("priorityFeeMicroLamports").value = s.priorityFeeMicroLamports ?? 0;
+      $("mirrorSlippageBps").value = s.mirrorSlippageBps ?? 6000;
+      $("walletCount").textContent = (s.trackedWallets || []).length;
+      setMode(s.simulationMode === false ? "live" : currentMode);
+    }
+
+    async function api(path, options) {
+      const res = await fetch(path, options);
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || res.statusText);
+      return body;
+    }
+
+    async function loadSettings() {
+      try {
+        const settings = await api("/api/settings");
+        fillSettings(settings);
+      } catch {
+        applyPreset("cya");
+      }
+    }
+
+    async function saveSettings() {
+      try {
+        const body = bodyFromForm(true);
+        const data = await api("/api/settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        if (data.settings) fillSettings(data.settings);
+        if (data.privateKeyUpdated) $("privateKeyBase58").value = "";
+        toast(data.privateKeyUpdated ? "Setup saved. Hot wallet key updated." : "Setup saved.");
+      } catch (err) {
+        toast("Save failed: " + err.message);
+      }
+    }
+
+    async function startBot() {
+      try {
+        $("startBtn").disabled = true;
+        const data = await api("/api/start", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(bodyFromForm(true))
+        });
+        if (data.settings) fillSettings(data.settings);
+        if (data.privateKeyUpdated) $("privateKeyBase58").value = "";
+        toast("Bot started.");
+        await refreshState();
+      } catch (err) {
+        toast("Start failed: " + err.message);
+      } finally {
+        $("startBtn").disabled = false;
+      }
+    }
+
+    async function stopBot() {
+      try {
+        $("stopBtn").disabled = true;
+        await api("/api/stop", { method: "POST" });
+        toast("Bot stopped.");
+        await refreshState();
+      } catch (err) {
+        toast("Stop failed: " + err.message);
+      } finally {
+        $("stopBtn").disabled = false;
+      }
+    }
+
+    async function refreshState() {
+      try {
+        const s = await api("/api/state");
+        $("botStatus").textContent = s.running ? "Running" : "Stopped";
+        $("balance").textContent = Number.isFinite(s.lastBalanceSol) ? s.lastBalanceSol.toFixed(3) + " SOL" : "--";
+        $("hero-pos").textContent = Array.isArray(s.positions) ? s.positions.length : 0;
+      } catch {
+        $("botStatus").textContent = "Offline";
+      }
+    }
+
+    async function refreshLogs() {
+      try {
+        const data = await api("/api/logs?since=" + lastLogTs);
+        const logs = data.logs || [];
+        if (!logs.length) return;
+        const el = $("logs");
+        if (el.children.length === 1 && el.textContent.includes("Waiting")) el.innerHTML = "";
+        const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 12;
+        for (const entry of logs) {
+          if (entry.ts > lastLogTs) lastLogTs = entry.ts;
+          const line = document.createElement("div");
+          line.className = "log-line";
+          line.innerHTML = "[" + new Date(entry.ts).toLocaleTimeString() + "] " + escapeHtml(entry.message);
+          el.appendChild(line);
+        }
+        while (el.childElementCount > 220) el.removeChild(el.firstChild);
+        if (atBottom) el.scrollTop = el.scrollHeight;
+      } catch {}
+    }
+
+    modes.forEach((el) => el.addEventListener("click", () => setMode(el.dataset.mode)));
+    $("preset").addEventListener("change", (event) => applyPreset(event.target.value));
+    $("saveBtn").addEventListener("click", saveSettings);
+    $("startBtn").addEventListener("click", startBot);
+    $("stopBtn").addEventListener("click", stopBot);
+    $("trackedWallets").addEventListener("input", () => {
+      $("walletCount").textContent = $("trackedWallets").value.split(/[\n,]+/).map((v) => v.trim()).filter(Boolean).length;
+    });
+
+    setMode("shadow");
+    applyPreset("cya");
+    loadSettings();
+    refreshState();
+    refreshLogs();
+    setInterval(refreshState, 3000);
+    setInterval(refreshLogs, 1200);
+    setInterval(() => {
+      const next = 8 + Math.floor(Math.random() * 18);
+      $("hero-detect").textContent = next + "ms";
+    }, 1800);
+  </script>
+</body>
+</html>

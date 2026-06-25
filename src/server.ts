@@ -15,7 +15,11 @@ import {
 } from "./botService.js";
 import { getLogs } from "./logBuffer.js";
 import { getFriendBotSettings } from "./config.js";
-import { normalizeFriendSettings, persistFriendSettings } from "./settingsStore.js";
+import {
+  normalizeFriendSettings,
+  persistFriendSecretSettings,
+  persistFriendSettings,
+} from "./settingsStore.js";
 import { getTokenPairInfo, WRAPPED_SOL_MINT } from "./tokenRegistry.js";
 import { getQuote } from "./jupiter.js";
 import { getPriceSampleMs, getPriceSeries, startPriceSampler } from "./priceSampler.js";
@@ -131,6 +135,10 @@ async function handle(
     return serveIndex(res);
   }
 
+  if (req.method === "GET" && (url === "/friend" || url === "/friend.html")) {
+    return servePublicFile(res, "friend.html", "text/html; charset=utf-8");
+  }
+
   if (req.method === "GET" && (url === "/dex" || url === "/dex.html")) {
     return servePublicFile(res, "dex.html", "text/html; charset=utf-8");
   }
@@ -232,8 +240,13 @@ async function handle(
   if (req.method === "POST" && url === "/api/settings") {
     try {
       const body = await readJsonBody(req);
+      const secretStatus = persistFriendSecretSettings(body);
       const settings = normalizeFriendSettings(body);
-      return sendJson(res, 200, { ok: true, settings: persistFriendSettings(settings) });
+      return sendJson(res, 200, {
+        ok: true,
+        settings: persistFriendSettings(settings),
+        ...secretStatus,
+      });
     } catch (err) {
       return sendError(res, 400, err instanceof Error ? err.message : String(err));
     }
@@ -251,11 +264,12 @@ async function handle(
     try {
       const body = await readJsonBody(req);
       let settings = getFriendBotSettings();
+      const secretStatus = persistFriendSecretSettings(body);
       if (Object.keys(body).length > 0) {
         settings = persistFriendSettings(normalizeFriendSettings(body));
       }
       await startBot();
-      return sendJson(res, 200, { ok: true, settings });
+      return sendJson(res, 200, { ok: true, settings, ...secretStatus });
     } catch (err) {
       return sendError(
         res,

@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { PublicKey } from "@solana/web3.js";
+import bs58 from "bs58";
+import { Keypair, PublicKey } from "@solana/web3.js";
 import {
   applyFriendBotSettings,
   getFriendBotSettings,
@@ -87,15 +88,22 @@ export function normalizeFriendSettings(body: Record<string, unknown>): FriendBo
   return settings;
 }
 
-function setEnvLine(lines: string[], key: SettingsKey, value: string): string[] {
+function setEnvLine(lines: string[], key: string, value: string): string[] {
   const escaped = value.includes(" ") ? JSON.stringify(value) : value;
-  const idx = lines.findIndex((line) => line.trimStart().startsWith(`${key}=`));
-  if (idx >= 0) {
-    lines[idx] = `${key}=${escaped}`;
-  } else {
-    lines.push(`${key}=${escaped}`);
+  let found = false;
+  const next: string[] = [];
+  for (const line of lines) {
+    if (line.trimStart().startsWith(`${key}=`)) {
+      if (!found) {
+        next.push(`${key}=${escaped}`);
+        found = true;
+      }
+      continue;
+    }
+    next.push(line);
   }
-  return lines;
+  if (!found) next.push(`${key}=${escaped}`);
+  return next;
 }
 
 export function persistFriendSettings(settings: FriendBotSettings): FriendBotSettings {
@@ -119,4 +127,30 @@ export function persistFriendSettings(settings: FriendBotSettings): FriendBotSet
   for (const key of SETTINGS_KEYS) lines = setEnvLine(lines, key, values[key]);
   writeFileSync(envPath, `${lines.join("\n").replace(/\n+$/, "")}\n`);
   return applied;
+}
+
+function validatePrivateKeyBase58(value: string): void {
+  try {
+    const decoded = bs58.decode(value);
+    Keypair.fromSecretKey(decoded);
+  } catch {
+    throw new Error("PRIVATE_KEY_BASE58 is not a valid Solana private key");
+  }
+}
+
+export function persistFriendSecretSettings(body: Record<string, unknown>): { privateKeyUpdated: boolean } {
+  const raw = body.privateKeyBase58;
+  if (raw == null || String(raw).trim() === "") return { privateKeyUpdated: false };
+
+  const privateKeyBase58 = String(raw).trim();
+  validatePrivateKeyBase58(privateKeyBase58);
+
+  const existing = existsSync(envPath) ? readFileSync(envPath, "utf8") : "";
+  let lines = existing.length ? existing.split(/\r?\n/) : [];
+  if (lines.length === 1 && lines[0] === "") lines = [];
+  lines = setEnvLine(lines, "PRIVATE_KEY_BASE58", privateKeyBase58);
+  writeFileSync(envPath, `${lines.join("\n").replace(/\n+$/, "")}\n`);
+  process.env.PRIVATE_KEY_BASE58 = privateKeyBase58;
+
+  return { privateKeyUpdated: true };
 }
