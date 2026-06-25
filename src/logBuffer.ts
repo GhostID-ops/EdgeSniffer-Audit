@@ -7,6 +7,7 @@ export type LogEntry = {
 };
 
 const buffer: LogEntry[] = [];
+let installed = false;
 
 function stringify(value: unknown): string {
   if (typeof value === "string") return value;
@@ -25,6 +26,9 @@ function push(level: LogEntry["level"], args: unknown[]): void {
 }
 
 export function installConsolePatch(): void {
+  if (installed) return;
+  installed = true;
+
   const origLog = console.log.bind(console);
   const origWarn = console.warn.bind(console);
   const origError = console.error.bind(console);

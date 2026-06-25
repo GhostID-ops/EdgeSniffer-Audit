@@ -1,7 +1,10 @@
+import { installConsolePatch } from "./logBuffer.js";
 import { startBot, stopBot, printPnlReport } from "./botService.js";
 import { registerKeyboardShortcuts, restoreTerminal } from "./keyboard.js";
 import { startServer } from "./server.js";
 import { startSolPriceUpdater } from "./solPrice.js";
+
+installConsolePatch();
 
 let shuttingDown = false;
 
