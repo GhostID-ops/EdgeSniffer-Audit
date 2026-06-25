@@ -612,6 +612,10 @@ export const mirrorSellProportionalFallback =
 const BUY_ONCE_RAW = (process.env.BUY_ONCE_PER_TOKEN ?? "true").toLowerCase();
 export const buyOncePerToken =
   BUY_ONCE_RAW !== "false" && BUY_ONCE_RAW !== "0" && BUY_ONCE_RAW !== "no";
+export const buyOnceAllowRebuyAfterFlat = parseEnvBool(
+  process.env.BUY_ONCE_ALLOW_REBUY_AFTER_FLAT,
+  false
+);
 /** Optional cap on repeated entries into the same token. Useful when BUY_ONCE_PER_TOKEN=false. */
 export const maxBuysPerToken = parseOptionalPositiveInteger(process.env.MAX_BUYS_PER_TOKEN);
 const MAX_SOL_PER_TOKEN = parseOptionalPositiveNumber(process.env.MAX_SOL_PER_TOKEN);

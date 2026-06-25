@@ -44,6 +44,7 @@ import {
   mirrorSellProportionalMaxPct,
   mirrorSellProportionalFallback,
   buyOncePerToken,
+  buyOnceAllowRebuyAfterFlat,
   skipSourcePreexistingMints,
   sourcePreexistingScanTxLimit,
   failedBuyRecovery,
@@ -111,6 +112,7 @@ import { subscribeRabbitWalletSwaps, type RabbitUnsubscribe } from "./rabbitWatc
 import { subscribeHeliusTransactionSwaps, type HeliusTxUnsubscribe } from "./heliusTxWatcher.js";
 import {
   startRustPumpFunSidecar,
+  releaseRustBoughtMint,
   type RustHotBuyFallback,
   type RustSidecarUnsubscribe,
 } from "./rustSidecar.js";
@@ -211,7 +213,7 @@ import { startJitoTipOracle, stopJitoTipOracle } from "./jitoTipOracle.js";
 import { startJitoConnectionWarmup, stopJitoConnectionWarmup } from "./jitoWarmup.js";
 import { classifyExecutionError } from "./errorClassifier.js";
 import { decideRetryAction } from "./executionRetry.js";
-import { isPostBroadcastBuyUncertainty, shouldHoldBuyOnceAfterFailure } from "./buyOncePolicy.js";
+import { isPostBroadcastBuyUncertainty, shouldBlockBuyOnceReentry, shouldHoldBuyOnceAfterFailure } from "./buyOncePolicy.js";
 import { planExecution } from "./executionPlanner.js";
 import { shouldUseBagsDirectLane } from "./bagsRoute.js";
 import { recordExecutionTelemetrySync } from "./executionTelemetry.js";
@@ -2683,10 +2685,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
     const existing = getPosition(mint);
     if (
-      buyOncePerTokenEnabled &&
-      (liveBuyAttemptedMintsThisSession.has(mint) ||
-        boughtMintsThisSession.has(mint) ||
-        (existing && existing.buysCount > 0))
+      shouldBlockBuyOnceReentry({
+        buyOncePerTokenEnabled,
+        allowRebuyAfterFlat: buyOnceAllowRebuyAfterFlat,
+        attemptedThisSession: liveBuyAttemptedMintsThisSession.has(mint),
+        boughtThisSession: boughtMintsThisSession.has(mint) || Boolean(existing && existing.buysCount > 0),
+        heldRaw: existing?.heldRaw ?? 0,
+      })
     ) {
       console.log(
         `Skipping buy: already bought ${mint.slice(0, 8)}... this session (buy-once ON).`
@@ -2763,10 +2768,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     }
     if (shouldDeferToRustHotSniperPrimary(swap, executionPlan)) {
       if (
-        rustHotBuyRecordedByMint.has(mint) ||
-        liveBuyAttemptedMintsThisSession.has(mint) ||
-        boughtMintsThisSession.has(mint) ||
-        (existing && existing.buysCount > 0)
+        shouldBlockBuyOnceReentry({
+          buyOncePerTokenEnabled,
+          allowRebuyAfterFlat: buyOnceAllowRebuyAfterFlat,
+          attemptedThisSession: rustHotBuyRecordedByMint.has(mint) || liveBuyAttemptedMintsThisSession.has(mint),
+          boughtThisSession: boughtMintsThisSession.has(mint) || Boolean(existing && existing.buysCount > 0),
+          heldRaw: existing?.heldRaw ?? 0,
+        })
       ) {
         pendingBuyRetryByMint.delete(mint);
         console.log(
@@ -2808,13 +2816,17 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
         rustHotSniperPrimaryPendingMints.delete(mint);
         const fallback = pendingBuyRetryByMint.get(mint) ?? swap;
         pendingBuyRetryByMint.delete(mint);
+        const latestPosition = getPosition(mint);
         if (
           stopRequested ||
-          rustHotBuyRecordedByMint.has(mint) ||
-          liveBuyAttemptedMintsThisSession.has(mint) ||
-          boughtMintsThisSession.has(mint) ||
           quarantinedBuyMints.has(mint) ||
-          (getPosition(mint)?.buysCount ?? 0) > 0
+          shouldBlockBuyOnceReentry({
+            buyOncePerTokenEnabled,
+            allowRebuyAfterFlat: buyOnceAllowRebuyAfterFlat,
+            attemptedThisSession: rustHotBuyRecordedByMint.has(mint) || liveBuyAttemptedMintsThisSession.has(mint),
+            boughtThisSession: boughtMintsThisSession.has(mint) || Boolean((latestPosition?.buysCount ?? 0) > 0),
+            heldRaw: latestPosition?.heldRaw ?? 0,
+          })
         ) {
           // Hot sniper already handled this mint (or it is otherwise resolved).
           return;
@@ -2946,10 +2958,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     const mint = swap.outputMint;
     const existingAfterFilters = getPosition(mint);
     if (
-      rustHotBuyRecordedByMint.has(mint) ||
-      liveBuyAttemptedMintsThisSession.has(mint) ||
-      boughtMintsThisSession.has(mint) ||
-      (existingAfterFilters?.buysCount ?? 0) > 0
+      shouldBlockBuyOnceReentry({
+        buyOncePerTokenEnabled,
+        allowRebuyAfterFlat: buyOnceAllowRebuyAfterFlat,
+        attemptedThisSession: rustHotBuyRecordedByMint.has(mint) || liveBuyAttemptedMintsThisSession.has(mint),
+        boughtThisSession: boughtMintsThisSession.has(mint) || (existingAfterFilters?.buysCount ?? 0) > 0,
+        heldRaw: existingAfterFilters?.heldRaw ?? 0,
+      })
     ) {
       pendingBuyRetryByMint.delete(mint);
       console.log(
@@ -4764,6 +4779,12 @@ function cleanupHybridExitStateIfClosed(position: PositionSnapshot): void {
     hybridExitTpInFlightByMint.delete(position.mint);
     profitLadderDoneByMint.delete(position.mint);
     profitLadderInFlightByMint.delete(position.mint);
+    if (buyOnceAllowRebuyAfterFlat) {
+      boughtMintsThisSession.delete(position.mint);
+      liveBuyAttemptedMintsThisSession.delete(position.mint);
+      rustHotBuyRecordedByMint.delete(position.mint);
+      releaseRustBoughtMint(position.mint, "position flat; rebuy-after-flat enabled");
+    }
   }
 }
 

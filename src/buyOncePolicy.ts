@@ -8,3 +8,15 @@ export function shouldHoldBuyOnceAfterFailure(args: {
 }): boolean {
   return args.buyOncePerTokenEnabled && isPostBroadcastBuyUncertainty(args.reason);
 }
+export function shouldBlockBuyOnceReentry(args: {
+  buyOncePerTokenEnabled: boolean;
+  allowRebuyAfterFlat: boolean;
+  attemptedThisSession: boolean;
+  boughtThisSession: boolean;
+  heldRaw: number;
+}): boolean {
+  if (!args.buyOncePerTokenEnabled) return false;
+  if (!args.attemptedThisSession && !args.boughtThisSession) return false;
+  if (args.allowRebuyAfterFlat && args.heldRaw <= 0) return false;
+  return true;
+}
