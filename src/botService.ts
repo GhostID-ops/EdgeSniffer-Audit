@@ -1622,7 +1622,10 @@ function recordMirrorSkip(
     detector: swap.detector,
     success: false,
     errorSummary: reason,
-    details,
+    details: {
+      ...details,
+      sourceProgramIds: swap.sourceProgramIds,
+    },
   });
 }
 
@@ -2471,7 +2474,10 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     detector: swap.detector,
     elapsedMs: sourceLatencyDetails.providerToProcessMs,
     success: true,
-    details: sourceLatencyDetails,
+    details: {
+      ...sourceLatencyDetails,
+      sourceProgramIds: swap.sourceProgramIds,
+    },
   });
 
   const executionPlan = planExecution(swap);
@@ -2493,6 +2499,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     details: {
       reason: executionPlan.reason,
       processToDecisionMs: decisionAtMs - processStartedAt,
+      sourceProgramIds: swap.sourceProgramIds,
       ...sourceLatencyDetails,
     },
   });

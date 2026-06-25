@@ -82,6 +82,27 @@ function extractPumpFunBuyIxAccounts(
   return null;
 }
 
+
+function collectSourceProgramIds(
+  info: SubscribeUpdateTransactionInfo,
+  allKeysBase58: string[]
+): string[] {
+  const message = info.transaction?.message;
+  const meta = info.meta;
+  if (!message || !meta) return [];
+  const ids = new Set<string>();
+  const add = (programIdIndex: number | undefined) => {
+    if (typeof programIdIndex !== "number") return;
+    const id = allKeysBase58[programIdIndex];
+    if (id) ids.add(id);
+  };
+  for (const ix of message.instructions ?? []) add(ix.programIdIndex);
+  for (const group of meta.innerInstructions ?? []) {
+    for (const ix of group.instructions ?? []) add(ix.programIdIndex);
+  }
+  return [...ids];
+}
+
 function ixDataToBuffer(data: unknown): Buffer {
   if (data instanceof Uint8Array) return Buffer.from(data);
   if (Array.isArray(data)) return Buffer.from(data);
@@ -306,6 +327,7 @@ export function extractSwapFromGrpcTransaction(
     ...meta.loadedWritableAddresses,
     ...meta.loadedReadonlyAddresses,
   ].map(pubkeyToBase58);
+  const sourceProgramIds = collectSourceProgramIds(info, accountKeys);
   const walletIdx = accountKeys.indexOf(wallet);
   if (walletIdx < 0) return null;
 
@@ -367,6 +389,7 @@ export function extractSwapFromGrpcTransaction(
     return {
       signature,
       wallet,
+      sourceProgramIds,
       inputMint: quote.mint ?? WRAPPED_SOL_MINT,
       outputMint: best.mint,
       amountRaw,
@@ -390,6 +413,7 @@ export function extractSwapFromGrpcTransaction(
     return {
       signature,
       wallet,
+      sourceProgramIds,
       inputMint: best.mint,
       outputMint: WRAPPED_SOL_MINT,
       amountRaw,
@@ -413,6 +437,7 @@ export function extractSwapFromGrpcTransaction(
       return {
         signature,
         wallet,
+        sourceProgramIds,
         inputMint: quote.mint,
         outputMint: best.mint,
         amountRaw,
@@ -437,6 +462,7 @@ export function extractSwapFromGrpcTransaction(
       return {
         signature,
         wallet,
+        sourceProgramIds,
         inputMint: best.mint,
         outputMint: WRAPPED_SOL_MINT,
         amountRaw,

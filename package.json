@@ -65,7 +65,8 @@
     "env:wallet:omego": "node scripts/applyWalletPreset.mjs omego",
     "env:wallet:5qn-eaz": "node scripts/applyWalletPreset.mjs 5qn-eaz",
     "env:wallet:4bdk": "node scripts/applyWalletPreset.mjs 4bdk",
-    "env:wallet:gug": "node scripts/applyWalletPreset.mjs gug"
+    "env:wallet:gug": "node scripts/applyWalletPreset.mjs gug",
+    "audit:missed-routes": "node scripts/auditMissedRoutes.mjs"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.0",

@@ -20,6 +20,8 @@ export type DetectedSwap = {
   sourceSlot?: number;
   /** Best-effort transaction index within the upstream slot/entry stream, when available. */
   sourceTransactionIndex?: number;
+  /** Program IDs seen in the source transaction's top-level/inner instructions. */
+  sourceProgramIds?: string[];
   /** Input token mint (e.g. wrapped SOL). */
   inputMint: string;
   /** Output token mint. */

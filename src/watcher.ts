@@ -674,6 +674,28 @@ function resolveAccountKeys(tx: VersionedTransactionResponse): string[] {
   );
 }
 
+
+function collectSourceProgramIdsFromRawTx(
+  tx: VersionedTransactionResponse,
+  accountKeys: string[]
+): string[] {
+  const ids = new Set<string>();
+  const message = tx.transaction.message as unknown as {
+    compiledInstructions?: Array<{ programIdIndex: number }>;
+    instructions?: Array<{ programIdIndex: number }>;
+  };
+  const add = (programIdIndex: number | undefined) => {
+    if (typeof programIdIndex !== "number") return;
+    const id = accountKeys[programIdIndex];
+    if (id) ids.add(id);
+  };
+  for (const ix of message.compiledInstructions ?? message.instructions ?? []) add(ix.programIdIndex);
+  for (const group of tx.meta?.innerInstructions ?? []) {
+    for (const ix of group.instructions ?? []) add((ix as unknown as { programIdIndex?: number }).programIdIndex);
+  }
+  return [...ids];
+}
+
 function instructionDataToBuffer(data: unknown): Buffer {
   if (data == null) return Buffer.alloc(0);
   if (Buffer.isBuffer(data)) return data;
@@ -783,6 +805,7 @@ function extractSwapFromRawTx(
   if (!meta || meta.err) return null;
 
   const accountKeys = resolveAccountKeys(tx);
+  const sourceProgramIds = collectSourceProgramIdsFromRawTx(tx, accountKeys);
   const walletIdx = accountKeys.indexOf(wallet);
   if (walletIdx < 0) return null;
 
@@ -838,6 +861,7 @@ function extractSwapFromRawTx(
     return {
       signature,
       wallet,
+      sourceProgramIds,
       inputMint,
       outputMint: bestMint,
       amountRaw,
@@ -856,6 +880,7 @@ function extractSwapFromRawTx(
     return {
       signature,
       wallet,
+      sourceProgramIds,
       inputMint: bestMint,
       outputMint: WRAPPED_SOL_MINT,
       amountRaw: Math.abs(bestNet),
@@ -874,6 +899,7 @@ function extractSwapFromRawTx(
       return {
         signature,
         wallet,
+        sourceProgramIds,
         inputMint: quote.mint,
         outputMint: bestMint,
         amountRaw: Math.abs(quote.net),
@@ -894,6 +920,7 @@ function extractSwapFromRawTx(
       return {
         signature,
         wallet,
+        sourceProgramIds,
         inputMint: bestMint,
         outputMint: WRAPPED_SOL_MINT,
         amountRaw: Math.abs(bestNet),
