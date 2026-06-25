@@ -48,6 +48,15 @@ export function planExecution(swap: DetectedSwap): ExecutionPlan {
     };
   }
 
+  if (swap.sourceIxAccounts?.length && swap.sourceIxAccounts.length >= 16) {
+    return {
+      side,
+      mint,
+      route: "pumpfun-bonding-curve",
+      reason: "source pump.fun account layout",
+    };
+  }
+
   if (!mint.endsWith("pump")) {
     return { side, mint, route: "jupiter-non-pump", reason: "non-pump mint without local protocol evidence" };
   }

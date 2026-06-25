@@ -13,7 +13,8 @@ const PROGRAM_LABELS = new Map([
   ["dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN", "meteora-dbc"],
   ["whirLbMiicVdio4qvUfM5KAg6CtVYzwdwq6R8kFJDY", "orca-whirlpool"],
   ["pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA", "pumpswap"],
-  ["6EF8rrecthR5DkB4tjvSYwVE7D5VvFAZHkmZ3QBjWJ5", "pumpfun"],
+  ["6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P", "pumpfun"],
+  ["FLASHX8DrLbgeR8FcfNV1F5krxYcYMUdBkrP1EPBtxB9", "flashx-pumpfun-router"],
 ]);
 
 function arg(name, fallback = "") {
@@ -75,7 +76,13 @@ function short(value) {
 function classify(programIds) {
   const labels = [...new Set(programIds.map((id) => PROGRAM_LABELS.get(id)).filter(Boolean))];
   const raydium = labels.find((label) => label.startsWith("raydium-"));
+  const meteora = labels.find((label) => label.startsWith("meteora-"));
+  const orca = labels.find((label) => label.startsWith("orca-"));
   if (raydium) return raydium;
+  if (meteora) return meteora;
+  if (orca) return orca;
+  if (labels.includes("pumpswap")) return "pumpswap";
+  if (labels.includes("pumpfun")) return "pumpfun";
   return labels[0] ?? "unknown";
 }
 

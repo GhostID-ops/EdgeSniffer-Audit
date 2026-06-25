@@ -15,7 +15,8 @@ const KNOWN_PROGRAMS = new Map([
   ["LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo", "meteora-dlmm"],
   ["dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN", "meteora-dbc"],
   ["pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA", "pumpswap"],
-  ["6EF8rrecthR5DkB4tjvSYwVE7D5VvFAZHkmZ3QBjWJ5", "pumpfun"],
+  ["6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P", "pumpfun"],
+  ["FLASHX8DrLbgeR8FcfNV1F5krxYcYMUdBkrP1EPBtxB9", "flashx-pumpfun-router"],
 ]);
 
 function arg(name, fallback = "") {
@@ -67,7 +68,14 @@ function classifyPrograms(programIds) {
   }
   if (labels.length === 0) return "unknown";
   const raydium = labels.find((label) => label.startsWith("raydium-"));
-  return raydium ?? labels[0];
+  const meteora = labels.find((label) => label.startsWith("meteora-"));
+  const orca = labels.find((label) => label.startsWith("orca-"));
+  if (raydium) return raydium;
+  if (meteora) return meteora;
+  if (orca) return orca;
+  if (labels.includes("pumpswap")) return "pumpswap";
+  if (labels.includes("pumpfun")) return "pumpfun";
+  return labels[0];
 }
 
 function short(value) {

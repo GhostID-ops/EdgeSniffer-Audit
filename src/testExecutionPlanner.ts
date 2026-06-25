@@ -23,6 +23,13 @@ assert.equal(
   planExecution({ ...base, sourceIxAccounts: undefined }).route,
   "jupiter-non-pump"
 );
+
+const legacyNonSuffix: DetectedSwap = {
+  ...base,
+  sourceIxAccounts: Array.from({ length: 16 }, (_, i) => `legacy-account-${i}`),
+};
+assert.equal(planExecution(legacyNonSuffix).route, "pumpfun-bonding-curve");
+assert.equal(planExecution({ ...legacyNonSuffix, sourceIxAccounts: undefined }).route, "jupiter-non-pump");
 assert.equal(
   planExecution({
     ...base,
