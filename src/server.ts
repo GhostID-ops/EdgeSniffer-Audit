@@ -18,6 +18,7 @@ import { getLogs } from "./logBuffer.js";
 import { getFriendBotSettings } from "./config.js";
 import {
   normalizeFriendSettings,
+  persistFriendRiskSettings,
   persistFriendSecretSettings,
   persistFriendSettings,
 } from "./settingsStore.js";
@@ -145,6 +146,10 @@ function serveIndex(res: ServerResponse): void {
   }
 }
 
+function serveLanding(res: ServerResponse): void {
+  return servePublicFile(res, "landing.html", "text/html; charset=utf-8");
+}
+
 function servePublicFile(res: ServerResponse, filename: string, contentType: string): void {
   try {
     const body = readFileSync(join(publicDir, filename));
@@ -165,9 +170,13 @@ async function handle(
 ): Promise<void> {
   const url = req.url ?? "/";
 
+  if (req.method === "GET" && (url === "/" || url === "/index.html" || url === "/landing.html")) {
+    return serveLanding(res);
+  }
+
   if (!isAuthorized(req)) return requestAuth(res);
 
-  if (req.method === "GET" && (url === "/" || url === "/index.html")) {
+  if (req.method === "GET" && (url === "/console" || url === "/console.html")) {
     return serveIndex(res);
   }
 
@@ -189,6 +198,15 @@ async function handle(
 
   if (req.method === "GET" && url === "/api/state") {
     return sendJson(res, 200, getBotState());
+  }
+
+  if (req.method === "GET" && url === "/api/readiness") {
+    return sendJson(res, 200, {
+      apiOnline: true,
+      authEnabled: UI_AUTH_ENABLED,
+      state: getBotState(),
+      settings: getFriendBotSettings(),
+    });
   }
 
   if (req.method === "GET" && url.startsWith("/api/price-series")) {
@@ -278,10 +296,12 @@ async function handle(
       const body = await readJsonBody(req);
       const secretStatus = persistFriendSecretSettings(body);
       const settings = normalizeFriendSettings(body);
+      const riskStatus = persistFriendRiskSettings(body);
       return sendJson(res, 200, {
         ok: true,
         settings: persistFriendSettings(settings),
         ...secretStatus,
+        ...riskStatus,
       });
     } catch (err) {
       return sendError(res, 400, err instanceof Error ? err.message : String(err));
@@ -301,11 +321,12 @@ async function handle(
       const body = await readJsonBody(req);
       let settings = getFriendBotSettings();
       const secretStatus = persistFriendSecretSettings(body);
+      const riskStatus = persistFriendRiskSettings(body);
       if (Object.keys(body).length > 0) {
         settings = persistFriendSettings(normalizeFriendSettings(body));
       }
       await startBot();
-      return sendJson(res, 200, { ok: true, settings, ...secretStatus });
+      return sendJson(res, 200, { ok: true, settings, ...secretStatus, ...riskStatus });
     } catch (err) {
       return sendError(
         res,

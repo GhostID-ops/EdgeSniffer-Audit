@@ -24,6 +24,18 @@ const SETTINGS_KEYS = [
 
 type SettingsKey = (typeof SETTINGS_KEYS)[number];
 
+const RISK_SETTINGS_KEYS = [
+  "STOP_LOSS_PCT",
+  "TAKE_PROFIT_PCT",
+  "MIN_HOLD_BEFORE_STOP_LOSS_MS",
+  "HYBRID_EXIT_ENABLED",
+  "HYBRID_EXIT_TP_PCT",
+  "HYBRID_EXIT_TP_SELL_PCT",
+  "HYBRID_EXIT_SOURCE_EXIT_REMAINING",
+  "PROFIT_LADDER_ENABLED",
+  "PROFIT_LADDER_STEPS",
+] as const;
+
 function assertPublicKey(value: string): void {
   try {
     new PublicKey(value);
@@ -127,6 +139,44 @@ export function persistFriendSettings(settings: FriendBotSettings): FriendBotSet
   for (const key of SETTINGS_KEYS) lines = setEnvLine(lines, key, values[key]);
   writeFileSync(envPath, `${lines.join("\n").replace(/\n+$/, "")}\n`);
   return applied;
+}
+
+export function persistFriendRiskSettings(body: Record<string, unknown>): { riskUpdated: boolean } {
+  const keyMap: Record<string, string> = {
+    stopLossPct: "STOP_LOSS_PCT",
+    takeProfitPct: "TAKE_PROFIT_PCT",
+    minHoldBeforeStopLossMs: "MIN_HOLD_BEFORE_STOP_LOSS_MS",
+    hybridExitEnabled: "HYBRID_EXIT_ENABLED",
+    hybridExitTpPct: "HYBRID_EXIT_TP_PCT",
+    hybridExitTpSellPct: "HYBRID_EXIT_TP_SELL_PCT",
+    hybridExitSourceExitRemaining: "HYBRID_EXIT_SOURCE_EXIT_REMAINING",
+    profitLadderEnabled: "PROFIT_LADDER_ENABLED",
+    profitLadderSteps: "PROFIT_LADDER_STEPS",
+  };
+
+  const updates: Array<[string, string]> = [];
+  for (const [bodyKey, envKey] of Object.entries(keyMap)) {
+    const raw = body[bodyKey];
+    if (raw == null || raw === "") continue;
+    if (typeof raw === "boolean") {
+      updates.push([envKey, raw ? "true" : "false"]);
+    } else {
+      updates.push([envKey, String(raw).trim()]);
+    }
+  }
+  if (updates.length === 0) return { riskUpdated: false };
+
+  const allowed = new Set<string>(RISK_SETTINGS_KEYS);
+  const existing = existsSync(envPath) ? readFileSync(envPath, "utf8") : "";
+  let lines = existing.length ? existing.split(/\r?\n/) : [];
+  if (lines.length === 1 && lines[0] === "") lines = [];
+  for (const [key, value] of updates) {
+    if (!allowed.has(key)) continue;
+    lines = setEnvLine(lines, key, value);
+    process.env[key] = value;
+  }
+  writeFileSync(envPath, `${lines.join("\n").replace(/\n+$/, "")}\n`);
+  return { riskUpdated: true };
 }
 
 function validatePrivateKeyBase58(value: string): void {

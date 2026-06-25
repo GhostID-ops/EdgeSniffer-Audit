@@ -246,6 +246,7 @@
     .proof-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .launch-grid { grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr); align-items: start; }
     .live-grid { grid-template-columns: minmax(0, .86fr) minmax(360px, .64fr); align-items: start; }
+    .dashboard-grid { display: grid; grid-template-columns: minmax(0, .78fr) minmax(360px, .52fr); gap: 14px; align-items: start; }
     .panel, .mode, .proof {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -361,6 +362,40 @@
     }
     .flow-step strong { display: block; margin-bottom: 4px; }
     .flow-step span { color: var(--muted); line-height: 1.42; }
+    .readiness { display: grid; gap: 10px; }
+    .ready-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 44px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.025);
+      color: var(--soft);
+    }
+    .ready-row strong { font-size: 13px; }
+    .state-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); box-shadow: 0 0 16px rgba(255,107,107,.55); }
+    .state-dot.ok { background: var(--green); box-shadow: 0 0 16px rgba(54,221,134,.55); }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .summary-tile {
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      padding: 14px;
+      background: rgba(255,255,255,.025);
+      min-height: 96px;
+    }
+    .summary-tile span { display:block; color: var(--muted); font-size: 12px; text-transform: uppercase; font-weight: 900; }
+    .summary-tile strong { display:block; margin-top: 8px; font-size: clamp(20px, 3vw, 30px); }
+    .pos-table { width: 100%; border-collapse: collapse; overflow: hidden; }
+    .pos-table th, .pos-table td { text-align: left; padding: 11px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+    .pos-table th { color: var(--muted); font-size: 12px; text-transform: uppercase; font-weight: 900; }
+    .pos-table td { color: #dfe7e2; font-size: 14px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .pos { color: var(--green-2); }
+    .neg { color: var(--red); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: #080c09; }
     .logs {
       height: 390px;
       overflow: auto;
@@ -413,7 +448,7 @@
     }
 
     @media (max-width: 1020px) {
-      .hero-inner, .launch-grid, .live-grid { grid-template-columns: 1fr; }
+      .hero-inner, .launch-grid, .live-grid, .dashboard-grid { grid-template-columns: 1fr; }
       .terminal { order: -1; }
       .mode-grid, .proof-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
@@ -554,6 +589,37 @@
                 <textarea id="trackedWallets" spellcheck="false"></textarea>
                 <span class="label-note">One wallet per line. Presets are intentionally tiny for demos.</span>
               </label>
+              <label>Stop loss %
+                <input id="stopLossPct" type="number" min="0" step="1" />
+              </label>
+              <label>Take profit %
+                <input id="takeProfitPct" type="number" min="0" step="1" />
+              </label>
+              <label>SL hold ms
+                <input id="minHoldBeforeStopLossMs" type="number" min="0" step="1000" />
+              </label>
+              <label>Hybrid TP %
+                <input id="hybridExitTpPct" type="number" min="0" step="1" />
+              </label>
+              <label>Hybrid sell %
+                <input id="hybridExitTpSellPct" type="number" min="0" max="100" step="1" />
+              </label>
+              <label class="checkline" style="margin-top:26px;">
+                <input id="hybridExitEnabled" type="checkbox" />
+                <span>Enable hybrid sell at target</span>
+              </label>
+              <label class="checkline wide">
+                <input id="hybridExitSourceExitRemaining" type="checkbox" />
+                <span>Sell remaining tokens when the source wallet exits</span>
+              </label>
+              <label class="checkline wide">
+                <input id="profitLadderEnabled" type="checkbox" />
+                <span>Enable laddered partial exits</span>
+              </label>
+              <label class="wide">Ladder steps
+                <input id="profitLadderSteps" type="text" placeholder="30:0,50:20,75:35" />
+                <span class="label-note">Format: trigger%:lock%, comma separated.</span>
+              </label>
             </div>
           </section>
 
@@ -590,6 +656,54 @@
               <div class="health-item"><span>Mode</span><strong id="modeStatus">Shadow</strong></div>
               <div class="health-item"><span>Wallets</span><strong id="walletCount">0</strong></div>
               <div class="health-item"><span>Balance</span><strong id="balance">--</strong></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Demo dashboard</div>
+            <h2>Positions and simulation PnL.</h2>
+          </div>
+          <div class="sub">These panels update from the same bot state as the operator console.</div>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-tile"><span>Realized PnL</span><strong id="summaryPnl">0 SOL</strong></div>
+          <div class="summary-tile"><span>Open positions</span><strong id="summaryOpen">0</strong></div>
+          <div class="summary-tile"><span>Trades</span><strong id="summaryTrades">0</strong></div>
+          <div class="summary-tile"><span>Wallet delta</span><strong id="summaryDelta">--</strong></div>
+        </div>
+        <div class="dashboard-grid" style="margin-top:14px;">
+          <section class="panel">
+            <h3>Live Positions</h3>
+            <div class="table-wrap" style="margin-top:14px;">
+              <table class="pos-table">
+                <thead>
+                  <tr>
+                    <th>Token</th>
+                    <th>Held</th>
+                    <th>Spent</th>
+                    <th>Received</th>
+                    <th>Realized</th>
+                  </tr>
+                </thead>
+                <tbody id="positionsBody">
+                  <tr><td colspan="5" class="sub">No open positions yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <aside class="panel">
+            <h3>Demo Readiness</h3>
+            <div class="readiness" style="margin-top:14px;">
+              <div class="ready-row"><span>API online</span><strong id="readyApi">Checking</strong><i id="readyApiDot" class="state-dot"></i></div>
+              <div class="ready-row"><span>Simulation mode</span><strong id="readySim">--</strong><i id="readySimDot" class="state-dot"></i></div>
+              <div class="ready-row"><span>Tracked wallet set</span><strong id="readyWallet">--</strong><i id="readyWalletDot" class="state-dot"></i></div>
+              <div class="ready-row"><span>Auth protected</span><strong id="readyAuth">Server-side</strong><i id="readyAuthDot" class="state-dot ok"></i></div>
             </div>
           </aside>
         </div>
@@ -643,7 +757,16 @@
         solReserveSol: 0.2,
         mirrorSlippageBps: 6000,
         tipLamports: 0,
-        priorityFeeMicroLamports: 0
+        priorityFeeMicroLamports: 0,
+        stopLossPct: 35,
+        takeProfitPct: 0,
+        minHoldBeforeStopLossMs: 15000,
+        hybridExitEnabled: true,
+        hybridExitTpPct: 30,
+        hybridExitTpSellPct: 50,
+        hybridExitSourceExitRemaining: false,
+        profitLadderEnabled: true,
+        profitLadderSteps: "30:0,50:20,75:35,100:60,200:125,300:200,500:350"
       },
       "4vw54": {
         trackedWallets: "4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9",
@@ -653,7 +776,16 @@
         solReserveSol: 0.2,
         mirrorSlippageBps: 6000,
         tipLamports: 0,
-        priorityFeeMicroLamports: 0
+        priorityFeeMicroLamports: 0,
+        stopLossPct: 35,
+        takeProfitPct: 0,
+        minHoldBeforeStopLossMs: 15000,
+        hybridExitEnabled: true,
+        hybridExitTpPct: 30,
+        hybridExitTpSellPct: 50,
+        hybridExitSourceExitRemaining: false,
+        profitLadderEnabled: true,
+        profitLadderSteps: "30:0,50:20,75:35,100:60,200:125,300:200,500:350"
       },
       omego: {
         trackedWallets: "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq",
@@ -663,7 +795,16 @@
         solReserveSol: 0.2,
         mirrorSlippageBps: 6000,
         tipLamports: 0,
-        priorityFeeMicroLamports: 0
+        priorityFeeMicroLamports: 0,
+        stopLossPct: 35,
+        takeProfitPct: 0,
+        minHoldBeforeStopLossMs: 15000,
+        hybridExitEnabled: true,
+        hybridExitTpPct: 30,
+        hybridExitTpSellPct: 50,
+        hybridExitSourceExitRemaining: false,
+        profitLadderEnabled: true,
+        profitLadderSteps: "30:0,50:20,75:35,100:60,200:125,300:200,500:350"
       }
     };
 
@@ -683,6 +824,25 @@
         '"': "&quot;",
         "'": "&#39;"
       }[c]));
+    }
+
+    function fmtSolLamports(value, signed = false) {
+      const n = Number(value || 0) / 1e9;
+      const prefix = signed && n > 0 ? "+" : "";
+      return prefix + n.toFixed(4) + " SOL";
+    }
+
+    function fmtTokens(raw, decimals) {
+      const n = Number(raw || 0) / Math.pow(10, Number(decimals || 0));
+      if (!Number.isFinite(n)) return "--";
+      if (n >= 1000000) return (n / 1000000).toFixed(2) + "M";
+      if (n >= 1000) return (n / 1000).toFixed(2) + "K";
+      return n.toFixed(2);
+    }
+
+    function shortAddr(value) {
+      const s = String(value || "");
+      return s.length > 12 ? s.slice(0, 6) + "..." + s.slice(-4) : s;
     }
 
     function setApiOnline(online) {
@@ -727,7 +887,9 @@
       if (!p) return;
       for (const [key, value] of Object.entries(p)) {
         const el = $(key);
-        if (el) el.value = value;
+        if (!el) continue;
+        if (el.type === "checkbox") el.checked = Boolean(value);
+        else el.value = value;
       }
       updateWalletCount();
     }
@@ -753,7 +915,16 @@
         tipLamports: Number($("tipLamports").value),
         priorityFeeMicroLamports: Number($("priorityFeeMicroLamports").value),
         mirrorSlippageBps: Number($("mirrorSlippageBps").value),
-        simulationMode: !live
+        simulationMode: !live,
+        stopLossPct: $("stopLossPct").value,
+        takeProfitPct: $("takeProfitPct").value,
+        minHoldBeforeStopLossMs: $("minHoldBeforeStopLossMs").value,
+        hybridExitEnabled: $("hybridExitEnabled").checked,
+        hybridExitTpPct: $("hybridExitTpPct").value,
+        hybridExitTpSellPct: $("hybridExitTpSellPct").value,
+        hybridExitSourceExitRemaining: $("hybridExitSourceExitRemaining").checked,
+        profitLadderEnabled: $("profitLadderEnabled").checked,
+        profitLadderSteps: $("profitLadderSteps").value
       };
       if (includeKey && live && $("privateKeyBase58").value.trim()) {
         body.privateKeyBase58 = $("privateKeyBase58").value.trim();
@@ -772,6 +943,49 @@
       $("mirrorSlippageBps").value = s.mirrorSlippageBps ?? 6000;
       updateWalletCount();
       setMode(s.simulationMode === false ? "live" : currentMode);
+    }
+
+    function fillRiskFromState(s) {
+      if (!s) return;
+      $("stopLossPct").value = s.stopLossPct ?? $("stopLossPct").value || 35;
+      $("takeProfitPct").value = s.takeProfitPct ?? $("takeProfitPct").value || 0;
+      $("minHoldBeforeStopLossMs").value = s.minHoldBeforeStopLossMs ?? $("minHoldBeforeStopLossMs").value || 15000;
+      $("hybridExitEnabled").checked = Boolean(s.hybridExitEnabled);
+      $("hybridExitTpPct").value = s.hybridExitTpPct ?? $("hybridExitTpPct").value || 30;
+      $("hybridExitTpSellPct").value = s.hybridExitTpSellPct ?? $("hybridExitTpSellPct").value || 50;
+      $("hybridExitSourceExitRemaining").checked = Boolean(s.hybridExitSourceExitRemaining);
+    }
+
+    function setReady(id, ok, label) {
+      $(id).textContent = label;
+      $(id + "Dot").classList.toggle("ok", Boolean(ok));
+    }
+
+    function renderSummary(s) {
+      const totals = s.totals || {};
+      $("summaryPnl").textContent = fmtSolLamports(totals.realizedPnlLamports || 0, true);
+      $("summaryPnl").className = (totals.realizedPnlLamports || 0) >= 0 ? "pos" : "neg";
+      $("summaryOpen").textContent = totals.openPositions ?? (s.positions || []).length ?? 0;
+      $("summaryTrades").textContent = totals.tradesCount ?? (s.recentSwaps || []).length ?? 0;
+      $("summaryDelta").textContent = s.sessionWalletDeltaLamports != null ? fmtSolLamports(s.sessionWalletDeltaLamports, true) : "--";
+    }
+
+    function renderPositions(positions) {
+      const rows = (positions || []).filter((p) => Number(p.heldRaw || 0) > 0);
+      if (!rows.length) {
+        $("positionsBody").innerHTML = '<tr><td colspan="5" class="sub">No open positions yet.</td></tr>';
+        return;
+      }
+      $("positionsBody").innerHTML = rows.map((p) => {
+        const pnl = Number(p.realizedPnlLamports || 0);
+        return `<tr>
+          <td><strong>$${escapeHtml(p.symbol || "?")}</strong><br><span class="mono sub">${escapeHtml(shortAddr(p.mint))}</span></td>
+          <td>${escapeHtml(fmtTokens(p.heldRaw, p.decimals))}</td>
+          <td>${escapeHtml(fmtSolLamports(p.totalSolSpentLamports || 0))}</td>
+          <td>${escapeHtml(fmtSolLamports(p.totalSolReceivedLamports || 0))}</td>
+          <td class="${pnl >= 0 ? "pos" : "neg"}">${escapeHtml(fmtSolLamports(pnl, true))}</td>
+        </tr>`;
+      }).join("");
     }
 
     async function loadSettings() {
@@ -839,11 +1053,29 @@
         $("hero-status").textContent = running ? "Running" : "Ready";
         $("balance").textContent = Number.isFinite(s.lastBalanceSol) ? s.lastBalanceSol.toFixed(3) + " SOL" : "--";
         $("hero-pos").textContent = Array.isArray(s.positions) ? s.positions.length : 0;
+        fillRiskFromState(s);
+        renderSummary(s);
+        renderPositions(s.positions || []);
+        setReady("readyApi", true, "Online");
+        setReady("readySim", Boolean(s.simulationMode), s.simulationMode ? "On" : "Live");
+        setReady("readyWallet", (s.trackedWallets || []).length > 0, String((s.trackedWallets || []).length || 0));
       } catch {
         setApiOnline(false);
         $("botStatus").textContent = "Offline";
         $("hero-status").textContent = "Offline";
+        setReady("readyApi", false, "Offline");
       }
+    }
+
+    async function refreshReadiness() {
+      try {
+        const data = await api("/api/readiness");
+        setReady("readyAuth", Boolean(data.authEnabled), data.authEnabled ? "Enabled" : "Disabled");
+        if (data.state) {
+          renderSummary(data.state);
+          renderPositions(data.state.positions || []);
+        }
+      } catch {}
     }
 
     async function refreshLogs() {
@@ -877,8 +1109,10 @@
     applyPreset("cya");
     loadSettings();
     refreshState();
+    refreshReadiness();
     refreshLogs();
     setInterval(refreshState, 3000);
+    setInterval(refreshReadiness, 5000);
     setInterval(refreshLogs, 1200);
     setInterval(() => {
       $("hero-detect").textContent = (8 + Math.floor(Math.random() * 18)) + "ms";
