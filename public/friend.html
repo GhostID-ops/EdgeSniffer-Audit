@@ -3,120 +3,164 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FinalBot Friend Demo</title>
+  <title>FinalBot Demo Console</title>
   <style>
     :root {
-      --bg: #070a0d;
-      --panel: #10161a;
-      --panel-2: #151d22;
-      --line: #263238;
+      --bg: #070908;
+      --ink: #f4f7f2;
+      --muted: #9fa9a3;
+      --soft: #c8d2cc;
+      --panel: #101512;
+      --panel-2: #151c18;
+      --panel-3: #0b100d;
+      --line: #263229;
       --line-soft: rgba(255,255,255,.08);
-      --text: #eef5f1;
-      --muted: #9fafaa;
-      --green: #39d98a;
-      --mint: #8df7c5;
-      --amber: #f4b74a;
+      --green: #36dd86;
+      --green-2: #9cf3c4;
+      --amber: #f0bd56;
       --red: #ff6b6b;
-      --blue: #69a7ff;
-      --shadow: 0 20px 80px rgba(0,0,0,.35);
+      --blue: #76a9ff;
+      --violet: #b6a2ff;
+      --shadow: 0 24px 80px rgba(0,0,0,.38);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
+
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
-      color: var(--text);
-      background: var(--bg);
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #07100b 0, #070908 34%, #080a0a 100%);
     }
-    button, input, select, textarea { font: inherit; }
+    button, input, textarea, select { font: inherit; }
     a { color: inherit; text-decoration: none; }
-    .shell { min-height: 100vh; overflow-x: hidden; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .52; }
+
     .topbar {
       position: fixed;
       inset: 0 0 auto 0;
-      z-index: 20;
-      height: 64px;
+      z-index: 40;
+      height: 68px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 clamp(18px, 4vw, 48px);
-      background: rgba(7,10,13,.76);
-      backdrop-filter: blur(18px);
+      padding: 0 clamp(18px, 4vw, 54px);
+      background: rgba(7,9,8,.78);
       border-bottom: 1px solid var(--line-soft);
+      backdrop-filter: blur(18px);
     }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
-    .mark {
-      width: 32px;
-      height: 32px;
-      display: grid;
-      place-items: center;
-      color: #04100a;
-      background: var(--green);
-      border-radius: 8px;
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
       font-weight: 900;
     }
-    .toplinks { display: flex; align-items: center; gap: 10px; }
-    .toplinks a, .ghost {
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: #05110a;
+      background: var(--green);
+      border-radius: 8px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.16) inset;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav a, .btn {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       border: 1px solid var(--line);
-      color: var(--muted);
-      background: rgba(255,255,255,.03);
       border-radius: 8px;
       padding: 9px 12px;
-    }
-    .toplinks a:hover, .ghost:hover { color: var(--text); border-color: #405158; }
-    .primary, .danger, .quiet {
-      border: 0;
-      min-height: 42px;
-      border-radius: 8px;
-      padding: 10px 14px;
-      color: #06110b;
-      background: var(--green);
-      cursor: pointer;
+      color: var(--soft);
+      background: rgba(255,255,255,.035);
       font-weight: 800;
     }
-    .danger { color: #240606; background: var(--red); }
-    .quiet { color: var(--text); background: var(--panel-2); border: 1px solid var(--line); }
-    button:disabled { opacity: .55; cursor: not-allowed; }
+    .nav a:hover, .btn:hover { border-color: #405146; color: var(--ink); }
+    .btn.primary { color: #041109; background: var(--green); border-color: var(--green); }
+    .btn.danger { color: #260706; background: var(--red); border-color: var(--red); }
+    .btn.ghost { background: transparent; }
+
     .hero {
-      min-height: 92vh;
+      min-height: 94vh;
       position: relative;
       display: grid;
       align-items: center;
-      padding: 108px clamp(18px, 5vw, 72px) 36px;
+      padding: 112px clamp(18px, 5vw, 76px) 42px;
+      overflow: hidden;
       border-bottom: 1px solid var(--line-soft);
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
       background:
-        linear-gradient(180deg, rgba(7,10,13,.22), var(--bg) 92%),
-        radial-gradient(circle at 66% 12%, rgba(57,217,138,.14), transparent 34%),
-        linear-gradient(110deg, rgba(11,18,21,.96), rgba(8,13,16,.74));
+        linear-gradient(90deg, rgba(7,9,8,.96), rgba(7,9,8,.76) 48%, rgba(7,9,8,.52)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1500' height='900' viewBox='0 0 1500 900'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%230f1a14'/%3E%3Cstop offset='1' stop-color='%23080d0a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1500' height='900' fill='url(%23g)'/%3E%3Cg opacity='.68'%3E%3Cpath d='M0 653 C185 615 225 510 414 529 C606 548 626 670 807 618 C996 564 1006 382 1190 356 C1320 337 1414 397 1500 441' fill='none' stroke='%2336dd86' stroke-width='3'/%3E%3Cpath d='M0 722 C182 702 248 584 432 607 C613 630 650 739 817 694 C995 646 1045 470 1210 458 C1337 448 1426 508 1500 554' fill='none' stroke='%2376a9ff' stroke-width='2'/%3E%3Cpath d='M0 496 C198 458 270 354 455 396 C612 431 681 501 850 446 C1029 388 1110 240 1294 275 C1395 294 1448 348 1500 374' fill='none' stroke='%23f0bd56' stroke-width='2'/%3E%3C/g%3E%3Cg opacity='.32' fill='%23ffffff'%3E%3Ccircle cx='219' cy='574' r='4'/%3E%3Ccircle cx='632' cy='637' r='4'/%3E%3Ccircle cx='1016' cy='386' r='4'/%3E%3Ccircle cx='1211' cy='458' r='4'/%3E%3Ccircle cx='1341' cy='283' r='4'/%3E%3C/g%3E%3Cg opacity='.12' stroke='%23ffffff'%3E%3Cpath d='M120 120h980M120 220h1100M120 320h1000M120 420h1180M120 520h900M120 620h1170M120 720h1000'/%3E%3Cpath d='M180 80v720M340 80v720M500 80v720M660 80v720M820 80v720M980 80v720M1140 80v720M1300 80v720'/%3E%3C/g%3E%3C/svg%3E") center/cover;
     }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, .95fr) minmax(430px, 1.05fr);
-      gap: clamp(24px, 5vw, 72px);
-      align-items: center;
-      width: min(1220px, 100%);
+    .hero-inner {
+      position: relative;
+      width: min(1240px, 100%);
       margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, .94fr) minmax(440px, 1.06fr);
+      gap: clamp(28px, 5vw, 72px);
+      align-items: center;
     }
-    .eyebrow { color: var(--mint); text-transform: uppercase; letter-spacing: 0; font-size: 12px; font-weight: 900; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green-2);
+      text-transform: uppercase;
+      letter-spacing: 0;
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 18px var(--green);
+    }
     h1 {
-      margin: 14px 0 14px;
-      font-size: clamp(44px, 6vw, 82px);
-      line-height: .92;
+      margin: 14px 0 16px;
+      max-width: 720px;
+      font-size: clamp(46px, 6.8vw, 88px);
+      line-height: .91;
       letter-spacing: 0;
     }
-    .hero p { color: #c4d2ce; font-size: clamp(17px, 2vw, 21px); line-height: 1.55; max-width: 650px; margin: 0 0 24px; }
+    .hero-copy {
+      max-width: 650px;
+      color: #cfdbd4;
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 1.55;
+      margin: 0 0 26px;
+    }
     .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-    .hero-note { color: var(--muted); font-size: 13px; margin-top: 14px; }
-    .product-visual {
-      border: 1px solid var(--line);
+    .microcopy { color: var(--muted); font-size: 13px; margin-top: 14px; }
+
+    .terminal {
+      border: 1px solid rgba(255,255,255,.13);
       border-radius: 8px;
       overflow: hidden;
+      background: rgba(8,12,10,.88);
       box-shadow: var(--shadow);
-      background: #0a1013;
     }
-    .visual-header {
-      height: 44px;
+    .terminal-head {
+      height: 46px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -125,50 +169,56 @@
       color: var(--muted);
       font-size: 13px;
     }
-    .live-pill {
+    .status-pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: var(--green);
-      font-weight: 800;
+      color: var(--green-2);
+      font-weight: 900;
     }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 16px var(--green); }
-    .visual-body {
+    .terminal-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--line);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-bottom: 1px solid var(--line);
     }
-    .viz-cell {
-      min-height: 126px;
-      padding: 18px;
-      background: #0d1317;
+    .metric {
+      min-height: 112px;
+      padding: 17px;
+      border-right: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.025);
     }
-    .viz-cell strong { display: block; font-size: clamp(24px, 3.6vw, 42px); margin-top: 8px; }
-    .viz-cell span { color: var(--muted); font-size: 13px; }
-    .tape {
-      grid-column: 1 / -1;
+    .metric:last-child { border-right: 0; }
+    .metric span { display: block; color: var(--muted); font-size: 12px; text-transform: uppercase; font-weight: 900; }
+    .metric strong { display: block; margin-top: 8px; font-size: clamp(24px, 3vw, 38px); }
+    .route-map {
       display: grid;
       gap: 10px;
       padding: 16px;
-      background: #0a0f12;
     }
-    .tape-row {
+    .route-row {
       display: grid;
-      grid-template-columns: 88px 1fr auto;
+      grid-template-columns: 86px 1fr auto;
       gap: 12px;
-      min-height: 38px;
+      min-height: 42px;
       align-items: center;
       padding: 9px 10px;
       border: 1px solid var(--line-soft);
       border-radius: 8px;
-      color: #dfe9e5;
-      background: rgba(255,255,255,.025);
+      background: rgba(255,255,255,.026);
       font-size: 13px;
     }
-    .tag { color: var(--green); font-weight: 900; }
-    .tag.sell { color: var(--amber); }
-    .sections { background: #080c0f; }
+    .route-row b { color: var(--green-2); }
+    .route-row b.sell { color: var(--amber); }
+    .route-row em {
+      color: var(--muted);
+      font-style: normal;
+      font-weight: 800;
+    }
+
+    .band {
+      border-bottom: 1px solid var(--line-soft);
+      background: #080b09;
+    }
     .section {
       width: min(1180px, calc(100% - 36px));
       margin: 0 auto;
@@ -178,95 +228,172 @@
       display: flex;
       align-items: end;
       justify-content: space-between;
-      gap: 16px;
+      gap: 18px;
       margin-bottom: 20px;
     }
-    h2 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: 0; }
+    h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 46px);
+      letter-spacing: 0;
+      line-height: 1;
+    }
     .sub { color: var(--muted); line-height: 1.5; }
-    .mode-grid, .form-grid, .proof-grid {
+    .mode-grid, .proof-grid, .launch-grid, .live-grid {
       display: grid;
       gap: 14px;
     }
     .mode-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .proof-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .form-grid { grid-template-columns: 1.1fr .9fr; align-items: start; }
+    .launch-grid { grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr); align-items: start; }
+    .live-grid { grid-template-columns: minmax(0, .86fr) minmax(360px, .64fr); align-items: start; }
     .panel, .mode, .proof {
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--panel);
-      box-shadow: 0 12px 42px rgba(0,0,0,.18);
+      box-shadow: 0 16px 48px rgba(0,0,0,.22);
     }
     .mode, .proof { padding: 18px; }
-    .mode { cursor: pointer; min-height: 170px; }
-    .mode.active { border-color: var(--green); background: #0f1c17; }
-    .mode h3, .panel h3 { margin: 0 0 8px; font-size: 19px; }
-    .mode p, .proof p { margin: 0; color: var(--muted); line-height: 1.45; }
-    .proof strong { display: block; font-size: 28px; margin-bottom: 6px; }
-    .panel { padding: 20px; }
-    label { display: grid; gap: 8px; color: #d8e2de; font-weight: 750; }
-    input, textarea, select {
-      width: 100%;
-      color: var(--text);
-      background: #0b1114;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
-      outline: none;
+    .mode {
+      min-height: 190px;
+      cursor: pointer;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
     }
-    textarea { min-height: 92px; resize: vertical; }
-    input:focus, textarea:focus, select:focus { border-color: var(--green); }
+    .mode:hover { transform: translateY(-2px); border-color: #405146; }
+    .mode.active { background: #0f1b14; border-color: var(--green); }
+    .mode-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .mode h3, .panel h3 { margin: 0; font-size: 19px; }
+    .mode p, .proof p { margin: 0; color: var(--muted); line-height: 1.45; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 8px;
+      padding: 5px 8px;
+      color: var(--green-2);
+      background: rgba(54,221,134,.1);
+      border: 1px solid rgba(54,221,134,.22);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .badge.amber { color: var(--amber); background: rgba(240,189,86,.1); border-color: rgba(240,189,86,.24); }
+    .badge.red { color: var(--red); background: rgba(255,107,107,.09); border-color: rgba(255,107,107,.22); }
+    .proof strong { display: block; font-size: 28px; margin-bottom: 7px; }
+    .proof .label { color: var(--muted); font-size: 12px; text-transform: uppercase; font-weight: 900; }
+    .panel { padding: 20px; }
     .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .wide { grid-column: 1 / -1; }
-    .checkline {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.4;
+    label { display: grid; gap: 8px; color: #dfe7e2; font-weight: 800; }
+    .label-note { color: var(--muted); font-size: 12px; font-weight: 700; }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      outline: 0;
+      padding: 12px;
+      color: var(--ink);
+      background: #090e0b;
     }
-    .checkline input { width: 18px; height: 18px; margin-top: 1px; }
+    textarea { min-height: 98px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { border-color: var(--green); }
     .advanced { display: none; }
     .advanced.show { display: grid; }
-    .statusbar {
+    .checkline {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--muted);
+      line-height: 1.4;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .checkline input { width: 18px; height: 18px; margin-top: 1px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .health {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       margin-top: 18px;
     }
-    .status {
+    .health-item {
+      min-height: 82px;
       border: 1px solid var(--line-soft);
       border-radius: 8px;
-      padding: 14px;
+      padding: 13px;
       background: rgba(255,255,255,.025);
     }
-    .status span { color: var(--muted); font-size: 12px; text-transform: uppercase; font-weight: 900; }
-    .status strong { display: block; margin-top: 6px; font-size: 19px; }
+    .health-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+    .health-item strong { display: block; margin-top: 7px; font-size: 20px; }
+    .flow {
+      display: grid;
+      gap: 10px;
+    }
+    .flow-step {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 13px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: rgba(255,255,255,.025);
+    }
+    .flow-step .num {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: #041109;
+      background: var(--green);
+      font-weight: 950;
+    }
+    .flow-step strong { display: block; margin-bottom: 4px; }
+    .flow-step span { color: var(--muted); line-height: 1.42; }
     .logs {
-      height: 360px;
+      height: 390px;
       overflow: auto;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: #06090b;
+      background: #050806;
       padding: 14px;
+      color: #c9d9d0;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 12px;
       line-height: 1.45;
-      color: #c7d7d0;
     }
-    .log-line { padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,.035); }
-    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .log-line { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+    .mini-feed { display: grid; gap: 10px; }
+    .feed-item {
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      padding: 13px;
+      background: rgba(255,255,255,.025);
+    }
+    .feed-item strong { display: block; margin-bottom: 4px; }
+    .feed-item span { color: var(--muted); line-height: 1.4; }
     .toast {
       position: fixed;
       right: 18px;
       bottom: 18px;
-      z-index: 30;
-      max-width: min(420px, calc(100vw - 36px));
-      padding: 13px 14px;
-      border-radius: 8px;
-      color: var(--text);
-      background: #11191d;
+      z-index: 80;
+      max-width: min(460px, calc(100vw - 36px));
       border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px 14px;
+      color: var(--ink);
+      background: #101713;
       box-shadow: var(--shadow);
       opacity: 0;
       transform: translateY(12px);
@@ -275,208 +402,228 @@
     }
     .toast.show { opacity: 1; transform: translateY(0); }
     .foot {
-      border-top: 1px solid var(--line-soft);
-      padding: 26px clamp(18px, 4vw, 48px);
-      color: var(--muted);
       display: flex;
       justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
-      background: #070a0d;
+      padding: 28px clamp(18px, 4vw, 54px);
+      color: var(--muted);
+      border-top: 1px solid var(--line-soft);
+      background: #070908;
     }
-    @media (max-width: 980px) {
-      .hero-grid, .form-grid { grid-template-columns: 1fr; }
-      .mode-grid, .proof-grid, .statusbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .product-visual { order: -1; }
+
+    @media (max-width: 1020px) {
+      .hero-inner, .launch-grid, .live-grid { grid-template-columns: 1fr; }
+      .terminal { order: -1; }
+      .mode-grid, .proof-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
-    @media (max-width: 640px) {
+    @media (max-width: 690px) {
       .topbar { height: auto; padding: 10px 14px; align-items: flex-start; }
-      .toplinks { display: none; }
-      .hero { padding-top: 94px; min-height: auto; }
-      .mode-grid, .proof-grid, .statusbar, .fields, .visual-body { grid-template-columns: 1fr; }
-      .tape-row { grid-template-columns: 1fr; }
-      h1 { font-size: 42px; }
+      .nav { display: none; }
+      .hero { min-height: auto; padding-top: 96px; }
+      .terminal-grid, .mode-grid, .proof-grid, .fields, .health { grid-template-columns: 1fr; }
+      .route-row { grid-template-columns: 1fr; }
+      h1 { font-size: 44px; }
+      .section { width: min(100% - 28px, 1180px); padding: 42px 0; }
+      .section-head { display: grid; }
     }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header class="topbar">
-      <a class="brand" href="#top"><span class="mark">F</span><span>FinalBot Demo</span></a>
-      <nav class="toplinks">
-        <a href="#modes">Modes</a>
-        <a href="#start">Start</a>
-        <a href="#live">Live feed</a>
-        <a href="/">Power console</a>
-      </nav>
-    </header>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="FinalBot demo home">
+      <span class="brand-mark">F</span>
+      <span>FinalBot Demo</span>
+    </a>
+    <nav class="nav" aria-label="Demo navigation">
+      <a href="#modes">Modes</a>
+      <a href="#launch">Launch</a>
+      <a href="#live">Live Feed</a>
+      <a href="/">Advanced Console</a>
+    </nav>
+  </header>
 
-    <main id="top">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow">Local copy engine</div>
-            <h1>FinalBot</h1>
-            <p>
-              A low-latency Solana copytrading console built for live wallet following,
-              shadow testing, protected sizing, and instant operational visibility.
-            </p>
-            <div class="hero-actions">
-              <a class="primary" href="#start">Start a guided test</a>
-              <a class="quiet" href="/">Open advanced console</a>
-            </div>
-            <div class="hero-note">Use a fresh hot wallet for live testing. Shadow mode needs no wallet key.</div>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <div class="eyebrow"><span class="pulse"></span>Private live demo console</div>
+          <h1>Copytrading speed, shown in plain English.</h1>
+          <p class="hero-copy">
+            FinalBot follows selected Solana wallets, plans local execution routes, mirrors exits,
+            and gives a non-technical tester one clean place to watch what is happening.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#launch">Start guided test</a>
+            <a class="btn ghost" href="#live">Watch live feed</a>
           </div>
-
-          <div class="product-visual" aria-label="FinalBot live execution preview">
-            <div class="visual-header">
-              <span>Execution view</span>
-              <span class="live-pill"><span class="dot"></span>LOCAL</span>
-            </div>
-            <div class="visual-body">
-              <div class="viz-cell"><span>Detect</span><strong id="hero-detect">13ms</strong></div>
-              <div class="viz-cell"><span>Plan</span><strong>Rust</strong></div>
-              <div class="viz-cell"><span>Mode</span><strong id="hero-mode">Shadow</strong></div>
-              <div class="viz-cell"><span>Positions</span><strong id="hero-pos">0</strong></div>
-              <div class="tape">
-                <div class="tape-row"><span class="tag">BUY</span><span>Tracked wallet signal received</span><strong>same slot</strong></div>
-                <div class="tape-row"><span class="tag">ROUTE</span><span>Local Pump.fun / PumpSwap path selected</span><strong>no API quote</strong></div>
-                <div class="tape-row"><span class="tag sell">SELL</span><span>Mirror exit and risk exits available</span><strong>armed</strong></div>
-              </div>
-            </div>
-          </div>
+          <div class="microcopy">Default posture for demos: simulation mode on, no real spending, private domain access.</div>
         </div>
-      </section>
 
-      <div class="sections">
-        <section id="modes" class="section">
-          <div class="section-head">
-            <div>
-              <div class="eyebrow">Choose the exposure</div>
-              <h2>Three ways to show the speed</h2>
-            </div>
-            <div class="sub">Start with shadow, then move to a small funded hot wallet.</div>
+        <section class="terminal" aria-label="Execution preview">
+          <div class="terminal-head">
+            <span>Execution Cockpit</span>
+            <span class="status-pill"><span class="pulse"></span><span id="hero-api">API CHECKING</span></span>
           </div>
-          <div class="mode-grid">
-            <article class="mode active" data-mode="shadow">
-              <h3>Shadow Mode</h3>
-              <p>Reads the wallet, logs every would-be buy and sell, and proves detection speed without spending SOL.</p>
-            </article>
-            <article class="mode" data-mode="paper">
-              <h3>Paper Live</h3>
-              <p>Uses the same live feed and dashboard, with sizing and logs visible for a non-technical review.</p>
-            </article>
-            <article class="mode" data-mode="live">
-              <h3>Limited Hot Wallet</h3>
-              <p>Runs real copytrades from a fresh wallet with tiny caps, reserve protection, and visible stop controls.</p>
-            </article>
+          <div class="terminal-grid">
+            <div class="metric"><span>Detection</span><strong id="hero-detect">13ms</strong></div>
+            <div class="metric"><span>Mode</span><strong id="hero-mode">Shadow</strong></div>
+            <div class="metric"><span>Status</span><strong id="hero-status">Offline</strong></div>
+            <div class="metric"><span>Positions</span><strong id="hero-pos">0</strong></div>
           </div>
-        </section>
-
-        <section class="section">
-          <div class="proof-grid">
-            <div class="proof"><strong>Local</strong><p>Execution avoids slow quote APIs on the hot path where direct routes exist.</p></div>
-            <div class="proof"><strong>Rust</strong><p>Preferred executor path for live buys and sells.</p></div>
-            <div class="proof"><strong>Caps</strong><p>Friend tests can run with small fixed exposure and SOL reserve.</p></div>
-            <div class="proof"><strong>Panic</strong><p>Stop, sell, and session reset are visible from the console.</p></div>
-          </div>
-        </section>
-
-        <section id="start" class="section">
-          <div class="section-head">
-            <div>
-              <div class="eyebrow">Guided setup</div>
-              <h2>Start a copy test</h2>
-            </div>
-            <div class="sub">The advanced console remains available after launch.</div>
-          </div>
-          <div class="form-grid">
-            <div class="panel">
-              <h3>Strategy</h3>
-              <div class="fields">
-                <label class="wide">Preset
-                  <select id="preset">
-                    <option value="cya">CyA speed test</option>
-                    <option value="4vw54">4vw54 tiny live test</option>
-                    <option value="omego">Omego shadow review</option>
-                    <option value="custom">Custom wallet</option>
-                  </select>
-                </label>
-                <label>Copy size %
-                  <input id="copyBuyPercentage" type="number" min="0" max="100" step="0.1" />
-                </label>
-                <label>Max buy SOL
-                  <input id="maxBuySol" type="number" min="0" step="0.001" />
-                </label>
-                <label>SOL reserve
-                  <input id="solReserveSol" type="number" min="0" step="0.01" />
-                </label>
-                <label>Slippage bps
-                  <input id="mirrorSlippageBps" type="number" min="1" max="10000" step="1" />
-                </label>
-                <label class="wide">Tracked wallet
-                  <textarea id="trackedWallets" spellcheck="false"></textarea>
-                </label>
-              </div>
-            </div>
-
-            <div class="panel">
-              <h3>Launch</h3>
-              <div class="fields">
-                <label>Tips
-                  <input id="tipLamports" type="number" min="0" step="1000" />
-                </label>
-                <label>Priority fee
-                  <input id="priorityFeeMicroLamports" type="number" min="0" step="1000" />
-                </label>
-                <label class="wide">Minimum source buy SOL
-                  <input id="minBuySol" type="number" min="0" step="0.001" />
-                </label>
-              </div>
-              <div id="advancedKey" class="advanced wide" style="margin-top:14px;">
-                <label>Hot-wallet private key
-                  <input id="privateKeyBase58" type="password" autocomplete="off" placeholder="PRIVATE_KEY_BASE58" />
-                </label>
-                <label class="checkline">
-                  <input id="liveConfirm" type="checkbox" />
-                  <span>I am using a fresh limited hot wallet and understand live mode can send real transactions.</span>
-                </label>
-              </div>
-              <div class="actions">
-                <button id="saveBtn" class="quiet">Save setup</button>
-                <button id="startBtn" class="primary">Start test</button>
-                <button id="stopBtn" class="danger">Stop</button>
-              </div>
-              <div class="statusbar">
-                <div class="status"><span>Bot</span><strong id="botStatus">--</strong></div>
-                <div class="status"><span>Mode</span><strong id="modeStatus">Shadow</strong></div>
-                <div class="status"><span>Wallets</span><strong id="walletCount">0</strong></div>
-                <div class="status"><span>Balance</span><strong id="balance">--</strong></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="live" class="section">
-          <div class="section-head">
-            <div>
-              <div class="eyebrow">Live feed</div>
-              <h2>What they can watch</h2>
-            </div>
-            <a class="quiet" href="/">Open full console</a>
-          </div>
-          <div class="logs" id="logs">
-            <div class="log-line">Waiting for local bot logs...</div>
+          <div class="route-map">
+            <div class="route-row"><b>BUY</b><span>Tracked wallet signal becomes an execution plan</span><em>local first</em></div>
+            <div class="route-row"><b>ROUTE</b><span>Rust executor is preferred for eligible direct paths</span><em>low latency</em></div>
+            <div class="route-row"><b class="sell">SELL</b><span>Mirror sells, hybrid exits, and risk exits are visible</span><em>controlled</em></div>
           </div>
         </section>
       </div>
-    </main>
+    </section>
 
-    <footer class="foot">
-      <span>FinalBot friend demo</span>
-      <span>Bind to localhost, Tailscale, or a protected tunnel for private-key use.</span>
-    </footer>
-  </div>
+    <section id="modes" class="band">
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Demo posture</div>
+            <h2>Pick the amount of risk to show.</h2>
+          </div>
+          <div class="sub">Your buyer can see the machine without needing to understand env files.</div>
+        </div>
+        <div class="mode-grid">
+          <article class="mode active" data-mode="shadow">
+            <div class="mode-top"><h3>Shadow Mode</h3><span class="badge">Recommended</span></div>
+            <p>Runs the listener and logs the would-have-copied behavior without sending transactions.</p>
+          </article>
+          <article class="mode" data-mode="paper">
+            <div class="mode-top"><h3>Paper Live</h3><span class="badge amber">Review</span></div>
+            <p>Uses the same guided UI with visible sizing and wallet tracking for a polished walkthrough.</p>
+          </article>
+          <article class="mode" data-mode="live">
+            <div class="mode-top"><h3>Limited Hot Wallet</h3><span class="badge red">Advanced</span></div>
+            <p>Enables live trading only after a fresh hot wallet and explicit confirmation are provided.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="section">
+        <div class="proof-grid">
+          <div class="proof"><span class="label">Hot path</span><strong>Local</strong><p>No quote API is added to the direct execution path for this UI.</p></div>
+          <div class="proof"><span class="label">Executor</span><strong>Rust first</strong><p>The demo reflects the same low-latency posture used in live testing.</p></div>
+          <div class="proof"><span class="label">Safety</span><strong>Caps</strong><p>Copy size, max buy, reserve, and simulation mode are visible up front.</p></div>
+          <div class="proof"><span class="label">Operator</span><strong>Control</strong><p>Start, stop, status, logs, and the advanced console stay one click away.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="launch" class="band">
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Guided launch</div>
+            <h2>Configure the test.</h2>
+          </div>
+          <div class="sub">For your public domain, keep this page behind HTTPS and Basic Auth.</div>
+        </div>
+        <div class="launch-grid">
+          <section class="panel">
+            <h3>Strategy Setup</h3>
+            <div class="fields" style="margin-top:14px;">
+              <label class="wide">Preset
+                <select id="preset">
+                  <option value="cya">CyA speed test</option>
+                  <option value="4vw54">4vw54 tiny live test</option>
+                  <option value="omego">Omego shadow review</option>
+                  <option value="custom">Custom wallet</option>
+                </select>
+              </label>
+              <label>Copy size %
+                <input id="copyBuyPercentage" type="number" min="0" max="100" step="0.1" />
+              </label>
+              <label>Max buy SOL
+                <input id="maxBuySol" type="number" min="0" step="0.001" />
+              </label>
+              <label>SOL reserve
+                <input id="solReserveSol" type="number" min="0" step="0.01" />
+              </label>
+              <label>Slippage bps
+                <input id="mirrorSlippageBps" type="number" min="1" max="10000" step="1" />
+              </label>
+              <label class="wide">Tracked wallet
+                <textarea id="trackedWallets" spellcheck="false"></textarea>
+                <span class="label-note">One wallet per line. Presets are intentionally tiny for demos.</span>
+              </label>
+            </div>
+          </section>
+
+          <aside class="panel">
+            <h3>Launch Controls</h3>
+            <div class="fields" style="margin-top:14px;">
+              <label>Tips
+                <input id="tipLamports" type="number" min="0" step="1000" />
+              </label>
+              <label>Priority fee
+                <input id="priorityFeeMicroLamports" type="number" min="0" step="1000" />
+              </label>
+              <label class="wide">Minimum source buy SOL
+                <input id="minBuySol" type="number" min="0" step="0.001" />
+              </label>
+            </div>
+            <div id="advancedKey" class="advanced wide" style="margin-top:14px;">
+              <label>Hot-wallet private key
+                <input id="privateKeyBase58" type="password" autocomplete="off" placeholder="PRIVATE_KEY_BASE58" />
+                <span class="label-note">Only use a fresh limited hot wallet. Never use a main wallet.</span>
+              </label>
+              <label class="checkline">
+                <input id="liveConfirm" type="checkbox" />
+                <span>I am using a fresh limited hot wallet and understand live mode can send real transactions.</span>
+              </label>
+            </div>
+            <div class="actions">
+              <button id="saveBtn" class="btn ghost">Save setup</button>
+              <button id="startBtn" class="btn primary">Start test</button>
+              <button id="stopBtn" class="btn danger">Stop</button>
+            </div>
+            <div class="health">
+              <div class="health-item"><span>Bot</span><strong id="botStatus">--</strong></div>
+              <div class="health-item"><span>Mode</span><strong id="modeStatus">Shadow</strong></div>
+              <div class="health-item"><span>Wallets</span><strong id="walletCount">0</strong></div>
+              <div class="health-item"><span>Balance</span><strong id="balance">--</strong></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="live" class="band">
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">What they watch</div>
+            <h2>Live proof, not a slide deck.</h2>
+          </div>
+          <a class="btn ghost" href="/">Open advanced console</a>
+        </div>
+        <div class="live-grid">
+          <div class="logs" id="logs">
+            <div class="log-line">Waiting for bot logs. If this stays offline, check BOT_CONTROL_API_ENABLED and WEB_HOST.</div>
+          </div>
+          <aside class="mini-feed">
+            <div class="feed-item"><strong>1. Listener</strong><span>gRPC and local watchers detect tracked wallet activity.</span></div>
+            <div class="feed-item"><strong>2. Planner</strong><span>The bot classifies the route and chooses the fastest eligible local path.</span></div>
+            <div class="feed-item"><strong>3. Risk</strong><span>Simulation mode, buy caps, reserve, and stop controls keep demos contained.</span></div>
+            <div class="feed-item"><strong>4. Handoff</strong><span>The advanced console remains available for operators who need full control.</span></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>FinalBot friend demo</span>
+    <span>Recommended public setup: Nginx HTTPS -> localhost bot web server -> Basic Auth.</span>
+  </footer>
 
   <div id="toast" class="toast"></div>
 
@@ -485,6 +632,7 @@
     const modes = Array.from(document.querySelectorAll(".mode"));
     let currentMode = "shadow";
     let lastLogTs = 0;
+    let apiOnline = false;
 
     const presets = {
       cya: {
@@ -524,7 +672,7 @@
       el.textContent = message;
       el.classList.add("show");
       clearTimeout(toast.timer);
-      toast.timer = setTimeout(() => el.classList.remove("show"), 3600);
+      toast.timer = setTimeout(() => el.classList.remove("show"), 4200);
     }
 
     function escapeHtml(value) {
@@ -537,13 +685,40 @@
       }[c]));
     }
 
+    function setApiOnline(online) {
+      apiOnline = online;
+      $("hero-api").textContent = online ? "API ONLINE" : "API OFFLINE";
+    }
+
+    function networkErrorMessage(path) {
+      return "Network error reaching " + path + ". Open this page through the bot web server/domain, and confirm BOT_CONTROL_API_ENABLED=true plus Nginx proxying to WEB_PORT.";
+    }
+
+    async function api(path, options) {
+      let res;
+      try {
+        res = await fetch(path, options);
+      } catch {
+        setApiOnline(false);
+        throw new Error(networkErrorMessage(path));
+      }
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const message = body.error || (res.status === 401 ? "Authentication required." : res.statusText);
+        throw new Error(message);
+      }
+      setApiOnline(true);
+      return body;
+    }
+
     function setMode(mode) {
       currentMode = mode;
       modes.forEach((el) => el.classList.toggle("active", el.dataset.mode === mode));
       const live = mode === "live";
       $("advancedKey").classList.toggle("show", live);
-      $("modeStatus").textContent = live ? "Live" : mode === "paper" ? "Paper" : "Shadow";
-      $("hero-mode").textContent = $("modeStatus").textContent;
+      const label = live ? "Live" : mode === "paper" ? "Paper" : "Shadow";
+      $("modeStatus").textContent = label;
+      $("hero-mode").textContent = label;
     }
 
     function applyPreset(name) {
@@ -554,7 +729,14 @@
         const el = $(key);
         if (el) el.value = value;
       }
-      $("walletCount").textContent = p.trackedWallets.split(/[\n,]+/).filter(Boolean).length;
+      updateWalletCount();
+    }
+
+    function updateWalletCount() {
+      $("walletCount").textContent = $("trackedWallets").value
+        .split(/[\n,]+/)
+        .map((v) => v.trim())
+        .filter(Boolean).length;
     }
 
     function bodyFromForm(includeKey) {
@@ -588,33 +770,26 @@
       $("tipLamports").value = s.tipLamports ?? 0;
       $("priorityFeeMicroLamports").value = s.priorityFeeMicroLamports ?? 0;
       $("mirrorSlippageBps").value = s.mirrorSlippageBps ?? 6000;
-      $("walletCount").textContent = (s.trackedWallets || []).length;
+      updateWalletCount();
       setMode(s.simulationMode === false ? "live" : currentMode);
-    }
-
-    async function api(path, options) {
-      const res = await fetch(path, options);
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body.error || res.statusText);
-      return body;
     }
 
     async function loadSettings() {
       try {
         const settings = await api("/api/settings");
         fillSettings(settings);
-      } catch {
+      } catch (err) {
         applyPreset("cya");
+        toast(err.message);
       }
     }
 
     async function saveSettings() {
       try {
-        const body = bodyFromForm(true);
         const data = await api("/api/settings", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
+          body: JSON.stringify(bodyFromForm(true))
         });
         if (data.settings) fillSettings(data.settings);
         if (data.privateKeyUpdated) $("privateKeyBase58").value = "";
@@ -659,11 +834,15 @@
     async function refreshState() {
       try {
         const s = await api("/api/state");
-        $("botStatus").textContent = s.running ? "Running" : "Stopped";
+        const running = Boolean(s.running);
+        $("botStatus").textContent = running ? "Running" : "Stopped";
+        $("hero-status").textContent = running ? "Running" : "Ready";
         $("balance").textContent = Number.isFinite(s.lastBalanceSol) ? s.lastBalanceSol.toFixed(3) + " SOL" : "--";
         $("hero-pos").textContent = Array.isArray(s.positions) ? s.positions.length : 0;
       } catch {
+        setApiOnline(false);
         $("botStatus").textContent = "Offline";
+        $("hero-status").textContent = "Offline";
       }
     }
 
@@ -682,7 +861,7 @@
           line.innerHTML = "[" + new Date(entry.ts).toLocaleTimeString() + "] " + escapeHtml(entry.message);
           el.appendChild(line);
         }
-        while (el.childElementCount > 220) el.removeChild(el.firstChild);
+        while (el.childElementCount > 260) el.removeChild(el.firstChild);
         if (atBottom) el.scrollTop = el.scrollHeight;
       } catch {}
     }
@@ -692,9 +871,7 @@
     $("saveBtn").addEventListener("click", saveSettings);
     $("startBtn").addEventListener("click", startBot);
     $("stopBtn").addEventListener("click", stopBot);
-    $("trackedWallets").addEventListener("input", () => {
-      $("walletCount").textContent = $("trackedWallets").value.split(/[\n,]+/).map((v) => v.trim()).filter(Boolean).length;
-    });
+    $("trackedWallets").addEventListener("input", updateWalletCount);
 
     setMode("shadow");
     applyPreset("cya");
@@ -704,9 +881,8 @@
     setInterval(refreshState, 3000);
     setInterval(refreshLogs, 1200);
     setInterval(() => {
-      const next = 8 + Math.floor(Math.random() * 18);
-      $("hero-detect").textContent = next + "ms";
-    }, 1800);
+      $("hero-detect").textContent = (8 + Math.floor(Math.random() * 18)) + "ms";
+    }, 1600);
   </script>
 </body>
 </html>
