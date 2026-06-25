@@ -1,4 +1,5 @@
 import { createServer, IncomingMessage, ServerResponse } from "node:http";
+import { timingSafeEqual } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
@@ -27,9 +28,12 @@ import { getPriceSampleMs, getPriceSeries, startPriceSampler } from "./priceSamp
 const PORT = parseInt(process.env.WEB_PORT ?? "3000", 10);
 // Interface to bind. Default 127.0.0.1 (localhost only). Set WEB_HOST to your
 // Tailscale IP (e.g. 100.x.y.z) to reach it from your tailnet devices WITHOUT
-// exposing it publicly. Avoid 0.0.0.0 unless the port is firewalled — the UI has
-// no auth, so a public bind lets anyone drain the wallet.
+// exposing it publicly. If binding publicly, put HTTPS in front of the service
+// and set UI_BASIC_AUTH_USER/UI_BASIC_AUTH_PASSWORD.
 const HOST = (process.env.WEB_HOST ?? "127.0.0.1").trim() || "127.0.0.1";
+const UI_BASIC_AUTH_USER = (process.env.UI_BASIC_AUTH_USER ?? "").trim();
+const UI_BASIC_AUTH_PASSWORD = process.env.UI_BASIC_AUTH_PASSWORD ?? "";
+const UI_AUTH_ENABLED = UI_BASIC_AUTH_USER.length > 0 && UI_BASIC_AUTH_PASSWORD.length > 0;
 const TOKEN_LIVE_CACHE_MS = Math.max(
   5_000,
   parseInt(process.env.UI_TOKEN_LIVE_CACHE_MS ?? "20000", 10)
@@ -67,6 +71,36 @@ function sendJson(res: ServerResponse, status: number, body: unknown): void {
 
 function sendError(res: ServerResponse, status: number, message: string): void {
   sendJson(res, status, { error: message });
+}
+
+function safeEqual(a: string, b: string): boolean {
+  const aBuf = Buffer.from(a);
+  const bBuf = Buffer.from(b);
+  return aBuf.length === bBuf.length && timingSafeEqual(aBuf, bBuf);
+}
+
+function isAuthorized(req: IncomingMessage): boolean {
+  if (!UI_AUTH_ENABLED) return true;
+  const header = req.headers.authorization ?? "";
+  if (!header.startsWith("Basic ")) return false;
+  try {
+    const decoded = Buffer.from(header.slice("Basic ".length), "base64").toString("utf8");
+    const sep = decoded.indexOf(":");
+    if (sep < 0) return false;
+    const user = decoded.slice(0, sep);
+    const password = decoded.slice(sep + 1);
+    return safeEqual(user, UI_BASIC_AUTH_USER) && safeEqual(password, UI_BASIC_AUTH_PASSWORD);
+  } catch {
+    return false;
+  }
+}
+
+function requestAuth(res: ServerResponse): void {
+  res.writeHead(401, {
+    "WWW-Authenticate": 'Basic realm="FinalBot"',
+    "Content-Type": "text/plain; charset=utf-8",
+  });
+  res.end("Authentication required");
 }
 
 function readJsonBody(req: IncomingMessage): Promise<Record<string, unknown>> {
@@ -130,6 +164,8 @@ async function handle(
   res: ServerResponse
 ): Promise<void> {
   const url = req.url ?? "/";
+
+  if (!isAuthorized(req)) return requestAuth(res);
 
   if (req.method === "GET" && (url === "/" || url === "/index.html")) {
     return serveIndex(res);
