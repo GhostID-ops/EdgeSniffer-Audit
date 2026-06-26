@@ -1,5 +1,5 @@
 import { Keypair, PublicKey, LAMPORTS_PER_SOL, type VersionedTransactionResponse } from "@solana/web3.js";
-import { closeSync, mkdirSync, openSync, unlinkSync, writeFileSync } from "node:fs";
+import { closeSync, mkdirSync, openSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import bs58 from "bs58";
@@ -367,6 +367,10 @@ const failedBuyRecoveryInFlightMints = new Set<string>();
 const boughtMintsThisSession = new Set<string>();
 const liveBuyAttemptedMintsThisSession = new Set<string>();
 const persistentBuyLockDir = process.env.BUY_LOCK_DIR || join(tmpdir(), "finalbot-buy-locks");
+const persistentBuyLockStaleMs = Math.max(
+  10_000,
+  Number.parseInt(process.env.BUY_LOCK_STALE_MS ?? "120000", 10) || 120_000
+);
 const sourcePreexistingBuyMints = new Set<string>();
 const sourceBuySignatureByMint = new Map<string, string>();
 const mirrorBuySignatureByMint = new Map<string, string>();
@@ -794,9 +798,9 @@ function acquirePersistentBuyLock(
   sourceSignature: string
 ): { ok: true; owner?: string } | { ok: false; reason: string } {
   if (simulationMode || !buyOncePerTokenEnabled) return { ok: true };
+  const path = buyLockPath(mint);
   try {
     mkdirSync(persistentBuyLockDir, { recursive: true });
-    const path = buyLockPath(mint);
     const fd = openSync(path, "wx");
     const owner = createBuyLockOwner();
     try {
@@ -817,9 +821,38 @@ function acquirePersistentBuyLock(
   } catch (err) {
     const code = (err as NodeJS.ErrnoException).code;
     if (code === "EEXIST") {
-      return { ok: false, reason: `persistent buy lock exists at ${buyLockPath(mint)}` };
+      if (releaseStalePersistentBuyLock(path, mint)) {
+        return acquirePersistentBuyLock(mint, sourceSignature);
+      }
+      return { ok: false, reason: `persistent buy lock exists at ${path}` };
     }
     return { ok: false, reason: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+function releaseStalePersistentBuyLock(path: string, mint: string): boolean {
+  try {
+    const raw = readFileSync(path, "utf8");
+    const parsed = JSON.parse(raw) as { createdAtMs?: number; createdAt?: string; pid?: number };
+    const createdAtMs =
+      typeof parsed.createdAtMs === "number"
+        ? parsed.createdAtMs
+        : typeof parsed.createdAt === "string"
+          ? Date.parse(parsed.createdAt)
+          : 0;
+    const ageMs = createdAtMs > 0 ? Date.now() - createdAtMs : Number.POSITIVE_INFINITY;
+    if (ageMs < persistentBuyLockStaleMs) return false;
+    unlinkSync(path);
+    console.warn(
+      `Cleared stale persistent buy lock for ${mint.slice(0, 8)}... ` +
+        `(age ${Math.round(ageMs)}ms >= ${persistentBuyLockStaleMs}ms).`
+    );
+    return true;
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") return true;
+    console.warn(`Could not inspect stale persistent buy lock for ${mint.slice(0, 8)}...: ${err}`);
+    return false;
   }
 }
 
@@ -2094,6 +2127,7 @@ function scheduleFailedBuyRecovery(
         pendingBuyRetryByMint.delete(sourceSwap.outputMint);
         liveBuyAttemptedMintsThisSession.delete(sourceSwap.outputMint);
         quarantinedBuyMints.delete(sourceSwap.outputMint);
+        releasePersistentBuyLock(sourceSwap.outputMint);
         releaseRustBoughtMint(sourceSwap.outputMint, `recoverable direct rescue ${decision.action}: ${msg}`);
         console.warn(
           `Direct rescue failure for ${sourceSwap.outputMint.slice(0, 8)}... is pump.fun account-layout recoverable; ` +
@@ -2102,9 +2136,13 @@ function scheduleFailedBuyRecovery(
       } else {
         boughtMintsThisSession.delete(sourceSwap.outputMint);
         pendingBuyRetryByMint.delete(sourceSwap.outputMint);
+        liveBuyAttemptedMintsThisSession.delete(sourceSwap.outputMint);
+        quarantinedBuyMints.delete(sourceSwap.outputMint);
+        releasePersistentBuyLock(sourceSwap.outputMint);
+        releaseRustBoughtMint(sourceSwap.outputMint, `recoverable direct rescue ${decision.action}: ${msg}`);
         console.warn(
           `Direct rescue failure for ${sourceSwap.outputMint.slice(0, 8)}... is recoverable ` +
-            `(${decision.action}); not quarantining this mint.`
+            `(${decision.action}); clearing buy locks so later source buys can retry this mint.`
         );
       }
     }).finally(() => {
@@ -3207,6 +3245,13 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           liveBuyAttemptedMintsThisSession.delete(mint);
           pendingBuyRetryByMint.delete(mint);
           fastBuyConfirmRetryScheduledByMint.delete(mint);
+          quarantinedBuyMints.delete(mint);
+          releasePersistentBuyLock(mint);
+          releaseRustBoughtMint(mint, `recoverable buy confirmation failure before direct rescue: ${reason}`);
+          persistentBuyLockCommitted = false;
+          if (persistentBuyLockMint === mint) {
+            persistentBuyLockMint = null;
+          }
           if (removed) {
             console.warn(
               `Rolled back optimistic buy for ${mint.slice(0, 8)}... before scheduling direct rescue.`
@@ -3568,10 +3613,29 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       details: { retryAction: retryDecision.action, shouldQuarantine: retryDecision.shouldQuarantine },
     });
     console.error(`?? Mirror failed for ${swap.signature}: ${msg}`);
-    if (isBuySignal(swap) && buyOncePerTokenEnabled && isPostBroadcastBuyUncertainty(msg)) {
+    if (
+      isBuySignal(swap) &&
+      buyOncePerTokenEnabled &&
+      shouldHoldBuyOnceAfterFailure({ buyOncePerTokenEnabled, reason: msg })
+    ) {
       const failedMint = swap.outputMint;
       holdBuyOnceMintAfterBroadcastUncertainty(failedMint, msg);
       persistentBuyLockCommitted = true;
+    } else if (isBuySignal(swap) && buyOncePerTokenEnabled && isPostBroadcastBuyUncertainty(msg)) {
+      const failedMint = swap.outputMint;
+      boughtMintsThisSession.delete(failedMint);
+      liveBuyAttemptedMintsThisSession.delete(failedMint);
+      quarantinedBuyMints.delete(failedMint);
+      releasePersistentBuyLock(failedMint);
+      releaseRustBoughtMint(failedMint, `recoverable post-broadcast buy failure: ${msg}`);
+      persistentBuyLockCommitted = false;
+      if (persistentBuyLockMint === failedMint) {
+        persistentBuyLockMint = null;
+      }
+      console.warn(
+        `Buy failed for ${failedMint.slice(0, 8)}... with recoverable post-broadcast ` +
+          `${retryDecision.category} failure; clearing buy locks so a later source signal can retry.`
+      );
     } else if (isBuySignal(swap) && (swap.skipDirectBuyRoutes || retryDecision.shouldQuarantine || isTerminalBuyFailure(msg))) {
       const failedMint = swap.outputMint;
       quarantinedBuyMints.set(

@@ -37,6 +37,7 @@ function inferProgram(lower: string): "pump" | "pump_amm" | "unknown" {
   if (
     lower.includes("pump_amm") ||
     lower.includes("pump-amm") ||
+    lower.includes("pumpswap") ||
     lower.includes("pamm") ||
     lower.includes("program pammbay6oceh9fjkbrhgp5d4bd4swpmswmn52fmfxea")
   ) {

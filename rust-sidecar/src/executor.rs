@@ -915,6 +915,46 @@ fn existing_lock_value(path: &PathBuf, key: &str) -> Option<String> {
     value.get(key).and_then(Value::as_str).map(str::to_string)
 }
 
+fn buy_lock_stale_ms() -> u128 {
+    env::var("BUY_LOCK_STALE_MS")
+        .ok()
+        .and_then(|value| value.trim().parse::<u128>().ok())
+        .filter(|value| *value >= 10_000)
+        .unwrap_or(120_000)
+}
+
+fn release_stale_existing_lock(path: &PathBuf, mint: &str) -> bool {
+    let threshold_ms = buy_lock_stale_ms();
+    let now_ms = now_unix_ms();
+    let text = match fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(err) if err.kind() == ErrorKind::NotFound => return true,
+        Err(_) => return false,
+    };
+    let created_at_ms = serde_json::from_str::<Value>(&text)
+        .ok()
+        .and_then(|value| value.get("createdAtMs").and_then(Value::as_u64).map(u128::from));
+    let age_ms = created_at_ms
+        .map(|created| now_ms.saturating_sub(created))
+        .unwrap_or(u128::MAX);
+    if age_ms < threshold_ms {
+        return false;
+    }
+    match fs::remove_file(path) {
+        Ok(_) => {
+            eprintln!(
+                "rust-sidecar: cleared stale persistent buy lock for {}... (age {}ms >= {}ms)",
+                &mint.chars().take(8).collect::<String>(),
+                age_ms,
+                threshold_ms
+            );
+            true
+        }
+        Err(err) if err.kind() == ErrorKind::NotFound => true,
+        Err(_) => false,
+    }
+}
+
 fn acquire_persistent_buy_lock(
     mint: &str,
     source_signature: &str,
@@ -951,6 +991,9 @@ fn acquire_persistent_buy_lock(
                 && existing_lock_value(&path, "owner").as_deref() == buy_lock_owner
             {
                 return Ok(PersistentBuyLock::Borrowed);
+            }
+            if release_stale_existing_lock(&path, mint) {
+                return acquire_persistent_buy_lock(mint, source_signature, buy_lock_owner);
             }
             bail!("persistent buy lock exists for {mint}; duplicate Rust broadcast blocked")
         }

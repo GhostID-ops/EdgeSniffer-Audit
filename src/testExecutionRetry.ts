@@ -22,6 +22,16 @@ assertDecision(
   }
 );
 
+assertDecision(
+  'PumpSwap confirmation failed after Rust broadcast: Transaction failed: {"InstructionError":[6,{"Custom":6023}]}',
+  {
+    action: "rebuild-pool-state",
+    shouldQuarantine: false,
+    category: "liquidity-overflow",
+    program: "pump_amm",
+  }
+);
+
 assertDecision("PumpSwap preflight failed: {\"InstructionError\":[6,\"PrivilegeEscalation\"]}", {
   action: "rebuild-derived-accounts",
   shouldQuarantine: false,

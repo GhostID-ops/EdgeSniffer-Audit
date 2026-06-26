@@ -26,6 +26,13 @@ assert.equal(
   }),
   false
 );
+assert.equal(
+  shouldHoldBuyOnceAfterFailure({
+    buyOncePerTokenEnabled: true,
+    reason: 'PumpSwap confirmation failed after Rust broadcast: Transaction failed: {"InstructionError":[6,{"Custom":6023}]}',
+  }),
+  false
+);
 
 
 assert.equal(
