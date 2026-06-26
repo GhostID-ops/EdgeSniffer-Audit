@@ -21,17 +21,17 @@ Fresh runs used:
 
 CyA is still an exit-led wallet. The fresh 6,000-tx sample continues to reject simple fixed TP/SL and time exits. The best tested behavior is still to stay close to CyA's exit, with the best current backtest variant being `50% at +30%, 50% source exit`.
 
-Important update: the low market-cap bucket weakened materially in the fresh sample. The old `$0-5k` bucket was slightly positive; the new `$0-5k` bucket is negative on source exit. That makes the `$5k` minimum market-cap filter more important, not less.
+Latest update: the fresh 48h ledger-first scan changed the market-cap read. The recent edge is concentrated under `$20k`, and both `$0-5k` and `$5k-10k` were positive in source-exit ROI. Do not blindly tighten CyA to a hard `$10k` or `$20k` minimum from old notes.
 
 Best current approach:
 
 - Copy once per mint.
 - Use `0.25 SOL` fixed-size entries.
 - Cap live exposure to `0.75 SOL` per session and `2` open positions.
-- Keep the fast local Pump.fun market-cap filter on.
-- Keep `PREBUY_MIN_MARKET_CAP_USD=5000` as the minimum; test `10000` or `20000` in shadow before tightening live.
 - Keep impact/drift protection.
-- Mirror CyA sells until the bot has a native hybrid exit rule for `50% at +30%, 50% source exit`.
+- Use the already-implemented CyA hybrid/source-exit mode: `HYBRID_EXIT_ENABLED=true`, `HYBRID_EXIT_TP_PCT=30`, `HYBRID_EXIT_TP_SELL_PCT=50`, `HYBRID_EXIT_SOURCE_EXIT_REMAINING=true`.
+- Keep `MIRROR_SELLS=true` so the remainder exits on CyA/source sell signals.
+- Do not add hot-path HTTP filters for same-slot copy. Use local inferred MC only if deliberately testing a filter; the latest 48h bucket scan does not justify a hard `$10k+` minimum.
 - Treat Moralis volume/liquidity/momentum filters as research-only for same-slot copy because they add hot-path latency.
 - Do not use the latest 3-entry path audit as a broad strategy sample; use it only as a last-trades sanity check.
 
@@ -258,32 +258,17 @@ Read:
 
 Read:
 
-- `$0-5k` is no longer attractive in the fresh sample.
-- `$5k-10k` is still the best balanced low-cap bucket.
-- `$20k-50k` has the best larger-sample ROI in this pass, but the median drawdown is extreme.
-- The live filter should keep at least `$5k`; shadow testing should compare `$10k` and `$20k` minimums.
+- This older candle-enriched sample suggested `$0-5k` was weaker and `$5k-10k` / `$20k-50k` were stronger, but the newer 48h ledger-first scan now supersedes it for current live posture.
+- Do not use this older section alone to force a live MC floor. Treat it as historical context for MFE/MAE and target-hit behavior.
+- Current CyA presets keep hot-path HTTP MC filters off. If testing a local inferred MC gate, compare it against a no-floor control using live telemetry.
 
-Current live filter:
+Current live filter posture:
 
 ```env
-LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=true
-LOCAL_PUMPFUN_SOL_PRICE_USD=72
-LOCAL_PUMPFUN_SOL_PRICE_AUTO_ENABLED=true
-LOCAL_PUMPFUN_SOL_PRICE_REFRESH_MS=300000
-LOCAL_PUMPFUN_SOL_PRICE_TIMEOUT_MS=2500
-PREBUY_MIN_MARKET_CAP_USD=5000
+LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=false
+PREBUY_MIN_MARKET_CAP_USD=
 PREBUY_MAX_MARKET_CAP_USD=
-PREBUY_FILTER_FAIL_OPEN=false
-```
-
-Shadow-test variants:
-
-```env
-PREBUY_MIN_MARKET_CAP_USD=10000
-```
-
-```env
-PREBUY_MIN_MARKET_CAP_USD=20000
+PREBUY_FILTER_FAIL_OPEN=true
 ```
 
 ## Volume Buckets
@@ -374,20 +359,20 @@ MAX_SOL_PER_TOKEN=0.25
 MAX_SESSION_DEPLOYED_SOL=0.75
 MAX_OPEN_POSITIONS=2
 
-STOP_LOSS_PCT=30
-MIN_HOLD_BEFORE_STOP_LOSS_MS=8000
-TAKE_PROFIT_PCT=40
-TRAILING_STEPS=20:12,35:25,60:45,100:80,180:140
+STOP_LOSS_PCT=
+MIN_HOLD_BEFORE_STOP_LOSS_MS=10000
+TAKE_PROFIT_PCT=
+TRAILING_STEPS=
+HYBRID_EXIT_ENABLED=true
+HYBRID_EXIT_TP_PCT=30
+HYBRID_EXIT_TP_SELL_PCT=50
+HYBRID_EXIT_SOURCE_EXIT_REMAINING=true
 
 PREBUY_MORALIS_FILTER_ENABLED=false
-LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=true
-LOCAL_PUMPFUN_SOL_PRICE_USD=72
-LOCAL_PUMPFUN_SOL_PRICE_AUTO_ENABLED=true
-LOCAL_PUMPFUN_SOL_PRICE_REFRESH_MS=300000
-LOCAL_PUMPFUN_SOL_PRICE_TIMEOUT_MS=2500
-PREBUY_MIN_MARKET_CAP_USD=5000
+LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=false
+PREBUY_MIN_MARKET_CAP_USD=
 PREBUY_MAX_MARKET_CAP_USD=
-PREBUY_FILTER_FAIL_OPEN=false
+PREBUY_FILTER_FAIL_OPEN=true
 
 MAX_ENTRY_PRICE_IMPACT_PCT=60
 MAX_SOURCE_DRIFT_PCT=25
@@ -401,11 +386,12 @@ RUST_HOT_SNIPER_PRIMARY=true
 RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS=60
 ```
 
-Why full mirror sells:
+Why hybrid/source-exit mode:
 
-- The fresh `212`-entry backtest says source exit remains one of the only positive tested behaviors.
-- `50% at +30, 50% source exit` tested better, but the current env-only setup does not express that exact hybrid rule cleanly.
-- Until the hybrid exit is implemented, full mirror sells are the closest live behavior to the tested edge.
+- The repo already supports the exact tested CyA rule through `HYBRID_EXIT_*` env keys.
+- Use `HYBRID_EXIT_TP_SELL_PCT=50` at `HYBRID_EXIT_TP_PCT=30`, then keep `MIRROR_SELLS=true` and `HYBRID_EXIT_SOURCE_EXIT_REMAINING=true` so the remainder exits on CyA/source sell.
+- In this mode, ordinary stop-loss, fixed take-profit, and trailing rules should stay blank unless deliberately testing a different strategy. The bot suppresses ordinary SL/TP/trailing while hybrid source-exit remainder mode is active.
+- `.env.cya-same-slot` and `.env.wallet-cya` already express this posture; prefer applying those presets over manually copying old snippets.
 
 ## Shadow Research Variant
 
@@ -425,19 +411,19 @@ BUY_ONCE_PER_TOKEN=true
 MIRROR_SELLS=true
 MIRROR_SELL_MODE=full
 
-STOP_LOSS_PCT=30
-MIN_HOLD_BEFORE_STOP_LOSS_MS=8000
-TAKE_PROFIT_PCT=40
-TRAILING_STEPS=20:12,35:25,60:45,100:80,180:140
+STOP_LOSS_PCT=
+MIN_HOLD_BEFORE_STOP_LOSS_MS=10000
+TAKE_PROFIT_PCT=
+TRAILING_STEPS=
+HYBRID_EXIT_ENABLED=true
+HYBRID_EXIT_TP_PCT=30
+HYBRID_EXIT_TP_SELL_PCT=50
+HYBRID_EXIT_SOURCE_EXIT_REMAINING=true
 
-LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=true
-LOCAL_PUMPFUN_SOL_PRICE_USD=72
-LOCAL_PUMPFUN_SOL_PRICE_AUTO_ENABLED=true
-LOCAL_PUMPFUN_SOL_PRICE_REFRESH_MS=300000
-LOCAL_PUMPFUN_SOL_PRICE_TIMEOUT_MS=2500
-PREBUY_MIN_MARKET_CAP_USD=10000
+LOCAL_PUMPFUN_MARKET_CAP_FILTER_ENABLED=false
+PREBUY_MIN_MARKET_CAP_USD=
 PREBUY_MAX_MARKET_CAP_USD=
-PREBUY_FILTER_FAIL_OPEN=false
+PREBUY_FILTER_FAIL_OPEN=true
 
 MAX_ENTRY_PRICE_IMPACT_PCT=60
 MAX_SOURCE_DRIFT_PCT=25
@@ -469,7 +455,7 @@ Next lead-signal work:
 
 ## Open Questions
 
-- Need to implement and test the hybrid exit rule: `50% at +30%, 50% CyA exit`.
-- Need to shadow compare `PREBUY_MIN_MARKET_CAP_USD=5000`, `10000`, and `20000`.
+- Hybrid exit is already implemented; next work is validating live telemetry and tuning whether `30/50` should remain the CyA default.
+- Need to shadow/live compare no MC floor versus optional local inferred MC floors; the latest 48h ledger scan does not support blindly tightening CyA to `$10k+`.
 - Need to decide whether Bags/graduated entries should be copied differently from early Pump.fun entries.
 - Need to verify whether `PUMPSWAP_DIRECT_BUY_ENABLED=false` plus `MIRROR_GRADUATED_BUYS=false` fully prevents graduated buys or whether a dedicated `SKIP_GRADUATED_BUYS=true` gate is needed.
