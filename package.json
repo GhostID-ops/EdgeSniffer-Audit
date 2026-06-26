@@ -29,6 +29,7 @@
     "env:vps-tiny-live-test": "node scripts/applyPerformanceEnv.mjs .env.vps-tiny-live-test",
     "env:speed-mode": "node scripts/applyPerformanceEnv.mjs .env.speed-mode",
     "env:cya-same-slot": "node scripts/applyPerformanceEnv.mjs .env.cya-same-slot",
+    "env:cya-vps-mc50-100-no-fees": "node scripts/applyPerformanceEnv.mjs .env.cya-vps-mc50-100-no-fees",
     "env:4bdk-same-slot": "node scripts/applyPerformanceEnv.mjs .env.4bdk-same-slot",
     "env:upsert": "node scripts/upsertEnv.mjs",
     "env:buy-only-fees": "node scripts/upsertEnv.mjs --from-file .env.buy-only-fees",

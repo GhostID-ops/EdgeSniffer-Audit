@@ -440,7 +440,6 @@ fn parse_env_optional_u64(name: &str) -> Option<u64> {
                 trimmed.parse::<u64>().ok()
             }
         })
-        .filter(|v| *v > 0)
 }
 
 fn parse_env_f64(name: &str, fallback: f64) -> f64 {

@@ -35,6 +35,12 @@ npm run env:wallet:4bdk
 npm run env:wallet:gug
 ```
 
+Special CyA VPS live instance preset:
+
+```bash
+npm run env:cya-vps-mc50-100-no-fees
+```
+
 Check after applying:
 
 ```bash
@@ -45,6 +51,7 @@ grep -nE '^(TRACKED_WALLETS|COPY_PERCENTAGE|MIN_BUY_SOL|MAX_BUY_SOL|MIRROR_SELLS
 ## Notes
 
 - `cya` uses the CyA hybrid/source-exit posture with no MC filter in the hot path.
+- `cya-vps-mc50-100-no-fees` uses CyA hybrid/source-exit, `0.20 SOL` fixed buys, no open-position cap, no tip/priority fees, Rust-only execution, no Jupiter fallback, and a local inferred `$50k-$100k` market-cap gate.
 - `4vw54` uses source-exit mirroring plus hybrid partial profit.
 - `tefs` allows scale-ins and forces no tips/priority because the edge depends on low round-trip cost.
 - `omego` uses bot-managed trailing instead of source-exit mirroring.

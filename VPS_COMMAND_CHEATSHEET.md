@@ -422,6 +422,52 @@ MAX_SESSION_DEPLOYED_SOL=0.30
 MAX_OPEN_POSITIONS=2
 ```
 
+## CyA MC 50k-100k No-Fee VPS Instance
+
+This creates a separate live CyA bot instance:
+
+- folder: `/root/bot/FinalBot-cya-mc50-100-nofee`
+- service: `finalbot-cya-mc50-100-nofee`
+- wallet: `CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o`
+- buy size: `0.20 SOL`
+- open positions: no cap (`MAX_OPEN_POSITIONS=` blank)
+- market cap gate: local inferred `$50k-$100k`
+- fees: no Jito tip, no Helius tip, no priority fee, no dynamic priority fee
+- execution: Rust-only buys/sells, no Jupiter fallback
+
+Install/update from the VPS:
+
+```bash
+cd /root/bot/FinalBot
+git pull origin main
+bash scripts/setupCyaMc50NoFeeInstance.sh
+```
+
+Start it:
+
+```bash
+systemctl start finalbot-cya-mc50-100-nofee
+```
+
+Watch it:
+
+```bash
+journalctl -u finalbot-cya-mc50-100-nofee -f
+```
+
+Stop it:
+
+```bash
+systemctl stop finalbot-cya-mc50-100-nofee
+```
+
+Verify the env:
+
+```bash
+cd /root/bot/FinalBot-cya-mc50-100-nofee
+npm run vps:doctor
+grep -nE '^(TRACKED_WALLETS|MIN_BUY_SOL|MAX_BUY_SOL|MAX_OPEN_POSITIONS|PREBUY_MIN_MARKET_CAP_USD|PREBUY_MAX_MARKET_CAP_USD|TIP_LAMPORTS|PRIORITY_FEE_MICRO_LAMPORTS|DYNAMIC_PRIORITY_FEE_ENABLED|JITO_TIP_ORACLE_ENABLED|JUPITER_FALLBACK_ENABLED|RUST_ONLY_BUYS|RUST_ONLY_SELLS)=' .env
+```
 ## Jito/ShredStream Sanity Check
 
 Bot logs should show:
