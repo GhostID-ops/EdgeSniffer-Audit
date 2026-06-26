@@ -2,7 +2,7 @@
 
 Wallet: `CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o`
 
-Last updated: 2026-06-17
+Last updated: 2026-06-26
 
 Fresh runs used:
 
@@ -14,6 +14,8 @@ Fresh runs used:
 - 100k+ last-7d artifacts: `data/cya-100k-last7d.json`, `data/cya-100k-last7d.md`
 - Recent path audit: `PATH_AUDIT_QUIET=true npx tsx src/pathBasedWalletAudit.ts CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 6000 60 24 20`
 - Generated recent-trade detail: `data/path-wallet-audit-CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o.md`
+- Latest 48h ledger bucket audit: `npm run audit:wallet-ledger-buckets -- CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 2500 cya-ledger-buckets-latest-48h`
+- Latest 48h ledger artifacts: `data/cya-ledger-buckets-latest-48h.json`, `data/cya-ledger-buckets-latest-48h.md`
 
 ## Current Verdict
 
@@ -32,6 +34,50 @@ Best current approach:
 - Mirror CyA sells until the bot has a native hybrid exit rule for `50% at +30%, 50% source exit`.
 - Treat Moralis volume/liquidity/momentum filters as research-only for same-slot copy because they add hot-path latency.
 - Do not use the latest 3-entry path audit as a broad strategy sample; use it only as a last-trades sanity check.
+
+## Latest 48h Ledger Bucket Audit
+
+Generated `2026-06-26T18:39:24Z` from a fresh `2,500` transaction Helius scan. This is a high-coverage ledger-first source-exit audit, not a slow candle/MFE path audit. It covers `2026-06-24T18:34:44Z` to `2026-06-26T18:35:34Z`.
+
+Coverage:
+
+- Transactions fetched: `2,500`
+- Reconstructed fills: `1,891`
+- Campaigns: `235`
+- Closed measured campaigns: `232`
+- Pump rows: `195`
+- BAGS rows: `2`
+- Other rows: `35`
+
+All-route market-cap bucket performance:
+
+| Entry MC | n | Win | Avg ROI | Median ROI | PF | Total PnL | Median hold |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `$0-5k` | 123 | 65.0% | +22.9% | +8.2% | 4.97 | +170.69 SOL | 0.42m |
+| `$5k-10k` | 60 | 51.7% | +17.2% | +3.6% | 2.50 | +77.71 SOL | 0.55m |
+| `$10k-20k` | 28 | 60.7% | +40.2% | +8.3% | 5.95 | +102.03 SOL | 1.49m |
+| `$20k-50k` | 17 | 35.3% | +9.8% | -16.7% | 1.49 | +1.40 SOL | 2.72m |
+| `$50k-100k` | 2 | 0.0% | -6.1% | -6.1% | 0.00 | -0.79 SOL | 0.18m |
+| `$100k+` | 2 | 0.0% | -13.9% | -13.9% | 0.00 | -5.75 SOL | 25.66m |
+
+Pump-only bucket performance:
+
+| Entry MC | n | Win | Avg ROI | Median ROI | PF | Total PnL | Median hold |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `$0-5k` | 102 | 65.7% | +23.2% | +8.3% | 5.15 | +134.83 SOL | 0.49m |
+| `$5k-10k` | 50 | 54.0% | +13.7% | +6.5% | 2.30 | +59.95 SOL | 0.69m |
+| `$10k-20k` | 25 | 60.0% | +43.0% | +3.6% | 5.73 | +94.72 SOL | 0.85m |
+| `$20k-50k` | 15 | 26.7% | +3.1% | -19.7% | 1.14 | -16.56 SOL | 2.72m |
+| `$50k-100k` | 1 | 0.0% | -2.7% | -2.7% | 0.00 | -0.27 SOL | 0.12m |
+| `$100k+` | 2 | 0.0% | -13.9% | -13.9% | 0.00 | -5.75 SOL | 25.66m |
+
+Latest 48h read:
+
+- The recent edge is concentrated below `$20k` entry MC, with `$10k-20k` the strongest current bucket by average ROI and profit factor.
+- `$20k+` is not attractive in this fresh window. The sample is thinner, but the median ROI turns negative and source-capital results weaken sharply.
+- The old instinct to blindly tighten CyA to `PREBUY_MIN_MARKET_CAP_USD=10000` is not obviously correct: `$0-5k` and `$5k-10k` both printed positive median ROI in the latest ledger scan.
+- For live CyA, the safer current interpretation is: keep broad low-cap access, prefer fast execution and sell-following, and do not overfit a hard `$10k` minimum from older/stale logs.
+- This audit measures source-exit performance only. It does not answer MFE/target-hit timing; use candle audits for TP/trailing design when we specifically need that.
 
 ## Expanded 10k-Tx Check
 
