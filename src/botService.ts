@@ -2092,10 +2092,12 @@ function scheduleFailedBuyRecovery(
       } else if (isPumpFunAccountLayoutFailure(msg)) {
         boughtMintsThisSession.delete(sourceSwap.outputMint);
         pendingBuyRetryByMint.delete(sourceSwap.outputMint);
-        quarantinedBuyMints.set(sourceSwap.outputMint, `direct rescue ${decision.action}: ${msg}`);
+        liveBuyAttemptedMintsThisSession.delete(sourceSwap.outputMint);
+        quarantinedBuyMints.delete(sourceSwap.outputMint);
+        releaseRustBoughtMint(sourceSwap.outputMint, `recoverable direct rescue ${decision.action}: ${msg}`);
         console.warn(
-          `Buy quarantine set for ${sourceSwap.outputMint.slice(0, 8)}... after pump.fun account-layout ` +
-            "rescue also failed. No more retries for this mint this session."
+          `Direct rescue failure for ${sourceSwap.outputMint.slice(0, 8)}... is pump.fun account-layout recoverable; ` +
+            "clearing buy locks so later source buys can retry this mint."
         );
       } else {
         boughtMintsThisSession.delete(sourceSwap.outputMint);
@@ -3219,10 +3221,11 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           pendingBuyRetryByMint.delete(mint);
           fastBuyConfirmRetryScheduledByMint.delete(mint);
           failedBuyRecoveryInFlightMints.delete(mint);
-          quarantinedBuyMints.set(mint, reason);
+          quarantinedBuyMints.delete(mint);
+          releaseRustBoughtMint(mint, `recoverable pump.fun account-layout failure: ${reason}`);
           console.warn(
             `Buy failed for ${mint.slice(0, 8)}... with pump.fun account-layout error after rescue; ` +
-              "quarantining this mint for the rest of the session."
+              "clearing buy locks so later source buys can retry this mint."
           );
           return;
         }

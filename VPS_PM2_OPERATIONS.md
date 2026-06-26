@@ -46,6 +46,39 @@ pm2 stop finalbot-cya
 pm2 delete finalbot-cya
 ```
 
+## Kill All Background Processes
+
+Use PM2 first. This stops and removes every PM2-managed bot process:
+
+```bash
+pm2 stop all
+pm2 delete all
+pm2 save
+pm2 status
+```
+
+If a Rust sidecar, `tsx`, or `node` process is still stuck after PM2 is empty, list the leftovers:
+
+```bash
+ps aux | egrep 'node|tsx|pumpfun-sidecar|cargo' | grep -v grep
+```
+
+Kill only the bot-related leftovers:
+
+```bash
+pkill -f 'FinalBot-cya'
+pkill -f 'pumpfun-sidecar'
+pkill -f 'tsx src/copytrade.ts'
+pm2 status
+```
+
+Hard reset PM2 itself if it is wedged:
+
+```bash
+pm2 kill
+pm2 resurrect
+pm2 status
+```$([Environment]::NewLine)
 ## Env Presets
 
 Buy-only tip and priority fees:

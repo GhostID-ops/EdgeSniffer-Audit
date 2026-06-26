@@ -604,10 +604,9 @@ export async function tryPumpFunDirectBuy(args: {
   // 5. Build + sign + broadcast.
   args.log("Building pump.fun buy tx...");
   const buildStartedAt = Date.now();
-  // Prefer canonical curve-derived V2 accounts when the curve RPC is available. Source CPI metas
-  // can carry router-specific or stale accounts and have repeatedly failed with Pump.fun 2006/6004.
-  // Source metas remain useful for legacy per-coin remaining accounts, and for the earlier
-  // source-replay fallback when the curve account is not readable yet.
+  // Prefer a full Pump.fun V2 source account list when the detector captured one. Those metas
+  // include launch-specific accounts that canonical derivation can miss on Token-2022 curves.
+  // Legacy source metas are still ignored for Token-2022 direct buys.
   let sourceIxPubkeys: PublicKey[] | undefined;
   if (args.sourceIxAccounts && args.sourceIxAccounts.length >= 16) {
     const candidate = args.sourceIxAccounts.map((k) => new PublicKey(k));
@@ -616,11 +615,12 @@ export async function tryPumpFunDirectBuy(args: {
       candidate[1]?.equals(mintKey) === true &&
       candidate[26]?.equals(PUMP_FUN_PROGRAM_ID) === true;
     if (curve.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID)) {
-      args.log(
-        isV2Source
-          ? "Using canonical Pump.fun V2 account derivation; ignoring source V2 metas after curve RPC quote."
-          : "Using canonical Pump.fun V2 account derivation; ignoring legacy source metas for Token-2022 direct buy."
-      );
+      if (isV2Source) {
+        sourceIxPubkeys = candidate;
+        args.log(`Using ${sourceIxPubkeys.length} source Pump.fun V2 account(s) from gRPC payload.`);
+      } else {
+        args.log("Using canonical Pump.fun V2 account derivation; ignoring legacy source metas for Token-2022 direct buy.");
+      }
     } else {
       sourceIxPubkeys = candidate;
       args.log(`Using ${sourceIxPubkeys.length} source pump.fun account(s) from gRPC payload.`);

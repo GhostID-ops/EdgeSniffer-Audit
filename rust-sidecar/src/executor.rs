@@ -1664,7 +1664,18 @@ fn build_pumpfun_buy_ix(
         let source_accounts = parse_pubkeys(source_ix_accounts, "sourceIxAccounts")?;
         let is_v2 = is_v2_source_accounts(&source_accounts, mint);
         let is_token_2022 = *token_program_id == parse_pubkey(TOKEN_2022_PROGRAM_ID, "token 2022")?;
-        if !is_token_2022 && !is_v2 && source_accounts.len() >= 16 {
+        if is_v2 {
+            return build_source_replay_buy_ix(
+                &source_accounts,
+                &data,
+                user,
+                mint,
+                token_program_id,
+                &parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?,
+                cmd.exact_sol_in,
+            );
+        }
+        if !is_token_2022 && source_accounts.len() >= 16 {
             return build_source_replay_buy_ix(
                 &source_accounts,
                 &data,
