@@ -20,6 +20,7 @@ import {
   PUMPSWAP_BUY_EXACT_QUOTE_IN_DISCRIMINATOR,
   PUMPSWAP_SELL_DISCRIMINATOR,
 } from "./pumpswap/route.js";
+import { RAYDIUM_CPMM_PROGRAM_ID_BASE58, RAYDIUM_CPMM_SWAP_BASE_INPUT_DISCRIMINATOR } from "./raydiumCpmm/route.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
 const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
@@ -154,6 +155,49 @@ function accountMetaFromMessage(
  * Capture the exact PumpSwap AMM account list from the source tx. This is the graduated-token
  * equivalent of sourceIxAccounts for pump.fun bonding-curve routes.
  */
+function extractRaydiumCpmmIx(
+  info: SubscribeUpdateTransactionInfo,
+  allKeysBase58: string[],
+  mint: string
+): { accounts: SourcePumpSwapAccountMeta[]; instruction: "swap_base_input" } | null {
+  const message = info.transaction?.message;
+  const meta = info.meta;
+  if (!message || !meta) return null;
+
+  const tryIx = (
+    programIdIndex: number,
+    accIndexes: Uint8Array | number[] | undefined,
+    dataRaw: unknown
+  ): { accounts: SourcePumpSwapAccountMeta[]; instruction: "swap_base_input" } | null => {
+    if (!accIndexes) return null;
+    const programId = allKeysBase58[programIdIndex];
+    if (programId !== RAYDIUM_CPMM_PROGRAM_ID_BASE58) return null;
+    const data = ixDataToBuffer(dataRaw);
+    if (!data.subarray(0, 8).equals(RAYDIUM_CPMM_SWAP_BASE_INPUT_DISCRIMINATOR)) return null;
+    const idxArr = accIndexes instanceof Uint8Array ? Array.from(accIndexes) : accIndexes;
+    if (idxArr.length < 13) return null;
+    const keys = idxArr.map((i) => allKeysBase58[i]!);
+    if (keys[10] !== mint && keys[11] !== mint) return null;
+    if (![keys[10], keys[11]].includes(WRAPPED_SOL_MINT) && ![keys[10], keys[11]].includes(USDC_MINT)) {
+      return null;
+    }
+    const accounts = idxArr.map((i) => accountMetaFromMessage(info, allKeysBase58, i));
+    if (accounts.some((account) => account == null)) return null;
+    return { accounts: accounts as SourcePumpSwapAccountMeta[], instruction: "swap_base_input" };
+  };
+
+  for (const ix of message.instructions ?? []) {
+    const found = tryIx(ix.programIdIndex, ix.accounts, (ix as unknown as { data?: unknown }).data);
+    if (found) return found;
+  }
+  for (const group of meta.innerInstructions ?? []) {
+    for (const ix of group.instructions ?? []) {
+      const found = tryIx(ix.programIdIndex, ix.accounts, (ix as unknown as { data?: unknown }).data);
+      if (found) return found;
+    }
+  }
+  return null;
+}
 function extractPumpSwapIx(
   info: SubscribeUpdateTransactionInfo,
   allKeysBase58: string[],
@@ -386,6 +430,7 @@ export function extractSwapFromGrpcTransaction(
       extractPumpFunBuyIxAccounts(info, accountKeys, best.mint) ?? undefined;
     const sourcePumpSwapIx =
       extractPumpSwapIx(info, accountKeys, best.mint) ?? undefined;
+    const sourceRaydiumCpmmIx = extractRaydiumCpmmIx(info, accountKeys, best.mint) ?? undefined;
     return {
       signature,
       wallet,
@@ -400,6 +445,8 @@ export function extractSwapFromGrpcTransaction(
       sourceIxDataBase64: sourcePumpFunIx?.dataBase64,
       sourcePumpSwapInstruction: sourcePumpSwapIx?.instruction,
       sourcePumpSwapAccounts: sourcePumpSwapIx?.accounts,
+      sourceRaydiumCpmmInstruction: sourceRaydiumCpmmIx?.instruction,
+      sourceRaydiumCpmmAccounts: sourceRaydiumCpmmIx?.accounts,
       sourceQuoteMint: quote.mint ?? WRAPPED_SOL_MINT,
       sourceQuoteAmountRaw: amountRaw,
     };
@@ -410,6 +457,7 @@ export function extractSwapFromGrpcTransaction(
     const counterpartyAmountRaw = numberFromBigint(nativeNet);
     if (amountRaw == null || counterpartyAmountRaw == null) return null;
     const sourcePumpSwapIx = extractPumpSwapIx(info, accountKeys, best.mint) ?? undefined;
+    const sourceRaydiumCpmmIx = extractRaydiumCpmmIx(info, accountKeys, best.mint) ?? undefined;
     return {
       signature,
       wallet,
@@ -421,6 +469,8 @@ export function extractSwapFromGrpcTransaction(
       counterpartyAmountRaw,
       counterpartyDecimals: 9,
       sourcePumpSwapAccounts: sourcePumpSwapIx?.accounts,
+      sourceRaydiumCpmmInstruction: sourceRaydiumCpmmIx?.instruction,
+      sourceRaydiumCpmmAccounts: sourceRaydiumCpmmIx?.accounts,
     };
   }
 
@@ -434,6 +484,7 @@ export function extractSwapFromGrpcTransaction(
       const counterpartyAmountRaw = numberFromBigint(best.net);
       if (amountRaw == null || counterpartyAmountRaw == null) return null;
       const sourcePumpSwapIx = extractPumpSwapIx(info, accountKeys, best.mint) ?? undefined;
+      const sourceRaydiumCpmmIx = extractRaydiumCpmmIx(info, accountKeys, best.mint) ?? undefined;
       return {
         signature,
         wallet,
@@ -446,6 +497,8 @@ export function extractSwapFromGrpcTransaction(
         counterpartyDecimals: best.decimals,
         sourcePumpSwapInstruction: sourcePumpSwapIx?.instruction,
         sourcePumpSwapAccounts: sourcePumpSwapIx?.accounts,
+        sourceRaydiumCpmmInstruction: sourceRaydiumCpmmIx?.instruction,
+        sourceRaydiumCpmmAccounts: sourceRaydiumCpmmIx?.accounts,
         sourceQuoteMint: quote.mint,
         sourceQuoteAmountRaw: amountRaw,
       };
@@ -459,6 +512,7 @@ export function extractSwapFromGrpcTransaction(
       const counterpartyAmountRaw = numberFromBigint(quote.net);
       if (amountRaw == null || counterpartyAmountRaw == null) return null;
       const sourcePumpSwapIx = extractPumpSwapIx(info, accountKeys, best.mint) ?? undefined;
+      const sourceRaydiumCpmmIx = extractRaydiumCpmmIx(info, accountKeys, best.mint) ?? undefined;
       return {
         signature,
         wallet,
@@ -470,6 +524,8 @@ export function extractSwapFromGrpcTransaction(
         counterpartyAmountRaw,
         counterpartyDecimals: quote.mint === USDC_MINT ? 6 : 9,
         sourcePumpSwapAccounts: sourcePumpSwapIx?.accounts,
+        sourceRaydiumCpmmInstruction: sourceRaydiumCpmmIx?.instruction,
+        sourceRaydiumCpmmAccounts: sourceRaydiumCpmmIx?.accounts,
       };
     }
   }
@@ -626,3 +682,4 @@ export async function subscribeGrpcWalletSwaps(
     activeStream?.destroy();
   };
 }
+

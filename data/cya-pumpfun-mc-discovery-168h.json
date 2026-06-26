@@ -1,0 +1,263 @@
+{
+  "generatedAt": "2026-06-19T16:27:00.425Z",
+  "wallet": "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
+  "hours": 168,
+  "minEntryMcUsd": 50000,
+  "solUsd": 69.07,
+  "supplyApprox": 1000000000,
+  "coverage": {
+    "walletTxs": 11780,
+    "swaps": 8861,
+    "campaigns": 1258,
+    "pumpfunCampaigns": 1015,
+    "pumpfunMcCampaigns": 22
+  },
+  "entryMc": {
+    "medianPumpfun": 3733.090031152487,
+    "medianPumpfunMc": 102630.06696408798
+  },
+  "pumpfunMcRows": [
+    {
+      "mint": "8J69rbLTzWWgUJziFY8jeu5tDwEPBwUz4pKBMr5rpump",
+      "entryIso": "2026-06-17T02:07:44.000Z",
+      "entryMcUsd": 5577154.470873949,
+      "firstBuySol": 5.000805,
+      "buyCount": 13,
+      "sellCount": 2,
+      "firstSellPct": -8.520445128644747,
+      "firstBuySignature": "3N29tLR5sphjzAsPGgMuiRJGGH44HZ9WYByASPT7f36Xr3m1FUBfE62aTGrSU5a6h7XjMt9ENU5mppuLdE9g9cUA",
+      "firstSellSignature": "2pkZz3WbKWmiW7JtJoe9aAigVg5BDL5WSQisiDn5cJLioPYpG1aqbmm1z2rgi4GUL2rYc7bTjR4ELrS8e3P3Xr3"
+    },
+    {
+      "mint": "AvxFBjWydMYWD7C8pHzSkGxNYAFWr7aNBbAKm84bpump",
+      "entryIso": "2026-06-16T19:06:34.000Z",
+      "entryMcUsd": 1942994.4961074323,
+      "firstBuySol": 5.00287908,
+      "buyCount": 11,
+      "sellCount": 6,
+      "firstSellPct": -7.872742384443064,
+      "firstBuySignature": "5sBSCvezxG2eEqgMbAZLiGm5VWbG7jBpb5TynpfXvP4HsFYfv797PWU9MetYvgCkb5ooSLUt8EaiydZu2T3mXURZ",
+      "firstSellSignature": "4TPYC6GptMwibCXqeqohfryAq4GUDUfHVEYC3zZLhaVtzHK4Lejz6PpJaPfnVuod7V6RMEsLGuJNwTtaEj7VG2A2"
+    },
+    {
+      "mint": "3x6apzqJKgf33zet8CbkAx7LogqkRhNX6FiRzVA5pump",
+      "entryIso": "2026-06-13T17:22:30.000Z",
+      "entryMcUsd": 737502.7394056304,
+      "firstBuySol": 5.000805,
+      "buyCount": 6,
+      "sellCount": 1,
+      "firstSellPct": -3.5655132137177166,
+      "firstBuySignature": "4Nef3H59h2cqzMTK9JFZcFdUcnZZxrFSKyq4A8fg57U3XnpCTkX1vagsnRp8xwYhfdV67qzdL4kt7xNM1Yhj6GyG",
+      "firstSellSignature": "39xmrh87v7dBn5qjSVNE7k4W9utzu1f71hGr2TruWbATQfPHeeqQv2osmukSzP5xdk2biqkXVAodbhdFuRCQcdF4"
+    },
+    {
+      "mint": "ADA9mtno4BVknoSefbqdh7aMPg4wwxZHKByRpJNTpump",
+      "entryIso": "2026-06-16T18:18:29.000Z",
+      "entryMcUsd": 473472.40908625675,
+      "firstBuySol": 5.00284428,
+      "buyCount": 2,
+      "sellCount": 1,
+      "firstSellPct": 0.06409711916649918,
+      "firstBuySignature": "5WtwYPsCWknRC1YMMfcSjijtDo9sJ4F2HUjudVjoMvtYhffGivjxXFc5DR91BpM5HMt6D2Nt12w5fk9m1iGCi6ey",
+      "firstSellSignature": "22RfkL9To4jgT2tfepmGBKud9JSkzW3jUx4CLxe2tUCGh6oCLqsJLTbhmijGe2c2XgPkq2tXX3fp94mmA9T7TRsV"
+    },
+    {
+      "mint": "21rKrtBzibPAZHAHQRzGiGDSh7XimCKB2a8VgsjZpump",
+      "entryIso": "2026-06-12T22:36:18.000Z",
+      "entryMcUsd": 438023.2657160263,
+      "firstBuySol": 5.000805,
+      "buyCount": 5,
+      "sellCount": 1,
+      "firstSellPct": -0.5562941526983599,
+      "firstBuySignature": "YUniKAKj1PSJqQkqsfqMfsKdA9RoJUAJipmJkzLSMi76nom2MV5a7MaRGo8rzrA2x7kJ1wjwMiM6QAfidFp8v6b",
+      "firstSellSignature": "63mz58JroEDDLfQmBtQB683mUXpMrhJUeHsMAWZQvb5uzxpGjAXmFifyNmVFpr4DC15wbrRjj3NZtrbaH3NrqviK"
+    },
+    {
+      "mint": "pu4obkGGCvfpKwDFcrt22qFpggdkCExkYREDS45pump",
+      "entryIso": "2026-06-16T21:38:50.000Z",
+      "entryMcUsd": 262517.80926723813,
+      "firstBuySol": 5.000805,
+      "buyCount": 2,
+      "sellCount": 1,
+      "firstSellPct": -2.5438617209910976,
+      "firstBuySignature": "mTL29vU59dPWXrBGDRvZxaHzxGTxxJg9PTDVyUScSysz2xcMepT5CwFo9RET8cKcMMgp9S1h9rcuDkLRv5J6jst",
+      "firstSellSignature": "gdHR5d7Lup4ugwXfPYEbqQ25PKQ8XYfV6Xc1GzwgccWsyKyxuWMWHDLJpeAYmt8Ypu8S7vpMNrXzV18JNZ4HoU4"
+    },
+    {
+      "mint": "9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump",
+      "entryIso": "2026-06-16T21:10:35.000Z",
+      "entryMcUsd": 247374.06765006343,
+      "firstBuySol": 5.000805,
+      "buyCount": 4,
+      "sellCount": 1,
+      "firstSellPct": -7.182268666199956,
+      "firstBuySignature": "eXXSQvptQmcGPPSQTEAFCSQuC27JVkhVUCCkLxqs6yfu2YG25xQGBucz9wVsCx595PfJkSr1tdefHjN37fQhZjD",
+      "firstSellSignature": "5i51ktcd6Hahvb4tKUkJCRCfLJi4g75Afkx5LXn9LSLsxKAYReVVxSJtFT9M1QT6Z7ZVh82iZ1mzRcjnqVVdUyrT"
+    },
+    {
+      "mint": "4gZ8BDrhDcRjw9gDWEGeTyLT4iFejVoxVxdQFYsGpump",
+      "entryIso": "2026-06-16T20:48:48.000Z",
+      "entryMcUsd": 187898.28925824232,
+      "firstBuySol": 5.00287908,
+      "buyCount": 11,
+      "sellCount": 1,
+      "firstSellPct": -28.059648666453686,
+      "firstBuySignature": "RTtDtQXRXcHa3an5FpYPWbPFbcGqBWp1JcHPSXh9v8aoxhsbGU7QyUZt98GQajgAv46pMK33HYxKu3NUJ1oriEG",
+      "firstSellSignature": "3Z5CYG7Pshit7FSFejfnJGCy6E9fb8WBQkFiN4aQssAy4ng6hp6dgMuCysDa4Y4qxkrcCmRQzVcas6xZjPbk4qFy"
+    },
+    {
+      "mint": "2vx5rqcMBhWtzquD8Goje9pXfLu1pvCgmc6skrbDpump",
+      "entryIso": "2026-06-15T00:18:50.000Z",
+      "entryMcUsd": 130414.68181765047,
+      "firstBuySol": 5.00284428,
+      "buyCount": 12,
+      "sellCount": 2,
+      "firstSellPct": 92.82359829485394,
+      "firstBuySignature": "5hS2ygrgax3WehZ5aF3RztDHHFPyMaLUD5o9qnkwosrH1tf1fSGcskufqDKVMQUHPeCDB46TvVUcd9LBLVcavnNs",
+      "firstSellSignature": "5iZeX4hSt5K3qRQBwXwenRnJgrLBr99jx3kBGCXq8vsYh8pNE5iGPtT1jM2fAzMbmsZZ5B52CHVnR1DRaSrL7r89"
+    },
+    {
+      "mint": "2aKTUD6u1MW3vbAQdHvNnw9wjjZoacQVMbYTG28cpump",
+      "entryIso": "2026-06-19T00:21:49.000Z",
+      "entryMcUsd": 113554.94531075566,
+      "firstBuySol": 5.00727908,
+      "buyCount": 5,
+      "sellCount": 1,
+      "firstSellPct": -54.551296886753256,
+      "firstBuySignature": "2hvPSMMz6vGv6S21c6HSHK2GjzYcERvUwzKTpU1JhopB5AE6WFwbESjH4GxuRpMDV28TdAjEEBhCo2f39S4DSNhx",
+      "firstSellSignature": "7duGAzduHGeJgDBtLhGmyq9dmsPccuhYajU7XjBztVtd1f6xSvUMD5DpANa5pbKT3gN1XAEsqXtuESEmUijqwDz"
+    },
+    {
+      "mint": "dFybjfpAbTxjen9Ux2Q2dQSFTmrbcVRzYsGoiV5pump",
+      "entryIso": "2026-06-15T11:08:21.000Z",
+      "entryMcUsd": 105094.80342446409,
+      "firstBuySol": 5.000805,
+      "buyCount": 9,
+      "sellCount": 5,
+      "firstSellPct": -22.427335200014678,
+      "firstBuySignature": "2K22BFCBmuDpbkSqYukzm9nVLZmLiQ3bxMdAFb3CYykLw44fKSKT1CE1yYJZKpUPBtWYJ3LruChcVezQxBex9Wcp",
+      "firstSellSignature": "4qZQKp9K4s2TfakKzANCP7gS4R83msahjQ61mSZAeHsZcHHaXC1BPiRMZ7wihA7dTrvcWoDNZgH59hD5bKJavDkd"
+    },
+    {
+      "mint": "Yc3WKpKKTHEtjWvzjRbFYF9VFQiPQubSw8r5gdBpump",
+      "entryIso": "2026-06-15T12:09:32.000Z",
+      "entryMcUsd": 100165.33050371188,
+      "firstBuySol": 5.00287908,
+      "buyCount": 1,
+      "sellCount": 1,
+      "firstSellPct": -17.71616694761289,
+      "firstBuySignature": "5c5pqmdGFWpVjHy3cYVVZu4W92e1KVhzDydoXARFosEU7EpdGVTcSwdZxGz2Md4KbrYeYJjjieWcJcCxY1rLiYNy",
+      "firstSellSignature": "59XM4ubRqixrJrTcKJdGMyWyTGPVqpL6fWtDyoPMjRGFx9cD3rweXnP7iHSW37rZfB3U5mvarhr245rkEa5fhEdm"
+    },
+    {
+      "mint": "BFM8azvsdcT7yhLPFzynz5ipYyATh2mFEPtEoF1Bpump",
+      "entryIso": "2026-06-14T00:39:35.000Z",
+      "entryMcUsd": 89539.05242198647,
+      "firstBuySol": 5.00287908,
+      "buyCount": 5,
+      "sellCount": 1,
+      "firstSellPct": -0.6982640053283904,
+      "firstBuySignature": "4ZkSogGfVLppqH6X8NcRvTE62TKYnC6xnFD6e7gi2qEFJRdWC2gfMhRzYkMf3j7VCM3wdVa9HX4i4LqWiER5DiVE",
+      "firstSellSignature": "dYFHWozhLsNbuZZLJfQYyQzfA7mnwQdg3CfzEgZfbbYvHNMaqRRhERdAWbwUaRn3mFzSDM96ydUfB2yGBdjZv7P"
+    },
+    {
+      "mint": "BzyKa1FGjs2EUpu3GGDibY4xdygn5evAiRboKmETpump",
+      "entryIso": "2026-06-18T20:41:57.000Z",
+      "entryMcUsd": 83865.0408061417,
+      "firstBuySol": 5.005205,
+      "buyCount": 2,
+      "sellCount": 1,
+      "firstSellPct": -1.3832950733640355,
+      "firstBuySignature": "2WuKBVFRfZk4Gwuk6zTEt5oV2xnDv3yUSMepCGP9hrJB7e54TFGRCed8pyghSWL8cdQEYpUwoHCwadCPewW2ppkk",
+      "firstSellSignature": "3HAKYztHFCWxBqDu3UUkrP7sqkYS3P66jadeEndFYV3ajkpgv9V9rwM7EugcU3Bz7vhgFqXzrp6UeYntw5D6kTbk"
+    },
+    {
+      "mint": "4StuLHHsHobhBh4BCNhreFtQ5EvSZHvbAMxJ44JWpump",
+      "entryIso": "2026-06-17T00:12:59.000Z",
+      "entryMcUsd": 80878.05499256088,
+      "firstBuySol": 5.000805,
+      "buyCount": 13,
+      "sellCount": 5,
+      "firstSellPct": -26.093200327363874,
+      "firstBuySignature": "62mzxxBo3Tu3oEK18HTcDq8pT2sv7uteCBxYJLsr6gJjVthHbdwwbBaNQPDcoVyTMzz7gspo3vCN7UiaoVTp3Y64",
+      "firstSellSignature": "2VRkSjCDBZrhWt1LvdAfR2wD31aSGA2TeBHgiWCTnWPwWHkAS3uDRNj21mdiJvDc3AEwfax7zsBiPnnEztkeeA3V"
+    },
+    {
+      "mint": "Ag7EKaVRQntM1Efnm9qvoVeTdAZ3PWAWPD1feFugpump",
+      "entryIso": "2026-06-19T00:21:09.000Z",
+      "entryMcUsd": 75435.7894624669,
+      "firstBuySol": 5.00727908,
+      "buyCount": 7,
+      "sellCount": 4,
+      "firstSellPct": 670.0735569618845,
+      "firstBuySignature": "5mVT8cBXw5HzZXThpYKENafFPEYaL9HKhMt6A645xDJkoTAUXTnTCYy51ncNdy3faRTEjncjh2gD8s5spHFhMAq3",
+      "firstSellSignature": "33wtSLP7JrYYkB7YnLHEhZXQZ7DDBU8U8QaRmYCiVDb5A3qrKVgUDdtz537d1vFioXDQp91YLKtBG9G9L3vrX7L7"
+    },
+    {
+      "mint": "3NMQuwg7WGqzqjqwUnR3Ciwo3AoVE39yYQnTqK49pump",
+      "entryIso": "2026-06-18T20:41:51.000Z",
+      "entryMcUsd": 64219.115308550725,
+      "firstBuySol": 5.00727908,
+      "buyCount": 20,
+      "sellCount": 5,
+      "firstSellPct": 120.07491364744094,
+      "firstBuySignature": "aXX6h72V3JQNUz4uMDxM51SyPJ1M1uyS47RLeHjvz7ruv3jxMFuDB9RF6SNwYmLiq98T25jrAWrYyTwyCrh2kE5",
+      "firstSellSignature": "3aVnc7gECcRJgTPH9hcuoNaZYwHJ5dDjqe4NS49ugVKrtdh5a4zKNcCkBcbPJVSEL8Mg8hZuVuxwskgBoP3jVtr6"
+    },
+    {
+      "mint": "8MifqHUWsUbD2J4SvteKo7BpdMae7ZUsm5yro3kzpump",
+      "entryIso": "2026-06-16T18:20:26.000Z",
+      "entryMcUsd": 62318.44652301697,
+      "firstBuySol": 5.00287908,
+      "buyCount": 1,
+      "sellCount": 1,
+      "firstSellPct": -95.70841910094697,
+      "firstBuySignature": "3aGYTZDKpB7HYUyRwJ25cGMamA5MB5E6oEmEJXuQhS2t1wha7Gmsev6VFzkDsPMhS3Dd2Gj5PW4eka4i3U7Kg26E",
+      "firstSellSignature": "5etxNsMmRRAtnsQXnqbb7MQ2brhFeYAkHNhrebGpYFpVqqtqhwndKpLZNJC4ZcqtoRzFXJF6HAQPm2nj3WKspV5x"
+    },
+    {
+      "mint": "DuamrFMW6RKXieEino683F7VbwXSX7e9CuhnZ3i8pump",
+      "entryIso": "2026-06-15T18:55:36.000Z",
+      "entryMcUsd": 58021.41539135659,
+      "firstBuySol": 5.000805,
+      "buyCount": 2,
+      "sellCount": 1,
+      "firstSellPct": -37.5535400917214,
+      "firstBuySignature": "2gWLMEPYwgsLhWdKAd256ThG4aBbvFeUHBQGH3W1MM2n5SA52P9oFQp2N2EqHKDcBdptkRhSae137nKL5XDV7hpE",
+      "firstSellSignature": "fn8MiCnoCwk9E6epzrgeAmrTJhqnfVtL1PSzFDrbcpPyNjzAzwWdEeyTRbqMFPRbFz7e3Z91EmQE1RtF1XAyEU6"
+    },
+    {
+      "mint": "EUwXuwZMQdXvHiqJ27WJp3U6MWAWp3228QVQDoerpump",
+      "entryIso": "2026-06-16T21:10:17.000Z",
+      "entryMcUsd": 52651.45465228658,
+      "firstBuySol": 5.00287908,
+      "buyCount": 3,
+      "sellCount": 1,
+      "firstSellPct": -11.589013707335752,
+      "firstBuySignature": "4d9EtTrSC9MknbTpUCKsCtsC73bmuVWRE4iCXeszbwhCZ6oMeHmzvkLMVxstrQuBr4GFu98otHkGHVof9sXz6Amz",
+      "firstSellSignature": "2gDWVXh7i4SV8qJGrjPjczYWJEuSX2qxPRy3gVWE71m1jQB51WGjfPswvB8n3uBfH2TcGcABjbLKRdy1dvmMPr8a"
+    },
+    {
+      "mint": "DXwcaZ3atb4WfrzDtkR3EcRhkv2rrbzjKLQxyPjNpump",
+      "entryIso": "2026-06-17T18:02:39.000Z",
+      "entryMcUsd": 51712.040458376025,
+      "firstBuySol": 5.03207908,
+      "buyCount": 3,
+      "sellCount": 1,
+      "firstSellPct": -11.94203621146398,
+      "firstBuySignature": "3PqUCj2JbWorUv5eYM9YxZ2JTQ475MG78k3k9iYuTRNJtN38JFLBb7CMVRiCgmHymJBkN94zPten7SiMkwcaJehj",
+      "firstSellSignature": "4LwCKpRNuKBWWXinTBGZS3giNtwoHTnyVMX8hRTczqj8cgBvvUZZxiTbqenUage8deBxQj297j1WaZBgmAZw4pZN"
+    },
+    {
+      "mint": "2rYbGEHUfES32Ph3QGBmpCcKVPXBzW6mHz1thGjvpump",
+      "entryIso": "2026-06-14T22:22:14.000Z",
+      "entryMcUsd": 50537.27312653565,
+      "firstBuySol": 5.00287908,
+      "buyCount": 5,
+      "sellCount": 2,
+      "firstSellPct": -12.893978055819804,
+      "firstBuySignature": "2b9rpoAEq7ZsntsyfiXAj4wyR89gh4GNGGWfxi4AkPiZuuMW9KQvt1m3nVwkfuRDPNXe2e3eBXo4BrnwDTgqQt2m",
+      "firstSellSignature": "2nP16LmkCyu1bs6kJXMrv6GdpvBMbbo4bMLdw8o3XVwUkRbY5egTPJdxNnhMD91uS7jJ9EsTUqqTaASuNcD4roP4"
+    }
+  ]
+}

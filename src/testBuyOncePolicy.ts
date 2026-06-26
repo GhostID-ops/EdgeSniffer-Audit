@@ -19,6 +19,13 @@ assert.equal(
   }),
   false
 );
+assert.equal(
+  shouldHoldBuyOnceAfterFailure({
+    buyOncePerTokenEnabled: true,
+    reason: 'Pump.fun direct buy failed: Transaction failed: {"InstructionError":[3,{"Custom":6042}]}',
+  }),
+  false
+);
 
 
 assert.equal(

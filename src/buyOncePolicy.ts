@@ -1,3 +1,5 @@
+import { decideRetryAction } from "./executionRetry.js";
+
 export function isPostBroadcastBuyUncertainty(reason: string): boolean {
   return /after (?:Rust )?broadcast|confirmation failed|confirmation-failed|signature=|Transaction failed/i.test(reason);
 }
@@ -6,7 +8,8 @@ export function shouldHoldBuyOnceAfterFailure(args: {
   buyOncePerTokenEnabled: boolean;
   reason: string;
 }): boolean {
-  return args.buyOncePerTokenEnabled && isPostBroadcastBuyUncertainty(args.reason);
+  if (!args.buyOncePerTokenEnabled || !isPostBroadcastBuyUncertainty(args.reason)) return false;
+  return decideRetryAction(args.reason).shouldQuarantine;
 }
 export function shouldBlockBuyOnceReentry(args: {
   buyOncePerTokenEnabled: boolean;

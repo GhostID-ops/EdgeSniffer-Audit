@@ -39,4 +39,18 @@ assert.equal(
   "pumpswap-graduated"
 );
 
+assert.equal(
+  planExecution({
+    ...base,
+    sourceIxAccounts: undefined,
+    sourceRaydiumCpmmAccounts: Array.from({ length: 13 }, (_, i) => ({
+      pubkey: `raydium-account-${i}`,
+      isSigner: i === 0,
+      isWritable: [0, 3, 4, 5, 6, 7, 12].includes(i),
+    })),
+  }).route,
+  "raydium-cpmm"
+);
 console.log("Execution planner tests passed");
+
+

@@ -1,0 +1,24 @@
+● finalbot-cya.service - FinalBot CyA wallet instance
+     Loaded: loaded (/etc/systemd/system/finalbot-cya.service; disabled; preset: enabled)
+     Active: active (running) since Fri 2026-06-19 18:27:27 UTC; 1h 6min ago
+   Main PID: 279305 (npm run bot)
+      Tasks: 39 (limit: 9251)
+     Memory: 152.9M (peak: 202.6M)
+        CPU: 6min 26.799s
+     CGroup: /system.slice/finalbot-cya.service
+             ├─279305 "npm run bot"
+             ├─279342 sh -c "tsx src/copytrade.ts"
+             ├─279343 node /root/bot/FinalBot-cya/node_modules/.bin/tsx src/copytrade.ts
+             ├─279354 /usr/bin/node --require /root/bot/FinalBot-cya/node_modules/tsx/dist/preflight.cjs --import file:///root/bot/FinalBot-cya/node_modules/tsx/dist/loader.mjs src/copytrade.ts
+             └─279367 /root/bot/FinalBot-cya/rust-sidecar/target/release/pumpfun-sidecar
+
+Jun 19 19:31:52 CTbot npm[279354]: Skipping buy: prebuy inferred MC $3.0K from source fill ($18 / 5,807,504.26 tokens, supply=1,000,000,000) < $50.0K.
+Jun 19 19:31:57 CTbot npm[279354]: 🔍 WS: no parsed tx for 2XzNNE7j… (raw + Helius both empty)
+Jun 19 19:31:57 CTbot npm[279354]: 🔍 WS: no parsed tx for 2e6mrfBS… (raw + Helius both empty)
+Jun 19 19:31:57 CTbot npm[279354]: 🔍 WS: no parsed tx for 44AhqeyB… (raw + Helius both empty)
+Jun 19 19:32:06 CTbot npm[279354]: gRPC detected swap 3gD3HMR4... (age 7ms)
+Jun 19 19:32:06 CTbot npm[279354]: ⚡ Processing sell from CyaE…a54o (3gD3HMR4…)
+Jun 19 19:32:06 CTbot npm[279354]: Execution plan: pumpfun-bonding-curve (pump mint without PumpSwap hints) for 84juB5M4...
+Jun 19 19:32:06 CTbot npm[279354]: ℹ️ Skipping sell: no position held for 84juB5M4…
+Jun 19 19:32:06 CTbot npm[279354]: Telegram error notification suppressed: Wallet: CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o | ⚠️ Skipped sell: No position held for token 84juB5M4…
+Jun 19 19:32:33 CTbot npm[279354]: Balance: 4.4483 SOL

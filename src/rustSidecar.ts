@@ -23,7 +23,7 @@ import {
 import { getCachedBlockhash } from "./blockhashCache.js";
 import { getDynamicPriorityFeeForRoute } from "./feeOracle.js";
 import { getHeliusTipLamportsForRoute, getJitoTipLamportsForRoute } from "./tipBuilder.js";
-import type { DetectedSwap, RustHotBuy, SourcePumpSwapAccountMeta } from "./types.js";
+import type { DetectedSwap, RustHotBuy, SourcePumpSwapAccountMeta, SourceRaydiumCpmmAccountMeta } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
 
 type RustSidecarEvent = {
@@ -113,6 +113,18 @@ export type RustPumpSwapBuyArgs = {
   baseTokenProgramId: string;
 };
 
+export type RustRaydiumCpmmSwapArgs = {
+  route: "raydium-cpmm-swap-base-input";
+  side: "buy" | "sell";
+  mint: string;
+  sourceSignature: string;
+  inputMint: string;
+  outputMint: string;
+  amountInRaw: number;
+  expectedOutRaw: number;
+  minOutRaw: number;
+  sourceRaydiumCpmmAccounts: SourceRaydiumCpmmAccountMeta[] | string[];
+};
 export type RustPumpSwapSellArgs = {
   route: "pumpswap-direct-sell";
   mint: string;
@@ -150,6 +162,7 @@ export type RustPumpFunBuyResult =
 
 export type RustPumpSwapBuyResult = RustPumpFunBuyResult;
 export type RustPumpSwapSellResult = RustPumpFunBuyResult;
+export type RustRaydiumCpmmSwapResult = RustPumpFunBuyResult;
 export type RustPumpFunSellResult = RustPumpFunBuyResult;
 
 export type RustHotBuyFallback = {
@@ -826,3 +839,58 @@ export function releaseRustBoughtMint(mint: string, reason: string): void {
   };
   executorStdin.write(`${JSON.stringify(command)}\n`);
 }
+
+export async function executeRustRaydiumCpmmSwap(args: RustRaydiumCpmmSwapArgs): Promise<RustRaydiumCpmmSwapResult | null> {
+  if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) return null;
+  const id = `rust-raydium-cpmm-${Date.now()}-${++executorSeq}`;
+  const { blockhash } = await getCachedBlockhash();
+  let amountInRaw: number;
+  let expectedOutRaw: number;
+  let minOutRaw: number;
+  try {
+    amountInRaw = integerCommandField(args.amountInRaw, "amountInRaw", 1);
+    expectedOutRaw = integerCommandField(args.expectedOutRaw, "expectedOutRaw", 1);
+    minOutRaw = integerCommandField(args.minOutRaw, "minOutRaw", 1);
+  } catch (err) {
+    return commandValidationFailure(err);
+  }
+  const command = {
+    kind: "executeRaydiumCpmmSwap",
+    id,
+    route: args.route,
+    side: args.side,
+    mint: args.mint,
+    sourceSignature: args.sourceSignature,
+    inputMint: args.inputMint,
+    outputMint: args.outputMint,
+    amountInRaw,
+    expectedOutRaw,
+    minOutRaw,
+    sourceRaydiumCpmmAccounts: args.sourceRaydiumCpmmAccounts.map(normalizePumpSwapAccountMeta),
+    blockhash,
+    computeUnitLimit,
+    priorityFeeMicroLamports: getDynamicPriorityFeeForRoute(args.route),
+    jitoTipLamports: getJitoTipLamportsForRoute(args.route),
+    heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
+    useJitoDirect,
+    useJitoFallback,
+    senderRpcFallbackEnabled,
+    executionMultiSendEnabled: executionMultiSendEnabled || broadcastRaceEnabled,
+    jitoSendMode,
+    jitoTransactionUrls,
+    jitoBundleUrls,
+    senderEndpointUrl,
+    rpcFallbackUrl: readRpcUrl,
+    jitoAuthUuid,
+  };
+
+  return await new Promise<RustRaydiumCpmmSwapResult>((resolve) => {
+    const timer = setTimeout(() => {
+      executorPending.delete(id);
+      resolve({ ok: false, error: `Rust Raydium CPMM executor timed out after ${rustExecutorTimeoutMs}ms` });
+    }, rustExecutorTimeoutMs);
+    executorPending.set(id, { resolve, timer });
+    executorStdin!.write(`${JSON.stringify(command)}\n`);
+  });
+}
+

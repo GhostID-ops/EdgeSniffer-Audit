@@ -23,8 +23,8 @@ ssh root@87.99.145.246
 
 ## Main Bot Folder
 
-```bash
-cd /root/bot/FinalBot
+```bash 
+cd /root/bot/FinalBot-cya
 ```
 
 Edit main env:
@@ -36,7 +36,7 @@ nano /root/bot/FinalBot/.env
 ## 4BdK Bot Folder
 
 ```bash
-cd /root/bot/FinalBot-4bdk
+cd /root/bot/FinalBot-cya
 ```
 
 Edit 4BdK env:
@@ -48,7 +48,7 @@ nano /root/bot/FinalBot-4bdk/.env
 ## 5qn Bot Folder
 
 ```bash
-cd /root/bot/FinalBot-5qn
+cd /root/bot/FinalBot-cya
 ```
 
 Edit 5qn env:
@@ -126,7 +126,7 @@ systemctl restart finalbot-4bdk
 5qn bot:
 
 ```bash
-systemctl restart finalbot-5qn
+systemctl restart finalbot-cya
 ```
 
 Restart 4BdK and 5qn together:
@@ -166,7 +166,7 @@ journalctl -u finalbot -f
 4BdK bot:
 
 ```bash
-journalctl -u finalbot-4bdk -f
+journalctl -u finalbot-cya -f
 ```
 
 5qn bot:
@@ -465,4 +465,80 @@ Stop manual mode with `Ctrl+C`, then restart background mode:
 
 ```bash
 systemctl start finalbot
+```
+
+## PM2 Bot Mode
+
+Use this when you want PM2 to keep the bot alive instead of running `npm run bot` manually.
+
+Install PM2 once:
+
+```bash
+npm install -g pm2
+```
+
+Start CyA with the committed PM2 config:
+
+```bash
+cd /root/bot/FinalBot-cya
+git pull origin main
+npm install
+npm run build
+pm2 delete finalbot-cya 2>/dev/null || true
+pm2 start ecosystem.config.cjs --only finalbot-cya
+pm2 save
+pm2 status
+pm2 logs finalbot-cya --lines 100
+```
+
+Useful PM2 commands:
+
+```bash
+pm2 status
+pm2 logs finalbot-cya --lines 100
+pm2 restart finalbot-cya
+pm2 stop finalbot-cya
+pm2 delete finalbot-cya
+```
+
+Make PM2 survive VPS reboots:
+
+```bash
+pm2 startup
+```
+
+Then run the command PM2 prints.
+
+## Env Update/Dedupe Commands
+
+These commands update `.env` and remove duplicate entries for the keys they touch.
+
+Buy-only tip and priority fees:
+
+```bash
+cd /root/bot/FinalBot-cya
+npm run env:buy-only-fees
+grep -nE '^(TIP_LAMPORTS|PRIORITY_FEE_MICRO_LAMPORTS|DYNAMIC_PRIORITY_FEE_ENABLED|EXECUTION_TIP_MULTIPLIERS|EXECUTION_PRIORITY_FEE_MULTIPLIERS)=' .env
+```
+
+No tip and no priority fees:
+
+```bash
+cd /root/bot/FinalBot-cya
+npm run env:no-execution-fees
+grep -nE '^(TIP_LAMPORTS|PRIORITY_FEE_MICRO_LAMPORTS|DYNAMIC_PRIORITY_FEE_ENABLED|DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS|EXECUTION_TIP_MULTIPLIERS|EXECUTION_PRIORITY_FEE_MULTIPLIERS)=' .env
+```
+
+Set one-off env values:
+
+```bash
+cd /root/bot/FinalBot-cya
+npm run env:upsert -- HYBRID_EXIT_ENABLED=true STOP_LOSS_PCT=35 MIN_HOLD_BEFORE_STOP_LOSS_MS=15000
+```
+
+Check duplicates, fee posture, and PM2 process status:
+
+```bash
+cd /root/bot/FinalBot-cya
+npm run vps:doctor
 ```

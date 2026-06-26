@@ -1,0 +1,367 @@
+{
+  "generatedAt": "2026-06-19T15:56:01.354Z",
+  "wallet": "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
+  "hours": 24,
+  "windowStartHoursAgo": 48,
+  "windowEndHoursAgo": 72,
+  "windowStartIso": "2026-06-16T15:54:06.000Z",
+  "windowEndIso": "2026-06-17T15:54:06.000Z",
+  "minEntryMcUsd": 50000,
+  "horizonHours": 24,
+  "routeFilter": "pumpfun-pumpswap",
+  "solUsd": 69.07,
+  "supplyApprox": 1000000000,
+  "trailingSteps": [
+    {
+      "peak": 50,
+      "floor": 25
+    },
+    {
+      "peak": 100,
+      "floor": 75
+    },
+    {
+      "peak": 200,
+      "floor": 125
+    },
+    {
+      "peak": 300,
+      "floor": 200
+    },
+    {
+      "peak": 500,
+      "floor": 350
+    },
+    {
+      "peak": 600,
+      "floor": 400
+    },
+    {
+      "peak": 800,
+      "floor": 500
+    },
+    {
+      "peak": 1200,
+      "floor": 1000
+    }
+  ],
+  "coverage": {
+    "walletTxs": 4067,
+    "swaps": 3163,
+    "campaigns48h": 192,
+    "mcCandidates": 14,
+    "candidates": 9
+  },
+  "entryMc": {
+    "median": 254053.98870007266,
+    "p25": 187898.28925824232,
+    "p75": 486882.4318625268
+  },
+  "path": {
+    "medianMfePct": 4.202879665948357,
+    "medianMaePct": -17.767557307958278
+  },
+  "targetHitSummary": [
+    {
+      "targetPct": 30,
+      "hits": 2,
+      "trades": 5,
+      "hitRatePct": 40,
+      "medianHitMin": 0.6083333333333333
+    },
+    {
+      "targetPct": 50,
+      "hits": 1,
+      "trades": 5,
+      "hitRatePct": 20,
+      "medianHitMin": 7.2
+    },
+    {
+      "targetPct": 75,
+      "hits": 0,
+      "trades": 5,
+      "hitRatePct": 0,
+      "medianHitMin": null
+    },
+    {
+      "targetPct": 100,
+      "hits": 0,
+      "trades": 5,
+      "hitRatePct": 0,
+      "medianHitMin": null
+    }
+  ],
+  "strategySummaries": [
+    {
+      "name": "mirror CyA first sell",
+      "trades": 5,
+      "winRatePct": 20,
+      "avgPct": -13.107592721649391,
+      "medianPct": -8.905350012604801,
+      "p25Pct": -26.093200327363874,
+      "p75Pct": -2.5438617209910976,
+      "totalPct": -65.53796360824695,
+      "profitFactor": 0.0009770595383098173
+    },
+    {
+      "name": "TP30 sell 100%",
+      "trades": 5,
+      "winRatePct": 60,
+      "avgPct": 9.72297707711412,
+      "medianPct": 0.06409711916649918,
+      "p25Pct": -2.5438617209910976,
+      "p75Pct": 30,
+      "totalPct": 48.6148853855706,
+      "profitFactor": 5.246133840194248
+    },
+    {
+      "name": "TP50 sell 100%",
+      "trades": 5,
+      "winRatePct": 40,
+      "avgPct": 2.5043370116413457,
+      "medianPct": -2.5438617209910976,
+      "p25Pct": -8.905350012604801,
+      "p75Pct": 0.06409711916649918,
+      "totalPct": 12.521685058206728,
+      "profitFactor": 1.3335343780755096
+    },
+    {
+      "name": "TP75 sell 100%",
+      "trades": 5,
+      "winRatePct": 20,
+      "avgPct": -13.107592721649391,
+      "medianPct": -8.905350012604801,
+      "p25Pct": -26.093200327363874,
+      "p75Pct": -2.5438617209910976,
+      "totalPct": -65.53796360824695,
+      "profitFactor": 0.0009770595383098173
+    },
+    {
+      "name": "TP100 sell 100%",
+      "trades": 5,
+      "winRatePct": 20,
+      "avgPct": -13.107592721649391,
+      "medianPct": -8.905350012604801,
+      "p25Pct": -26.093200327363874,
+      "p75Pct": -2.5438617209910976,
+      "totalPct": -65.53796360824695,
+      "profitFactor": 0.0009770595383098173
+    },
+    {
+      "name": "custom trailing",
+      "trades": 5,
+      "winRatePct": 40,
+      "avgPct": -2.4956629883586543,
+      "medianPct": -2.5438617209910976,
+      "p25Pct": -8.905350012604801,
+      "p75Pct": 0.06409711916649918,
+      "totalPct": -12.478314941793272,
+      "profitFactor": 0.6676208518107064
+    }
+  ],
+  "rows": [
+    {
+      "mint": "AvxFBjWydMYWD7C8pHzSkGxNYAFWr7aNBbAKm84bpump",
+      "symbol": "Merlin",
+      "entryIso": "2026-06-16T19:06:34.000Z",
+      "sourceFillMarketCapUsd": 1942994.4961074323,
+      "sourceBuySol": 5.00287908,
+      "sourceExitPct": -8.905350012604801,
+      "firstSellMinutes": 11.716666666666667,
+      "currentMarketCapUsd": 1409150,
+      "liquidityUsd": 113351.56,
+      "mfePct": 2.187010706099097,
+      "maePct": -15.14814969404619,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -8.905350012604801,
+        "tp30Sell100": -8.905350012604801,
+        "tp50Sell100": -8.905350012604801,
+        "tp75Sell100": -8.905350012604801,
+        "tp100Sell100": -8.905350012604801,
+        "trailingCustom": -8.905350012604801
+      },
+      "firstBuySignature": "5sBSCvezxG2eEqgMbAZLiGm5VWbG7jBpb5TynpfXvP4HsFYfv797PWU9MetYvgCkb5ooSLUt8EaiydZu2T3mXURZ",
+      "firstSellSignature": "1VJZLJ85AFwK8Rv228AajFoTF1rjx2dzK7TAx6FV7gY6pBargohcsg3zoWm6wPHjnHCx7qi15GZxVHt4JwasvAp"
+    },
+    {
+      "mint": "ADA9mtno4BVknoSefbqdh7aMPg4wwxZHKByRpJNTpump",
+      "symbol": "RIZZMAS",
+      "entryIso": "2026-06-16T18:18:29.000Z",
+      "sourceFillMarketCapUsd": 486882.4318625268,
+      "sourceBuySol": 5.000805,
+      "sourceExitPct": 0.06409711916649918,
+      "firstSellMinutes": 2.05,
+      "currentMarketCapUsd": 762249,
+      "liquidityUsd": 61938.02,
+      "mfePct": 4.202879665948357,
+      "maePct": -6.816715933887593,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 0.06409711916649918,
+        "tp30Sell100": 0.06409711916649918,
+        "tp50Sell100": 0.06409711916649918,
+        "tp75Sell100": 0.06409711916649918,
+        "tp100Sell100": 0.06409711916649918,
+        "trailingCustom": 0.06409711916649918
+      },
+      "firstBuySignature": "gNaf2Vydr7oQviX85t9NfGyKJKhRq6RiVDMyD8ZeEY5dKWhtqNaVya5EkViw4H8rUrnfgHfH3zKPUMsgmUYJzET",
+      "firstSellSignature": "22RfkL9To4jgT2tfepmGBKud9JSkzW3jUx4CLxe2tUCGh6oCLqsJLTbhmijGe2c2XgPkq2tXX3fp94mmA9T7TRsV"
+    },
+    {
+      "mint": "pu4obkGGCvfpKwDFcrt22qFpggdkCExkYREDS45pump",
+      "symbol": "GAYLON",
+      "entryIso": "2026-06-16T21:38:50.000Z",
+      "sourceFillMarketCapUsd": 254053.98870007266,
+      "sourceBuySol": 5.00287908,
+      "sourceExitPct": -2.5438617209910976,
+      "firstSellMinutes": 0.26666666666666666,
+      "currentMarketCapUsd": 62125,
+      "liquidityUsd": 26093.73,
+      "mfePct": 1.841030147025803,
+      "maePct": -55.35689879369979,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -2.5438617209910976,
+        "tp30Sell100": -2.5438617209910976,
+        "tp50Sell100": -2.5438617209910976,
+        "tp75Sell100": -2.5438617209910976,
+        "tp100Sell100": -2.5438617209910976,
+        "trailingCustom": -2.5438617209910976
+      },
+      "firstBuySignature": "2WkmixE6aoGDXvPGAg44oMAaiKFQQFUfvnJ71WuM2RU9f3xKSRQWR6MGNen7aUy3DqoEQqmJ24Gqbb4tbGCjSeaw",
+      "firstSellSignature": "gdHR5d7Lup4ugwXfPYEbqQ25PKQ8XYfV6Xc1GzwgccWsyKyxuWMWHDLJpeAYmt8Ypu8S7vpMNrXzV18JNZ4HoU4"
+    },
+    {
+      "mint": "4gZ8BDrhDcRjw9gDWEGeTyLT4iFejVoxVxdQFYsGpump",
+      "symbol": "OGFLOKI",
+      "entryIso": "2026-06-16T20:48:48.000Z",
+      "sourceFillMarketCapUsd": 187898.28925824232,
+      "sourceBuySol": 5.00287908,
+      "sourceExitPct": -28.059648666453686,
+      "firstSellMinutes": 11.533333333333333,
+      "currentMarketCapUsd": 154696,
+      "liquidityUsd": 32316.45,
+      "mfePct": 66.74036368779261,
+      "maePct": -40.04973631800551,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 72,
+        "tp50": 432,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 552,
+        "peakPct": 66.74036368779261,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -28.059648666453686,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": -28.059648666453686,
+        "tp100Sell100": -28.059648666453686,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "RTtDtQXRXcHa3an5FpYPWbPFbcGqBWp1JcHPSXh9v8aoxhsbGU7QyUZt98GQajgAv46pMK33HYxKu3NUJ1oriEG",
+      "firstSellSignature": "3Z5CYG7Pshit7FSFejfnJGCy6E9fb8WBQkFiN4aQssAy4ng6hp6dgMuCysDa4Y4qxkrcCmRQzVcas6xZjPbk4qFy"
+    },
+    {
+      "mint": "4StuLHHsHobhBh4BCNhreFtQ5EvSZHvbAMxJ44JWpump",
+      "symbol": "MUTUMBO",
+      "entryIso": "2026-06-17T00:12:59.000Z",
+      "sourceFillMarketCapUsd": 80878.05499256088,
+      "sourceBuySol": 5.000805,
+      "sourceExitPct": -26.093200327363874,
+      "firstSellMinutes": 1.65,
+      "currentMarketCapUsd": 43220,
+      "liquidityUsd": 30119.96,
+      "mfePct": 35.84695780324655,
+      "maePct": -17.767557307958278,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 1,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -26.093200327363874,
+        "tp30Sell100": 30,
+        "tp50Sell100": -26.093200327363874,
+        "tp75Sell100": -26.093200327363874,
+        "tp100Sell100": -26.093200327363874,
+        "trailingCustom": -26.093200327363874
+      },
+      "firstBuySignature": "62mzxxBo3Tu3oEK18HTcDq8pT2sv7uteCBxYJLsr6gJjVthHbdwwbBaNQPDcoVyTMzz7gspo3vCN7UiaoVTp3Y64",
+      "firstSellSignature": "2VRkSjCDBZrhWt1LvdAfR2wD31aSGA2TeBHgiWCTnWPwWHkAS3uDRNj21mdiJvDc3AEwfax7zsBiPnnEztkeeA3V"
+    }
+  ],
+  "skips": [
+    {
+      "mint": "8J69rbLTzWWgUJziFY8jeu5tDwEPBwUz4pKBMr5rpump",
+      "reason": "missing entry/path candles across 1 pair(s): unknown:FDrY5i...NSP7 no entry/path candles"
+    },
+    {
+      "mint": "9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump",
+      "reason": "missing entry/path candles across 1 pair(s): unknown:FnzKY6...L3CC no entry/path candles"
+    },
+    {
+      "mint": "EUwXuwZMQdXvHiqJ27WJp3U6MWAWp3228QVQDoerpump",
+      "reason": "missing entry/path candles across 1 pair(s): unknown:7EARNR...jDAw no entry/path candles"
+    },
+    {
+      "mint": "8MifqHUWsUbD2J4SvteKo7BpdMae7ZUsm5yro3kzpump",
+      "reason": "missing entry/path candles across 1 pair(s): unknown:6gmvaD...d3qu no entry/path candles"
+    }
+  ]
+}

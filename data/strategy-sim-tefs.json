@@ -1,0 +1,991 @@
+{
+  "generatedAt": "2026-06-24T06:14:51.686Z",
+  "inputPath": "data/path-wallet-audit-tefsDGYz1qc3F52ckPPxaVqxwbCuJkheoEhzyFDumyf.json",
+  "sample": {
+    "partial": false,
+    "txsFetched": 5000,
+    "swaps": 1633,
+    "campaigns": 359,
+    "measuredEntries": 80,
+    "oldestTx": "2026-06-18T21:09:58.000Z",
+    "newestTx": "2026-06-24T06:09:13.000Z",
+    "horizonHours": 24,
+    "solUsdUsed": "69.79"
+  },
+  "caveats": [
+    "Uses cached candle-enriched path rows only.",
+    "Source sell timing is not present in the path rows; mirror-source exits are applied at the candle horizon if no trailing/stop exit triggers first.",
+    "Open-position and exposure caps are therefore most reliable for bot-managed stop/trailing exits, not source-exit timing.",
+    "Fees/tips/slippage are not deducted."
+  ],
+  "results": [
+    {
+      "name": "Recommended 15% MC12-50k cap3 exp2.5",
+      "env": {
+        "name": "Recommended 15% MC12-50k cap3 exp2.5",
+        "copyPct": 15,
+        "minMc": 12000,
+        "maxMc": 50000,
+        "maxOpenPositions": 3,
+        "maxSessionDeployedSol": 2.5,
+        "maxSolPerToken": 0.75,
+        "stopLossPct": 25,
+        "trailingSteps": [
+          {
+            "peak": 20,
+            "floor": 5
+          },
+          {
+            "peak": 35,
+            "floor": 15
+          },
+          {
+            "peak": 50,
+            "floor": 25
+          },
+          {
+            "peak": 75,
+            "floor": 45
+          },
+          {
+            "peak": 100,
+            "floor": 70
+          },
+          {
+            "peak": 150,
+            "floor": 110
+          },
+          {
+            "peak": 250,
+            "floor": 180
+          }
+        ],
+        "mirrorSourceExit": true
+      },
+      "sampleRows": 80,
+      "trades": 0,
+      "skipped": {
+        "filter": 80,
+        "openCap": 0,
+        "exposureCap": 0,
+        "tooSmall": 0
+      },
+      "totalDeployedSol": 0,
+      "totalPnlSol": 0,
+      "avgPnlSol": 0,
+      "medianPnlSol": null,
+      "avgRoiPct": 0,
+      "medianRoiPct": null,
+      "winRatePct": 0,
+      "profitFactor": 0,
+      "maxDrawdownSol": 0,
+      "maxOpenPositionsSeen": 0,
+      "maxExposureSol": 0,
+      "p10RoiPct": null,
+      "p90RoiPct": null,
+      "exitReasons": {},
+      "worst": [],
+      "best": []
+    },
+    {
+      "name": "Loose 15% MC8-50k cap3 exp2.5",
+      "env": {
+        "name": "Loose 15% MC8-50k cap3 exp2.5",
+        "copyPct": 15,
+        "minMc": 8000,
+        "maxMc": 50000,
+        "maxOpenPositions": 3,
+        "maxSessionDeployedSol": 2.5,
+        "maxSolPerToken": 0.75,
+        "stopLossPct": 25,
+        "trailingSteps": [
+          {
+            "peak": 20,
+            "floor": 5
+          },
+          {
+            "peak": 35,
+            "floor": 15
+          },
+          {
+            "peak": 50,
+            "floor": 25
+          },
+          {
+            "peak": 75,
+            "floor": 45
+          },
+          {
+            "peak": 100,
+            "floor": 70
+          },
+          {
+            "peak": 150,
+            "floor": 110
+          },
+          {
+            "peak": 250,
+            "floor": 180
+          }
+        ],
+        "mirrorSourceExit": true
+      },
+      "sampleRows": 80,
+      "trades": 0,
+      "skipped": {
+        "filter": 80,
+        "openCap": 0,
+        "exposureCap": 0,
+        "tooSmall": 0
+      },
+      "totalDeployedSol": 0,
+      "totalPnlSol": 0,
+      "avgPnlSol": 0,
+      "medianPnlSol": null,
+      "avgRoiPct": 0,
+      "medianRoiPct": null,
+      "winRatePct": 0,
+      "profitFactor": 0,
+      "maxDrawdownSol": 0,
+      "maxOpenPositionsSeen": 0,
+      "maxExposureSol": 0,
+      "p10RoiPct": null,
+      "p90RoiPct": null,
+      "exitReasons": {},
+      "worst": [],
+      "best": []
+    },
+    {
+      "name": "Tight 15% MC20-50k cap3 exp2.5",
+      "env": {
+        "name": "Tight 15% MC20-50k cap3 exp2.5",
+        "copyPct": 15,
+        "minMc": 20000,
+        "maxMc": 50000,
+        "maxOpenPositions": 3,
+        "maxSessionDeployedSol": 2.5,
+        "maxSolPerToken": 0.75,
+        "stopLossPct": 25,
+        "trailingSteps": [
+          {
+            "peak": 20,
+            "floor": 5
+          },
+          {
+            "peak": 35,
+            "floor": 15
+          },
+          {
+            "peak": 50,
+            "floor": 25
+          },
+          {
+            "peak": 75,
+            "floor": 45
+          },
+          {
+            "peak": 100,
+            "floor": 70
+          },
+          {
+            "peak": 150,
+            "floor": 110
+          },
+          {
+            "peak": 250,
+            "floor": 180
+          }
+        ],
+        "mirrorSourceExit": true
+      },
+      "sampleRows": 80,
+      "trades": 0,
+      "skipped": {
+        "filter": 80,
+        "openCap": 0,
+        "exposureCap": 0,
+        "tooSmall": 0
+      },
+      "totalDeployedSol": 0,
+      "totalPnlSol": 0,
+      "avgPnlSol": 0,
+      "medianPnlSol": null,
+      "avgRoiPct": 0,
+      "medianRoiPct": null,
+      "winRatePct": 0,
+      "profitFactor": 0,
+      "maxDrawdownSol": 0,
+      "maxOpenPositionsSeen": 0,
+      "maxExposureSol": 0,
+      "p10RoiPct": null,
+      "p90RoiPct": null,
+      "exitReasons": {},
+      "worst": [],
+      "best": []
+    },
+    {
+      "name": "More exposure 20% MC12-50k cap5 exp5",
+      "env": {
+        "name": "More exposure 20% MC12-50k cap5 exp5",
+        "copyPct": 20,
+        "minMc": 12000,
+        "maxMc": 50000,
+        "maxOpenPositions": 5,
+        "maxSessionDeployedSol": 5,
+        "maxSolPerToken": 1,
+        "stopLossPct": 25,
+        "trailingSteps": [
+          {
+            "peak": 20,
+            "floor": 5
+          },
+          {
+            "peak": 35,
+            "floor": 15
+          },
+          {
+            "peak": 50,
+            "floor": 25
+          },
+          {
+            "peak": 75,
+            "floor": 45
+          },
+          {
+            "peak": 100,
+            "floor": 70
+          },
+          {
+            "peak": 150,
+            "floor": 110
+          },
+          {
+            "peak": 250,
+            "floor": 180
+          }
+        ],
+        "mirrorSourceExit": true
+      },
+      "sampleRows": 80,
+      "trades": 0,
+      "skipped": {
+        "filter": 80,
+        "openCap": 0,
+        "exposureCap": 0,
+        "tooSmall": 0
+      },
+      "totalDeployedSol": 0,
+      "totalPnlSol": 0,
+      "avgPnlSol": 0,
+      "medianPnlSol": null,
+      "avgRoiPct": 0,
+      "medianRoiPct": null,
+      "winRatePct": 0,
+      "profitFactor": 0,
+      "maxDrawdownSol": 0,
+      "maxOpenPositionsSeen": 0,
+      "maxExposureSol": 0,
+      "p10RoiPct": null,
+      "p90RoiPct": null,
+      "exitReasons": {},
+      "worst": [],
+      "best": []
+    },
+    {
+      "name": "Conservative 10% MC12-50k cap3 exp1.5",
+      "env": {
+        "name": "Conservative 10% MC12-50k cap3 exp1.5",
+        "copyPct": 10,
+        "minMc": 12000,
+        "maxMc": 50000,
+        "maxOpenPositions": 3,
+        "maxSessionDeployedSol": 1.5,
+        "maxSolPerToken": 0.5,
+        "stopLossPct": 25,
+        "trailingSteps": [
+          {
+            "peak": 15,
+            "floor": 3
+          },
+          {
+            "peak": 25,
+            "floor": 8
+          },
+          {
+            "peak": 35,
+            "floor": 15
+          },
+          {
+            "peak": 50,
+            "floor": 25
+          },
+          {
+            "peak": 75,
+            "floor": 45
+          },
+          {
+            "peak": 100,
+            "floor": 70
+          }
+        ],
+        "mirrorSourceExit": true
+      },
+      "sampleRows": 80,
+      "trades": 0,
+      "skipped": {
+        "filter": 80,
+        "openCap": 0,
+        "exposureCap": 0,
+        "tooSmall": 0
+      },
+      "totalDeployedSol": 0,
+      "totalPnlSol": 0,
+      "avgPnlSol": 0,
+      "medianPnlSol": null,
+      "avgRoiPct": 0,
+      "medianRoiPct": null,
+      "winRatePct": 0,
+      "profitFactor": 0,
+      "maxDrawdownSol": 0,
+      "maxOpenPositionsSeen": 0,
+      "maxExposureSol": 0,
+      "p10RoiPct": null,
+      "p90RoiPct": null,
+      "exitReasons": {},
+      "worst": [],
+      "best": []
+    },
+    {
+      "name": "All MC 15% cap3 exp2.5",
+      "env": {
+        "name": "All MC 15% cap3 exp2.5",
+        "copyPct": 15,
+        "minMc": null,
+        "maxMc": 50000,
+        "maxOpenPositions": 3,
+        "maxSessionDeployedSol": 2.5,
+        "maxSolPerToken": 0.75,
+        "stopLossPct": 25,
+        "trailingSteps": [
+          {
+            "peak": 20,
+            "floor": 5
+          },
+          {
+            "peak": 35,
+            "floor": 15
+          },
+          {
+            "peak": 50,
+            "floor": 25
+          },
+          {
+            "peak": 75,
+            "floor": 45
+          },
+          {
+            "peak": 100,
+            "floor": 70
+          },
+          {
+            "peak": 150,
+            "floor": 110
+          },
+          {
+            "peak": 250,
+            "floor": 180
+          }
+        ],
+        "mirrorSourceExit": true
+      },
+      "sampleRows": 80,
+      "trades": 65,
+      "skipped": {
+        "filter": 0,
+        "openCap": 15,
+        "exposureCap": 0,
+        "tooSmall": 0
+      },
+      "totalDeployedSol": 0.0086508618,
+      "totalPnlSol": -0.00023278963870935457,
+      "avgPnlSol": -0.0000035813790570669934,
+      "medianPnlSol": -0.000027128174999999997,
+      "avgRoiPct": -3.8364244218444004,
+      "medianRoiPct": -25,
+      "winRatePct": 40,
+      "profitFactor": 0.7913438266690815,
+      "maxDrawdownSol": -0.0003752873812093545,
+      "maxOpenPositionsSeen": 3,
+      "maxExposureSol": 0.0008549253,
+      "p10RoiPct": -25,
+      "p90RoiPct": 25,
+      "exitReasons": {
+        "SL25": 36,
+        "trail-floor-5": 8,
+        "trail-floor-15": 7,
+        "trail-floor-25": 5,
+        "trail-floor-70": 3,
+        "horizon-close": 3,
+        "trail-floor-45": 2,
+        "trail-floor-110": 1
+      },
+      "worst": [
+        {
+          "mint": "HkNZ5LCdhBdx9zuomPXgGBginZJWyyQD2CUVR2ybpump",
+          "symbol": "Gronk",
+          "entryTs": 1782264499,
+          "exitTs": 1782264600,
+          "sizeSol": 0.0001469046,
+          "sourceBuySol": 0.000979364,
+          "entryMarketCapUsdApprox": 46.29927777457805,
+          "exitPct": -25,
+          "pnlSol": -0.00003672615,
+          "reason": "SL25",
+          "mfePct": 43.37921489423411,
+          "maePct": -65.99237233765247,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "BKqLgyPg2vsRtefuPjD9RkrmWTwRHYMWJdJEpdWMpump",
+          "symbol": "FC",
+          "entryTs": 1782260127,
+          "exitTs": 1782260400,
+          "sizeSol": 0.0001466082,
+          "sourceBuySol": 0.000977388,
+          "entryMarketCapUsdApprox": 42.66672147778218,
+          "exitPct": -25,
+          "pnlSol": -0.00003665205,
+          "reason": "SL25",
+          "mfePct": 19.98100119947105,
+          "maePct": -93.94852659105129,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "6xE9U3PdqfK9oe7F9KTuYWt5ALYYWxZethaPGLvppump",
+          "symbol": "vibeshift",
+          "entryTs": 1782222465,
+          "exitTs": 1782222600,
+          "sizeSol": 0.00014639295,
+          "sourceBuySol": 0.000975953,
+          "entryMarketCapUsdApprox": 42.602982153673494,
+          "exitPct": -25,
+          "pnlSol": -0.0000365982375,
+          "reason": "SL25",
+          "mfePct": 49.94832333810373,
+          "maePct": -92.6990943549388,
+          "earlierBuys": null
+        },
+        {
+          "mint": "8QHo7VnHZfLP2vstH72c8E1W4fZcHrAX5VdUuoj4pump",
+          "symbol": "WSB",
+          "entryTs": 1782277647,
+          "exitTs": 1782277800,
+          "sizeSol": 0.000142605,
+          "sourceBuySol": 0.0009507,
+          "entryMarketCapUsdApprox": 42.24834217105566,
+          "exitPct": -25,
+          "pnlSol": -0.00003565125,
+          "reason": "SL25",
+          "mfePct": 58.28546705082286,
+          "maePct": -96.17404140365126,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "3aMimaEFUsxAgju8PiPQPk6YiBBoLW45vtzq5Rrypump",
+          "symbol": "NPA",
+          "entryTs": 1782256095,
+          "exitTs": 1782257100,
+          "sizeSol": 0.00013892804999999999,
+          "sourceBuySol": 0.000926187,
+          "entryMarketCapUsdApprox": 38.58458212652963,
+          "exitPct": -25,
+          "pnlSol": -0.000034732012499999996,
+          "reason": "SL25",
+          "mfePct": 7.151779629317057,
+          "maePct": -94.26096020592787,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "FwFuStbYEJ2bDuhnveFCbZBqE5SePrtnrHdwrPgFpump",
+          "symbol": "STARSHIT",
+          "entryTs": 1782269458,
+          "exitTs": 1782270000,
+          "sizeSol": 0.00013765995,
+          "sourceBuySol": 0.000917733,
+          "entryMarketCapUsdApprox": 37.57597660831709,
+          "exitPct": -25,
+          "pnlSol": -0.0000344149875,
+          "reason": "SL25",
+          "mfePct": 18.457390448758446,
+          "maePct": -81.72179133985362,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "55LH84co1nvAnEqKzQVHhWtEx2X1j1Sjo4VARp3ujFkq",
+          "symbol": "STAR",
+          "entryTs": 1782240715,
+          "exitTs": 1782240900,
+          "sizeSol": 0.0001364505,
+          "sourceBuySol": 0.00090967,
+          "entryMarketCapUsdApprox": 32.039341790559526,
+          "exitPct": -25,
+          "pnlSol": -0.000034112625,
+          "reason": "SL25",
+          "mfePct": 16.687090081624596,
+          "maePct": -93.80747727244116,
+          "earlierBuys": null
+        },
+        {
+          "mint": "6TntU6ZqPtmUFyzrWffv4b6VtWT3aZdw5dMhmTtrpump",
+          "symbol": "SHARKCASH",
+          "entryTs": 1782230924,
+          "exitTs": 1782231000,
+          "sizeSol": 0.00013263149999999998,
+          "sourceBuySol": 0.00088421,
+          "entryMarketCapUsdApprox": 32.86206966662431,
+          "exitPct": -25,
+          "pnlSol": -0.000033157874999999995,
+          "reason": "SL25",
+          "mfePct": 34.62135077327608,
+          "maePct": -88.28052193634731,
+          "earlierBuys": null
+        }
+      ],
+      "best": [
+        {
+          "mint": "4McB2nCRSKQsKJUnfDTFn3wMHCC3PYuUcYAHD5taWYWG",
+          "symbol": "USCON",
+          "entryTs": 1782236483,
+          "exitTs": 1782236700,
+          "sizeSol": 0.00011246459999999999,
+          "sourceBuySol": 0.000749764,
+          "entryMarketCapUsdApprox": 27.04163994273524,
+          "exitPct": 110,
+          "pnlSol": 0.00012371105999999999,
+          "reason": "trail-floor-110",
+          "mfePct": 169.5077378439177,
+          "maePct": -52.805199892290624,
+          "earlierBuys": null
+        },
+        {
+          "mint": "9QSjVAg5rDfBZPhvKwZcB63St3r6bqohP3Adurkjpump",
+          "symbol": "Rosie",
+          "entryTs": 1782236406,
+          "exitTs": 1782237900,
+          "sizeSol": 0.000550836,
+          "sourceBuySol": 0.00367224,
+          "entryMarketCapUsdApprox": 224.99653734155814,
+          "exitPct": 15,
+          "pnlSol": 0.00008262539999999999,
+          "reason": "trail-floor-15",
+          "mfePct": 44.54988922041138,
+          "maePct": -25.402535728722324,
+          "earlierBuys": null
+        },
+        {
+          "mint": "29Mcsn4JUQjnxX6gNiVC31WjffJC57MpLnFGGGPGpump",
+          "symbol": "LAZARUS",
+          "entryTs": 1782243407,
+          "exitTs": 1782243600,
+          "sizeSol": 0.00011588519999999999,
+          "sourceBuySol": 0.000772568,
+          "entryMarketCapUsdApprox": 30.48804753699827,
+          "exitPct": 70,
+          "pnlSol": 0.00008111963999999998,
+          "reason": "trail-floor-70",
+          "mfePct": 268.85414665611586,
+          "maePct": -65.32547583237431,
+          "earlierBuys": null
+        },
+        {
+          "mint": "HFpdNsxcnqxM2de8FmyBNE5LyXE1VEaXjRbMwaoGpump",
+          "symbol": "wundys",
+          "entryTs": 1782276939,
+          "exitTs": 1782277200,
+          "sizeSol": 0.00010940325,
+          "sourceBuySol": 0.000729355,
+          "entryMarketCapUsdApprox": 32.43109129441697,
+          "exitPct": 70,
+          "pnlSol": 0.00007658227499999999,
+          "reason": "trail-floor-70",
+          "mfePct": 101.89922908134157,
+          "maePct": -80.14658425331355,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "CG98exyic2jgmrquF2EX3L8iYyMbUdiig8vr87xjpump",
+          "symbol": "COGE",
+          "entryTs": 1782214924,
+          "exitTs": 1782215400,
+          "sizeSol": 0.0001093641,
+          "sourceBuySol": 0.000729094,
+          "entryMarketCapUsdApprox": 31.779333321250895,
+          "exitPct": 70,
+          "pnlSol": 0.00007655486999999999,
+          "reason": "trail-floor-70",
+          "mfePct": 136.3008380971702,
+          "maePct": -95.35805556240574,
+          "earlierBuys": null
+        },
+        {
+          "mint": "AfdZzG7xWNCbhhKCpmK8TykpJ9fohVk39am4n8Cwpump",
+          "symbol": "CAT",
+          "entryTs": 1782229759,
+          "exitTs": 1782229800,
+          "sizeSol": 0.00010795350000000001,
+          "sourceBuySol": 0.00071969,
+          "entryMarketCapUsdApprox": 31.544491976630724,
+          "exitPct": 45,
+          "pnlSol": 0.000048579075,
+          "reason": "trail-floor-45",
+          "mfePct": 210.70927515316643,
+          "maePct": -89.98571873981183,
+          "earlierBuys": null
+        },
+        {
+          "mint": "3p8Y7BTK6BtYqDDDnVCDqmUjdVCggjW9vAygWLYcpump",
+          "symbol": "ANGIE",
+          "entryTs": 1782270932,
+          "exitTs": 1782271200,
+          "sizeSol": 0.00010749225,
+          "sourceBuySol": 0.000716615,
+          "entryMarketCapUsdApprox": 22.99367218275257,
+          "exitPct": 45,
+          "pnlSol": 0.0000483715125,
+          "reason": "trail-floor-45",
+          "mfePct": 80.4170905847228,
+          "maePct": -56.68791180071025,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "8JdjmcF8JQLPpbaiiyS6xhd5fYT2GLeNygTq8Twppump",
+          "symbol": "EC43",
+          "entryTs": 1782273492,
+          "exitTs": 1782274200,
+          "sizeSol": 0.00019018215,
+          "sourceBuySol": 0.001267881,
+          "entryMarketCapUsdApprox": 106.3793822924972,
+          "exitPct": 25,
+          "pnlSol": 0.0000475455375,
+          "reason": "trail-floor-25",
+          "mfePct": 289.08451345362846,
+          "maePct": -61.07112446645539,
+          "earlierBuys": 0
+        }
+      ]
+    },
+    {
+      "name": "Early buyers <=5 15% cap3 exp2.5",
+      "env": {
+        "name": "Early buyers <=5 15% cap3 exp2.5",
+        "copyPct": 15,
+        "minMc": null,
+        "maxMc": 50000,
+        "maxEarlierBuys": 5,
+        "maxOpenPositions": 3,
+        "maxSessionDeployedSol": 2.5,
+        "maxSolPerToken": 0.75,
+        "stopLossPct": 25,
+        "trailingSteps": [
+          {
+            "peak": 30,
+            "floor": 5
+          },
+          {
+            "peak": 50,
+            "floor": 20
+          },
+          {
+            "peak": 75,
+            "floor": 35
+          },
+          {
+            "peak": 100,
+            "floor": 60
+          },
+          {
+            "peak": 150,
+            "floor": 100
+          },
+          {
+            "peak": 250,
+            "floor": 180
+          }
+        ],
+        "mirrorSourceExit": true
+      },
+      "sampleRows": 80,
+      "trades": 20,
+      "skipped": {
+        "filter": 60,
+        "openCap": 0,
+        "exposureCap": 0,
+        "tooSmall": 0
+      },
+      "totalDeployedSol": 0.0029544338999999997,
+      "totalPnlSol": -0.00017655701999999993,
+      "avgPnlSol": -0.000008827850999999997,
+      "medianPnlSol": -0.00002718103125,
+      "avgRoiPct": -1.75,
+      "medianRoiPct": -25,
+      "winRatePct": 40,
+      "profitFactor": 0.6416519098782776,
+      "maxDrawdownSol": -0.000331927095,
+      "maxOpenPositionsSeen": 2,
+      "maxExposureSol": 0.00080316765,
+      "p10RoiPct": -25,
+      "p90RoiPct": 60,
+      "exitReasons": {
+        "SL25": 12,
+        "trail-floor-60": 3,
+        "trail-floor-5": 2,
+        "trail-floor-20": 2,
+        "trail-floor-35": 1
+      },
+      "worst": [
+        {
+          "mint": "7newJUjH7LGsGPDfEq83gxxy2d1q39A84SeUKha8pump",
+          "symbol": "ATELIER",
+          "entryTs": 1782264558,
+          "exitTs": 1782273600,
+          "sizeSol": 0.0006129855,
+          "sourceBuySol": 0.00408657,
+          "entryMarketCapUsdApprox": 604.2847109362096,
+          "exitPct": -25,
+          "pnlSol": -0.000153246375,
+          "reason": "SL25",
+          "mfePct": 20.43135427201714,
+          "maePct": -29.48404647284723,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "HkNZ5LCdhBdx9zuomPXgGBginZJWyyQD2CUVR2ybpump",
+          "symbol": "Gronk",
+          "entryTs": 1782264499,
+          "exitTs": 1782264600,
+          "sizeSol": 0.0001469046,
+          "sourceBuySol": 0.000979364,
+          "entryMarketCapUsdApprox": 46.29927777457805,
+          "exitPct": -25,
+          "pnlSol": -0.00003672615,
+          "reason": "SL25",
+          "mfePct": 43.37921489423411,
+          "maePct": -65.99237233765247,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "BKqLgyPg2vsRtefuPjD9RkrmWTwRHYMWJdJEpdWMpump",
+          "symbol": "FC",
+          "entryTs": 1782260127,
+          "exitTs": 1782260400,
+          "sizeSol": 0.0001466082,
+          "sourceBuySol": 0.000977388,
+          "entryMarketCapUsdApprox": 42.66672147778218,
+          "exitPct": -25,
+          "pnlSol": -0.00003665205,
+          "reason": "SL25",
+          "mfePct": 19.98100119947105,
+          "maePct": -93.94852659105129,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "8QHo7VnHZfLP2vstH72c8E1W4fZcHrAX5VdUuoj4pump",
+          "symbol": "WSB",
+          "entryTs": 1782277647,
+          "exitTs": 1782277800,
+          "sizeSol": 0.000142605,
+          "sourceBuySol": 0.0009507,
+          "entryMarketCapUsdApprox": 42.24834217105566,
+          "exitPct": -25,
+          "pnlSol": -0.00003565125,
+          "reason": "SL25",
+          "mfePct": 58.28546705082286,
+          "maePct": -96.17404140365126,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "3aMimaEFUsxAgju8PiPQPk6YiBBoLW45vtzq5Rrypump",
+          "symbol": "NPA",
+          "entryTs": 1782256095,
+          "exitTs": 1782257100,
+          "sizeSol": 0.00013892804999999999,
+          "sourceBuySol": 0.000926187,
+          "entryMarketCapUsdApprox": 38.58458212652963,
+          "exitPct": -25,
+          "pnlSol": -0.000034732012499999996,
+          "reason": "SL25",
+          "mfePct": 7.151779629317057,
+          "maePct": -94.26096020592787,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "FwFuStbYEJ2bDuhnveFCbZBqE5SePrtnrHdwrPgFpump",
+          "symbol": "STARSHIT",
+          "entryTs": 1782269458,
+          "exitTs": 1782270000,
+          "sizeSol": 0.00013765995,
+          "sourceBuySol": 0.000917733,
+          "entryMarketCapUsdApprox": 37.57597660831709,
+          "exitPct": -25,
+          "pnlSol": -0.0000344149875,
+          "reason": "SL25",
+          "mfePct": 18.457390448758446,
+          "maePct": -81.72179133985362,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "F8sTbMUfP2jU4jije4GCTUq8dS3cVPbTkXtMqjh4pump",
+          "symbol": "WEN",
+          "entryTs": 1782273778,
+          "exitTs": 1782274200,
+          "sizeSol": 0.0001212555,
+          "sourceBuySol": 0.00080837,
+          "entryMarketCapUsdApprox": 29.23101505296588,
+          "exitPct": -25,
+          "pnlSol": -0.000030313875,
+          "reason": "SL25",
+          "mfePct": 14.43822049313174,
+          "maePct": -87.65691102188457,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "7jVXjqwUdQJxswTP66yBA3VCDTWkevMQiWkiftazpump",
+          "symbol": "GRACIE",
+          "entryTs": 1782258690,
+          "exitTs": 1782259200,
+          "sizeSol": 0.00011188245,
+          "sourceBuySol": 0.000745883,
+          "entryMarketCapUsdApprox": 64.99399741646248,
+          "exitPct": -25,
+          "pnlSol": -0.0000279706125,
+          "reason": "SL25",
+          "mfePct": 302.71132716338315,
+          "maePct": -62.75474291951911,
+          "earlierBuys": 0
+        }
+      ],
+      "best": [
+        {
+          "mint": "382YojVQdcb5DV1QCj1KdN4XPVZebS22XAfDr1EMpump",
+          "symbol": "EC43",
+          "entryTs": 1782277754,
+          "exitTs": 1782278400,
+          "sizeSol": 0.00012018315,
+          "sourceBuySol": 0.000801221,
+          "entryMarketCapUsdApprox": 61.91447428953167,
+          "exitPct": 60,
+          "pnlSol": 0.00007210988999999999,
+          "reason": "trail-floor-60",
+          "mfePct": 219.89050335073688,
+          "maePct": -48.00131243509341,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "66pQgfLHEfbHSBgYSZSrKEdJHHaGiYbgCtNbz48Apump",
+          "symbol": "WEN",
+          "entryTs": 1782265902,
+          "exitTs": 1782267000,
+          "sizeSol": 0.0001133637,
+          "sourceBuySol": 0.000755758,
+          "entryMarketCapUsdApprox": 275.7471858177248,
+          "exitPct": 60,
+          "pnlSol": 0.00006801822,
+          "reason": "trail-floor-60",
+          "mfePct": 3773.642337671194,
+          "maePct": -16.229416959843252,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "HFpdNsxcnqxM2de8FmyBNE5LyXE1VEaXjRbMwaoGpump",
+          "symbol": "wundys",
+          "entryTs": 1782276939,
+          "exitTs": 1782277200,
+          "sizeSol": 0.00010940325,
+          "sourceBuySol": 0.000729355,
+          "entryMarketCapUsdApprox": 32.43109129441697,
+          "exitPct": 60,
+          "pnlSol": 0.00006564195,
+          "reason": "trail-floor-60",
+          "mfePct": 101.89922908134157,
+          "maePct": -80.14658425331355,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "8JdjmcF8JQLPpbaiiyS6xhd5fYT2GLeNygTq8Twppump",
+          "symbol": "EC43",
+          "entryTs": 1782273492,
+          "exitTs": 1782274200,
+          "sizeSol": 0.00019018215,
+          "sourceBuySol": 0.001267881,
+          "entryMarketCapUsdApprox": 106.3793822924972,
+          "exitPct": 20,
+          "pnlSol": 0.00003803643,
+          "reason": "trail-floor-20",
+          "mfePct": 289.08451345362846,
+          "maePct": -61.07112446645539,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "3p8Y7BTK6BtYqDDDnVCDqmUjdVCggjW9vAygWLYcpump",
+          "symbol": "ANGIE",
+          "entryTs": 1782270932,
+          "exitTs": 1782271200,
+          "sizeSol": 0.00010749225,
+          "sourceBuySol": 0.000716615,
+          "entryMarketCapUsdApprox": 22.99367218275257,
+          "exitPct": 35,
+          "pnlSol": 0.000037622287499999996,
+          "reason": "trail-floor-35",
+          "mfePct": 80.4170905847228,
+          "maePct": -56.68791180071025,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "Doqpv6jVic3odZS1y73GYA6STrd6Vg5AUMurmchHpump",
+          "symbol": "Pokelana",
+          "entryTs": 1782268189,
+          "exitTs": 1782268200,
+          "sizeSol": 0.00011706734999999999,
+          "sourceBuySol": 0.000780449,
+          "entryMarketCapUsdApprox": 27.259060136152648,
+          "exitPct": 20,
+          "pnlSol": 0.00002341347,
+          "reason": "trail-floor-20",
+          "mfePct": 203.56469591562546,
+          "maePct": -76.37042818521653,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "DQjxb55E8fT8Rr4ddMBpQvWBn3seWHaj6Q1kwD1Tpump",
+          "symbol": "Onboard",
+          "entryTs": 1782257937,
+          "exitTs": 1782258000,
+          "sizeSol": 0.00011973209999999999,
+          "sourceBuySol": 0.000798214,
+          "entryMarketCapUsdApprox": 33.240496154808696,
+          "exitPct": 5,
+          "pnlSol": 0.000005986605,
+          "reason": "trail-floor-5",
+          "mfePct": 127.29350024248693,
+          "maePct": -88.97011327150072,
+          "earlierBuys": 0
+        },
+        {
+          "mint": "7MfL79aSJFsLrSyfgtfFGygpwmyyhnt8Ad6h4hy6pump",
+          "symbol": "DUMPSTER",
+          "entryTs": 1782281109,
+          "exitTs": 1782281400,
+          "sizeSol": 0.00010622205,
+          "sourceBuySol": 0.000708147,
+          "entryMarketCapUsdApprox": 24.70743234354357,
+          "exitPct": 5,
+          "pnlSol": 0.000005311102500000001,
+          "reason": "trail-floor-5",
+          "mfePct": 43.86384083105269,
+          "maePct": 0,
+          "earlierBuys": 0
+        }
+      ]
+    }
+  ]
+}

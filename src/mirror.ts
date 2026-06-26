@@ -33,6 +33,7 @@ import { getPosition, unrecordBuy } from "./pnl.js";
 import type { DetectedSwap } from "./types.js";
 import { tryPumpFunDirectBuy, tryPumpFunDirectSell } from "./pumpfun/route.js";
 import { tryPumpSwapDirectBuy, tryPumpSwapDirectSell } from "./pumpswap/route.js";
+import { tryRaydiumCpmmDirectBuy, tryRaydiumCpmmDirectSell } from "./raydiumCpmm/route.js";
 import { applyShadowExecution, shadowDelay, shadowSimulateTransaction } from "./shadowExecution.js";
 import { recordExecutionStage } from "./executionTelemetry.js";
 
@@ -444,6 +445,63 @@ export async function mirrorSwap(
   };
   const initialAmountRaw = await getMirrorAmount(side, swap, keypair, options);
 
+  if (
+    side === "buy" &&
+    Boolean(swap.sourceRaydiumCpmmAccounts?.length) &&
+    !swap.skipDirectBuyRoutes
+  ) {
+    const raydium = await tryRaydiumCpmmDirectBuy({
+      user: keypair,
+      mint: swap.outputMint,
+      sourceSignature: swap.signature,
+      sourceInputRaw: swap.sourceQuoteAmountRaw ?? swap.amountRaw,
+      sourceOutputRaw: swap.counterpartyAmountRaw,
+      sourceRaydiumCpmmAccounts: swap.sourceRaydiumCpmmAccounts,
+      quoteMint: mirrorInputMint,
+      quoteInRaw: initialAmountRaw,
+      slippageBps: mirrorSlippageBps,
+      startedAt,
+      log: (m) => console.log(m),
+      onConfirmFailure: (mint, tokensRaw, quoteAmountRaw, reason) => {
+        const solLamports = estimateCostBasisLamports(mirrorInputMint, quoteAmountRaw);
+        const removed = isUncertainConfirmationReason(reason)
+          ? false
+          : unrecordBuy(mint, tokensRaw, solLamports);
+        options.onFastBuyConfirmFailure?.({
+          mint,
+          tokenAmountRaw: tokensRaw,
+          solLamports,
+          reason,
+          positionRemoved: removed,
+          sourceSwap: swap,
+        });
+      },
+      onConfirmSuccess: (mint, tokensRaw, quoteAmountRaw, signature) => {
+        const solLamports = estimateCostBasisLamports(mirrorInputMint, quoteAmountRaw);
+        options.onFastBuyConfirmSuccess?.({
+          mint,
+          tokenAmountRaw: tokensRaw,
+          solLamports,
+          signature,
+          sourceSwap: swap,
+        });
+      },
+    });
+    if (raydium.ok) {
+      console.log(`Raydium CPMM direct buy complete (${elapsed()})`);
+      await shadowDelay();
+      return applyShadowExecution({
+        signature: raydium.signature,
+        isSimulated: raydium.isSimulated,
+        side: "buy",
+        input: { meta: raydium.inputMeta, amountRaw: Number(raydium.inputAmount) },
+        output: { meta: raydium.outputMeta, amountRaw: Number(raydium.outputAmount) },
+        costBasisLamports: estimateCostBasisLamports(mirrorInputMint, Number(raydium.inputAmount)),
+        confirmationPending: raydium.confirmationPending,
+      }, swap.signature);
+    }
+    console.log(`Raydium CPMM direct buy skipped: ${raydium.reason}; ${jupiterFallbackEnabled ? "falling back to Jupiter." : "Jupiter fallback disabled."}`);
+  }
   // USDC-quoted PumpSwap buys bypass Pump.fun (bonding curves are SOL-only).
   // Rust debits the existing USDC ATA directly; no Jupiter or HTTP quote is used.
   if (
@@ -757,6 +815,55 @@ export async function mirrorSwap(
     }
   }
 
+  if (
+    side === "sell" &&
+    mirrorOutputMint === WRAPPED_SOL_MINT &&
+    Boolean(swap.sourceRaydiumCpmmAccounts?.length)
+  ) {
+    const raydium = await tryRaydiumCpmmDirectSell({
+      user: keypair,
+      mint: swap.inputMint,
+      sourceSignature: swap.signature,
+      sourceInputRaw: swap.amountRaw,
+      sourceOutputRaw: swap.counterpartyAmountRaw,
+      sourceRaydiumCpmmAccounts: swap.sourceRaydiumCpmmAccounts,
+      tokensInRaw: initialAmountRaw,
+      slippageBps: mirrorSlippageBps,
+      startedAt,
+      log: (m) => console.log(m),
+      onConfirmFailure: (mint, tokensRaw, solLamports, reason) => {
+        options.onFastSellConfirmFailure?.({
+          mint,
+          tokenAmountRaw: tokensRaw,
+          solLamports,
+          reason,
+          sourceSwap: swap,
+        });
+      },
+      onConfirmSuccess: (mint, tokensRaw, solLamports, signature) => {
+        options.onFastSellConfirmSuccess?.({
+          mint,
+          tokenAmountRaw: tokensRaw,
+          solLamports,
+          signature,
+          sourceSwap: swap,
+        });
+      },
+    });
+    if (raydium.ok) {
+      console.log(`Raydium CPMM direct sell complete (${elapsed()})`);
+      await shadowDelay();
+      return applyShadowExecution({
+        signature: raydium.signature,
+        isSimulated: raydium.isSimulated,
+        side: "sell",
+        input: { meta: raydium.inputMeta, amountRaw: Number(raydium.inputAmount) },
+        output: { meta: raydium.outputMeta, amountRaw: Number(raydium.outputAmount) },
+        confirmationPending: raydium.confirmationPending,
+      }, swap.signature);
+    }
+    console.log(`Raydium CPMM direct sell skipped: ${raydium.reason}; ${jupiterFallbackEnabled ? "falling back to Jupiter." : "Jupiter fallback disabled."}`);
+  }
   const jupiterAllowed = jupiterFallbackEnabled || options.allowBagsDirectJupiter === true;
   if (!jupiterAllowed) {
     throw new Error(
@@ -1167,3 +1274,4 @@ export async function mirrorSwap(
     ? lastSlippageError
     : new Error("Swap failed after slippage retry");
 }
+

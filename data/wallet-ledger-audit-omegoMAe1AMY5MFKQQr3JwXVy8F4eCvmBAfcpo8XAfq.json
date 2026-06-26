@@ -1,99 +1,99 @@
 {
   "wallet": "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq",
-  "txs": 10000,
-  "classified": 9794,
-  "unclassifiedWithToken": 29,
-  "positions": 800,
-  "solUsd": 82.61,
-  "realizedPnlSol": 49.301103382678846,
-  "realizedPnlUsd": 4072.7641504430994,
-  "realizedRoiPct": 1.4506348919794174,
-  "unrealizedPnlSol": -31.34201414961447,
-  "unrealizedPnlUsd": -2589.1637888996515,
-  "combinedPnlSol": 17.959089233064375,
-  "combinedPnlUsd": 1483.6003615434481,
-  "realizedTrades": 4809,
-  "winRatePct": 45.581201913079646,
-  "avgRoiPct": 1.8398288335459378,
-  "medianRoiPct": -1.3324631194957073,
-  "profitFactor": 1.2228654706367632,
-  "sharpeProxy": 0.07690740844548641,
-  "maxDrawdownSol": -5.0563622698573,
-  "largestWinSol": 1.700768054,
-  "largestLossSol": -1.2236284637024322,
-  "nativeNetSol": -3.417672619,
+  "txs": 3000,
+  "classified": 2984,
+  "unclassifiedWithToken": 0,
+  "positions": 208,
+  "solUsd": 73.03,
+  "realizedPnlSol": 7.813186716173718,
+  "realizedPnlUsd": 570.5970258821666,
+  "realizedRoiPct": 0.8140607432791371,
+  "unrealizedPnlSol": -10.700212629044529,
+  "unrealizedPnlUsd": -781.436528299122,
+  "combinedPnlSol": -2.8870259128708113,
+  "combinedPnlUsd": -210.83950241695536,
+  "realizedTrades": 1453,
+  "winRatePct": 39.64211975223675,
+  "avgRoiPct": -2.0599248751979156,
+  "medianRoiPct": -2.556505107437199,
+  "profitFactor": 1.1297345270964159,
+  "sharpeProxy": -0.07798831691681093,
+  "maxDrawdownSol": -5.131919554557121,
+  "largestWinSol": 1.1194017,
+  "largestLossSol": -1.1813322065088474,
+  "nativeNetSol": 6.035457813,
   "wsolNetSol": 0,
-  "usdcNet": 0,
+  "usdcNet": 215.700507,
   "topOpen": [
     {
-      "mint": "3Hvxn5wa5F7ysyY1uQVQsLVmmpEdN5XJcGjSXUgnSdPv",
-      "symbol": "IBM",
-      "heldRaw": 3392055610464,
-      "valueSol": 3.891768923,
-      "valueUsd": 321.49903075977795
+      "mint": "7AZPFMALNAMu4sLP7h7N15u8ZqeNhooYQNV98Jh8pump",
+      "symbol": "JINS",
+      "heldRaw": 3488432837797,
+      "valueSol": 1.85718566,
+      "valueUsd": 135.63026873354735
     },
     {
-      "mint": "7QXDpKoeEe9hJjiYTw6NmaAyyqX1KyBfvVXq3F24pump",
-      "symbol": "TAPE",
-      "heldRaw": 7105113741390,
-      "valueSol": 1.924857106,
-      "valueUsd": 159.0124455323082
+      "mint": "2eT7LUQZM83Cm9ydpuRYwmCNDVV1JEvoWR514qvqpump",
+      "symbol": "RYXON",
+      "heldRaw": 5577519924758,
+      "valueSol": 0.976810624,
+      "valueUsd": 71.33647983765482
     },
     {
-      "mint": "BdntCwkZwKELvTane4PQ2v1TbVZsdTrXreYvvkfrpump",
-      "symbol": "Graphify",
-      "heldRaw": 7032457148322,
-      "valueSol": 1.734916798,
-      "valueUsd": 143.32147668280237
+      "mint": "ARmShXJoTU9mzezRBeitNLUnWB9o3JUgjR7PUYTpump",
+      "symbol": "n0dex",
+      "heldRaw": 3396417762814,
+      "valueSol": 0.892472366,
+      "valueUsd": 65.17725686840066
     },
     {
-      "mint": "AMc5zMxS1HWdyhYst68vaVGT5RyDvK1W6MoGoveppump",
-      "symbol": "FCSRL",
-      "heldRaw": 5138271205009,
-      "valueSol": 0.952890871,
-      "valueUsd": 78.71831486073788
+      "mint": "4pAv4hggLZmBufQumwPVtBNvuoEB17mUkrgc5rCJpump",
+      "symbol": "BOTCHUA",
+      "heldRaw": 7042457880473,
+      "valueSol": 0.814564449,
+      "valueUsd": 59.487641716355434
     },
     {
-      "mint": "AyLn7YdHqh3pGSNC1YrdEtEdSCVjG7BxQedxBvkTpump",
-      "symbol": "DATA",
-      "heldRaw": 7635632361626,
-      "valueSol": 0.890654321,
-      "valueUsd": 73.57695343662814
+      "mint": "C6pX9eVkAPRHbw1PARzmnH9ychCxbFccBHW9hxs1pump",
+      "symbol": "MINORI",
+      "heldRaw": 5517650432593,
+      "valueSol": 0.809174807,
+      "valueUsd": 59.094036133071036
     },
     {
-      "mint": "GJF4KMWjSHzhJj8ZS9yS81DRd4WYefAcDeJh9Bkkpump",
-      "symbol": "FLUKI",
-      "heldRaw": 6748169074065,
-      "valueSol": 0.759281341,
-      "valueUsd": 62.72423154343417
+      "mint": "H82sDBZNC56obAjMV6Js8iRESb6zrR1UGE217kU5pump",
+      "symbol": "Martha",
+      "heldRaw": 7454612054696,
+      "valueSol": 0.575198397,
+      "valueUsd": 42.006738928211966
     },
     {
-      "mint": "FboMqyPvfKMs1NGnF4Gu41YVEtr72dWna9bN8QUApump",
-      "symbol": "TripleK",
-      "heldRaw": 6072672339890,
-      "valueSol": 0.735101361,
-      "valueUsd": 60.726723398900006
+      "mint": "9QKFPnPnc92cJa6WNXJ1N8esnTGtz4LgASL6hExupump",
+      "symbol": "Vertebrae",
+      "heldRaw": 7401248089344,
+      "valueSol": 0.571891592,
+      "valueUsd": 41.765242968168195
     },
     {
-      "mint": "Cgv7iy6PoFFF963FLdhYWv8sWHQP5EeECek4Hurrpump",
-      "symbol": "PokeBurn",
-      "heldRaw": 8746839186513,
-      "valueSol": 0.563181668,
-      "valueUsd": 46.52443763306265
+      "mint": "tqbtUbfG3at1bcUSHGtoianx7tFdvxYW17tMuUnpump",
+      "symbol": "BANKRAM",
+      "heldRaw": 9421929934372,
+      "valueSol": 0.565728643,
+      "valueUsd": 41.31516276222123
     },
     {
-      "mint": "214uC4yTasZZLhbabnKU3agdipLZiPoQz25Nv1xupump",
-      "symbol": "opsec",
-      "heldRaw": 5975462930230,
-      "valueSol": 0.540041233,
-      "valueUsd": 44.61280623709718
+      "mint": "JBm8ztcjcsYTpa2PpbC9p47Z5j2D4rqGCfw8eWedpump",
+      "symbol": "ML",
+      "heldRaw": 8727845348799,
+      "valueSol": 0.524411685,
+      "valueUsd": 38.29778539053001
     },
     {
-      "mint": "Anr6gkCX8TqedhmdZ8ihNXxZxbX9Z4xRVMtaBUxxpump",
-      "symbol": "Juan",
-      "heldRaw": 7193394176712,
-      "valueSol": 0.45819683,
-      "valueUsd": 37.85164015785854
+      "mint": "DTRmPLZPfQRRRVwyZFuSxUhvnj9RHgDqFjQXx6vUpump",
+      "symbol": "BULLCEMBER",
+      "heldRaw": 8567936287636,
+      "valueSol": 0.485004089,
+      "valueUsd": 35.419848613087225
     }
   ]
 }

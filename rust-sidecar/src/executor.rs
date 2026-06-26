@@ -30,6 +30,7 @@ const WRAPPED_SOL_MINT: &str = "So11111111111111111111111111111111111111112";
 const USDC_MINT: &str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const PUMP_FUN_PROGRAM_ID: &str = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P";
 const PUMPSWAP_PROGRAM_ID: &str = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
+const RAYDIUM_CPMM_PROGRAM_ID: &str = "CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C";
 const PUMP_FUN_FEE_PROGRAM_ID: &str = "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ";
 const PUMP_FUN_FEE_RECIPIENT: &str = "CebN5WGQ4jvEPvsVU4EoHEpgzq1VV7AbicfhtW4xC9iM";
 const PUMP_FUN_BUYBACK_FEE_RECIPIENT: &str = "5YxQFdt3Tr9zJLvkFccqXVUwhdTWJQc1fFg2YPbxvxeD";
@@ -119,6 +120,7 @@ enum ExecutorCommand {
     ExecutePumpfunSell(ExecutePumpfunSellCommand),
     ExecutePumpSwapBuy(ExecutePumpSwapBuyCommand),
     ExecutePumpSwapSell(ExecutePumpSwapSellCommand),
+    ExecuteRaydiumCpmmSwap(ExecuteRaydiumCpmmSwapCommand),
     ReleaseBoughtMint(ReleaseBoughtMintCommand),
 }
 
@@ -206,6 +208,39 @@ pub struct ExecutePumpSwapSellCommand {
     pub min_quote_out_raw: u64,
     pub source_pump_swap_accounts: Vec<SourcePumpSwapAccountMeta>,
     pub base_token_program_id: String,
+    pub blockhash: String,
+    pub compute_unit_limit: u32,
+    pub priority_fee_micro_lamports: u64,
+    pub jito_tip_lamports: u64,
+    pub helius_tip_lamports: u64,
+    pub use_jito_direct: bool,
+    pub use_jito_fallback: bool,
+    pub sender_rpc_fallback_enabled: bool,
+    pub execution_multi_send_enabled: bool,
+    pub jito_send_mode: String,
+    pub jito_transaction_urls: Vec<String>,
+    pub jito_bundle_urls: Vec<String>,
+    pub sender_endpoint_url: String,
+    pub rpc_fallback_url: String,
+    pub jito_auth_uuid: Option<String>,
+}
+
+
+#[derive(Debug, Deserialize)]
+#[allow(dead_code)]
+#[serde(rename_all = "camelCase")]
+pub struct ExecuteRaydiumCpmmSwapCommand {
+    pub id: String,
+    pub route: String,
+    pub side: String,
+    pub mint: String,
+    pub source_signature: String,
+    pub input_mint: String,
+    pub output_mint: String,
+    pub amount_in_raw: u64,
+    pub expected_out_raw: u64,
+    pub min_out_raw: u64,
+    pub source_raydium_cpmm_accounts: Vec<SourcePumpSwapAccountMeta>,
     pub blockhash: String,
     pub compute_unit_limit: u32,
     pub priority_fee_micro_lamports: u64,
@@ -380,6 +415,21 @@ impl BroadcastConfig {
         }
     }
 
+
+    fn from_raydium_cpmm(cmd: &ExecuteRaydiumCpmmSwapCommand) -> Self {
+        Self {
+            use_jito_direct: cmd.use_jito_direct,
+            use_jito_fallback: cmd.use_jito_fallback,
+            sender_rpc_fallback_enabled: cmd.sender_rpc_fallback_enabled,
+            execution_multi_send_enabled: cmd.execution_multi_send_enabled,
+            jito_send_mode: cmd.jito_send_mode.clone(),
+            jito_transaction_urls: cmd.jito_transaction_urls.clone(),
+            jito_bundle_urls: cmd.jito_bundle_urls.clone(),
+            sender_endpoint_url: cmd.sender_endpoint_url.clone(),
+            rpc_fallback_url: cmd.rpc_fallback_url.clone(),
+            jito_auth_uuid: cmd.jito_auth_uuid.clone(),
+        }
+    }
     fn from_pumpswap_sell(cmd: &ExecutePumpSwapSellCommand) -> Self {
         Self {
             use_jito_direct: cmd.use_jito_direct,
@@ -675,6 +725,30 @@ async fn handle_line(
                 }
             }
         }
+        Ok(ExecutorCommand::ExecuteRaydiumCpmmSwap(cmd)) => {
+            let id = cmd.id.clone();
+            match execute_raydium_cpmm_swap(cmd, started).await {
+                Ok(mut response) => {
+                    response.id = id;
+                    response
+                }
+                Err(err) => ExecutorResponse {
+                    kind: "execResult",
+                    id,
+                    ok: false,
+                    signature: None,
+                    route: None,
+                    sender_path: None,
+                    sol_in_lamports: None,
+                    tokens_out_raw: None,
+                    elapsed_ms: started.elapsed().as_millis(),
+                    build_ms: None,
+                    broadcast_ms: None,
+                    tx_bytes: None,
+                    error: Some(err.to_string()),
+                },
+            }
+        }
         Ok(ExecutorCommand::ExecutePumpSwapSell(cmd)) => {
             let id = cmd.id.clone();
             match execute_pumpswap_sell(cmd, started).await {
@@ -963,6 +1037,161 @@ async fn execute_pumpswap_buy(
     })
 }
 
+
+async fn execute_raydium_cpmm_swap(
+    cmd: ExecuteRaydiumCpmmSwapCommand,
+    started: Instant,
+) -> Result<ExecutorResponse> {
+    let built = build_raydium_cpmm_swap_tx(&cmd)?;
+    let broadcast_started = Instant::now();
+    let sender_path = broadcast_signed_tx(
+        &BroadcastConfig::from_raydium_cpmm(&cmd),
+        &built.tx,
+        &built.signature,
+    )
+    .await?;
+    Ok(ExecutorResponse {
+        kind: "execResult",
+        id: cmd.id,
+        ok: true,
+        signature: Some(built.signature),
+        route: Some(cmd.route),
+        sender_path: Some(sender_path),
+        sol_in_lamports: Some(if cmd.input_mint == WRAPPED_SOL_MINT { cmd.amount_in_raw } else { 0 }),
+        tokens_out_raw: Some(cmd.expected_out_raw.max(1)),
+        elapsed_ms: started.elapsed().as_millis(),
+        build_ms: Some(built.build_ms),
+        broadcast_ms: Some(broadcast_started.elapsed().as_millis()),
+        tx_bytes: Some(built.bytes),
+        error: None,
+    })
+}
+
+fn build_raydium_cpmm_swap_tx(cmd: &ExecuteRaydiumCpmmSwapCommand) -> Result<BuiltTx> {
+    let started = Instant::now();
+    let private_key = env::var("PRIVATE_KEY_BASE58").context("PRIVATE_KEY_BASE58 is not set")?;
+    let keypair_bytes = bs58::decode(private_key.trim())
+        .into_vec()
+        .context("PRIVATE_KEY_BASE58 is not valid base58")?;
+    let keypair = Keypair::from_bytes(&keypair_bytes)
+        .context("PRIVATE_KEY_BASE58 is not a Solana keypair")?;
+    let user = keypair.pubkey();
+    let input_mint = parse_supported_swap_mint(&cmd.input_mint, "inputMint")?;
+    let output_mint = parse_supported_swap_mint(&cmd.output_mint, "outputMint")?;
+    let blockhash = Hash::from_str(&cmd.blockhash).context("invalid blockhash")?;
+
+    if cmd.source_raydium_cpmm_accounts.len() < 13 {
+        bail!("Raydium CPMM source accounts unavailable");
+    }
+    let source = parse_source_meta_accounts(&cmd.source_raydium_cpmm_accounts, "sourceRaydiumCpmmAccounts")?;
+    let input_token_program = source[8].pubkey;
+    let output_token_program = source[9].pubkey;
+    if source[10].pubkey != input_mint {
+        bail!("Raydium CPMM source input mint does not match mirrored input mint");
+    }
+    if source[11].pubkey != output_mint {
+        bail!("Raydium CPMM source output mint does not match mirrored output mint");
+    }
+    let user_input_ata = derive_ata(&user, &input_mint, &input_token_program)?;
+    let user_output_ata = derive_ata(&user, &output_mint, &output_token_program)?;
+
+    let mut instructions = Vec::with_capacity(9);
+    if cmd.compute_unit_limit > 0 {
+        instructions.push(ComputeBudgetInstruction::set_compute_unit_limit(
+            cmd.compute_unit_limit.min(1_400_000),
+        ));
+    }
+    instructions.push(ComputeBudgetInstruction::set_compute_unit_price(
+        cmd.priority_fee_micro_lamports,
+    ));
+    instructions.push(create_ata_idempotent_ix(&user, &user, &input_mint, &input_token_program)?);
+    instructions.push(create_ata_idempotent_ix(&user, &user, &output_mint, &output_token_program)?);
+    if cmd.input_mint == WRAPPED_SOL_MINT {
+        instructions.push(system_instruction::transfer(&user, &user_input_ata, cmd.amount_in_raw));
+        instructions.push(sync_native_ix(&user_input_ata)?);
+    }
+    instructions.push(build_raydium_cpmm_swap_ix(cmd, &source, &user, &user_input_ata, &user_output_ata)?);
+    if cmd.input_mint == WRAPPED_SOL_MINT {
+        instructions.push(close_token_account_ix(&user_input_ata, &user)?);
+    } else if cmd.output_mint == WRAPPED_SOL_MINT {
+        instructions.push(close_token_account_ix(&user_output_ata, &user)?);
+    }
+
+    let tip_sets = tip_instruction_sets(
+        &user,
+        cmd.jito_tip_lamports,
+        cmd.helius_tip_lamports,
+        cmd.use_jito_direct,
+        cmd.use_jito_fallback,
+    )?;
+    let mut last_error: Option<anyhow::Error> = None;
+    for tips in tip_sets {
+        let mut all_ixs = instructions.clone();
+        all_ixs.extend(tips);
+        match compile_and_sign(&keypair, blockhash, &all_ixs) {
+            Ok((tx, bytes)) if bytes <= PACKET_DATA_SIZE => {
+                let signature = tx
+                    .signatures
+                    .first()
+                    .ok_or_else(|| anyhow!("signed transaction has no signature"))?
+                    .to_string();
+                return Ok(BuiltTx {
+                    tx,
+                    signature,
+                    tokens_out_raw: cmd.expected_out_raw.max(1),
+                    bytes,
+                    build_ms: started.elapsed().as_millis(),
+                });
+            }
+            Ok((_tx, bytes)) => {
+                last_error = Some(anyhow!(
+                    "transaction too large: {bytes}B > {PACKET_DATA_SIZE}B"
+                ));
+            }
+            Err(err) => last_error = Some(err),
+        }
+    }
+    Err(last_error.unwrap_or_else(|| anyhow!("no tip set could build a Raydium CPMM transaction")))
+}
+
+fn build_raydium_cpmm_swap_ix(
+    cmd: &ExecuteRaydiumCpmmSwapCommand,
+    source: &[AccountMeta],
+    user: &Pubkey,
+    user_input_ata: &Pubkey,
+    user_output_ata: &Pubkey,
+) -> Result<Instruction> {
+    let mut accounts = source.to_vec();
+    accounts[0] = meta(*user, true, true);
+    accounts[4] = meta(*user_input_ata, false, true);
+    accounts[5] = meta(*user_output_ata, false, true);
+    let mut data = Vec::with_capacity(24);
+    data.extend_from_slice(&[143, 190, 90, 218, 196, 30, 51, 222]);
+    data.extend_from_slice(&cmd.amount_in_raw.to_le_bytes());
+    data.extend_from_slice(&cmd.min_out_raw.to_le_bytes());
+    Ok(Instruction {
+        program_id: parse_pubkey(RAYDIUM_CPMM_PROGRAM_ID, "raydium cpmm program")?,
+        accounts,
+        data,
+    })
+}
+
+fn parse_source_meta_accounts(accounts: &[SourcePumpSwapAccountMeta], label: &str) -> Result<Vec<AccountMeta>> {
+    accounts
+        .iter()
+        .map(|account| {
+            Ok(meta(
+                parse_pubkey(&account.pubkey, label)?,
+                account.is_signer,
+                account.is_writable,
+            ))
+        })
+        .collect()
+}
+
+fn parse_supported_swap_mint(value: &str, label: &str) -> Result<Pubkey> {
+    parse_pubkey(value, label)
+}
 async fn execute_pumpfun_sell(
     cmd: ExecutePumpfunSellCommand,
     started: Instant,
@@ -2581,3 +2810,5 @@ mod tests {
         assert!(matches!(parsed, ExecutorCommand::ExecutePumpfunSell(_)));
     }
 }
+
+

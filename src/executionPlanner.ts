@@ -5,6 +5,7 @@ export type PlannedRoute =
   | "pumpfun-bonding-curve"
   | "pumpfun-v2-token2022"
   | "pumpswap-graduated"
+  | "raydium-cpmm"
   | "jupiter-non-pump"
   | "unsafe-unknown";
 
@@ -36,6 +37,14 @@ export function planExecution(swap: DetectedSwap): ExecutionPlan {
       mint,
       route: "pumpswap-graduated",
       reason: "source payload includes PumpSwap accounts",
+    };
+  }
+  if (swap.sourceRaydiumCpmmAccounts?.length) {
+    return {
+      side,
+      mint,
+      route: "raydium-cpmm",
+      reason: "source payload includes Raydium CPMM accounts",
     };
   }
 

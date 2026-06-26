@@ -4,6 +4,8 @@ export type SourcePumpSwapAccountMeta = {
   isWritable: boolean;
 };
 
+export type SourceRaydiumCpmmAccountMeta = SourcePumpSwapAccountMeta;
+
 /** A Jupiter swap detected from a tracked wallet's transaction. */
 export type DetectedSwap = {
   signature: string;
@@ -66,6 +68,13 @@ export type DetectedSwap = {
    * pubkeys; those are accepted as a compatibility fallback.
    */
   sourcePumpSwapAccounts?: SourcePumpSwapAccountMeta[] | string[];
+  /**
+   * Raydium CPMM swap account metas in source instruction order. This lets the
+   * local Rust executor replay the source's pool/vault/oracle accounts and only
+   * replace the payer plus user input/output token accounts.
+   */
+  sourceRaydiumCpmmAccounts?: SourceRaydiumCpmmAccountMeta[] | string[];
+  sourceRaydiumCpmmInstruction?: "swap_base_input";
   /** Original quote mint used by the source wallet when it differs from the mirrored input. */
   sourceQuoteMint?: string;
   /** Original quote amount used by the source wallet, in raw units. */
@@ -106,3 +115,4 @@ export type RustHotBuy = {
   detectedAtMs?: number;
   receivedAtMs?: number;
 };
+

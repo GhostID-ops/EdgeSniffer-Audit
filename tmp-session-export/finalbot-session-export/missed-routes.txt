@@ -1,0 +1,51 @@
+
+> finalbot@1.0.0 audit:missed-routes
+> node scripts/auditMissedRoutes.mjs
+
+Missed Route Audit
+File: /root/bot/FinalBot-cya/data/execution-telemetry.jsonl
+Rows: 11446
+Missed non-pump buy signals: 467
+
+By inferred protocol
+   467  100.0%  unknown
+
+By detector
+   337   72.2%  shyft-grpc
+   101   21.6%  rust-sidecar
+    29    6.2%  ws-raw-rpc
+
+By wallet
+   442   94.6%  CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o
+    15    3.2%  4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9
+    10    2.1%  DbEh3Yah8wPtRNpcxtixHMP8Kw1H2wvfv9D1DLVH2zKH
+
+By reason
+   467  100.0%  non-pump mint
+
+Latest 25 misses
+  2026-06-16T19:47:08.184Z 5w1s4juXQq... mint=4Rs4R8SP9t... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:47:08.036Z vaBwPeuwoY... mint=4Rs4R8SP9t... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:47:07.319Z 5uLzU8fV3o... mint=4Rs4R8SP9t... protocol=unknown detector=rust-sidecar
+  2026-06-16T19:47:07.319Z 2CXnw7PEKk... mint=4Rs4R8SP9t... protocol=unknown detector=rust-sidecar
+  2026-06-16T19:47:07.287Z 3FoUaBcF6Q... mint=4Rs4R8SP9t... protocol=unknown detector=rust-sidecar
+  2026-06-16T19:47:07.286Z 5Dyr4emnA6... mint=4Rs4R8SP9t... protocol=unknown detector=rust-sidecar
+  2026-06-16T19:47:07.215Z 4LnRBsJq2E... mint=4Rs4R8SP9t... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:14:15.037Z j732tQH26e... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:11:50.423Z 4gBVBuY8kv... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:11:50.150Z 3Qnsa8PUKP... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:11:33.920Z 2A6j6JXZEk... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:11:33.874Z QdZSq492Q7... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:11:28.543Z 2Ss5va8w3y... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:11:20.087Z 37Vd1oXpcy... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:11:19.954Z 4oUqr9dumk... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:11:01.697Z 4mGAASagvu... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:11:01.554Z 424noWX4cW... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:10:53.963Z v89jPueTgG... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:10:53.815Z 3zk2ZS7dQR... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:10:53.661Z tZzzypwqGV... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:10:52.964Z 5WSxyakDLN... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc
+  2026-06-16T19:10:47.880Z 52M1H1ZkgK... mint=HzdvRLjfzn... protocol=unknown detector=rust-sidecar
+  2026-06-16T19:10:47.879Z 3DkumXH14d... mint=HzdvRLjfzn... protocol=unknown detector=rust-sidecar
+  2026-06-16T19:10:47.878Z SoY7Z8NoHw... mint=HzdvRLjfzn... protocol=unknown detector=rust-sidecar
+  2026-06-16T19:10:47.670Z 4zCEzZad1b... mint=HzdvRLjfzn... protocol=unknown detector=shyft-grpc

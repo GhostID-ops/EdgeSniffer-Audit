@@ -1,0 +1,4298 @@
+{
+  "generatedAt": "2026-06-19T17:01:04.774Z",
+  "wallet": "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
+  "hours": 48,
+  "windowStartHoursAgo": 0,
+  "windowEndHoursAgo": 48,
+  "windowStartIso": "2026-06-17T15:57:44.000Z",
+  "windowEndIso": "2026-06-19T15:57:44.000Z",
+  "minEntryMcUsd": 0,
+  "horizonHours": 24,
+  "routeFilter": "pumpfun-pumpswap",
+  "solUsd": 69.07,
+  "supplyApprox": 1000000000,
+  "trailingSteps": [
+    {
+      "peak": 50,
+      "floor": 25
+    },
+    {
+      "peak": 100,
+      "floor": 75
+    },
+    {
+      "peak": 200,
+      "floor": 125
+    },
+    {
+      "peak": 300,
+      "floor": 200
+    },
+    {
+      "peak": 500,
+      "floor": 350
+    },
+    {
+      "peak": 600,
+      "floor": 400
+    },
+    {
+      "peak": 800,
+      "floor": 500
+    },
+    {
+      "peak": 1200,
+      "floor": 1000
+    }
+  ],
+  "coverage": {
+    "walletTxs": 2251,
+    "swaps": 1706,
+    "campaigns48h": 269,
+    "mcCandidates": 269,
+    "candidates": 206
+  },
+  "entryMc": {
+    "median": 4288.024197851518,
+    "p25": 2927.2910807094504,
+    "p75": 9063.94233729789
+  },
+  "path": {
+    "medianMfePct": 24.461406171187896,
+    "medianMaePct": -42.88245919232508
+  },
+  "targetHitSummary": [
+    {
+      "targetPct": 30,
+      "hits": 44,
+      "trades": 99,
+      "hitRatePct": 44.44444444444444,
+      "medianHitMin": 0.4166666666666667
+    },
+    {
+      "targetPct": 50,
+      "hits": 28,
+      "trades": 99,
+      "hitRatePct": 28.28282828282828,
+      "medianHitMin": 0.39166666666666666
+    },
+    {
+      "targetPct": 75,
+      "hits": 18,
+      "trades": 99,
+      "hitRatePct": 18.181818181818183,
+      "medianHitMin": 0.39166666666666666
+    },
+    {
+      "targetPct": 100,
+      "hits": 13,
+      "trades": 99,
+      "hitRatePct": 13.131313131313133,
+      "medianHitMin": 1.15
+    }
+  ],
+  "strategySummaries": [
+    {
+      "name": "mirror CyA first sell",
+      "trades": 99,
+      "winRatePct": 45.45454545454545,
+      "avgPct": 11.313126807769521,
+      "medianPct": -2.296752204554259,
+      "p25Pct": -19.93855754873108,
+      "p75Pct": 17.096669412514387,
+      "totalPct": 1119.9995539691827,
+      "profitFactor": 1.9079589806409052
+    },
+    {
+      "name": "TP30 sell 100%",
+      "trades": 99,
+      "winRatePct": 66.66666666666666,
+      "avgPct": 11.881647151992714,
+      "medianPct": 30,
+      "p25Pct": -12.344898829735461,
+      "p75Pct": 30,
+      "totalPct": 1176.2830680472787,
+      "profitFactor": 2.4206765161191894
+    },
+    {
+      "name": "TP50 sell 100%",
+      "trades": 99,
+      "winRatePct": 58.58585858585859,
+      "avgPct": 19.472745122802635,
+      "medianPct": 11.181407566983689,
+      "p25Pct": -14.906496912260755,
+      "p75Pct": 50,
+      "totalPct": 1927.801767157461,
+      "profitFactor": 2.9855861676152924
+    },
+    {
+      "name": "TP75 sell 100%",
+      "trades": 99,
+      "winRatePct": 53.535353535353536,
+      "avgPct": 18.729040250168914,
+      "medianPct": 2.602792010374253,
+      "p25Pct": -18.446830291069276,
+      "p75Pct": 40.09639302965306,
+      "totalPct": 1854.1749847667227,
+      "profitFactor": 2.6855421839095843
+    },
+    {
+      "name": "TP100 sell 100%",
+      "trades": 99,
+      "winRatePct": 49.494949494949495,
+      "avgPct": 18.202343380781052,
+      "medianPct": -0.5758722492416095,
+      "p25Pct": -19.269546992545774,
+      "p75Pct": 33.17564782645391,
+      "totalPct": 1802.031994697324,
+      "profitFactor": 2.523772814560868
+    },
+    {
+      "name": "custom trailing",
+      "trades": 99,
+      "winRatePct": 58.58585858585859,
+      "avgPct": 16.442442092499604,
+      "medianPct": 11.181407566983689,
+      "p25Pct": -14.906496912260755,
+      "p75Pct": 25,
+      "totalPct": 1627.801767157461,
+      "profitFactor": 2.6765938944300105
+    }
+  ],
+  "rows": [
+    {
+      "mint": "2aKTUD6u1MW3vbAQdHvNnw9wjjZoacQVMbYTG28cpump",
+      "symbol": "BARRON",
+      "entryIso": "2026-06-19T00:21:49.000Z",
+      "sourceFillMarketCapUsd": 113554.94531075566,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -54.551296886753256,
+      "firstSellMinutes": 2.25,
+      "currentMarketCapUsd": 3995,
+      "liquidityUsd": 4729.18,
+      "mfePct": 80.11042094734506,
+      "maePct": -69.27983771273853,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 11,
+        "tp50": 11,
+        "tp75": 11,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 11,
+        "peakPct": 80.11042094734506,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -54.551296886753256,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": -54.551296886753256,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "2hvPSMMz6vGv6S21c6HSHK2GjzYcERvUwzKTpU1JhopB5AE6WFwbESjH4GxuRpMDV28TdAjEEBhCo2f39S4DSNhx",
+      "firstSellSignature": "7duGAzduHGeJgDBtLhGmyq9dmsPccuhYajU7XjBztVtd1f6xSvUMD5DpANa5pbKT3gN1XAEsqXtuESEmUijqwDz"
+    },
+    {
+      "mint": "BzyKa1FGjs2EUpu3GGDibY4xdygn5evAiRboKmETpump",
+      "symbol": "TRENCH",
+      "entryIso": "2026-06-18T20:41:57.000Z",
+      "sourceFillMarketCapUsd": 79679.49104547939,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -1.3832950733640355,
+      "firstSellMinutes": 1.2833333333333334,
+      "currentMarketCapUsd": 7946,
+      "liquidityUsd": 8323.88,
+      "mfePct": 30.232716154165505,
+      "maePct": -22.393804036723406,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 3,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -1.3832950733640355,
+        "tp30Sell100": 30,
+        "tp50Sell100": -1.3832950733640355,
+        "tp75Sell100": -1.3832950733640355,
+        "tp100Sell100": -1.3832950733640355,
+        "trailingCustom": -1.3832950733640355
+      },
+      "firstBuySignature": "3GUNheKmpkYGpX9rdAsmcEuLJRKpLaMCtaNfRLJvrWFJfhH63s5wCwgxfqAaSag8L5PDzJreJiiLk5tXTksE8MQR",
+      "firstSellSignature": "3HAKYztHFCWxBqDu3UUkrP7sqkYS3P66jadeEndFYV3ajkpgv9V9rwM7EugcU3Bz7vhgFqXzrp6UeYntw5D6kTbk"
+    },
+    {
+      "mint": "3NMQuwg7WGqzqjqwUnR3Ciwo3AoVE39yYQnTqK49pump",
+      "symbol": "TRENCHES",
+      "entryIso": "2026-06-18T20:41:51.000Z",
+      "sourceFillMarketCapUsd": 64219.115308550725,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": 120.07491364744094,
+      "firstSellMinutes": 31.916666666666668,
+      "currentMarketCapUsd": 200182,
+      "liquidityUsd": 34477.97,
+      "mfePct": 330.7734245614474,
+      "maePct": -36.5841743189585,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 9,
+        "tp50": 9,
+        "tp75": 9,
+        "tp100": 9
+      },
+      "trailingExit": {
+        "roiPct": 75,
+        "timeSec": 9,
+        "peakPct": 140.50955312807386,
+        "floorPct": 75
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 120.07491364744094,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 75
+      },
+      "firstBuySignature": "aXX6h72V3JQNUz4uMDxM51SyPJ1M1uyS47RLeHjvz7ruv3jxMFuDB9RF6SNwYmLiq98T25jrAWrYyTwyCrh2kE5",
+      "firstSellSignature": "3aVnc7gECcRJgTPH9hcuoNaZYwHJ5dDjqe4NS49ugVKrtdh5a4zKNcCkBcbPJVSEL8Mg8hZuVuxwskgBoP3jVtr6"
+    },
+    {
+      "mint": "DXwcaZ3atb4WfrzDtkR3EcRhkv2rrbzjKLQxyPjNpump",
+      "symbol": "KEVUN",
+      "entryIso": "2026-06-17T18:02:39.000Z",
+      "sourceFillMarketCapUsd": 51712.040458376025,
+      "sourceBuySol": 5.03207908,
+      "sourceExitPct": -11.94203621146398,
+      "firstSellMinutes": 3.8,
+      "currentMarketCapUsd": 30238,
+      "liquidityUsd": 14162.43,
+      "mfePct": 24.461406171187896,
+      "maePct": -25.12855385082235,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -11.94203621146398,
+        "tp30Sell100": -11.94203621146398,
+        "tp50Sell100": -11.94203621146398,
+        "tp75Sell100": -11.94203621146398,
+        "tp100Sell100": -11.94203621146398,
+        "trailingCustom": -11.94203621146398
+      },
+      "firstBuySignature": "3PqUCj2JbWorUv5eYM9YxZ2JTQ475MG78k3k9iYuTRNJtN38JFLBb7CMVRiCgmHymJBkN94zPten7SiMkwcaJehj",
+      "firstSellSignature": "4LwCKpRNuKBWWXinTBGZS3giNtwoHTnyVMX8hRTczqj8cgBvvUZZxiTbqenUage8deBxQj297j1WaZBgmAZw4pZN"
+    },
+    {
+      "mint": "EmfAFkiXqHqN6j1yGkxShnMLaHLpm7kFdzZzhbtupump",
+      "symbol": "DAWN",
+      "entryIso": "2026-06-18T23:42:02.000Z",
+      "sourceFillMarketCapUsd": 44232.43257793792,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": 3.1678845826351254,
+      "firstSellMinutes": 13.25,
+      "currentMarketCapUsd": 54495,
+      "liquidityUsd": 17266.15,
+      "mfePct": 56.46738005108134,
+      "maePct": -45.012809122430895,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 58,
+        "tp50": 58,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 58,
+        "peakPct": 50.11956009606403,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 3.1678845826351254,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 3.1678845826351254,
+        "tp100Sell100": 3.1678845826351254,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "5D16xRGwrP5FP26hU4LAaZ6joeisZmNLUDdcYZMwmPaDZBLo63uEhHn57idXTyhiaQXdeF47NRuTK55tyXGNqyeU",
+      "firstSellSignature": "fvf8CuBzjw7YhAqVTKFvePJwUCmtUWdobGW2gm3AyTbuB2nfsTaJGA5oJbPPAM21iC3Mi8sqSvX7DJSt8o2EKeE"
+    },
+    {
+      "mint": "79Jx4SNyuzwitVxrGoCbNLuLVUNGHsQQaiswXapMpump",
+      "symbol": "CRAFT",
+      "entryIso": "2026-06-19T14:26:54.000Z",
+      "sourceFillMarketCapUsd": 44194.31200142554,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -50.479608977576696,
+      "firstSellMinutes": 0.26666666666666666,
+      "currentMarketCapUsd": 39751,
+      "liquidityUsd": 14046.81,
+      "mfePct": 1.9241553822022694,
+      "maePct": -62.12430246673664,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -50.479608977576696,
+        "tp30Sell100": -50.479608977576696,
+        "tp50Sell100": -50.479608977576696,
+        "tp75Sell100": -50.479608977576696,
+        "tp100Sell100": -50.479608977576696,
+        "trailingCustom": -50.479608977576696
+      },
+      "firstBuySignature": "5sXE5zUfGkZW95fJuLLPRRPiVyJjNVnMz1TufWMKarY9JSpruoBg7fo5r8PHXxP1oXCFpCofLD1GCcEnX3WKrFWJ",
+      "firstSellSignature": "5wBeh7j6tj3qy5GsvxahNX5ckdfuU4B84DRac166aotZT5cCH6KF2X4p7CdZntQjesgNBLntaikaHfUeKZqhBBaM"
+    },
+    {
+      "mint": "Gn2SDa53t9zegwdKX71ywUVZbjJZDXnBBkGP3T2Apump",
+      "symbol": "COMOS",
+      "entryIso": "2026-06-18T22:33:35.000Z",
+      "sourceFillMarketCapUsd": 35589.84834075934,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": 33.69238517128005,
+      "firstSellMinutes": 330.0833333333333,
+      "currentMarketCapUsd": 71743,
+      "liquidityUsd": 19303.38,
+      "mfePct": 320.9476025641139,
+      "maePct": -1.7068366736065128,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 85,
+        "tp50": 85,
+        "tp75": 265,
+        "tp100": 265
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 85,
+        "peakPct": 56.16230244714492,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 33.69238517128005,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "4EHSvEmvhQRfeBbfGUtJ1gVTKq9LTzsjLj5ck6QpJydYKb73iRsUcHjDzFL2RZYE4v7XyUC9q9THUXg1JVC3kZda",
+      "firstSellSignature": "5mrRxapRrPjw5V9Wy5Uj6KdMq1bUhnRSJGiyRGtwfs1NDeHxZ6XvqUXTtdVq3AtQM4LQZJBwq22r9HaeRe1dDAL"
+    },
+    {
+      "mint": "BmNASdTTgXc1AhvMqFiPBKp3kwrPeHchn7LbbWeSpump",
+      "symbol": "COLLECTABLE",
+      "entryIso": "2026-06-19T14:54:47.000Z",
+      "sourceFillMarketCapUsd": 31134.60945999396,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": null,
+      "firstSellMinutes": null,
+      "currentMarketCapUsd": 68667,
+      "liquidityUsd": 18530.92,
+      "mfePct": 182.86385368461973,
+      "maePct": -43.999803511562746,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 1273,
+        "tp50": 1273,
+        "tp75": 1693,
+        "tp100": 1693
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 1273,
+        "peakPct": 51.38599892731989,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 101.67165486140341,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "2tGVqqUnFhEtHR64Ux5qFD3rpRVkx7xK9amegA9ibnxC99tBr6urWtDFmAvUSt3H1a3bsomVgFjMXyKmw7UXfizb",
+      "firstSellSignature": null
+    },
+    {
+      "mint": "8vreH8zd6wKEkqEtaWanKZAcyjjrx4SfT42f5Sqppump",
+      "symbol": "Day",
+      "entryIso": "2026-06-17T18:33:07.000Z",
+      "sourceFillMarketCapUsd": 30543.557124579624,
+      "sourceBuySol": 5.03207908,
+      "sourceExitPct": -36.82147437436119,
+      "firstSellMinutes": 6.6,
+      "currentMarketCapUsd": 3030,
+      "liquidityUsd": 3990.49,
+      "mfePct": 45.141380228011464,
+      "maePct": -59.59772643472058,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 113,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -36.82147437436119,
+        "tp30Sell100": 30,
+        "tp50Sell100": -36.82147437436119,
+        "tp75Sell100": -36.82147437436119,
+        "tp100Sell100": -36.82147437436119,
+        "trailingCustom": -36.82147437436119
+      },
+      "firstBuySignature": "xtCkXKscnd7SbgHEjVR4J2B1BjyZ9sss1MAbv7A6hDNDQLJw4bigo4jrHLfi48KU6ShNncyXQfG7yGFepS6vA2M",
+      "firstSellSignature": "KGJ84Vw2k13cKL6XZkWe7H3qVWrGnMqQXsgHQ4vjxeYDnjokGTKwkc4Qazk5Arag5i8VuVJpHdA5okVE57TVZwH"
+    },
+    {
+      "mint": "CBxnoa2ZS7m8t3zgA3AZuyBxHvhPWTgPxY67iPeSpump",
+      "symbol": "MSTR",
+      "entryIso": "2026-06-18T18:18:34.000Z",
+      "sourceFillMarketCapUsd": 27099.495836278395,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": 22.444476472040385,
+      "firstSellMinutes": 0.48333333333333334,
+      "currentMarketCapUsd": 4063,
+      "liquidityUsd": 4492.5,
+      "mfePct": 9.46379507889081,
+      "maePct": -48.02901259120115,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 22.444476472040385,
+        "tp30Sell100": 22.444476472040385,
+        "tp50Sell100": 22.444476472040385,
+        "tp75Sell100": 22.444476472040385,
+        "tp100Sell100": 22.444476472040385,
+        "trailingCustom": 22.444476472040385
+      },
+      "firstBuySignature": "4ERYYu6QAXrvXeLKWU2Cy6BBGfkaW6DneZrWRFZmEwUhKix5gjzP2KKboZPShf295TQDmQbVAi73LTr72TLSUdnS",
+      "firstSellSignature": "22G46DAu2DXTwMeDyMz51oCvfDhab48D2A5kvC49agisDXJv9yqh71C73cgUoqns8m87LbBPaMh7YCsE871hu4zM"
+    },
+    {
+      "mint": "857tSudZn1j86tChoP7NWELop32rQ1VPzAL9cuf1pump",
+      "symbol": "UP",
+      "entryIso": "2026-06-18T20:05:53.000Z",
+      "sourceFillMarketCapUsd": 23657.392160278134,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": 15.404460388549301,
+      "firstSellMinutes": 0.65,
+      "currentMarketCapUsd": 6217,
+      "liquidityUsd": 5524.57,
+      "mfePct": 10.949694806647091,
+      "maePct": -34.65890978068258,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 15.404460388549301,
+        "tp30Sell100": 15.404460388549301,
+        "tp50Sell100": 15.404460388549301,
+        "tp75Sell100": 15.404460388549301,
+        "tp100Sell100": 15.404460388549301,
+        "trailingCustom": 15.404460388549301
+      },
+      "firstBuySignature": "22WthoLNa8Vj4MSxjkLS8pf8WQh8Zm4wHY8WHf4dvDncNBhkGrD839upPz6ENZLNepELmWt8kbLT2cmdkEdd7186",
+      "firstSellSignature": "43zk7c1UW7diA4FYvdGKiYAiUouiyvjRqCnXRgF3f8UFW3Dd4vWmPgMtBTrPFFwStEiKpj1YAghT9mVWXj4Djp8m"
+    },
+    {
+      "mint": "AWvgKkGymGqupAxS7uufhzTis9XEoLMgBZhctimxpump",
+      "symbol": "VOYAGER",
+      "entryIso": "2026-06-18T23:20:05.000Z",
+      "sourceFillMarketCapUsd": 20358.166232357682,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -37.291910559936284,
+      "firstSellMinutes": 1.3166666666666667,
+      "currentMarketCapUsd": 4871,
+      "liquidityUsd": 4913.93,
+      "mfePct": 1.298357926610992,
+      "maePct": -51.14829818612282,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -37.291910559936284,
+        "tp30Sell100": -37.291910559936284,
+        "tp50Sell100": -37.291910559936284,
+        "tp75Sell100": -37.291910559936284,
+        "tp100Sell100": -37.291910559936284,
+        "trailingCustom": -37.291910559936284
+      },
+      "firstBuySignature": "4zqQsijHMB6gRTpX9arvSwvmo7tCkYCmzkpR6U8BcFfK9CE1D6rtNrDdZY5GcSMYoJrcm9KrzoheS6a5tpViFTSt",
+      "firstSellSignature": "3ECMxqQWFKqevLCV3pbAdNfbVcooFdWcrbUVNjAaRRUjGaCKxQa1SSr2dXUhA76vB2ajnuTQ8P6XJ6Jwkqo2rHuF"
+    },
+    {
+      "mint": "HA57ZhNgdoVT2HAjaKMgkomSVZbWusWCByXxrswGpump",
+      "symbol": "Asteroid",
+      "entryIso": "2026-06-18T21:40:27.000Z",
+      "sourceFillMarketCapUsd": 19133.49098070926,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -33.037081290083194,
+      "firstSellMinutes": 0.7666666666666667,
+      "currentMarketCapUsd": 2524,
+      "liquidityUsd": 3511.62,
+      "mfePct": 11.661455167413216,
+      "maePct": -77.47117149947631,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -33.037081290083194,
+        "tp30Sell100": -33.037081290083194,
+        "tp50Sell100": -33.037081290083194,
+        "tp75Sell100": -33.037081290083194,
+        "tp100Sell100": -33.037081290083194,
+        "trailingCustom": -33.037081290083194
+      },
+      "firstBuySignature": "48miJbW6agWqXQerVB8qoPf7AZycBkbLiZQYRJWVR5eKPQdc9iWFJDAvTKbw1P2i2TwXGNtrueLUhDQk9QPijEoo",
+      "firstSellSignature": "r1DbwjxMMaENPssZUrhQHytvzo76VZwq36y6hYhNKWts8qzsK4LMPjyCyvz8kV8NLEYXqhYWtzMLNzMQJ21CJM4"
+    },
+    {
+      "mint": "FbBzPWxRZ1TBC4kKPKkmNCA2fNP5xFvkqQqHPubSpump",
+      "symbol": "ANSEM",
+      "entryIso": "2026-06-18T19:05:14.000Z",
+      "sourceFillMarketCapUsd": 17899.11188081852,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -46.38620230250952,
+      "firstSellMinutes": 4.166666666666667,
+      "currentMarketCapUsd": 6682,
+      "liquidityUsd": 5981.12,
+      "mfePct": 1.0533835253481587,
+      "maePct": -70.55868695380967,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -46.38620230250952,
+        "tp30Sell100": -46.38620230250952,
+        "tp50Sell100": -46.38620230250952,
+        "tp75Sell100": -46.38620230250952,
+        "tp100Sell100": -46.38620230250952,
+        "trailingCustom": -46.38620230250952
+      },
+      "firstBuySignature": "5tqpJjYV2DKK9nb49AWWoKMRQeuFtFAKZFc1BMSKJZRkoyqezZFW9MQByFLeuHk7BumwbuuRXu1TExMY7f6qBkkD",
+      "firstSellSignature": "2gRZZG4Zvo33iXqkAWZzY3rP4GLdu6ZDpqmGuUAYeT3iZBXSKgjvt5uWfjqe1fPnBxDuGPELLDfB2NjzBcz4QcXa"
+    },
+    {
+      "mint": "2D1QhViqzrRL8i22RFF6tiPETR5ExrCnVAGqJQu6pump",
+      "symbol": "Wersh",
+      "entryIso": "2026-06-17T18:01:30.000Z",
+      "sourceFillMarketCapUsd": 17690.76001466398,
+      "sourceBuySol": 5.030005,
+      "sourceExitPct": -26.66171119998214,
+      "firstSellMinutes": 1,
+      "currentMarketCapUsd": 1449,
+      "liquidityUsd": 2729.11,
+      "mfePct": 9.49314310712615,
+      "maePct": -31.166432835701908,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -26.66171119998214,
+        "tp30Sell100": -26.66171119998214,
+        "tp50Sell100": -26.66171119998214,
+        "tp75Sell100": -26.66171119998214,
+        "tp100Sell100": -26.66171119998214,
+        "trailingCustom": -26.66171119998214
+      },
+      "firstBuySignature": "apRC7NgTNCyXwPdqWb1fhH8R1gqkWbHz33Jn2NuLfKgMYtqdGre2AJhN3LYNAbCnG48Box9WYY7xu4noUL1xR2z",
+      "firstSellSignature": "5aqHZfFMM9WyZdBTD8xnY9WXH97HeTNW5MmX4GzBgPKMCCoXtvFq5ZewqE6FKzA69wyNTzRChJMWMMjry8fDNDDK"
+    },
+    {
+      "mint": "EZamyy5m45D6j4BN3Vu4Qbkzw3dZtVe7yPafX6DApump",
+      "symbol": "NeGa",
+      "entryIso": "2026-06-19T00:07:23.000Z",
+      "sourceFillMarketCapUsd": 17085.541311795492,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": 35.48015765879781,
+      "firstSellMinutes": 3.5166666666666666,
+      "currentMarketCapUsd": 1423,
+      "liquidityUsd": 2660.74,
+      "mfePct": 40.974773864570224,
+      "maePct": -31.396203594663145,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 97,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 35.48015765879781,
+        "tp30Sell100": 30,
+        "tp50Sell100": 35.48015765879781,
+        "tp75Sell100": 35.48015765879781,
+        "tp100Sell100": 35.48015765879781,
+        "trailingCustom": 35.48015765879781
+      },
+      "firstBuySignature": "mnsyFKfdgdWegAk9yfmLCyMNVBFqt8KQgh9Q3QfCwExUCdGAtgZc5GQyGKgQw7CKAw97oBAvnkwimwA6rFP4WtC",
+      "firstSellSignature": "Gu4qKufUL9e92oXS8BuxG8yQvz6vyEhqcAX3BuDBET7ry4F7vwefhk2ujQmb1TdtRryGM8fr7q34vmTVye6sfBh"
+    },
+    {
+      "mint": "Ct5ZGEs7TTwbV63e1gTDdhdves3xenJRe6gKW2pupump",
+      "symbol": "HERO",
+      "entryIso": "2026-06-19T15:39:35.000Z",
+      "sourceFillMarketCapUsd": 16447.087974650243,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -11.812443646227386,
+      "firstSellMinutes": 0.4166666666666667,
+      "currentMarketCapUsd": 2293,
+      "liquidityUsd": 3350.18,
+      "mfePct": 48.78849417135483,
+      "maePct": -34.291858758325894,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 25,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -11.812443646227386,
+        "tp30Sell100": 30,
+        "tp50Sell100": -11.812443646227386,
+        "tp75Sell100": -11.812443646227386,
+        "tp100Sell100": -11.812443646227386,
+        "trailingCustom": -11.812443646227386
+      },
+      "firstBuySignature": "BTHWAevNre5LHHwhgsgBpPM3edCihpaQnJnn6GJxhZZTLN92PyBYBqNjbKe4J8DJmVdnnNPofUoqG545ozyY6uG",
+      "firstSellSignature": "4rCrfUTdL3epUW6UQtLXknSZX1NdaibBo77HY8SkzdKMY7oCexLTtAC2tntPAHapMv48rfWXViUFkEY98yvHGbrk"
+    },
+    {
+      "mint": "J5ywrHWqr4dR2Kb4cAfcgNPwnEutHDakeZum8vUopump",
+      "symbol": "DAWN",
+      "entryIso": "2026-06-18T22:27:45.000Z",
+      "sourceFillMarketCapUsd": 13535.04251071855,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -10.829161613256842,
+      "firstSellMinutes": 0.26666666666666666,
+      "currentMarketCapUsd": 1934.31,
+      "liquidityUsd": null,
+      "mfePct": 3.6074652497198585,
+      "maePct": -79.47026950801221,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -10.829161613256842,
+        "tp30Sell100": -10.829161613256842,
+        "tp50Sell100": -10.829161613256842,
+        "tp75Sell100": -10.829161613256842,
+        "tp100Sell100": -10.829161613256842,
+        "trailingCustom": -10.829161613256842
+      },
+      "firstBuySignature": "32JenouAGwAnHSJDd8BsdCFjtbya9G28ohJdg9eSkQ7vuqiRPfgV8bJDoK6DBxtfS7UDXx9xYekFsB8q74QxHwBT",
+      "firstSellSignature": "5hBUbumTjBN87FMVtpbsVV4Uf6fFUoSDgi23xnjUsYvohnVLLVZFLaivhTBbhxpWhD2oQbDtmXLkGjbrRXko8eVV"
+    },
+    {
+      "mint": "ByYAq5QmKLkrj7BrHVAZRncLRDiFX3WHNBs3Fug2pump",
+      "symbol": "Tagoh",
+      "entryIso": "2026-06-17T16:21:15.000Z",
+      "sourceFillMarketCapUsd": 13197.500157440967,
+      "sourceBuySol": 5.03207908,
+      "sourceExitPct": 9.190166688406846,
+      "firstSellMinutes": 0.7833333333333333,
+      "currentMarketCapUsd": 1953.44,
+      "liquidityUsd": null,
+      "mfePct": 13.083843271780632,
+      "maePct": -29.838771525908452,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 9.190166688406846,
+        "tp30Sell100": 9.190166688406846,
+        "tp50Sell100": 9.190166688406846,
+        "tp75Sell100": 9.190166688406846,
+        "tp100Sell100": 9.190166688406846,
+        "trailingCustom": 9.190166688406846
+      },
+      "firstBuySignature": "67Pw4vuR4XsJ4Tj9C4kkqf6he1HFGzVj9wmpgp2S5pKioZ8gToVYupRY7Juu8PjpArKKDjDBxCBAPC3iYYKYx8PB",
+      "firstSellSignature": "62njnF8CbeS2K5LUTmvztH5266jf7bnmjed7fx3cEspgYpDyCQRUPzQXDzJrs2WksJ4vn2KE2usC5oCZz8JsTPbe"
+    },
+    {
+      "mint": "DQtAGsabS26q4haXCJCnxLqT3cBhkVnSr7EctFH1pump",
+      "symbol": "DAWNNY",
+      "entryIso": "2026-06-18T21:59:40.000Z",
+      "sourceFillMarketCapUsd": 13077.650244418443,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -41.14180259373836,
+      "firstSellMinutes": 1.05,
+      "currentMarketCapUsd": 1950.8,
+      "liquidityUsd": null,
+      "mfePct": 0,
+      "maePct": -80.26181604391556,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -41.14180259373836,
+        "tp30Sell100": -41.14180259373836,
+        "tp50Sell100": -41.14180259373836,
+        "tp75Sell100": -41.14180259373836,
+        "tp100Sell100": -41.14180259373836,
+        "trailingCustom": -41.14180259373836
+      },
+      "firstBuySignature": "3b3nDqUm18ReT85fiqrFK6LxKhGKk54S8dDeJDxoPVQN4CNtzQWMy4BzBjvhAM2CjsbbxYjxSApGsaurvNc8YiUz",
+      "firstSellSignature": "2WKFPSmZe9WEqWEG3g2MzDQg6dzdXErKfqwnZa4jZw5Ad1XUxdwoXvyqXjY8UCNTbCK9pac2LyWmVg6G27RSeZAe"
+    },
+    {
+      "mint": "2bJLvamPNX7iTxZwtsu3SL2fLuSgejfB4rxtYeaipump",
+      "symbol": "FATTOO",
+      "entryIso": "2026-06-19T14:11:54.000Z",
+      "sourceFillMarketCapUsd": 10185.203290165071,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": 41.23962181301208,
+      "firstSellMinutes": 3.466666666666667,
+      "currentMarketCapUsd": 2719,
+      "liquidityUsd": 3779.09,
+      "mfePct": 0,
+      "maePct": -66.0299384341649,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 41.23962181301208,
+        "tp30Sell100": 41.23962181301208,
+        "tp50Sell100": 41.23962181301208,
+        "tp75Sell100": 41.23962181301208,
+        "tp100Sell100": 41.23962181301208,
+        "trailingCustom": 41.23962181301208
+      },
+      "firstBuySignature": "3FSxUtzUP2Nyp83KwF6h4EpvduRtGSexPBtdeLmE6BaFBPTpSkoSrFxgMTUPxEAjMc7M6Kc7pM9VxPjPUAVPoSxx",
+      "firstSellSignature": "4D8NV41Tsd6D35mK86YrFcsL8ytEqD2PAF31pmiGjirG22QRoTUStQEJ5Zu98GvEDMcpyXSHAbb6mZJQ3wXXRJD9"
+    },
+    {
+      "mint": "DDxA55TKt6336382LCiebwUk3xpuhDucahmHesKPpump",
+      "symbol": "POKE",
+      "entryIso": "2026-06-17T20:38:18.000Z",
+      "sourceFillMarketCapUsd": 9846.945799109728,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -14.906496912260755,
+      "firstSellMinutes": 1.1833333333333333,
+      "currentMarketCapUsd": 2031.73,
+      "liquidityUsd": null,
+      "mfePct": 1.0426325135197125,
+      "maePct": -41.60182455952493,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -14.906496912260755,
+        "tp30Sell100": -14.906496912260755,
+        "tp50Sell100": -14.906496912260755,
+        "tp75Sell100": -14.906496912260755,
+        "tp100Sell100": -14.906496912260755,
+        "trailingCustom": -14.906496912260755
+      },
+      "firstBuySignature": "41oobCib41YXM9j5bjwVfJrNTsHdWGATEVoBnGNGyht1uuRXbiTKLMCypXKeRS7mH9EQXquQoY2CU2LWkBcehENA",
+      "firstSellSignature": "2vbL6BJBRvU41hwDe6zJPw54ox3VhrJWXe8QQRC6Ee8nvpEevjAuh1WZqRF76N9XNVcksXpUjtZ8HE1HKyRJXvm"
+    },
+    {
+      "mint": "5U7XtJL252qdFUXu9H9auKpKkABTrcjomwoq18CNpump",
+      "symbol": "Anna",
+      "entryIso": "2026-06-18T21:35:59.000Z",
+      "sourceFillMarketCapUsd": 9577.280498947022,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": 9.251578705971339,
+      "firstSellMinutes": 5.116666666666666,
+      "currentMarketCapUsd": 1441,
+      "liquidityUsd": 2665.06,
+      "mfePct": 37.28278481277091,
+      "maePct": -52.56512517930501,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 121,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 9.251578705971339,
+        "tp30Sell100": 30,
+        "tp50Sell100": 9.251578705971339,
+        "tp75Sell100": 9.251578705971339,
+        "tp100Sell100": 9.251578705971339,
+        "trailingCustom": 9.251578705971339
+      },
+      "firstBuySignature": "3jPQDLzZegJ9VEzL6vkLwxuCkZLuAwBzxV5jQrQ7uzpNpkGgS9gw67h8asnmNFHxHgVqDqMaJcRoCVqs2xExduFN",
+      "firstSellSignature": "DiSo83GLSW91DEZaZSfEkk9XmM1MDKU6qVLdGpFwVkffKNH2K4cZV5wbvuyNRAnYKerA8m9b8LbRSchu1E4vxy5"
+    },
+    {
+      "mint": "867NwVrvf1gZGNo9frV6HebkNYnLeNAzMjTkRjJBpump",
+      "symbol": "CELEBRITY",
+      "entryIso": "2026-06-17T20:00:33.000Z",
+      "sourceFillMarketCapUsd": 9541.397548282937,
+      "sourceBuySol": 5.00287908,
+      "sourceExitPct": 33.17564782645391,
+      "firstSellMinutes": 0.45,
+      "currentMarketCapUsd": 1958.77,
+      "liquidityUsd": null,
+      "mfePct": 8.692031392456949,
+      "maePct": -39.115927269593726,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 33.17564782645391,
+        "tp30Sell100": 33.17564782645391,
+        "tp50Sell100": 33.17564782645391,
+        "tp75Sell100": 33.17564782645391,
+        "tp100Sell100": 33.17564782645391,
+        "trailingCustom": 33.17564782645391
+      },
+      "firstBuySignature": "4X9iYJSRwh1gPzkmSbcd9ZC5nywjBExt3siuosXUgsTQZruS2Arjp1GymoxzHK3z8hKyUuMQz7hQpo4zq8mwnMjH",
+      "firstSellSignature": "2XUBs5xGP4A7fU3jv6JrYNri7Sjo1ZsHgM4ZofMt6MZoNoi7vSRaf2aPbizNVEM82XuLUDdxi71Szdu2o9iitphx"
+    },
+    {
+      "mint": "8z6P5j8SY5fHp9pXMzTgvRqvYNjLwdXMfVMasvvvpump",
+      "symbol": "Jasper",
+      "entryIso": "2026-06-18T17:39:42.000Z",
+      "sourceFillMarketCapUsd": 9119.578661630776,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -34.07149441407078,
+      "firstSellMinutes": 74.73333333333333,
+      "currentMarketCapUsd": 5037.11,
+      "liquidityUsd": null,
+      "mfePct": 63.60992464844779,
+      "maePct": -46.80303786741764,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 258,
+        "tp50": 978,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 1158,
+        "peakPct": 63.53095390897599,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -34.07149441407078,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": -34.07149441407078,
+        "tp100Sell100": -34.07149441407078,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "2yk28VS5fDxjiJEJLKJ6H3yyNGSVpBBdW5JDMUGonsxjQr4n3pYXA1XPhiAtGXVuVq75J1Z1Qec7wGASfoKCNNdw",
+      "firstSellSignature": "4gMPAGDvVCqiGqHAKXkL4BU6jp6suKk39LN41WcXficCLd1YbsRkE2w48DQHkkBVv7dp4ahygBiwbqXsWbXBL7Si"
+    },
+    {
+      "mint": "51aYMAVu1EEGvKAjdZE3iqhbXiRjCB3uWNkWifaspump",
+      "symbol": "ALPACA",
+      "entryIso": "2026-06-19T00:48:45.000Z",
+      "sourceFillMarketCapUsd": 9063.94233729789,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -8.202546272277067,
+      "firstSellMinutes": 2.1166666666666667,
+      "currentMarketCapUsd": 2084.73,
+      "liquidityUsd": null,
+      "mfePct": 47.67996121219865,
+      "maePct": -17.268294308590367,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 15,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -8.202546272277067,
+        "tp30Sell100": 30,
+        "tp50Sell100": -8.202546272277067,
+        "tp75Sell100": -8.202546272277067,
+        "tp100Sell100": -8.202546272277067,
+        "trailingCustom": -8.202546272277067
+      },
+      "firstBuySignature": "4uxGU14QcQre4RAdp8qqvuuc3nbW1hsua7oMwMDCJ3o1w1o4UkJJdbaxmtoTBBXpet5qhhQbDsAsMrYzPviTfwm3",
+      "firstSellSignature": "4F3opj7jvWvziNTpdQHTvQsnCcASeezFeq6pKVx1gpCkkwk2TE8cVqGsC8GapKrXtAWfZcvrvebkGwjB1m6gWXWh"
+    },
+    {
+      "mint": "FpJfSLANsaPJkRFuFroPqPkYJGyNbXdQ194P499spump",
+      "symbol": "mohammad",
+      "entryIso": "2026-06-17T16:26:48.000Z",
+      "sourceFillMarketCapUsd": 8621.048594250673,
+      "sourceBuySol": 5.03207908,
+      "sourceExitPct": -3.7965446234025597,
+      "firstSellMinutes": 0.95,
+      "currentMarketCapUsd": 1976.72,
+      "liquidityUsd": null,
+      "mfePct": 67.92776536483119,
+      "maePct": -15.626036552319512,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 12,
+        "tp50": 12,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 12,
+        "peakPct": 67.92776536483119,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -3.7965446234025597,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": -3.7965446234025597,
+        "tp100Sell100": -3.7965446234025597,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "4oWVxRx4cTNEKGZQ9GGj98FgxmjDNRWGzCjDF48THSPrXjgpwpTmrPPEwSqfNBSmwqQZwpdYbUtLbrVW9kqnHoRB",
+      "firstSellSignature": "2jqCC2WUoeksc1s6pZA2wS4qyCViqJYm9JZdTQoJvXFA3hcHtigicTsGrbsD4CUp7MxKgX8Qr7CyYwsPQARUBn41"
+    },
+    {
+      "mint": "BRxt7ryvca6YjmJwzcj4qpoTr1PLZk9TXgagh5DApump",
+      "symbol": "Hunch",
+      "entryIso": "2026-06-19T15:02:24.000Z",
+      "sourceFillMarketCapUsd": 8469.129214845554,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -52.554667965855394,
+      "firstSellMinutes": 2.1,
+      "currentMarketCapUsd": 1389,
+      "liquidityUsd": 2606.16,
+      "mfePct": 2.640221543059388,
+      "maePct": -77.16536943125647,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -52.554667965855394,
+        "tp30Sell100": -52.554667965855394,
+        "tp50Sell100": -52.554667965855394,
+        "tp75Sell100": -52.554667965855394,
+        "tp100Sell100": -52.554667965855394,
+        "trailingCustom": -52.554667965855394
+      },
+      "firstBuySignature": "2ojwoSzR1F6o2KR939d4P63EzPaiN7qZAfiUd7uxA9f1mXDLEneCFrAmHQQFRBwEd3U22Vg9dmPtyWtY5PmD2FEw",
+      "firstSellSignature": "2am9TGJKt7MEYPMtkkGUx7DxkrfkpdE2o5VTUQ1UGR7bkca9BG8wYTgpgt8HUKmUQwzvGAm6ZMjsrfLtevYc8YUf"
+    },
+    {
+      "mint": "FXcKm6Sifct3mFtccvaETBtjkGCrpsRQLFtmbV2hpump",
+      "symbol": "Ponyo",
+      "entryIso": "2026-06-17T16:25:16.000Z",
+      "sourceFillMarketCapUsd": 8366.914139074977,
+      "sourceBuySol": 5.03207908,
+      "sourceExitPct": -18.446830291069276,
+      "firstSellMinutes": 12.616666666666667,
+      "currentMarketCapUsd": 1847,
+      "liquidityUsd": 3018.46,
+      "mfePct": 5.350995762653685,
+      "maePct": -29.616148345843907,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -18.446830291069276,
+        "tp30Sell100": -18.446830291069276,
+        "tp50Sell100": -18.446830291069276,
+        "tp75Sell100": -18.446830291069276,
+        "tp100Sell100": -18.446830291069276,
+        "trailingCustom": -18.446830291069276
+      },
+      "firstBuySignature": "57t4DB9YLXc7fW8S2MCzAqweU9is3jaGoSeLJiw3MXsaUjeitNs5n1fWq6BLeoNUBX2mfqH9xYQB9aFFG4BoCzgT",
+      "firstSellSignature": "2fEWhF8kx2jVSg3cjJDcyiXm82VJjhpV4vjZJrowhZqkxnws9HE14rp6mdaUpzNqv2HqLkqyJf1DNkToazBCYbWj"
+    },
+    {
+      "mint": "7VKemWtFDh9Gnv8qGssjazeUKQFo8XUmuUBPKLifpump",
+      "symbol": "Juanita",
+      "entryIso": "2026-06-18T23:54:35.000Z",
+      "sourceFillMarketCapUsd": 8300.991349010445,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": 11.372647457868469,
+      "firstSellMinutes": 0.45,
+      "currentMarketCapUsd": 1932,
+      "liquidityUsd": null,
+      "mfePct": 0,
+      "maePct": -69.3953497030785,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 11.372647457868469,
+        "tp30Sell100": 11.372647457868469,
+        "tp50Sell100": 11.372647457868469,
+        "tp75Sell100": 11.372647457868469,
+        "tp100Sell100": 11.372647457868469,
+        "trailingCustom": 11.372647457868469
+      },
+      "firstBuySignature": "57X82jKd37AjxBPe1MESoUjLoRaSqSdHJXNVGAyYfA1cgbzEsa4Lwx1N5fWkUJcxVG4KeHKt3S5sA1wtnLV9xWr4",
+      "firstSellSignature": "3Z8mZ5XfcPnwYk6sYAb7mUBZW8nMo82jmJLktE879AGcA2xYgFHfrEh6Wcg8bjYzBk2GbgPBWtTw51r9L6q89ABQ"
+    },
+    {
+      "mint": "6QYddd82wVasozCk9gV61yyEvJyM9JwvGEK9nfcRpump",
+      "symbol": "Jane",
+      "entryIso": "2026-06-17T20:13:57.000Z",
+      "sourceFillMarketCapUsd": 8011.050164098414,
+      "sourceBuySol": 5.00287908,
+      "sourceExitPct": -12.344898829735461,
+      "firstSellMinutes": 4.283333333333333,
+      "currentMarketCapUsd": 1939,
+      "liquidityUsd": 3061.47,
+      "mfePct": 14.159138049438944,
+      "maePct": -32.82260476733686,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -12.344898829735461,
+        "tp30Sell100": -12.344898829735461,
+        "tp50Sell100": -12.344898829735461,
+        "tp75Sell100": -12.344898829735461,
+        "tp100Sell100": -12.344898829735461,
+        "trailingCustom": -12.344898829735461
+      },
+      "firstBuySignature": "3GchPtDSddERuNXrpJzJr3gebPtn64SGGwgF8NguGpwtZP5WNGz4GVToW8aawY9aVf68iNc1NJScA3vwLdgZwfe6",
+      "firstSellSignature": "4jzSEokW5YYnBDPPK4NYu9kDrVhMhz7od39m87skmTGBUU6ncXogvra3rW1i98wuHfCSMaQgBuWAbBfHfK3KsuzT"
+    },
+    {
+      "mint": "Brb2MMdagu9eANtjgyNimqzZmnEmJVm7ivrD1wkupump",
+      "symbol": "clitcoin",
+      "entryIso": "2026-06-18T19:59:51.000Z",
+      "sourceFillMarketCapUsd": 7681.318730867271,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": 73.33567695771848,
+      "firstSellMinutes": 16.216666666666665,
+      "currentMarketCapUsd": 4006,
+      "liquidityUsd": 0.03,
+      "mfePct": 0.8056203173382274,
+      "maePct": 0,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 73.33567695771848,
+        "tp30Sell100": 73.33567695771848,
+        "tp50Sell100": 73.33567695771848,
+        "tp75Sell100": 73.33567695771848,
+        "tp100Sell100": 73.33567695771848,
+        "trailingCustom": 73.33567695771848
+      },
+      "firstBuySignature": "2rotVn5NaXCsXyuhqH2Fv1pPxq8PJzMFg2pnkv2HAh4tuF6dZBJti6kPpfyEkepa7D83ssy1kYGEL1kkKQGdyrEB",
+      "firstSellSignature": "KbmUPzqfmRmuBThVjDQt7crprzYghjwDU7y9bGxXtcuyoaD6wixMfNn62T54d6PHMSQGgQwDxy4DPzyAYEL9P1S"
+    },
+    {
+      "mint": "FdUCnpoTktJrmct55L3Rfpk9NDbd3KZpicwUXA9Bpump",
+      "symbol": "Sheba",
+      "entryIso": "2026-06-18T17:26:01.000Z",
+      "sourceFillMarketCapUsd": 7631.739005286161,
+      "sourceBuySol": 5.00287908,
+      "sourceExitPct": -17.113853949576864,
+      "firstSellMinutes": 18.116666666666667,
+      "currentMarketCapUsd": 28034.35,
+      "liquidityUsd": null,
+      "mfePct": 73.18455941740196,
+      "maePct": -49.679547489661005,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 359,
+        "tp50": 539,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 779,
+        "peakPct": 73.18455941740196,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -17.113853949576864,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": -17.113853949576864,
+        "tp100Sell100": -17.113853949576864,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "5Vn2qPW3vzjE2N5S3LLyaAdRBmtch2Yk6rioLS6jDPHdXM8dHKAkHwhg7p9hBJSL1yRsYwRbWKwnYwvpkwpr34DV",
+      "firstSellSignature": "3SeJhn9B5cVR3fxY7dGbRtPpCyvik6iWuTWKkpDw9Jgei9mL7yQfEoZ2AvaVA9JVfTth3Wo51yF5MucfLxRiziLy"
+    },
+    {
+      "mint": "DGUL7kW9qJzvxMqP5rQK2FwycSAko1AuqGsMy96apump",
+      "symbol": "hold",
+      "entryIso": "2026-06-18T23:25:38.000Z",
+      "sourceFillMarketCapUsd": 7303.853015433357,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -4.0324858513125905,
+      "firstSellMinutes": 5.25,
+      "currentMarketCapUsd": 2236,
+      "liquidityUsd": 3314.59,
+      "mfePct": 0,
+      "maePct": -73.2847025666295,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -4.0324858513125905,
+        "tp30Sell100": -4.0324858513125905,
+        "tp50Sell100": -4.0324858513125905,
+        "tp75Sell100": -4.0324858513125905,
+        "tp100Sell100": -4.0324858513125905,
+        "trailingCustom": -4.0324858513125905
+      },
+      "firstBuySignature": "2iCSFBLDeVDhgAyP6dBXMrDYPfoJjDndJxWGbQDdLfGnG7VkMiMKE9HqF923CJYrqBDQryV4ErjQKGsEgoXh2Awd",
+      "firstSellSignature": "Bn1mYaaKbap6ujHKDopo1rQK4fpL7QGBn4o34NnpsGw1Q78s8UStar4WL4xH4pPdxsU2UNTxecFRfiPpL8Te2pq"
+    },
+    {
+      "mint": "D3jnVDrA9H9E9K9ztLk62iYZXJsKTG1vfX9L6ADqpump",
+      "symbol": "Percy",
+      "entryIso": "2026-06-17T20:27:51.000Z",
+      "sourceFillMarketCapUsd": 7135.8638976974225,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 2.081055651007879,
+      "firstSellMinutes": 5.416666666666667,
+      "currentMarketCapUsd": 1997.06,
+      "liquidityUsd": null,
+      "mfePct": 107.33424734024737,
+      "maePct": -19.603478764988257,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 9,
+        "tp50": 9,
+        "tp75": 69,
+        "tp100": 69
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 9,
+        "peakPct": 51.92939714638209,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 2.081055651007879,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "3Pjb3ooYYAk9BBpJHGt5JU76mK7BfzY8E1hGSMQEEzWHZBX7VmuzLxsJ3iZeN8xXi5KZsfu3CHLbwYwhuZPfnGbH",
+      "firstSellSignature": "2UDvmJTdSMASjriXdBcYHKAQGJED7y2iJ67R9oCgj78fXcG1taRh5htcW7RaVfdt8kbYG6bSv8dEGFwDrcPcqZpr"
+    },
+    {
+      "mint": "9pLCoqft42cm3nXbuaq7GVM4Ypgq2ciAZQQM7HaNpump",
+      "symbol": "CLICKISM",
+      "entryIso": "2026-06-19T13:56:57.000Z",
+      "sourceFillMarketCapUsd": 7049.256914969584,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -25.084534176576785,
+      "firstSellMinutes": 0.9833333333333333,
+      "currentMarketCapUsd": 1946.87,
+      "liquidityUsd": null,
+      "mfePct": 23.266227303130734,
+      "maePct": -37.76590522820778,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -25.084534176576785,
+        "tp30Sell100": -25.084534176576785,
+        "tp50Sell100": -25.084534176576785,
+        "tp75Sell100": -25.084534176576785,
+        "tp100Sell100": -25.084534176576785,
+        "trailingCustom": -25.084534176576785
+      },
+      "firstBuySignature": "4UeDntBvJDekD8FNeQPCgah3Ltx3Y4zr2FC6S5Njj1yjSNspd6XhFsU2iMFfcbpRv3tY7iyHpTyfPV5fbah8gxeV",
+      "firstSellSignature": "5c5wExjbgPib6wdVsHqDp2NvEgTrQ5YGWkYsfetn481p4eEAQvxkKQZxcBrTrRt2fckPq57Vdiv4ZLXbFA6T2MmH"
+    },
+    {
+      "mint": "5ZXJMKUuTYWrD6CZyzXhdX8FnBUw3VL1uvStfQWepump",
+      "symbol": "Hydration",
+      "entryIso": "2026-06-19T00:55:48.000Z",
+      "sourceFillMarketCapUsd": 7037.774863859661,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -13.918016665803853,
+      "firstSellMinutes": 0.21666666666666667,
+      "currentMarketCapUsd": 12962.19,
+      "liquidityUsd": null,
+      "mfePct": 6.492628007832782,
+      "maePct": -51.791329358430694,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -13.918016665803853,
+        "tp30Sell100": -13.918016665803853,
+        "tp50Sell100": -13.918016665803853,
+        "tp75Sell100": -13.918016665803853,
+        "tp100Sell100": -13.918016665803853,
+        "trailingCustom": -13.918016665803853
+      },
+      "firstBuySignature": "dGBeXZ6bFMNc4r5XBHgRpPDEPMjpeoNo5iXkWbgRw5ZAejQnwttdoYjya59y4qyns93rB3QGxuR89utWA5ZQoaw",
+      "firstSellSignature": "4Qive37moy5jJnXjSPCnvMWstTX9YfZGPcSRwSrLJbUxd2BRrdR5cyHEKsDEq3KuT6CJra13f1Bxke5FdQwefnz7"
+    },
+    {
+      "mint": "6FCeoWmjurxX7EsH7zdWRMDn4HGTBhJXLryKTqkepump",
+      "symbol": "Citizen",
+      "entryIso": "2026-06-19T04:02:00.000Z",
+      "sourceFillMarketCapUsd": 6620.13551941801,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": 2.5814690161028655,
+      "firstSellMinutes": 0.2833333333333333,
+      "currentMarketCapUsd": 28482.21,
+      "liquidityUsd": null,
+      "mfePct": 46.98112236878077,
+      "maePct": 0,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 0,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 2.5814690161028655,
+        "tp30Sell100": 30,
+        "tp50Sell100": 2.5814690161028655,
+        "tp75Sell100": 2.5814690161028655,
+        "tp100Sell100": 2.5814690161028655,
+        "trailingCustom": 2.5814690161028655
+      },
+      "firstBuySignature": "5h9qDtMwhcdCowKZ3TmtJTRAf2uBagpX54xDFgE3Gex5BtJM2w2Q21AhxA4CBTfHMJN9jWjg5obZzTzz2Lp5ouWW",
+      "firstSellSignature": "2biq9CpPAfQ8bcQZcKRnu2Z1JcVtPJEFXWnku6Bs97j5S2e4r7huMnZvvqfTW8xffyvbnXV1wf2xpFzm2XZxp9zs"
+    },
+    {
+      "mint": "5fNDto6oDY5fszPHkLHH1hm8bgTLpntmGqeomL1Bpump",
+      "symbol": "Cotro",
+      "entryIso": "2026-06-18T20:31:34.000Z",
+      "sourceFillMarketCapUsd": 6579.32682045169,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -63.42799996837078,
+      "firstSellMinutes": 7.75,
+      "currentMarketCapUsd": 2326.34,
+      "liquidityUsd": null,
+      "mfePct": 0,
+      "maePct": -76.42945699495894,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -63.42799996837078,
+        "tp30Sell100": -63.42799996837078,
+        "tp50Sell100": -63.42799996837078,
+        "tp75Sell100": -63.42799996837078,
+        "tp100Sell100": -63.42799996837078,
+        "trailingCustom": -63.42799996837078
+      },
+      "firstBuySignature": "puZYNyytNwMsry7MNP7c3zodUxwGbKBxbmhiC7TnXyVPnUtpHE3vFitVVMTCWSWz3hiBKbfrEEwJtpC5BDayX9k",
+      "firstSellSignature": "3cnkY6Stw97JLZDVs3U1ppRqX2LJAfQCvy7uFeh5vJ48b6dVYnQiNXUDdTzuASEbaQ7vLqZTUTTJPbNGeCLF3kCt"
+    },
+    {
+      "mint": "6pTaN8piCr26Dji4YUqQNH9MxccKebjbi9eQU6uJpump",
+      "symbol": "MCAT",
+      "entryIso": "2026-06-19T03:44:49.000Z",
+      "sourceFillMarketCapUsd": 6279.95300810439,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -48.96232625991076,
+      "firstSellMinutes": 5.083333333333333,
+      "currentMarketCapUsd": 1770.96,
+      "liquidityUsd": null,
+      "mfePct": 55.182110842259135,
+      "maePct": -54.52641821193569,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 11,
+        "tp50": 71,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 71,
+        "peakPct": 55.182110842259135,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -48.96232625991076,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": -48.96232625991076,
+        "tp100Sell100": -48.96232625991076,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "2Bn46SRpb3wGPMiUwrWCXBByiuRcUrX5U11AfoQxT1AUdTJRgb3DstnyZmSu29zqJfTWgLSaKQCin9hdTqDfi4BB",
+      "firstSellSignature": "4UWbxNSXo2B2Uknxwg6d2pVh3dXHjWUyJzLWReTXdqiGqfYWxoiQVyjozAz1NcC3xpFUmz7XLv8KQECEBAsvSLfF"
+    },
+    {
+      "mint": "2GNjBTa9E1HSsj4y4djEas9BwqewDnpM6Es3GcTopump",
+      "symbol": "bread",
+      "entryIso": "2026-06-18T21:47:39.000Z",
+      "sourceFillMarketCapUsd": 5337.783643647555,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 149.86782578515758,
+      "firstSellMinutes": 2.3,
+      "currentMarketCapUsd": 1947.49,
+      "liquidityUsd": null,
+      "mfePct": 147.88223229479286,
+      "maePct": -10.421180454803343,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 21,
+        "tp50": 21,
+        "tp75": 21,
+        "tp100": 21
+      },
+      "trailingExit": {
+        "roiPct": 75,
+        "timeSec": 21,
+        "peakPct": 105.2747945992343,
+        "floorPct": 75
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 149.86782578515758,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 75
+      },
+      "firstBuySignature": "4mJwf1Vkm3ce8FcPZb2Jf3d6h65JtPtzrt5X7uVmXasMxuJXJfNpPrnXxG5e7YJ6Zwntv966Ruy5zE82mJgPfqFs",
+      "firstSellSignature": "5kqURsgkS7fSzYyt395p6QuvMR2Gh1J4oK1FV3iR9yVfX4LAK5VAq9592k2o3NqW9gAipucwcXF4AhHQMAxykgxx"
+    },
+    {
+      "mint": "6qBvcmFT7K8hJHvHrpqzfbGTjjQnyK13GsLjswoGpump",
+      "symbol": "TAY",
+      "entryIso": "2026-06-18T21:16:23.000Z",
+      "sourceFillMarketCapUsd": 5151.640019214155,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 0.728780881110425,
+      "firstSellMinutes": 1.2333333333333334,
+      "currentMarketCapUsd": 2343.08,
+      "liquidityUsd": null,
+      "mfePct": 23.743071485271212,
+      "maePct": -32.908639650751766,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 0.728780881110425,
+        "tp30Sell100": 0.728780881110425,
+        "tp50Sell100": 0.728780881110425,
+        "tp75Sell100": 0.728780881110425,
+        "tp100Sell100": 0.728780881110425,
+        "trailingCustom": 0.728780881110425
+      },
+      "firstBuySignature": "445poz1EgaaDiea6w2tqaLk4RBp6V2PdYBpj2smM14b9JiNcqGZC9VmZpyep6yVFFRJgGb9ShaXUJvfdNs9AS2Qv",
+      "firstSellSignature": "8h6Bn9oAcznS9PpubGwdCJTH2k7uEspUaTMsEw21iNpM8NYW6CoP3Cdsu1kr9imHH9RVCdaiip3ZsDK69LQSqRZ"
+    },
+    {
+      "mint": "2xbybpkzYDFEjwGMhk36HVBBqTsaMo8ad49tbyqBpump",
+      "symbol": "Bitboy",
+      "entryIso": "2026-06-18T20:06:57.000Z",
+      "sourceFillMarketCapUsd": 5143.16745622861,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -44.38637338357516,
+      "firstSellMinutes": 1.35,
+      "currentMarketCapUsd": 1330,
+      "liquidityUsd": 2576.09,
+      "mfePct": 26.10063046874381,
+      "maePct": -45.02319547716103,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -44.38637338357516,
+        "tp30Sell100": -44.38637338357516,
+        "tp50Sell100": -44.38637338357516,
+        "tp75Sell100": -44.38637338357516,
+        "tp100Sell100": -44.38637338357516,
+        "trailingCustom": -44.38637338357516
+      },
+      "firstBuySignature": "3SYZ1ew8qYdjUhf18swCSXWwyfVL3QTMyksETGdePna2doF3Mrp7WtFVagvZr48mP3CdYy8r4bvh4QH8tDyjJDaN",
+      "firstSellSignature": "44AVhU4bJYjnjfcpomdsCBnvG6Hxcp8p8BoVERpxUJtpQQSLysTHAubmvcZPEXAud24wHo33hBbJxExr54vxmEP5"
+    },
+    {
+      "mint": "GcPPmzzij3fxCh5pZEPzTWZ7tFZVs15ao3jvA9dFpump",
+      "symbol": "Bartholomew",
+      "entryIso": "2026-06-18T18:44:17.000Z",
+      "sourceFillMarketCapUsd": 4938.841537249182,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 5.921570872462315,
+      "firstSellMinutes": 92.46666666666667,
+      "currentMarketCapUsd": 3565,
+      "liquidityUsd": 4182.86,
+      "mfePct": 106.29322888709041,
+      "maePct": -4.142948117671756,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 283,
+        "tp50": 283,
+        "tp75": 283,
+        "tp100": 283
+      },
+      "trailingExit": {
+        "roiPct": 75,
+        "timeSec": 283,
+        "peakPct": 106.29322888709041,
+        "floorPct": 75
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 5.921570872462315,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 75
+      },
+      "firstBuySignature": "5o5EfeKbtAZxPyncg1ZkuBpM2JXbdmvSdUhUPRXdf16p3tbnw99z3a8hypnjUowFcfKf8CQrwoHDZEz9CVwF1nxP",
+      "firstSellSignature": "5ZXEHKMiKxPXDVPWtfE3uHP36cyeJiEadbkFxtDv4RBzwxKgChE2Y6nX528tJAgV3awT1KefdX1Dne3DA18rhETV"
+    },
+    {
+      "mint": "5LLNmSNvoDssXvUuviBdYaeruHB4Qfu1HZMMzPDipump",
+      "symbol": "MCAT",
+      "entryIso": "2026-06-19T03:37:08.000Z",
+      "sourceFillMarketCapUsd": 4895.223564945006,
+      "sourceBuySol": 5.005205,
+      "sourceExitPct": 15.232088955175534,
+      "firstSellMinutes": 5.666666666666667,
+      "currentMarketCapUsd": 288.13,
+      "liquidityUsd": null,
+      "mfePct": 71.94480139564835,
+      "maePct": -26.171902371247214,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 52,
+        "tp50": 112,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 112,
+        "peakPct": 71.94480139564835,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 15.232088955175534,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 15.232088955175534,
+        "tp100Sell100": 15.232088955175534,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "2qVkaiFfXe57xD8KunaSogzdTxLeeL3dQjsx4GuMRyz3FsLfKUPVLiuZvyGEtBCnxd9XVfGMBkaFkxBhxtmnq2J2",
+      "firstSellSignature": "3d5zPAE3EAccKZGUt7vKM65vpGwb4irS36VbyVa5zgfpFhhAi6MuoRCTCtwjhu8p4d9oUPUAk5N3qST96whHhJVB"
+    },
+    {
+      "mint": "2twAvsztzh27PDDMyGyJXNWxhNRRQRrJ12XFoYV2pump",
+      "symbol": "Butterfly",
+      "entryIso": "2026-06-18T20:13:53.000Z",
+      "sourceFillMarketCapUsd": 4589.027541851246,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 53.21338506769157,
+      "firstSellMinutes": 1.0333333333333334,
+      "currentMarketCapUsd": 1913.01,
+      "liquidityUsd": null,
+      "mfePct": 9.29905512568208,
+      "maePct": -38.114815799079715,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 53.21338506769157,
+        "tp30Sell100": 53.21338506769157,
+        "tp50Sell100": 53.21338506769157,
+        "tp75Sell100": 53.21338506769157,
+        "tp100Sell100": 53.21338506769157,
+        "trailingCustom": 53.21338506769157
+      },
+      "firstBuySignature": "2Fbmk38nt8hPoytBM1huzfqhJ5pUV9G2zBLC3jq61rWo3tirZSGBFKynQtUzMJFtGi3V2Nubg2TUPiMGKNhkuNY1",
+      "firstSellSignature": "deXgRPVYZehSoAwFUwnoyhVMwqqiRRFzZgd1ah5wDBDhzwdpeNCUpYo8cicsjPMkxwWHPtgDCNyYouzoNerSnFn"
+    },
+    {
+      "mint": "9tvYbZx7JPvGGgaMF21WXUG6U6MRXhotXFHBUdbYpump",
+      "symbol": "bold",
+      "entryIso": "2026-06-19T14:49:55.000Z",
+      "sourceFillMarketCapUsd": 4500.470589823879,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 0.9086955773988165,
+      "firstSellMinutes": 0.31666666666666665,
+      "currentMarketCapUsd": 1935.08,
+      "liquidityUsd": null,
+      "mfePct": 4.879207064715694,
+      "maePct": -52.99291492977519,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 0.9086955773988165,
+        "tp30Sell100": 0.9086955773988165,
+        "tp50Sell100": 0.9086955773988165,
+        "tp75Sell100": 0.9086955773988165,
+        "tp100Sell100": 0.9086955773988165,
+        "trailingCustom": 0.9086955773988165
+      },
+      "firstBuySignature": "3CpV7JioMxSp6BDuZqwfvcLbtWWpf5iXRrFwvDfNxwbmMHVd2nG9pGeiWz6WiGyPs1fXFTHXwcCrtoqtjBDVr7fj",
+      "firstSellSignature": "52F6xCPKiUsu62R2oof3jQj63az5n3QwABaSDicCYggssbd6vCXgAM4V35sbXXZWxXZ1tmWnZpXmqR39FkYCpfed"
+    },
+    {
+      "mint": "9wHvhkkqxZVkjUwRJJ9xBPenUGPJq8ahr3jVbB61pump",
+      "symbol": "USPD",
+      "entryIso": "2026-06-19T14:38:18.000Z",
+      "sourceFillMarketCapUsd": 4472.144955104015,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -0.5758722492416095,
+      "firstSellMinutes": 1.95,
+      "currentMarketCapUsd": 4008.4,
+      "liquidityUsd": null,
+      "mfePct": 25.83195909235511,
+      "maePct": -9.672383038248794,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -0.5758722492416095,
+        "tp30Sell100": -0.5758722492416095,
+        "tp50Sell100": -0.5758722492416095,
+        "tp75Sell100": -0.5758722492416095,
+        "tp100Sell100": -0.5758722492416095,
+        "trailingCustom": -0.5758722492416095
+      },
+      "firstBuySignature": "53v95kENiBXLfqQkM2EU9hGrK6jYXHzXHzPvmbvvJTLGsDRTnJ6VKHzpkjfgmxPKYuAj1NBMMYFDyugpk53cRf5V",
+      "firstSellSignature": "2F35uQsZVmpmYShxKzaM8tYzqyFxbZNm7afGbAp8wjZE5i6N7e7MpEuYcY4d5AcJfJGZhiFDqH5meXPBCdHojaZu"
+    },
+    {
+      "mint": "B5GcQ3MzvwEfgFPLUfrq2uERQPU5xJSYexModcTNpump",
+      "symbol": "CompCoin",
+      "entryIso": "2026-06-19T03:15:01.000Z",
+      "sourceFillMarketCapUsd": 4463.586868259847,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -19.93855754873108,
+      "firstSellMinutes": 1.9833333333333334,
+      "currentMarketCapUsd": 1921.2,
+      "liquidityUsd": null,
+      "mfePct": 31.56460815526482,
+      "maePct": -33.41028040856724,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 59,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -19.93855754873108,
+        "tp30Sell100": 30,
+        "tp50Sell100": -19.93855754873108,
+        "tp75Sell100": -19.93855754873108,
+        "tp100Sell100": -19.93855754873108,
+        "trailingCustom": -19.93855754873108
+      },
+      "firstBuySignature": "4oswAZywGzqH8Tmn8V8aeHN5FfZ4Rjp9f5hDJsmjpdrebiVGstUPz5jToMA23dubrJ372YBhfx18zk15UKfSFm74",
+      "firstSellSignature": "4T4PqxUAy9FxtXa6AmB9vxWotsjURMyG2cmFSaP1vS4CPWQYWVmHYPToyunNP4eywPptFzroJs59bckVWHKUs79R"
+    },
+    {
+      "mint": "6bEQqgT8PDe5e1mvQMAugXC8REqMXY4KpZ6qKhMgpump",
+      "symbol": "LARRY",
+      "entryIso": "2026-06-17T20:45:42.000Z",
+      "sourceFillMarketCapUsd": 4288.024197851518,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 11.181407566983689,
+      "firstSellMinutes": 0.9166666666666666,
+      "currentMarketCapUsd": 1968.42,
+      "liquidityUsd": null,
+      "mfePct": 34.61386319457395,
+      "maePct": -30.407762296342394,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 18,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 11.181407566983689,
+        "tp30Sell100": 30,
+        "tp50Sell100": 11.181407566983689,
+        "tp75Sell100": 11.181407566983689,
+        "tp100Sell100": 11.181407566983689,
+        "trailingCustom": 11.181407566983689
+      },
+      "firstBuySignature": "484HQ87ugxTT4SM39y2C32pgT22epynHWoHeQVRFkT4dK81YnqXvmijkMD2wDDykFz9wYkVE4f57wMwp4BUixyYP",
+      "firstSellSignature": "RgvPV62rHjCkSK5MLbyvHP6nVMyDpp4g62vLTz19tVK5xsRCoH8iF4vgJ7omag5CE6WPE6WF3TFxyRXtRKsHQe7"
+    },
+    {
+      "mint": "FpGDG2g6ZhEzX5GXGKasodQH53VGKD6Wqwzd2tGdpump",
+      "symbol": "gg",
+      "entryIso": "2026-06-18T22:08:39.000Z",
+      "sourceFillMarketCapUsd": 4202.443915436616,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -39.5356024893742,
+      "firstSellMinutes": 1.6,
+      "currentMarketCapUsd": 1947.08,
+      "liquidityUsd": null,
+      "mfePct": 0.19561969025443005,
+      "maePct": -59.70089855453361,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -39.5356024893742,
+        "tp30Sell100": -39.5356024893742,
+        "tp50Sell100": -39.5356024893742,
+        "tp75Sell100": -39.5356024893742,
+        "tp100Sell100": -39.5356024893742,
+        "trailingCustom": -39.5356024893742
+      },
+      "firstBuySignature": "3cJTjka5AG4W3DJXRH9kmjtkHLmKboCMGwq9qBKEWkE59uazoWAAti7AcTU4HvQFz4sTK2LkgR6pkwRmjeQbsTyU",
+      "firstSellSignature": "2twc3YtZuRTLNqPeNPQQUsAxyntRXohDjEh6JA8ywyEMvQC1223EChhscYAxyVEC9TKVHYFTfXLRSPY45nLcoEMt"
+    },
+    {
+      "mint": "6QgxujgLV4WV9qeF9R3NG7uXbyrsjYNszTfHJ7Ngpump",
+      "symbol": "Mizore",
+      "entryIso": "2026-06-19T13:58:35.000Z",
+      "sourceFillMarketCapUsd": 4192.362797659663,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -19.269546992545774,
+      "firstSellMinutes": 0.8333333333333334,
+      "currentMarketCapUsd": 2222.71,
+      "liquidityUsd": null,
+      "mfePct": 0.8909396812493112,
+      "maePct": -64.67613947540156,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -19.269546992545774,
+        "tp30Sell100": -19.269546992545774,
+        "tp50Sell100": -19.269546992545774,
+        "tp75Sell100": -19.269546992545774,
+        "tp100Sell100": -19.269546992545774,
+        "trailingCustom": -19.269546992545774
+      },
+      "firstBuySignature": "33b2LUiF1W3WbhznH2Fa2LmDyHMpqBeZudHJ6FP5A7xsHnAcKtViGyzJfseczrinqpU89beJqVdUqbkjoyHbZRsq",
+      "firstSellSignature": "5kabFMp4yYixiJrR7C2ZsTYDChdCAZpkRQKtKKGxSCrrjo7XF1TrJWBrbJ2Fa1wFdPa7RUayLB4byGCsuawpkUom"
+    },
+    {
+      "mint": "AiXVEvyu8MJ65RtciQ9GqkR28hDNvWx3XvyqPiF2pump",
+      "symbol": "YOANE",
+      "entryIso": "2026-06-17T19:10:37.000Z",
+      "sourceFillMarketCapUsd": 4165.276730190929,
+      "sourceBuySol": 3.00757908,
+      "sourceExitPct": -33.71758381693565,
+      "firstSellMinutes": 0.7833333333333333,
+      "currentMarketCapUsd": 1921.62,
+      "liquidityUsd": null,
+      "mfePct": 25.804368798878148,
+      "maePct": -46.641697504696744,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -33.71758381693565,
+        "tp30Sell100": -33.71758381693565,
+        "tp50Sell100": -33.71758381693565,
+        "tp75Sell100": -33.71758381693565,
+        "tp100Sell100": -33.71758381693565,
+        "trailingCustom": -33.71758381693565
+      },
+      "firstBuySignature": "5o9GRgoJyFyv8t3xo85Bn2LCFgpgUNUxognQnaueLq8GiibTmjhhXCunGxjiercwRWu26zmvUeU82t8N85asBg8i",
+      "firstSellSignature": "5Lu6YT8sYCWNiMdK3LnmMkFKzXR5JcwNWMTc7hMy3TavEU1YY7UbL5QwQTRjjxDLGmTA2uvjcJNBTaieNzrtJVSq"
+    },
+    {
+      "mint": "92ZLxypTtK9iQdMoqjEeU1DJgxhYo5H6NLwiucsepump",
+      "symbol": "Onboarding",
+      "entryIso": "2026-06-19T13:36:55.000Z",
+      "sourceFillMarketCapUsd": 3994.5816626168016,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -46.538539161318646,
+      "firstSellMinutes": 0.15,
+      "currentMarketCapUsd": 1940.82,
+      "liquidityUsd": null,
+      "mfePct": 0,
+      "maePct": -63.60252857987058,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -46.538539161318646,
+        "tp30Sell100": -46.538539161318646,
+        "tp50Sell100": -46.538539161318646,
+        "tp75Sell100": -46.538539161318646,
+        "tp100Sell100": -46.538539161318646,
+        "trailingCustom": -46.538539161318646
+      },
+      "firstBuySignature": "33FKc2sUXpHRs79qajAQL2MmenR9aBWcu3bvrgEQTVFDVUvZXgZXP8kTX5VYJEen763fbYgLDjphZ3kpwB1PDemQ",
+      "firstSellSignature": "4dp4nT61tN9t1dwd17LiR4y3cmXBs8GURvNhRFhzhavR39eCUdUKoDVDqFXp4YHYQLDvNzbmuSE31pmqWqQmcSii"
+    },
+    {
+      "mint": "9NXV4xRwubmrKRqWaH7jBvmUoNLgp6uMbZNL1XBapump",
+      "symbol": "MTRG",
+      "entryIso": "2026-06-18T17:47:49.000Z",
+      "sourceFillMarketCapUsd": 3843.849110403843,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 687.6262137476632,
+      "firstSellMinutes": 9.2,
+      "currentMarketCapUsd": 1942,
+      "liquidityUsd": 3127.05,
+      "mfePct": 32.34954354760467,
+      "maePct": -2.3273400064233662,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 551,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 687.6262137476632,
+        "tp30Sell100": 30,
+        "tp50Sell100": 687.6262137476632,
+        "tp75Sell100": 687.6262137476632,
+        "tp100Sell100": 687.6262137476632,
+        "trailingCustom": 687.6262137476632
+      },
+      "firstBuySignature": "2ieWPBWdvkSAAYNda335vq3fsDUfUNRG2zJNxJNftKyqGEhBHHzCJTjzP6w2VgfeJffE4FyF71r6gwAL4GuEPtJA",
+      "firstSellSignature": "5u5d1pvFKiHKL9Q8gdmrCyznpsYv7YTXV5BoirSfCtaT5dgWej3LLyTcpeyoz5aQtFUm4YWVTuxLuKjNiqFZHTtJ"
+    },
+    {
+      "mint": "2WED2WnJTsKaJXEeGXM9gnmxdqmcApGqGDgF3p4apump",
+      "symbol": "DAWNNY",
+      "entryIso": "2026-06-18T21:59:18.000Z",
+      "sourceFillMarketCapUsd": 3840.647138306428,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": -46.3463266257564,
+      "firstSellMinutes": 0.7666666666666667,
+      "currentMarketCapUsd": 1943.43,
+      "liquidityUsd": null,
+      "mfePct": 0,
+      "maePct": -47.188721889092754,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -46.3463266257564,
+        "tp30Sell100": -46.3463266257564,
+        "tp50Sell100": -46.3463266257564,
+        "tp75Sell100": -46.3463266257564,
+        "tp100Sell100": -46.3463266257564,
+        "trailingCustom": -46.3463266257564
+      },
+      "firstBuySignature": "2mmVGVRRcrFbN4pWYW5jzavYmk839eox5cVfd2eEf9usPQS6VbbJpETr9gbeRjtHaxNdkyFE5ZHbhme7D2DVq1gu",
+      "firstSellSignature": "65i5CHqFLCb2zT8Yw3KdmNnNeZA6YiFZXVc4nbwpmWyrpLXmc2BDAzPDyv4zuWt9DYuh1mmoTpxmJzQWjWe5Xkay"
+    },
+    {
+      "mint": "7Adn7uS4giSC318s1MH3Tpi18qBLeYt3aP7bPVq7pump",
+      "symbol": "HONEY",
+      "entryIso": "2026-06-19T14:42:52.000Z",
+      "sourceFillMarketCapUsd": 3743.5306556005926,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -25.204337668708288,
+      "firstSellMinutes": 0.5166666666666667,
+      "currentMarketCapUsd": 1938.68,
+      "liquidityUsd": null,
+      "mfePct": 71.23436568377,
+      "maePct": -32.378266965618124,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 8,
+        "tp50": 8,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 8,
+        "peakPct": 71.23436568377,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -25.204337668708288,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": -25.204337668708288,
+        "tp100Sell100": -25.204337668708288,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "21Fdf9dFoFe8SCPFoX35K1H3KKBGmgihZXAvQwNYgexTNgKtyJVmP6KSavmn2s56Pmu3Bb45znbYGKpmJ7GRQHUn",
+      "firstSellSignature": "5XuyaSAMvgNgwLSmvMEHz9Wfbyx1mM47xvM5gaNfQB4fGVYoKLETexuGbGfrdfvX7jXntn3WdUvXTQBiwou6S4iN"
+    },
+    {
+      "mint": "FiuuRPDShSQc1KqVXgrnnvbcjMgkQaWFLi5Sk5Yapump",
+      "symbol": "KSPLAY",
+      "entryIso": "2026-06-18T19:32:32.000Z",
+      "sourceFillMarketCapUsd": 3742.4480165150367,
+      "sourceBuySol": 5.00727908,
+      "sourceExitPct": -38.99657238697118,
+      "firstSellMinutes": 7.516666666666667,
+      "currentMarketCapUsd": 1944.05,
+      "liquidityUsd": null,
+      "mfePct": 37.07542512707231,
+      "maePct": -55.14193244429335,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 28,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -38.99657238697118,
+        "tp30Sell100": 30,
+        "tp50Sell100": -38.99657238697118,
+        "tp75Sell100": -38.99657238697118,
+        "tp100Sell100": -38.99657238697118,
+        "trailingCustom": -38.99657238697118
+      },
+      "firstBuySignature": "c2dXctWuHt23oBkMCt7Cqqp4BjuppKyspEtqh2BSCPVk41aWTocj9Sc9KeT6FEWfBuArn5r96tKT5kmmCY2hiSd",
+      "firstSellSignature": "2PSUKz9X8JWeeUYzQGx8pvd9R7LUcJD1kA6B3jSaqZHQwmUFxXKhnvjL7bi5sH17Tb1jeJavrEweZ8NcxnmC2tfg"
+    },
+    {
+      "mint": "CecRzGg3KfwZSLD1VUbnV9DTB1uvhpYR5tcTvYQNpump",
+      "symbol": "C6",
+      "entryIso": "2026-06-19T14:01:53.000Z",
+      "sourceFillMarketCapUsd": 3699.3718036237256,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -23.472528434222774,
+      "firstSellMinutes": 0.8166666666666667,
+      "currentMarketCapUsd": 2197.46,
+      "liquidityUsd": null,
+      "mfePct": 38.78999295075862,
+      "maePct": -52.52372936519366,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 7,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -23.472528434222774,
+        "tp30Sell100": 30,
+        "tp50Sell100": -23.472528434222774,
+        "tp75Sell100": -23.472528434222774,
+        "tp100Sell100": -23.472528434222774,
+        "trailingCustom": -23.472528434222774
+      },
+      "firstBuySignature": "4GEkqwHf93PGXCDgcmKULS4VDRCP6g6Kafgc4yaHkCb5bPXwxigUjjpfmmAuR81wBeKDjM7daAfTLymAmKpYRn1h",
+      "firstSellSignature": "2FQWGorD5vGwW6EWqFHPKYkbjUvY1GVwy7kMAP2gaHjQzsUvx3aNbyvNqZNNibPscyTb9pM3pCiawnCRtqFMVbsD"
+    },
+    {
+      "mint": "C4Q3kxvuaxPGyDvGmsAbuzCSLbJnS6Y4Czy4Rmdxpump",
+      "symbol": "#1",
+      "entryIso": "2026-06-19T13:26:41.000Z",
+      "sourceFillMarketCapUsd": 3678.6093342728736,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": 33.12371187853116,
+      "firstSellMinutes": 0.8,
+      "currentMarketCapUsd": 2545.25,
+      "liquidityUsd": null,
+      "mfePct": 0.1805507726668888,
+      "maePct": -73.19683742012015,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 33.12371187853116,
+        "tp30Sell100": 33.12371187853116,
+        "tp50Sell100": 33.12371187853116,
+        "tp75Sell100": 33.12371187853116,
+        "tp100Sell100": 33.12371187853116,
+        "trailingCustom": 33.12371187853116
+      },
+      "firstBuySignature": "4grXbq7X6caF2WAen1k3ZXtUkSzNXmzhu7RDLfCdrWcbc7D16fiq4LXVgWjZVkBZtrVftf1Pkw82fW6MY2131WJz",
+      "firstSellSignature": "pPxzGftXRoHK1ptLwsFvUEiY8sLrGzm8CzG1guiw3MsSgkxsg1J4hF1HgbH71wrDmwQd2v8dN4gxgM1bGZwBJz5"
+    },
+    {
+      "mint": "AvL4Uz2ydiAeuTZFGyzfdRF9nUjKRxx7sE2R7Dxapump",
+      "symbol": "SARAS",
+      "entryIso": "2026-06-19T14:46:26.000Z",
+      "sourceFillMarketCapUsd": 3651.7296100285666,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": 101.69273171901277,
+      "firstSellMinutes": 0.65,
+      "currentMarketCapUsd": 1941.34,
+      "liquidityUsd": null,
+      "mfePct": 13.621006301531017,
+      "maePct": -44.734552603550846,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 101.69273171901277,
+        "tp30Sell100": 101.69273171901277,
+        "tp50Sell100": 101.69273171901277,
+        "tp75Sell100": 101.69273171901277,
+        "tp100Sell100": 101.69273171901277,
+        "trailingCustom": 101.69273171901277
+      },
+      "firstBuySignature": "3KbL5MEoyotwWxiVxbdK1sMguSUTF6Vd14KVQutNQLwJFDhHmcxPoyXVLWKC3rE9coDn8vTfVGFU2xENawTWoMqS",
+      "firstSellSignature": "4LhGZEfcqfr6n7Z2qDLVrXvMyfVnj3hNaQgrTUrbSnn224QNsNsVY6KKVgRkHVTQVocvz4m6mAiXK39oakzS245M"
+    },
+    {
+      "mint": "7SWYEibj5SuGn3zDGajf5CjdpSMJhWEYqV9dKpc4pump",
+      "symbol": "SICHI",
+      "entryIso": "2026-06-17T18:06:44.000Z",
+      "sourceFillMarketCapUsd": 3649.320430759647,
+      "sourceBuySol": 3.03207908,
+      "sourceExitPct": -9.131622693580095,
+      "firstSellMinutes": 0.6,
+      "currentMarketCapUsd": 1948.05,
+      "liquidityUsd": null,
+      "mfePct": 0,
+      "maePct": -53.98711329688861,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -9.131622693580095,
+        "tp30Sell100": -9.131622693580095,
+        "tp50Sell100": -9.131622693580095,
+        "tp75Sell100": -9.131622693580095,
+        "tp100Sell100": -9.131622693580095,
+        "trailingCustom": -9.131622693580095
+      },
+      "firstBuySignature": "4M6xPhr7q9kmMBRw7H9CQFNQz8zqbNDH1hzMB7XnfTCTY5SAM3PY5aC2fTqnLZAyUGbbCKEHGnW1aAD4Liv4HQQ2",
+      "firstSellSignature": "2hCPBQjM11jCVUwrNrRitZpTVcCN3sZC6M3qehggtY6wPyzFCUJLDwwRcYn6ghCbcwoW6CFojvGhjYd2833JDQMU"
+    },
+    {
+      "mint": "BmTEjCDkgfd76Wx59pUkE5Wd3hgSyzdBgS4P1z8Tpump",
+      "symbol": "SILVERGOONER",
+      "entryIso": "2026-06-18T20:27:04.000Z",
+      "sourceFillMarketCapUsd": 3642.8545801246014,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 9.224640810747244,
+      "firstSellMinutes": 4.683333333333334,
+      "currentMarketCapUsd": 1954.75,
+      "liquidityUsd": null,
+      "mfePct": 59.402368537767714,
+      "maePct": -43.16944409888546,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 56,
+        "tp50": 116,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 116,
+        "peakPct": 59.402368537767714,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 9.224640810747244,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 9.224640810747244,
+        "tp100Sell100": 9.224640810747244,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "UPVEgjw4KK63oojspZxqbmEriY8hRUUzhqqU3SWboocmYNy3gMqdAZrSzSqKvcWUQ3jVcXRzuRdeHWRpR7KANUq",
+      "firstSellSignature": "5Y4kCLCFjUrDeuZpnP66GHKVUyqozVi2cskBuHTZmaMjdPtEdxXs7tH5YVVjQKfr7MnirYoviieXaQeXut7iZPbj"
+    },
+    {
+      "mint": "DWzjr75addb5gSiaJepiw6ShcxmBhdmxsmr5FFGspump",
+      "symbol": "CHUCKY",
+      "entryIso": "2026-06-18T19:30:39.000Z",
+      "sourceFillMarketCapUsd": 3597.832756171113,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": 49.64306629909367,
+      "firstSellMinutes": 0.8,
+      "currentMarketCapUsd": 1919.66,
+      "liquidityUsd": null,
+      "mfePct": 25.1161065754819,
+      "maePct": -58.35610976740696,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 49.64306629909367,
+        "tp30Sell100": 49.64306629909367,
+        "tp50Sell100": 49.64306629909367,
+        "tp75Sell100": 49.64306629909367,
+        "tp100Sell100": 49.64306629909367,
+        "trailingCustom": 49.64306629909367
+      },
+      "firstBuySignature": "39dvJ7mtNdoM6G2N9fHVF54vfEBCYMvwLnm7jLm71ywQmu2iFi3C9EgophJhEXgYoP9uxuKVsEnYG6H99QQ3rmqL",
+      "firstSellSignature": "2PN6nAWu8tZCnmR2pE1iFPN7CNwzHLF9DM73LHhrM423Bgfgg21PYDqAfj2ChyRBbbPL5SXdG9iLcVwShzgDY1X6"
+    },
+    {
+      "mint": "AtPqyV5QRWQRpDsh1YJ2pB3dP1QKCMUcdZ13zFeFpump",
+      "symbol": "OpiumChicken",
+      "entryIso": "2026-06-19T14:33:36.000Z",
+      "sourceFillMarketCapUsd": 3503.2292310351204,
+      "sourceBuySol": 1.078775823,
+      "sourceExitPct": 116.70955101218101,
+      "firstSellMinutes": 1.3166666666666667,
+      "currentMarketCapUsd": 10978.24,
+      "liquidityUsd": null,
+      "mfePct": 26.46800803649551,
+      "maePct": -28.269894691472015,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 116.70955101218101,
+        "tp30Sell100": 116.70955101218101,
+        "tp50Sell100": 116.70955101218101,
+        "tp75Sell100": 116.70955101218101,
+        "tp100Sell100": 116.70955101218101,
+        "trailingCustom": 116.70955101218101
+      },
+      "firstBuySignature": "4cnvvEiqcGcpTCRG67jke7X1xKyPxXJsVDS4zZ8Xo8JeHTHdjjLMzJyxrNi9JsmvfhSicMFc6hvru1b7fmbHQyiD",
+      "firstSellSignature": "4kH5MNqJLFi2z8CDxRdcC6Geos2Q1kK394LSciaMUpsHx4mhsZTSW6DAMkP8i3LuEfFX7xc1oVEvEVTEm5Qr24zQ"
+    },
+    {
+      "mint": "9LoH9PAQedLEvPGLsqXWkY5E6kwdB7xhg7sG9fhSpump",
+      "symbol": "CCM",
+      "entryIso": "2026-06-19T00:34:50.000Z",
+      "sourceFillMarketCapUsd": 3442.135838593485,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -12.585951312110016,
+      "firstSellMinutes": 0.18333333333333332,
+      "currentMarketCapUsd": 1906.25,
+      "liquidityUsd": null,
+      "mfePct": 22.002705643747504,
+      "maePct": -22.28374785405185,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -12.585951312110016,
+        "tp30Sell100": -12.585951312110016,
+        "tp50Sell100": -12.585951312110016,
+        "tp75Sell100": -12.585951312110016,
+        "tp100Sell100": -12.585951312110016,
+        "trailingCustom": -12.585951312110016
+      },
+      "firstBuySignature": "3qeMC2J91F9SscrXV8oFxGPz7GX5buKUitoig2C7YZzrYD4nz6yJJUXFH3K5UGit2BAyowgTFMSc93pC79MXZ6z9",
+      "firstSellSignature": "4kGMi8rTqcibfc6YxSFQckjKzJJ1cWtu82vZZG5Kk7Jwpbp68yktLCGSsaC8rGRzHRJdLYEd1j86ZYbQFNC7SXsQ"
+    },
+    {
+      "mint": "ooMnSRKs3d8zrw39MAFHij7JP8skRFA3dihionMpump",
+      "symbol": "Clitcoin",
+      "entryIso": "2026-06-18T18:55:43.000Z",
+      "sourceFillMarketCapUsd": 3415.2978227186027,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": 80.42237462204395,
+      "firstSellMinutes": 3.0166666666666666,
+      "currentMarketCapUsd": 1969.01,
+      "liquidityUsd": null,
+      "mfePct": 88.86950922790116,
+      "maePct": -17.23417951105195,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 17,
+        "tp50": 17,
+        "tp75": 17,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 17,
+        "peakPct": 88.86950922790116,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 80.42237462204395,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 80.42237462204395,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "2dgiwEyyVDmN7JrwMU8nuXw5U7vuwLx4oyrAb3B2jjmUAa2HT5xiDLhheb7dyCvDSDqxy35dHG8FcPS8PMqsrGhR",
+      "firstSellSignature": "b1MzqcNox9NtUf8bszRXrxJkt8FriMCxnGFjw3pqogouJuwpiqdmbQb9eaZ3bSA9pSsMTiRRk3vx7euH5KoHJEC"
+    },
+    {
+      "mint": "MXQcb928CL59NrZoV1u5VoLnX3RFUGFdn3NssXApump",
+      "symbol": "#1",
+      "entryIso": "2026-06-19T03:24:22.000Z",
+      "sourceFillMarketCapUsd": 3380.4353747212135,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": 4.830816551951196,
+      "firstSellMinutes": 8.533333333333333,
+      "currentMarketCapUsd": 2093.17,
+      "liquidityUsd": null,
+      "mfePct": 139.5393657227779,
+      "maePct": -65.90849575160443,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 38,
+        "tp50": 278,
+        "tp75": 278,
+        "tp100": 278
+      },
+      "trailingExit": {
+        "roiPct": 75,
+        "timeSec": 278,
+        "peakPct": 117.25292868257637,
+        "floorPct": 75
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 4.830816551951196,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 75
+      },
+      "firstBuySignature": "5ApVrfi3TTY4spQXXncPm4tkEn1pJAg31myDeW5QAxGUzd9jUg2j29SxUg731zJnk9RoaK1d4nfEbJTdfxU7LNqy",
+      "firstSellSignature": "Ezj9PxnrdEjediGk4b15bXeomqaUbq6NMDBYJUk2mVsVevPnQx5jpCXsFVHAvUbv25n6TWTMxq4AxoKKNm85d65"
+    },
+    {
+      "mint": "BtfqieGaFwKMP3uvsUd44ibL4GhQqGJWuh1TtoFXpump",
+      "symbol": "Hero",
+      "entryIso": "2026-06-19T01:04:46.000Z",
+      "sourceFillMarketCapUsd": 3287.3333090819197,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 157.0309364148993,
+      "firstSellMinutes": 1.05,
+      "currentMarketCapUsd": 1949.57,
+      "liquidityUsd": null,
+      "mfePct": 148.37565677494214,
+      "maePct": 0,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 14,
+        "tp50": 14,
+        "tp75": 14,
+        "tp100": 14
+      },
+      "trailingExit": {
+        "roiPct": 75,
+        "timeSec": 14,
+        "peakPct": 148.37565677494214,
+        "floorPct": 75
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 157.0309364148993,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 75
+      },
+      "firstBuySignature": "2nzDhmnzkGKM3PUrhpnec81QuSSFvb8AqXfYKVN2KqNrK3GAqc2pLWL5YxEG3P5LqQfZAVLHZypGVTzUYAp5fNbN",
+      "firstSellSignature": "5DsPnXSbCRjky53VwDGqi89WiuQEvqtZpTrYHiX6TmTYMPE5bS21gK8Emy7tknx8z1hnywsueZui2W9j5Thn6UYT"
+    },
+    {
+      "mint": "VhkSVj3ZCqETZR247HzFrcR4HeRzFJk8bruWgUFpump",
+      "symbol": "ANIMALS",
+      "entryIso": "2026-06-18T22:25:31.000Z",
+      "sourceFillMarketCapUsd": 3164.757533767139,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -23.810901611255225,
+      "firstSellMinutes": 0.5,
+      "currentMarketCapUsd": 1917.88,
+      "liquidityUsd": null,
+      "mfePct": 0.7509718827375192,
+      "maePct": -29.25236551357649,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -23.810901611255225,
+        "tp30Sell100": -23.810901611255225,
+        "tp50Sell100": -23.810901611255225,
+        "tp75Sell100": -23.810901611255225,
+        "tp100Sell100": -23.810901611255225,
+        "trailingCustom": -23.810901611255225
+      },
+      "firstBuySignature": "4yKFp8XG3nkauZ65JUqFHn8jHNfovAL2PJndtkk2aJZHwQTV6Cmypg1XBTWzLDTz5SEH5NE6s3YqoHKK7s17ga7Q",
+      "firstSellSignature": "aeJgE1ZPx4ma9yTd2nykJ7vtZPhYfnb2meGnrDrwU33SKBRrvSLSMMTWQX2VmggRED6jb7BeVFMMSpJf51X7rnd"
+    },
+    {
+      "mint": "FkxonFQH2fLDr3ndPPkhLgcTdPkCYFUwoS5WNY8Apump",
+      "symbol": "LEWINE",
+      "entryIso": "2026-06-17T20:43:53.000Z",
+      "sourceFillMarketCapUsd": 3163.395058677501,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -23.04890517338403,
+      "firstSellMinutes": 0.21666666666666667,
+      "currentMarketCapUsd": 1920.22,
+      "liquidityUsd": null,
+      "mfePct": 3.6291651233962177,
+      "maePct": -41.78483105948769,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -23.04890517338403,
+        "tp30Sell100": -23.04890517338403,
+        "tp50Sell100": -23.04890517338403,
+        "tp75Sell100": -23.04890517338403,
+        "tp100Sell100": -23.04890517338403,
+        "trailingCustom": -23.04890517338403
+      },
+      "firstBuySignature": "2NRZZJDsSMK3F3xHZNchNr8msHwqoxx4YAtY4kvzLwGrEWhAWo18FNTLo9jSYjwtA78yS6C6wE3ro843Ur1DQv7f",
+      "firstSellSignature": "2RLrvdipWxHq4EFP4y6g2MPf1S2mRYfTjwbxB4Xbnncegx8GtHJP57DCpatdMZkvWUrmc4GRConhZPYchEpsBfQk"
+    },
+    {
+      "mint": "73ksFwKkZgL7X65eK2JdbPUsvtmBWZXSfyN2szbppump",
+      "symbol": "FRANKLIN",
+      "entryIso": "2026-06-17T20:24:39.000Z",
+      "sourceFillMarketCapUsd": 3123.08603810042,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -14.925393557867972,
+      "firstSellMinutes": 1.0666666666666667,
+      "currentMarketCapUsd": 1960.93,
+      "liquidityUsd": null,
+      "mfePct": 15.180472278917046,
+      "maePct": -32.75983028363489,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -14.925393557867972,
+        "tp30Sell100": -14.925393557867972,
+        "tp50Sell100": -14.925393557867972,
+        "tp75Sell100": -14.925393557867972,
+        "tp100Sell100": -14.925393557867972,
+        "trailingCustom": -14.925393557867972
+      },
+      "firstBuySignature": "5MeLyVbykiV5LVGmBmae6VA5D85bYSPd77U62N3vfUUgfzfabPGTiVBX5khycnSCNsT6dNoPwBJP5T7vpFTBEEJ",
+      "firstSellSignature": "3fmvJZoaGu5j8HhEfpXPAVgSPRtdjJsQKPES3EVUMF7EapJ6PgKfgHskG1gThWVK656DNTqEAd14N6m97Vaq2YT6"
+    },
+    {
+      "mint": "F6VFdgCPdiZWoS4FJrYtyBoQjNAQ8rkfRLATViPKpump",
+      "symbol": "RICH",
+      "entryIso": "2026-06-19T14:28:47.000Z",
+      "sourceFillMarketCapUsd": 3086.561178913453,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 2.602792010374253,
+      "firstSellMinutes": 0.23333333333333334,
+      "currentMarketCapUsd": 1937.28,
+      "liquidityUsd": null,
+      "mfePct": 0,
+      "maePct": -45.423452937001976,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 2.602792010374253,
+        "tp30Sell100": 2.602792010374253,
+        "tp50Sell100": 2.602792010374253,
+        "tp75Sell100": 2.602792010374253,
+        "tp100Sell100": 2.602792010374253,
+        "trailingCustom": 2.602792010374253
+      },
+      "firstBuySignature": "3HnMyFtuaNzzz1ux3rsxQdQJia5ugMdYgvqZorjFfCp7VfEeT3Tz94ggmYHNGMSJjTNBKjbVzSC7H2pfwWTBQBDn",
+      "firstSellSignature": "5wu4v4iqaG6iKT5vx3vUB7wkvrXf4iq5cSfbCG5AvYsVPj9wYueEb4mwvTvRQQvMyXMhRDr6iZuXUwZ5oVd3ajwV"
+    },
+    {
+      "mint": "EStGTgtqXPFo2LXj6gXX78Tt59d4VwC875NyMH5ppump",
+      "symbol": "niggacoin",
+      "entryIso": "2026-06-19T01:15:05.000Z",
+      "sourceFillMarketCapUsd": 2992.039679532703,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -14.808814208164463,
+      "firstSellMinutes": 6.016666666666667,
+      "currentMarketCapUsd": 1911.74,
+      "liquidityUsd": null,
+      "mfePct": 132.1865327167316,
+      "maePct": -51.74581394512139,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 55,
+        "tp50": 55,
+        "tp75": 115,
+        "tp100": 235
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 55,
+        "peakPct": 58.663589711398586,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -14.808814208164463,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "52JjiJnmHQDuYT2cqtzUEHB8wJFk83tXHpD56s7RGV751sB7kvzexsPBRdvte6TZHQNLq3sEPu7X6BuDSr6LbJw3",
+      "firstSellSignature": "2xH2W4YXGabiCJPeficPz7PyaCQTzXW1X4o2rQKZ9cnQBNiQc7w2pQ6jHDuJp89v3VrU2Mh7fyRqtBHMS5YqqmLi"
+    },
+    {
+      "mint": "6Q9XEKoC5QVF3QABannHpPAMGHDaT7xr7V8sa9h1pump",
+      "symbol": "Fan",
+      "entryIso": "2026-06-17T19:08:05.000Z",
+      "sourceFillMarketCapUsd": 2927.2910807094504,
+      "sourceBuySol": 3.00782964,
+      "sourceExitPct": 10.458443099173845,
+      "firstSellMinutes": 1.2,
+      "currentMarketCapUsd": 1916.35,
+      "liquidityUsd": null,
+      "mfePct": 31.32987089401326,
+      "maePct": -34.24345928359863,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 55,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 10.458443099173845,
+        "tp30Sell100": 30,
+        "tp50Sell100": 10.458443099173845,
+        "tp75Sell100": 10.458443099173845,
+        "tp100Sell100": 10.458443099173845,
+        "trailingCustom": 10.458443099173845
+      },
+      "firstBuySignature": "YKg3jPmUxJdzxoeTzz8yqfLHNA2pcSeEADYkz4nhyvaAXyGEDfZokZx7s1mcN5kyjHmbj9cnMoYQ6zXVSBdL35d",
+      "firstSellSignature": "3LaZ2ZKkhk5i4HzGN6pcuSFj49TJwHiYEigNWgJXmmthEALEtuCTHqmezYH7oMWh1jYjmMghEAHGxMNFo6aX2qFv"
+    },
+    {
+      "mint": "9QEmaVGVe9HNjjsSyB7EGFB6YZqZ44BRNsLQougUpump",
+      "symbol": "PINGO",
+      "entryIso": "2026-06-19T00:01:32.000Z",
+      "sourceFillMarketCapUsd": 2923.3480054051442,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 13.405957917459856,
+      "firstSellMinutes": 0.5833333333333334,
+      "currentMarketCapUsd": 1947.33,
+      "liquidityUsd": null,
+      "mfePct": 0,
+      "maePct": -59.64732682534668,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 13.405957917459856,
+        "tp30Sell100": 13.405957917459856,
+        "tp50Sell100": 13.405957917459856,
+        "tp75Sell100": 13.405957917459856,
+        "tp100Sell100": 13.405957917459856,
+        "trailingCustom": 13.405957917459856
+      },
+      "firstBuySignature": "WpVUXsHTfuTJejaT7XqUTfGfAxpQDUKknhGHMZ8UQcpRNPeyPgPRRYDfmJ5KYn2Hpbvtudoo7k1Pb79cXwQqA1L",
+      "firstSellSignature": "4GqSgncyzeeSxdrFEYp6Nfh9XqgSjGVDkXVLWN2rojT3WLS5eBbwFgdMgb7JvnRqCFPoxaPEnTBzHfFXv71RLfQ4"
+    },
+    {
+      "mint": "7dA4HNWgyXBdwBWdAK6i7qLbkbmJtxdDFTAu9Cbepump",
+      "symbol": "esh",
+      "entryIso": "2026-06-17T19:19:35.000Z",
+      "sourceFillMarketCapUsd": 2872.3739143536254,
+      "sourceBuySol": 3.00782964,
+      "sourceExitPct": 39.62801821627571,
+      "firstSellMinutes": 1.45,
+      "currentMarketCapUsd": 1974.86,
+      "liquidityUsd": null,
+      "mfePct": 61.71013795990289,
+      "maePct": -16.5261899850663,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 85,
+        "tp50": 85,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 85,
+        "peakPct": 61.71013795990289,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 39.62801821627571,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 39.62801821627571,
+        "tp100Sell100": 39.62801821627571,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "3nHYtaGABm9C41escPQxazkGZSzS2ve2LaxgRkchvwxkmvtdn2QhecyvA84BUpcKRhmWop4pA4AaYLerte6uBwSR",
+      "firstSellSignature": "3UUs1fAiNERygoQHBD9jFCTq4waq4JKkUqxLVjvVtets51jBiMhEdx9iJwy5HVLBasse8e3vv9hK1rgu9pEVjfoD"
+    },
+    {
+      "mint": "J3BGRuNgVDsh5kvUZCBDwyVGbceqkFCbt6T8Hzdkpump",
+      "symbol": "BOINKS",
+      "entryIso": "2026-06-18T18:50:55.000Z",
+      "sourceFillMarketCapUsd": 2841.1526925064604,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": -33.696269471943744,
+      "firstSellMinutes": 19.133333333333333,
+      "currentMarketCapUsd": 1934.73,
+      "liquidityUsd": null,
+      "mfePct": 151.89401611952334,
+      "maePct": -42.88245919232508,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 5,
+        "tp50": 5,
+        "tp75": 5,
+        "tp100": 5
+      },
+      "trailingExit": {
+        "roiPct": 75,
+        "timeSec": 5,
+        "peakPct": 151.89401611952334,
+        "floorPct": 75
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -33.696269471943744,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 75
+      },
+      "firstBuySignature": "o1UMkqLFwewLbgjMVHAaT4yxmE3f52VUuJwxeajQgLX1tWY6uMuo6cun3ctNhzfVAuXszTScr7gz6sEfJSvwqtR",
+      "firstSellSignature": "4T6XBNsvtCgeJMcLdi4HdUj28NhNy1zmKvdUcCfc56mLWeH3VbQuV8pWs3p3CWjpqs5DpUh19DMGyAniyu3SotHv"
+    },
+    {
+      "mint": "GxbETzTFbQTyuyhB92iDkTRFDySWHXfXxnf4hEABpump",
+      "symbol": "WEEB",
+      "entryIso": "2026-06-17T17:06:25.000Z",
+      "sourceFillMarketCapUsd": 2769.984780416899,
+      "sourceBuySol": 3.03207908,
+      "sourceExitPct": -16.97126323381844,
+      "firstSellMinutes": 24.016666666666666,
+      "currentMarketCapUsd": 1923.38,
+      "liquidityUsd": null,
+      "mfePct": 91.13475065312353,
+      "maePct": -59.851268415623714,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 35,
+        "tp50": 35,
+        "tp75": 575,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 35,
+        "peakPct": 51.71227303745929,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -16.97126323381844,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": -16.97126323381844,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "4oURZFGc3cfxFzBgyR3vcaPNvs1rCzKoVxZ6PPWacS3JmaiQ6nv1BzryjGYCB1hXQka6EM8STk8XpegdjhnmfQmA",
+      "firstSellSignature": "5KCUhotL9Bayzxm3xD41W8f2aNAgfby9jt5TndASWqPt6YC8yuoCEJ27vAujo1qnDci6rFz82u5yXudoKvVbAiv2"
+    },
+    {
+      "mint": "9wYLEqACazYbCchVbhqKqeBBRezE7HVkwpgzCRfTpump",
+      "symbol": "DAWNNY",
+      "entryIso": "2026-06-18T22:00:57.000Z",
+      "sourceFillMarketCapUsd": 2765.9076949219125,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": -7.692348085269647,
+      "firstSellMinutes": 0.8833333333333333,
+      "currentMarketCapUsd": 1914.07,
+      "liquidityUsd": null,
+      "mfePct": 13.569070763803193,
+      "maePct": -61.054451215628106,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -7.692348085269647,
+        "tp30Sell100": -7.692348085269647,
+        "tp50Sell100": -7.692348085269647,
+        "tp75Sell100": -7.692348085269647,
+        "tp100Sell100": -7.692348085269647,
+        "trailingCustom": -7.692348085269647
+      },
+      "firstBuySignature": "4fWhQ2Rfmo7PYDve3mWGGJYC6xpioQBxZKaXffjCtXFLhZDyDTfiNCkVEdJjeaFoRPGcsMPgfecWppFQyTHZADeD",
+      "firstSellSignature": "2Lb9CNpwtCMCyXoQDazXFCMHy7FRCUFL6kZ7Rnwi42wcuSSp5dBBtJjxg1NAXm5rktzEVXC3ZmgFzVvjLQDwWrsa"
+    },
+    {
+      "mint": "88x9ZVA8ipZD7bDEszU86kjQ8TksfRZYWNeWaW7Qpump",
+      "symbol": "Niggi",
+      "entryIso": "2026-06-19T14:08:25.000Z",
+      "sourceFillMarketCapUsd": 2762.5770574035114,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": -9.42968103966218,
+      "firstSellMinutes": 0.6166666666666667,
+      "currentMarketCapUsd": 1949.49,
+      "liquidityUsd": null,
+      "mfePct": 16.75198497420186,
+      "maePct": -22.493887678209592,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -9.42968103966218,
+        "tp30Sell100": -9.42968103966218,
+        "tp50Sell100": -9.42968103966218,
+        "tp75Sell100": -9.42968103966218,
+        "tp100Sell100": -9.42968103966218,
+        "trailingCustom": -9.42968103966218
+      },
+      "firstBuySignature": "quyXkXH7AZtrEXx77CsMwevenQL9NQJANFyjcGcbdxF5SKz52A7Rh5yi3nUiDs8y37fKPN6RTm13zuTA1p1tuSs",
+      "firstSellSignature": "3NQWLHcU9fn7z376RJkxRjDyi8ox9bcihMo3ypfhtDz73VR8FhsUT2ymyEWAWaukAq9HSST9DHofkZm5oEsAoyug"
+    },
+    {
+      "mint": "BYfT3vXF7svyMLC2ARVY3KUWSZXFALVVDmoJBX2Epump",
+      "symbol": "DAD",
+      "entryIso": "2026-06-19T13:31:16.000Z",
+      "sourceFillMarketCapUsd": 2762.5770574035114,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": -14.277486484024324,
+      "firstSellMinutes": 1.5333333333333334,
+      "currentMarketCapUsd": 2152.62,
+      "liquidityUsd": null,
+      "mfePct": 1.2687929705096468,
+      "maePct": -53.1704626288366,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -14.277486484024324,
+        "tp30Sell100": -14.277486484024324,
+        "tp50Sell100": -14.277486484024324,
+        "tp75Sell100": -14.277486484024324,
+        "tp100Sell100": -14.277486484024324,
+        "trailingCustom": -14.277486484024324
+      },
+      "firstBuySignature": "4jq5vWdcM2zKfnLg9RP8nuVnBgAMzqMRUVnG3ooCFPrBSbR3DxJngHAesmFdD4F5uokUviRSfRHaN63mYiKLPUf2",
+      "firstSellSignature": "45swiYBc3kUeEcyS7bGj4TpE5LTxGEFJxmtRwe8jCTXgK8bkj8jy8eHHaZQw7KaYF5Wyxu12BZMqVCLXUfRyVMdx"
+    },
+    {
+      "mint": "CwL29JFwKfBmEkK9P4oJaYvwCgxZFAEXfFM6oTkqpump",
+      "symbol": "Juanita",
+      "entryIso": "2026-06-18T23:55:35.000Z",
+      "sourceFillMarketCapUsd": 2744.2348642499574,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": -8.92728550080221,
+      "firstSellMinutes": 4.033333333333333,
+      "currentMarketCapUsd": 1914.34,
+      "liquidityUsd": null,
+      "mfePct": 76.98966483382182,
+      "maePct": -62.267789611838765,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 25,
+        "tp50": 25,
+        "tp75": 25,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 25,
+        "peakPct": 76.98966483382182,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -8.92728550080221,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": -8.92728550080221,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "2kt2affdUwLm28NhcGz15qGNzRChrtEBHPoq4zM89fwWvmDLtz5F26jSXo97MsqidCbm5KvcBs3yBmKWo9RMrJyE",
+      "firstSellSignature": "4dLfSDmzsRdCaWLtsYFFQ52JPs56Jd7PXDs2xHxz62adC6GBKvuNuRnvKm7U7jMu4gSGQWY4VvvC4pZsYRj3wHRD"
+    },
+    {
+      "mint": "5WXXECZjJHE1Mk3PukBRmRiVvrMVQaR8agbFp9jJpump",
+      "symbol": "TNB",
+      "entryIso": "2026-06-18T18:40:57.000Z",
+      "sourceFillMarketCapUsd": 2728.4482558715604,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -0.0049288423133203784,
+      "firstSellMinutes": 2.566666666666667,
+      "currentMarketCapUsd": 1951.29,
+      "liquidityUsd": null,
+      "mfePct": 154.32712737990903,
+      "maePct": -45.36016918219476,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 3,
+        "tp50": 3,
+        "tp75": 3,
+        "tp100": 3
+      },
+      "trailingExit": {
+        "roiPct": 75,
+        "timeSec": 3,
+        "peakPct": 154.32712737990903,
+        "floorPct": 75
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -0.0049288423133203784,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 75
+      },
+      "firstBuySignature": "3UVsKvpLTY27dUQRZwZDL8oU3obizk9pUQLDVoCyjAPa7sAAfziS6E613wJayiCi1hWxcb5pf73a2H3eB93SCauP",
+      "firstSellSignature": "5odVu6m7c7mZNdRDpd4G8Sder8CpY3M2HjFpEGLqvqwVWsoSUpNZceubLUHQuU3jcJzTnttYHPnHU4AVqcfGH4H7"
+    },
+    {
+      "mint": "7kKZWHDmEGjtqToyofqqPkMXp9otXgzhRBhrgVAepump",
+      "symbol": "Sheba",
+      "entryIso": "2026-06-18T17:32:21.000Z",
+      "sourceFillMarketCapUsd": 2683.193112616079,
+      "sourceBuySol": 3.00287908,
+      "sourceExitPct": 40.09639302965306,
+      "firstSellMinutes": 1.9166666666666667,
+      "currentMarketCapUsd": 1907.73,
+      "liquidityUsd": null,
+      "mfePct": 38.10134460095858,
+      "maePct": -37.072620042075414,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 99,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 40.09639302965306,
+        "tp30Sell100": 30,
+        "tp50Sell100": 40.09639302965306,
+        "tp75Sell100": 40.09639302965306,
+        "tp100Sell100": 40.09639302965306,
+        "trailingCustom": 40.09639302965306
+      },
+      "firstBuySignature": "299WBmqXR9oKikoAVRskuZ99VKszVSdbwia4jHSNDh7b2s2yeQBMDotH1yBMQdjAdvGifgKsVXKGi2FU5pEsef9Y",
+      "firstSellSignature": "26TXXvRjXH2bEFx2zW5PpD7BV9rPNxaSAAyW9E5HL4DMsaNBrwjc3zBv6p7ve7d546hssNHNsbWuHGAVGmn5Thwu"
+    },
+    {
+      "mint": "DVLZeW577s1n6XbPN2nE89TezHpDDPCeXN6Lo6zQpump",
+      "symbol": "way",
+      "entryIso": "2026-06-19T13:41:52.000Z",
+      "sourceFillMarketCapUsd": 2608.5084091045733,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 27.051018118920243,
+      "firstSellMinutes": 0.5333333333333333,
+      "currentMarketCapUsd": 1941.24,
+      "liquidityUsd": null,
+      "mfePct": 10.898200141181293,
+      "maePct": -52.586386952133005,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 27.051018118920243,
+        "tp30Sell100": 27.051018118920243,
+        "tp50Sell100": 27.051018118920243,
+        "tp75Sell100": 27.051018118920243,
+        "tp100Sell100": 27.051018118920243,
+        "trailingCustom": 27.051018118920243
+      },
+      "firstBuySignature": "5ZULJ9L47aQ5yhZDXPdmdGbirrfeG2RfybMCtNhGgo3fYoFNe2zqRhGMxsK1bU1muawChcC72264GW5AaD4qTM4U",
+      "firstSellSignature": "2sUs3xcNBy6ff4JKXYF8mS86aK8C98vUUDoJbHQwupFmSfzUYeST6Ed5W3iJn4TQjstbNouqucBguoMTFPZfdLpo"
+    },
+    {
+      "mint": "HWakxKpAPGogrMLCNqfoZDZuG5CDMJavwQ8V6CuFpump",
+      "symbol": "SHEEP",
+      "entryIso": "2026-06-19T00:28:43.000Z",
+      "sourceFillMarketCapUsd": 2580.200020054723,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 16.878561495269096,
+      "firstSellMinutes": 0.4,
+      "currentMarketCapUsd": 1953.49,
+      "liquidityUsd": null,
+      "mfePct": 24.448852824967158,
+      "maePct": -45.79766472476418,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 16.878561495269096,
+        "tp30Sell100": 16.878561495269096,
+        "tp50Sell100": 16.878561495269096,
+        "tp75Sell100": 16.878561495269096,
+        "tp100Sell100": 16.878561495269096,
+        "trailingCustom": 16.878561495269096
+      },
+      "firstBuySignature": "Fp8zYxSU4drnmRrMjmgdy84xMGHNF14njdE8Y9ZiNFymTHNPB2uojWNTpFJDLx9jkyP3AX3Pp6XUsyRQYa1dxyU",
+      "firstSellSignature": "3yj8etYnXqcWpxHfGKJciYrowKDyPRJte4WFCuyJXkaYx3GXxjecyX3GExkCiJsGn4Po5MgyYC9n3DyxhMzPmxsP"
+    },
+    {
+      "mint": "EHkYhwsizi2HnY9ocZvKYKBTCyJbm9cXUByfj2T6pump",
+      "symbol": "QWANT",
+      "entryIso": "2026-06-19T13:46:56.000Z",
+      "sourceFillMarketCapUsd": 2578.4834748430694,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": 93.71982472174984,
+      "firstSellMinutes": 0.5166666666666667,
+      "currentMarketCapUsd": 2213.94,
+      "liquidityUsd": null,
+      "mfePct": 148.9223355426578,
+      "maePct": -0.4608550513622623,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 4,
+        "tp50": 4,
+        "tp75": 4,
+        "tp100": 4
+      },
+      "trailingExit": {
+        "roiPct": 75,
+        "timeSec": 4,
+        "peakPct": 148.9223355426578,
+        "floorPct": 75
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 93.71982472174984,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 75
+      },
+      "firstBuySignature": "3wMu3WMoRSWyZNpD8qqiVbQcuYMdJEBecXj1DohaEXvgKbewMgzKmqPCR5xVLzW9Wnaz5c5XbUyVnioB5CXVnqXp",
+      "firstSellSignature": "2X987KBbtQDNVMbzgtnNL9cmUq262pQYv6kkCxPtA5MBr4avxTssCRq8FN1VivgLksZqSHbHWGjbBjY2AxiALghL"
+    },
+    {
+      "mint": "D9FLT8Snx88WbksW6vJem9wsicusU8u5Ab1CMavppump",
+      "symbol": "poopwich",
+      "entryIso": "2026-06-18T20:04:41.000Z",
+      "sourceFillMarketCapUsd": 2561.592449163928,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": 20.20082322160202,
+      "firstSellMinutes": 0.6666666666666666,
+      "currentMarketCapUsd": 1944.83,
+      "liquidityUsd": null,
+      "mfePct": 7.016117837374793,
+      "maePct": -50.45356336689747,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 20.20082322160202,
+        "tp30Sell100": 20.20082322160202,
+        "tp50Sell100": 20.20082322160202,
+        "tp75Sell100": 20.20082322160202,
+        "tp100Sell100": 20.20082322160202,
+        "trailingCustom": 20.20082322160202
+      },
+      "firstBuySignature": "224FWbJnZEEmwqvCVvUqeTXX5zoUbEctadyAbmCEGDNHeoaTs9knAX5YPZy8UPibrCtrTdjKt2efrkXUZJWBQFiq",
+      "firstSellSignature": "51BvUCXG5vUgueu1c5mqrA71CZ4tvyatjRsaRJqCKx8uup3NPWkAiux7c99nWCSuxGaKRc89hdBL19Gxkd8vZACN"
+    },
+    {
+      "mint": "AwnUtDVzdetrrXrd66DBV3AqvhaxpwhgLC43cfxGpump",
+      "symbol": "FPS",
+      "entryIso": "2026-06-18T18:46:38.000Z",
+      "sourceFillMarketCapUsd": 2551.61976997619,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": -2.413411883072386,
+      "firstSellMinutes": 8.45,
+      "currentMarketCapUsd": 1975.89,
+      "liquidityUsd": null,
+      "mfePct": 100.62322448638446,
+      "maePct": -42.368861757244666,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": true
+      },
+      "hitTimeSec": {
+        "tp30": 22,
+        "tp50": 22,
+        "tp75": 22,
+        "tp100": 322
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 22,
+        "peakPct": 87.71020629971534,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -2.413411883072386,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": 100,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "4mBwCq7VGKAMVyE2JNwpZkMCtFKHQw4uEsSEKEftvf7Sqn75sYQBBE9wMiCV4HZheSX3D95tqwhoSTR8hcnbwcxo",
+      "firstSellSignature": "2RCgTetshykg5wyUrEQBmZQwJLAiWbvzYqsaBL3LA68UqNb41yBuK3mrSc8y5MqM5crRVPENw6ewafTyqiTEMg5m"
+    },
+    {
+      "mint": "9q3sdUeAdqad1NiwMxKVJucDeEfaw1ZJcoZoWTuApump",
+      "symbol": "ALONA",
+      "entryIso": "2026-06-18T22:26:53.000Z",
+      "sourceFillMarketCapUsd": 2550.025093105376,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": 17.76720622654561,
+      "firstSellMinutes": 0.13333333333333333,
+      "currentMarketCapUsd": 1924.38,
+      "liquidityUsd": null,
+      "mfePct": 34.99280141834804,
+      "maePct": -28.925914469097474,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 7,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 17.76720622654561,
+        "tp30Sell100": 30,
+        "tp50Sell100": 17.76720622654561,
+        "tp75Sell100": 17.76720622654561,
+        "tp100Sell100": 17.76720622654561,
+        "trailingCustom": 17.76720622654561
+      },
+      "firstBuySignature": "5cv3QxNP7FEzYeU2EbrxQ8hsyu8TaJA66MxEfzc2Tt2LJ3Dcf51M5bFBx3pL3pbCQcFrDUFhz3CoAzxgcewbm1Lv",
+      "firstSellSignature": "2qYDwPM6dKXmraMXGhFDdsRz7AZ5j4XBG3MoakFQT2bC4DtwxuK1oU4c2oGAzBaLpCcfoWoExgKNTpw3z63VdZYe"
+    },
+    {
+      "mint": "BN7t5A9jj7cg3jcR2tZ757ssxtudJhB45LmbgFPwpump",
+      "symbol": "FENN",
+      "entryIso": "2026-06-19T03:12:10.000Z",
+      "sourceFillMarketCapUsd": 2517.232067347463,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": 17.096669412514387,
+      "firstSellMinutes": 2.066666666666667,
+      "currentMarketCapUsd": 1911.82,
+      "liquidityUsd": null,
+      "mfePct": 11.683915047471096,
+      "maePct": -47.28831152120582,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 17.096669412514387,
+        "tp30Sell100": 17.096669412514387,
+        "tp50Sell100": 17.096669412514387,
+        "tp75Sell100": 17.096669412514387,
+        "tp100Sell100": 17.096669412514387,
+        "trailingCustom": 17.096669412514387
+      },
+      "firstBuySignature": "mRX6yUhxa5YiZ5DEq3KrarBgbS38sEm7VRavzzmTYoSDnbBR1gXo6tV2WutjmN4XF4qGLcKXNrQ9eTAhKaE5C9Z",
+      "firstSellSignature": "5RCdK6K9chkQf1eFjEro8nBjhEKSRMNo2sbZyQ4uDSujs9CHKCLmqM21SsS4UYZqUMyeQV6Th6SAgxUFDyvFZtJ4"
+    },
+    {
+      "mint": "CWi3yBRqyXdwdJN2VhpgpScF4TGoAzcgSTAbHcHZpump",
+      "symbol": "BP",
+      "entryIso": "2026-06-18T22:30:51.000Z",
+      "sourceFillMarketCapUsd": 2479.628141267747,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": -3.0519862004309375,
+      "firstSellMinutes": 0.45,
+      "currentMarketCapUsd": 1945.95,
+      "liquidityUsd": null,
+      "mfePct": 1.086004847355134,
+      "maePct": -34.38924052164346,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -3.0519862004309375,
+        "tp30Sell100": -3.0519862004309375,
+        "tp50Sell100": -3.0519862004309375,
+        "tp75Sell100": -3.0519862004309375,
+        "tp100Sell100": -3.0519862004309375,
+        "trailingCustom": -3.0519862004309375
+      },
+      "firstBuySignature": "3Qc1W2KeptQLJMoHib8Meuk9fDEKAYKJyHACDzwDnyQboL1toxFbsHgxFYk1fgy3Q3tBpHHeK6nCLYCzae4rHsfs",
+      "firstSellSignature": "2pHSxaeNQfYyHaM6gS4iipPMh7mE97wcdEEVgyEjfdRqM9tFHHbxvKXs4wE5WwCJdqAQ7fzqKjhDF5LjBATaXZde"
+    },
+    {
+      "mint": "9Buhdx73jYC7CFNr6xHhwH4gkJLX3TWFWYmo7Dbpump",
+      "symbol": "nigga ",
+      "entryIso": "2026-06-19T01:12:59.000Z",
+      "sourceFillMarketCapUsd": 2345.3584045032867,
+      "sourceBuySol": 6.00990674,
+      "sourceExitPct": 38.269141960097144,
+      "firstSellMinutes": 0.03333333333333333,
+      "currentMarketCapUsd": 1916.16,
+      "liquidityUsd": null,
+      "mfePct": 64.22323029642493,
+      "maePct": -20.36952383827005,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 1,
+        "tp50": 1,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 1,
+        "peakPct": 64.22323029642493,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 38.269141960097144,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 38.269141960097144,
+        "tp100Sell100": 38.269141960097144,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "4RVeZVWj3BQnqeVZLn7kgNvHyT6gdmvCMY1KDGu1XgJVexAjk5TCdDtjn7sSfpmYTBF3mHj1Lniw7Pepzvc2Cd7m",
+      "firstSellSignature": "2YmUPoo4Tk1H3fVBDFQkMowDd4pZchsGKwobrQimtkagCKXDS5J9thNCdz4kLrZ2ZPn9pFbwm9ic5tTcofL1PcD"
+    },
+    {
+      "mint": "3YiNLmY77pxPb2yihf6JJ3wW3X5yBkBYRD2uusKwpump",
+      "symbol": "dogwifihat",
+      "entryIso": "2026-06-18T22:11:18.000Z",
+      "sourceFillMarketCapUsd": 2312.459681822042,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": -17.16432833476978,
+      "firstSellMinutes": 1.1333333333333333,
+      "currentMarketCapUsd": 1947.06,
+      "liquidityUsd": null,
+      "mfePct": 3.805428443129625,
+      "maePct": -44.884170754149544,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -17.16432833476978,
+        "tp30Sell100": -17.16432833476978,
+        "tp50Sell100": -17.16432833476978,
+        "tp75Sell100": -17.16432833476978,
+        "tp100Sell100": -17.16432833476978,
+        "trailingCustom": -17.16432833476978
+      },
+      "firstBuySignature": "4Jm1AP5gTKqga5K6ovPWd11Mmh7eeF1RGXUpMBP1QC67qsHJNn5e3ngephAHtaB5GhuTNH3NzJKeDp81HmzGmhzE",
+      "firstSellSignature": "N8F7HVgWYeFDP489FVQXT3KdRfeyRdtYVD2vfpjsX2A5pQioVMkVsKudXuUNNtRumz3LzmVjzzFR3fy89NWbzdW"
+    },
+    {
+      "mint": "8NzQmyYgqPUe7LYwSZCkU8cPEtPoRdz2rnEANMnNpump",
+      "symbol": "SETOSHI",
+      "entryIso": "2026-06-18T17:52:56.000Z",
+      "sourceFillMarketCapUsd": 2214.787268647903,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": -2.115519070068224,
+      "firstSellMinutes": 15.366666666666667,
+      "currentMarketCapUsd": 1937.32,
+      "liquidityUsd": null,
+      "mfePct": 81.39168374097338,
+      "maePct": -30.51952201076542,
+      "hit": {
+        "tp30": true,
+        "tp50": true,
+        "tp75": true,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 4,
+        "tp50": 4,
+        "tp75": 64,
+        "tp100": null
+      },
+      "trailingExit": {
+        "roiPct": 25,
+        "timeSec": 4,
+        "peakPct": 58.833887909208826,
+        "floorPct": 25
+      },
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -2.115519070068224,
+        "tp30Sell100": 30,
+        "tp50Sell100": 50,
+        "tp75Sell100": 75,
+        "tp100Sell100": -2.115519070068224,
+        "trailingCustom": 25
+      },
+      "firstBuySignature": "5RPeSHboTodGwwAx9t983YLzMVMKWuP2uYRbReZFfkqYoYKbLJW6hBvXGiQBrGdSoS7R9Q7XzTCZjAGZxqre9i3V",
+      "firstSellSignature": "4RRmsCiRtwAGNkSpvxQr4wWiy4r9UD3gKzETMMwbLQTUJzT3mticP7MpsPCg7vvKNSPvq6e3jRHkkpRhvSg6wJkB"
+    },
+    {
+      "mint": "FYeKySVmimWdS5kcucWadPu22dmxHw1aBVSophTgpump",
+      "symbol": "HAMMY",
+      "entryIso": "2026-06-18T23:44:55.000Z",
+      "sourceFillMarketCapUsd": 2212.9166262751896,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": 4.687997547133918,
+      "firstSellMinutes": 0.15,
+      "currentMarketCapUsd": 1944.34,
+      "liquidityUsd": null,
+      "mfePct": 15.345671329154554,
+      "maePct": -36.77248719265475,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 4.687997547133918,
+        "tp30Sell100": 4.687997547133918,
+        "tp50Sell100": 4.687997547133918,
+        "tp75Sell100": 4.687997547133918,
+        "tp100Sell100": 4.687997547133918,
+        "trailingCustom": 4.687997547133918
+      },
+      "firstBuySignature": "3HRyZYdnS33i4RnuYEkXhpV512u2Zw7LPaTcsLj7c19KLT24DNc3iLKWYrMd8z8izwnNbrJByK8GdVoq4q9LXt7W",
+      "firstSellSignature": "43zMHQ6P4grAq57C19k886VDkA5x9RJKx4jcUmGWWvRj5zo36H6wQRRhHgDg29vuB8dRnFZPShiUiwafqoayta8t"
+    },
+    {
+      "mint": "AcWexgdVWvcDRMxRa7cKodFkMXekSGrWUd4veKaXpump",
+      "symbol": "Bartholom",
+      "entryIso": "2026-06-18T18:43:58.000Z",
+      "sourceFillMarketCapUsd": 2179.1130391178353,
+      "sourceBuySol": 3.00752964,
+      "sourceExitPct": 20.15052290556978,
+      "firstSellMinutes": 0.05,
+      "currentMarketCapUsd": 1919.94,
+      "liquidityUsd": null,
+      "mfePct": 0,
+      "maePct": -34.58707693234213,
+      "hit": {
+        "tp30": false,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": null,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": 20.15052290556978,
+        "tp30Sell100": 20.15052290556978,
+        "tp50Sell100": 20.15052290556978,
+        "tp75Sell100": 20.15052290556978,
+        "tp100Sell100": 20.15052290556978,
+        "trailingCustom": 20.15052290556978
+      },
+      "firstBuySignature": "4EuBAFSuQxKhQwo5QgtMnbqbET1QasfHY1YnBCaY3G6FEaVqscye83xWCZDJaLzmUZWJ7qTnTmcLnVCyyDQFhFaP",
+      "firstSellSignature": "4JsWYxaw5YZpMcpV8LiXdepwGLKwMMPsjP1mEBUiviSwov5Mo1woVwaucGTQno1WfxMHzn7dPJdkw84LGqmAVXpv"
+    },
+    {
+      "mint": "96Udi6sMN34yxuCWBfXjru8vgNgFEGxrsS8QQqghpump",
+      "symbol": "CompCoin",
+      "entryIso": "2026-06-19T03:16:24.000Z",
+      "sourceFillMarketCapUsd": 2173.480532183112,
+      "sourceBuySol": 3.00727908,
+      "sourceExitPct": -2.296752204554259,
+      "firstSellMinutes": 9.066666666666666,
+      "currentMarketCapUsd": 2032.59,
+      "liquidityUsd": null,
+      "mfePct": 31.97631154873703,
+      "maePct": -33.576689464812794,
+      "hit": {
+        "tp30": true,
+        "tp50": false,
+        "tp75": false,
+        "tp100": false
+      },
+      "hitTimeSec": {
+        "tp30": 156,
+        "tp50": null,
+        "tp75": null,
+        "tp100": null
+      },
+      "trailingExit": null,
+      "strategyReturns": {
+        "mirrorCyaFirstSell": -2.296752204554259,
+        "tp30Sell100": 30,
+        "tp50Sell100": -2.296752204554259,
+        "tp75Sell100": -2.296752204554259,
+        "tp100Sell100": -2.296752204554259,
+        "trailingCustom": -2.296752204554259
+      },
+      "firstBuySignature": "2a8aDZsny5H38jMnyXrU2xtvqG9gZNmRcVfx9U931f8Sk2aQif3Kkaonafd4Mz5Un43wQjXB7nRWqPKh6nzdmp9M",
+      "firstSellSignature": "3XNwjQGLdcz9wcEyLU9yVVhg4h12Y6PfDW2dkVJ7JhJa8L7cFVUSYybqexLGkM4dXBjMPURp98BK2hEvFecwFZkV"
+    }
+  ],
+  "skips": [
+    {
+      "mint": "5p1qSPt31tsZaJiL28e4Hpg4UkFEWjD6qFnTQxikpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:HSUP2i...kjMU no entry/path candles"
+    },
+    {
+      "mint": "Dr8ZFDZPct84VyNCi4CykGHxSQTZMNhMDeELdBpBpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:JE6KW6...zEEE no entry/path candles"
+    },
+    {
+      "mint": "DaTC7XFxywG96hdfQUFqJkU5gQJW5EhZ3Wtygxhwpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:6JpSGr...sSM1 no entry/path candles"
+    },
+    {
+      "mint": "LdrVtN3N1totzn4A9NYaiGg6r9mS6mAXHYAqNj5pump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:FpY9bG...AidJ no entry/path candles"
+    },
+    {
+      "mint": "3exjVQeLNrNzMzcMzes88BnhmDJWgVgi7bimKRHYpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:8Sv4JN...yZPR no entry/path candles"
+    },
+    {
+      "mint": "CoEBgLbpMf127dLFgkCTNQMwK5DV4NzZzSDc44nmpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:BGT19Z...awAB no entry/path candles"
+    },
+    {
+      "mint": "6D6MwxBpkQLbExTLUfDXzSYSEK8SMiBZ4yYNRQcQpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:2FkLp3...D5X2 no entry/path candles"
+    },
+    {
+      "mint": "CUkE1KdMmpa4XyeM8TM63yrMmgfMSphn1YQfaa8upump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:ACz2K6...WH7o no entry/path candles"
+    },
+    {
+      "mint": "3UJebNZAQ28RJV92hgdfRzMrkUQ6d92kFoby1XQ9pump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:CDndNN...jCYB no entry/path candles"
+    },
+    {
+      "mint": "BV8a6aA8yLoyi2TzBfof8UseaFdHjyjQvSBtWEfxpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:EC7CgZ...cBT9 no entry/path candles"
+    },
+    {
+      "mint": "vv1dX6iv1KCLf7aQRpVdK2RcLSiQAumCsmpQoPKpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:DcoT7b...TfHM no entry/path candles"
+    },
+    {
+      "mint": "4syAGdbzpDKigdCqBcH248RTsGejtQ8vCZwD78RApump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:8CgmRe...uWxW no entry/path candles"
+    },
+    {
+      "mint": "BgFQgCuSUJYYT5birFDBibn2t4d8gkk4jmjqkdNrpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:k9JNMT...c7iD no entry/path candles"
+    },
+    {
+      "mint": "DobFUyijdgy9qKsMWmd5pmNVxvzZVRXGP3G5XwU4pump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:9iHv5t...tnwU no entry/path candles"
+    },
+    {
+      "mint": "GWf6p9yNk6NDobKGiXxckr8vYA3sUsQe6t2VzVE7pump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:8FfLGu...LdFc no entry/path candles"
+    },
+    {
+      "mint": "8qFu6CWK8VCpUVfE512SazKQUx8XN94ZkthQ1Jn1pump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:EEWXBG...Ag9g no entry/path candles"
+    },
+    {
+      "mint": "DPcF94jW5gVoh82qFQthdB1U485zLfrXczL7xuXcpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:Gt7SnA...M76B no entry/path candles"
+    },
+    {
+      "mint": "z6f6N5cz4F1w5qtDmdNvnKKfucwGXjqtZ4SrXW7pump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:9Nw9b3...b7ir no entry/path candles"
+    },
+    {
+      "mint": "CFD53679KaeSWABnKkrK75p1EY47MypGniNkNKvBpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:5RXCEe...88i2 no entry/path candles"
+    },
+    {
+      "mint": "3GED5d54BEVfsNzcihkDeKNhyfNjav2TJw4rKmsFpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:GD6pQA...TGTu no entry/path candles"
+    },
+    {
+      "mint": "82NuJqjNB7HUNKfTZshCrqvGDLM7wxn4UDzj9BX2pump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:EGcdjT...k2Ft no entry/path candles"
+    },
+    {
+      "mint": "57cjURSuvtb4QWiqum42ANLpiSWTpcWRhmcnhjfRpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:AjJxYQ...63cq no entry/path candles"
+    },
+    {
+      "mint": "uVhhVQTq1fGEqB7U5fTBxMjJz6T6MpyVDy1oCSfpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:BXqmWJ...8qDB no entry/path candles"
+    },
+    {
+      "mint": "7W6o7PuHHYHMsTcarhM2Z15ZqpK8EMcQ3AcsEUKppump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:BeG49U...K7cP no entry/path candles"
+    },
+    {
+      "mint": "AgzpUqiozWUziJJyH4TKbDGQXv1uYE8wbiQzc8bbpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:Gboxud...cmMd no entry/path candles"
+    },
+    {
+      "mint": "8JorxjS9zys2ygjRfm3M7X6AykWeiLLKroC9XCVLpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:BUUU8w...pW4p no entry/path candles"
+    },
+    {
+      "mint": "BrPntEYQTxuyq9xatBVajdivphhWqaWExsseTWqZpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:4Bp9jB...DoPg no entry/path candles"
+    },
+    {
+      "mint": "6sLLyfLKy7U6mEFhdMDrN1Py5j6haay2PE8ZjRkhpump",
+      "reason": "missing entry/path candles across 2 pair(s): pumpswap:788Th7...T2Xx no entry/path candles; pumpfun:Hah72t...g63y no entry/path candles"
+    },
+    {
+      "mint": "EeAS1VpNxACLr7w3aBU7cqzXJT1aZHMvcoEPVrhVpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:4SfVpe...6r7u no entry/path candles"
+    },
+    {
+      "mint": "GAeFsj1KPGoZXUdjqTS3hzoCLKcASuiorfbDDSFepump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:BdMzCU...NmZs no entry/path candles"
+    },
+    {
+      "mint": "EPnQ9euccXuMMLPWcDVdVfG38jrWrWpmzzY5ZD33pump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:y4p6qB...rWt9 no entry/path candles"
+    },
+    {
+      "mint": "3BeiuS6UdFXqCiiQy5xaedQiBJWosdAPECqTBe8Apump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:4XtNPY...GnBF no entry/path candles"
+    },
+    {
+      "mint": "BV8chQEhtVbWUbtkR41AA9f16khJFGvuYqSHqwVppump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:FW6fBq...2pxD no entry/path candles"
+    },
+    {
+      "mint": "Ag7EKaVRQntM1Efnm9qvoVeTdAZ3PWAWPD1feFugpump",
+      "reason": "missing entry/path candles across 1 pair(s): unknown:ft3evq...x3oN no entry/path candles"
+    },
+    {
+      "mint": "FTcLTVyQXmYK4PH74URxnL5xuBpTyA1QKRkcBmqupump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:DVd1aJ...EsWf no entry/path candles"
+    },
+    {
+      "mint": "4TCdNZSTdVFx9YbsYK7HgHzyRJ8bBcDT2xgQEVkfpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:6vTW3s...gysS no entry/path candles"
+    },
+    {
+      "mint": "5dbodviC7t7HKiPfbyA9gWVCUFypihTmN4q4Y9Txpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:8gM8Pt...bmgn no entry/path candles"
+    },
+    {
+      "mint": "EiVuRsRxnZh2CTV8pgWwWn3JpvpKktBFCk5b4EqFpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:8i8V1y...TjZH no entry/path candles"
+    },
+    {
+      "mint": "29Bhih4PhiMkq6PnbS9NDQstc8n2AXBxCm38uh9Xpump",
+      "reason": "missing entry/path candles across 4 pair(s): pumpswap:4nfU7d...tmXV no entry/path candles; meteora:Dy1ZzB...QmK4 no entry/path candles; meteora:5yYyik...w3qy no entry/path candles; pumpfun:AhuXBv...jsu3 no entry/path candles"
+    },
+    {
+      "mint": "F1ygN2oW2c9J8iRU69rqcPyGb5p4fYeCheah9ooxpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:7CPZwb...uSvK no entry/path candles"
+    },
+    {
+      "mint": "6xRmpSbe39MjaRVDBFNVs5zwT68YwNzPnCW9ArVKpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:DqKvxj...1sAk no entry/path candles"
+    },
+    {
+      "mint": "24gh4DALbHM2fsasuvN3niAV6zKCLYYRGHAHnyngpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:BdwTZK...SB9i no entry/path candles"
+    },
+    {
+      "mint": "DmXdDzAdimiUU2jW33uTN5R56qL8gZufUeXYQWSspump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:2UJocm...MbMi no entry/path candles"
+    },
+    {
+      "mint": "34ptBJApqrxYpomTAR9nDVZK8fUP6Nw3AYjaMzWFpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:AgYFor...hz3a no entry/path candles"
+    },
+    {
+      "mint": "4odydzcDCxrg61ReHEm9fzBXhemzK5iUnSAERzB2pump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:3pXn9f...fDaG no entry/path candles"
+    },
+    {
+      "mint": "BtKrmqB6tLh9Foj33sQ13TRGnQn5siVFDzWgB11Rpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:7qTd4z...YGk2 no entry/path candles"
+    },
+    {
+      "mint": "2rCeo4zYeCkZdBmGYdv1vzosa7tapLXt9R7op6Lupump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:Cd46u4...dZGC no entry/path candles"
+    },
+    {
+      "mint": "3RD5Rqg87fZHC1bNwBquxtXnGtsH7PrxeyE1EmQGpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:Enr3Ee...U6RW no entry/path candles"
+    },
+    {
+      "mint": "95oLHJhKdAQK2rD8GWcyoBeNkfAS3Mx9CgW46qaxpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:AL1rTL...NwYZ no entry/path candles"
+    },
+    {
+      "mint": "Nn1eM2aRiP6LCmBVnSPiB37mytdDUfiwnqEBg4rpump",
+      "reason": "missing entry/path candles across 2 pair(s): pumpswap:2tToJM...iWmJ no entry/path candles; pumpfun:6AvmRP...ErxC no entry/path candles"
+    },
+    {
+      "mint": "5bwLWaHzNVLAixphH4RZNqwk8BFA3DtpZ7RPH6hQpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:9BZJ3v...gx7s no entry/path candles"
+    },
+    {
+      "mint": "BjNeR45hio5JGBwXG5B9wpHie4eppsLQzU4UKoMfpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:DjMisQ...U7xb no entry/path candles"
+    },
+    {
+      "mint": "ETtABB3uDgZonCLohMv87zD1DQ74w1en2XEGMwNtpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:7zdGwv...7YfL no entry/path candles"
+    },
+    {
+      "mint": "Bamt4N21V4CkFVwgSPBeaRjwFJuhnedQup1aaTfNpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:4dxrTw...Hvky no entry/path candles"
+    },
+    {
+      "mint": "26yd9xJViHGEwoGApz2R6k5NPhKS6DFATrgtKUBLpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:AN6fy3...Z6TT no entry/path candles"
+    },
+    {
+      "mint": "9AreqeKAwZNtMjeTFe7rGEyeNDYEeqiSf7nFYPGupump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:2Z2sTq...gCjk no entry/path candles"
+    },
+    {
+      "mint": "6LLpcG3LWLNrNJTSDhZRBY3Sj8DfJZT7KBGUwB3apump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:9EmtDj...AN7J no entry/path candles"
+    },
+    {
+      "mint": "6bZKdLxmc6PKnWakoJzd9NUFwEG1kYazN7eduSRZpump",
+      "reason": "missing entry/path candles across 3 pair(s): pumpswap:ENgMTt...sPZD no entry/path candles; meteora:H6RSkY...hAj3 no entry/path candles; pumpfun:54bi6W...JbAa no entry/path candles"
+    },
+    {
+      "mint": "7eLYwhsZvT1HxXk1HGQsT172Jt7fpBfrdHBvd7Copump",
+      "reason": "missing entry/path candles across 2 pair(s): meteora:5e1Qbw...cWFB no entry/path candles; pumpfun:5wzKjb...C3NA no entry/path candles"
+    },
+    {
+      "mint": "A1srGG2jZFyzT79ksrdZKrz3xFNzA2ckb9FncmtWpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:4eyEHL...28g5 no entry/path candles"
+    },
+    {
+      "mint": "EXDG691BR6wFReA3WMMLJbymepP3i92M8nChYYvkpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "8gZW1YKbvr3PPotg7TCKyvVTxCrC63KvAqdh3U2Xpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:wVH9V6...xSEr no entry/path candles"
+    },
+    {
+      "mint": "DFAM6QtnmJQ5Fhdpw3dG1ejVG7f7oR3FCbmgZF8Ppump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "AX37eZaewUtzK4MHLttJQ8cM8e4joGZf4hLuRVQvpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "Gbukm14gjx2djtXQJLV8qUcjaDJTpRNj3RqfZdxgpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "Fr4NgnVvLchW6HXvDiHPizZD7XJi2Q7rJzEFcmq3pump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "8NThYFr7i6iM8tYtoUrCMXju5DvJwh1ax2NaGsFmpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:87DN39...eWx1 no entry/path candles"
+    },
+    {
+      "mint": "FLgDJahvEjeCfUvS2WR2rTZVaopFU3AdFcmEGmkgpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "DAefoyCcpvpHUvrrAe6TU4EtEZs27sF7zDRxcKm4pump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "FPWLCBgr2Ph2AWCUNecs1gMQuaNg4fVif8TmqJDPpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "EjzQAbosVLWuAiw1RkAmasy3bHLaJPWuw3yN9vyzpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "7ewT8caGwfSqrFkHgH7QwLFuLT8NoMSGScGZkLmypump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:3eWNpL...s53H no entry/path candles"
+    },
+    {
+      "mint": "3qKGbyuSSdHYt2zrmi9H5rUwpCEyJ1u9HjYzg149pump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "fMvshNNKwXczu1nnAC7yLdML2PGuSUpVAhRwkZgpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:6KtjSe...BTQk no entry/path candles"
+    },
+    {
+      "mint": "4SfonyukbLKb6nWnziGE5DyEKXsM5QvTw7TXXrMBpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:3RqJyM...tCY1 no entry/path candles"
+    },
+    {
+      "mint": "2u1qpe5ZafJLLcinJUXfsoTrSoahtDVLuYZqNxphpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "9UH6f8mbhLUtR1N29rAgGYGe8vZwFLpTYcawP3Uypump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "ED6gaTMG4z7AN8vrz6C32oK4CUD17wHQJiKpmfZtpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "7KLNscEK8Vv6EktAhwrcYAfDUuzSUNNZeXToDGwWpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "Gy5FHpi8pi22t7Pxf4FVy8Baa8zfzZMgMq29PFLZpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "7c2seafNebr5AQWXB66RcGcnwM4Y7ZT3DSj4Kuhvpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "5cvEH5ZFD4ofVrALJmTujL2rymCKNvyqjLPSewuCpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:GFR8Lo...1GhU no entry/path candles"
+    },
+    {
+      "mint": "BQEWGkFWZFAJE31YKn6AKYSKVV1biPZj8GxrbBKypump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "4DkdxahsbtD2Z4V1Gu9ojyKu3Fm1LvLWjSvePAd2pump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "Fzqa8LKsnERCqcrrDHSapwceZYmfwR6UPrb548Cfpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "HKCZgMMDNhUAP8VfJPpGPbL26sRSoKPo9v8q4Cmapump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "9eC27ded6DQi4cneBHb7AwbXjUuqhXFjZ2r94QR4pump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:epjyrQ...5qMz no entry/path candles"
+    },
+    {
+      "mint": "GFW2z6DGZgKW5otWDW9pkUQhYN7eYtThn98sCb6ppump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "4obREZunW2pGxnnCxEH15dypACFQsSgQ6TR4CY6spump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "59oVo7iPJYp1qQbGogTFuf9qiSU45N3BHfP4WFfSpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "FTmneFJSajUzL6RRvbmsQvXW26bUERbikF78jJqqpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "iaGJA8Yg2KS4Cf9JirGzXXn6pPBfVoDrSrFHXkspump",
+      "reason": "missing entry/path candles across 2 pair(s): pumpswap:BUACYU...PSWY no entry/path candles; meteora:EEDUJU...BSSP no entry/path candles"
+    },
+    {
+      "mint": "XVZ5i1VNDtSgc6Bksy8vHZoBncNx8sgyACGyqkSpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpswap:CHGFFD...RRtg no entry/path candles"
+    },
+    {
+      "mint": "35p9qXnK1eiw3S2qaN8u8s19PKx3aphYrv4EYSPrpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "CbSNfFc8yhR1MitjTMgXQERgXkXYmepojyYArZPepump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "6VCRczotz9NoDnQ4RiCsK3FRX7GHxMJVW2wWbVbepump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "BhQRqWoSV9srYjxvmiKRJpef1xFriRQ7purrT39mpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "2a3LXGWTW2AqCUBRenCQ1B2XvXf7ZXhPR3AvJjSXpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "Hv7ASMuwdXVPWSjBa4WfeHLjtZMYotbzrJ4nyvyzpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "GCfhLnFfcnnFz1sS3uH7i3DjucHMHsrxqpiFBgdCpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "CBMctAPJiwuZfFmfhfBEZeh2aDGuzQREmbampLVZpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "G4nJ8psjvB1AuVFiHeWsTGmGzrV2gEEfNMN45M5vpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpswap:A4DwCb...B1pE no entry/path candles"
+    },
+    {
+      "mint": "GZsQVVfyMX1WFfkUVWC1Se4B3tqPgiEVMurermEjpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "DpV4GLCbe3c9jw2rkYXLry2yVo3ZxcHakSVZ9a89pump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "7NTmUi7rFfDwt89R8kx47dCaQhM2Yd13Nty5fLFNpump",
+      "reason": "no DexScreener/Gecko pair"
+    },
+    {
+      "mint": "GXB3aNL2ABERkqg8jDkGFnbtuZd2ohnk3fC7sqDZpump",
+      "reason": "missing entry/path candles across 1 pair(s): pumpfun:4LEgsQ...FGsK no entry/path candles"
+    },
+    {
+      "mint": "FsuyCcqRBhgMY78ECxqCQ4wYyyRhW1GavuLmLhyFpump",
+      "reason": "no DexScreener/Gecko pair"
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "wallet": "GaYjpVLZ1ViQy9fK2PFVJu9t9jXLUF8YEJ71cNRTaXNo",
+  "txs": 2330,
+  "classified": 2224,
+  "unclassifiedWithToken": 14,
+  "positions": 248,
+  "solUsd": 72.67,
+  "realizedPnlSol": -2.3072253436377648,
+  "realizedPnlUsd": -167.66606572215636,
+  "realizedRoiPct": -1.9578049735005039,
+  "unrealizedPnlSol": -0.6449000704150305,
+  "unrealizedPnlUsd": -46.86488811706027,
+  "combinedPnlSol": -2.9521254140527953,
+  "combinedPnlUsd": -214.53095383921664,
+  "realizedTrades": 1011,
+  "winRatePct": 31.55291790306627,
+  "avgRoiPct": -3.127567301936273,
+  "medianRoiPct": -4.483498006015667,
+  "profitFactor": 0.7464655013155199,
+  "sharpeProxy": -0.15433085138264352,
+  "maxDrawdownSol": -3.316702394487566,
+  "largestWinSol": 0.677916135,
+  "largestLossSol": -0.781151676,
+  "nativeNetSol": 13.443812492,
+  "wsolNetSol": 0,
+  "usdcNet": 0,
+  "topOpen": [
+    {
+      "mint": "7GjyNrjq6DX8KdNUndb5Dimkqo6vpqX4LHaLK7xppump",
+      "symbol": "CROFT",
+      "heldRaw": 1499483515134,
+      "valueSol": 0.262260018,
+      "valueUsd": 19.05843547735314
+    },
+    {
+      "mint": "8ESs6WnDYgV9eodF8JpyNrrdQuuvNZrBK9tctnfypump",
+      "symbol": "GHOST",
+      "heldRaw": 599797292371,
+      "valueSol": 0.168128125,
+      "valueUsd": 12.21787084559727
+    },
+    {
+      "mint": "H82sDBZNC56obAjMV6Js8iRESb6zrR1UGE217kU5pump",
+      "symbol": "Martha",
+      "heldRaw": 619850504451,
+      "valueSol": 0.157031069,
+      "valueUsd": 11.411447786942912
+    },
+    {
+      "mint": "HKBFkmdMt2ZgdwtS27ojrp1a79o4cWAWxueMB8FZpump",
+      "symbol": "SimVerse",
+      "heldRaw": 599531218250,
+      "valueSol": 0.1451184,
+      "valueUsd": 10.5457541290175
+    },
+    {
+      "mint": "C6pX9eVkAPRHbw1PARzmnH9ychCxbFccBHW9hxs1pump",
+      "symbol": "MINORI",
+      "heldRaw": 799277338239,
+      "valueSol": 0.134514405,
+      "valueUsd": 9.77516184666297
+    },
+    {
+      "mint": "8HTgYxA2BduumkagdHDMCunKF4fDPCr6CkYF9Aohpump",
+      "symbol": "SP",
+      "heldRaw": 940276159486,
+      "valueSol": 0.122286363,
+      "valueUsd": 8.886549983302185
+    },
+    {
+      "mint": "3vVxL1Q19FeJuAmdGRcgQvyH8yDFDaMS57ru5kPspump",
+      "symbol": "GOAL",
+      "heldRaw": 897483469222,
+      "valueSol": 0.077274722,
+      "valueUsd": 5.615554066922054
+    },
+    {
+      "mint": "FkQnbEexG353EdJnaNgXvubyZaPWR42r4x1WUjvxpump",
+      "symbol": "BROOKE",
+      "heldRaw": 753937629417,
+      "valueSol": 0.072551064,
+      "valueUsd": 5.272285842513081
+    },
+    {
+      "mint": "GB7mAJeCiSzZUt9stWh75TihRF2wWURWK46RK15kE1ob",
+      "symbol": "滑る猫",
+      "heldRaw": 1387552068236,
+      "valueSol": 0.070036342,
+      "valueUsd": 5.089540986289648
+    },
+    {
+      "mint": "3tjZY8nfDM6xVCgErCfn9p49PPLFYSxfWhq8695opump",
+      "symbol": "GymShow",
+      "heldRaw": 1559532531732,
+      "valueSol": 0.068244302,
+      "valueUsd": 4.95931345090776
+    }
+  ]
+}

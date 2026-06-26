@@ -2850,7 +2850,8 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       rustExecutorEnabled &&
       (executionPlan.route === "pumpfun-bonding-curve" ||
         executionPlan.route === "pumpfun-v2-token2022" ||
-        executionPlan.route === "pumpswap-graduated");
+        executionPlan.route === "pumpswap-graduated" ||
+        executionPlan.route === "raydium-cpmm");
     if (useBagsDirectLane) {
       console.log(
         `BAGS direct lane: allowing ${mint.slice(0, 8)}... through Jupiter/Sender ` +
@@ -4265,6 +4266,7 @@ async function sellLivePosition(
       `$${p.symbol}: verified wallet balance is 0; historical buy transactions will not be used as sell inventory.`
     );
   }
+  const isSourceHoldExit = effectiveNote?.startsWith("Source-hold exit:") ?? false;
   // Chain authoritatively says we hold 0 (read succeeded, value was 0). Typical causes: transfer-fee /
   // honeypot mechanics drained the ATA, or an earlier sell landed but timed out before we recorded it.
   // Falling back to the tracked amount here is what was burning gas on every 15s risk-exit retry —
@@ -4285,7 +4287,7 @@ async function sellLivePosition(
       );
       return;
     }
-    if (hasFastBuyLocalCloseGuard(p.mint)) {
+    if (!isSourceHoldExit && hasFastBuyLocalCloseGuard(p.mint)) {
       console.warn(
         `$${p.symbol}: wallet holds 0 on-chain during recent fast-buy settle guard; ` +
           "leaving optimistic position open instead of closing locally."
@@ -4304,7 +4306,6 @@ async function sellLivePosition(
     cleanupHybridExitStateIfClosed(snap);
     return;
   }
-  const isSourceHoldExit = effectiveNote?.startsWith("Source-hold exit:") ?? false;
   const isFullExitIntent = amountRawOverride == null;
   const fullExitRemainderIntent: PostSellRemainderIntent | null = isFullExitIntent
     ? {
@@ -5767,3 +5768,4 @@ export function getBotState(): BotState {
     totals: getTotals(),
   };
 }
+
