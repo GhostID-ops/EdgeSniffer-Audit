@@ -828,7 +828,7 @@ export async function executeRustPumpFunSell(args: RustPumpFunSellArgs): Promise
   });
 }
 
-export function releaseRustBoughtMint(mint: string, reason: string): void {
+export function releaseRustBoughtMint(mint: string, reason: string, sourceSignature?: string): void {
   if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) return;
   const id = `rust-release-${Date.now()}-${++executorSeq}`;
   const command = {
@@ -836,6 +836,7 @@ export function releaseRustBoughtMint(mint: string, reason: string): void {
     id,
     mint,
     reason,
+    sourceSignature,
   };
   executorStdin.write(`${JSON.stringify(command)}\n`);
 }

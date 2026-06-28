@@ -300,6 +300,7 @@ pub struct ReleaseBoughtMintCommand {
     pub id: String,
     pub mint: String,
     pub reason: Option<String>,
+    pub source_signature: Option<String>,
 }
 
 #[derive(Clone)]
@@ -775,6 +776,10 @@ async fn handle_line(
         }
         Ok(ExecutorCommand::ReleaseBoughtMint(cmd)) => {
             release_executor_mint(shared_bought_mints.as_ref(), &cmd.mint);
+            release_executor_signature(
+                shared_bought_signatures.as_ref(),
+                cmd.source_signature.as_deref(),
+            );
             let route = cmd
                 .reason
                 .as_ref()

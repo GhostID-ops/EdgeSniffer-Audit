@@ -1621,6 +1621,78 @@ function holdBuyOnceMintAfterBroadcastUncertainty(mint: string, reason: string):
   );
 }
 
+async function releaseDroppedBuyAfterZeroInventory(args: {
+  mint: string;
+  tokenAmountRaw: number;
+  solLamports: number;
+  reason: string;
+  signature?: string;
+  sourceSignature?: string;
+  sourceSwap?: DetectedSwap;
+  kp?: Keypair;
+  retryOnce?: boolean;
+  label: string;
+}): Promise<boolean> {
+  if (!keypair || simulationMode) return false;
+  const liveRaw = await getVerifiedTokenBalance(keypair.publicKey, args.mint, {
+    expectedRaw: args.tokenAmountRaw,
+    ownerLabel: "wallet",
+  });
+  if (liveRaw > 0) {
+    console.warn(
+      `${args.label} for ${args.mint.slice(0, 8)}... timed out, but wallet now holds ` +
+        `${liveRaw} raw token(s); keeping optimistic buy locked.`
+    );
+    return false;
+  }
+
+  const removed = unrecordBuy(args.mint, args.tokenAmountRaw, args.solLamports);
+  if (removed) noteLocalSolCredit(args.solLamports);
+  mirrorBuySignatureByMint.delete(args.mint);
+  clearFastBuyConfirmationPending(args.mint, args.signature);
+  confirmedFastBuyTokensByMint.delete(args.mint);
+  rustHotBuyRecordedByMint.delete(args.mint);
+  rustHotSniperPrimaryPendingMints.delete(args.mint);
+  pendingBuyRetryByMint.delete(args.mint);
+  fastBuyConfirmRetryScheduledByMint.delete(args.mint);
+  failedBuyRecoveryInFlightMints.delete(args.mint);
+  quarantinedBuyMints.delete(args.mint);
+  boughtMintsThisSession.delete(args.mint);
+  liveBuyAttemptedMintsThisSession.delete(args.mint);
+  releasePersistentBuyLock(args.mint);
+  releaseRustBoughtMint(
+    args.mint,
+    `zero wallet inventory after dropped buy: ${args.reason}`,
+    args.sourceSignature ?? args.sourceSwap?.signature
+  );
+
+  console.warn(
+    `${args.label} for ${args.mint.slice(0, 8)}... timed out and wallet inventory is still 0; ` +
+      "cleared optimistic buy/quarantine so this mint can be retried."
+  );
+
+  if (
+    args.retryOnce &&
+    args.sourceSwap &&
+    args.kp &&
+    (args.sourceSwap.buyRecoveryAttempt ?? 0) < 1 &&
+    !stopRequested
+  ) {
+    const retrySwap = {
+      ...args.sourceSwap,
+      buyRecoveryAttempt: (args.sourceSwap.buyRecoveryAttempt ?? 0) + 1,
+    };
+    setTimeout(() => {
+      if (stopRequested || quarantinedBuyMints.has(args.mint)) return;
+      processSwap(retrySwap, args.kp!).catch((err) => {
+        console.error("Zero-inventory buy retry failed:", err);
+      });
+    }, 0);
+  }
+
+  return true;
+}
+
 function isPumpFunAccountLayoutFailure(reason: string): boolean {
   const category = classifyExecutionError(reason).category;
   return (
@@ -1896,7 +1968,7 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
       }
       clearFastBuyConfirmationPendingSoon(hotBuy.mint, hotBuy.signature);
     })
-    .catch((err) => {
+    .catch(async (err) => {
       const reason = err instanceof Error ? err.message : String(err);
       recordExecutionTelemetrySync({
         kind: "stage:confirm",
@@ -1918,6 +1990,19 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
         // Status absence is not proof of failure. A Sender/Jito transaction may
         // land after this read RPC's status window. Keep its costed lot until
         // wallet/transaction reconciliation proves otherwise.
+        const released = await releaseDroppedBuyAfterZeroInventory({
+          mint: hotBuy.mint,
+          tokenAmountRaw: hotBuy.tokensOutRaw,
+          solLamports: hotBuy.solInLamports,
+          reason,
+          signature: hotBuy.signature,
+          sourceSignature: hotBuy.sourceSignature,
+          sourceSwap,
+          kp,
+          retryOnce: true,
+          label: "Rust hot buy confirmation",
+        });
+        if (released) return;
         clearFastBuyConfirmationPending(hotBuy.mint, hotBuy.signature);
         rustHotSniperPrimaryPendingMints.delete(hotBuy.mint);
         console.warn(
@@ -3227,6 +3312,19 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
           // later gets dust-sold, and the rescue can double-buy. Retain the optimistic
           // lot instead and let wallet reconciliation correct it if it truly failed.
           // This mirrors the Rust hot-sniper background-confirm handler.
+          void releaseDroppedBuyAfterZeroInventory({
+            mint,
+            tokenAmountRaw,
+            solLamports,
+            reason,
+            sourceSwap,
+            kp,
+            retryOnce: true,
+            label: "Fast buy confirmation",
+          }).catch((err) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.warn(`Zero-inventory buy release failed for ${mint.slice(0, 8)}...: ${msg}`);
+          });
           pendingBuyRetryByMint.delete(mint);
           fastBuyConfirmRetryScheduledByMint.delete(mint);
           if (buyOncePerTokenEnabled) {
