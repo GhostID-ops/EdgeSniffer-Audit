@@ -78,11 +78,15 @@ import {
   clusterConfirmWindowMs,
   clusterNoConfirmTrailingSteps,
   pumpfunDirectEnabled,
+  pumpSwapDirectBuyEnabled,
+  pumpSwapDirectPreflight,
+  jupiterFallbackEnabled,
   shyftGrpcEnabled,
   shyftRabbitStreamEnabled,
   rustSidecarEnabled,
   rustExecutorEnabled,
   rustOnlyBuys,
+  rustOnlySells,
   rustHotSniperEnabled,
   rustHotSniperPrimary,
   rustHotSniperPrimaryFallbackEnabled,
@@ -3901,6 +3905,23 @@ export async function startBot(): Promise<void> {
       trackedWallets.length,
       "wallet(s); no transactions will be sent."
     );
+  }
+
+  if (!simulationMode) {
+    const hotPathWarnings: string[] = [];
+    if (shadowExecutionMode) hotPathWarnings.push("SHADOW_EXECUTION_MODE is ON");
+    if (pumpSwapDirectPreflight) hotPathWarnings.push("PUMPSWAP_DIRECT_PREFLIGHT is ON");
+    if (!pumpSwapDirectBuyEnabled) hotPathWarnings.push("PUMPSWAP_DIRECT_BUY_ENABLED is OFF");
+    if (jupiterFallbackEnabled) hotPathWarnings.push("JUPITER_FALLBACK_ENABLED is ON");
+    if (!rustOnlyBuys) hotPathWarnings.push("RUST_ONLY_BUYS is OFF");
+    if (!rustOnlySells) hotPathWarnings.push("RUST_ONLY_SELLS is OFF");
+    if (hotPathWarnings.length > 0) {
+      console.warn(
+        "Live hot-path warning: " +
+          hotPathWarnings.join("; ") +
+          ". Expected CyA live-test posture is Rust-only buys/sells, PumpSwap preflight off, Jupiter fallback off."
+      );
+    }
   }
 
   if (riskControlsEnabled) {

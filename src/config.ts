@@ -260,7 +260,7 @@ export const pumpSwapDirectMinOutBps = Math.max(
   0,
   Math.min(10_000, parseInt(process.env.PUMPSWAP_DIRECT_MIN_OUT_BPS ?? "1", 10))
 );
-const PUMPSWAP_DIRECT_PREFLIGHT_RAW = (process.env.PUMPSWAP_DIRECT_PREFLIGHT ?? "true").toLowerCase();
+const PUMPSWAP_DIRECT_PREFLIGHT_RAW = (process.env.PUMPSWAP_DIRECT_PREFLIGHT ?? "false").toLowerCase();
 export const pumpSwapDirectPreflight =
   PUMPSWAP_DIRECT_PREFLIGHT_RAW !== "false" &&
   PUMPSWAP_DIRECT_PREFLIGHT_RAW !== "0" &&

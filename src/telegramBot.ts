@@ -161,6 +161,14 @@ class TelegramBotHandler {
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
+        if (/conflict: terminated by other getupdates request/i.test(msg)) {
+          console.warn(
+            "Telegram command polling disabled: another bot instance is already using getUpdates for this token."
+          );
+          this.enabled = false;
+          this.releasePollingLock();
+          break;
+        }
         console.warn(`Telegram polling error: ${msg}`);
         await this.sleep(POLL_RETRY_MS);
       }
@@ -184,8 +192,8 @@ class TelegramBotHandler {
       description?: string;
     };
 
-    if (!data.ok) {
-      throw new Error(data.description ?? "getUpdates failed");
+    if (!response.ok || !data.ok) {
+      throw new Error(data.description ?? `getUpdates failed with HTTP ${response.status}`);
     }
 
     return data.result ?? [];
