@@ -797,6 +797,18 @@ function createBuyLockOwner(): string {
   return `${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
+function isPidAlive(pid: number): boolean {
+  if (!Number.isInteger(pid) || pid <= 0) return false;
+  try {
+    // Signal 0 performs existence/permission checks without actually signalling.
+    process.kill(pid, 0);
+    return true;
+  } catch (err) {
+    // EPERM means the process exists but is owned by another user — still alive.
+    return (err as NodeJS.ErrnoException).code === "EPERM";
+  }
+}
+
 function acquirePersistentBuyLock(
   mint: string,
   sourceSignature: string
@@ -838,6 +850,19 @@ function releaseStalePersistentBuyLock(path: string, mint: string): boolean {
   try {
     const raw = readFileSync(path, "utf8");
     const parsed = JSON.parse(raw) as { createdAtMs?: number; createdAt?: string; pid?: number };
+    // Reap locks whose owning process is gone. A dead owner can never release its lock, so it
+    // would otherwise block this mint until the (24h) stale TTL elapses — e.g. an orphan left
+    // by the previous process after a restart/crash, which 705123a deliberately preserves.
+    // Acquisition is only reached after the quarantine / source-preexisting / held-inventory
+    // (buy-once reentry) gates, so an orphaned lock at this point is safe to clear.
+    if (typeof parsed.pid === "number" && parsed.pid !== process.pid && !isPidAlive(parsed.pid)) {
+      unlinkSync(path);
+      console.warn(
+        `Cleared orphaned persistent buy lock for ${mint.slice(0, 8)}... ` +
+          `(owner pid ${parsed.pid} is no longer running).`
+      );
+      return true;
+    }
     const createdAtMs =
       typeof parsed.createdAtMs === "number"
         ? parsed.createdAtMs
@@ -2129,6 +2154,18 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
         failedBuyRecoveryInFlightMints.delete(hotBuy.mint);
         boughtMintsThisSession.delete(hotBuy.mint);
         liveBuyAttemptedMintsThisSession.delete(hotBuy.mint);
+        quarantinedBuyMints.delete(hotBuy.mint);
+        releasePersistentBuyLock(hotBuy.mint);
+        const released = await releaseRustBoughtMint(
+          hotBuy.mint,
+          `recoverable Rust hot buy failure: ${reason}`,
+          hotBuy.sourceSignature
+        );
+        if (!released.ok) {
+          console.warn(
+            `Rust hot buy lock release did not ack for ${hotBuy.mint.slice(0, 8)}...: ${released.error}`
+          );
+        }
         if (shouldAttemptFailedBuyRecovery(fallback, reason)) {
           console.warn(
             `Rust hot buy failed for ${hotBuy.mint.slice(0, 8)}... with recoverable ` +
@@ -6121,4 +6158,3 @@ export function getBotState(): BotState {
     totals: getTotals(),
   };
 }
-

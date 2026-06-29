@@ -181,7 +181,7 @@ let executorSeq = 0;
 const executorPending = new Map<
   string,
   {
-    resolve: (value: RustPumpFunBuyResult) => void;
+    resolve: (value: any) => void;
     timer: NodeJS.Timeout;
   }
 >();
@@ -596,6 +596,10 @@ function handleExecutorResponse(response: RustExecutorResponse): void {
     });
     return;
   }
+  if (response.ok === true) {
+    pending.resolve({ ok: true });
+    return;
+  }
   pending.resolve({ ok: false, error: response.error ?? "Rust executor failed" });
 }
 
@@ -828,8 +832,14 @@ export async function executeRustPumpFunSell(args: RustPumpFunSellArgs): Promise
   });
 }
 
-export function releaseRustBoughtMint(mint: string, reason: string, sourceSignature?: string): void {
-  if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) return;
+export async function releaseRustBoughtMint(
+  mint: string,
+  reason: string,
+  sourceSignature?: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) {
+    return { ok: false, error: "Rust executor unavailable" };
+  }
   const id = `rust-release-${Date.now()}-${++executorSeq}`;
   const command = {
     kind: "releaseBoughtMint",
@@ -838,7 +848,14 @@ export function releaseRustBoughtMint(mint: string, reason: string, sourceSignat
     reason,
     sourceSignature,
   };
-  executorStdin.write(`${JSON.stringify(command)}\n`);
+  return await new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      executorPending.delete(id);
+      resolve({ ok: false, error: `Rust release timed out after ${rustExecutorTimeoutMs}ms` });
+    }, rustExecutorTimeoutMs);
+    executorPending.set(id, { resolve, timer });
+    executorStdin!.write(`${JSON.stringify(command)}\n`);
+  });
 }
 
 export async function executeRustRaydiumCpmmSwap(args: RustRaydiumCpmmSwapArgs): Promise<RustRaydiumCpmmSwapResult | null> {
