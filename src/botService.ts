@@ -292,6 +292,7 @@ export type BotState = {
   tipLamports: number;
   priorityFeeMicroLamports: number;
   mirrorSlippageBps: number;
+  mirrorSellsEnabled: boolean;
   feeGuide: {
     computeUnitLimit: number;
     useJitoDirect: boolean;
@@ -6129,6 +6130,7 @@ export function getBotState(): BotState {
     tipLamports,
     priorityFeeMicroLamports,
     mirrorSlippageBps,
+    mirrorSellsEnabled,
     feeGuide: {
       computeUnitLimit,
       useJitoDirect,

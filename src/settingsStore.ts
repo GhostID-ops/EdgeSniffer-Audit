@@ -19,6 +19,7 @@ const SETTINGS_KEYS = [
   "TIP_LAMPORTS",
   "PRIORITY_FEE_MICRO_LAMPORTS",
   "MIRROR_SLIPPAGE_BPS",
+  "MIRROR_SELLS",
   "SIMULATION_MODE",
 ] as const;
 
@@ -88,6 +89,7 @@ export function normalizeFriendSettings(body: Record<string, unknown>): FriendBo
       numberFromBody(body, "priorityFeeMicroLamports", current.priorityFeeMicroLamports)
     ),
     mirrorSlippageBps: Math.round(numberFromBody(body, "mirrorSlippageBps", current.mirrorSlippageBps)),
+    mirrorSells: boolFromBody(body, "mirrorSells", current.mirrorSells),
     simulationMode: boolFromBody(body, "simulationMode", current.simulationMode),
   };
 
@@ -159,6 +161,7 @@ export function persistFriendSettings(settings: FriendBotSettings): FriendBotSet
     TIP_LAMPORTS: String(applied.tipLamports),
     PRIORITY_FEE_MICRO_LAMPORTS: String(applied.priorityFeeMicroLamports),
     MIRROR_SLIPPAGE_BPS: String(applied.mirrorSlippageBps),
+    MIRROR_SELLS: applied.mirrorSells ? "true" : "false",
     SIMULATION_MODE: applied.simulationMode ? "true" : "false",
   };
 

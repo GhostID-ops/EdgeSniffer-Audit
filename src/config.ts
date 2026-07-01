@@ -593,7 +593,7 @@ export const rustHotSniperPrimaryFallbackDelayMs = Math.max(
 
 /** When false, the bot ignores source-wallet sells (you exit manually via 'e' or 'a' keys). Default true. */
 const MIRROR_SELLS_RAW = (process.env.MIRROR_SELLS ?? "true").toLowerCase();
-export const mirrorSells =
+export let mirrorSells =
   MIRROR_SELLS_RAW !== "false" && MIRROR_SELLS_RAW !== "0" && MIRROR_SELLS_RAW !== "no";
 export type MirrorSellMode = "full" | "proportional";
 const MIRROR_SELL_MODE_RAW = (process.env.MIRROR_SELL_MODE ?? "full").trim().toLowerCase();
@@ -842,6 +842,7 @@ export type FriendBotSettings = {
   tipLamports: number;
   priorityFeeMicroLamports: number;
   mirrorSlippageBps: number;
+  mirrorSells: boolean;
   simulationMode: boolean;
 };
 
@@ -855,6 +856,7 @@ export function getFriendBotSettings(): FriendBotSettings {
     tipLamports,
     priorityFeeMicroLamports,
     mirrorSlippageBps,
+    mirrorSells,
     simulationMode,
   };
 }
@@ -891,6 +893,7 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
     Math.round(settings.priorityFeeMicroLamports ?? PRIORITY_FEE_MICRO_LAMPORTS)
   );
   MIRROR_SLIPPAGE_BPS = Math.max(1, Math.round(settings.mirrorSlippageBps ?? MIRROR_SLIPPAGE_BPS));
+  if (typeof settings.mirrorSells === "boolean") mirrorSells = settings.mirrorSells;
 
   tipLamports = TIP_LAMPORTS;
   priorityFeeMicroLamports = PRIORITY_FEE_MICRO_LAMPORTS;
@@ -908,6 +911,7 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
   process.env.TIP_LAMPORTS = String(TIP_LAMPORTS);
   process.env.PRIORITY_FEE_MICRO_LAMPORTS = String(PRIORITY_FEE_MICRO_LAMPORTS);
   process.env.MIRROR_SLIPPAGE_BPS = String(MIRROR_SLIPPAGE_BPS);
+  process.env.MIRROR_SELLS = mirrorSells ? "true" : "false";
   process.env.SIMULATION_MODE = simulationMode ? "true" : "false";
 
   return getFriendBotSettings();

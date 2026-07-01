@@ -627,6 +627,10 @@
             <input id="hybridExitTpSellPct" type="number" min="0" max="100" step="1" />
           </label>
           <label class="checkline wide" style="margin-top:4px;">
+            <input id="mirrorSells" type="checkbox" />
+            <span>Mirror source sells <span class="tip" tabindex="0">i<span class="tip-box">When the tracked wallet sells a token you copied, the bot sells your matching position too. Turn this off if you only want stop-loss, ladder, hybrid, or manual exits.</span></span></span>
+          </label>
+          <label class="checkline wide">
             <input id="hybridExitEnabled" type="checkbox" />
             <span>Enable hybrid sell at target <span class="tip" tabindex="0">i<span class="tip-box">Master switch for the hybrid take-profit above.</span></span></span>
           </label>
@@ -839,9 +843,9 @@
     let buysPaused = false;
 
     const presets = {
-      cya: { trackedWallets: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", copyBuyPercentage: 2, minBuySol: 0.001, maxBuySol: 0.03, solReserveSol: 0.2, mirrorSlippageBps: 6000, tipLamports: 0, priorityFeeMicroLamports: 0, stopLossPct: 35, takeProfitPct: 0, minHoldBeforeStopLossMs: 15000, hybridExitEnabled: true, hybridExitTpPct: 30, hybridExitTpSellPct: 50, hybridExitSourceExitRemaining: false, profitLadderEnabled: true, profitLadderSteps: "30:0,50:20,75:35,100:60,200:125,300:200,500:350" },
-      "4vw54": { trackedWallets: "4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9", copyBuyPercentage: 2, minBuySol: 0.001, maxBuySol: 0.03, solReserveSol: 0.2, mirrorSlippageBps: 6000, tipLamports: 0, priorityFeeMicroLamports: 0, stopLossPct: 35, takeProfitPct: 0, minHoldBeforeStopLossMs: 15000, hybridExitEnabled: true, hybridExitTpPct: 30, hybridExitTpSellPct: 50, hybridExitSourceExitRemaining: false, profitLadderEnabled: true, profitLadderSteps: "30:0,50:20,75:35,100:60,200:125,300:200,500:350" },
-      omego: { trackedWallets: "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq", copyBuyPercentage: 2, minBuySol: 0.001, maxBuySol: 0.03, solReserveSol: 0.2, mirrorSlippageBps: 6000, tipLamports: 0, priorityFeeMicroLamports: 0, stopLossPct: 35, takeProfitPct: 0, minHoldBeforeStopLossMs: 15000, hybridExitEnabled: true, hybridExitTpPct: 30, hybridExitTpSellPct: 50, hybridExitSourceExitRemaining: false, profitLadderEnabled: true, profitLadderSteps: "30:0,50:20,75:35,100:60,200:125,300:200,500:350" }
+      cya: { trackedWallets: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", copyBuyPercentage: 2, minBuySol: 0.001, maxBuySol: 0.03, solReserveSol: 0.2, mirrorSlippageBps: 6000, mirrorSells: true, tipLamports: 0, priorityFeeMicroLamports: 0, stopLossPct: 35, takeProfitPct: 0, minHoldBeforeStopLossMs: 15000, hybridExitEnabled: true, hybridExitTpPct: 30, hybridExitTpSellPct: 50, hybridExitSourceExitRemaining: false, profitLadderEnabled: true, profitLadderSteps: "30:0,50:20,75:35,100:60,200:125,300:200,500:350" },
+      "4vw54": { trackedWallets: "4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9", copyBuyPercentage: 2, minBuySol: 0.001, maxBuySol: 0.03, solReserveSol: 0.2, mirrorSlippageBps: 6000, mirrorSells: true, tipLamports: 0, priorityFeeMicroLamports: 0, stopLossPct: 35, takeProfitPct: 0, minHoldBeforeStopLossMs: 15000, hybridExitEnabled: true, hybridExitTpPct: 30, hybridExitTpSellPct: 50, hybridExitSourceExitRemaining: false, profitLadderEnabled: true, profitLadderSteps: "30:0,50:20,75:35,100:60,200:125,300:200,500:350" },
+      omego: { trackedWallets: "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq", copyBuyPercentage: 2, minBuySol: 0.001, maxBuySol: 0.03, solReserveSol: 0.2, mirrorSlippageBps: 6000, mirrorSells: true, tipLamports: 0, priorityFeeMicroLamports: 0, stopLossPct: 35, takeProfitPct: 0, minHoldBeforeStopLossMs: 15000, hybridExitEnabled: true, hybridExitTpPct: 30, hybridExitTpSellPct: 50, hybridExitSourceExitRemaining: false, profitLadderEnabled: true, profitLadderSteps: "30:0,50:20,75:35,100:60,200:125,300:200,500:350" }
     };
 
     const walletProfiles = {
@@ -920,7 +924,7 @@
         trackedWallets: $("trackedWallets").value, minBuySol: Number($("minBuySol").value), maxBuySol: Number($("maxBuySol").value),
         copyBuyPercentage: Number($("copyBuyPercentage").value), solReserveSol: Number($("solReserveSol").value),
         tipLamports: Number($("tipLamports").value), priorityFeeMicroLamports: Number($("priorityFeeMicroLamports").value),
-        mirrorSlippageBps: Number($("mirrorSlippageBps").value), simulationMode: !live,
+        mirrorSlippageBps: Number($("mirrorSlippageBps").value), mirrorSells: $("mirrorSells").checked, simulationMode: !live,
         stopLossPct: $("stopLossPct").value, takeProfitPct: $("takeProfitPct").value, minHoldBeforeStopLossMs: $("minHoldBeforeStopLossMs").value,
         hybridExitEnabled: $("hybridExitEnabled").checked, hybridExitTpPct: $("hybridExitTpPct").value, hybridExitTpSellPct: $("hybridExitTpSellPct").value,
         hybridExitSourceExitRemaining: $("hybridExitSourceExitRemaining").checked, profitLadderEnabled: $("profitLadderEnabled").checked, profitLadderSteps: $("profitLadderSteps").value
@@ -935,6 +939,7 @@
       $("copyBuyPercentage").value = s.copyBuyPercentage ?? 2; $("solReserveSol").value = s.solReserveSol ?? 0.2;
       $("tipLamports").value = s.tipLamports ?? 0; $("priorityFeeMicroLamports").value = s.priorityFeeMicroLamports ?? 0;
       $("mirrorSlippageBps").value = s.mirrorSlippageBps ?? 6000;
+      $("mirrorSells").checked = s.mirrorSells !== false;
       updateWalletCount(); refreshHints();
       setMode(s.simulationMode === false ? "live" : currentMode);
     }

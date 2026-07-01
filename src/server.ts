@@ -13,6 +13,7 @@ import {
   closeAllOpenPositionsSimulated,
   resetTradingState,
   setBuysPaused,
+  setMirrorSellsEnabled,
 } from "./botService.js";
 import { getLogs } from "./logBuffer.js";
 import { getFriendBotSettings } from "./config.js";
@@ -308,6 +309,7 @@ async function handle(
       const secretStatus = persistFriendSecretSettings(body);
       const settings = normalizeFriendSettings(body);
       const riskStatus = persistFriendRiskSettings(body);
+      setMirrorSellsEnabled(settings.mirrorSells);
       return sendJson(res, 200, {
         ok: true,
         settings: persistFriendSettings(settings),
@@ -335,6 +337,7 @@ async function handle(
       const riskStatus = persistFriendRiskSettings(body);
       if (Object.keys(body).length > 0) {
         settings = persistFriendSettings(normalizeFriendSettings(body));
+        setMirrorSellsEnabled(settings.mirrorSells);
       }
       await startBot();
       return sendJson(res, 200, { ok: true, settings, ...secretStatus, ...riskStatus });
