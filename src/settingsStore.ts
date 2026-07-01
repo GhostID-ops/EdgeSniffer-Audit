@@ -59,6 +59,13 @@ function boolFromBody(body: Record<string, unknown>, key: string, fallback: bool
   return ["true", "1", "yes", "on"].includes(String(raw).toLowerCase());
 }
 
+function positiveEnvNumber(key: string): number | null {
+  const raw = process.env[key];
+  if (raw == null || raw.trim() === "") return null;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}
+
 export function normalizeFriendSettings(body: Record<string, unknown>): FriendBotSettings {
   const current = getFriendBotSettings();
   const walletsRaw = Array.isArray(body.trackedWallets)
@@ -83,6 +90,25 @@ export function normalizeFriendSettings(body: Record<string, unknown>): FriendBo
     mirrorSlippageBps: Math.round(numberFromBody(body, "mirrorSlippageBps", current.mirrorSlippageBps)),
     simulationMode: boolFromBody(body, "simulationMode", current.simulationMode),
   };
+
+  if (!settings.simulationMode) {
+    const maxLiveBuySol = positiveEnvNumber("FRIEND_MAX_LIVE_BUY_SOL");
+    if (maxLiveBuySol != null && maxLiveBuySol > 0) {
+      settings.maxBuySol = Math.min(settings.maxBuySol, maxLiveBuySol);
+      settings.minBuySol = Math.min(settings.minBuySol, settings.maxBuySol);
+    }
+    const maxLiveTipLamports = positiveEnvNumber("FRIEND_MAX_LIVE_TIP_LAMPORTS");
+    if (maxLiveTipLamports != null) {
+      settings.tipLamports = Math.min(settings.tipLamports, Math.round(maxLiveTipLamports));
+    }
+    const maxLivePriorityFee = positiveEnvNumber("FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS");
+    if (maxLivePriorityFee != null) {
+      settings.priorityFeeMicroLamports = Math.min(
+        settings.priorityFeeMicroLamports,
+        Math.round(maxLivePriorityFee)
+      );
+    }
+  }
 
   if (settings.minBuySol <= 0) throw new Error("Minimum buy must be greater than 0 SOL");
   if (settings.maxBuySol < settings.minBuySol) {

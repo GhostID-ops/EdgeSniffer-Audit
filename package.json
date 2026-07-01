@@ -9,6 +9,8 @@
     "bot": "tsx src/copytrade.ts",
     "dev": "tsx src/copytrade.ts",
     "web": "tsx src/web.ts",
+    "friend": "tsx src/friendWeb.ts",
+    "friend:demo": "tsx src/demoInstance.ts",
     "vps:control": "tsx src/vpsControlPanel.ts",
     "swap": "tsx src/swap.ts",
     "profile-edge": "tsx src/profileSourceEdge.ts",

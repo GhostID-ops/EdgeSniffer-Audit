@@ -25,6 +25,7 @@ import {
 import { getTokenPairInfo, WRAPPED_SOL_MINT } from "./tokenRegistry.js";
 import { getQuote } from "./jupiter.js";
 import { getPriceSampleMs, getPriceSeries, startPriceSampler } from "./priceSampler.js";
+import { getExecutionTelemetrySummary, getTopTrades } from "./friendTelemetry.js";
 
 const PORT = parseInt(process.env.WEB_PORT ?? "3000", 10);
 // Interface to bind. Default 127.0.0.1 (localhost only). Set WEB_HOST to your
@@ -198,6 +199,16 @@ async function handle(
 
   if (req.method === "GET" && url === "/api/state") {
     return sendJson(res, 200, getBotState());
+  }
+
+  if (req.method === "GET" && url === "/api/telemetry") {
+    return sendJson(res, 200, getExecutionTelemetrySummary());
+  }
+
+  if (req.method === "GET" && url.startsWith("/api/top-trades")) {
+    const u = new URL(url, "http://localhost");
+    const limit = parseInt(u.searchParams.get("limit") ?? "9", 10);
+    return sendJson(res, 200, getTopTrades(Number.isFinite(limit) ? limit : 9));
   }
 
   if (req.method === "GET" && url === "/api/readiness") {
