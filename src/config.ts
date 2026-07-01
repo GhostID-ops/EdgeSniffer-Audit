@@ -302,6 +302,10 @@ export const dynamicPriorityFeeRefreshMs = Math.max(
 export const dynamicPriorityFeeMaxMicroLamports = parseOptionalPositiveInteger(
   process.env.DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS
 );
+export const maxBuyExecutionFeeLamports = (() => {
+  const sol = parseOptionalPositiveNumber(process.env.MAX_BUY_EXECUTION_FEE_SOL);
+  return sol == null ? null : Math.max(0, Math.round(sol * LAMPORTS_PER_SOL));
+})();
 
 /** Helius staked RPC URL for read-only operations (blockhash, ALTs). */
 export const readRpcUrl =
