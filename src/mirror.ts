@@ -228,6 +228,7 @@ function formatQuoteAmount(raw: number, quoteMint: string): string {
 }
 
 function applyCopyBuyPercentage(amountRaw: number): number {
+  if (copyBuyPercentage <= 0) return 0;
   return Math.floor(amountRaw * (copyBuyPercentage / 100));
 }
 
@@ -336,13 +337,15 @@ async function getMirrorAmount(
     const quoteMint = quoteMintForBuy(swap);
     const maxRaw = quoteMint === USDC_MINT ? maxBuyUsdcRaw : maxBuyLamports;
     const minRaw = quoteMint === USDC_MINT ? minBuyUsdcRaw : minBuyLamports;
-    const calculatedRaw = applyCopyBuyPercentage(swap.amountRaw);
+    const percentageRaw = applyCopyBuyPercentage(swap.amountRaw);
+    const fixedSizeMode = copyBuyPercentage <= 0;
+    const calculatedRaw = fixedSizeMode ? minRaw : percentageRaw;
 
     console.log("[CopyTrade]");
     console.log("Tracked Wallet Buy Detected");
     console.log(`Token: ${swap.outputMint}`);
     console.log(`Tracked Wallet Amount: ${formatQuoteAmount(swap.amountRaw, quoteMint)}`);
-    console.log(`Copy Percentage: ${copyBuyPercentage}%`);
+    console.log(fixedSizeMode ? "Copy Percentage: fixed-size mode" : `Copy Percentage: ${copyBuyPercentage}%`);
     console.log(`Bot Buy Amount: ${formatQuoteAmount(calculatedRaw, quoteMint)}`);
 
     if (!Number.isFinite(calculatedRaw) || calculatedRaw <= 0) {

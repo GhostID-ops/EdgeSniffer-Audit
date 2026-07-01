@@ -1878,27 +1878,30 @@ function mirrorQuoteMintForBuy(swap: DetectedSwap): string {
 
 function mirroredBuyAmountRaw(swap: DetectedSwap): number | null {
   const quoteMint = mirrorQuoteMintForBuy(swap);
+  const minRaw = quoteMint === USDC_MINT
+    ? (Number.isFinite(minBuyUsdcRaw) ? minBuyUsdcRaw : 0)
+    : (Number.isFinite(minBuyLamports) ? minBuyLamports : 0);
+  const maxRaw = quoteMint === USDC_MINT
+    ? (Number.isFinite(maxBuyUsdcRaw) ? maxBuyUsdcRaw : minRaw)
+    : (Number.isFinite(maxBuyLamports) ? maxBuyLamports : minRaw);
   const calculatedRaw = Math.floor(swap.amountRaw * (copyBuyPercentage / 100));
-  if (!Number.isFinite(calculatedRaw) || calculatedRaw <= 0) return null;
-  // Blank MIN_BUY_*/MAX_BUY_* env values parse to NaN. Treat an unset cap as "no cap"
-  // (use the percentage-sized amount as-is) and an unset minimum as 0, so empty sizing
-  // falls back to pure percentage copying instead of producing NaN and skipping the buy.
+  if (!Number.isFinite(calculatedRaw) || calculatedRaw <= 0) {
+    return minRaw > 0 ? Math.min(maxRaw, minRaw) : null;
+  }
+  // Friend/demo mode can leave Copy % blank/0. In that case, use MIN_BUY as a
+  // fixed-size buy and still respect MAX_BUY as the cap.
   if (quoteMint === USDC_MINT) {
-    const minUsdc = Number.isFinite(minBuyUsdcRaw) ? minBuyUsdcRaw : 0;
-    const maxUsdc = Number.isFinite(maxBuyUsdcRaw) ? maxBuyUsdcRaw : calculatedRaw;
-    if (calculatedRaw < minUsdc) {
+    if (calculatedRaw < minRaw) {
       if (minBuyBehavior === "skip") return null;
-      if (minBuyBehavior === "floor") return Math.min(maxUsdc, minUsdc);
+      if (minBuyBehavior === "floor") return Math.min(maxRaw, minRaw);
     }
-    return Math.min(maxUsdc, calculatedRaw);
+    return Math.min(maxRaw, calculatedRaw);
   }
-  const minLamports = Number.isFinite(minBuyLamports) ? minBuyLamports : 0;
-  const maxLamports = Number.isFinite(maxBuyLamports) ? maxBuyLamports : calculatedRaw;
-  if (calculatedRaw < minLamports) {
+  if (calculatedRaw < minRaw) {
     if (minBuyBehavior === "skip") return null;
-    if (minBuyBehavior === "floor") return Math.min(maxLamports, minLamports);
+    if (minBuyBehavior === "floor") return Math.min(maxRaw, minRaw);
   }
-  return Math.min(maxLamports, calculatedRaw);
+  return Math.min(maxRaw, calculatedRaw);
 }
 
 function shouldDeferToRustHotSniperPrimary(
@@ -2411,10 +2414,13 @@ function logTrade(
         ? `${formatTokenAmount(swap.counterpartyAmountRaw, result.output.meta.decimals)} $${result.output.meta.symbol}`
         : undefined;
     const percentageSizedRaw = Math.floor(swap.amountRaw * (copyBuyPercentage / 100));
-    const clamped = result.input.amountRaw !== percentageSizedRaw;
+    const fixedSizeMode = copyBuyPercentage <= 0;
+    const clamped = !fixedSizeMode && result.input.amountRaw !== percentageSizedRaw;
     const sizingNote = clamped
       ? ` (adjusted from ${quoteAmountDisplay(percentageSizedRaw, result.input.meta.mint)}; source ${sourceQuote})`
-      : copyBuyPercentage !== 100
+      : fixedSizeMode
+        ? ` (fixed-size mode; source ${sourceQuote})`
+        : copyBuyPercentage !== 100
         ? ` (${copyBuyPercentage}% of ${sourceQuote})`
         : "";
     const entryPrice = tokenPriceInSol(

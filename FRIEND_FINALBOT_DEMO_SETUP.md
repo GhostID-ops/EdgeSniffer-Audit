@@ -53,6 +53,11 @@ Use the login printed by `npm run friend:demo`.
 
 For a real-money V1 trial, use only a burner wallet.
 
+Sizing can be configured two ways:
+
+- Percentage mode: set `Copy size %` above 0. The bot copies that percentage of the source buy, capped by `Max buy`.
+- Fixed-size mode: leave `Copy size %` blank or set it to 0. The bot buys `Min bot buy`, capped by `Max buy`.
+
 Recommended process:
 
 1. Start in simulation mode and confirm the UI, logs, telemetry, and settings work.

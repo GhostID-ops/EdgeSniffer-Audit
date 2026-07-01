@@ -559,10 +559,10 @@
             <span class="label-note">One wallet per line.</span>
           </label>
           <label>
-            <span class="lab">Copy size %
-              <span class="tip" tabindex="0">i<span class="tip-box">What fraction of the tracked wallet's buy you mirror. <b>2%</b> means if they buy 1 SOL, you buy 0.02 SOL — but never more than "Max buy".</span></span>
+            <span class="lab">Copy size % optional
+              <span class="tip" tabindex="0">i<span class="tip-box">What fraction of the tracked wallet's buy you mirror. Leave blank or set <b>0</b> to use fixed-size mode: the bot buys your Min bot buy amount and caps at Max buy.</span></span>
             </span>
-            <input id="copyBuyPercentage" type="number" min="0" max="100" step="0.1" />
+            <input id="copyBuyPercentage" type="number" min="0" max="100" step="0.1" placeholder="0 = fixed size" />
           </label>
           <label>
             <span class="lab">Max buy
@@ -577,8 +577,8 @@
             <input id="solReserveSol" type="number" min="0" step="0.01" />
           </label>
           <label>
-            <span class="lab">Min source buy
-              <span class="tip" tabindex="0">i<span class="tip-box">Ignore the source's dust trades. Only copy buys at or above this <b>SOL</b> size — filters out noise.</span></span>
+            <span class="lab">Min bot buy
+              <span class="tip" tabindex="0">i<span class="tip-box">Minimum amount your bot will buy. If Copy size % is blank or 0, this becomes the fixed buy size. Max buy still caps the trade.</span></span>
             </span>
             <input id="minBuySol" type="number" min="0" step="0.001" /><span class="hint" data-unit="sol" data-for="minBuySol"></span>
           </label>
@@ -922,7 +922,7 @@
       if (live && !$("liveConfirm").checked) throw new Error("Live mode requires the hot-wallet confirmation checkbox.");
       const body = {
         trackedWallets: $("trackedWallets").value, minBuySol: Number($("minBuySol").value), maxBuySol: Number($("maxBuySol").value),
-        copyBuyPercentage: Number($("copyBuyPercentage").value), solReserveSol: Number($("solReserveSol").value),
+        copyBuyPercentage: $("copyBuyPercentage").value.trim() === "" ? 0 : Number($("copyBuyPercentage").value), solReserveSol: Number($("solReserveSol").value),
         tipLamports: Number($("tipLamports").value), priorityFeeMicroLamports: Number($("priorityFeeMicroLamports").value),
         mirrorSlippageBps: Number($("mirrorSlippageBps").value), mirrorSells: $("mirrorSells").checked, simulationMode: !live,
         stopLossPct: $("stopLossPct").value, takeProfitPct: $("takeProfitPct").value, minHoldBeforeStopLossMs: $("minHoldBeforeStopLossMs").value,
