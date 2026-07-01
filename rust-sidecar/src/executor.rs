@@ -1946,10 +1946,15 @@ fn build_pumpswap_sell_ix(
 }
 
 fn encode_pumpswap_buy_args(cmd: &ExecutePumpSwapBuyCommand) -> Vec<u8> {
+    let base_out_raw = if cmd.buy_instruction == "buy" {
+        cmd.expected_base_out_raw
+    } else {
+        cmd.min_base_out_raw
+    };
     encode_pumpswap_buy_data(
         &cmd.buy_instruction,
         cmd.quote_amount_in_raw,
-        cmd.min_base_out_raw,
+        base_out_raw,
     )
 }
 
@@ -2817,6 +2822,23 @@ mod tests {
         assert_eq!(
             u64::from_le_bytes(data[16..24].try_into().unwrap()),
             min_base_out
+        );
+        assert_eq!(data[24], 0);
+    }
+
+    #[test]
+    fn pumpswap_exact_output_buy_encodes_target_output_then_max_quote() {
+        let quote_raw = 12_345_678u64;
+        let base_out = 987_654_321u64;
+        let data = encode_pumpswap_buy_data("buy", quote_raw, base_out);
+        assert_eq!(&data[..8], &BUY_DISCRIMINATOR);
+        assert_eq!(
+            u64::from_le_bytes(data[8..16].try_into().unwrap()),
+            base_out
+        );
+        assert_eq!(
+            u64::from_le_bytes(data[16..24].try_into().unwrap()),
+            quote_raw
         );
         assert_eq!(data[24], 0);
     }

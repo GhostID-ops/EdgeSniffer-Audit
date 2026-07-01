@@ -75,10 +75,14 @@ const PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX = 22;
 const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT = 23;
 const PUMPSWAP_MIN_SELL_ACCOUNT_COUNT = 21;
 const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 17, 20, 23]);
-const PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS = Math.max(
-  1,
-  Math.min(10_000, Number.parseInt(process.env.PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS ?? "1", 10) || 1)
+const PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS_RAW = Number.parseInt(
+  process.env.PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS ?? "0",
+  10
 );
+const PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS =
+  Number.isFinite(PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS_RAW) && PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS_RAW > 0
+    ? Math.min(10_000, PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS_RAW)
+    : 0;
 
 type PumpSwapAccountPlan = {
   accounts: AccountMeta[];
@@ -1681,8 +1685,11 @@ export async function tryPumpSwapDirectBuy(args: {
       isWritable: account.isWritable,
     }));
   const overflowRetryBuyInstruction: PumpSwapBuyInstruction = "buy_exact_quote_in";
-  const overflowRetryMinBaseOut = (expectedBaseOut * BigInt(PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS)) / 10_000n;
-  const safeOverflowRetryMinBaseOut = overflowRetryMinBaseOut > 0n ? overflowRetryMinBaseOut : 1n;
+  const overflowRetryMinBaseOut =
+    PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS > 0
+      ? (expectedBaseOut * BigInt(PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS)) / 10_000n
+      : minBaseOut;
+  const safeOverflowRetryMinBaseOut = overflowRetryMinBaseOut > 0n ? overflowRetryMinBaseOut : minBaseOut;
   const executeRustAttempt = async (
     attemptInstruction: PumpSwapBuyInstruction,
     attempt: "primary" | "overflow-retry" | "canonical-overflow-retry",
@@ -1809,7 +1816,11 @@ export async function tryPumpSwapDirectBuy(args: {
     releaseRustBoughtMint(args.mint, `PumpSwap overflow retry after ${buyInstruction} failed: ${originalMsg}`);
     args.log(
       `PumpSwap Rust overflow retry: ${buyInstruction} failed with 6023; ` +
-        `retrying ${overflowRetryBuyInstruction} with minOutBps=${PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS}.`
+        `retrying ${overflowRetryBuyInstruction} with ${
+          PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS > 0
+            ? `minOutBps=${PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS}`
+            : `slippage minOut=${safeOverflowRetryMinBaseOut}`
+        }.`
     );
     const retry = await executeRustAttempt(
       overflowRetryBuyInstruction,
@@ -1986,9 +1997,7 @@ export async function tryPumpSwapDirectBuy(args: {
           program: "pump_amm",
           instruction: "buy",
           accounts,
-          // The exact-output PumpSwap path spends up to max_quote_amount_in. Use minBaseOut
-          // as the target so it behaves like the slippage guard on exact-quote buys.
-          data: encodeBuy(minBaseOut, BigInt(args.solInLamports)),
+          data: encodeBuy(expectedBaseOut, BigInt(args.solInLamports)),
           allowExtraAccounts: true,
         })
       : buildNativeIdlInstructionFromOrderedAccounts({
