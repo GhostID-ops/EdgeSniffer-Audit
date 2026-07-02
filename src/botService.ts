@@ -392,6 +392,7 @@ const openPositionBuyMintsInFlight = new Set<string>();
 const riskSellsInFlight = new Set<string>();
 const exitSignalSellsInFlight = new Set<string>();
 const riskSellRetryAfterByMint = new Map<string, number>();
+const pendingFastBuyRiskSkipLogAtByMint = new Map<string, number>();
 const sourceHoldMissingByMint = new Map<string, SourceHoldZeroState>();
 const sourceSignalStateByMint = new Map<string, SourceSignalState>();
 const confirmedInventoryByMint = new Map<string, ConfirmedInventoryLedger>();
@@ -1230,6 +1231,41 @@ async function reconcileOpenPositionWithConfirmedBuy(
   }
 
   return changed ? getPosition(position.mint) ?? position : position;
+}
+
+async function shouldSkipRiskExitForPendingFastBuy(position: PositionSnapshot): Promise<boolean> {
+  if (simulationMode) return false;
+  if (!keypair) return false;
+  if (position.buysCount <= 0 || position.sellsCount > 0) return false;
+  if (!mirrorBuySignatureByMint.has(position.mint)) return false;
+  if (confirmedFastBuyTokensByMint.has(position.mint)) return false;
+  if (!hasFastBuyConfirmationPending(position.mint)) return false;
+  if (Date.now() - position.lastTradeAt >= confirmationNullStatusTimeoutMs) return false;
+
+  let liveHeldRaw: number | null = null;
+  try {
+    liveHeldRaw =
+      (await getTokenBalanceFast(keypair.publicKey, position.mint)) ??
+      (await getTokenBalance(keypair.publicKey, position.mint));
+  } catch {
+    liveHeldRaw = null;
+  }
+
+  if (liveHeldRaw != null && liveHeldRaw > 0) {
+    confirmedFastBuyTokensByMint.set(position.mint, liveHeldRaw);
+    return false;
+  }
+
+  const now = Date.now();
+  const lastLogAt = pendingFastBuyRiskSkipLogAtByMint.get(position.mint) ?? 0;
+  if (now - lastLogAt > 5_000) {
+    pendingFastBuyRiskSkipLogAtByMint.set(position.mint, now);
+    console.warn(
+      `Risk exit skipped for $${position.symbol}: fast buy is still pending confirmation ` +
+        "and wallet inventory is not visible yet."
+    );
+  }
+  return true;
 }
 
 async function reconcileFastSellExecution(args: {
@@ -4434,6 +4470,7 @@ export function resetTradingState(): void {
   sourceBuySignatureByMint.clear();
   pendingFastBuyConfirmSignaturesByMint.clear();
   fastBuyLocalCloseGuardUntilByMint.clear();
+  pendingFastBuyRiskSkipLogAtByMint.clear();
   loggedFastBuyDebitBySignature.clear();
   openPositionBuyMintsInFlight.clear();
   riskSellsInFlight.clear();
@@ -5453,6 +5490,7 @@ async function checkRiskExits(): Promise<void> {
     if (fastSellConfirmPendingByMint.has(p.mint)) continue;
     if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > Date.now()) continue;
     p = await reconcileOpenPositionWithConfirmedBuy(p);
+    if (await shouldSkipRiskExitForPendingFastBuy(p)) continue;
     if (p.costBasisRemainingLamports <= 0) continue;
 
     try {
