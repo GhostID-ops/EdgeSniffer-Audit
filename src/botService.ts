@@ -83,6 +83,7 @@ import {
   jupiterFallbackEnabled,
   shyftGrpcEnabled,
   shyftRabbitStreamEnabled,
+  watcherPollFallbackEnabled,
   rustSidecarEnabled,
   rustExecutorEnabled,
   rustOnlyBuys,
@@ -300,6 +301,7 @@ export type BotState = {
     heliusTipMinLamports: number;
   };
   pollIntervalMs: number;
+  watcherPollFallbackEnabled: boolean;
   riskControlsEnabled: boolean;
   riskCheckIntervalMs: number;
   minHoldBeforeStopLossMs: number;
@@ -3991,7 +3993,7 @@ async function loop(): Promise<void> {
     try {
       // Poll is a safety net — WebSocket does the fast path. Run serially so polls catch anything the WS missed.
       const loopStartedAt = Date.now();
-      if (loopStartedAt - lastPoll >= pollIntervalMs) {
+      if (watcherPollFallbackEnabled && loopStartedAt - lastPoll >= pollIntervalMs) {
         const swaps = await getNewSwaps(watchedWallets, processedSignatures, bootTimeSec);
         for (const swap of swaps) {
           await processSwap(swap, kp);
@@ -4284,6 +4286,11 @@ export async function startBot(): Promise<void> {
         console.error("WS processSwap error:", err);
       });
     }
+  );
+  console.log(
+    watcherPollFallbackEnabled
+      ? `Watcher poll fallback enabled: Helius address-history safety polling every ${pollIntervalMs}ms.`
+      : "Watcher poll fallback disabled: stream detectors are active; no Helius address-history polling."
   );
 
   loop().catch((err) => {
@@ -6144,6 +6151,7 @@ export function getBotState(): BotState {
       heliusTipMinLamports: HELIUS_TIP_MIN_LAMPORTS,
     },
     pollIntervalMs,
+    watcherPollFallbackEnabled,
     riskControlsEnabled,
     riskCheckIntervalMs,
     minHoldBeforeStopLossMs,

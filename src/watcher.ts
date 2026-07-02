@@ -1040,7 +1040,7 @@ export async function subscribeWalletSwaps(
   onSwap: (swap: DetectedSwap) => void
 ): Promise<Unsubscribe> {
   if (!websocketUrl) {
-    console.warn("⚠️  No WEBSOCKET_URL set — skipping WS subscription (polling only).");
+    console.warn("⚠️  No WEBSOCKET_URL set — skipping legacy WS subscription.");
     return async () => {};
   }
 
@@ -1139,4 +1139,3 @@ export async function subscribeWalletSwaps(
     }
   };
 }
-

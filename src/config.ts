@@ -590,6 +590,17 @@ export const rustHotSniperPrimaryFallbackDelayMs = Math.max(
   0,
   parseInt(process.env.RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS ?? "80", 10)
 );
+const WATCHER_POLL_FALLBACK_ENABLED_RAW = process.env.WATCHER_POLL_FALLBACK_ENABLED;
+const STREAM_DETECTION_ENABLED =
+  shyftGrpcEnabled ||
+  shyftRabbitStreamEnabled ||
+  rustSidecarEnabled ||
+  heliusTxSubscribeEnabled ||
+  websocketUrl.trim().length > 0;
+export const watcherPollFallbackEnabled =
+  WATCHER_POLL_FALLBACK_ENABLED_RAW == null
+    ? !STREAM_DETECTION_ENABLED
+    : parseEnvBool(WATCHER_POLL_FALLBACK_ENABLED_RAW, false);
 
 /** When false, the bot ignores source-wallet sells (you exit manually via 'e' or 'a' keys). Default true. */
 const MIRROR_SELLS_RAW = (process.env.MIRROR_SELLS ?? "true").toLowerCase();
