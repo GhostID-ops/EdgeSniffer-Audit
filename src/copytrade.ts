@@ -16,7 +16,10 @@ async function shutdown(signal: string): Promise<void> {
   shuttingDown = true;
   console.log(`\nReceived ${signal}, shutting down...`);
   stopBot();
-  await printPnlReport();
+  await printPnlReport({
+    settlePendingFastBuysMs: 30_000,
+    settlementReason: `${signal} shutdown`,
+  });
   restoreTerminal();
   setTimeout(() => process.exit(0), 250);
 }

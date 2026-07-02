@@ -93,6 +93,7 @@ import {
   rustHotSniperPrimaryFallbackEnabled,
   rustHotSniperPrimaryFallbackDelayMs,
   heliusTxSubscribeEnabled,
+  confirmationTimeoutMs,
   confirmationNullStatusTimeoutMs,
   prebuyMoralisFilterEnabled,
   prebuyInferredMcFilterEnabled,
@@ -1719,6 +1720,103 @@ async function releaseDroppedBuyAfterZeroInventory(args: {
   }
 
   return true;
+}
+
+async function settlePendingFastBuysForReport(options: {
+  waitMs?: number;
+  reason?: string;
+} = {}): Promise<void> {
+  if (!keypair || simulationMode || pendingFastBuyConfirmSignaturesByMint.size === 0) return;
+
+  const waitMs = Math.max(0, options.waitMs ?? 0);
+  const deadline = Date.now() + waitMs;
+  const label = options.reason ?? "PnL/report settlement";
+  let loggedWait = false;
+
+  while (pendingFastBuyConfirmSignaturesByMint.size > 0) {
+    let madeProgress = false;
+    const pending = Array.from(pendingFastBuyConfirmSignaturesByMint.entries());
+
+    for (const [mint, signatures] of pending) {
+      const position = getPosition(mint);
+      if (!position || position.heldRaw <= 0) {
+        clearFastBuyConfirmationPending(mint);
+        madeProgress = true;
+        continue;
+      }
+
+      for (const signature of Array.from(signatures)) {
+        const execution = await actualBuyExecutionFromTx(signature, mint);
+        if (execution && execution.tokenAmountRaw > 0) {
+          await reconcileFastBuyTokens({
+            mint,
+            expectedTokenAmountRaw: position.totalBoughtRaw,
+            expectedSolLamports: position.totalSolSpentLamports,
+            signature,
+          });
+          clearFastBuyConfirmationPending(mint, signature);
+          console.warn(
+            `${label}: confirmed pending fast buy ${signature.slice(0, 8)}... for ${mint.slice(0, 8)}... before report.`
+          );
+          madeProgress = true;
+          continue;
+        }
+
+        let statusErr: unknown = null;
+        let hasTerminalStatus = false;
+        try {
+          const status = (await readConnection.getSignatureStatuses([signature])).value[0];
+          if (status?.err) {
+            statusErr = status.err;
+            hasTerminalStatus = true;
+          } else if (status?.confirmationStatus === "confirmed" || status?.confirmationStatus === "finalized") {
+            hasTerminalStatus = true;
+          }
+        } catch {
+          // A transient status RPC issue should not decide the position during reporting.
+        }
+
+        if (statusErr != null) {
+          const released = await releaseDroppedBuyAfterZeroInventory({
+            mint,
+            tokenAmountRaw: position.totalBoughtRaw,
+            solLamports: position.totalSolSpentLamports,
+            reason: `Transaction failed: ${JSON.stringify(statusErr)}`,
+            signature,
+            sourceSignature: sourceBuySignatureByMint.get(mint),
+            label,
+          });
+          madeProgress = madeProgress || released;
+          continue;
+        }
+
+        const oldEnoughToCallDropped =
+          Date.now() - position.lastTradeAt >= confirmationTimeoutMs &&
+          !hasTerminalStatus;
+        if (oldEnoughToCallDropped) {
+          const released = await releaseDroppedBuyAfterZeroInventory({
+            mint,
+            tokenAmountRaw: position.totalBoughtRaw,
+            solLamports: position.totalSolSpentLamports,
+            reason: `not found in status polling after ${confirmationTimeoutMs}ms; suspected dropped transaction`,
+            signature,
+            sourceSignature: sourceBuySignatureByMint.get(mint),
+            label,
+          });
+          madeProgress = madeProgress || released;
+        }
+      }
+    }
+
+    if (pendingFastBuyConfirmSignaturesByMint.size === 0 || Date.now() >= deadline) break;
+    if (!loggedWait && waitMs > 0) {
+      loggedWait = true;
+      console.warn(
+        `${label}: waiting for ${pendingFastBuyConfirmSignaturesByMint.size} pending fast buy confirmation(s) before report...`
+      );
+    }
+    if (!madeProgress) await sleep(1_000);
+  }
 }
 
 async function timedOutSellAppearsLanded(args: {
@@ -5997,7 +6095,15 @@ export function isRunning(): boolean {
   return running;
 }
 
-export async function printPnlReport(): Promise<void> {
+export async function printPnlReport(options: {
+  settlePendingFastBuysMs?: number;
+  settlementReason?: string;
+} = {}): Promise<void> {
+  await settlePendingFastBuysForReport({
+    waitMs: options.settlePendingFastBuysMs ?? 0,
+    reason: options.settlementReason ?? "PnL report",
+  });
+
   if (keypair) {
     await updateBalance(keypair.publicKey, { log: false });
   }
