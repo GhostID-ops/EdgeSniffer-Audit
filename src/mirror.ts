@@ -290,7 +290,7 @@ function shouldTryPumpSwapAfterPumpFunSkip(reason: string, swap: DetectedSwap): 
  * on fresh pump mints and surfaces a false "Buy failed" + Telegram alert).
  */
 function isRustAlreadyBoughtReason(reason: string): boolean {
-  return /already bought\/reserved by rust|already hot-bought by rust|already bought .* this session/i.test(
+  return /already bought\/reserved by rust|already hot-bought by rust|already bought .* this session|source signature already mirrored by rust/i.test(
     reason
   );
 }
@@ -567,6 +567,10 @@ export async function mirrorSwap(
       startedAt,
       log: (m) => console.log(m),
       sourceSignature: swap.forceDerivedPumpFunBuy ? undefined : swap.signature,
+      rustSourceSignature:
+        swap.buyRecoveryAttempt != null && swap.buyRecoveryAttempt > 0
+          ? `${swap.signature}:rescue:${swap.buyRecoveryAttempt}`
+          : undefined,
       sourceIxAccounts: swap.forceDerivedPumpFunBuy ? undefined : swap.sourceIxAccounts,
       sourceIxDataBase64: swap.forceDerivedPumpFunBuy ? undefined : swap.sourceIxDataBase64,
       onConfirmFailure: (mint, tokensRaw, quoteAmountRaw, reason) => {

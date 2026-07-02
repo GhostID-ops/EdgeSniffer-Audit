@@ -267,6 +267,7 @@ export async function tryPumpFunDirectBuy(args: {
   startedAt: number;
   log: (msg: string) => void;
   sourceSignature?: string;
+  rustSourceSignature?: string;
   /**
    * Full account list from the source's pump.fun buy ix (16-18 base58 pubkeys), extracted
    * by the gRPC watcher from the live tx payload. When present, the buy builder uses these
@@ -369,7 +370,7 @@ export async function tryPumpFunDirectBuy(args: {
         mode: "source-replay",
         route,
         mint: args.mint,
-        sourceSignature: args.sourceSignature,
+        sourceSignature: args.rustSourceSignature ?? args.sourceSignature,
         quoteMint,
         solInLamports: Number(solIn),
         slippageBps: args.slippageBps,
@@ -636,7 +637,7 @@ export async function tryPumpFunDirectBuy(args: {
     mode: "direct",
     route: "pumpfun-direct-buy",
     mint: args.mint,
-    sourceSignature: args.sourceSignature,
+    sourceSignature: args.rustSourceSignature ?? args.sourceSignature,
     solInLamports: Number(quote.solIn),
     tokensOutRaw: Number(quote.tokensOut),
     slippageBps: args.slippageBps,
