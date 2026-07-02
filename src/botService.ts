@@ -2411,6 +2411,14 @@ function scheduleFailedBuyRecovery(
   kp: Keypair,
   reason: string
 ): void {
+  if (stopRequested) {
+    failedBuyRecoveryInFlightMints.delete(sourceSwap.outputMint);
+    console.warn(
+      `Skipping direct rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... because shutdown is in progress.`
+    );
+    return;
+  }
+
   failedBuyRecoveryInFlightMints.add(sourceSwap.outputMint);
   const decision = decideRetryAction(reason);
   const useDerivedPumpFunRescue =
@@ -4182,7 +4190,6 @@ async function loop(): Promise<void> {
 
   running = false;
   startedAt = null;
-  stopRequested = false;
   stopFeeOracle();
   stopJitoTipOracle();
   stopJitoConnectionWarmup();
@@ -4395,7 +4402,6 @@ export async function startBot(): Promise<void> {
     console.error("Loop crashed:", err);
     running = false;
     startedAt = null;
-    stopRequested = false;
   });
 }
 
