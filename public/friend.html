@@ -94,6 +94,16 @@
     .strategy.active { border-color: var(--green); box-shadow: 0 0 0 2px rgba(71,229,164,.13) inset; }
     .strategy strong { display: block; font-size: 15px; line-height: 1.2; }
     .strategy p { margin: 7px 0 0; color: var(--muted); font-size: 12.3px; line-height: 1.38; }
+    .strategy-pick {
+      appearance: none; border: 0; padding: 0; margin: 0; background: transparent;
+      color: inherit; text-align: left; width: 100%;
+    }
+    .strategy-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .why-strategy {
+      min-height: 31px; border: 1px solid rgba(139,216,255,.28); border-radius: 8px;
+      color: var(--blue); background: rgba(139,216,255,.06); padding: 6px 9px; font-size: 11px; font-weight: 950;
+    }
+    .why-strategy:hover { border-color: rgba(139,216,255,.65); }
     .tags { display: flex; flex-wrap: wrap; gap: 6px; }
     .tag { display: inline-flex; padding: 4px 7px; border-radius: 999px; background: rgba(255,255,255,.05); color: var(--soft); font-size: 10.5px; font-weight: 900; }
     .tag.green { color: #07130f; background: var(--green); }
@@ -150,6 +160,39 @@
       padding: 12px 13px; box-shadow: var(--shadow); display: none; font-size: 13px; line-height: 1.4;
     }
     .toast.show { display: block; }
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 30; display: none; place-items: center;
+      padding: 18px; background: rgba(0,0,0,.72); backdrop-filter: blur(10px);
+    }
+    .modal-backdrop.open { display: grid; }
+    .modal {
+      width: min(760px, 100%); max-height: min(84vh, 780px); overflow: auto;
+      border: 1px solid var(--line); border-radius: 8px;
+      background: linear-gradient(180deg, #0b0e14, #040507); box-shadow: var(--shadow);
+    }
+    .modal-head {
+      position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; gap: 12px; align-items: start;
+      padding: 16px; border-bottom: 1px solid var(--line); background: rgba(7,9,13,.96);
+    }
+    .modal-title { margin: 0; font-size: 20px; letter-spacing: -.2px; }
+    .modal-subtitle { margin-top: 4px; color: var(--muted); font-size: 12.5px; }
+    .icon-btn {
+      width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 8px;
+      background: #05070a; color: var(--soft); font-size: 20px; line-height: 1;
+    }
+    .modal-body { padding: 16px; display: grid; gap: 14px; }
+    .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .insight-metric {
+      border: 1px solid var(--line); border-radius: 8px; background: #05070a; padding: 12px;
+    }
+    .insight-metric span { display: block; color: var(--muted); font-size: 10.5px; font-weight: 950; text-transform: uppercase; letter-spacing: .4px; }
+    .insight-metric strong { display: block; margin-top: 7px; font-size: 18px; overflow-wrap: anywhere; }
+    .bucket-table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 8px; border: 1px solid var(--line); }
+    .bucket-table th, .bucket-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); text-align: left; font-size: 12px; }
+    .bucket-table th { color: var(--muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: .45px; background: rgba(255,255,255,.025); }
+    .bucket-table tr:last-child td { border-bottom: 0; }
+    .insight-list { margin: 0; padding-left: 18px; color: var(--soft); font-size: 13px; line-height: 1.5; }
+    .insight-list li + li { margin-top: 6px; }
     .muted { color: var(--muted); }
     .green { color: var(--green); }
     .red { color: var(--red); }
@@ -163,6 +206,7 @@
       .top, .status-row { align-items: stretch; flex-direction: column; }
       .strategies, .row, .amounts, .btns, .summary { grid-template-columns: 1fr; }
       .step { grid-template-columns: 1fr; }
+      .insight-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -370,6 +414,18 @@
   </main>
 
   <div class="toast" id="toast"></div>
+  <div class="modal-backdrop" id="strategyModal" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="strategyModalTitle">
+      <div class="modal-head">
+        <div>
+          <h2 class="modal-title" id="strategyModalTitle">Strategy Research</h2>
+          <div class="modal-subtitle" id="strategyModalSubtitle"></div>
+        </div>
+        <button class="icon-btn" id="closeStrategyModal" type="button" aria-label="Close strategy research">×</button>
+      </div>
+      <div class="modal-body" id="strategyModalBody"></div>
+    </section>
+  </div>
 
   <script>
     const STRATEGIES = [
@@ -381,6 +437,26 @@
         risk: "Medium/High",
         tags: ["Recommended", "+329 SOL audit", "Fast exits"],
         note: "High-scoring follow wallet. Research showed strong realized PnL, fast median holds, and runner-style entries. Best used with source sells on.",
+        research: {
+          source: "CYA_DEEP_WALLET_RESEARCH.md + data/cya-ledger-buckets-latest-48h.md",
+          metrics: [
+            ["Expanded PnL", "+911.9 SOL", "10k transaction sample"],
+            ["Best behavior", "50% at +30%", "then source exit"],
+            ["Median hold", "0.62 min", "fast runner exits"]
+          ],
+          buckets: [
+            ["$0-5k MC", "123", "65.0%", "+22.9%", "+170.69 SOL", "Best low-cap lane"],
+            ["$5k-10k MC", "60", "51.7%", "+17.2%", "+77.71 SOL", "Still positive"],
+            ["$10k-20k MC", "28", "60.7%", "+40.2%", "+102.03 SOL", "Higher upside"],
+            ["$50k+", "4", "25.0%", "-19.3%", "-1.40 SOL", "Avoid late entries"]
+          ],
+          takeaways: [
+            "CyA is an exit-led strategy: source sells matter more than a fixed timer.",
+            "The best tested mode is profit lock ON: sell 50% at +30%, then follow the source exit for the rest.",
+            "The strongest historical buckets were early market caps under about $20k."
+          ],
+          recommended: "Use fixed small sizing, mirror sells ON, hybrid profit lock ON, and avoid late/high-MC entries."
+        },
         defaults: { amount: 0.01, maxBuy: 0.015, reserve: 0.03, copyPct: 0, slippage: 12, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 15000, hybrid: true, tip: 0, priority: 0 }
       },
       {
@@ -391,6 +467,26 @@
         risk: "Medium",
         tags: ["75% win audit", "Source exit", "Early"],
         note: "Cleaner source-exit profile in research. Strong wallet PnL and a high realized win rate, but still volatile on tiny launch tokens.",
+        research: {
+          source: "4BDK_DEEP_WALLET_RESEARCH.md",
+          metrics: [
+            ["Wallet PnL", "+858.9 SOL", "5k transaction audit"],
+            ["Closed win", "70.7%", "source-exit campaigns"],
+            ["Profit factor", "5.94", "strong source exits"]
+          ],
+          buckets: [
+            ["$20k-50k MC", "22", "81.8%", "+205.5%", "+58.0%", "Best MC bucket"],
+            ["$50k-100k MC", "10", "70.0%", "+110.8%", "+135.6%", "High but volatile"],
+            ["6-12 SOL source buy", "20", "65.0%", "+135.6%", "+36.2%", "Best source-size lane"],
+            ["50% at +30%", "51", "82.4%", "+100.9%", "+30.3%", "Reduced drawdown"]
+          ],
+          takeaways: [
+            "4BdK has strong upside but can tolerate ugly drawdowns before winners resolve.",
+            "Tight stop losses are historically bad here; source exit plus hybrid profit lock tested better.",
+            "The cleanest bucket was around $20k-50k market cap with meaningful source buy size."
+          ],
+          recommended: "Use mirror sells ON, hybrid profit lock ON, and avoid making the stop too tight."
+        },
         defaults: { amount: 0.01, maxBuy: 0.015, reserve: 0.03, copyPct: 0, slippage: 10, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 25000, hybrid: true, tip: 0, priority: 0 }
       },
       {
@@ -401,6 +497,26 @@
         risk: "High",
         tags: ["Early", "Many trades", "Runners"],
         note: "Often appears extremely early. Research found multiple 50-100% runner paths, but it needs strict sizing because trade count is high.",
+        research: {
+          source: "data/path-wallet-audit-2CQ*.md + data/wallet-ledger-audit-2CQ*.md",
+          metrics: [
+            ["Ledger PnL", "+364.7 SOL", "10k transaction ledger"],
+            ["Source exit PF", "3.44", "path audit"],
+            ["Median order", "#2", "usually very early"]
+          ],
+          buckets: [
+            ["Mirror source exit", "47", "59.6%", "+28.0%", "+2.8%", "Most natural exit"],
+            ["Hit +30 path", "50", "28.0%", "14 hits", "13 min to 2x", "Runner optionality"],
+            ["Ledger campaigns", "928", "46.0%", "+28.0%", "+2.8%", "Many quick trades"],
+            ["Median entry MC", "50", "-", "$2.9k", "0 earlier buys", "Early launch lane"]
+          ],
+          takeaways: [
+            "2CQ is useful when you want very early launch exposure, but it fires often.",
+            "Sizing should stay strict because high trade count can create noise and fee drag.",
+            "Best story is early detection plus source exit, not a set-and-forget large sizing strategy."
+          ],
+          recommended: "Use smaller fixed buys, mirror sells ON, hybrid profit lock ON, and keep max buy conservative."
+        },
         defaults: { amount: 0.005, maxBuy: 0.01, reserve: 0.035, copyPct: 0, slippage: 15, mirrorSells: true, stopLoss: 30, takeProfit: "", minHold: 15000, hybrid: true, tip: 0, priority: 0 }
       },
       {
@@ -411,6 +527,26 @@
         risk: "High",
         tags: ["Large PnL", "Whale flow", "Source exit"],
         note: "Very large realized wallet PnL in the audit. Best presented as a high-risk whale-flow strategy with conservative bot sizing.",
+        research: {
+          source: "BWAM_DEEP_WALLET_RESEARCH.md + data/wallet-ledger-buckets-bwam-5000.md",
+          metrics: [
+            ["Ledger PnL", "+2201.0 SOL", "5k transaction ledger"],
+            ["Win rate", "79.9%", "closed ledger positions"],
+            ["Median hold", "0.1 min", "ultra-fast flow"]
+          ],
+          buckets: [
+            ["$0-5k MC", "979", "44.9%", "+19.9%", "-2.2%", "+1552.90 SOL"],
+            ["$5k-10k MC", "8", "87.5%", "+529.7%", "+542.9%", "Tiny sample"],
+            ["BAGS $20k-50k", "4", "75.0%", "+25.1%", "+4.8%", "Route-specific"],
+            ["Median order", "1000", "#1", "0s delay", "0.1m hold", "Extremely early"]
+          ],
+          takeaways: [
+            "BWAM looks extremely profitable historically, but the behavior is closer to creator/launch-side scalping.",
+            "Our local telemetry did not fully capture this wallet in older runs, so treat it as shadow-first.",
+            "It should impress as a research strategy, not as the safest live-copy pool yet."
+          ],
+          recommended: "Run shadow/small-size first. Keep fixed buy low, mirror sells ON, and do not market this as fully validated."
+        },
         defaults: { amount: 0.01, maxBuy: 0.02, reserve: 0.04, copyPct: 0, slippage: 12, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 25000, hybrid: true, tip: 0, priority: 0 }
       },
       {
@@ -421,6 +557,26 @@
         risk: "Research",
         tags: ["Many runners", "Experimental"],
         note: "Saw many tokens with strong MFE, but mirror-source exit was weak in the audit. Keep this as research or shadow mode.",
+        research: {
+          source: "OMEGO_DEEP_WALLET_RESEARCH.md",
+          metrics: [
+            ["Ledger PnL", "+72.8 SOL", "10k transaction ledger"],
+            ["Fresh source exit", "+0.2%", "avg, weak median"],
+            ["Hit +30", "38/74", "runner optionality"]
+          ],
+          buckets: [
+            ["$20k-50k MC", "28", "89.3%", "+6.1%", "+6.2%", "Best source-exit bucket"],
+            ["$0-5k MC", "120", "27.5%", "-8.3%", "-4.8%", "Avoid blind low-cap copy"],
+            ["20% trailing", "214", "66.7%", "+9.4%", "-2.2%", "Better than source exit"],
+            ["Mirror source exit", "214", "-", "-4.4%", "-", "Weak in large sample"]
+          ],
+          takeaways: [
+            "Omego sees runners, but source exits are not strong enough for simple blind mirroring.",
+            "This strategy should be positioned as experimental or bot-managed exit research.",
+            "Best historical lane was not the earliest tiny caps; $20k-50k performed better."
+          ],
+          recommended: "Use shadow mode or tiny sizing. Consider bot-managed exits; do not pitch as the safest beginner pool."
+        },
         defaults: { amount: 0.005, maxBuy: 0.01, reserve: 0.04, copyPct: 0, slippage: 15, mirrorSells: true, stopLoss: 30, takeProfit: "", minHold: 15000, hybrid: true, tip: 0, priority: 0 }
       },
       {
@@ -431,6 +587,25 @@
         risk: "Custom",
         tags: ["Manual", "WalletTracker"],
         note: "Use this for wallets discovered in WalletTracker or new strategy pools that are not packaged yet.",
+        research: {
+          source: "User-provided WalletTracker research",
+          metrics: [
+            ["Research", "Not packaged", "paste a wallet"],
+            ["Defaults", "Conservative", "small fixed buys"],
+            ["Exit", "Hybrid", "50% at +30%"]
+          ],
+          buckets: [
+            ["WalletTracker", "-", "-", "-", "-", "Run audit before scaling"],
+            ["Shadow test", "-", "-", "-", "-", "Recommended first"],
+            ["Live test", "-", "-", "-", "-", "Small fixed size only"]
+          ],
+          takeaways: [
+            "Use this when a new wallet has not been turned into a packaged strategy yet.",
+            "Best next step is to run WalletTracker and bucket analysis before increasing size.",
+            "For friend demos, custom wallets should start in shadow or tiny live mode."
+          ],
+          recommended: "Paste one wallet, use small fixed buys, keep max buy capped, and review the session before scaling."
+        },
         defaults: { amount: 0.01, maxBuy: 0.01, reserve: 0.03, copyPct: 0, slippage: 10, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 25000, hybrid: true, tip: 0, priority: 0 }
       }
     ];
@@ -454,6 +629,16 @@
       setTimeout(() => el.classList.remove("show"), 4200);
     }
 
+    function esc(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[ch]));
+    }
+
     async function api(path, opts = {}) {
       const res = await fetch(path, {
         ...opts,
@@ -466,14 +651,17 @@
 
     function renderStrategies() {
       $("strategyGrid").innerHTML = STRATEGIES.map((s) => `
-        <button class="strategy ${s.id === selectedStrategy.id ? "active" : ""}" type="button" data-strategy="${s.id}">
-          <span>
-            <strong>${s.name}</strong>
-            <p>${s.subtitle}</p>
-            <p>${s.note}</p>
-          </span>
-          <span class="tags">${s.tags.map((t, i) => `<span class="tag ${i === 0 ? "green" : ""}">${t}</span>`).join("")}</span>
-        </button>
+        <div class="strategy ${s.id === selectedStrategy.id ? "active" : ""}">
+          <button class="strategy-pick" type="button" data-strategy="${esc(s.id)}">
+            <strong>${esc(s.name)}</strong>
+            <p>${esc(s.subtitle)}</p>
+            <p>${esc(s.note)}</p>
+          </button>
+          <div class="strategy-actions">
+            <span class="tags">${s.tags.map((t, i) => `<span class="tag ${i === 0 ? "green" : ""}">${esc(t)}</span>`).join("")}</span>
+            <button class="why-strategy" type="button" data-research="${esc(s.id)}">Why this strategy?</button>
+          </div>
+        </div>
       `).join("");
       document.querySelectorAll("[data-strategy]").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -487,6 +675,73 @@
           toast(`${next.name} defaults loaded.`);
         });
       });
+      document.querySelectorAll("[data-research]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const next = STRATEGIES.find((s) => s.id === btn.dataset.research);
+          if (next) openStrategyResearch(next);
+        });
+      });
+    }
+
+    function renderResearchMetrics(metrics = []) {
+      return metrics.map(([label, value, note]) => `
+        <div class="insight-metric">
+          <span>${esc(label)}</span>
+          <strong>${esc(value)}</strong>
+          <p>${esc(note)}</p>
+        </div>
+      `).join("");
+    }
+
+    function renderResearchBuckets(buckets = []) {
+      return `
+        <table class="bucket-table">
+          <thead>
+            <tr>
+              <th>Bucket</th>
+              <th>N</th>
+              <th>Win</th>
+              <th>Avg</th>
+              <th>Median / PnL</th>
+              <th>Why it matters</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${buckets.map((row) => `
+              <tr>${row.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function openStrategyResearch(strategy) {
+      const research = strategy.research || {};
+      $("strategyModalTitle").textContent = strategy.name;
+      $("strategyModalSubtitle").textContent = `${strategy.subtitle} · ${strategy.risk} risk`;
+      $("strategyModalBody").innerHTML = `
+        <div class="insight-grid">${renderResearchMetrics(research.metrics)}</div>
+        <div class="preset-note">
+          <b>Recommended setup</b><br>
+          ${esc(research.recommended || strategy.note)}
+        </div>
+        <section>
+          <h3>Best Buckets</h3>
+          ${renderResearchBuckets(research.buckets)}
+        </section>
+        <section>
+          <h3>Plain-English Takeaways</h3>
+          <ul class="insight-list">${(research.takeaways || []).map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+        </section>
+        <div class="hint">Research source: ${esc(research.source || "Packaged strategy research")}</div>
+      `;
+      $("strategyModal").classList.add("open");
+      $("strategyModal").setAttribute("aria-hidden", "false");
+    }
+
+    function closeStrategyResearch() {
+      $("strategyModal").classList.remove("open");
+      $("strategyModal").setAttribute("aria-hidden", "true");
     }
 
     function applyStrategyDefaults(strategy) {
@@ -727,6 +982,13 @@
       await refresh();
     });
     $("refreshBtn").addEventListener("click", () => refresh().catch((e) => toast(e.message)));
+    $("closeStrategyModal").addEventListener("click", closeStrategyResearch);
+    $("strategyModal").addEventListener("click", (event) => {
+      if (event.target === $("strategyModal")) closeStrategyResearch();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeStrategyResearch();
+    });
 
     renderStrategies();
     renderAmounts();
