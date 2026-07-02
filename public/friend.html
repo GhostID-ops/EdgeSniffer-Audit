@@ -123,6 +123,13 @@
     .details { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #0f131b; }
     .details summary { padding: 12px 13px; font-weight: 950; cursor: pointer; color: var(--soft); }
     .details-body { padding: 0 13px 13px; display: grid; gap: 10px; }
+    .preset-note {
+      border: 1px solid rgba(125,211,252,.28); border-radius: 8px; background: rgba(125,211,252,.07);
+      color: var(--soft); padding: 11px 12px; font-size: 12.5px; line-height: 1.45;
+    }
+    .setting-card { border: 1px solid var(--line); border-radius: 8px; background: rgba(255,255,255,.025); padding: 11px; }
+    .setting-card label { margin-bottom: 6px; }
+    .explain { color: var(--muted); font-size: 12px; line-height: 1.4; margin-top: 7px; }
     .toast {
       position: fixed; right: 18px; bottom: 18px; z-index: 20; max-width: min(430px, calc(100% - 36px));
       border: 1px solid var(--line); border-radius: 8px; background: #111722; color: var(--text);
@@ -214,8 +221,9 @@
                     <input id="customAmount" type="number" min="0.001" step="0.001" placeholder="0.01" />
                   </div>
                   <div>
-                    <label for="reserveSol">Keep SOL reserve</label>
+                    <label for="reserveSol">Gas money to keep safe</label>
                     <input id="reserveSol" type="number" min="0" step="0.001" value="0.03" />
+                    <div class="hint">The bot will leave this much SOL unused so the wallet can still pay network fees.</div>
                   </div>
                 </div>
                 <div class="btns">
@@ -223,50 +231,77 @@
                   <button class="btn danger" id="stopBtn" type="button">Stop Bot</button>
                 </div>
                 <details class="details">
-                  <summary>Advanced settings</summary>
+                  <summary>Advanced safety settings</summary>
                   <div class="details-body">
+                    <div class="preset-note" id="presetNote">Recommended defaults are loaded from the selected strategy.</div>
                     <div class="row">
-                      <div>
-                        <label for="copyPct">Copy size %</label>
+                      <div class="setting-card">
+                        <label for="copyPct">Buy sizing style</label>
                         <input id="copyPct" type="number" min="0" max="100" step="1" value="0" />
-                        <div class="hint">0 means fixed buy size from the buttons above.</div>
+                        <div class="explain">Use 0 for beginner mode: every buy uses the SOL amount above. Use 10-100 only if you want to size buys as a percent of the source wallet's buy.</div>
                       </div>
-                      <div>
-                        <label for="maxBuy">Max buy SOL</label>
+                      <div class="setting-card">
+                        <label for="maxBuy">Largest buy allowed</label>
                         <input id="maxBuy" type="number" min="0.001" step="0.001" value="0.01" />
+                        <div class="explain">Hard cap per trade. Even if the copied wallet buys huge, the bot will not spend more than this.</div>
                       </div>
                     </div>
                     <div class="row">
-                      <div>
-                        <label for="slippage">Slippage %</label>
+                      <div class="setting-card">
+                        <label for="slippage">Price movement room</label>
                         <input id="slippage" type="number" min="0.1" max="100" step="0.1" value="10" />
+                        <div class="explain">Higher means the bot is more likely to land a fast buy, but may accept a worse fill. 10-15% is the simple live-test zone.</div>
                       </div>
-                      <div>
-                        <label for="mirrorSells">Mirror source sells</label>
+                      <div class="setting-card">
+                        <label for="mirrorSells">Auto-follow sells</label>
                         <select id="mirrorSells">
-                          <option value="true">On</option>
-                          <option value="false">Off</option>
+                          <option value="true">On - sell when the wallet sells</option>
+                          <option value="false">Off - manual/risk exits only</option>
                         </select>
+                        <div class="explain">Recommended on. The bot exits when the strategy wallet exits, unless profit lock or stop loss sells first.</div>
                       </div>
                     </div>
                     <div class="row">
-                      <div>
-                        <label for="tipLamports">Tip lamports</label>
-                        <input id="tipLamports" type="number" min="0" step="1000" value="0" />
+                      <div class="setting-card">
+                        <label for="hybridLock">Profit lock</label>
+                        <select id="hybridLock">
+                          <option value="on">On - sell 50% at +30%, ride the rest</option>
+                          <option value="off">Off - only follow wallet/risk exits</option>
+                        </select>
+                        <div class="explain">Default: on. If a trade jumps +30%, the bot banks half, then lets the rest follow the source wallet's exit.</div>
                       </div>
-                      <div>
+                      <div class="setting-card">
+                        <label for="stopLoss">Emergency stop</label>
+                        <input id="stopLoss" type="number" min="0" max="100" step="1" placeholder="35" />
+                        <div class="explain">If price drops this much after the minimum hold time, the bot exits to avoid a full bag.</div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="setting-card">
+                        <label for="minHold">Stop-loss wait time</label>
+                        <select id="minHold">
+                          <option value="15000">15 seconds - faster protection</option>
+                          <option value="25000">25 seconds - gives launches room</option>
+                          <option value="45000">45 seconds - more patient</option>
+                        </select>
+                        <div class="explain">Prevents the bot from instantly panic-selling normal launch volatility.</div>
+                      </div>
+                      <div class="setting-card">
+                        <label for="takeProfit">Full take-profit</label>
+                        <input id="takeProfit" type="number" min="0" step="1" placeholder="Optional" />
+                        <div class="explain">Usually leave blank when profit lock is on. This would sell the remaining position at a fixed gain.</div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="setting-card">
+                        <label for="tipLamports">Speed tip</label>
+                        <input id="tipLamports" type="number" min="0" step="1000" value="0" />
+                        <div class="explain">Extra network incentive. Keep 0 for demos unless you are intentionally competing for first-slot buys.</div>
+                      </div>
+                      <div class="setting-card">
                         <label for="priorityFee">Priority fee</label>
                         <input id="priorityFee" type="number" min="0" step="1000" value="0" />
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div>
-                        <label for="stopLoss">Stop loss %</label>
-                        <input id="stopLoss" type="number" min="0" max="100" step="1" placeholder="35" />
-                      </div>
-                      <div>
-                        <label for="takeProfit">Take profit %</label>
-                        <input id="takeProfit" type="number" min="0" step="1" placeholder="optional" />
+                        <div class="explain">Extra compute priority. Keep 0 for controlled demos; raise only for aggressive live sniping.</div>
                       </div>
                     </div>
                     <button class="btn ghost" id="saveSettingsBtn" type="button">Save Settings</button>
@@ -331,7 +366,8 @@
         wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
         risk: "Medium/High",
         tags: ["Recommended", "+329 SOL audit", "Fast exits"],
-        note: "High-scoring follow wallet. Research showed strong realized PnL, fast median holds, and runner-style entries. Best used with source sells on."
+        note: "High-scoring follow wallet. Research showed strong realized PnL, fast median holds, and runner-style entries. Best used with source sells on.",
+        defaults: { amount: 0.01, maxBuy: 0.015, reserve: 0.03, copyPct: 0, slippage: 12, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 15000, hybrid: true, tip: 0, priority: 0 }
       },
       {
         id: "4bdk",
@@ -340,7 +376,8 @@
         wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk",
         risk: "Medium",
         tags: ["75% win audit", "Source exit", "Early"],
-        note: "Cleaner source-exit profile in research. Strong wallet PnL and a high realized win rate, but still volatile on tiny launch tokens."
+        note: "Cleaner source-exit profile in research. Strong wallet PnL and a high realized win rate, but still volatile on tiny launch tokens.",
+        defaults: { amount: 0.01, maxBuy: 0.015, reserve: 0.03, copyPct: 0, slippage: 10, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 25000, hybrid: true, tip: 0, priority: 0 }
       },
       {
         id: "2cq",
@@ -349,7 +386,8 @@
         wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
         risk: "High",
         tags: ["Early", "Many trades", "Runners"],
-        note: "Often appears extremely early. Research found multiple 50-100% runner paths, but it needs strict sizing because trade count is high."
+        note: "Often appears extremely early. Research found multiple 50-100% runner paths, but it needs strict sizing because trade count is high.",
+        defaults: { amount: 0.005, maxBuy: 0.01, reserve: 0.035, copyPct: 0, slippage: 15, mirrorSells: true, stopLoss: 30, takeProfit: "", minHold: 15000, hybrid: true, tip: 0, priority: 0 }
       },
       {
         id: "bwam",
@@ -358,7 +396,8 @@
         wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa",
         risk: "High",
         tags: ["Large PnL", "Whale flow", "Source exit"],
-        note: "Very large realized wallet PnL in the audit. Best presented as a high-risk whale-flow strategy with conservative bot sizing."
+        note: "Very large realized wallet PnL in the audit. Best presented as a high-risk whale-flow strategy with conservative bot sizing.",
+        defaults: { amount: 0.01, maxBuy: 0.02, reserve: 0.04, copyPct: 0, slippage: 12, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 25000, hybrid: true, tip: 0, priority: 0 }
       },
       {
         id: "omego",
@@ -367,7 +406,8 @@
         wallet: "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq",
         risk: "Research",
         tags: ["Many runners", "Experimental"],
-        note: "Saw many tokens with strong MFE, but mirror-source exit was weak in the audit. Keep this as research or shadow mode."
+        note: "Saw many tokens with strong MFE, but mirror-source exit was weak in the audit. Keep this as research or shadow mode.",
+        defaults: { amount: 0.005, maxBuy: 0.01, reserve: 0.04, copyPct: 0, slippage: 15, mirrorSells: true, stopLoss: 30, takeProfit: "", minHold: 15000, hybrid: true, tip: 0, priority: 0 }
       },
       {
         id: "custom",
@@ -376,7 +416,8 @@
         wallet: "",
         risk: "Custom",
         tags: ["Manual", "WalletTracker"],
-        note: "Use this for wallets discovered in WalletTracker or new strategy pools that are not packaged yet."
+        note: "Use this for wallets discovered in WalletTracker or new strategy pools that are not packaged yet.",
+        defaults: { amount: 0.01, maxBuy: 0.01, reserve: 0.03, copyPct: 0, slippage: 10, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 25000, hybrid: true, tip: 0, priority: 0 }
       }
     ];
     const AMOUNTS = [0.005, 0.01, 0.02, 0.03];
@@ -426,10 +467,33 @@
           if (!next) return;
           selectedStrategy = next;
           if (next.wallet) $("customWallets").value = next.wallet;
+          applyStrategyDefaults(next);
           renderStrategies();
           renderSelected();
+          toast(`${next.name} defaults loaded.`);
         });
       });
+    }
+
+    function applyStrategyDefaults(strategy) {
+      const d = strategy.defaults || {};
+      if (typeof d.amount === "number") {
+        selectedAmount = d.amount;
+        $("customAmount").value = "";
+      }
+      $("reserveSol").value = d.reserve ?? 0.03;
+      $("copyPct").value = d.copyPct ?? 0;
+      $("maxBuy").value = d.maxBuy ?? selectedAmount;
+      $("slippage").value = d.slippage ?? 10;
+      $("mirrorSells").value = d.mirrorSells === false ? "false" : "true";
+      $("hybridLock").value = d.hybrid === false ? "off" : "on";
+      $("stopLoss").value = d.stopLoss ?? 35;
+      $("takeProfit").value = d.takeProfit ?? "";
+      $("minHold").value = String(d.minHold ?? 25000);
+      $("tipLamports").value = d.tip ?? 0;
+      $("priorityFee").value = d.priority ?? 0;
+      $("presetNote").textContent = `${strategy.name} defaults: fixed ${selectedAmount.toFixed(3)} SOL buys, ${d.slippage ?? 10}% price room, ${d.mirrorSells === false ? "manual exits" : "auto-follow sells"}, profit lock ${d.hybrid === false ? "off" : "50% at +30%"}.`;
+      renderAmounts();
     }
 
     function renderAmounts() {
@@ -478,6 +542,11 @@
         priorityFeeMicroLamports: Number($("priorityFee").value || 0),
         stopLossPct: $("stopLoss").value,
         takeProfitPct: $("takeProfit").value,
+        minHoldBeforeStopLossMs: $("minHold").value,
+        hybridExitEnabled: $("hybridLock").value === "on",
+        hybridExitTpPct: "30",
+        hybridExitTpSellPct: "50",
+        hybridExitSourceExitRemaining: true,
         ...extra
       };
     }

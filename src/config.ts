@@ -924,15 +924,15 @@ export const pollIntervalMs = Math.max(
 );
 
 /** Optional risk exits. Percent values are measured against remaining cost basis. Empty/0 = disabled. */
-export const stopLossPct = parseOptionalPositiveNumber(process.env.STOP_LOSS_PCT);
-export const takeProfitPct = parseOptionalPositiveNumber(process.env.TAKE_PROFIT_PCT);
-export const hybridExitEnabled = parseEnvBool(process.env.HYBRID_EXIT_ENABLED, false);
-export const hybridExitTpPct = parseNonNegativeNumber(process.env.HYBRID_EXIT_TP_PCT, 30);
-export const hybridExitTpSellPct = Math.max(
+export let stopLossPct = parseOptionalPositiveNumber(process.env.STOP_LOSS_PCT);
+export let takeProfitPct = parseOptionalPositiveNumber(process.env.TAKE_PROFIT_PCT);
+export let hybridExitEnabled = parseEnvBool(process.env.HYBRID_EXIT_ENABLED, false);
+export let hybridExitTpPct = parseNonNegativeNumber(process.env.HYBRID_EXIT_TP_PCT, 30);
+export let hybridExitTpSellPct = Math.max(
   0,
   Math.min(100, parseNonNegativeNumber(process.env.HYBRID_EXIT_TP_SELL_PCT, 50))
 );
-export const hybridExitSourceExitRemaining = parseEnvBool(
+export let hybridExitSourceExitRemaining = parseEnvBool(
   process.env.HYBRID_EXIT_SOURCE_EXIT_REMAINING,
   true
 );
@@ -1001,11 +1001,63 @@ export const maxRiskQuotesPerCheck = Math.max(
  * Stop-loss grace period after a buy. Take-profit can still trigger immediately.
  * Default 3500ms protects against quote noise in the first tick or two without disarming SL when it matters most.
  */
-export const minHoldBeforeStopLossMs = Math.max(
+export let minHoldBeforeStopLossMs = Math.max(
   0,
   parseNonNegativeInteger(process.env.MIN_HOLD_BEFORE_STOP_LOSS_MS, 3500)
 );
-export const riskControlsEnabled = stopLossPct != null || takeProfitPct != null || hybridExitEnabled || profitLadderEnabled;
+export let riskControlsEnabled = stopLossPct != null || takeProfitPct != null || hybridExitEnabled || profitLadderEnabled;
+
+export type FriendRiskSettings = {
+  stopLossPct?: string | number | null;
+  takeProfitPct?: string | number | null;
+  minHoldBeforeStopLossMs?: string | number | null;
+  hybridExitEnabled?: boolean | string | number | null;
+  hybridExitTpPct?: string | number | null;
+  hybridExitTpSellPct?: string | number | null;
+  hybridExitSourceExitRemaining?: boolean | string | number | null;
+};
+
+function riskNumber(value: string | number | null | undefined): string | undefined {
+  if (value == null) return undefined;
+  return String(value).trim();
+}
+
+export function applyFriendRiskSettings(settings: FriendRiskSettings): void {
+  const nextStopLoss = riskNumber(settings.stopLossPct);
+  if (nextStopLoss !== undefined) {
+    process.env.STOP_LOSS_PCT = nextStopLoss;
+    stopLossPct = parseOptionalPositiveNumber(nextStopLoss);
+  }
+  const nextTakeProfit = riskNumber(settings.takeProfitPct);
+  if (nextTakeProfit !== undefined) {
+    process.env.TAKE_PROFIT_PCT = nextTakeProfit;
+    takeProfitPct = parseOptionalPositiveNumber(nextTakeProfit);
+  }
+  const nextMinHold = riskNumber(settings.minHoldBeforeStopLossMs);
+  if (nextMinHold !== undefined) {
+    process.env.MIN_HOLD_BEFORE_STOP_LOSS_MS = nextMinHold;
+    minHoldBeforeStopLossMs = Math.max(0, parseNonNegativeInteger(nextMinHold, minHoldBeforeStopLossMs));
+  }
+  if (settings.hybridExitEnabled != null) {
+    process.env.HYBRID_EXIT_ENABLED = String(settings.hybridExitEnabled);
+    hybridExitEnabled = parseEnvBool(process.env.HYBRID_EXIT_ENABLED, false);
+  }
+  const nextHybridTp = riskNumber(settings.hybridExitTpPct);
+  if (nextHybridTp !== undefined) {
+    process.env.HYBRID_EXIT_TP_PCT = nextHybridTp;
+    hybridExitTpPct = parseNonNegativeNumber(nextHybridTp, hybridExitTpPct);
+  }
+  const nextHybridSell = riskNumber(settings.hybridExitTpSellPct);
+  if (nextHybridSell !== undefined) {
+    process.env.HYBRID_EXIT_TP_SELL_PCT = nextHybridSell;
+    hybridExitTpSellPct = Math.max(0, Math.min(100, parseNonNegativeNumber(nextHybridSell, hybridExitTpSellPct)));
+  }
+  if (settings.hybridExitSourceExitRemaining != null) {
+    process.env.HYBRID_EXIT_SOURCE_EXIT_REMAINING = String(settings.hybridExitSourceExitRemaining);
+    hybridExitSourceExitRemaining = parseEnvBool(process.env.HYBRID_EXIT_SOURCE_EXIT_REMAINING, true);
+  }
+  riskControlsEnabled = stopLossPct != null || takeProfitPct != null || hybridExitEnabled || profitLadderEnabled;
+}
 
 /** Shared Jupiter quote throttle/backoff for buys, sells, and risk checks. */
 export const jupiterQuoteMinGapMs = Math.max(

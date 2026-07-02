@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import bs58 from "bs58";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import {
+  applyFriendRiskSettings,
   applyFriendBotSettings,
   getFriendBotSettings,
   type FriendBotSettings,
@@ -184,13 +185,16 @@ export function persistFriendRiskSettings(body: Record<string, unknown>): { risk
   };
 
   const updates: Array<[string, string]> = [];
+  const runtimeUpdates: Record<string, string | boolean> = {};
   for (const [bodyKey, envKey] of Object.entries(keyMap)) {
     const raw = body[bodyKey];
-    if (raw == null || raw === "") continue;
+    if (raw == null) continue;
     if (typeof raw === "boolean") {
       updates.push([envKey, raw ? "true" : "false"]);
+      runtimeUpdates[bodyKey] = raw;
     } else {
       updates.push([envKey, String(raw).trim()]);
+      runtimeUpdates[bodyKey] = String(raw).trim();
     }
   }
   if (updates.length === 0) return { riskUpdated: false };
@@ -205,6 +209,7 @@ export function persistFriendRiskSettings(body: Record<string, unknown>): { risk
     process.env[key] = value;
   }
   writeFileSync(envPath, `${lines.join("\n").replace(/\n+$/, "")}\n`);
+  applyFriendRiskSettings(runtimeUpdates);
   return { riskUpdated: true };
 }
 
