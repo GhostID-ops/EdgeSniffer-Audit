@@ -121,6 +121,30 @@
     .metric span { display: block; color: var(--muted); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .45px; }
     .metric strong { display: block; margin-top: 8px; font-size: 21px; letter-spacing: -.4px; overflow-wrap: anywhere; }
     .mini { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .status-panel { display: grid; gap: 8px; }
+    .check-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      border: 1px solid var(--line); border-radius: 8px; background: #05070a; padding: 10px 11px;
+    }
+    .check-row span:first-child { color: var(--soft); font-size: 12.5px; font-weight: 850; }
+    .check-state { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; font-weight: 950; text-align: right; }
+    .check-state::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #667085; }
+    .check-state.ok { color: var(--green); }
+    .check-state.ok::before { background: var(--green); box-shadow: 0 0 12px rgba(93,242,174,.58); }
+    .check-state.warn { color: var(--amber); }
+    .check-state.warn::before { background: var(--amber); box-shadow: 0 0 12px rgba(243,201,105,.45); }
+    .check-state.bad { color: var(--red); }
+    .check-state.bad::before { background: var(--red); box-shadow: 0 0 12px rgba(255,115,115,.45); }
+    .strategy-summary {
+      border: 1px solid rgba(93,242,174,.24); border-radius: 8px; background: rgba(93,242,174,.06);
+      padding: 12px; color: var(--soft); font-size: 13px; line-height: 1.45; margin-top: 10px;
+    }
+    .strategy-summary b { color: var(--text); }
+    .live-warning {
+      display: none; border: 1px solid rgba(255,115,115,.45); border-radius: 8px;
+      background: rgba(255,115,115,.09); color: #ffd7d7; padding: 11px 12px; font-size: 12.5px; line-height: 1.42;
+    }
+    .live-warning.show { display: block; }
     .feed { height: 292px; overflow: auto; display: grid; align-content: start; gap: 8px; padding-right: 2px; }
     .log {
       border: 1px solid var(--line); border-radius: 8px; background: #05070a; padding: 10px 11px;
@@ -265,6 +289,7 @@
                     <button class="btn ghost" id="useCustomBtn" type="button">Use Custom Wallet</button>
                   </div>
                 </details>
+                <div class="strategy-summary" id="strategySummary">Choose a strategy to see exactly what the bot will buy and how it exits.</div>
               </div>
             </div>
 
@@ -284,6 +309,20 @@
                     <div class="hint">The bot will leave this much SOL unused so the wallet can still pay network fees.</div>
                   </div>
                 </div>
+                <div class="live-warning" id="liveWarning">
+                  Live Money mode can spend real SOL from this wallet. Start in Shadow mode or tiny live size until the first test trade looks right.
+                </div>
+                <details class="details" style="margin-top:12px" open>
+                  <summary>Pre-flight checklist before Start</summary>
+                  <div class="details-body status-panel" id="preflightList">
+                    <div class="check-row"><span>Private key</span><span class="check-state warn">Checking</span></div>
+                    <div class="check-row"><span>Balance</span><span class="check-state warn">Checking</span></div>
+                    <div class="check-row"><span>Tracked wallet</span><span class="check-state warn">Checking</span></div>
+                    <div class="check-row"><span>Live / Shadow mode</span><span class="check-state warn">Checking</span></div>
+                    <div class="check-row"><span>ShredStream / gRPC</span><span class="check-state warn">Checking</span></div>
+                    <div class="check-row"><span>Rust executor</span><span class="check-state warn">Checking</span></div>
+                  </div>
+                </details>
                 <div class="btns">
                   <button class="btn primary" id="startBtn" type="button">Start Copy Trading</button>
                   <button class="btn danger" id="stopBtn" type="button">Stop Bot</button>
@@ -381,12 +420,28 @@
           <div class="metric">
             <span>Per Buy</span>
             <strong id="selectedAmount">--</strong>
-            <div class="mini">Fixed size by default</div>
+            <div class="mini" id="selectedExit">Fixed size by default</div>
           </div>
           <div class="metric">
             <span>Open</span>
             <strong id="openCount">0</strong>
             <div class="mini">Active positions</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head">
+            <div class="card-title">Connection Status</div>
+            <button class="btn ghost" id="refreshBalanceBtn" type="button">Refresh Balance</button>
+          </div>
+          <div class="card-body">
+            <div class="status-panel" id="connectionPanel">
+              <div class="check-row"><span>Streams</span><span class="check-state warn">Waiting</span></div>
+              <div class="check-row"><span>Executor</span><span class="check-state warn">Waiting</span></div>
+              <div class="check-row"><span>Trading</span><span class="check-state warn">Stopped</span></div>
+              <div class="check-row"><span>Wallet</span><span class="check-state warn">Checking</span></div>
+            </div>
+            <div class="hint" id="balanceHelp">Use Refresh Balance after saving a wallet. If it stays 0, the wallet may be new, the RPC may be lagging, or the key may not be the funded wallet.</div>
           </div>
         </div>
 
@@ -617,9 +672,14 @@
     let selectedStrategy = STRATEGIES[0];
     let selectedAmount = 0.01;
     let lastLogIndex = 0;
+    let recentLogLines = [];
 
     function fmtSol(n) {
       return typeof n === "number" && Number.isFinite(n) ? `${n.toFixed(4)} SOL` : "--";
+    }
+
+    function isPositive(n) {
+      return typeof n === "number" && Number.isFinite(n) && n > 0;
     }
 
     function toast(msg) {
@@ -784,6 +844,14 @@
       $("selectedName").textContent = selectedStrategy.name;
       $("selectedRisk").textContent = `${selectedStrategy.risk} risk`;
       $("selectedAmount").textContent = `${selectedAmount.toFixed(3)} SOL`;
+      const d = selectedStrategy.defaults || {};
+      $("selectedExit").textContent = d.hybrid === false ? "Source/risk exits" : "50% at +30%, then source sell";
+      $("strategySummary").innerHTML = `
+        <b>${esc(selectedStrategy.name)}</b> buys the selected wallet with a default ${selectedAmount.toFixed(3)} SOL size,
+        caps each buy at ${Number(d.maxBuy ?? selectedAmount).toFixed(3)} SOL, keeps ${Number(d.reserve ?? 0.03).toFixed(3)} SOL reserved,
+        and exits with ${d.hybrid === false ? "source sells plus risk controls" : "profit lock at +30% plus source sells"}.
+      `;
+      updateSafetyPanels();
     }
 
     function getWalletsForSave() {
@@ -840,7 +908,23 @@
       renderSelected();
     }
 
+    function explainFailure(line) {
+      const raw = String(line || "");
+      const lower = raw.toLowerCase();
+      if (!/failed|instructionerror|preflight|custom|error/.test(lower)) return null;
+      let reason = "the price/curve moved or the route became unsafe before confirmation";
+      if (lower.includes("insufficient")) reason = "the wallet did not have enough available SOL after reserve and fees";
+      else if (lower.includes("slippage")) reason = "slippage protection blocked a worse-than-allowed fill";
+      else if (lower.includes("6023") || lower.includes("overflow")) reason = "PumpSwap price math overflowed after the pool moved";
+      else if (lower.includes("6042")) reason = "the Pump.fun curve/account state changed before the transaction landed";
+      else if (lower.includes("blockhash")) reason = "the transaction expired before the cluster accepted it";
+      else if (lower.includes("429") || lower.includes("rate limited")) reason = "an RPC provider rate-limited a supporting balance/status check";
+      return `Buy attempted but did not complete on-chain. No tokens were recorded for this wallet. Reason: ${reason}.`;
+    }
+
     function friendlyLog(line) {
+      const explained = explainFailure(line);
+      if (explained) return explained;
       return String(line || "")
         .replace(/gRPC detected swap/i, "Wallet activity detected")
         .replace(/Processing buy/i, "Processing buy")
@@ -851,6 +935,78 @@
         .replace(/\| logs=.*/i, "");
     }
 
+    function setRows(containerId, rows) {
+      $(containerId).innerHTML = rows.map((row) => `
+        <div class="check-row">
+          <span>${esc(row.label)}</span>
+          <span class="check-state ${row.kind}">${esc(row.value)}</span>
+        </div>
+      `).join("");
+    }
+
+    function inferInfra() {
+      const text = recentLogLines.join("\n").toLowerCase();
+      const grpc = /grpc: subscribed|grpc detected/.test(text);
+      const shred = /shredstream: connected|subscribed to jito shredstream|jito shredstream/.test(text);
+      const rabbit = /rabbitstream: subscribed/.test(text);
+      const executor = /rust executor.*ready|command bridge ready|rust executor command channel ready/.test(text);
+      return { grpc, shred, rabbit, executor };
+    }
+
+    function updateSafetyPanels() {
+      if (!$("preflightList") || !$("connectionPanel")) return;
+      const trackedWallets = getWalletsForSave();
+      const hasWallet = !!state?.ourWallet;
+      const hasTracked = trackedWallets.length > 0 && trackedWallets.every(Boolean);
+      const balance = state?.lastBalanceSol;
+      const funded = isPositive(balance);
+      const live = state?.simulationMode === false;
+      const infra = inferInfra();
+      const streamsReady = infra.grpc || infra.shred || infra.rabbit;
+      const liveSize = Math.max(Number($("maxBuy").value || selectedAmount), selectedAmount);
+      const tinyLive = liveSize <= 0.01;
+
+      setRows("preflightList", [
+        { label: "Private key", value: hasWallet ? "Saved" : "Missing", kind: hasWallet ? "ok" : "bad" },
+        {
+          label: "Balance",
+          value: funded ? fmtSol(balance) : live ? "0 or unknown" : "Not required in Shadow",
+          kind: funded ? "ok" : live ? "bad" : "warn"
+        },
+        { label: "Tracked wallet", value: hasTracked ? "Selected" : "Missing", kind: hasTracked ? "ok" : "bad" },
+        {
+          label: "Live / Shadow mode",
+          value: live ? (tinyLive ? "Live tiny size" : "Live larger size") : "Shadow safe",
+          kind: live ? (tinyLive ? "warn" : "bad") : "ok"
+        },
+        {
+          label: "ShredStream / gRPC",
+          value: streamsReady ? "Connected" : state?.running ? "Waiting" : "Starts with bot",
+          kind: streamsReady ? "ok" : "warn"
+        },
+        {
+          label: "Rust executor",
+          value: infra.executor ? "Ready" : state?.running ? "Waiting" : "Starts with bot",
+          kind: infra.executor ? "ok" : "warn"
+        }
+      ]);
+
+      setRows("connectionPanel", [
+        { label: "Streams", value: streamsReady ? "Connected" : state?.running ? "Connecting" : "Stopped", kind: streamsReady ? "ok" : "warn" },
+        { label: "Executor", value: infra.executor ? "Ready" : state?.running ? "Waiting" : "Stopped", kind: infra.executor ? "ok" : "warn" },
+        { label: "Trading", value: state?.running ? "Running" : "Stopped", kind: state?.running ? "ok" : "warn" },
+        { label: "Wallet", value: funded ? "Funded" : hasWallet ? "0 or unknown" : "No key", kind: funded ? "ok" : hasWallet ? "warn" : "bad" }
+      ]);
+
+      $("liveWarning").classList.toggle("show", live);
+      $("balanceHelp").textContent = funded
+        ? `Wallet balance refreshed: ${fmtSol(balance)}.`
+        : hasWallet
+          ? "Balance is 0 or unknown. This can mean the wallet is new, RPC lagged, the key is not the funded wallet, or Shadow mode has not started its simulated balance yet."
+          : "Save a wallet first, then use Refresh Balance/Status.";
+      $("startBtn").disabled = !hasWallet || !hasTracked || (live && !funded);
+    }
+
     function renderState(next) {
       state = next || state;
       const running = !!state?.running;
@@ -859,6 +1015,7 @@
       $("modeText").textContent = state?.simulationMode ? "Shadow" : "Live";
       $("balanceText").textContent = fmtSol(state?.lastBalanceSol);
       $("openCount").textContent = String(state?.positions?.length || 0);
+      updateSafetyPanels();
       $("positions").innerHTML = (state?.positions || []).length
         ? state.positions.map((p, i) => `
           <div class="position">
@@ -895,8 +1052,12 @@
       const lines = data.logs || [];
       for (const row of lines) {
         if (typeof row.ts === "number" && row.ts > lastLogIndex) lastLogIndex = row.ts;
+        const raw = row.message || row.line || row;
+        recentLogLines.push(String(raw || ""));
       }
+      recentLogLines = recentLogLines.slice(-220);
       if (!feed.children.length && !lines.length) {
+        updateSafetyPanels();
         feed.innerHTML = `<div class="log">Waiting for wallet activity...</div>`;
         return;
       }
@@ -913,6 +1074,7 @@
       }
       while (feed.children.length > 80) feed.removeChild(feed.firstChild);
       feed.scrollTop = feed.scrollHeight;
+      updateSafetyPanels();
     }
 
     async function refresh() {
@@ -941,6 +1103,10 @@
     });
     $("toggleModeBtn").addEventListener("click", async () => {
       const nextSimulationMode = state?.simulationMode === false;
+      if (!nextSimulationMode) {
+        const ok = window.confirm("LIVE MONEY WARNING\n\nThis can spend real SOL from the saved wallet. Start with tiny size, confirm the tracked wallet, and keep only test funds in this wallet.\n\nSwitch to Live mode?");
+        if (!ok) return;
+      }
       await saveSettings({ simulationMode: nextSimulationMode });
       toast(nextSimulationMode ? "Switched to Shadow mode." : "Switched to Live mode.");
     });
@@ -960,6 +1126,24 @@
     $("saveSettingsBtn").addEventListener("click", () => saveSettings().catch((e) => toast(e.message)));
     $("startBtn").addEventListener("click", async () => {
       const payload = settingsPayload();
+      if (state?.simulationMode === false) {
+        const maxLive = Math.max(Number(payload.maxBuySol || 0), Number(payload.minBuySol || 0));
+        if (maxLive > 0.01) {
+          const ok = window.confirm(`LIVE MONEY WARNING\n\nThis can spend real SOL. Your max buy is ${maxLive.toFixed(3)} SOL, which is above the beginner test size of 0.010 SOL.\n\nPress OK only if you intentionally want to override tiny live mode.`);
+          if (!ok) {
+            selectedAmount = 0.01;
+            $("customAmount").value = "";
+            $("maxBuy").value = 0.01;
+            renderAmounts();
+            renderSelected();
+            toast("Changed to tiny live size: 0.010 SOL. Press Start again when ready.");
+            return;
+          }
+        } else {
+          const ok = window.confirm("LIVE MONEY WARNING\n\nThis can spend real SOL. Confirm you want to start live copy trading with tiny test sizing.");
+          if (!ok) return;
+        }
+      }
       await api("/api/start", { method: "POST", body: JSON.stringify(payload) });
       toast("Bot started.");
       await refresh();
@@ -982,6 +1166,10 @@
       await refresh();
     });
     $("refreshBtn").addEventListener("click", () => refresh().catch((e) => toast(e.message)));
+    $("refreshBalanceBtn").addEventListener("click", () => {
+      toast("Refreshing wallet balance and connection status...");
+      refresh().catch((e) => toast(e.message));
+    });
     $("closeStrategyModal").addEventListener("click", closeStrategyResearch);
     $("strategyModal").addEventListener("click", (event) => {
       if (event.target === $("strategyModal")) closeStrategyResearch();
