@@ -7,22 +7,28 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #0b0d12;
-      --panel: #141821;
-      --panel-2: #191f2b;
-      --line: #293142;
+      --bg: #020304;
+      --panel: #07090d;
+      --panel-2: #0b0e14;
+      --line: #1a202c;
       --text: #f6f8fc;
-      --muted: #9aa4b6;
-      --soft: #cbd3e1;
-      --blue: #7dd3fc;
-      --green: #47e5a4;
+      --muted: #7f8796;
+      --soft: #d5dbe7;
+      --blue: #8bd8ff;
+      --green: #5df2ae;
       --amber: #f3c969;
       --red: #ff7373;
-      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --shadow: 0 24px 90px rgba(0,0,0,.62);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
+    body {
+      margin: 0; min-height: 100vh; color: var(--text);
+      background:
+        radial-gradient(900px 500px at 82% -12%, rgba(93,242,174,.07), transparent 58%),
+        radial-gradient(700px 440px at -10% 14%, rgba(139,216,255,.06), transparent 60%),
+        var(--bg);
+    }
     button, input, textarea, select { font: inherit; }
     button { cursor: pointer; }
     button:disabled { cursor: not-allowed; opacity: .55; }
@@ -30,29 +36,29 @@
     .top {
       display: flex; align-items: center; justify-content: space-between; gap: 16px;
       padding: 16px 0 18px; position: sticky; top: 0; z-index: 5;
-      background: rgba(11,13,18,.86); backdrop-filter: blur(14px);
+      background: rgba(2,3,4,.88); backdrop-filter: blur(14px);
     }
     .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-    .mark { width: 38px; height: 38px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(135deg, var(--blue), var(--green)); color: #061018; font-weight: 950; }
+    .mark { width: 38px; height: 38px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(135deg, var(--blue), var(--green)); color: #020304; font-weight: 950; box-shadow: 0 0 28px rgba(93,242,174,.18); }
     h1 { margin: 0; font-size: 22px; letter-spacing: -.3px; }
     .subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
     .status-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
     .pill {
       display: inline-flex; align-items: center; gap: 7px; min-height: 32px; padding: 6px 10px;
       border: 1px solid var(--line); border-radius: 999px; color: var(--soft); font-size: 12px; font-weight: 800;
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.025);
     }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: #667085; }
     .dot.on { background: var(--green); box-shadow: 0 0 14px rgba(71,229,164,.7); }
     .dot.warn { background: var(--amber); box-shadow: 0 0 14px rgba(243,201,105,.55); }
     .grid { display: grid; grid-template-columns: 1.03fr .97fr; gap: 16px; align-items: start; }
     .card {
-      border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
+      border: 1px solid var(--line); border-radius: 8px; background: linear-gradient(180deg, rgba(12,15,22,.96), rgba(7,9,13,.98));
       box-shadow: var(--shadow); overflow: hidden;
     }
     .card-head {
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      padding: 15px 16px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.02);
+      padding: 15px 16px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.018);
     }
     .card-title { font-size: 15px; font-weight: 900; letter-spacing: -.1px; }
     .card-body { padding: 16px; }
@@ -66,7 +72,7 @@
     .hint { color: var(--muted); font-size: 12.5px; line-height: 1.45; margin-top: 7px; }
     label { display: block; color: var(--soft); font-size: 12px; font-weight: 850; margin: 0 0 7px; }
     input, textarea, select {
-      width: 100%; border: 1px solid var(--line); background: #0f131b; color: var(--text);
+      width: 100%; border: 1px solid var(--line); background: #05070a; color: var(--text);
       border-radius: 8px; padding: 11px 12px; outline: none;
     }
     textarea { min-height: 76px; resize: vertical; line-height: 1.4; }
@@ -75,13 +81,13 @@
     .amounts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .amount {
       min-height: 42px; border: 1px solid var(--line); border-radius: 8px;
-      background: #0f131b; color: var(--soft); font-weight: 900;
+      background: #05070a; color: var(--soft); font-weight: 900;
     }
     .amount.active { border-color: var(--green); color: #07130f; background: var(--green); }
     .strategies { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .strategy {
       border: 1px solid var(--line); border-radius: 8px; padding: 13px;
-      background: #0f131b; color: inherit; text-align: left; min-height: 138px;
+      background: linear-gradient(180deg, #080b10, #05070a); color: inherit; text-align: left; min-height: 138px;
       display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
     }
     .strategy:hover { border-color: rgba(125,211,252,.55); }
@@ -95,19 +101,19 @@
     .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
     .btn {
       min-height: 48px; border: 1px solid var(--line); border-radius: 8px; padding: 11px 14px;
-      background: rgba(255,255,255,.04); color: var(--text); font-weight: 950;
+      background: rgba(255,255,255,.035); color: var(--text); font-weight: 950;
     }
     .btn.primary { border-color: transparent; color: #061018; background: linear-gradient(135deg, var(--green), var(--blue)); }
     .btn.danger { border-color: rgba(255,115,115,.55); color: #fff; background: rgba(255,115,115,.12); }
-    .btn.ghost { color: var(--soft); background: #0f131b; }
+    .btn.ghost { color: var(--soft); background: #05070a; }
     .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-    .metric { border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); padding: 13px; min-height: 80px; }
+    .metric { border: 1px solid var(--line); border-radius: 8px; background: linear-gradient(180deg, #0b0e14, #06080c); padding: 13px; min-height: 80px; }
     .metric span { display: block; color: var(--muted); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .45px; }
     .metric strong { display: block; margin-top: 8px; font-size: 21px; letter-spacing: -.4px; overflow-wrap: anywhere; }
     .mini { font-size: 12px; color: var(--muted); margin-top: 6px; }
     .feed { height: 292px; overflow: auto; display: grid; align-content: start; gap: 8px; padding-right: 2px; }
     .log {
-      border: 1px solid var(--line); border-radius: 8px; background: #0f131b; padding: 10px 11px;
+      border: 1px solid var(--line); border-radius: 8px; background: #05070a; padding: 10px 11px;
       color: var(--soft); font-size: 12.5px; line-height: 1.4;
     }
     .log.good { border-color: rgba(71,229,164,.4); }
@@ -115,12 +121,20 @@
     .log.warn { border-color: rgba(243,201,105,.42); }
     .positions { display: grid; gap: 8px; }
     .position {
-      display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center;
-      border: 1px solid var(--line); border-radius: 8px; background: #0f131b; padding: 11px;
+      display: grid; gap: 10px;
+      border: 1px solid var(--line); border-radius: 8px; background: #05070a; padding: 11px;
     }
     .position b { display: block; font-size: 13px; }
     .position span { color: var(--muted); font-size: 12px; }
-    .details { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #0f131b; }
+    .position-top { display: flex; justify-content: space-between; gap: 10px; align-items: start; }
+    .sell-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .sell-action {
+      min-height: 36px; border: 1px solid var(--line); border-radius: 8px;
+      color: var(--soft); background: #080b10; font-size: 12px; font-weight: 950;
+    }
+    .sell-action:hover { border-color: rgba(93,242,174,.55); color: var(--green); }
+    .sell-action.full { border-color: rgba(255,115,115,.45); color: #ffd5d5; background: rgba(255,115,115,.08); }
+    .details { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #05070a; }
     .details summary { padding: 12px 13px; font-weight: 950; cursor: pointer; color: var(--soft); }
     .details-body { padding: 0 13px 13px; display: grid; gap: 10px; }
     .preset-note {
@@ -593,15 +607,27 @@
       $("positions").innerHTML = (state?.positions || []).length
         ? state.positions.map((p, i) => `
           <div class="position">
-            <div><b>${p.symbol || p.mint?.slice(0, 6) || "Token"}</b><span>${fmtSol((p.costBasisLamports || 0) / 1e9)} deployed</span></div>
-            <button class="btn ghost" type="button" data-sell="${i + 1}">Sell</button>
+            <div class="position-top">
+              <div>
+                <b>${p.symbol || p.mint?.slice(0, 6) || "Token"}</b>
+                <span>${fmtSol((p.costBasisLamports || 0) / 1e9)} deployed</span>
+              </div>
+              <span>${p.mint ? p.mint.slice(0, 4) + "..." + p.mint.slice(-4) : ""}</span>
+            </div>
+            <div class="sell-actions">
+              <button class="sell-action" type="button" data-sell-pct="${i + 1}:0.25">Sell 25%</button>
+              <button class="sell-action" type="button" data-sell-pct="${i + 1}:0.5">Sell 50%</button>
+              <button class="sell-action full" type="button" data-sell-pct="${i + 1}:1">Sell 100%</button>
+            </div>
           </div>
         `).join("")
         : `<div class="log">No open positions yet.</div>`;
-      document.querySelectorAll("[data-sell]").forEach((btn) => {
+      document.querySelectorAll("[data-sell-pct]").forEach((btn) => {
         btn.addEventListener("click", async () => {
-          await api(`/api/actions/sell-position/${btn.dataset.sell}`, { method: "POST", body: "{}" });
-          toast("Sell requested.");
+          const [index, fraction] = String(btn.dataset.sellPct).split(":");
+          const pct = Math.round(Number(fraction) * 100);
+          await api(`/api/actions/sell-position-percent/${index}?fraction=${fraction}`, { method: "POST", body: "{}" });
+          toast(`Sell ${pct}% requested.`);
           await refresh();
         });
       });
