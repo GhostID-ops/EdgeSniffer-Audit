@@ -7,6 +7,7 @@ import {
   startBot,
   stopBot,
   getBotState,
+  reloadWalletFromEnv,
   sellAllPositions,
   sellPositionByIndex,
   sellPositionPercentByIndex,
@@ -313,10 +314,12 @@ async function handle(
       const secretStatus = persistFriendSecretSettings(body);
       const settings = normalizeFriendSettings(body);
       const riskStatus = persistFriendRiskSettings(body);
+      if (secretStatus.privateKeyUpdated) await reloadWalletFromEnv();
       setMirrorSellsEnabled(settings.mirrorSells);
       return sendJson(res, 200, {
         ok: true,
         settings: persistFriendSettings(settings),
+        state: getBotState(),
         ...secretStatus,
         ...riskStatus,
       });
@@ -339,12 +342,13 @@ async function handle(
       let settings = getFriendBotSettings();
       const secretStatus = persistFriendSecretSettings(body);
       const riskStatus = persistFriendRiskSettings(body);
+      if (secretStatus.privateKeyUpdated) await reloadWalletFromEnv();
       if (Object.keys(body).length > 0) {
         settings = persistFriendSettings(normalizeFriendSettings(body));
         setMirrorSellsEnabled(settings.mirrorSells);
       }
       await startBot();
-      return sendJson(res, 200, { ok: true, settings, ...secretStatus, ...riskStatus });
+      return sendJson(res, 200, { ok: true, settings, state: getBotState(), ...secretStatus, ...riskStatus });
     } catch (err) {
       return sendError(
         res,

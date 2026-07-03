@@ -4233,13 +4233,20 @@ async function loop(): Promise<void> {
   console.log("Bot stopped.");
 }
 
+export async function reloadWalletFromEnv(): Promise<Keypair> {
+  const loaded = Keypair.fromSecretKey(bs58.decode(getPrivateKeyBase58()));
+  keypair = loaded;
+  await updateBalance(loaded.publicKey, { log: false });
+  return loaded;
+}
+
 export async function startBot(): Promise<void> {
   if (running) return;
   await validateLicense();
   if (trackedWallets.length === 0) {
     throw new Error("No TRACKED_WALLETS set in .env.");
   }
-  keypair = Keypair.fromSecretKey(bs58.decode(getPrivateKeyBase58()));
+  const kp = await reloadWalletFromEnv();
   running = true;
   startedAt = null;
   stopRequested = false;
@@ -4250,7 +4257,7 @@ export async function startBot(): Promise<void> {
   startBlockhashCache();
   console.log(
     "Copytrading bot started. Our wallet:",
-    keypair.publicKey.toBase58()
+    kp.publicKey.toBase58()
   );
   const watchedWallets = getWatchedWallets();
   console.log("Tracked wallets:", trackedWallets.length);
@@ -4278,7 +4285,7 @@ export async function startBot(): Promise<void> {
 
   // Send Telegram notification
   void telegram.notifyBotStatus("started");
-  await updateBalance(keypair.publicKey);
+  await updateBalance(kp.publicKey);
   captureSessionStartBalance();
   if (simulationMode) {
     console.log(
@@ -4352,13 +4359,12 @@ export async function startBot(): Promise<void> {
   await Promise.allSettled([
     warmConnection(),
     warmPumpSwapStaticAccounts(),
-    warmWalletAccounts(keypair.publicKey),
+    warmWalletAccounts(kp.publicKey),
     warmExecutionAltAccounts(console.log),
   ]);
   startedAt = Date.now();
   console.log("Fresh start - only trades from this moment onward will be mirrored.");
 
-  const kp = keypair;
   if (rustSidecarEnabled) {
     unsubscribeRustSidecar = await startRustPumpFunSidecar(
       processedSignatures,

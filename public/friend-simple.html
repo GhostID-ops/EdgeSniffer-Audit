@@ -661,9 +661,10 @@
     $("saveKeyBtn").addEventListener("click", async () => {
       const key = $("privateKey").value.trim();
       if (!key) return toast("Paste a private key first.");
-      await api("/api/settings", { method: "POST", body: JSON.stringify({ privateKeyBase58: key }) });
+      const saved = await api("/api/settings", { method: "POST", body: JSON.stringify({ privateKeyBase58: key }) });
+      if (saved.state) state = saved.state;
       $("privateKey").value = "";
-      toast("Wallet saved.");
+      toast(saved.state?.ourWallet ? "Wallet saved and loaded." : "Wallet saved. Refreshing wallet state...");
       await refresh();
     });
     $("preset").addEventListener("change", applyPreset);
