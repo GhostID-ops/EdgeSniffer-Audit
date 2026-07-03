@@ -142,6 +142,8 @@ const ENV_KEYS = [
   "JITO_TIP_FLOOR_URL",
   "TIP_LAMPORTS",
   "PRIORITY_FEE_MICRO_LAMPORTS",
+  "COMPUTE_UNIT_LIMIT",
+  "MAX_BUY_EXECUTION_FEE_SOL",
   "DYNAMIC_PRIORITY_FEE_ENABLED",
   "DYNAMIC_PRIORITY_FEE_REFRESH_MS",
   "DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS",
@@ -184,9 +186,18 @@ const SPEED_MODE_ENV: Record<string, string> = {
   RUST_EXECUTOR_ENABLED: "true",
   RUST_EXECUTOR_TIMEOUT_MS: "1500",
   RUST_HOT_SNIPER_ENABLED: "true",
-  RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "",
-  RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "",
-  RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "",
+  RUST_HOT_SNIPER_PRIMARY: "true",
+  RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED: "true",
+  RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS: "20",
+  // Real cheap-tier fees, NOT blank. Blank values here made the hot sniper fire with a
+  // zero tip/priority, which loses every contested slot. See FEE_TIERS.cheap below.
+  RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
+  RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "3000000",
+  RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
+  COMPUTE_UNIT_LIMIT: "400000",
+  TIP_LAMPORTS: "3000000",
+  PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
+  MAX_BUY_EXECUTION_FEE_SOL: "0.02",
   JITO_TIP_ORACLE_ENABLED: "true",
   JITO_TIP_ORACLE_PERCENTILE: "p75",
   JITO_TIP_ORACLE_REFRESH_MS: "5000",
@@ -201,6 +212,54 @@ const SPEED_MODE_ENV: Record<string, string> = {
   PUMPFUN_EXACT_SOL_IN_BUYS: "true",
   PUMPSWAP_DIRECT_BUY_ENABLED: "true",
   PUMPSWAP_DIRECT_PREFLIGHT: "true",
+};
+
+// One-switch same-slot sniper. Turns on the ShredStream hot-sniper overlay + the
+// broadcast race. Fee VALUES come from a FEE_TIERS preset so the sniper never fires
+// with a zero bid. Toggling requires a service restart (the Rust sidecar reads these
+// at startup and subscribes to ShredStream), which the endpoints below trigger.
+const SAME_SLOT_CORE_ON: Record<string, string> = {
+  RUST_HOT_SNIPER_ENABLED: "true",
+  RUST_HOT_SNIPER_PRIMARY: "true",
+  RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED: "true",
+  RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS: "20",
+  JITO_SHREDSTREAM_ENABLED: "true",
+  JITO_TIP_ORACLE_ENABLED: "true",
+  DYNAMIC_PRIORITY_FEE_ENABLED: "true",
+  JITO_CONNECTION_WARMUP_ENABLED: "true",
+  BROADCAST_RACE_ENABLED: "true",
+  JITO_SEND_MODE: "race",
+  EXECUTION_MULTI_SEND_ENABLED: "true",
+  SENDER_RPC_FALLBACK_ENABLED: "true",
+};
+
+const SAME_SLOT_OFF: Record<string, string> = {
+  RUST_HOT_SNIPER_ENABLED: "false",
+  RUST_HOT_SNIPER_PRIMARY: "false",
+};
+
+// Priority is charged per compute unit (price x COMPUTE_UNIT_LIMIT), so "cheap" keeps an
+// aggressive per-CU price but shrinks the requested CU limit to cut total spend ~5x.
+// Approx cost per LANDED snipe: cheap ~0.006 SOL, aggressive ~0.037 SOL.
+const FEE_TIERS: Record<string, Record<string, string>> = {
+  cheap: {
+    COMPUTE_UNIT_LIMIT: "400000",
+    RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "3000000",
+    RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
+    RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
+    TIP_LAMPORTS: "3000000",
+    PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
+    MAX_BUY_EXECUTION_FEE_SOL: "0.02",
+  },
+  aggressive: {
+    COMPUTE_UNIT_LIMIT: "1400000",
+    RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "10000000",
+    RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "1500000",
+    RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "18000000",
+    TIP_LAMPORTS: "10000000",
+    PRIORITY_FEE_MICRO_LAMPORTS: "18000000",
+    MAX_BUY_EXECUTION_FEE_SOL: "0.05",
+  },
 };
 
 function execCommand(command: string, args: string[], cwd?: string): Promise<string> {
@@ -386,6 +445,9 @@ function html(): string {
   .pill.active{color:#03130a;background:var(--green);border-color:var(--green)}.pill.inactive{color:#190407;background:var(--red);border-color:var(--red)}
   .actions{display:flex;gap:8px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
   .actions.trade{background:#0b0d11}
+  .actions.sniper{background:#0c1116;align-items:center}
+  .sstate{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;margin-right:auto}
+  .son{color:var(--green);font-weight:800}.soff{color:var(--amber);font-weight:800}
   button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:8px;height:34px;padding:0 12px;cursor:pointer}button:hover{border-color:var(--blue)}button.danger:hover{border-color:var(--red)}
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px}
   label{display:grid;gap:5px;color:var(--muted);font-size:12px}input,textarea{width:100%;border:1px solid var(--line);background:#080a0e;color:var(--text);border-radius:8px;padding:9px;font:inherit;font-size:13px}
@@ -405,7 +467,10 @@ const ids=["main","4bdk","5qn","cya"];
 function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.hidden=false;setTimeout(()=>el.hidden=true,4500)}
 async function api(url, opts){const res=await fetch(url,opts);const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||res.statusText);return data}
 function field(id,key,val){const area=key==="TRAILING_STEPS"||key==="PROFIT_LADDER_STEPS"||key==="TRACKED_WALLETS"||key==="EXECUTION_TIP_MULTIPLIERS"||key.endsWith("_URL");return '<label class="'+(area?'wide':'')+'"><span>'+key+'</span>'+(area?'<textarea data-i="'+id+'" data-k="'+key+'">'+(val||'')+'</textarea>':'<input data-i="'+id+'" data-k="'+key+'" value="'+(val||'').replaceAll('"','&quot;')+'">')+'</label>'}
-function card(s){const pill=s.active==="active"?"active":"inactive";return '<section class="inst"><div class="head"><div><div class="name">'+s.label+'</div><div class="sub">'+s.service+' · '+s.dir+' · API '+s.apiPort+'</div></div><div class="pill '+pill+'">'+s.active+'</div></div><div class="actions"><button onclick="act(\\''+s.id+'\\',\\'start\\')">Start</button><button class="danger" onclick="act(\\''+s.id+'\\',\\'stop\\')">Stop</button><button onclick="act(\\''+s.id+'\\',\\'restart\\')">Restart</button><button onclick="deploy(\\''+s.id+'\\')">Deploy</button><button onclick="speedMode(\\''+s.id+'\\')">Speed Mode</button><button onclick="save(\\''+s.id+'\\')">Save Env</button><button onclick="save(\\''+s.id+'\\',true)">Save + Restart</button></div><div class="actions trade"><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'sell-all\\')">Sell All</button><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'panic\\')">Panic</button><button onclick="botAction(\\''+s.id+'\\',\\'close-all-sim\\')">Close Sim</button><button onclick="botAction(\\''+s.id+'\\',\\'reset-session\\')">Reset Session</button></div><div class="grid">'+keys.map(k=>field(s.id,k,s.env?.[k]||"")).join("")+'</div><div class="logs"><pre>'+String(s.logs||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))+'</pre></div></section>'}
+function card(s){const pill=s.active==="active"?"active":"inactive";const on=(s.env&&s.env.RUST_HOT_SNIPER_ENABLED==="true");const cost=snipeCost(s.env||{});return'<section class="inst"><div class="head"><div><div class="name">'+s.label+'</div><div class="sub">'+s.service+' · '+s.dir+' · API '+s.apiPort+'</div></div><div class="pill '+pill+'">'+s.active+'</div></div><div class="actions"><button onclick="act(\\''+s.id+'\\',\\'start\\')">Start</button><button class="danger" onclick="act(\\''+s.id+'\\',\\'stop\\')">Stop</button><button onclick="act(\\''+s.id+'\\',\\'restart\\')">Restart</button><button onclick="deploy(\\''+s.id+'\\')">Deploy</button><button onclick="speedMode(\\''+s.id+'\\')">Speed Mode</button><button onclick="save(\\''+s.id+'\\')">Save Env</button><button onclick="save(\\''+s.id+'\\',true)">Save + Restart</button></div><div class="actions trade"><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'sell-all\\')">Sell All</button><button class="danger" onclick="botAction(\\''+s.id+'\\',\\'panic\\')">Panic</button><button onclick="botAction(\\''+s.id+'\\',\\'close-all-sim\\')">Close Sim</button><button onclick="botAction(\\''+s.id+'\\',\\'reset-session\\')">Reset Session</button></div>'+sniper(s.id,on,cost)+'<div class="grid">'+keys.map(k=>field(s.id,k,s.env?.[k]||"")).join("")+'</div><div class="logs"><pre>'+String(s.logs||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))+'</pre></div></section>'}
+function snipeCost(env){var cu=Number(env.COMPUTE_UNIT_LIMIT||1400000);var jt=Number(env.RUST_HOT_SNIPER_JITO_TIP_LAMPORTS||env.TIP_LAMPORTS||0);var ht=Number(env.RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS||0);var pf=Number(env.RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS||env.PRIORITY_FEE_MICRO_LAMPORTS||0);return (jt+ht+Math.ceil(pf*cu/1e6))/1e9}
+function sniper(id,on,cost){return '<div class="actions sniper"><span class="sstate">\\u26a1 Same-Slot Sniper <b class="'+(on?"son":"soff")+'">'+(on?"ON":"OFF")+'</b> \\u00b7 ~'+cost.toFixed(4)+' SOL/snipe</span><button onclick="sameSlot(\\''+id+'\\',true,\\'cheap\\')">ON \\u00b7 Cheap</button><button onclick="sameSlot(\\''+id+'\\',true,\\'aggressive\\')">ON \\u00b7 Aggressive</button><button class="danger" onclick="sameSlot(\\''+id+'\\',false)">OFF</button></div>'}
+async function sameSlot(id,enabled,tier){var m=enabled?("enable Same-Slot Sniper with "+tier+" fees and RESTART "+id+"?"):("DISABLE Same-Slot Sniper and RESTART "+id+"?");if(!confirm(id+": "+m))return;try{toast(id+" applying + restarting...");await api("/api/instances/"+id+"/same-slot",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({enabled:enabled,tier:tier})});toast(id+" same-slot "+(enabled?("ON ("+tier+")"):"OFF"));await load()}catch(e){toast(e.message)}}
 async function load(){try{const data=await api("/api/instances");document.getElementById("app").innerHTML=data.instances.map(card).join("")}catch(e){toast(e.message)}}
 async function act(id,action){try{await api("/api/instances/"+id+"/"+action,{method:"POST"});toast(id+" "+action+" ok");await load()}catch(e){toast(e.message)}}
 async function deploy(id){try{toast(id+" deploy running...");await api("/api/instances/"+id+"/deploy",{method:"POST"});toast(id+" deploy ok");await load()}catch(e){toast(e.message)}}
@@ -482,6 +547,17 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
 
   if (req.method === "POST" && action === "speed-mode") {
     const env = await patchEnv(instance.envPath, SPEED_MODE_ENV);
+    return sendJson(res, 200, { ok: true, env, status: await serviceStatus(instance) });
+  }
+
+  if (req.method === "POST" && action === "same-slot") {
+    const body = await readJsonBody(req);
+    const enabled = body.enabled === true;
+    const tier = body.tier === "aggressive" ? "aggressive" : "cheap";
+    const updates = enabled ? { ...SAME_SLOT_CORE_ON, ...FEE_TIERS[tier] } : { ...SAME_SLOT_OFF };
+    const env = await patchEnv(instance.envPath, updates);
+    // The Rust sidecar reads the hot-sniper flags at startup, so a toggle needs a restart.
+    await execCommand("systemctl", ["restart", instance.service]);
     return sendJson(res, 200, { ok: true, env, status: await serviceStatus(instance) });
   }
 
