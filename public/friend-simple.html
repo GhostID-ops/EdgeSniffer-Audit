@@ -512,24 +512,24 @@
       const mintText = shortMint ? ` Token: ${shortMint}...` : "";
 
       if (!raw) return null;
-      if (/rust-sidecar: hot sniper fees|rust-sidecar: starting|rust-sidecar: subscribed$|subscribed to jito shredstream entries|execution plan:|required incl\.|source trade:|balance:/i.test(raw)) return null;
+      if (/rust-sidecar: hot sniper fees|rust-sidecar: starting|rust-sidecar: subscribed$|subscribed to jito shredstream entries|execution plan:|available:|required incl\.|source trade:|balance:/i.test(raw)) return null;
       if (/jito shredstream: connected/i.test(raw)) return { type: "good", text: "Streams connected: ShredStream is live." };
       if (/grpc: subscribed/i.test(raw)) return { type: "good", text: "Streams connected: gRPC wallet watcher is live." };
       if (/rabbitstream: subscribed/i.test(raw)) return { type: "good", text: "Streams connected: fast wallet stream is live." };
       if (/rust executor command channel ready/i.test(raw)) return { type: "good", text: "Executor ready: Rust trading engine is connected." };
       if (/wallet activity detected|grpc detected swap|rust sidecar detected buy|detected buy by/i.test(raw)) return null;
-      if (/processing buy/i.test(raw)) return { type: "", text: "Buy signal received. Checking safety rules and sending if allowed." };
+      if (/processing buy/i.test(raw)) return null;
       if (/processing sell/i.test(raw)) return null;
-      if (/rust-only buy mode:|passed filters; rust executor will broadcast/i.test(raw)) return { type: "", text: `Buy approved: sending transaction now.${mintText}` };
-      if (/broadcast accepted|direct path complete|mirror path completed/i.test(raw)) return { type: "good", text: "Buy transaction sent. Waiting for chain confirmation." };
+      if (/rust-only buy mode:|passed filters; rust executor will broadcast/i.test(raw)) return null;
+      if (/broadcast accepted|direct path complete|mirror path completed/i.test(raw)) return null;
       const buyMatch = raw.match(/Buy.*?:\s*([0-9.]+)\s*SOL/i) || raw.match(/Trade went through.*?([0-9.]+)\s*SOL/i);
       if (buyMatch) return { type: "good", text: `Trade went through: ${buyMatch[1]} SOL purchased.${mintText}` };
       const sellMatch = raw.match(/Sell(?: LIVE)?(?: .*?)?:\s*([0-9,.]+)\s*/i);
       if (/sell .*complete|sell live|sell \(/i.test(lower)) return { type: "good", text: sellMatch ? `Sell went through: ${sellMatch[1]} tokens sold.${mintText}` : `Sell went through.${mintText}` };
-      if (/skipping sell:.*no position|skipped sell:.*no position|confirmed wallet inventory is 0/i.test(lower)) return { type: "warn", text: `No sell needed: this wallet did not hold that token.${mintText}` };
+      if (/skipping sell:.*no position|skipped sell:.*no position|confirmed wallet inventory is 0/i.test(lower)) return null;
       if (/skipping buy:.*below configured minimum|below configured minimum/i.test(lower)) return { type: "warn", text: "Buy skipped: the copied trade was below the minimum buy size." };
       if (/skipping buy:.*buy-once|already bought/i.test(lower)) return { type: "warn", text: `Buy skipped: this token was already bought in this session.${mintText}` };
-      if (/not enough|insufficient|available:\s*0(?:\.0+)?\s*sol|required incl/i.test(lower)) return { type: "bad", text: "Buy not sent: not enough available SOL after reserve and fees." };
+      if (/skipping buy:.*(?:not enough|insufficient)|buy not sent:.*(?:not enough|insufficient)|insufficient funds/i.test(lower)) return { type: "bad", text: "Buy not sent: not enough available SOL after reserve and fees." };
       if (/failed|instructionerror|preflight|custom|error|expired|blockhash|rate limited|429|timed out|timeout|rejected/i.test(lower)) {
         if (code === "6042" || code === "6002") return { type: "bad", text: "Buy did not go through: the bonding curve moved too fast before confirmation." };
         if (code === "6023" || lower.includes("overflow")) return { type: "bad", text: "Buy did not go through: the pool moved too fast and rejected the quote." };
