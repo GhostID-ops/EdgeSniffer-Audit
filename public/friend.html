@@ -908,18 +908,75 @@
       renderSelected();
     }
 
+    function customErrorCode(raw) {
+      const text = String(raw || "");
+      const hex = text.match(/custom program error:\s*0x([0-9a-f]+)/i)?.[1];
+      return (
+        text.match(/Custom["):\s]*(\d+)/i)?.[1] ||
+        text.match(/Error Number:\s*(\d+)/i)?.[1] ||
+        (hex ? String(parseInt(hex, 16)) : "")
+      );
+    }
+
+    function routeLabel(lower) {
+      if (/pumpswap|pump-amm|pamm/.test(lower)) return "PumpSwap";
+      if (/pump\.fun|pump fun|bonding-curve|bonding curve/.test(lower)) return "Pump.fun";
+      if (/raydium/.test(lower)) return "Raydium";
+      return "Solana";
+    }
+
     function explainFailure(line) {
       const raw = String(line || "");
       const lower = raw.toLowerCase();
-      if (!/failed|instructionerror|preflight|custom|error/.test(lower)) return null;
-      let reason = "the price/curve moved or the route became unsafe before confirmation";
-      if (lower.includes("insufficient")) reason = "the wallet did not have enough available SOL after reserve and fees";
-      else if (lower.includes("slippage")) reason = "slippage protection blocked a worse-than-allowed fill";
-      else if (lower.includes("6023") || lower.includes("overflow")) reason = "PumpSwap price math overflowed after the pool moved";
-      else if (lower.includes("6042")) reason = "the Pump.fun curve/account state changed before the transaction landed";
-      else if (lower.includes("blockhash")) reason = "the transaction expired before the cluster accepted it";
-      else if (lower.includes("429") || lower.includes("rate limited")) reason = "an RPC provider rate-limited a supporting balance/status check";
-      return `Buy attempted but did not complete on-chain. No tokens were recorded for this wallet. Reason: ${reason}.`;
+      if (!/failed|instructionerror|preflight|custom|error|expired|blockhash|rate limited|429|timed out|timeout|not found in status polling/.test(lower)) return null;
+
+      const code = customErrorCode(raw);
+      const route = routeLabel(lower);
+      const side = lower.includes("sell") ? "Sell" : "Buy";
+      const sent = !lower.includes("preflight failed") && !lower.includes("preflight simulation failed");
+      const prefix = sent
+        ? `${side} attempted on-chain. The ${route} program rejected it or it did not land cleanly.`
+        : `${side} blocked before sending. The bot protected the wallet before placing the trade.`;
+
+      let reason = "Market state changed before the transaction could safely land.";
+      let next = "Usually the right move is to wait for the next wallet signal instead of chasing the same stale quote.";
+
+      if (code === "6042" || code === "6002" || lower.includes("too much sol required")) {
+        reason = "The bonding curve pumped between quote time and landing time, so the bot would have received fewer tokens than its safety limit allowed.";
+        next = "This is chain speed/price movement. Higher slippage or priority can land more attempts, but it also accepts worse fills.";
+      } else if (code === "6003" || lower.includes("too little sol received")) {
+        reason = "The sell quote moved before landing, so the bot would have received less SOL than its safety limit allowed.";
+        next = "This protects against bad exits. Wider sell slippage can help only if the strategy accepts worse exits.";
+      } else if (code === "6023" || code === "6024" || code === "6025" || lower.includes("overflow")) {
+        reason = route === "PumpSwap"
+          ? "The PumpSwap pool math overflowed or changed too much while the trade was being built. The pool was moving too fast/unsafe for that quote."
+          : "The Pump.fun liquidity/token balance was not enough for the requested action at landing time.";
+        next = "This is pool state, not a UI mistake. The bot should skip or retry with fresh canonical state, not reuse the stale transaction.";
+      } else if (lower.includes("slippage")) {
+        reason = "Price moved beyond the configured slippage guard.";
+        next = "Slippage protected the wallet from a worse-than-allowed fill. Increase it only if you accept worse entries/exits.";
+      } else if (lower.includes("insufficient funds") || lower.includes("insufficient lamports")) {
+        reason = "The wallet did not have enough available SOL after reserve, rent, and network fees.";
+        next = "Top up SOL, reduce buy size, or lower the SOL reserve.";
+      } else if (lower.includes("blockhash") || lower.includes("expired") || lower.includes("not found in status polling")) {
+        reason = "The transaction was broadcast but likely dropped or expired before the cluster confirmed it.";
+        next = "This is a landing problem. Fresh blockhash, alternate sender path, or priority/tip can improve odds.";
+      } else if (lower.includes("429") || lower.includes("rate limited") || lower.includes("max usage reached")) {
+        reason = "A supporting RPC/API provider rate-limited a balance/status/metadata check.";
+        next = "This does not always mean the stream failed. It means one helper provider said slow down or switch endpoint.";
+      } else if (lower.includes("no routes found") || lower.includes("not tradable")) {
+        reason = "The token was too new or the route was not tradable through that path yet.";
+        next = "Direct Pump.fun/PumpSwap routes may work before public aggregators index the token.";
+      } else if (lower.includes("timeout") || lower.includes("timed out") || lower.includes("fetch failed") || lower.includes("network")) {
+        reason = "A network/RPC request timed out while confirming or supporting the trade.";
+        next = "The bot should use another sender/RPC path or wait for the next fresh signal.";
+      }
+
+      const codeText = code ? ` Code ${code}.` : "";
+      const outcome = sent
+        ? "Tokens may be zero if the program rejected it; a small network fee can still be spent."
+        : "No buy/sell transaction was sent from this preflight block.";
+      return `${prefix}${codeText} Reason: ${reason} ${outcome} What to do: ${next}`;
     }
 
     function friendlyLog(line) {
