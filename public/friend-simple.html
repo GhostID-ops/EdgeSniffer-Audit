@@ -118,6 +118,7 @@
     .strategy.active { border-color: rgba(105,230,190,.78); box-shadow: 0 0 0 2px rgba(105,230,190,.12) inset, 0 14px 42px rgba(105,230,190,.08); }
     .strategy b { display: block; font-size: 15px; }
     .strategy p { margin: 5px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.35; }
+    .strategy .fee-line { display: block; margin-top: 7px; color: var(--blue); font-size: 11.5px; font-weight: 850; }
     .badge { display: inline-flex; align-items: center; border-radius: 999px; background: rgba(93,242,174,.13); color: var(--green); padding: 5px 8px; font-size: 11px; font-weight: 950; white-space: nowrap; }
     .amount-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .amount { border: 1px solid var(--line); border-radius: 13px; background: rgba(4,6,9,.68); color: var(--soft); min-height: 46px; font-weight: 950; }
@@ -350,9 +351,10 @@
                 <button class="switch on" id="mirrorToggle" type="button" aria-label="Toggle mirror sells"></button>
               </div>
               <div class="toggle-row">
-                <div><b>Tips and priority fees</b><p>Extra speed money. Leave off for cheap demos. Turn on only when landing speed matters more than fees.</p></div>
+                <div><b>Speed tip + priority fee</b><p>Optional boost for competitive buys. Defaults change by strategy. Leave off for cheap demos.</p></div>
                 <button class="switch" id="feeToggle" type="button" aria-label="Toggle fees"></button>
               </div>
+              <div class="setting-help" id="feeRecommendation">Fees are off. Turn on only when faster landing matters more than attempt cost.</div>
               <div class="row">
                 <div>
                   <label for="slippage">Max price change allowed (%)</label>
@@ -393,12 +395,12 @@
                 <div>
                   <label for="tipLamports">Speed tip</label>
                   <input id="tipLamports" type="number" min="0" step="1000" value="0" />
-                  <div class="setting-help">Optional landing tip. It can help compete, but it is spent even when a trade fails on-chain.</div>
+                  <div class="setting-help">Paid as an extra speed tip. Beginner default: use the strategy recommendation, or 0 for cheap testing. This can be spent even if the chain later rejects the trade.</div>
                 </div>
                 <div>
                   <label for="priorityFee">Priority fee</label>
                   <input id="priorityFee" type="number" min="0" step="1000" value="0" />
-                  <div class="setting-help">Optional Solana compute fee. Higher can be faster, but it makes each attempt more expensive.</div>
+                  <div class="setting-help">Paid to prioritize compute. Beginner default: use the strategy recommendation. 50k is light, 75k is normal, 100k+ is aggressive.</div>
                 </div>
               </div>
               <button class="secondary" id="saveSettingsBtn" type="button">Save Settings</button>
@@ -444,11 +446,11 @@
 
   <script>
     const STRATEGIES = [
-      { id: "cya", name: "Cented Strategy", short: "Fast runner wallet", wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", risk: "Medium/High", amount: 0.01, maxBuy: 0.015, slippage: 12 },
-      { id: "4bdk", name: "Anchor Strategy", short: "Higher win-rate source exits", wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk", risk: "Medium", amount: 0.01, maxBuy: 0.015, slippage: 10 },
-      { id: "2cq", name: "Scout Strategy", short: "Early launch hunter", wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG", risk: "High", amount: 0.005, maxBuy: 0.01, slippage: 15 },
-      { id: "bwam", name: "Whale Tape", short: "Research whale-flow pool", wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa", risk: "High", amount: 0.01, maxBuy: 0.02, slippage: 12 },
-      { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 10 }
+      { id: "cya", name: "Cented Strategy", short: "Fast runner wallet", wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", risk: "Medium/High", amount: 0.01, maxBuy: 0.015, slippage: 12, tipLamports: 1000000, priorityFee: 75000, feeHelp: "Competitive but not crazy. Use when Cented entries are moving fast." },
+      { id: "4bdk", name: "Anchor Strategy", short: "Higher win-rate source exits", wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk", risk: "Medium", amount: 0.01, maxBuy: 0.015, slippage: 10, tipLamports: 500000, priorityFee: 50000, feeHelp: "Lighter boost. This strategy does not need max aggression by default." },
+      { id: "2cq", name: "Scout Strategy", short: "Early launch hunter", wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG", risk: "High", amount: 0.005, maxBuy: 0.01, slippage: 15, tipLamports: 1000000, priorityFee: 100000, feeHelp: "Most aggressive preset because early-launch signals can move violently." },
+      { id: "bwam", name: "Whale Tape", short: "Research whale-flow pool", wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa", risk: "High", amount: 0.01, maxBuy: 0.02, slippage: 12, tipLamports: 1000000, priorityFee: 75000, feeHelp: "Normal competitive boost for whale-flow copies." },
+      { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 10, tipLamports: 500000, priorityFee: 50000, feeHelp: "Starter boost for unknown wallets. Raise only after testing." }
     ];
     const AMOUNTS = [0.005, 0.01, 0.02, 0.05];
     const $ = (id) => document.getElementById(id);
@@ -516,6 +518,19 @@
     }
     function fmtSol(n) {
       return typeof n === "number" && Number.isFinite(n) ? `${n.toFixed(4)} SOL` : "--";
+    }
+    function fmtTip(lamports) {
+      const n = Number(lamports || 0) / 1e9;
+      return n > 0 ? `${n.toFixed(4)} SOL tip` : "0 SOL tip";
+    }
+    function fmtPriority(microLamports) {
+      const n = Number(microLamports || 0);
+      return n > 0 ? `${Math.round(n / 1000)}k priority` : "0 priority";
+    }
+    function setFeeDefaults(strategy = selected, force = false) {
+      if (!strategy) return;
+      if (force || Number($("tipLamports").value || 0) <= 0) $("tipLamports").value = strategy.tipLamports || 0;
+      if (force || Number($("priorityFee").value || 0) <= 0) $("priorityFee").value = strategy.priorityFee || 0;
     }
     function toast(msg) {
       $("toast").textContent = msg;
@@ -633,7 +648,7 @@
     function renderStrategies() {
       $("strategyGrid").innerHTML = STRATEGIES.map((s) => `
         <button class="strategy ${s.id === selected.id ? "active" : ""}" data-strategy="${esc(s.id)}" type="button">
-          <span><b>${esc(s.name)}</b><p>${esc(s.short)}</p></span>
+          <span><b>${esc(s.name)}</b><p>${esc(s.short)}<span class="fee-line">Fee boost: ${esc(fmtTip(s.tipLamports))} + ${esc(fmtPriority(s.priorityFee))}</span></p></span>
           <span class="badge">${esc(s.risk)}</span>
         </button>
       `).join("");
@@ -643,6 +658,7 @@
         $("customAmount").value = "";
         $("maxBuy").value = selected.maxBuy;
         $("slippage").value = selected.slippage;
+        setFeeDefaults(selected, feeMode);
         if (selected.wallet) $("customWallets").value = selected.wallet;
         render();
         toast(`${selected.name} selected.`);
@@ -664,7 +680,7 @@
       } else if (preset === "balanced") {
         feeMode = false; mirrorSells = true; $("slippage").value = selected.slippage; $("presetHelp").textContent = "Balanced: normal strategy settings. You still choose when to switch Live Money on.";
       } else {
-        mirrorSells = true; $("slippage").value = Math.max(15, selected.slippage); $("presetHelp").textContent = "Aggressive: gives buys more room to land, but fills can be worse. Use only after a successful tiny test.";
+        feeMode = true; mirrorSells = true; $("slippage").value = Math.max(15, selected.slippage); setFeeDefaults(selected, true); $("presetHelp").textContent = "Aggressive: gives buys more room to land and turns on the strategy fee boost. Use only after a successful tiny test.";
       }
       render();
     }
@@ -683,6 +699,11 @@
       $("mirrorToggle").classList.toggle("on", mirrorSells);
       $("feeToggle").classList.toggle("on", feeMode);
       $("feeFields").style.display = feeMode ? "grid" : "none";
+      const feeTip = Number($("tipLamports").value || selected.tipLamports || 0);
+      const feePriority = Number($("priorityFee").value || selected.priorityFee || 0);
+      $("feeRecommendation").innerHTML = feeMode
+        ? `<span class="plain-word">Fee boost ON:</span> ${esc(fmtTip(feeTip))} + ${esc(fmtPriority(feePriority))}. ${esc(selected.feeHelp || "Use small values first.")}`
+        : `<span class="plain-word">Fee boost OFF:</span> recommended for cheap demos. ${esc(selected.name)} suggested boost if needed: ${esc(fmtTip(selected.tipLamports))} + ${esc(fmtPriority(selected.priorityFee))}.`;
       $("summaryText").className = `notice ${liveMode ? "warning" : ""}`;
       $("summaryText").textContent = `Selected: ${selected.name}. Normal buy: ${amount.toFixed(3)} SOL. Hard max: ${Number($("maxBuy").value || amount).toFixed(3)} SOL. Sells: ${mirrorSells ? "follow copied wallet" : "manual only"}. Profit lock: sell 50% at +30%, then follow the copied wallet.`;
       const customMissing = selected.id === "custom" && !$("customWallets").value.trim();
@@ -909,8 +930,10 @@
     });
     $("mirrorToggle").addEventListener("click", () => { mirrorSells = !mirrorSells; render(); });
     $("feeToggle").addEventListener("click", () => {
-      if (!feeMode && !confirm("Tips and priority fees can spend extra SOL to improve landing. Turn them on?")) return;
-      feeMode = !feeMode; render();
+      if (!feeMode && !confirm("Speed tip and priority fee can spend extra SOL to improve landing. Turn them on with this strategy's recommended defaults?")) return;
+      feeMode = !feeMode;
+      if (feeMode) setFeeDefaults(selected, true);
+      render();
     });
     $("saveSettingsBtn").addEventListener("click", () => saveSettings().catch((e) => toast(e.message)));
     $("startBtn").addEventListener("click", async () => {
