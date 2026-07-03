@@ -117,24 +117,22 @@ if (!existsSync(demoEnvPath)) {
     "WEB_HOST=0.0.0.0",
     "UI_BASIC_AUTH_USER=friend",
     `UI_BASIC_AUTH_PASSWORD=${randomPassword()}`,
-    "FRIEND_MAX_LIVE_BUY_SOL=0.03",
-    // TRUE hard ceiling on TOTAL buy fees (tip + priority + helius) in SOL.
-    // executionFeeCaps scales everything down to fit this, so it is a real cap
-    // regardless of the micro-lamport values below. Priority is charged per compute
-    // unit (1 microLamport x 1.4M CU = 1.4 lamports), which is why a raw
-    // PRIORITY_FEE_MICRO_LAMPORTS of 6,000,000 quietly cost ~0.0084 SOL.
-    "MAX_BUY_EXECUTION_FEE_SOL=0.004",
-    "FRIEND_MAX_LIVE_TIP_LAMPORTS=2500000",
-    "FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS=1500000",
-    "MIN_BUY_SOL=0.01",
-    "MAX_BUY_SOL=0.02",
+    "FRIEND_MAX_LIVE_BUY_SOL=0.5",
+    // Ceiling on TOTAL buy fees (tip + priority + helius) in SOL. Raised to 0.02 so the
+    // same-slot cheap tier (~0.006/snipe) is not clamped. Priority is charged per compute
+    // unit (price x COMPUTE_UNIT_LIMIT), which is why the tier lowers the CU limit to 400k.
+    "MAX_BUY_EXECUTION_FEE_SOL=0.02",
+    "FRIEND_MAX_LIVE_TIP_LAMPORTS=5000000",
+    "FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS=10000000",
+    "MIN_BUY_SOL=0.02",
+    "MAX_BUY_SOL=0.1",
     "COPY_BUY_PERCENTAGE=10",
     "SOL_RESERVE=0.05",
-    "TIP_LAMPORTS=0",
-    "PRIORITY_FEE_MICRO_LAMPORTS=0",
-    "MAX_OPEN_POSITIONS=1",
-    "MAX_SOL_PER_TOKEN=0.03",
-    "MAX_SESSION_DEPLOYED_SOL=0.06",
+    "TIP_LAMPORTS=3000000",
+    "PRIORITY_FEE_MICRO_LAMPORTS=8000000",
+    "MAX_OPEN_POSITIONS=2",
+    "MAX_SOL_PER_TOKEN=0.15",
+    "MAX_SESSION_DEPLOYED_SOL=0.5",
     "JUPITER_FALLBACK_ENABLED=false",
     "PUMPSWAP_DIRECT_BUY_ENABLED=true",
     "PUMPSWAP_DIRECT_PREFLIGHT=false",
@@ -149,6 +147,22 @@ if (!existsSync(demoEnvPath)) {
     "RUST_ONLY_SELLS=true",
     "JITO_SHREDSTREAM_ENABLED=true",
     "JITO_SHREDSTREAM_GRPC_URL=http://127.0.0.1:9999",
+    "# Same-slot ShredStream hot sniper (cheap tier ~0.006 SOL/snipe) so the demo lands in-slot.",
+    "RUST_HOT_SNIPER_ENABLED=true",
+    "RUST_HOT_SNIPER_PRIMARY=true",
+    "RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED=true",
+    "RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS=20",
+    "RUST_HOT_SNIPER_JITO_TIP_LAMPORTS=3000000",
+    "RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS=0",
+    "RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS=8000000",
+    "COMPUTE_UNIT_LIMIT=400000",
+    "JITO_TIP_ORACLE_ENABLED=true",
+    "DYNAMIC_PRIORITY_FEE_ENABLED=true",
+    "JITO_CONNECTION_WARMUP_ENABLED=true",
+    "BROADCAST_RACE_ENABLED=true",
+    "JITO_SEND_MODE=race",
+    "EXECUTION_MULTI_SEND_ENABLED=true",
+    "SENDER_RPC_FALLBACK_ENABLED=true",
     "# Throwaway burner wallet (0 SOL). Replaced if the friend pastes their own key.",
     `PRIVATE_KEY_BASE58=${bs58.encode(burner.secretKey)}`,
     "",
@@ -158,10 +172,13 @@ if (!existsSync(demoEnvPath)) {
 
 ensureDemoAuth();
 upsertDemoEnv({
-  FRIEND_MAX_LIVE_BUY_SOL: "0.03",
-  MAX_BUY_EXECUTION_FEE_SOL: "0.004",
-  FRIEND_MAX_LIVE_TIP_LAMPORTS: "2500000",
-  FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS: "1500000",
+  // Sales demo: the friend is trialing the bot to buy it, so he gets the REAL same-slot
+  // sniper (below) and room to size up. These caps are raised from the old cheap-demo
+  // values so the same-slot fee tier is not clamped and he can place meaningful bets.
+  FRIEND_MAX_LIVE_BUY_SOL: "0.5",
+  MAX_BUY_EXECUTION_FEE_SOL: "0.02",
+  FRIEND_MAX_LIVE_TIP_LAMPORTS: "5000000",
+  FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS: "10000000",
   // Fast pump.fun tokens move between quote and fill. 12% was too tight and caused
   // first-attempt buy (6042) / sell (6003) reverts + retries. Match the proven CyA
   // configs (60%). The UI strategy presets override per-strategy on start.
@@ -182,6 +199,25 @@ upsertDemoEnv({
   RUST_ONLY_SELLS: "true",
   JITO_SHREDSTREAM_ENABLED: "true",
   JITO_SHREDSTREAM_GRPC_URL: "http://127.0.0.1:9999",
+  // Same-slot ShredStream hot sniper, cheap fee tier (~0.006 SOL/snipe). Primary path with
+  // a 20ms head-start + Rust backstop. Uses its own RUST_HOT_SNIPER_* fees (not the friend
+  // UI caps), so the demo lands in Cented's slot instead of one hop behind. This is what the
+  // prospective buyer is here to feel — do not gate it behind the cheap-demo profile.
+  RUST_HOT_SNIPER_ENABLED: "true",
+  RUST_HOT_SNIPER_PRIMARY: "true",
+  RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED: "true",
+  RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS: "20",
+  RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "3000000",
+  RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
+  RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
+  COMPUTE_UNIT_LIMIT: "400000",
+  JITO_TIP_ORACLE_ENABLED: "true",
+  DYNAMIC_PRIORITY_FEE_ENABLED: "true",
+  JITO_CONNECTION_WARMUP_ENABLED: "true",
+  BROADCAST_RACE_ENABLED: "true",
+  JITO_SEND_MODE: "race",
+  EXECUTION_MULTI_SEND_ENABLED: "true",
+  SENDER_RPC_FALLBACK_ENABLED: "true",
 });
 
 for (const file of ["execution-telemetry.jsonl", "trades.jsonl"]) {

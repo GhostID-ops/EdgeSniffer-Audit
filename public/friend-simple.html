@@ -131,6 +131,8 @@
     }
     .plain-word { color: var(--green); font-weight: 950; }
     .notice { border: 1px solid rgba(156,199,255,.22); border-radius: 15px; background: rgba(156,199,255,.055); padding: 13px 14px; color: var(--soft); font-size: 13px; line-height: 1.45; }
+    .sniper-badge { display: flex; gap: 8px; align-items: baseline; border: 1px solid rgba(105,230,190,.38); border-radius: 15px; background: rgba(105,230,190,.09); padding: 12px 14px; color: var(--soft); font-size: 12.5px; line-height: 1.45; }
+    .sniper-badge b { color: var(--green); }
     .warning { border-color: rgba(255,116,116,.42); background: rgba(255,116,116,.08); color: #ffd9d9; }
     .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .primary, .danger, .secondary {
@@ -274,6 +276,7 @@
           <small id="statusHelp">Streams and executor start with the bot.</small>
         </div>
       </div>
+      <div class="sniper-badge">⚡ <span><b>Same-Slot Sniper active.</b> Your copy is submitted through Jito ShredStream to land in the <b>same slot</b> as the tracked wallet — not seconds behind. Bigger buys make the fixed speed fee a smaller %.</span></div>
       <div class="notice" id="summaryText">Choose a strategy, pick the SOL amount, then start in Shadow mode first.</div>
       <div class="actions" id="startArea">
         <button class="primary" id="startBtn" type="button">Start Bot</button>
@@ -363,26 +366,26 @@
                 </div>
                 <div>
                   <label for="maxBuy">Max per buy</label>
-                  <input id="maxBuy" type="number" min="0.001" step="0.001" value="0.01" />
+                  <input id="maxBuy" type="number" min="0.001" step="0.001" value="0.25" />
                   <div class="setting-help">Hard limit per signal. Even if a copied wallet buys huge, Obsidian will not spend more than this.</div>
                 </div>
               </div>
               <div class="row">
                 <div>
                   <label for="maxOpenPositions">Max active trades</label>
-                  <input id="maxOpenPositions" type="number" min="1" step="1" value="1" />
+                  <input id="maxOpenPositions" type="number" min="1" step="1" value="2" />
                   <div class="setting-help">Default: 1. How many tokens can be open at the same time. Higher lets the bot copy more signals but spreads the wallet across more risk.</div>
                 </div>
                 <div>
                   <label for="maxSolPerToken">Max SOL in one token</label>
-                  <input id="maxSolPerToken" type="number" min="0" step="0.001" value="0.03" />
+                  <input id="maxSolPerToken" type="number" min="0" step="0.001" value="0.25" />
                   <div class="setting-help">Default: 0.03 SOL. Total exposure limit for one token, including repeat buys. Blank or 0 disables this cap.</div>
                 </div>
               </div>
               <div class="row">
                 <div>
                   <label for="maxSessionDeployed">Max SOL this session</label>
-                  <input id="maxSessionDeployed" type="number" min="0" step="0.001" value="0.06" />
+                  <input id="maxSessionDeployed" type="number" min="0" step="0.001" value="1" />
                   <div class="setting-help">Default: 0.06 SOL. Total gross buy budget before the bot stops opening new buys for this run. Blank or 0 disables this cap.</div>
                 </div>
                 <div>
@@ -452,7 +455,7 @@
       { id: "bwam", name: "Whale Tape", short: "Research whale-flow pool", wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa", risk: "High", amount: 0.01, maxBuy: 0.02, slippage: 50, tipLamports: 1500000, priorityFee: 1000000, feeHelp: "Normal competitive boost (~0.003 SOL total) for whale-flow copies." },
       { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 40, tipLamports: 1000000, priorityFee: 700000, feeHelp: "Starter boost (~0.002 SOL total) for unknown wallets. Raise only after testing." }
     ];
-    const AMOUNTS = [0.005, 0.01, 0.02, 0.05];
+    const AMOUNTS = [0.01, 0.05, 0.1, 0.25];
     const $ = (id) => document.getElementById(id);
     let selected = STRATEGIES[0];
     let amount = selected.amount;
