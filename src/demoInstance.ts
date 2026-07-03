@@ -19,6 +19,7 @@ const demoName = process.argv[2] && !/^\d+$/.test(process.argv[2]) ? process.arg
 const port = process.env.WEB_PORT || process.argv.find((a, i) => i >= 2 && /^\d+$/.test(a)) || "3001";
 const demoDir = resolve(repoRoot, demoName);
 const demoEnvPath = join(demoDir, ".env");
+const rustSidecarBin = join(repoRoot, "rust-sidecar", "target", "release", process.platform === "win32" ? "pumpfun-sidecar.exe" : "pumpfun-sidecar");
 
 mkdirSync(demoDir, { recursive: true });
 mkdirSync(join(demoDir, "data"), { recursive: true });
@@ -32,7 +33,7 @@ const STRIP_EXACT = new Set([
   "UI_BASIC_AUTH_USER",
   "UI_BASIC_AUTH_PASSWORD",
 ]);
-const STRIP_PREFIX = ["TELEGRAM", "RUST_", "JITO_SHREDSTREAM"];
+const STRIP_PREFIX = ["TELEGRAM"];
 
 function shouldStrip(key: string): boolean {
   if (STRIP_EXACT.has(key)) return true;
@@ -124,6 +125,20 @@ if (!existsSync(demoEnvPath)) {
     "MAX_OPEN_POSITIONS=1",
     "MAX_SOL_PER_TOKEN=0.03",
     "MAX_SESSION_DEPLOYED_SOL=0.06",
+    "JUPITER_FALLBACK_ENABLED=false",
+    "PUMPSWAP_DIRECT_BUY_ENABLED=true",
+    "PUMPSWAP_DIRECT_PREFLIGHT=false",
+    "WATCHER_POLL_FALLBACK_ENABLED=false",
+    "RUST_SIDECAR_ENABLED=true",
+    "RUST_SIDECAR_YELLOWSTONE_ENABLED=true",
+    "RUST_SIDECAR_USE_CARGO=false",
+    `RUST_SIDECAR_BIN=${rustSidecarBin}`,
+    "RUST_EXECUTOR_ENABLED=true",
+    "RUST_EXECUTOR_TIMEOUT_MS=1500",
+    "RUST_ONLY_BUYS=true",
+    "RUST_ONLY_SELLS=true",
+    "JITO_SHREDSTREAM_ENABLED=true",
+    "JITO_SHREDSTREAM_GRPC_URL=http://127.0.0.1:9999",
     "# Throwaway burner wallet (0 SOL). Replaced if the friend pastes their own key.",
     `PRIVATE_KEY_BASE58=${bs58.encode(burner.secretKey)}`,
     "",
@@ -136,6 +151,20 @@ upsertDemoEnv({
   FRIEND_MAX_LIVE_BUY_SOL: "0.03",
   FRIEND_MAX_LIVE_TIP_LAMPORTS: "0",
   FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS: "0",
+  JUPITER_FALLBACK_ENABLED: "false",
+  PUMPSWAP_DIRECT_BUY_ENABLED: "true",
+  PUMPSWAP_DIRECT_PREFLIGHT: "false",
+  WATCHER_POLL_FALLBACK_ENABLED: "false",
+  RUST_SIDECAR_ENABLED: "true",
+  RUST_SIDECAR_YELLOWSTONE_ENABLED: "true",
+  RUST_SIDECAR_USE_CARGO: "false",
+  RUST_SIDECAR_BIN: rustSidecarBin,
+  RUST_EXECUTOR_ENABLED: "true",
+  RUST_EXECUTOR_TIMEOUT_MS: "1500",
+  RUST_ONLY_BUYS: "true",
+  RUST_ONLY_SELLS: "true",
+  JITO_SHREDSTREAM_ENABLED: "true",
+  JITO_SHREDSTREAM_GRPC_URL: "http://127.0.0.1:9999",
 });
 
 for (const file of ["execution-telemetry.jsonl", "trades.jsonl"]) {
@@ -159,7 +188,8 @@ console.log("  dir:    " + demoDir);
 console.log("  env:    " + demoEnvPath + "  (the friend's key writes here only)");
 if (burnerPub) console.log("  burner: " + burnerPub + "  (empty throwaway - your wallet is untouched)");
 console.log("  login:  " + uiUser + " / " + uiPassword);
-console.log("  open:   http://localhost:" + port + "/friend   (or http://YOUR_VPS_IP:" + port + "/friend)");
+console.log("  open:   http://localhost:" + port + "/friend-simple   (or tunnel local port -> this VPS port)");
+console.log("  infra:  Rust sidecar + Jito ShredStream + Rust executor requested.\n");
 console.log("  Ctrl+C to stop.\n");
 
 await import("./web.js");
