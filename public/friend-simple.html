@@ -183,19 +183,25 @@
     .tour-card {
       position: fixed; left: var(--tour-left, 50%); top: var(--tour-top, 50%);
       transform: translate(var(--tour-shift-x, -50%), var(--tour-shift-y, -50%));
-      width: min(430px, calc(100vw - 36px)); border: 1px solid rgba(148,163,184,.24);
+      width: min(460px, calc(100vw - 36px)); border: 1px solid rgba(148,163,184,.24);
       border-radius: 20px; background: linear-gradient(180deg, rgba(18,22,29,.9), rgba(7,10,14,.88));
-      padding: 22px; box-shadow: 0 26px 90px rgba(0,0,0,.68), inset 0 1px 0 rgba(255,255,255,.06);
+      padding: 24px; box-shadow: 0 26px 90px rgba(0,0,0,.68), inset 0 1px 0 rgba(255,255,255,.06);
       backdrop-filter: blur(22px) saturate(135%); pointer-events: auto;
+      max-height: calc(100vh - 44px); overflow-y: auto;
     }
     .tour-kicker { color: var(--green); font-size: 11px; font-weight: 950; letter-spacing: .7px; text-transform: uppercase; margin-bottom: 9px; }
     .tour-card h2 { margin-bottom: 10px; font-size: 23px; letter-spacing: -.2px; }
     .tour-card p { color: var(--soft); line-height: 1.58; margin-bottom: 0; }
+    .tour-note {
+      margin-top: 14px; padding: 12px 13px; border: 1px solid rgba(105,230,190,.2);
+      border-radius: 14px; background: rgba(105,230,190,.07); color: var(--text); font-size: 13px; line-height: 1.45;
+    }
     .tour-progress { display: flex; gap: 6px; margin-top: 18px; }
     .tour-dot { height: 5px; flex: 1; border-radius: 999px; background: rgba(255,255,255,.12); }
     .tour-dot.active { background: linear-gradient(135deg, var(--green), var(--blue)); }
-    .tour-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; }
+    .tour-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 18px; }
     .tour-actions .primary, .tour-actions .secondary { min-height: 46px; min-width: 96px; }
+    .tour-actions button:disabled { opacity: .38; cursor: not-allowed; }
     .focus-ring {
       outline: 2px solid rgba(105,230,190,.98); outline-offset: 9px; position: relative; z-index: 45;
       box-shadow: 0 0 0 1px rgba(105,230,190,.35), 0 0 60px rgba(105,230,190,.16) !important;
@@ -398,8 +404,10 @@
       <div class="tour-kicker" id="tourKicker">Step 1 of 6</div>
       <h2 id="tourTitle">Welcome to Obsidian Labs</h2>
       <p id="tourText">This page is the simple wallet-style view. We will walk through the pieces once.</p>
+      <div class="tour-note" id="tourNote">You can always restart this with Show me around.</div>
       <div class="tour-progress" id="tourProgress"></div>
       <div class="tour-actions">
+        <button class="secondary" id="tourBack" type="button">Back</button>
         <button class="secondary" id="tourSkip" type="button">Skip</button>
         <button class="primary" id="tourNext" type="button">Next</button>
       </div>
@@ -427,15 +435,51 @@
     let feeMode = false;
     let tourIndex = 0;
 
+    const TOUR_STORAGE_KEY = "obsidianFriendSimpleTourSeenV2";
     const tourSteps = [
-      ["homeCard", "Home screen", "Check three things here: wallet balance, whether you are in Shadow or Live, and whether the bot is Running. Start and Stop are the main buttons."],
-      ["walletStep", "Add a test wallet", "Paste a private key once. Use a fresh wallet with a small amount first. After saving, the key field clears so it is not sitting on screen."],
-      ["strategyStep", "Choose who to copy", "Pick a prebuilt strategy. Each one loads a tracked wallet plus sensible defaults, so beginners do not need to tune the engine."],
-      ["amountStep", "Pick the buy size", "This is the normal SOL amount per copied buy. Start tiny, like 0.005 to 0.01 SOL, until you trust the setup."],
-      ["advancedBox", "Settings you can ignore", "These are hidden because most people should leave them alone. Max price change allowed is the main safety setting: default 12%, safer 8-10%, aggressive 15-20%."],
-      ["activityCard", "Watch what happened", "Trades, positions, and sells show up here in normal language. If the chain rejects a buy, Obsidian explains the likely reason."]
+      {
+        id: "homeCard",
+        title: "Start here",
+        text: "This is the whole bot in one screen. Wallet Balance shows the money in the trading wallet. Bot Mode says Shadow when it is only practicing, and Live when it can spend real SOL. Status tells you if trading is running.",
+        note: "For a first test, use Shadow or a tiny Live amount. You do not need to understand every setting to begin."
+      },
+      {
+        id: "walletStep",
+        title: "Connect a small test wallet",
+        text: "This is the wallet the bot trades from. Paste the private key once, press Save Wallet, and the field clears so the key is not left on screen.",
+        note: "Use a fresh wallet with only test funds. Do not use a main wallet or a wallet with large balances for demos."
+      },
+      {
+        id: "strategyStep",
+        title: "Pick who to copy",
+        text: "A strategy is a prebuilt wallet-following setup. It chooses the tracked wallet and loads the default risk settings for that trader.",
+        note: "Beginners should pick one strategy and leave the defaults alone for the first run."
+      },
+      {
+        id: "amountStep",
+        title: "Choose SOL per buy",
+        text: "This is the normal amount the bot tries to spend when the tracked wallet buys. If you choose 0.01 SOL, each copied buy is tiny and easier to test.",
+        note: "Recommended first Live test: 0.005 to 0.01 SOL. Bigger numbers mean bigger wins and bigger losses."
+      },
+      {
+        id: "advancedBox",
+        title: "Safety limits protect the wallet",
+        text: "These controls are optional. Max active trades, max SOL per token, and max SOL this session stop the bot from using too much money at once.",
+        note: "Price movement room means how much worse the token price may move before the bot refuses the buy. Default 12% is balanced. Lower is safer, higher is more aggressive."
+      },
+      {
+        id: "startArea",
+        title: "Start only when the checks look right",
+        text: "Start Bot begins watching the selected wallet. Stop Bot pauses trading. If Live Money mode is on, the confirmation popup means real SOL can be spent.",
+        note: "Simple rule: save wallet, choose strategy, choose SOL amount, then start in Shadow first or tiny Live mode."
+      },
+      {
+        id: "activityCard",
+        title: "Read the activity feed like a receipt",
+        text: "This panel explains what the bot saw and what it did. Open positions appear here, and sell buttons let you sell 25%, 50%, or all when a buy lands.",
+        note: "If a buy fails, the UI translates scary chain errors into plain English, such as slippage too low or price moved too fast."
+      }
     ];
-
     function esc(v) {
       return String(v ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
     }
@@ -648,7 +692,7 @@
       const rect = target.getBoundingClientRect();
       const viewportW = window.innerWidth;
       const viewportH = window.innerHeight;
-      const cardW = Math.min(430, viewportW - 36);
+      const cardW = Math.min(460, viewportW - 36);
       const cardH = 245;
       const gap = 24;
       const centerX = rect.left + rect.width / 2;
@@ -693,13 +737,16 @@
       document.querySelectorAll(".focus-ring").forEach((el) => el.classList.remove("focus-ring"));
       const step = tourSteps[tourIndex];
       if (!step) { closeTour(); return; }
-      const target = $(step[0]);
+      if (step.id === "advancedBox") $("advancedBox").open = true;
+      const target = $(step.id);
       target?.classList.add("focus-ring");
-      $("tourTitle").textContent = step[1];
-      $("tourText").textContent = step[2];
+      $("tourTitle").textContent = step.title;
+      $("tourText").textContent = step.text;
+      $("tourNote").textContent = step.note;
       $("tourKicker").textContent = `Step ${tourIndex + 1} of ${tourSteps.length}`;
       $("tourProgress").innerHTML = tourSteps.map((_, i) => `<span class="tour-dot ${i <= tourIndex ? "active" : ""}"></span>`).join("");
       $("tour").classList.add("open");
+      $("tourBack").disabled = tourIndex === 0;
       $("tourNext").textContent = tourIndex === tourSteps.length - 1 ? "Finish" : "Next";
       try { target?.scrollIntoView({ behavior: "smooth", block: "center" }); } catch {}
       setTimeout(() => placeTourCard(target), 180);
@@ -707,7 +754,7 @@
     function closeTour() {
       $("tour").classList.remove("open");
       document.querySelectorAll(".focus-ring").forEach((el) => el.classList.remove("focus-ring"));
-      localStorage.setItem("finalbotSimpleTourSeen", "1");
+      localStorage.setItem(TOUR_STORAGE_KEY, "1");
     }
     $("saveKeyBtn").addEventListener("click", async () => {
       const key = $("privateKey").value.trim();
@@ -745,17 +792,18 @@
     $("refreshBtn").addEventListener("click", () => refresh().catch((e) => toast(e.message)));
     $("tourBtn").addEventListener("click", startTour);
     $("tourSkip").addEventListener("click", closeTour);
+    $("tourBack").addEventListener("click", () => { tourIndex = Math.max(0, tourIndex - 1); showTour(); });
     $("tourNext").addEventListener("click", () => { tourIndex += 1; showTour(); });
     window.addEventListener("resize", () => {
       if (!$("tour").classList.contains("open")) return;
       const step = tourSteps[tourIndex];
-      if (step) placeTourCard($(step[0]));
+      if (step) placeTourCard($(step.id));
     });
     $("maxBuy").addEventListener("input", render);
     render();
     refresh().catch((e) => toast(e.message));
     setInterval(() => { api("/api/state").then((s) => { state = s; render(); renderPositions(); }).catch(() => {}); refreshLogs().catch(() => {}); }, 2500);
-    if (!localStorage.getItem("finalbotSimpleTourSeen")) setTimeout(startTour, 600);
+    if (!localStorage.getItem(TOUR_STORAGE_KEY)) setTimeout(startTour, 600);
   </script>
 </body>
 </html>
