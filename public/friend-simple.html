@@ -109,6 +109,12 @@
     .amount { border: 1px solid var(--line); border-radius: 13px; background: rgba(4,6,9,.68); color: var(--soft); min-height: 46px; font-weight: 950; }
     .amount.active { border-color: transparent; background: linear-gradient(135deg, var(--green), var(--blue)); color: #02100a; }
     .hint { color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+    .setting-help {
+      margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.45;
+      border: 1px solid rgba(148,163,184,.12); border-radius: 12px;
+      background: rgba(255,255,255,.025); padding: 9px 10px;
+    }
+    .plain-word { color: var(--green); font-weight: 950; }
     .notice { border: 1px solid rgba(156,199,255,.22); border-radius: 15px; background: rgba(156,199,255,.055); padding: 13px 14px; color: var(--soft); font-size: 13px; line-height: 1.45; }
     .warning { border-color: rgba(255,116,116,.42); background: rgba(255,116,116,.08); color: #ffd9d9; }
     .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -121,7 +127,7 @@
     details { border: 1px solid var(--line); border-radius: 15px; background: rgba(4,6,9,.62); }
     summary { padding: 14px; cursor: pointer; font-weight: 950; color: var(--soft); }
     .details-body { padding: 0 13px 13px; display: grid; gap: 10px; }
-    .toggle-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 13px; padding: 12px; background: rgba(255,255,255,.018); }
+    .toggle-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 13px; padding: 12px; background: rgba(255,255,255,.025); box-shadow: inset 0 1px 0 rgba(255,255,255,.025); }
     .toggle-row p { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
     .switch { width: 54px; height: 32px; border: 1px solid var(--line); border-radius: 999px; background: #141922; position: relative; flex: 0 0 auto; }
     .switch::after { content: ""; position: absolute; width: 24px; height: 24px; left: 3px; top: 3px; border-radius: 50%; background: var(--muted); transition: .16s; }
@@ -225,7 +231,7 @@
             <label for="privateKey">1. Bot wallet private key</label>
             <input id="privateKey" type="password" autocomplete="off" placeholder="Paste once, save, then it disappears" />
             <button class="secondary" id="saveKeyBtn" type="button">Save Wallet</button>
-            <div class="hint">Use a fresh test wallet. Do not keep large funds in a demo wallet.</div>
+            <div class="setting-help"><span class="plain-word">Beginner version:</span> this is the wallet FinalBot trades from. Use a fresh wallet with only test money first.</div>
           </div>
 
           <div class="field" id="strategyStep">
@@ -247,10 +253,12 @@
               <div>
                 <label for="customAmount">Custom amount</label>
                 <input id="customAmount" type="number" min="0.001" step="0.001" placeholder="0.01" />
+                <div class="setting-help">The normal buy size. If you choose 0.01 SOL, the bot tries to spend 0.01 SOL when a copied wallet buys.</div>
               </div>
               <div>
                 <label for="reserveSol">Keep this SOL safe</label>
                 <input id="reserveSol" type="number" min="0" step="0.001" value="0.03" />
+                <div class="setting-help">A wallet cushion. The bot leaves this much SOL untouched for rent, transaction fees, and safety.</div>
               </div>
             </div>
             <div class="hint">Recommended: 0.005-0.01 SOL for a first live test, or any size in Shadow mode.</div>
@@ -267,38 +275,42 @@
           </div>
 
           <details id="advancedBox">
-            <summary>Optional advanced controls</summary>
+            <summary>Optional advanced controls (safe to ignore)</summary>
             <div class="details-body">
               <div class="toggle-row">
-                <div><b>Live Money mode</b><p>Off means Shadow practice. On can spend real SOL.</p></div>
+                <div><b>Live Money mode</b><p>Off means practice only. On can spend real SOL from the saved wallet.</p></div>
                 <button class="switch" id="liveToggle" type="button" aria-label="Toggle live mode"></button>
               </div>
               <div class="toggle-row">
-                <div><b>Auto-follow sells</b><p>Recommended on. The bot sells when the copied wallet sells.</p></div>
+                <div><b>Auto-follow sells</b><p>Recommended on. If the copied wallet exits, FinalBot exits too.</p></div>
                 <button class="switch on" id="mirrorToggle" type="button" aria-label="Toggle mirror sells"></button>
               </div>
               <div class="toggle-row">
-                <div><b>Tips and priority fees</b><p>Off for simple demos. On can improve landing but spends more SOL.</p></div>
+                <div><b>Tips and priority fees</b><p>Extra speed money. Leave off for cheap demos. Turn on only when landing speed matters more than fees.</p></div>
                 <button class="switch" id="feeToggle" type="button" aria-label="Toggle fees"></button>
               </div>
               <div class="row">
                 <div>
                   <label for="slippage">Price movement room</label>
                   <input id="slippage" type="number" min="0.1" max="100" step="0.1" value="12" />
+                  <div class="setting-help">Plain English: how much worse the price is allowed to get while the buy is landing. Higher lands more often but can buy at a worse price. Lower protects price but misses more buys.</div>
                 </div>
                 <div>
                   <label for="maxBuy">Max per buy</label>
                   <input id="maxBuy" type="number" min="0.001" step="0.001" value="0.01" />
+                  <div class="setting-help">Hard limit per signal. Even if a copied wallet buys huge, FinalBot will not spend more than this.</div>
                 </div>
               </div>
               <div class="row" id="feeFields" style="display:none">
                 <div>
-                  <label for="tipLamports">Tip</label>
+                  <label for="tipLamports">Speed tip</label>
                   <input id="tipLamports" type="number" min="0" step="1000" value="0" />
+                  <div class="setting-help">Optional landing tip. It can help compete, but it is spent even when a trade fails on-chain.</div>
                 </div>
                 <div>
                   <label for="priorityFee">Priority fee</label>
                   <input id="priorityFee" type="number" min="0" step="1000" value="0" />
+                  <div class="setting-help">Optional Solana compute fee. Higher can be faster, but it makes each attempt more expensive.</div>
                 </div>
               </div>
               <button class="secondary" id="saveSettingsBtn" type="button">Save Settings</button>
@@ -358,12 +370,12 @@
     let tourIndex = 0;
 
     const tourSteps = [
-      ["homeCard", "Your dashboard", "This is the only place most users need. It shows wallet balance, Shadow/Live mode, bot status, and the Start/Stop buttons."],
-      ["walletStep", "Connect a test wallet", "Paste a private key once and save it. Use a fresh wallet with only test funds."],
-      ["strategyStep", "Pick a strategy", "Strategies are prebuilt wallet-following pools. The complicated settings are loaded behind the scenes."],
-      ["amountStep", "Choose the SOL amount", "You choose how much SOL the bot can spend per buy. For a first live test, 0.005 to 0.01 SOL is recommended."],
-      ["advancedBox", "Optional controls", "Live mode, tips, priority fees, mirror sells, slippage, and max buy are hidden here until someone wants them."],
-      ["activityCard", "Watch trades", "Open positions and human-friendly trade messages appear here. Raw chain errors are translated into plain English."]
+      ["homeCard", "Home screen", "Check three things here: wallet balance, whether you are in Shadow or Live, and whether the bot is Running. Start and Stop are the main buttons."],
+      ["walletStep", "Add a test wallet", "Paste a private key once. Use a fresh wallet with a small amount first. After saving, the key field clears so it is not sitting on screen."],
+      ["strategyStep", "Choose who to copy", "Pick a prebuilt strategy. Each one loads a tracked wallet plus sensible defaults, so beginners do not need to tune the engine."],
+      ["amountStep", "Pick the buy size", "This is the normal SOL amount per copied buy. Start tiny, like 0.005 to 0.01 SOL, until you trust the setup."],
+      ["advancedBox", "Settings you can ignore", "These are hidden because most people should leave them alone. Price movement room means how much worse a price the bot may accept to land a buy."],
+      ["activityCard", "Watch what happened", "Trades, positions, and sells show up here in normal language. If the chain rejects a buy, FinalBot explains the likely reason."]
     ];
 
     function esc(v) {
@@ -464,11 +476,11 @@
     function applyPreset() {
       const preset = $("preset").value;
       if (preset === "safe") {
-        liveMode = false; feeMode = false; mirrorSells = true; $("slippage").value = Math.max(10, selected.slippage); $("presetHelp").textContent = "Safe Test uses Shadow mode, no fees, mirror sells on, and conservative price room. You still choose SOL amount.";
+        liveMode = false; feeMode = false; mirrorSells = true; $("slippage").value = Math.max(10, selected.slippage); $("presetHelp").textContent = "Safe Test: practice mode, no extra speed fees, auto-follow sells on. Good for the first run.";
       } else if (preset === "balanced") {
-        feeMode = false; mirrorSells = true; $("slippage").value = selected.slippage; $("presetHelp").textContent = "Balanced uses normal strategy defaults. Live mode is still manual.";
+        feeMode = false; mirrorSells = true; $("slippage").value = selected.slippage; $("presetHelp").textContent = "Balanced: normal strategy settings. You still choose when to switch Live Money on.";
       } else {
-        mirrorSells = true; $("slippage").value = Math.max(15, selected.slippage); $("presetHelp").textContent = "Aggressive allows more price movement. Turn fees on only if you accept higher cost.";
+        mirrorSells = true; $("slippage").value = Math.max(15, selected.slippage); $("presetHelp").textContent = "Aggressive: gives buys more room to land, but fills can be worse. Use only after a successful tiny test.";
       }
       render();
     }
@@ -479,14 +491,14 @@
       $("runText").textContent = state?.running ? "Running" : "Stopped";
       $("balanceText").textContent = fmtSol(state?.lastBalanceSol);
       $("walletText").textContent = state?.ourWallet ? `${state.ourWallet.slice(0, 4)}...${state.ourWallet.slice(-4)}` : "Save a wallet to start.";
-      $("modeHelp").textContent = liveMode ? "Live can spend real SOL." : "Shadow practice mode.";
-      $("statusHelp").textContent = state?.running ? "Bot is watching the selected wallet." : "Bot is not trading.";
+      $("modeHelp").textContent = liveMode ? "Real SOL can be spent." : "Practice only. No real buys.";
+      $("statusHelp").textContent = state?.running ? "Watching selected wallet now." : "Stopped. Nothing is being copied.";
       $("liveToggle").classList.toggle("on", liveMode);
       $("mirrorToggle").classList.toggle("on", mirrorSells);
       $("feeToggle").classList.toggle("on", feeMode);
       $("feeFields").style.display = feeMode ? "grid" : "none";
       $("summaryText").className = `notice ${liveMode ? "warning" : ""}`;
-      $("summaryText").textContent = `${selected.name}: buys up to ${Number($("maxBuy").value || amount).toFixed(3)} SOL per signal, uses ${amount.toFixed(3)} SOL default buys, ${mirrorSells ? "auto-follows sells" : "does not auto-follow sells"}, and locks 50% profit at +30%.`;
+      $("summaryText").textContent = `Selected: ${selected.name}. Normal buy: ${amount.toFixed(3)} SOL. Hard max: ${Number($("maxBuy").value || amount).toFixed(3)} SOL. Sells: ${mirrorSells ? "follow copied wallet" : "manual only"}. Profit lock: sell 50% at +30%, then follow the copied wallet.`;
       $("startBtn").disabled = !state?.ourWallet || (!(selected.id !== "custom" || $("customWallets").value.trim()) || (liveMode && !(state?.lastBalanceSol > 0)));
     }
     function renderPositions() {
