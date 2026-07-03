@@ -316,6 +316,30 @@
                   <div class="setting-help">Hard limit per signal. Even if a copied wallet buys huge, Obsidian will not spend more than this.</div>
                 </div>
               </div>
+              <div class="row">
+                <div>
+                  <label for="maxOpenPositions">Max active trades</label>
+                  <input id="maxOpenPositions" type="number" min="1" step="1" value="1" />
+                  <div class="setting-help">Default: 1. How many tokens can be open at the same time. Higher lets the bot copy more signals but spreads the wallet across more risk.</div>
+                </div>
+                <div>
+                  <label for="maxSolPerToken">Max SOL in one token</label>
+                  <input id="maxSolPerToken" type="number" min="0" step="0.001" value="0.03" />
+                  <div class="setting-help">Default: 0.03 SOL. Total exposure limit for one token, including repeat buys. Blank or 0 disables this cap.</div>
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <label for="maxSessionDeployed">Max SOL this session</label>
+                  <input id="maxSessionDeployed" type="number" min="0" step="0.001" value="0.06" />
+                  <div class="setting-help">Default: 0.06 SOL. Total gross buy budget before the bot stops opening new buys for this run. Blank or 0 disables this cap.</div>
+                </div>
+                <div>
+                  <label for="maxOpenDeployed">Max SOL currently open</label>
+                  <input id="maxOpenDeployed" type="number" min="0" step="0.001" placeholder="Optional" />
+                  <div class="setting-help">Optional. Limits how much SOL can be sitting in open trades at once. Useful for bigger wallets or multiple active trades.</div>
+                </div>
+              </div>
               <div class="row" id="feeFields" style="display:none">
                 <div>
                   <label for="tipLamports">Speed tip</label>
@@ -446,6 +470,10 @@
         maxBuySol: Math.max(buy, Number($("maxBuy").value || buy)),
         copyBuyPercentage: 0,
         solReserveSol: Number($("reserveSol").value || 0.03),
+        maxOpenPositions: $("maxOpenPositions").value.trim() ? Number($("maxOpenPositions").value) : null,
+        maxSolPerTokenSol: $("maxSolPerToken").value.trim() ? Number($("maxSolPerToken").value) : null,
+        maxSessionDeployedSol: $("maxSessionDeployed").value.trim() ? Number($("maxSessionDeployed").value) : null,
+        maxOpenDeployedSol: $("maxOpenDeployed").value.trim() ? Number($("maxOpenDeployed").value) : null,
         mirrorSlippageBps: Math.round(Number($("slippage").value || selected.slippage) * 100),
         mirrorSells,
         simulationMode: !liveMode,
@@ -566,6 +594,10 @@
         amount = Number(settings.minBuySol || amount);
         $("reserveSol").value = settings.solReserveSol ?? 0.03;
         $("maxBuy").value = settings.maxBuySol ?? selected.maxBuy;
+        $("maxOpenPositions").value = settings.maxOpenPositions ?? 1;
+        $("maxSolPerToken").value = settings.maxSolPerTokenSol ?? "";
+        $("maxSessionDeployed").value = settings.maxSessionDeployedSol ?? "";
+        $("maxOpenDeployed").value = settings.maxOpenDeployedSol ?? "";
         $("slippage").value = ((settings.mirrorSlippageBps ?? selected.slippage * 100) / 100).toString();
         $("tipLamports").value = settings.tipLamports ?? 0;
         $("priorityFee").value = settings.priorityFeeMicroLamports ?? 0;

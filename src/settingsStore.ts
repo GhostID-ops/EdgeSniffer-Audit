@@ -22,6 +22,10 @@ const SETTINGS_KEYS = [
   "MIRROR_SLIPPAGE_BPS",
   "MIRROR_SELLS",
   "SIMULATION_MODE",
+  "MAX_OPEN_POSITIONS",
+  "MAX_SOL_PER_TOKEN",
+  "MAX_SESSION_DEPLOYED_SOL",
+  "MAX_OPEN_DEPLOYED_SOL",
 ] as const;
 
 type SettingsKey = (typeof SETTINGS_KEYS)[number];
@@ -50,6 +54,16 @@ function numberFromBody(body: Record<string, unknown>, key: string, fallback: nu
   const raw = body[key];
   if (raw == null || raw === "") return fallback;
   const n = typeof raw === "number" ? raw : parseFloat(String(raw));
+  if (!Number.isFinite(n)) throw new Error(`${key} must be a number`);
+  return n;
+}
+
+function optionalNumberFromBody(body: Record<string, unknown>, key: string, fallback: number | null): number | null {
+  const raw = body[key];
+  if (raw == null) return fallback;
+  const text = String(raw).trim();
+  if (text === "") return null;
+  const n = typeof raw === "number" ? raw : parseFloat(text);
   if (!Number.isFinite(n)) throw new Error(`${key} must be a number`);
   return n;
 }
@@ -92,6 +106,10 @@ export function normalizeFriendSettings(body: Record<string, unknown>): FriendBo
     mirrorSlippageBps: Math.round(numberFromBody(body, "mirrorSlippageBps", current.mirrorSlippageBps)),
     mirrorSells: boolFromBody(body, "mirrorSells", current.mirrorSells),
     simulationMode: boolFromBody(body, "simulationMode", current.simulationMode),
+    maxOpenPositions: optionalNumberFromBody(body, "maxOpenPositions", current.maxOpenPositions),
+    maxSolPerTokenSol: optionalNumberFromBody(body, "maxSolPerTokenSol", current.maxSolPerTokenSol),
+    maxSessionDeployedSol: optionalNumberFromBody(body, "maxSessionDeployedSol", current.maxSessionDeployedSol),
+    maxOpenDeployedSol: optionalNumberFromBody(body, "maxOpenDeployedSol", current.maxOpenDeployedSol),
   };
 
   if (!settings.simulationMode) {
@@ -120,6 +138,10 @@ export function normalizeFriendSettings(body: Record<string, unknown>): FriendBo
   if (settings.copyBuyPercentage < 0) throw new Error("Copy buy percentage cannot be negative");
   if (settings.copyBuyPercentage > 100) settings.copyBuyPercentage = 100;
   if (settings.solReserveSol < 0) throw new Error("SOL reserve cannot be negative");
+  if (settings.maxOpenPositions != null && settings.maxOpenPositions < 1) throw new Error("Max open positions must be at least 1 or blank");
+  if (settings.maxSolPerTokenSol != null && settings.maxSolPerTokenSol < 0) throw new Error("Max per-token deployed SOL cannot be negative");
+  if (settings.maxSessionDeployedSol != null && settings.maxSessionDeployedSol < 0) throw new Error("Max session deployed SOL cannot be negative");
+  if (settings.maxOpenDeployedSol != null && settings.maxOpenDeployedSol < 0) throw new Error("Max open deployed SOL cannot be negative");
   if (settings.tipLamports < 0) throw new Error("Tip cannot be negative");
   if (settings.priorityFeeMicroLamports < 0) throw new Error("Priority fee cannot be negative");
   if (settings.mirrorSlippageBps < 1 || settings.mirrorSlippageBps > 10000) {
@@ -164,6 +186,10 @@ export function persistFriendSettings(settings: FriendBotSettings): FriendBotSet
     MIRROR_SLIPPAGE_BPS: String(applied.mirrorSlippageBps),
     MIRROR_SELLS: applied.mirrorSells ? "true" : "false",
     SIMULATION_MODE: applied.simulationMode ? "true" : "false",
+    MAX_OPEN_POSITIONS: applied.maxOpenPositions != null ? String(applied.maxOpenPositions) : "",
+    MAX_SOL_PER_TOKEN: applied.maxSolPerTokenSol != null ? String(applied.maxSolPerTokenSol) : "",
+    MAX_SESSION_DEPLOYED_SOL: applied.maxSessionDeployedSol != null ? String(applied.maxSessionDeployedSol) : "",
+    MAX_OPEN_DEPLOYED_SOL: applied.maxOpenDeployedSol != null ? String(applied.maxOpenDeployedSol) : "",
   };
 
   for (const key of SETTINGS_KEYS) lines = setEnvLine(lines, key, values[key]);

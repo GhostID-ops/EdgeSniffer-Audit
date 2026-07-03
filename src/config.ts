@@ -633,17 +633,17 @@ export const buyOnceAllowRebuyAfterFlat = parseEnvBool(
 );
 /** Optional cap on repeated entries into the same token. Useful when BUY_ONCE_PER_TOKEN=false. */
 export const maxBuysPerToken = parseOptionalPositiveInteger(process.env.MAX_BUYS_PER_TOKEN);
-const MAX_SOL_PER_TOKEN = parseOptionalPositiveNumber(process.env.MAX_SOL_PER_TOKEN);
+let MAX_SOL_PER_TOKEN = parseOptionalPositiveNumber(process.env.MAX_SOL_PER_TOKEN);
 /** Optional cap on total SOL spent per token position. */
-export const maxSolPerTokenLamports =
+export let maxSolPerTokenLamports =
   MAX_SOL_PER_TOKEN != null ? Math.round(MAX_SOL_PER_TOKEN * LAMPORTS_PER_SOL) : null;
-const MAX_SESSION_DEPLOYED_SOL = parseOptionalPositiveNumber(process.env.MAX_SESSION_DEPLOYED_SOL);
+let MAX_SESSION_DEPLOYED_SOL = parseOptionalPositiveNumber(process.env.MAX_SESSION_DEPLOYED_SOL);
 /** Optional cap on total gross SOL deployed into buys during this bot session. */
-export const maxSessionDeployedLamports =
+export let maxSessionDeployedLamports =
   MAX_SESSION_DEPLOYED_SOL != null ? Math.round(MAX_SESSION_DEPLOYED_SOL * LAMPORTS_PER_SOL) : null;
-const MAX_OPEN_DEPLOYED_SOL = parseOptionalPositiveNumber(process.env.MAX_OPEN_DEPLOYED_SOL);
+let MAX_OPEN_DEPLOYED_SOL = parseOptionalPositiveNumber(process.env.MAX_OPEN_DEPLOYED_SOL);
 /** Optional cap on currently open SOL cost basis plus the next buy. Better for high-turnover copy sources. */
-export const maxOpenDeployedLamports =
+export let maxOpenDeployedLamports =
   MAX_OPEN_DEPLOYED_SOL != null ? Math.round(MAX_OPEN_DEPLOYED_SOL * LAMPORTS_PER_SOL) : null;
 
 /**
@@ -752,7 +752,7 @@ export const prebuyFilterFailOpen =
   PREBUY_FILTER_FAIL_OPEN_RAW === "yes";
 
 /** Optional cap on simultaneously open token positions. Empty/0 = no cap. */
-export const maxOpenPositions = parseOptionalPositiveInteger(process.env.MAX_OPEN_POSITIONS);
+export let maxOpenPositions = parseOptionalPositiveInteger(process.env.MAX_OPEN_POSITIONS);
 
 /**
  * When true (default), fetch & display market cap from DexScreener whenever available.
@@ -855,6 +855,10 @@ export type FriendBotSettings = {
   mirrorSlippageBps: number;
   mirrorSells: boolean;
   simulationMode: boolean;
+  maxOpenPositions: number | null;
+  maxSolPerTokenSol: number | null;
+  maxSessionDeployedSol: number | null;
+  maxOpenDeployedSol: number | null;
 };
 
 export function getFriendBotSettings(): FriendBotSettings {
@@ -869,6 +873,10 @@ export function getFriendBotSettings(): FriendBotSettings {
     mirrorSlippageBps,
     mirrorSells,
     simulationMode,
+    maxOpenPositions: maxOpenPositions ?? null,
+    maxSolPerTokenSol: maxSolPerTokenLamports != null ? maxSolPerTokenLamports / LAMPORTS_PER_SOL : null,
+    maxSessionDeployedSol: maxSessionDeployedLamports != null ? maxSessionDeployedLamports / LAMPORTS_PER_SOL : null,
+    maxOpenDeployedSol: maxOpenDeployedLamports != null ? maxOpenDeployedLamports / LAMPORTS_PER_SOL : null,
   };
 }
 
@@ -905,6 +913,10 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
   );
   MIRROR_SLIPPAGE_BPS = Math.max(1, Math.round(settings.mirrorSlippageBps ?? MIRROR_SLIPPAGE_BPS));
   if (typeof settings.mirrorSells === "boolean") mirrorSells = settings.mirrorSells;
+  if (settings.maxOpenPositions !== undefined) maxOpenPositions = settings.maxOpenPositions != null ? Math.max(1, Math.round(settings.maxOpenPositions)) : null;
+  if (settings.maxSolPerTokenSol !== undefined) MAX_SOL_PER_TOKEN = settings.maxSolPerTokenSol != null ? Math.max(0, settings.maxSolPerTokenSol) : null;
+  if (settings.maxSessionDeployedSol !== undefined) MAX_SESSION_DEPLOYED_SOL = settings.maxSessionDeployedSol != null ? Math.max(0, settings.maxSessionDeployedSol) : null;
+  if (settings.maxOpenDeployedSol !== undefined) MAX_OPEN_DEPLOYED_SOL = settings.maxOpenDeployedSol != null ? Math.max(0, settings.maxOpenDeployedSol) : null;
 
   tipLamports = TIP_LAMPORTS;
   priorityFeeMicroLamports = PRIORITY_FEE_MICRO_LAMPORTS;
@@ -913,6 +925,9 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
   minBuyLamports = Math.round(MIN_BUY_SOL * LAMPORTS_PER_SOL);
   maxBuyLamports = Math.round(MAX_BUY_SOL * LAMPORTS_PER_SOL);
   solReserveLamports = Math.round(SOL_RESERVE * LAMPORTS_PER_SOL);
+  maxSolPerTokenLamports = MAX_SOL_PER_TOKEN != null && MAX_SOL_PER_TOKEN > 0 ? Math.round(MAX_SOL_PER_TOKEN * LAMPORTS_PER_SOL) : null;
+  maxSessionDeployedLamports = MAX_SESSION_DEPLOYED_SOL != null && MAX_SESSION_DEPLOYED_SOL > 0 ? Math.round(MAX_SESSION_DEPLOYED_SOL * LAMPORTS_PER_SOL) : null;
+  maxOpenDeployedLamports = MAX_OPEN_DEPLOYED_SOL != null && MAX_OPEN_DEPLOYED_SOL > 0 ? Math.round(MAX_OPEN_DEPLOYED_SOL * LAMPORTS_PER_SOL) : null;
   if (typeof settings.simulationMode === "boolean") setSimulationMode(settings.simulationMode);
 
   process.env.MIN_BUY_SOL = String(MIN_BUY_SOL);
