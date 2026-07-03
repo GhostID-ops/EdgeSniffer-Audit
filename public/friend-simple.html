@@ -147,6 +147,23 @@
     .switch::after { content: ""; position: absolute; width: 24px; height: 24px; left: 3px; top: 3px; border-radius: 50%; background: var(--muted); transition: .16s; }
     .switch.on { background: rgba(93,242,174,.2); border-color: rgba(93,242,174,.55); }
     .switch.on::after { left: 25px; background: var(--green); }
+    #activityCard {
+      max-height: min(760px, calc(100vh - 118px));
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 16px;
+    }
+    #activityCard .body {
+      min-height: 360px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(105,230,190,.55) rgba(255,255,255,.06);
+    }
+    #activityCard .body::-webkit-scrollbar { width: 10px; }
+    #activityCard .body::-webkit-scrollbar-track { background: rgba(255,255,255,.04); border-radius: 999px; }
+    #activityCard .body::-webkit-scrollbar-thumb { background: rgba(105,230,190,.42); border-radius: 999px; border: 2px solid rgba(4,6,9,.9); }
     .feed, .positions { display: grid; gap: 8px; }
     .log, .position { border: 1px solid var(--line); border-radius: 14px; background: rgba(4,6,9,.66); padding: 12px; color: var(--soft); font-size: 12.5px; line-height: 1.45; }
     .log.good { border-color: rgba(93,242,174,.42); }
@@ -187,6 +204,8 @@
       .main-grid, .wallet-row, .row { grid-template-columns: 1fr; }
       .amount-grid { grid-template-columns: 1fr 1fr; }
       .top { align-items: stretch; flex-direction: column; }
+      #activityCard { position: static; max-height: 72vh; }
+      #activityCard .body { min-height: 300px; }
     }
   </style>
 </head>
