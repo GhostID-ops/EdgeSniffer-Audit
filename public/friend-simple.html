@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FinalBot Simple</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #020303;
+      --card: #090c10;
+      --card2: #0d1118;
+      --line: #1b2430;
+      --text: #f6f8fb;
+      --muted: #8b95a5;
+      --soft: #d9e0ea;
+      --green: #5df2ae;
+      --blue: #8bd8ff;
+      --amber: #f2cc6b;
+      --red: #ff7474;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    .app { width: min(980px, calc(100% - 28px)); margin: 0 auto; padding: 18px 0 34px; }
+    .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0 16px; }
+    .brand { display: flex; gap: 11px; align-items: center; min-width: 0; }
+    .logo { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(135deg, var(--green), var(--blue)); color: #020303; font-weight: 950; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 2px; font-size: 22px; letter-spacing: -.2px; }
+    .sub { color: var(--muted); font-size: 13px; }
+    .link-btn { border: 1px solid var(--line); border-radius: 10px; background: #05070a; color: var(--soft); min-height: 38px; padding: 8px 11px; font-weight: 850; }
+    .hero {
+      border: 1px solid var(--line); border-radius: 14px; background: linear-gradient(180deg, #0d1118, #06080b);
+      padding: 18px; display: grid; gap: 16px; box-shadow: 0 28px 90px rgba(0,0,0,.52);
+    }
+    .wallet-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .tile { border: 1px solid var(--line); border-radius: 12px; background: #05070a; padding: 14px; min-height: 86px; }
+    .tile span { display: block; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .45px; font-weight: 950; }
+    .tile strong { display: block; margin-top: 8px; font-size: 22px; overflow-wrap: anywhere; }
+    .tile small { display: block; color: var(--muted); margin-top: 5px; line-height: 1.35; }
+    .main-grid { display: grid; grid-template-columns: 1fr .86fr; gap: 14px; margin-top: 14px; align-items: start; }
+    .card { border: 1px solid var(--line); border-radius: 14px; background: var(--card); overflow: hidden; }
+    .card-head { padding: 14px 15px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .card-title { font-weight: 950; }
+    .body { padding: 15px; display: grid; gap: 13px; }
+    .field { display: grid; gap: 7px; }
+    label { color: var(--soft); font-size: 12px; font-weight: 900; }
+    input, select, textarea {
+      width: 100%; border: 1px solid var(--line); border-radius: 11px; background: #05070a; color: var(--text);
+      padding: 12px; outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: rgba(139,216,255,.75); box-shadow: 0 0 0 3px rgba(139,216,255,.12); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .strategies { display: grid; gap: 9px; }
+    .strategy {
+      width: 100%; border: 1px solid var(--line); border-radius: 12px; background: #05070a; color: inherit;
+      padding: 13px; text-align: left; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center;
+    }
+    .strategy.active { border-color: var(--green); box-shadow: 0 0 0 2px rgba(93,242,174,.12) inset; }
+    .strategy b { display: block; font-size: 15px; }
+    .strategy p { margin: 5px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.35; }
+    .badge { display: inline-flex; align-items: center; border-radius: 999px; background: rgba(93,242,174,.13); color: var(--green); padding: 5px 8px; font-size: 11px; font-weight: 950; white-space: nowrap; }
+    .amount-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .amount { border: 1px solid var(--line); border-radius: 11px; background: #05070a; color: var(--soft); min-height: 44px; font-weight: 950; }
+    .amount.active { border-color: var(--green); background: var(--green); color: #02100a; }
+    .hint { color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+    .notice { border: 1px solid rgba(139,216,255,.28); border-radius: 12px; background: rgba(139,216,255,.06); padding: 12px; color: var(--soft); font-size: 13px; line-height: 1.45; }
+    .warning { border-color: rgba(255,116,116,.42); background: rgba(255,116,116,.08); color: #ffd9d9; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .primary, .danger, .secondary {
+      min-height: 54px; border-radius: 13px; border: 1px solid var(--line); font-weight: 950;
+    }
+    .primary { border: 0; color: #03100b; background: linear-gradient(135deg, var(--green), var(--blue)); }
+    .danger { color: #fff; background: rgba(255,116,116,.12); border-color: rgba(255,116,116,.45); }
+    .secondary { color: var(--soft); background: #05070a; }
+    details { border: 1px solid var(--line); border-radius: 12px; background: #05070a; }
+    summary { padding: 13px; cursor: pointer; font-weight: 950; color: var(--soft); }
+    .details-body { padding: 0 13px 13px; display: grid; gap: 10px; }
+    .toggle-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 11px; padding: 11px; }
+    .toggle-row p { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .switch { width: 54px; height: 32px; border: 1px solid var(--line); border-radius: 999px; background: #141922; position: relative; flex: 0 0 auto; }
+    .switch::after { content: ""; position: absolute; width: 24px; height: 24px; left: 3px; top: 3px; border-radius: 50%; background: var(--muted); transition: .16s; }
+    .switch.on { background: rgba(93,242,174,.2); border-color: rgba(93,242,174,.55); }
+    .switch.on::after { left: 25px; background: var(--green); }
+    .feed, .positions { display: grid; gap: 8px; }
+    .log, .position { border: 1px solid var(--line); border-radius: 12px; background: #05070a; padding: 11px; color: var(--soft); font-size: 12.5px; line-height: 1.45; }
+    .log.good { border-color: rgba(93,242,174,.42); }
+    .log.bad { border-color: rgba(255,116,116,.44); }
+    .log.warn { border-color: rgba(242,204,107,.44); }
+    .position-top { display: flex; justify-content: space-between; gap: 10px; }
+    .sell-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 10px; }
+    .sell-grid button { min-height: 36px; border: 1px solid var(--line); border-radius: 10px; background: #080c11; color: var(--soft); font-weight: 950; font-size: 12px; }
+    .toast { position: fixed; right: 16px; bottom: 16px; z-index: 30; border: 1px solid var(--line); border-radius: 12px; background: #111722; color: var(--text); padding: 12px; display: none; max-width: min(420px, calc(100% - 32px)); font-size: 13px; }
+    .toast.show { display: block; }
+    .tour { position: fixed; inset: 0; z-index: 40; display: none; background: rgba(0,0,0,.72); padding: 18px; place-items: center; }
+    .tour.open { display: grid; }
+    .tour-card { width: min(520px, 100%); border: 1px solid var(--line); border-radius: 16px; background: #080c12; padding: 18px; box-shadow: 0 22px 80px rgba(0,0,0,.62); }
+    .tour-card h2 { margin-bottom: 8px; }
+    .tour-card p { color: var(--soft); line-height: 1.5; }
+    .tour-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; }
+    .focus-ring { outline: 3px solid rgba(93,242,174,.8); outline-offset: 5px; position: relative; z-index: 45; }
+    @media (max-width: 820px) {
+      .main-grid, .wallet-row, .row { grid-template-columns: 1fr; }
+      .amount-grid { grid-template-columns: 1fr 1fr; }
+      .top { align-items: stretch; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div class="brand">
+        <div class="logo">FB</div>
+        <div>
+          <h1>FinalBot</h1>
+          <div class="sub">Simple copy trading wallet</div>
+        </div>
+      </div>
+      <div>
+        <button class="link-btn" id="tourBtn" type="button">Show me around</button>
+        <a class="link-btn" href="/friend" style="display:inline-flex;align-items:center;text-decoration:none;margin-left:6px">Advanced</a>
+      </div>
+    </header>
+
+    <section class="hero" id="homeCard">
+      <div class="wallet-row">
+        <div class="tile">
+          <span>Wallet balance</span>
+          <strong id="balanceText">--</strong>
+          <small id="walletText">Save a wallet to start.</small>
+        </div>
+        <div class="tile">
+          <span>Bot mode</span>
+          <strong id="modeText">--</strong>
+          <small id="modeHelp">Shadow is practice. Live can spend SOL.</small>
+        </div>
+        <div class="tile">
+          <span>Status</span>
+          <strong id="runText">Loading</strong>
+          <small id="statusHelp">Streams and executor start with the bot.</small>
+        </div>
+      </div>
+      <div class="notice" id="summaryText">Choose a strategy, pick the SOL amount, then start in Shadow mode first.</div>
+      <div class="actions" id="startArea">
+        <button class="primary" id="startBtn" type="button">Start Bot</button>
+        <button class="danger" id="stopBtn" type="button">Stop Bot</button>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="card" id="setupCard">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Setup</div>
+            <div class="hint">Three choices. The rest is optional.</div>
+          </div>
+          <button class="secondary" id="refreshBtn" type="button">Refresh</button>
+        </div>
+        <div class="body">
+          <div class="field" id="walletStep">
+            <label for="privateKey">1. Bot wallet private key</label>
+            <input id="privateKey" type="password" autocomplete="off" placeholder="Paste once, save, then it disappears" />
+            <button class="secondary" id="saveKeyBtn" type="button">Save Wallet</button>
+            <div class="hint">Use a fresh test wallet. Do not keep large funds in a demo wallet.</div>
+          </div>
+
+          <div class="field" id="strategyStep">
+            <label>2. Strategy</label>
+            <div class="strategies" id="strategyGrid"></div>
+            <details>
+              <summary>Use my own wallet to copy</summary>
+              <div class="details-body">
+                <textarea id="customWallets" placeholder="Paste one tracked wallet address"></textarea>
+                <button class="secondary" id="useCustomBtn" type="button">Use Custom Wallet</button>
+              </div>
+            </details>
+          </div>
+
+          <div class="field" id="amountStep">
+            <label>3. SOL per buy</label>
+            <div class="amount-grid" id="amountGrid"></div>
+            <div class="row">
+              <div>
+                <label for="customAmount">Custom amount</label>
+                <input id="customAmount" type="number" min="0.001" step="0.001" placeholder="0.01" />
+              </div>
+              <div>
+                <label for="reserveSol">Keep this SOL safe</label>
+                <input id="reserveSol" type="number" min="0" step="0.001" value="0.03" />
+              </div>
+            </div>
+            <div class="hint">Recommended: 0.005-0.01 SOL for a first live test, or any size in Shadow mode.</div>
+          </div>
+
+          <div class="field">
+            <label>Safety preset</label>
+            <select id="preset">
+              <option value="safe">Safe Test - recommended first</option>
+              <option value="balanced">Balanced - normal demo</option>
+              <option value="aggressive">Aggressive - faster, more risk</option>
+            </select>
+            <div class="hint" id="presetHelp">Safe Test keeps Shadow mode on and uses conservative hidden settings. You still choose SOL amount.</div>
+          </div>
+
+          <details id="advancedBox">
+            <summary>Optional advanced controls</summary>
+            <div class="details-body">
+              <div class="toggle-row">
+                <div><b>Live Money mode</b><p>Off means Shadow practice. On can spend real SOL.</p></div>
+                <button class="switch" id="liveToggle" type="button" aria-label="Toggle live mode"></button>
+              </div>
+              <div class="toggle-row">
+                <div><b>Auto-follow sells</b><p>Recommended on. The bot sells when the copied wallet sells.</p></div>
+                <button class="switch on" id="mirrorToggle" type="button" aria-label="Toggle mirror sells"></button>
+              </div>
+              <div class="toggle-row">
+                <div><b>Tips and priority fees</b><p>Off for simple demos. On can improve landing but spends more SOL.</p></div>
+                <button class="switch" id="feeToggle" type="button" aria-label="Toggle fees"></button>
+              </div>
+              <div class="row">
+                <div>
+                  <label for="slippage">Price movement room</label>
+                  <input id="slippage" type="number" min="0.1" max="100" step="0.1" value="12" />
+                </div>
+                <div>
+                  <label for="maxBuy">Max per buy</label>
+                  <input id="maxBuy" type="number" min="0.001" step="0.001" value="0.01" />
+                </div>
+              </div>
+              <div class="row" id="feeFields" style="display:none">
+                <div>
+                  <label for="tipLamports">Tip</label>
+                  <input id="tipLamports" type="number" min="0" step="1000" value="0" />
+                </div>
+                <div>
+                  <label for="priorityFee">Priority fee</label>
+                  <input id="priorityFee" type="number" min="0" step="1000" value="0" />
+                </div>
+              </div>
+              <button class="secondary" id="saveSettingsBtn" type="button">Save Settings</button>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="card" id="activityCard">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Activity</div>
+            <div class="hint">Plain-English updates only.</div>
+          </div>
+          <button class="secondary" id="sellAllBtn" type="button">Sell All</button>
+        </div>
+        <div class="body">
+          <div class="positions" id="positions"></div>
+          <div class="feed" id="feed"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="tour" id="tour">
+    <div class="tour-card">
+      <h2 id="tourTitle">Welcome to FinalBot</h2>
+      <p id="tourText">This page is the simple wallet-style view. We will walk through the pieces once.</p>
+      <div class="tour-actions">
+        <button class="secondary" id="tourSkip" type="button">Skip</button>
+        <button class="primary" id="tourNext" type="button">Next</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STRATEGIES = [
+      { id: "cya", name: "Cented Strategy", short: "Fast runner wallet", wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", risk: "Medium/High", amount: 0.01, maxBuy: 0.015, slippage: 12 },
+      { id: "4bdk", name: "Anchor Strategy", short: "Higher win-rate source exits", wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk", risk: "Medium", amount: 0.01, maxBuy: 0.015, slippage: 10 },
+      { id: "2cq", name: "Scout Strategy", short: "Early launch hunter", wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG", risk: "High", amount: 0.005, maxBuy: 0.01, slippage: 15 },
+      { id: "bwam", name: "Whale Tape", short: "Research whale-flow pool", wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa", risk: "High", amount: 0.01, maxBuy: 0.02, slippage: 12 },
+      { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 10 }
+    ];
+    const AMOUNTS = [0.005, 0.01, 0.02, 0.05];
+    const $ = (id) => document.getElementById(id);
+    let selected = STRATEGIES[0];
+    let amount = selected.amount;
+    let state = null;
+    let settings = null;
+    let logsSince = 0;
+    let liveMode = false;
+    let mirrorSells = true;
+    let feeMode = false;
+    let tourIndex = 0;
+
+    const tourSteps = [
+      ["homeCard", "Your dashboard", "This is the only place most users need. It shows wallet balance, Shadow/Live mode, bot status, and the Start/Stop buttons."],
+      ["walletStep", "Connect a test wallet", "Paste a private key once and save it. Use a fresh wallet with only test funds."],
+      ["strategyStep", "Pick a strategy", "Strategies are prebuilt wallet-following pools. The complicated settings are loaded behind the scenes."],
+      ["amountStep", "Choose the SOL amount", "You choose how much SOL the bot can spend per buy. For a first live test, 0.005 to 0.01 SOL is recommended."],
+      ["advancedBox", "Optional controls", "Live mode, tips, priority fees, mirror sells, slippage, and max buy are hidden here until someone wants them."],
+      ["activityCard", "Watch trades", "Open positions and human-friendly trade messages appear here. Raw chain errors are translated into plain English."]
+    ];
+
+    function esc(v) {
+      return String(v ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+    }
+    function fmtSol(n) {
+      return typeof n === "number" && Number.isFinite(n) ? `${n.toFixed(4)} SOL` : "--";
+    }
+    function toast(msg) {
+      $("toast").textContent = msg;
+      $("toast").classList.add("show");
+      setTimeout(() => $("toast").classList.remove("show"), 3800);
+    }
+    async function api(path, opts = {}) {
+      const res = await fetch(path, { ...opts, headers: { "content-type": "application/json", ...(opts.headers || {}) } });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok === false) throw new Error(data.error || data.message || `Request failed: ${res.status}`);
+      return data;
+    }
+    function customErrorCode(raw) {
+      const text = String(raw || "");
+      const hex = text.match(/custom program error:\s*0x([0-9a-f]+)/i)?.[1];
+      return text.match(/Custom["):\s]*(\d+)/i)?.[1] || text.match(/Error Number:\s*(\d+)/i)?.[1] || (hex ? String(parseInt(hex, 16)) : "");
+    }
+    function friendly(line) {
+      const raw = String(line || "");
+      const lower = raw.toLowerCase();
+      const code = customErrorCode(raw);
+      if (/failed|instructionerror|preflight|custom|error|expired|blockhash|rate limited|429|timed out|timeout/.test(lower)) {
+        if (code === "6042" || code === "6002") return "Buy skipped: the bonding curve pumped before our transaction landed. The bot protected the wallet from a worse fill.";
+        if (code === "6023" || lower.includes("overflow")) return "Trade skipped: the pool moved too fast and became unsafe for that quote. This is chain/pool movement, not a settings mistake.";
+        if (lower.includes("slippage")) return "Trade skipped: price moved beyond the safety limit. Increase price movement room only if worse fills are acceptable.";
+        if (lower.includes("429") || lower.includes("rate limited")) return "Provider slowed us down: a helper RPC/API rate-limited a status or balance check.";
+        if (lower.includes("blockhash") || lower.includes("expired") || lower.includes("timeout")) return "Transaction did not land cleanly: the cluster likely dropped or expired it before confirmation.";
+        if (lower.includes("insufficient")) return "Not enough available SOL after reserve and fees. Add SOL or lower the buy amount.";
+        return "Trade did not complete cleanly. The chain rejected it or the market moved before confirmation.";
+      }
+      return raw
+        .replace(/gRPC detected swap/i, "Wallet activity detected")
+        .replace(/Processing buy/i, "Processing buy")
+        .replace(/Processing sell/i, "Processing sell")
+        .replace(/Skipping buy:/i, "Skipped buy:")
+        .replace(/Skipping sell:/i, "Skipped sell:")
+        .replace(/\| logs=.*/i, "");
+    }
+    function payload(extra = {}) {
+      const custom = Number($("customAmount").value);
+      const buy = Number.isFinite(custom) && custom > 0 ? custom : amount;
+      amount = buy;
+      return {
+        trackedWallets: selected.id === "custom" ? $("customWallets").value.split(/[\n,]+/).map((x) => x.trim()).filter(Boolean) : [selected.wallet],
+        minBuySol: buy,
+        maxBuySol: Math.max(buy, Number($("maxBuy").value || buy)),
+        copyBuyPercentage: 0,
+        solReserveSol: Number($("reserveSol").value || 0.03),
+        mirrorSlippageBps: Math.round(Number($("slippage").value || selected.slippage) * 100),
+        mirrorSells,
+        simulationMode: !liveMode,
+        tipLamports: feeMode ? Number($("tipLamports").value || 0) : 0,
+        priorityFeeMicroLamports: feeMode ? Number($("priorityFee").value || 0) : 0,
+        stopLossPct: "35",
+        takeProfitPct: "",
+        minHoldBeforeStopLossMs: "15000",
+        hybridExitEnabled: true,
+        hybridExitTpPct: "30",
+        hybridExitTpSellPct: "50",
+        hybridExitSourceExitRemaining: true,
+        ...extra
+      };
+    }
+    function renderStrategies() {
+      $("strategyGrid").innerHTML = STRATEGIES.map((s) => `
+        <button class="strategy ${s.id === selected.id ? "active" : ""}" data-strategy="${esc(s.id)}" type="button">
+          <span><b>${esc(s.name)}</b><p>${esc(s.short)}</p></span>
+          <span class="badge">${esc(s.risk)}</span>
+        </button>
+      `).join("");
+      document.querySelectorAll("[data-strategy]").forEach((btn) => btn.addEventListener("click", () => {
+        selected = STRATEGIES.find((s) => s.id === btn.dataset.strategy) || selected;
+        amount = selected.amount;
+        $("customAmount").value = "";
+        $("maxBuy").value = selected.maxBuy;
+        $("slippage").value = selected.slippage;
+        if (selected.wallet) $("customWallets").value = selected.wallet;
+        render();
+        toast(`${selected.name} selected.`);
+      }));
+    }
+    function renderAmounts() {
+      $("amountGrid").innerHTML = AMOUNTS.map((a) => `<button class="amount ${a === amount ? "active" : ""}" data-amount="${a}" type="button">${a} SOL</button>`).join("");
+      document.querySelectorAll("[data-amount]").forEach((btn) => btn.addEventListener("click", () => {
+        amount = Number(btn.dataset.amount);
+        $("customAmount").value = "";
+        $("maxBuy").value = Math.max(amount, selected.maxBuy);
+        render();
+      }));
+    }
+    function applyPreset() {
+      const preset = $("preset").value;
+      if (preset === "safe") {
+        liveMode = false; feeMode = false; mirrorSells = true; $("slippage").value = Math.max(10, selected.slippage); $("presetHelp").textContent = "Safe Test uses Shadow mode, no fees, mirror sells on, and conservative price room. You still choose SOL amount.";
+      } else if (preset === "balanced") {
+        feeMode = false; mirrorSells = true; $("slippage").value = selected.slippage; $("presetHelp").textContent = "Balanced uses normal strategy defaults. Live mode is still manual.";
+      } else {
+        mirrorSells = true; $("slippage").value = Math.max(15, selected.slippage); $("presetHelp").textContent = "Aggressive allows more price movement. Turn fees on only if you accept higher cost.";
+      }
+      render();
+    }
+    function render() {
+      renderStrategies();
+      renderAmounts();
+      $("modeText").textContent = liveMode ? "Live" : "Shadow";
+      $("runText").textContent = state?.running ? "Running" : "Stopped";
+      $("balanceText").textContent = fmtSol(state?.lastBalanceSol);
+      $("walletText").textContent = state?.ourWallet ? `${state.ourWallet.slice(0, 4)}...${state.ourWallet.slice(-4)}` : "Save a wallet to start.";
+      $("modeHelp").textContent = liveMode ? "Live can spend real SOL." : "Shadow practice mode.";
+      $("statusHelp").textContent = state?.running ? "Bot is watching the selected wallet." : "Bot is not trading.";
+      $("liveToggle").classList.toggle("on", liveMode);
+      $("mirrorToggle").classList.toggle("on", mirrorSells);
+      $("feeToggle").classList.toggle("on", feeMode);
+      $("feeFields").style.display = feeMode ? "grid" : "none";
+      $("summaryText").className = `notice ${liveMode ? "warning" : ""}`;
+      $("summaryText").textContent = `${selected.name}: buys up to ${Number($("maxBuy").value || amount).toFixed(3)} SOL per signal, uses ${amount.toFixed(3)} SOL default buys, ${mirrorSells ? "auto-follows sells" : "does not auto-follow sells"}, and locks 50% profit at +30%.`;
+      $("startBtn").disabled = !state?.ourWallet || (!(selected.id !== "custom" || $("customWallets").value.trim()) || (liveMode && !(state?.lastBalanceSol > 0)));
+    }
+    function renderPositions() {
+      const positions = state?.positions || [];
+      $("positions").innerHTML = positions.length ? positions.map((p, i) => `
+        <div class="position">
+          <div class="position-top"><b>${esc(p.symbol || (p.mint || "Token").slice(0, 6))}</b><span>${fmtSol((p.costBasisLamports || 0) / 1e9)}</span></div>
+          <div class="sell-grid">
+            <button data-sell="${i + 1}:0.25" type="button">Sell 25%</button>
+            <button data-sell="${i + 1}:0.5" type="button">Sell 50%</button>
+            <button data-sell="${i + 1}:1" type="button">Sell All</button>
+          </div>
+        </div>`).join("") : `<div class="log">No open positions yet.</div>`;
+      document.querySelectorAll("[data-sell]").forEach((btn) => btn.addEventListener("click", async () => {
+        const [index, fraction] = btn.dataset.sell.split(":");
+        await api(`/api/actions/sell-position-percent/${index}?fraction=${fraction}`, { method: "POST", body: "{}" });
+        toast("Sell requested.");
+        await refresh();
+      }));
+    }
+    async function refreshLogs() {
+      const data = await api(`/api/logs?since=${logsSince}`).catch(() => null);
+      if (!data) return;
+      const lines = data.logs || [];
+      for (const row of lines) if (typeof row.ts === "number" && row.ts > logsSince) logsSince = row.ts;
+      if (!$("feed").children.length && !lines.length) $("feed").innerHTML = `<div class="log">Waiting for wallet activity...</div>`;
+      if (lines.length && $("feed").textContent.includes("Waiting for wallet activity")) $("feed").innerHTML = "";
+      for (const row of lines.slice(-40)) {
+        const raw = row.message || row.line || row;
+        const div = document.createElement("div");
+        div.className = `log ${/complete|Buy \(|Sell LIVE|Sell \(/i.test(raw) ? "good" : /failed|error/i.test(raw) ? "bad" : /skip|warn|rate limited/i.test(raw) ? "warn" : ""}`;
+        div.textContent = friendly(raw);
+        $("feed").appendChild(div);
+      }
+      while ($("feed").children.length > 60) $("feed").removeChild($("feed").firstChild);
+    }
+    async function refresh() {
+      const ready = await api("/api/readiness");
+      state = ready.state;
+      settings = ready.settings;
+      if (settings) {
+        liveMode = settings.simulationMode === false;
+        mirrorSells = settings.mirrorSells !== false;
+        amount = Number(settings.minBuySol || amount);
+        $("reserveSol").value = settings.solReserveSol ?? 0.03;
+        $("maxBuy").value = settings.maxBuySol ?? selected.maxBuy;
+        $("slippage").value = ((settings.mirrorSlippageBps ?? selected.slippage * 100) / 100).toString();
+        $("tipLamports").value = settings.tipLamports ?? 0;
+        $("priorityFee").value = settings.priorityFeeMicroLamports ?? 0;
+        feeMode = Number(settings.tipLamports || 0) > 0 || Number(settings.priorityFeeMicroLamports || 0) > 0;
+        if (Array.isArray(settings.trackedWallets) && settings.trackedWallets.length) {
+          $("customWallets").value = settings.trackedWallets.join("\n");
+          selected = STRATEGIES.find((s) => s.wallet && settings.trackedWallets.includes(s.wallet)) || selected;
+        }
+      }
+      render();
+      renderPositions();
+      await refreshLogs();
+    }
+    async function saveSettings(extra = {}) {
+      const saved = await api("/api/settings", { method: "POST", body: JSON.stringify(payload(extra)) });
+      settings = saved.settings || settings;
+      toast("Settings saved.");
+      await refresh();
+    }
+    function startTour() { tourIndex = 0; showTour(); }
+    function showTour() {
+      document.querySelectorAll(".focus-ring").forEach((el) => el.classList.remove("focus-ring"));
+      const step = tourSteps[tourIndex];
+      if (!step) { closeTour(); return; }
+      $(step[0])?.classList.add("focus-ring");
+      $("tourTitle").textContent = step[1];
+      $("tourText").textContent = step[2];
+      $("tour").classList.add("open");
+      $("tourNext").textContent = tourIndex === tourSteps.length - 1 ? "Finish" : "Next";
+      try { $(step[0])?.scrollIntoView({ behavior: "smooth", block: "center" }); } catch {}
+    }
+    function closeTour() {
+      $("tour").classList.remove("open");
+      document.querySelectorAll(".focus-ring").forEach((el) => el.classList.remove("focus-ring"));
+      localStorage.setItem("finalbotSimpleTourSeen", "1");
+    }
+    $("saveKeyBtn").addEventListener("click", async () => {
+      const key = $("privateKey").value.trim();
+      if (!key) return toast("Paste a private key first.");
+      await api("/api/settings", { method: "POST", body: JSON.stringify({ privateKeyBase58: key }) });
+      $("privateKey").value = "";
+      toast("Wallet saved.");
+      await refresh();
+    });
+    $("preset").addEventListener("change", applyPreset);
+    $("useCustomBtn").addEventListener("click", () => { selected = STRATEGIES.find((s) => s.id === "custom"); render(); });
+    $("customAmount").addEventListener("input", () => { const n = Number($("customAmount").value); if (Number.isFinite(n) && n > 0) amount = n; render(); });
+    $("liveToggle").addEventListener("click", () => {
+      if (!liveMode && !confirm("Live Money mode can spend real SOL. Use a tiny amount first. Switch to Live?")) return;
+      liveMode = !liveMode; render();
+    });
+    $("mirrorToggle").addEventListener("click", () => { mirrorSells = !mirrorSells; render(); });
+    $("feeToggle").addEventListener("click", () => {
+      if (!feeMode && !confirm("Tips and priority fees can spend extra SOL to improve landing. Turn them on?")) return;
+      feeMode = !feeMode; render();
+    });
+    $("saveSettingsBtn").addEventListener("click", () => saveSettings().catch((e) => toast(e.message)));
+    $("startBtn").addEventListener("click", async () => {
+      if (liveMode) {
+        const maxBuy = Number($("maxBuy").value || amount);
+        if (!confirm(`Live Money warning: this can spend real SOL. Max per buy is ${maxBuy.toFixed(3)} SOL. Start bot?`)) return;
+      }
+      await api("/api/start", { method: "POST", body: JSON.stringify(payload()) });
+      toast("Bot started.");
+      await refresh();
+    });
+    $("stopBtn").addEventListener("click", async () => { await api("/api/stop", { method: "POST", body: "{}" }); toast("Bot stopped."); await refresh(); });
+    $("sellAllBtn").addEventListener("click", async () => { await api("/api/actions/sell-all", { method: "POST", body: "{}" }); toast("Sell all requested."); await refresh(); });
+    $("refreshBtn").addEventListener("click", () => refresh().catch((e) => toast(e.message)));
+    $("tourBtn").addEventListener("click", startTour);
+    $("tourSkip").addEventListener("click", closeTour);
+    $("tourNext").addEventListener("click", () => { tourIndex += 1; showTour(); });
+    $("maxBuy").addEventListener("input", render);
+    render();
+    refresh().catch((e) => toast(e.message));
+    setInterval(() => { api("/api/state").then((s) => { state = s; render(); renderPositions(); }).catch(() => {}); refreshLogs().catch(() => {}); }, 2500);
+    if (!localStorage.getItem("finalbotSimpleTourSeen")) setTimeout(startTour, 600);
+  </script>
+</body>
+</html>

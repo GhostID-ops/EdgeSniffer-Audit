@@ -186,6 +186,10 @@ async function handle(
     return servePublicFile(res, "friend.html", "text/html; charset=utf-8");
   }
 
+  if (req.method === "GET" && (url === "/friend-simple" || url === "/friend-simple.html")) {
+    return servePublicFile(res, "friend-simple.html", "text/html; charset=utf-8");
+  }
+
   if (req.method === "GET" && (url === "/dex" || url === "/dex.html")) {
     return servePublicFile(res, "dex.html", "text/html; charset=utf-8");
   }
