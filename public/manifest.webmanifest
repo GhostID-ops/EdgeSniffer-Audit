@@ -1,12 +1,13 @@
 {
-  "name": "Obsidian Copy Console",
-  "short_name": "Obsidian",
-  "description": "Copy-trading console: live positions, exposure, charts, and controls.",
-  "start_url": "/",
+  "name": "Obsidian Labs Copy Trading Console",
+  "short_name": "Obsidian Labs",
+  "description": "Private Solana copy trading console with strategy presets, live/shadow mode, risk controls, and plain-English trade activity.",
+  "start_url": "/friend-simple",
   "display": "standalone",
-  "background_color": "#060708",
-  "theme_color": "#060708",
+  "background_color": "#030405",
+  "theme_color": "#030405",
   "icons": [
-    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/obsidian-labs.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
 }

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Obsidian Labs">
+  <defs>
+    <linearGradient id="obsidianGlow" x1="18" y1="12" x2="82" y2="88" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#69e6be"/>
+      <stop offset="0.52" stop-color="#9cc7ff"/>
+      <stop offset="1" stop-color="#f6f8fb"/>
+    </linearGradient>
+    <linearGradient id="obsidianCore" x1="24" y1="14" x2="78" y2="82" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#151922"/>
+      <stop offset="1" stop-color="#030405"/>
+    </linearGradient>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="96" height="96" rx="24" fill="#030405"/>
+  <path d="M48 10 82 29.5v37L48 86 14 66.5v-37L48 10Z" fill="url(#obsidianCore)" stroke="rgba(246,248,251,.18)" stroke-width="2"/>
+  <path d="M48 19 74 34v28L48 77 22 62V34l26-15Z" fill="none" stroke="url(#obsidianGlow)" stroke-width="4" stroke-linejoin="round" filter="url(#softGlow)"/>
+  <path d="M48 29 64 38.5v19L48 67 32 57.5v-19L48 29Z" fill="rgba(105,230,190,.08)" stroke="#69e6be" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M48 29v38M32 38.5l32 19M64 38.5l-32 19" stroke="rgba(156,199,255,.65)" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="48" cy="48" r="5" fill="#f6f8fb"/>
+</svg>

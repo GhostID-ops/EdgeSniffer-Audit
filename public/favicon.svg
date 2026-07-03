@@ -1,7 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#050607"/>
-  <rect x="4" y="4" width="56" height="56" rx="12" fill="#0b0c0f" stroke="#25282e" stroke-width="2"/>
-  <path d="M15 32c0-9.389 7.611-17 17-17 5.754 0 10.846 2.862 13.922 7.241l-6.67 3.856A9.154 9.154 0 1 0 32 41.154c3.166 0 5.954-1.611 7.59-4.047l6.684 3.864A17 17 0 0 1 15 32Z" fill="#f3f5f7"/>
-  <path d="M33.962 31.934 50.308 22.45v18.966L33.962 31.934Z" fill="#f3f5f7"/>
-  <circle cx="32" cy="32" r="4.7" fill="#3df28b"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Obsidian Labs">
+  <defs>
+    <linearGradient id="g" x1="10" y1="8" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#69e6be"/>
+      <stop offset="0.56" stop-color="#9cc7ff"/>
+      <stop offset="1" stop-color="#f6f8fb"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#030405"/>
+  <path d="M32 6 55 19.5v25L32 58 9 44.5v-25L32 6Z" fill="#080b10" stroke="rgba(246,248,251,.2)" stroke-width="2"/>
+  <path d="M32 13 49 23v18L32 51 15 41V23l17-10Z" fill="none" stroke="url(#g)" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M32 21 42 27v10L32 43 22 37V27l10-6Z" fill="rgba(105,230,190,.08)" stroke="#69e6be" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="32" cy="32" r="4" fill="#f6f8fb"/>
 </svg>

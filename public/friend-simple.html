@@ -3,7 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FinalBot Simple</title>
+  <title>Obsidian Labs | Copy Trading Console</title>
+  <meta name="description" content="Obsidian Labs is a private Solana copy trading console for testing wallet-following strategies, live/shadow trading, risk controls, and plain-English trade activity." />
+  <meta name="application-name" content="Obsidian Labs" />
+  <meta name="theme-color" content="#030405" />
+  <meta property="og:title" content="Obsidian Labs" />
+  <meta property="og:description" content="Private Solana copy trading console with beginner-safe controls, strategy presets, and live/shadow execution." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/obsidian-labs.svg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Obsidian Labs" />
+  <meta name="twitter:description" content="A private Solana copy trading console with simplified strategy controls." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="mask-icon" href="/obsidian-labs.svg" color="#69e6be" />
+  <link rel="manifest" href="/manifest.webmanifest" />
   <style>
     :root {
       color-scheme: dark;
@@ -47,9 +60,10 @@
     .brand { display: flex; gap: 11px; align-items: center; min-width: 0; }
     .logo {
       width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center;
-      background: linear-gradient(145deg, rgba(105,230,190,.95), rgba(156,199,255,.88));
-      color: #020303; font-weight: 950; box-shadow: 0 16px 45px rgba(105,230,190,.16);
+      background: rgba(255,255,255,.035); border: 1px solid var(--line);
+      box-shadow: 0 16px 45px rgba(105,230,190,.12); overflow: hidden;
     }
+    .logo img { width: 100%; height: 100%; display: block; }
     h1, h2, h3, p { margin-top: 0; }
     h1 { margin-bottom: 2px; font-size: 22px; letter-spacing: -.2px; }
     .sub { color: var(--muted); font-size: 13px; }
@@ -180,10 +194,10 @@
   <main class="app">
     <header class="top">
       <div class="brand">
-        <div class="logo">FB</div>
+        <div class="logo"><img src="/obsidian-labs.svg" alt="Obsidian Labs" /></div>
         <div>
-          <h1>FinalBot</h1>
-          <div class="sub">Simple copy trading wallet</div>
+          <h1>Obsidian Labs</h1>
+          <div class="sub">Simple Solana copy trading console</div>
         </div>
       </div>
       <div>
@@ -232,7 +246,7 @@
             <label for="privateKey">1. Bot wallet private key</label>
             <input id="privateKey" type="password" autocomplete="off" placeholder="Paste once, save, then it disappears" />
             <button class="secondary" id="saveKeyBtn" type="button">Save Wallet</button>
-            <div class="setting-help"><span class="plain-word">Beginner version:</span> this is the wallet FinalBot trades from. Use a fresh wallet with only test money first.</div>
+            <div class="setting-help"><span class="plain-word">Beginner version:</span> this is the wallet Obsidian trades from. Use a fresh wallet with only test money first.</div>
           </div>
 
           <div class="field" id="strategyStep">
@@ -283,7 +297,7 @@
                 <button class="switch" id="liveToggle" type="button" aria-label="Toggle live mode"></button>
               </div>
               <div class="toggle-row">
-                <div><b>Auto-follow sells</b><p>Recommended on. If the copied wallet exits, FinalBot exits too.</p></div>
+                <div><b>Auto-follow sells</b><p>Recommended on. If the copied wallet exits, Obsidian exits too.</p></div>
                 <button class="switch on" id="mirrorToggle" type="button" aria-label="Toggle mirror sells"></button>
               </div>
               <div class="toggle-row">
@@ -294,12 +308,12 @@
                 <div>
                   <label for="slippage">Max price change allowed (%)</label>
                   <input id="slippage" type="number" min="0.1" max="100" step="0.1" value="12" />
-                  <div class="setting-help">Why this exists: Solana meme coins can move while FinalBot is trying to buy. This number is the most price movement you allow before FinalBot skips the buy. Default: 12%. Safer: 8-10. Normal: 12. Aggressive: 15-20. Higher can land more buys, but can enter at a worse price.</div>
+                  <div class="setting-help">Why this exists: Solana meme coins can move while Obsidian is trying to buy. This number is the most price movement you allow before Obsidian skips the buy. Default: 12%. Safer: 8-10. Normal: 12. Aggressive: 15-20. Higher can land more buys, but can enter at a worse price.</div>
                 </div>
                 <div>
                   <label for="maxBuy">Max per buy</label>
                   <input id="maxBuy" type="number" min="0.001" step="0.001" value="0.01" />
-                  <div class="setting-help">Hard limit per signal. Even if a copied wallet buys huge, FinalBot will not spend more than this.</div>
+                  <div class="setting-help">Hard limit per signal. Even if a copied wallet buys huge, Obsidian will not spend more than this.</div>
                 </div>
               </div>
               <div class="row" id="feeFields" style="display:none">
@@ -339,7 +353,7 @@
   <div class="tour" id="tour">
     <div class="tour-card">
       <div class="tour-kicker" id="tourKicker">Step 1 of 6</div>
-      <h2 id="tourTitle">Welcome to FinalBot</h2>
+      <h2 id="tourTitle">Welcome to Obsidian Labs</h2>
       <p id="tourText">This page is the simple wallet-style view. We will walk through the pieces once.</p>
       <div class="tour-progress" id="tourProgress"></div>
       <div class="tour-actions">
@@ -376,7 +390,7 @@
       ["strategyStep", "Choose who to copy", "Pick a prebuilt strategy. Each one loads a tracked wallet plus sensible defaults, so beginners do not need to tune the engine."],
       ["amountStep", "Pick the buy size", "This is the normal SOL amount per copied buy. Start tiny, like 0.005 to 0.01 SOL, until you trust the setup."],
       ["advancedBox", "Settings you can ignore", "These are hidden because most people should leave them alone. Max price change allowed is the main safety setting: default 12%, safer 8-10%, aggressive 15-20%."],
-      ["activityCard", "Watch what happened", "Trades, positions, and sells show up here in normal language. If the chain rejects a buy, FinalBot explains the likely reason."]
+      ["activityCard", "Watch what happened", "Trades, positions, and sells show up here in normal language. If the chain rejects a buy, Obsidian explains the likely reason."]
     ];
 
     function esc(v) {
