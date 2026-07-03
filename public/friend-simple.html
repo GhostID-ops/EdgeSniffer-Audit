@@ -529,7 +529,8 @@
       if (/skipping sell:.*no position|skipped sell:.*no position|confirmed wallet inventory is 0/i.test(lower)) return null;
       if (/skipping buy:.*below configured minimum|below configured minimum/i.test(lower)) return { type: "warn", text: "Buy skipped: the copied trade was below the minimum buy size." };
       if (/skipping buy:.*buy-once|already bought/i.test(lower)) return { type: "warn", text: `Buy skipped: this token was already bought in this session.${mintText}` };
-      if (/skipping buy:.*(?:not enough|insufficient)|buy not sent:.*(?:not enough|insufficient)|insufficient funds/i.test(lower)) return { type: "bad", text: "Buy not sent: not enough available SOL after reserve and fees." };
+      if (/shadow reserve check failed/i.test(raw)) return { type: "warn", text: "Shadow test did not open: simulated test balance was too low. Restarting the updated demo fixes this." };
+      if (/skipping buy:.*(?:not enough|insufficient)|buy not sent:.*(?:not enough|insufficient)|insufficient funds/i.test(lower)) return { type: "bad", text: liveMode ? "Buy not sent: not enough available SOL after reserve and fees." : "Shadow test did not open: simulated test balance was too low." };
       if (/failed|instructionerror|preflight|custom|error|expired|blockhash|rate limited|429|timed out|timeout|rejected/i.test(lower)) {
         if (code === "6042" || code === "6002") return { type: "bad", text: "Buy did not go through: the bonding curve moved too fast before confirmation." };
         if (code === "6023" || lower.includes("overflow")) return { type: "bad", text: "Buy did not go through: the pool moved too fast and rejected the quote." };
