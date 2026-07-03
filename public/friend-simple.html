@@ -173,6 +173,15 @@
     .stat-box span { display: block; color: var(--muted); font-size: 10px; font-weight: 950; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
     .stat-box.good b { color: var(--green); }
     .stat-box.bad b { color: var(--red); }
+    .bot-status {
+      margin: 0; padding: 12px 14px; border-bottom: 1px solid var(--line);
+      background: rgba(4,6,9,.5); color: var(--soft); font-size: 13px; line-height: 1.45;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .status-dot { width: 9px; height: 9px; border-radius: 99px; margin-top: 5px; flex: 0 0 auto; background: var(--muted); }
+    .status-dot.on { background: var(--green); box-shadow: 0 0 14px rgba(93,242,174,.7); }
+    .status-dot.warn { background: var(--amber); box-shadow: 0 0 14px rgba(242,204,107,.55); }
+    .bot-status b { color: var(--text); }
     .feed, .positions { display: grid; gap: 8px; }
     .log, .position { border: 1px solid var(--line); border-radius: 14px; background: rgba(4,6,9,.66); padding: 12px; color: var(--soft); font-size: 12.5px; line-height: 1.45; }
     .log.good { border-color: rgba(93,242,174,.42); }
@@ -402,6 +411,7 @@
           <button class="secondary" id="sellAllBtn" type="button">Sell All</button>
         </div>
         <div class="activity-stats" id="activityStats"></div>
+        <div class="bot-status" id="botStatus"><span class="status-dot warn"></span><div><b>Checking bot status...</b></div></div>
         <div class="body">
           <div class="positions" id="positions"></div>
           <div class="feed" id="feed"></div>
@@ -645,6 +655,7 @@
       renderStrategies();
       renderAmounts();
       renderActivityStats();
+      renderBotStatus();
       $("modeText").textContent = liveMode ? "Live" : "Shadow";
       $("runText").textContent = state?.running ? "Running" : "Stopped";
       $("balanceText").textContent = fmtSol(state?.lastBalanceSol);
@@ -679,6 +690,21 @@
         <div class="stat-box"><span>Open Cost</span><b>${openCost.toFixed(4)} SOL</b></div>
         <div class="stat-box"><span>Mode</span><b>${liveMode ? "Live" : "Shadow"}</b></div>
       `;
+    }
+    function renderBotStatus() {
+      const running = !!state?.running;
+      const walletReady = !!state?.ourWallet;
+      const strategy = selected?.name || "Selected strategy";
+      const mode = liveMode ? "Live" : "Shadow";
+      const buySize = `${amount.toFixed(3)} SOL`;
+      const dotClass = running ? "on" : walletReady ? "warn" : "";
+      const title = running ? "Bot is running" : walletReady ? "Bot is stopped" : "Wallet not connected";
+      const detail = running
+        ? `Watching ${strategy} in ${mode} mode. Normal buy ${buySize}. Auto-sells ${mirrorSells ? "ON" : "OFF"}.`
+        : walletReady
+          ? `Ready but not trading. Press Start Bot to watch ${strategy}.`
+          : "Save a bot wallet private key first, then choose a strategy.";
+      $("botStatus").innerHTML = `<span class="status-dot ${dotClass}"></span><div><b>${esc(title)}</b><br>${esc(detail)}</div>`;
     }
     function renderPositions() {
       const positions = state?.positions || [];
@@ -719,6 +745,10 @@
       const data = await api(`/api/trades?since=${tradesSince}&limit=80`).catch(() => null);
       if (!data) return;
       const trades = data.trades || [];
+      if (tradesSince === 0) {
+        for (const trade of trades) if (typeof trade.ts === "number" && trade.ts > tradesSince) tradesSince = trade.ts;
+        return;
+      }
       for (const trade of trades) {
         if (typeof trade.ts === "number" && trade.ts > tradesSince) tradesSince = trade.ts;
         const key = `${trade.ts}:${trade.mirrorSignature || trade.sourceSignature || ""}:${trade.side}`;
