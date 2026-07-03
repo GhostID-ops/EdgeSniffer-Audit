@@ -118,8 +118,11 @@ if (!existsSync(demoEnvPath)) {
     "UI_BASIC_AUTH_USER=friend",
     `UI_BASIC_AUTH_PASSWORD=${randomPassword()}`,
     "FRIEND_MAX_LIVE_BUY_SOL=0.03",
-    "FRIEND_MAX_LIVE_TIP_LAMPORTS=0",
-    "FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS=0",
+    // Ceiling on live fees per buy. Must stay above the strategy fee presets in
+    // public/friend-simple.html or the UI's auto-applied tip/priority get clamped to
+    // this and buys stop landing. 0 here would force every live buy to zero fees.
+    "FRIEND_MAX_LIVE_TIP_LAMPORTS=6000000",
+    "FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS=15000000",
     "MIN_BUY_SOL=0.01",
     "MAX_BUY_SOL=0.02",
     "COPY_BUY_PERCENTAGE=10",
@@ -153,8 +156,8 @@ if (!existsSync(demoEnvPath)) {
 ensureDemoAuth();
 upsertDemoEnv({
   FRIEND_MAX_LIVE_BUY_SOL: "0.03",
-  FRIEND_MAX_LIVE_TIP_LAMPORTS: "0",
-  FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS: "0",
+  FRIEND_MAX_LIVE_TIP_LAMPORTS: "6000000",
+  FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS: "15000000",
   SIMULATION_SOL_BALANCE: "1",
   STARTING_SOL_BALANCE: "1",
   JUPITER_FALLBACK_ENABLED: "false",

@@ -400,7 +400,7 @@
                 <div>
                   <label for="priorityFee">Priority fee</label>
                   <input id="priorityFee" type="number" min="0" step="1000" value="0" />
-                  <div class="setting-help">Paid to prioritize compute. Beginner default: use the strategy recommendation. 50k is light, 75k is normal, 100k+ is aggressive.</div>
+                  <div class="setting-help">Paid to prioritize compute. Beginner default: leave blank to use the strategy recommendation (auto-applied in Live). Higher lands faster but costs more per attempt.</div>
                 </div>
               </div>
               <button class="secondary" id="saveSettingsBtn" type="button">Save Settings</button>
@@ -446,11 +446,11 @@
 
   <script>
     const STRATEGIES = [
-      { id: "cya", name: "Cented Strategy", short: "Fast runner wallet", wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", risk: "Medium/High", amount: 0.01, maxBuy: 0.015, slippage: 12, tipLamports: 1000000, priorityFee: 75000, feeHelp: "Competitive but not crazy. Use when Cented entries are moving fast." },
-      { id: "4bdk", name: "Anchor Strategy", short: "Higher win-rate source exits", wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk", risk: "Medium", amount: 0.01, maxBuy: 0.015, slippage: 10, tipLamports: 500000, priorityFee: 50000, feeHelp: "Lighter boost. This strategy does not need max aggression by default." },
-      { id: "2cq", name: "Scout Strategy", short: "Early launch hunter", wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG", risk: "High", amount: 0.005, maxBuy: 0.01, slippage: 15, tipLamports: 1000000, priorityFee: 100000, feeHelp: "Most aggressive preset because early-launch signals can move violently." },
-      { id: "bwam", name: "Whale Tape", short: "Research whale-flow pool", wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa", risk: "High", amount: 0.01, maxBuy: 0.02, slippage: 12, tipLamports: 1000000, priorityFee: 75000, feeHelp: "Normal competitive boost for whale-flow copies." },
-      { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 10, tipLamports: 500000, priorityFee: 50000, feeHelp: "Starter boost for unknown wallets. Raise only after testing." }
+      { id: "cya", name: "Cented Strategy", short: "Fast runner wallet", wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", risk: "Medium/High", amount: 0.01, maxBuy: 0.015, slippage: 12, tipLamports: 2000000, priorityFee: 6000000, feeHelp: "Competitive boost so buys land in the same slot as Cented before the runner moves." },
+      { id: "4bdk", name: "Anchor Strategy", short: "Higher win-rate source exits", wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk", risk: "Medium", amount: 0.01, maxBuy: 0.015, slippage: 10, tipLamports: 1500000, priorityFee: 4000000, feeHelp: "Lighter boost. This strategy does not need max aggression by default." },
+      { id: "2cq", name: "Scout Strategy", short: "Early launch hunter", wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG", risk: "High", amount: 0.005, maxBuy: 0.01, slippage: 15, tipLamports: 3000000, priorityFee: 10000000, feeHelp: "Most aggressive preset because early-launch signals can move violently." },
+      { id: "bwam", name: "Whale Tape", short: "Research whale-flow pool", wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa", risk: "High", amount: 0.01, maxBuy: 0.02, slippage: 12, tipLamports: 2000000, priorityFee: 6000000, feeHelp: "Normal competitive boost for whale-flow copies." },
+      { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 10, tipLamports: 1500000, priorityFee: 4000000, feeHelp: "Starter boost for unknown wallets. Raise only after testing." }
     ];
     const AMOUNTS = [0.005, 0.01, 0.02, 0.05];
     const $ = (id) => document.getElementById(id);
@@ -633,8 +633,11 @@
         mirrorSlippageBps: Math.round(Number($("slippage").value || selected.slippage) * 100),
         mirrorSells,
         simulationMode: !liveMode,
-        tipLamports: feeMode ? Number($("tipLamports").value || 0) : 0,
-        priorityFeeMicroLamports: feeMode ? Number($("priorityFee").value || 0) : 0,
+        // Live buys must pay to land in time. If the friend hasn't opened the manual
+        // fee controls, auto-apply the selected strategy's recommended tip/priority so
+        // picking a strategy is enough to be competitive. Shadow needs no fees.
+        tipLamports: (feeMode || liveMode) ? (Number($("tipLamports").value || 0) || selected.tipLamports || 0) : 0,
+        priorityFeeMicroLamports: (feeMode || liveMode) ? (Number($("priorityFee").value || 0) || selected.priorityFee || 0) : 0,
         stopLossPct: "35",
         takeProfitPct: "",
         minHoldBeforeStopLossMs: "15000",
@@ -702,8 +705,10 @@
       const feeTip = Number($("tipLamports").value || selected.tipLamports || 0);
       const feePriority = Number($("priorityFee").value || selected.priorityFee || 0);
       $("feeRecommendation").innerHTML = feeMode
-        ? `<span class="plain-word">Fee boost ON:</span> ${esc(fmtTip(feeTip))} + ${esc(fmtPriority(feePriority))}. ${esc(selected.feeHelp || "Use small values first.")}`
-        : `<span class="plain-word">Fee boost OFF:</span> recommended for cheap demos. ${esc(selected.name)} suggested boost if needed: ${esc(fmtTip(selected.tipLamports))} + ${esc(fmtPriority(selected.priorityFee))}.`;
+        ? `<span class="plain-word">Fee boost ON (manual):</span> ${esc(fmtTip(feeTip))} + ${esc(fmtPriority(feePriority))}. ${esc(selected.feeHelp || "Use small values first.")}`
+        : liveMode
+          ? `<span class="plain-word">Auto fees (Live):</span> ${esc(selected.name)} sends ${esc(fmtTip(selected.tipLamports))} + ${esc(fmtPriority(selected.priorityFee))} automatically so buys land in time. Turn this on to customize.`
+          : `<span class="plain-word">Fee boost OFF:</span> Shadow mode needs no fees. Going Live auto-applies ${esc(selected.name)}'s ${esc(fmtTip(selected.tipLamports))} + ${esc(fmtPriority(selected.priorityFee))}.`;
       $("summaryText").className = `notice ${liveMode ? "warning" : ""}`;
       $("summaryText").textContent = `Selected: ${selected.name}. Normal buy: ${amount.toFixed(3)} SOL. Hard max: ${Number($("maxBuy").value || amount).toFixed(3)} SOL. Sells: ${mirrorSells ? "follow copied wallet" : "manual only"}. Profit lock: sell 50% at +30%, then follow the copied wallet.`;
       const customMissing = selected.id === "custom" && !$("customWallets").value.trim();
