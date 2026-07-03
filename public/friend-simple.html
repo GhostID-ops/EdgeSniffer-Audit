@@ -215,6 +215,7 @@
         <button class="primary" id="startBtn" type="button">Start Bot</button>
         <button class="danger" id="stopBtn" type="button">Stop Bot</button>
       </div>
+      <div class="setting-help" id="startHelp">Save a wallet first, then Start Bot unlocks.</div>
     </section>
 
     <section class="main-grid">
@@ -499,7 +500,13 @@
       $("feeFields").style.display = feeMode ? "grid" : "none";
       $("summaryText").className = `notice ${liveMode ? "warning" : ""}`;
       $("summaryText").textContent = `Selected: ${selected.name}. Normal buy: ${amount.toFixed(3)} SOL. Hard max: ${Number($("maxBuy").value || amount).toFixed(3)} SOL. Sells: ${mirrorSells ? "follow copied wallet" : "manual only"}. Profit lock: sell 50% at +30%, then follow the copied wallet.`;
-      $("startBtn").disabled = !state?.ourWallet || (!(selected.id !== "custom" || $("customWallets").value.trim()) || (liveMode && !(state?.lastBalanceSol > 0)));
+      const customMissing = selected.id === "custom" && !$("customWallets").value.trim();
+      const liveNeedsBalance = liveMode && !(state?.lastBalanceSol > 0);
+      const missingWallet = !state?.ourWallet;
+      const blockedReason = missingWallet ? "Start locked: save a bot wallet private key first." : customMissing ? "Start locked: paste the wallet you want to copy, or choose a prebuilt strategy." : liveNeedsBalance ? "Start locked: Live mode needs a funded wallet. Switch to Shadow or add SOL." : "Ready. Start Bot will begin watching the selected wallet.";
+      $("startHelp").textContent = blockedReason;
+      $("startHelp").className = `setting-help ${missingWallet || customMissing || liveNeedsBalance ? "warning" : ""}`;
+      $("startBtn").disabled = Boolean(missingWallet || customMissing || liveNeedsBalance);
     }
     function renderPositions() {
       const positions = state?.positions || [];
