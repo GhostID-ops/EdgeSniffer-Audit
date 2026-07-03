@@ -434,6 +434,7 @@
     let mirrorSells = true;
     let feeMode = false;
     let tourIndex = 0;
+    const renderedStatusMessages = new Set();
     let lastFeedText = '';
 
     const TOUR_STORAGE_KEY = "obsidianFriendSimpleTourSeenV2";
@@ -657,7 +658,11 @@
       if (lines.length && $("feed").textContent.includes("Waiting for wallet activity")) $("feed").innerHTML = "";
       for (const row of lines.slice(-80)) {
         const compact = compactLog(row.message || row.line || row);
-        if (!compact || compact.text === lastFeedText) continue;
+        if (!compact) continue;
+        const isStatus = /^(Streams connected|Executor ready)/.test(compact.text);
+        if (isStatus && renderedStatusMessages.has(compact.text)) continue;
+        if (!isStatus && compact.text === lastFeedText) continue;
+        if (isStatus) renderedStatusMessages.add(compact.text);
         lastFeedText = compact.text;
         const div = document.createElement("div");
         div.className = `log ${compact.type || ""}`;
