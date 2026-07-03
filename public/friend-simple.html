@@ -434,6 +434,7 @@
     let mirrorSells = true;
     let feeMode = false;
     let tourIndex = 0;
+    let lastFeedText = '';
 
     const TOUR_STORAGE_KEY = "obsidianFriendSimpleTourSeenV2";
     const tourSteps = [
@@ -502,26 +503,42 @@
       const hex = text.match(/custom program error:\s*0x([0-9a-f]+)/i)?.[1];
       return text.match(/Custom["):\s]*(\d+)/i)?.[1] || text.match(/Error Number:\s*(\d+)/i)?.[1] || (hex ? String(parseInt(hex, 16)) : "");
     }
-    function friendly(line) {
-      const raw = String(line || "");
+    function compactLog(line) {
+      const raw = String(line || "").replace(/\s+/g, " ").trim();
       const lower = raw.toLowerCase();
       const code = customErrorCode(raw);
-      if (/failed|instructionerror|preflight|custom|error|expired|blockhash|rate limited|429|timed out|timeout/.test(lower)) {
-        if (code === "6042" || code === "6002") return "Buy skipped: the bonding curve pumped before our transaction landed. The bot protected the wallet from a worse fill.";
-        if (code === "6023" || lower.includes("overflow")) return "Trade skipped: the pool moved too fast and became unsafe for that quote. This is chain/pool movement, not a settings mistake.";
-        if (lower.includes("slippage")) return "Trade skipped: price moved beyond the max price change allowed. Raise it only if you accept worse entries to land more buys.";
-        if (lower.includes("429") || lower.includes("rate limited")) return "Provider slowed us down: a helper RPC/API rate-limited a status or balance check.";
-        if (lower.includes("blockhash") || lower.includes("expired") || lower.includes("timeout")) return "Transaction did not land cleanly: the cluster likely dropped or expired it before confirmation.";
-        if (lower.includes("insufficient")) return "Not enough available SOL after reserve and fees. Add SOL or lower the buy amount.";
-        return "Trade did not complete cleanly. The chain rejected it or the market moved before confirmation.";
+      const shortMint = raw.match(/(?:for|mint=|CA:)\s*([1-9A-HJ-NP-Za-km-z]{8})[1-9A-HJ-NP-Za-km-z]*/i)?.[1];
+      const mintText = shortMint ? ` Token: ${shortMint}...` : "";
+
+      if (!raw) return null;
+      if (/rust-sidecar: hot sniper fees|rust-sidecar: starting|rust-sidecar: subscribed$|subscribed to jito shredstream entries|execution plan:|required incl\.|source trade:|balance:/i.test(raw)) return null;
+      if (/jito shredstream: connected/i.test(raw)) return { type: "good", text: "Streams connected: ShredStream is live." };
+      if (/grpc: subscribed/i.test(raw)) return { type: "good", text: "Streams connected: gRPC wallet watcher is live." };
+      if (/rabbitstream: subscribed/i.test(raw)) return { type: "good", text: "Streams connected: fast wallet stream is live." };
+      if (/rust executor command channel ready/i.test(raw)) return { type: "good", text: "Executor ready: Rust trading engine is connected." };
+      if (/wallet activity detected|grpc detected swap|rust sidecar detected buy|detected buy by/i.test(raw)) return null;
+      if (/processing buy/i.test(raw)) return { type: "", text: "Buy signal received. Checking safety rules and sending if allowed." };
+      if (/processing sell/i.test(raw)) return null;
+      if (/rust-only buy mode:|passed filters; rust executor will broadcast/i.test(raw)) return { type: "", text: `Buy approved: sending transaction now.${mintText}` };
+      if (/broadcast accepted|direct path complete|mirror path completed/i.test(raw)) return { type: "good", text: "Buy transaction sent. Waiting for chain confirmation." };
+      const buyMatch = raw.match(/Buy.*?:\s*([0-9.]+)\s*SOL/i) || raw.match(/Trade went through.*?([0-9.]+)\s*SOL/i);
+      if (buyMatch) return { type: "good", text: `Trade went through: ${buyMatch[1]} SOL purchased.${mintText}` };
+      const sellMatch = raw.match(/Sell(?: LIVE)?(?: .*?)?:\s*([0-9,.]+)\s*/i);
+      if (/sell .*complete|sell live|sell \(/i.test(lower)) return { type: "good", text: sellMatch ? `Sell went through: ${sellMatch[1]} tokens sold.${mintText}` : `Sell went through.${mintText}` };
+      if (/skipping sell:.*no position|skipped sell:.*no position|confirmed wallet inventory is 0/i.test(lower)) return { type: "warn", text: `No sell needed: this wallet did not hold that token.${mintText}` };
+      if (/skipping buy:.*below configured minimum|below configured minimum/i.test(lower)) return { type: "warn", text: "Buy skipped: the copied trade was below the minimum buy size." };
+      if (/skipping buy:.*buy-once|already bought/i.test(lower)) return { type: "warn", text: `Buy skipped: this token was already bought in this session.${mintText}` };
+      if (/not enough|insufficient|available:\s*0(?:\.0+)?\s*sol|required incl/i.test(lower)) return { type: "bad", text: "Buy not sent: not enough available SOL after reserve and fees." };
+      if (/failed|instructionerror|preflight|custom|error|expired|blockhash|rate limited|429|timed out|timeout|rejected/i.test(lower)) {
+        if (code === "6042" || code === "6002") return { type: "bad", text: "Buy did not go through: the bonding curve moved too fast before confirmation." };
+        if (code === "6023" || lower.includes("overflow")) return { type: "bad", text: "Buy did not go through: the pool moved too fast and rejected the quote." };
+        if (lower.includes("slippage")) return { type: "bad", text: "Buy did not go through: price moved past the allowed price movement room." };
+        if (lower.includes("429") || lower.includes("rate limited")) return { type: "warn", text: "Provider slowed a status check. Streams can still be connected." };
+        if (lower.includes("blockhash") || lower.includes("expired") || lower.includes("timeout")) return { type: "bad", text: "Transaction did not land: the cluster dropped or expired it before confirmation." };
+        return { type: "bad", text: "Trade did not go through: the chain rejected it or the market moved before confirmation." };
       }
-      return raw
-        .replace(/gRPC detected swap/i, "Wallet activity detected")
-        .replace(/Processing buy/i, "Processing buy")
-        .replace(/Processing sell/i, "Processing sell")
-        .replace(/Skipping buy:/i, "Skipped buy:")
-        .replace(/Skipping sell:/i, "Skipped sell:")
-        .replace(/\| logs=.*/i, "");
+      if (/telegram|shortcut|price sampler|web ui:|dex ui:|license checks|fresh start|helius transactionsubscribe disabled|websocket_url|watcher poll fallback/i.test(raw)) return null;
+      return null;
     }
     function payload(extra = {}) {
       const custom = Number($("customAmount").value);
@@ -638,14 +655,16 @@
       for (const row of lines) if (typeof row.ts === "number" && row.ts > logsSince) logsSince = row.ts;
       if (!$("feed").children.length && !lines.length) $("feed").innerHTML = `<div class="log">Waiting for wallet activity...</div>`;
       if (lines.length && $("feed").textContent.includes("Waiting for wallet activity")) $("feed").innerHTML = "";
-      for (const row of lines.slice(-40)) {
-        const raw = row.message || row.line || row;
+      for (const row of lines.slice(-80)) {
+        const compact = compactLog(row.message || row.line || row);
+        if (!compact || compact.text === lastFeedText) continue;
+        lastFeedText = compact.text;
         const div = document.createElement("div");
-        div.className = `log ${/complete|Buy \(|Sell LIVE|Sell \(/i.test(raw) ? "good" : /failed|error/i.test(raw) ? "bad" : /skip|warn|rate limited/i.test(raw) ? "warn" : ""}`;
-        div.textContent = friendly(raw);
+        div.className = `log ${compact.type || ""}`;
+        div.textContent = compact.text;
         $("feed").appendChild(div);
       }
-      while ($("feed").children.length > 60) $("feed").removeChild($("feed").firstChild);
+      while ($("feed").children.length > 30) $("feed").removeChild($("feed").firstChild);
     }
     async function refresh() {
       const ready = await api("/api/readiness");
