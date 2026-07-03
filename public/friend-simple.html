@@ -358,8 +358,8 @@
               <div class="row">
                 <div>
                   <label for="slippage">Max price change allowed (%)</label>
-                  <input id="slippage" type="number" min="0.1" max="100" step="0.1" value="12" />
-                  <div class="setting-help">Why this exists: Solana meme coins can move while Obsidian is trying to buy. This number is the most price movement you allow before Obsidian skips the buy. Default: 12%. Safer: 8-10. Normal: 12. Aggressive: 15-20. Higher can land more buys, but can enter at a worse price.</div>
+                  <input id="slippage" type="number" min="0.1" max="100" step="0.1" value="50" />
+                  <div class="setting-help">Why this exists: pump.fun tokens move fast between quoting and landing a trade. This is the most price movement Obsidian allows before the chain rejects it. Copy-trading needs room: too low and buys/sells fail (errors 6042/6003) and have to retry, which is slower and worse on exits. Default: 50%. Tighter (20-30%) protects your entry price but misses more; higher (50-60%) reliably lands buys and always gets you out on sells.</div>
                 </div>
                 <div>
                   <label for="maxBuy">Max per buy</label>
@@ -446,11 +446,11 @@
 
   <script>
     const STRATEGIES = [
-      { id: "cya", name: "Cented Strategy", short: "Fast runner wallet", wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", risk: "Medium/High", amount: 0.01, maxBuy: 0.015, slippage: 12, tipLamports: 1500000, priorityFee: 1000000, feeHelp: "Competitive boost (~0.003 SOL total) so buys land near Cented without overpaying." },
-      { id: "4bdk", name: "Anchor Strategy", short: "Higher win-rate source exits", wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk", risk: "Medium", amount: 0.01, maxBuy: 0.015, slippage: 10, tipLamports: 1000000, priorityFee: 700000, feeHelp: "Lighter boost (~0.002 SOL total). This strategy does not need max aggression." },
-      { id: "2cq", name: "Scout Strategy", short: "Early launch hunter", wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG", risk: "High", amount: 0.005, maxBuy: 0.01, slippage: 15, tipLamports: 2000000, priorityFee: 1200000, feeHelp: "Most aggressive preset (~0.004 SOL total) because early-launch signals move fast." },
-      { id: "bwam", name: "Whale Tape", short: "Research whale-flow pool", wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa", risk: "High", amount: 0.01, maxBuy: 0.02, slippage: 12, tipLamports: 1500000, priorityFee: 1000000, feeHelp: "Normal competitive boost (~0.003 SOL total) for whale-flow copies." },
-      { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 10, tipLamports: 1000000, priorityFee: 700000, feeHelp: "Starter boost (~0.002 SOL total) for unknown wallets. Raise only after testing." }
+      { id: "cya", name: "Cented Strategy", short: "Fast runner wallet", wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", risk: "Medium/High", amount: 0.01, maxBuy: 0.015, slippage: 50, tipLamports: 1500000, priorityFee: 1000000, feeHelp: "Competitive boost (~0.003 SOL total) so buys land near Cented without overpaying." },
+      { id: "4bdk", name: "Anchor Strategy", short: "Higher win-rate source exits", wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk", risk: "Medium", amount: 0.01, maxBuy: 0.015, slippage: 40, tipLamports: 1000000, priorityFee: 700000, feeHelp: "Lighter boost (~0.002 SOL total). This strategy does not need max aggression." },
+      { id: "2cq", name: "Scout Strategy", short: "Early launch hunter", wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG", risk: "High", amount: 0.005, maxBuy: 0.01, slippage: 55, tipLamports: 2000000, priorityFee: 1200000, feeHelp: "Most aggressive preset (~0.004 SOL total) because early-launch signals move fast." },
+      { id: "bwam", name: "Whale Tape", short: "Research whale-flow pool", wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa", risk: "High", amount: 0.01, maxBuy: 0.02, slippage: 50, tipLamports: 1500000, priorityFee: 1000000, feeHelp: "Normal competitive boost (~0.003 SOL total) for whale-flow copies." },
+      { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 40, tipLamports: 1000000, priorityFee: 700000, feeHelp: "Starter boost (~0.002 SOL total) for unknown wallets. Raise only after testing." }
     ];
     const AMOUNTS = [0.005, 0.01, 0.02, 0.05];
     const $ = (id) => document.getElementById(id);

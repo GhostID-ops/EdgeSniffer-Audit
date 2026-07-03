@@ -162,6 +162,10 @@ upsertDemoEnv({
   MAX_BUY_EXECUTION_FEE_SOL: "0.004",
   FRIEND_MAX_LIVE_TIP_LAMPORTS: "2500000",
   FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS: "1500000",
+  // Fast pump.fun tokens move between quote and fill. 12% was too tight and caused
+  // first-attempt buy (6042) / sell (6003) reverts + retries. Match the proven CyA
+  // configs (60%). The UI strategy presets override per-strategy on start.
+  MIRROR_SLIPPAGE_BPS: "5000",
   SIMULATION_SOL_BALANCE: "1",
   STARTING_SOL_BALANCE: "1",
   JUPITER_FALLBACK_ENABLED: "false",
