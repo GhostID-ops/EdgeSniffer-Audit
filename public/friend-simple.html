@@ -446,11 +446,11 @@
 
   <script>
     const STRATEGIES = [
-      { id: "cya", name: "Cented Strategy", short: "Fast runner wallet", wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", risk: "Medium/High", amount: 0.01, maxBuy: 0.015, slippage: 12, tipLamports: 2000000, priorityFee: 6000000, feeHelp: "Competitive boost so buys land in the same slot as Cented before the runner moves." },
-      { id: "4bdk", name: "Anchor Strategy", short: "Higher win-rate source exits", wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk", risk: "Medium", amount: 0.01, maxBuy: 0.015, slippage: 10, tipLamports: 1500000, priorityFee: 4000000, feeHelp: "Lighter boost. This strategy does not need max aggression by default." },
-      { id: "2cq", name: "Scout Strategy", short: "Early launch hunter", wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG", risk: "High", amount: 0.005, maxBuy: 0.01, slippage: 15, tipLamports: 3000000, priorityFee: 10000000, feeHelp: "Most aggressive preset because early-launch signals can move violently." },
-      { id: "bwam", name: "Whale Tape", short: "Research whale-flow pool", wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa", risk: "High", amount: 0.01, maxBuy: 0.02, slippage: 12, tipLamports: 2000000, priorityFee: 6000000, feeHelp: "Normal competitive boost for whale-flow copies." },
-      { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 10, tipLamports: 1500000, priorityFee: 4000000, feeHelp: "Starter boost for unknown wallets. Raise only after testing." }
+      { id: "cya", name: "Cented Strategy", short: "Fast runner wallet", wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", risk: "Medium/High", amount: 0.01, maxBuy: 0.015, slippage: 12, tipLamports: 1500000, priorityFee: 1000000, feeHelp: "Competitive boost (~0.003 SOL total) so buys land near Cented without overpaying." },
+      { id: "4bdk", name: "Anchor Strategy", short: "Higher win-rate source exits", wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk", risk: "Medium", amount: 0.01, maxBuy: 0.015, slippage: 10, tipLamports: 1000000, priorityFee: 700000, feeHelp: "Lighter boost (~0.002 SOL total). This strategy does not need max aggression." },
+      { id: "2cq", name: "Scout Strategy", short: "Early launch hunter", wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG", risk: "High", amount: 0.005, maxBuy: 0.01, slippage: 15, tipLamports: 2000000, priorityFee: 1200000, feeHelp: "Most aggressive preset (~0.004 SOL total) because early-launch signals move fast." },
+      { id: "bwam", name: "Whale Tape", short: "Research whale-flow pool", wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa", risk: "High", amount: 0.01, maxBuy: 0.02, slippage: 12, tipLamports: 1500000, priorityFee: 1000000, feeHelp: "Normal competitive boost (~0.003 SOL total) for whale-flow copies." },
+      { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 10, tipLamports: 1000000, priorityFee: 700000, feeHelp: "Starter boost (~0.002 SOL total) for unknown wallets. Raise only after testing." }
     ];
     const AMOUNTS = [0.005, 0.01, 0.02, 0.05];
     const $ = (id) => document.getElementById(id);
@@ -523,9 +523,14 @@
       const n = Number(lamports || 0) / 1e9;
       return n > 0 ? `${n.toFixed(4)} SOL tip` : "0 SOL tip";
     }
+    // Priority fee is charged per compute unit (COMPUTE_UNIT_LIMIT defaults to 1.4M),
+    // so show the real SOL cost instead of a raw micro-lamport number that hides it.
+    const COMPUTE_UNITS = 1400000;
     function fmtPriority(microLamports) {
       const n = Number(microLamports || 0);
-      return n > 0 ? `${Math.round(n / 1000)}k priority` : "0 priority";
+      if (n <= 0) return "0 priority";
+      const sol = (n * COMPUTE_UNITS) / 1e6 / 1e9;
+      return `~${sol.toFixed(4)} SOL priority`;
     }
     function setFeeDefaults(strategy = selected, force = false) {
       if (!strategy) return;
