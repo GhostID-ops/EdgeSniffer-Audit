@@ -182,8 +182,13 @@
     .status-dot.on { background: var(--green); box-shadow: 0 0 14px rgba(93,242,174,.7); }
     .status-dot.warn { background: var(--amber); box-shadow: 0 0 14px rgba(242,204,107,.55); }
     .bot-status b { color: var(--text); }
+    .activity-feed-note {
+      padding: 9px 14px; border-bottom: 1px solid var(--line); color: var(--muted);
+      font-size: 11.5px; background: rgba(255,255,255,.012);
+    }
     .feed, .positions { display: grid; gap: 8px; }
     .log, .position { border: 1px solid var(--line); border-radius: 14px; background: rgba(4,6,9,.66); padding: 12px; color: var(--soft); font-size: 12.5px; line-height: 1.45; }
+    .log-time { display: block; color: var(--muted); font-size: 10.5px; font-weight: 900; letter-spacing: .35px; text-transform: uppercase; margin-bottom: 5px; }
     .log.good { border-color: rgba(93,242,174,.42); }
     .log.bad { border-color: rgba(255,116,116,.44); }
     .log.warn { border-color: rgba(242,204,107,.44); }
@@ -412,6 +417,7 @@
         </div>
         <div class="activity-stats" id="activityStats"></div>
         <div class="bot-status" id="botStatus"><span class="status-dot warn"></span><div><b>Checking bot status...</b></div></div>
+        <div class="activity-feed-note">Latest updates appear at the bottom. Older activity auto-clears to keep this simple.</div>
         <div class="body">
           <div class="positions" id="positions"></div>
           <div class="feed" id="feed"></div>
@@ -532,14 +538,19 @@
       if (!Number.isFinite(n)) return "";
       return ` (${n >= 0 ? "+" : ""}${n.toFixed(1)}%)`;
     }
-    function appendFeed(text, type = "") {
+    function feedTime(ts = Date.now()) {
+      try { return new Date(ts).toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" }); } catch { return "now"; }
+    }
+    function appendFeed(text, type = "", ts = Date.now()) {
       if (!text || text === lastFeedText) return;
       lastFeedText = text;
       const div = document.createElement("div");
       div.className = `log ${type || ""}`;
-      div.textContent = text;
+      div.innerHTML = `<span class="log-time">${esc(feedTime(ts))}</span>${esc(text)}`;
       $("feed").appendChild(div);
-      while ($("feed").children.length > 30) $("feed").removeChild($("feed").firstChild);
+      while ($("feed").children.length > 24) $("feed").removeChild($("feed").firstChild);
+      const body = $("activityCard").querySelector(".body");
+      if (body) body.scrollTop = body.scrollHeight;
     }
     function customErrorCode(raw) {
       const text = String(raw || "");
@@ -729,7 +740,7 @@
       if (!data) return;
       const lines = data.logs || [];
       for (const row of lines) if (typeof row.ts === "number" && row.ts > logsSince) logsSince = row.ts;
-      if (!$("feed").children.length && !lines.length) $("feed").innerHTML = `<div class="log">Waiting for wallet activity...</div>`;
+      if (!$("feed").children.length && !lines.length) appendFeed("Waiting for wallet activity...", "", Date.now());
       if (lines.length && $("feed").textContent.includes("Waiting for wallet activity")) $("feed").innerHTML = "";
       for (const row of lines.slice(-80)) {
         const compact = compactLog(row.message || row.line || row);
@@ -738,7 +749,7 @@
         if (isStatus && renderedStatusMessages.has(compact.text)) continue;
         if (!isStatus && compact.text === lastFeedText) continue;
         if (isStatus) renderedStatusMessages.add(compact.text);
-        appendFeed(compact.text, compact.type || "");
+        appendFeed(compact.text, compact.type || "", row.ts || Date.now());
       }
     }
     async function refreshTradeReceipts() {
@@ -760,7 +771,7 @@
           const pnl = Number(trade.realizedPnlLamports || 0);
           const type = pnl >= 0 ? "good" : "bad";
           const session = state?.totals ? ` Session PnL: ${fmtPnlLamports(state.totals.realizedPnlLamports)}.` : "";
-          appendFeed(`Sell went through:${tokenText} PnL ${fmtPnlLamports(pnl)}${fmtPnlPct(trade.realizedPnlPct)}.${session}`, type);
+          appendFeed(`Sell went through:${tokenText} PnL ${fmtPnlLamports(pnl)}${fmtPnlPct(trade.realizedPnlPct)}.${session}`, type, trade.ts || Date.now());
         }
       }
     }
