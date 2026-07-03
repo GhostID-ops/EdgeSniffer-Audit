@@ -291,9 +291,9 @@
               </div>
               <div class="row">
                 <div>
-                  <label for="slippage">Price movement room</label>
+                  <label for="slippage">Max price change allowed (%)</label>
                   <input id="slippage" type="number" min="0.1" max="100" step="0.1" value="12" />
-                  <div class="setting-help">Plain English: how much worse the price is allowed to get while the buy is landing. Higher lands more often but can buy at a worse price. Lower protects price but misses more buys.</div>
+                  <div class="setting-help">Why this exists: Solana meme coins can move while FinalBot is trying to buy. This number is the most price movement you allow before FinalBot skips the buy. Default: 12%. Safer: 8-10. Normal: 12. Aggressive: 15-20. Higher can land more buys, but can enter at a worse price.</div>
                 </div>
                 <div>
                   <label for="maxBuy">Max per buy</label>
@@ -374,7 +374,7 @@
       ["walletStep", "Add a test wallet", "Paste a private key once. Use a fresh wallet with a small amount first. After saving, the key field clears so it is not sitting on screen."],
       ["strategyStep", "Choose who to copy", "Pick a prebuilt strategy. Each one loads a tracked wallet plus sensible defaults, so beginners do not need to tune the engine."],
       ["amountStep", "Pick the buy size", "This is the normal SOL amount per copied buy. Start tiny, like 0.005 to 0.01 SOL, until you trust the setup."],
-      ["advancedBox", "Settings you can ignore", "These are hidden because most people should leave them alone. Price movement room means how much worse a price the bot may accept to land a buy."],
+      ["advancedBox", "Settings you can ignore", "These are hidden because most people should leave them alone. Max price change allowed is the main safety setting: default 12%, safer 8-10%, aggressive 15-20%."],
       ["activityCard", "Watch what happened", "Trades, positions, and sells show up here in normal language. If the chain rejects a buy, FinalBot explains the likely reason."]
     ];
 
@@ -407,7 +407,7 @@
       if (/failed|instructionerror|preflight|custom|error|expired|blockhash|rate limited|429|timed out|timeout/.test(lower)) {
         if (code === "6042" || code === "6002") return "Buy skipped: the bonding curve pumped before our transaction landed. The bot protected the wallet from a worse fill.";
         if (code === "6023" || lower.includes("overflow")) return "Trade skipped: the pool moved too fast and became unsafe for that quote. This is chain/pool movement, not a settings mistake.";
-        if (lower.includes("slippage")) return "Trade skipped: price moved beyond the safety limit. Increase price movement room only if worse fills are acceptable.";
+        if (lower.includes("slippage")) return "Trade skipped: price moved beyond the max price change allowed. Raise it only if you accept worse entries to land more buys.";
         if (lower.includes("429") || lower.includes("rate limited")) return "Provider slowed us down: a helper RPC/API rate-limited a status or balance check.";
         if (lower.includes("blockhash") || lower.includes("expired") || lower.includes("timeout")) return "Transaction did not land cleanly: the cluster likely dropped or expired it before confirmation.";
         if (lower.includes("insufficient")) return "Not enough available SOL after reserve and fees. Add SOL or lower the buy amount.";
