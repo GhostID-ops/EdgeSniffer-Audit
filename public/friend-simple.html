@@ -570,10 +570,16 @@
       if (/grpc: subscribed/i.test(raw)) return { type: "good", text: "Streams connected: gRPC wallet watcher is live." };
       if (/rabbitstream: subscribed/i.test(raw)) return { type: "good", text: "Streams connected: fast wallet stream is live." };
       if (/rust executor command channel ready/i.test(raw)) return { type: "good", text: "Executor ready: Rust trading engine is connected." };
-      if (/wallet activity detected|grpc detected swap|rust sidecar detected buy|detected buy by/i.test(raw)) return null;
-      if (/processing buy/i.test(raw)) return null;
+      if (/wallet activity detected|grpc detected swap|rust sidecar detected buy|detected buy by/i.test(raw)) {
+        return { type: "", text: `Wallet activity seen${mintText}. Waiting for a copyable buy.` };
+      }
+      if (/processing buy/i.test(raw)) {
+        return { type: "", text: `Buy signal received${mintText}. Checking safety rules now.` };
+      }
       if (/processing sell/i.test(raw)) return null;
-      if (/rust-only buy mode:|passed filters; rust executor will broadcast/i.test(raw)) return null;
+      if (/rust-only buy mode:|passed filters; rust executor will broadcast/i.test(raw)) {
+        return { type: "good", text: `Buy approved${mintText}. Sending with the fast Rust engine.` };
+      }
       if (/broadcast accepted|direct path complete|mirror path completed/i.test(raw)) return null;
       const buyMatch = raw.match(/Buy.*?:\s*([0-9.]+)\s*SOL/i) || raw.match(/Trade went through.*?([0-9.]+)\s*SOL/i);
       if (buyMatch) return { type: "good", text: `Trade went through: ${buyMatch[1]} SOL purchased.${mintText}` };
