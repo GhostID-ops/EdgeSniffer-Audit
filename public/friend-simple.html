@@ -430,11 +430,13 @@
     let state = null;
     let settings = null;
     let logsSince = 0;
+    let tradesSince = 0;
     let liveMode = false;
     let mirrorSells = true;
     let feeMode = false;
     let tourIndex = 0;
     const renderedStatusMessages = new Set();
+    const renderedTradeReceipts = new Set();
     let lastFeedText = '';
 
     const TOUR_STORAGE_KEY = "obsidianFriendSimpleTourSeenV2";
@@ -499,6 +501,25 @@
       if (!res.ok || data.ok === false) throw new Error(data.error || data.message || `Request failed: ${res.status}`);
       return data;
     }
+    function fmtPnlLamports(lamports) {
+      const n = Number(lamports || 0) / 1e9;
+      const sign = n >= 0 ? "+" : "-";
+      return `${sign}${Math.abs(n).toFixed(4)} SOL`;
+    }
+    function fmtPnlPct(pct) {
+      const n = Number(pct);
+      if (!Number.isFinite(n)) return "";
+      return ` (${n >= 0 ? "+" : ""}${n.toFixed(1)}%)`;
+    }
+    function appendFeed(text, type = "") {
+      if (!text || text === lastFeedText) return;
+      lastFeedText = text;
+      const div = document.createElement("div");
+      div.className = `log ${type || ""}`;
+      div.textContent = text;
+      $("feed").appendChild(div);
+      while ($("feed").children.length > 30) $("feed").removeChild($("feed").firstChild);
+    }
     function customErrorCode(raw) {
       const text = String(raw || "");
       const hex = text.match(/custom program error:\s*0x([0-9a-f]+)/i)?.[1];
@@ -525,7 +546,7 @@
       const buyMatch = raw.match(/Buy.*?:\s*([0-9.]+)\s*SOL/i) || raw.match(/Trade went through.*?([0-9.]+)\s*SOL/i);
       if (buyMatch) return { type: "good", text: `Trade went through: ${buyMatch[1]} SOL purchased.${mintText}` };
       const sellMatch = raw.match(/Sell(?: LIVE)?(?: .*?)?:\s*([0-9,.]+)\s*/i);
-      if (/sell .*complete|sell live|sell \(/i.test(lower)) return { type: "good", text: sellMatch ? `Sell went through: ${sellMatch[1]} tokens sold.${mintText}` : `Sell went through.${mintText}` };
+      if (/sell .*complete|sell live|sell \(/i.test(lower)) return null;
       if (/skipping sell:.*no position|skipped sell:.*no position|confirmed wallet inventory is 0/i.test(lower)) return null;
       if (/skipping buy:.*below configured minimum|below configured minimum/i.test(lower)) return { type: "warn", text: "Buy skipped: the copied trade was below the minimum buy size." };
       if (/skipping buy:.*buy-once|already bought/i.test(lower)) return { type: "warn", text: `Buy skipped: this token was already bought in this session.${mintText}` };
@@ -664,13 +685,27 @@
         if (isStatus && renderedStatusMessages.has(compact.text)) continue;
         if (!isStatus && compact.text === lastFeedText) continue;
         if (isStatus) renderedStatusMessages.add(compact.text);
-        lastFeedText = compact.text;
-        const div = document.createElement("div");
-        div.className = `log ${compact.type || ""}`;
-        div.textContent = compact.text;
-        $("feed").appendChild(div);
+        appendFeed(compact.text, compact.type || "");
       }
-      while ($("feed").children.length > 30) $("feed").removeChild($("feed").firstChild);
+    }
+    async function refreshTradeReceipts() {
+      const data = await api(`/api/trades?since=${tradesSince}&limit=80`).catch(() => null);
+      if (!data) return;
+      const trades = data.trades || [];
+      for (const trade of trades) {
+        if (typeof trade.ts === "number" && trade.ts > tradesSince) tradesSince = trade.ts;
+        const key = `${trade.ts}:${trade.mirrorSignature || trade.sourceSignature || ""}:${trade.side}`;
+        if (renderedTradeReceipts.has(key)) continue;
+        renderedTradeReceipts.add(key);
+        const token = trade.side === "buy" ? trade.outputSymbol : trade.inputSymbol;
+        const tokenText = token ? ` ${token}` : "";
+        if (trade.side === "sell") {
+          const pnl = Number(trade.realizedPnlLamports || 0);
+          const type = pnl >= 0 ? "good" : "bad";
+          const session = state?.totals ? ` Session PnL: ${fmtPnlLamports(state.totals.realizedPnlLamports)}.` : "";
+          appendFeed(`Sell went through:${tokenText} PnL ${fmtPnlLamports(pnl)}${fmtPnlPct(trade.realizedPnlPct)}.${session}`, type);
+        }
+      }
     }
     async function refresh() {
       const ready = await api("/api/readiness");
@@ -698,6 +733,7 @@
       render();
       renderPositions();
       await refreshLogs();
+      await refreshTradeReceipts();
     }
     async function saveSettings(extra = {}) {
       const saved = await api("/api/settings", { method: "POST", body: JSON.stringify(payload(extra)) });
@@ -827,7 +863,7 @@
     $("maxBuy").addEventListener("input", render);
     render();
     refresh().catch((e) => toast(e.message));
-    setInterval(() => { api("/api/state").then((s) => { state = s; render(); renderPositions(); }).catch(() => {}); refreshLogs().catch(() => {}); }, 2500);
+    setInterval(() => { api("/api/state").then((s) => { state = s; render(); renderPositions(); }).catch(() => {}); refreshLogs().catch(() => {}); refreshTradeReceipts().catch(() => {}); }, 2500);
     if (!localStorage.getItem(TOUR_STORAGE_KEY)) setTimeout(startTour, 600);
   </script>
 </body>

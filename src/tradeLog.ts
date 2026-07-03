@@ -105,3 +105,35 @@ export async function appendTradeLog(entry: Omit<TradeLogEntry, "isoTs" | "mode"
 export function logTradeAsync(entry: Omit<TradeLogEntry, "isoTs" | "mode" | "config">): void {
   void appendTradeLog(entry);
 }
+
+export async function readRecentTradeLogs(options: { since?: number; limit?: number } = {}): Promise<TradeLogEntry[]> {
+  try {
+    await ensureDirectory();
+    const text = await fs.readFile(TRADE_LOG_PATH, "utf8").catch((err: unknown) => {
+      const code = typeof err === "object" && err && "code" in err ? String((err as { code?: unknown }).code) : "";
+      if (code === "ENOENT") return "";
+      throw err;
+    });
+    const since = Number.isFinite(options.since) ? Number(options.since) : 0;
+    const limit = Math.max(1, Math.min(200, Math.floor(options.limit ?? 50)));
+    const rows: TradeLogEntry[] = [];
+    for (const line of text.split(/\r?\n/)) {
+      if (!line.trim()) continue;
+      try {
+        const row = JSON.parse(line) as TradeLogEntry;
+        if (typeof row.ts === "number" && row.ts > since) rows.push(row);
+      } catch {
+        // Ignore partial/corrupt lines so the UI endpoint stays best-effort.
+      }
+    }
+    return rows.slice(-limit);
+  } catch (err) {
+    if (!warnedOnFailure) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Trade log read failed (suppressed): ${msg} - path=${TRADE_LOG_PATH}`);
+      warnedOnFailure = true;
+    }
+    return [];
+  }
+}
+

@@ -28,6 +28,7 @@ import { getTokenPairInfo, WRAPPED_SOL_MINT } from "./tokenRegistry.js";
 import { getQuote } from "./jupiter.js";
 import { getPriceSampleMs, getPriceSeries, startPriceSampler } from "./priceSampler.js";
 import { getExecutionTelemetrySummary, getTopTrades } from "./friendTelemetry.js";
+import { readRecentTradeLogs } from "./tradeLog.js";
 
 const PORT = parseInt(process.env.WEB_PORT ?? "3000", 10);
 // Interface to bind. Default 127.0.0.1 (localhost only). Set WEB_HOST to your
@@ -336,6 +337,14 @@ async function handle(
     });
   }
 
+  if (req.method === "GET" && url.startsWith("/api/trades")) {
+    const u = new URL(url, "http://localhost");
+    const since = parseInt(u.searchParams.get("since") ?? "0", 10);
+    const limit = parseInt(u.searchParams.get("limit") ?? "50", 10);
+    return sendJson(res, 200, {
+      trades: await readRecentTradeLogs({ since: Number.isFinite(since) ? since : 0, limit: Number.isFinite(limit) ? limit : 50 }),
+    });
+  }
   if (req.method === "POST" && url === "/api/start") {
     try {
       const body = await readJsonBody(req);
