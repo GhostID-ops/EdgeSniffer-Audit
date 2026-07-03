@@ -164,6 +164,15 @@
     #activityCard .body::-webkit-scrollbar { width: 10px; }
     #activityCard .body::-webkit-scrollbar-track { background: rgba(255,255,255,.04); border-radius: 999px; }
     #activityCard .body::-webkit-scrollbar-thumb { background: rgba(105,230,190,.42); border-radius: 999px; border: 2px solid rgba(4,6,9,.9); }
+    .activity-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      padding: 12px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.018);
+    }
+    .stat-box { border: 1px solid var(--line); border-radius: 13px; padding: 10px; background: rgba(4,6,9,.58); min-width: 0; }
+    .stat-box b { display: block; color: var(--text); font-size: 16px; line-height: 1.1; overflow-wrap: anywhere; }
+    .stat-box span { display: block; color: var(--muted); font-size: 10px; font-weight: 950; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .stat-box.good b { color: var(--green); }
+    .stat-box.bad b { color: var(--red); }
     .feed, .positions { display: grid; gap: 8px; }
     .log, .position { border: 1px solid var(--line); border-radius: 14px; background: rgba(4,6,9,.66); padding: 12px; color: var(--soft); font-size: 12.5px; line-height: 1.45; }
     .log.good { border-color: rgba(93,242,174,.42); }
@@ -212,6 +221,7 @@
       .top { align-items: stretch; flex-direction: column; }
       #activityCard { position: static; max-height: 72vh; }
       #activityCard .body { min-height: 300px; }
+      .activity-stats { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -391,6 +401,7 @@
           </div>
           <button class="secondary" id="sellAllBtn" type="button">Sell All</button>
         </div>
+        <div class="activity-stats" id="activityStats"></div>
         <div class="body">
           <div class="positions" id="positions"></div>
           <div class="feed" id="feed"></div>
@@ -633,6 +644,7 @@
     function render() {
       renderStrategies();
       renderAmounts();
+      renderActivityStats();
       $("modeText").textContent = liveMode ? "Live" : "Shadow";
       $("runText").textContent = state?.running ? "Running" : "Stopped";
       $("balanceText").textContent = fmtSol(state?.lastBalanceSol);
@@ -652,6 +664,21 @@
       $("startHelp").textContent = blockedReason;
       $("startHelp").className = `setting-help ${missingWallet || customMissing || liveNeedsBalance ? "warning" : ""}`;
       $("startBtn").disabled = Boolean(missingWallet || customMissing || liveNeedsBalance);
+    }
+    function renderActivityStats() {
+      const totals = state?.totals || {};
+      const pnl = Number(totals.realizedPnlLamports || 0);
+      const roi = totals.realizedCostBasisLamports > 0 ? (pnl / totals.realizedCostBasisLamports) * 100 : null;
+      const pnlText = `${fmtPnlLamports(pnl)}${roi == null ? "" : fmtPnlPct(roi)}`;
+      const openCost = Number(totals.openCostBasisLamports || 0) / 1e9;
+      $("activityStats").innerHTML = `
+        <div class="stat-box ${pnl > 0 ? "good" : pnl < 0 ? "bad" : ""}"><span>Total PnL</span><b>${esc(pnlText)}</b></div>
+        <div class="stat-box"><span>Trades</span><b>${Number(totals.tradesCount || 0)}</b></div>
+        <div class="stat-box"><span>Buys / Sells</span><b>${Number(totals.buysCount || 0)} / ${Number(totals.sellsCount || 0)}</b></div>
+        <div class="stat-box"><span>Open Trades</span><b>${Number(totals.openPositions || 0)}</b></div>
+        <div class="stat-box"><span>Open Cost</span><b>${openCost.toFixed(4)} SOL</b></div>
+        <div class="stat-box"><span>Mode</span><b>${liveMode ? "Live" : "Shadow"}</b></div>
+      `;
     }
     function renderPositions() {
       const positions = state?.positions || [];
