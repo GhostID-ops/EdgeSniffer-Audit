@@ -2499,7 +2499,9 @@ fn broadcast_candidates(cfg: &BroadcastConfig) -> Result<Vec<BroadcastCandidate>
             }
         }
     }
-    if !cfg.use_jito_direct || cfg.use_jito_fallback {
+    if (!cfg.use_jito_direct || cfg.use_jito_fallback)
+        && !cfg.sender_endpoint_url.trim().is_empty()
+    {
         candidates.push(BroadcastCandidate {
             name: "helius-sender".to_string(),
             url: cfg.sender_endpoint_url.clone(),
@@ -2526,25 +2528,57 @@ async fn race_broadcast(
     jito_auth_uuid: Option<String>,
 ) -> Result<String> {
     let client = http_client();
-    let mut futures = FuturesUnordered::new();
-    for candidate in candidates {
-        let client = client.clone();
-        let tx_base64 = tx_base64.clone();
-        let signature = signature.clone();
-        let auth = jito_auth_uuid.clone();
-        futures.push(async move {
-            send_candidate(&client, &candidate, &tx_base64, &signature, auth.as_deref())
-                .await
-                .map_err(|err| format!("{}: {err}", candidate.name))
-        });
-    }
+
+    // Plain RPC `sendTransaction` ACKs almost instantly (the node just accepts the tx into its
+    // mempool), so if it races in parallel with Jito it always wins the ACK — and returning here
+    // drops the FuturesUnordered, cancelling the tip-bearing Jito bundle before it can land. That
+    // loses the slot AND wastes the tip. So keep plain RPC as a genuine fallback: race only the
+    // same-slot lanes (Jito bundle/tx, Helius Sender) first, and fall to plain RPC solely if every
+    // same-slot lane fails — which preserves in-slot landing without ever missing a buy.
+    let (priority, fallback): (Vec<BroadcastCandidate>, Vec<BroadcastCandidate>) = candidates
+        .into_iter()
+        .partition(|candidate| !matches!(candidate.method, BroadcastMethod::RpcFallback));
+
     let mut errors = Vec::new();
-    while let Some(result) = futures.next().await {
-        match result {
-            Ok(path) => return Ok(path),
-            Err(err) => errors.push(err),
+
+    if !priority.is_empty() {
+        let mut futures = FuturesUnordered::new();
+        for candidate in priority {
+            let client = client.clone();
+            let tx_base64 = tx_base64.clone();
+            let signature = signature.clone();
+            let auth = jito_auth_uuid.clone();
+            futures.push(async move {
+                send_candidate(&client, &candidate, &tx_base64, &signature, auth.as_deref())
+                    .await
+                    .map_err(|err| format!("{}: {err}", candidate.name))
+            });
+        }
+        while let Some(result) = futures.next().await {
+            match result {
+                Ok(path) => return Ok(path),
+                Err(err) => errors.push(err),
+            }
         }
     }
+
+    // Same-slot lanes exhausted (or none configured) — try the plain-RPC fallback sequentially so
+    // buys still land even when Jito/sender are down.
+    for candidate in fallback {
+        match send_candidate(
+            &client,
+            &candidate,
+            &tx_base64,
+            &signature,
+            jito_auth_uuid.as_deref(),
+        )
+        .await
+        {
+            Ok(path) => return Ok(path),
+            Err(err) => errors.push(format!("{}: {err}", candidate.name)),
+        }
+    }
+
     Err(anyhow!(
         "all rust executor broadcast paths failed: {}",
         errors.join(" | ")
