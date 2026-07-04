@@ -7,9 +7,13 @@ import { HeliusKeyPool, heliusKeysFromEnv } from "./heliusKeyPool.js";
 import { getTokenPairInfo } from "./tokenRegistry.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
+const GECKO_BASE = "https://api.geckoterminal.com/api/v2";
 const MORALIS_BASE = "https://solana-gateway.moralis.io";
 const MORALIS_API_KEY = process.env.MORALIS_API_KEY ?? "";
 const CACHE_DIR = path.resolve(process.cwd(), "data", "wallet-quant-audit-cache");
+let moralisDisabledReason: string | null = null;
+let moralisConsecutiveFailures = 0;
+const ohlcvProviderCounts = { Moralis: 0, GeckoTerminal: 0 };
 const HELIUS_KEYS = heliusKeysFromEnv();
 const HELIUS_POOL = new HeliusKeyPool(HELIUS_KEYS, {
   cooldownMs: Number(process.env.HELIUS_KEY_COOLDOWN_MS ?? "60000"),
@@ -216,7 +220,7 @@ function buildCampaigns(swaps: Swap[]): Campaign[] {
   return [...campaigns.values()];
 }
 
-async function fetchMoralisOhlcv(poolAddress: string, fromTs: number, toTs: number): Promise<Candle[]> {
+async function fetchMoralisOhlcvDirect(poolAddress: string, fromTs: number, toTs: number): Promise<Candle[]> {
   if (!MORALIS_API_KEY) throw new Error("MORALIS_API_KEY is not set");
   const key = `ohlcv-${poolAddress}-${fromTs}-${toTs}.json`;
   const cached = await cacheGet<Candle[]>(key);
@@ -257,6 +261,83 @@ async function fetchMoralisOhlcv(poolAddress: string, fromTs: number, toTs: numb
   return out;
 }
 
+async function fetchGeckoOhlcv(poolAddress: string, fromTs: number, toTs: number): Promise<Candle[]> {
+  const key = `gecko-${poolAddress}-${fromTs}-${toTs}.json`;
+  const cached = await cacheGet<Candle[]>(key);
+  if (cached) return cached;
+  const rows: Candle[] = [];
+  let before = toTs + 60;
+  for (let page = 0; page < 8; page++) {
+    const url =
+      `${GECKO_BASE}/networks/solana/pools/${poolAddress}/ohlcv/minute` +
+      `?aggregate=1&before_timestamp=${before}&limit=1000&currency=usd`;
+    let response: Response | null = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      response = await fetch(url, { signal: AbortSignal.timeout(15_000) });
+      if (response.status !== 429 && response.status < 500) break;
+      if (attempt < 3) await sleep(2_500 * attempt);
+    }
+    if (!response?.ok) {
+      throw new Error(`GeckoTerminal ${response?.status ?? "network"}: ${response ? (await response.text()).slice(0, 180) : "no response"}`);
+    }
+    const json = (await response.json()) as {
+      data?: { attributes?: { ohlcv_list?: number[][] } };
+    };
+    const batch = json.data?.attributes?.ohlcv_list ?? [];
+    if (batch.length === 0) break;
+    for (const row of batch) {
+      const [ts, open, high, low, close, volume] = row;
+      if ([ts, open, high, low, close].some((value) => typeof value !== "number")) continue;
+      if (ts >= fromTs && ts <= toTs) {
+        rows.push({ ts, open, high, low, close, volume: volume ?? 0 });
+      }
+    }
+    const oldest = Math.min(...batch.map((row) => row[0] ?? before));
+    if (!Number.isFinite(oldest) || oldest <= fromTs) break;
+    before = oldest - 1;
+    await sleep(2_500);
+  }
+  const out = rows.sort((a, b) => a.ts - b.ts);
+  await cacheSet(key, out);
+  return out;
+}
+
+export function isPermanentMoralisError(message: string): boolean {
+  return /Moralis 401|Moralis 403|usage has been consumed|validation service blocked|upgrade your plan/i.test(message);
+}
+
+function isTransientMoralisError(message: string): boolean {
+  return /Moralis 429|Moralis 5\d\d|timed? ?out|fetch failed|network/i.test(message);
+}
+
+async function fetchMoralisOhlcv(poolAddress: string, fromTs: number, toTs: number): Promise<Candle[]> {
+  if (!moralisDisabledReason) {
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const candles = await fetchMoralisOhlcvDirect(poolAddress, fromTs, toTs);
+        moralisConsecutiveFailures = 0;
+        if (candles.length > 0) {
+          ohlcvProviderCounts.Moralis += 1;
+          return candles;
+        }
+        break;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        moralisConsecutiveFailures += 1;
+        if (isPermanentMoralisError(message) || moralisConsecutiveFailures >= 3) {
+          moralisDisabledReason = message.slice(0, 180);
+          console.warn(`Moralis disabled for this audit run; using GeckoTerminal: ${moralisDisabledReason}`);
+          break;
+        }
+        if (!isTransientMoralisError(message) || attempt === 3) break;
+        await sleep(1_000 * 2 ** (attempt - 1));
+      }
+    }
+  }
+  const candles = await fetchGeckoOhlcv(poolAddress, fromTs, toTs);
+  if (candles.length > 0) ohlcvProviderCounts.GeckoTerminal += 1;
+  return candles;
+}
 function candleAtOrAfter(candles: Candle[], ts: number): Candle | null {
   return candles.find((c) => c.ts >= ts) ?? candles[candles.length - 1] ?? null;
 }
@@ -563,7 +644,13 @@ export async function runWalletQuantAudit(wallet: string, maxTxs = 5000, entryLi
       medianMfePct: median(paths.map((p) => p.mfe)),
       medianMaePct: median(paths.map((p) => p.mae)),
     },
-    targetProbabilities: thresholds,
+    entryEnrichment: {
+      attempted: Math.min(campaigns.length, entryLimit),
+      measured: labs.length,
+      unmeasured: Math.max(0, Math.min(campaigns.length, entryLimit) - labs.length),
+      providers: { ...ohlcvProviderCounts },
+      moralisDisabledReason,
+    },    targetProbabilities: thresholds,
     downsideProbabilities: downside,
     strategies,
     buckets,

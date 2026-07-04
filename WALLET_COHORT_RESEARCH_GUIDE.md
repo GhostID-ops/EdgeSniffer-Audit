@@ -351,6 +351,9 @@ nohup npm run audit:wallet-cohort -- data/wallet-audit-wallets.json "$RUN_DIR" \
 echo $! > "$RUN_DIR/runner.pid"
 ```
 
+## OHLCV Provider Resilience
+
+Entry-path enrichment uses Moralis first. Transient Moralis failures are retried three times. A repeated 5xx response or a permanent 401/403 quota response opens a circuit breaker for the remainder of that wallet audit and automatically falls back to GeckoTerminal. The final JSON records provider counts and the Moralis disable reason under `entryEnrichment`.
 ## Outputs
 
 Every run writes:
