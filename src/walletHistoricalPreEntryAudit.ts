@@ -568,6 +568,11 @@ async function runAudit(
   maxMintTxs: number,
   outputTag: string
 ): Promise<void> {
+  if (HELIUS_KEYS.length === 0) {
+    throw new Error(
+      "No Helius API keys configured. Set HELIUS_API_KEYS or HELIUS_API_KEY before running."
+    );
+  }
   const ledger = await readJson<LedgerReport>(ledgerPath);
   if (!ledger?.rows?.length) throw new Error("Ledger report has no campaign rows");
   let edgeEnv: Record<string, string> = {};
@@ -687,6 +692,10 @@ async function runAudit(
           `outcome=${outcome(ledgerRow)} events=${events.length} candidates=${candidates.length}`
       );
     } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (/all helius api keys exhausted/i.test(message)) {
+        throw error;
+      }
       rows.push({
         ledger: ledgerRow,
         outcome: outcome(ledgerRow),
@@ -697,7 +706,7 @@ async function runAudit(
         firstPreEntryLeadSeconds: null,
         windows: {},
         candidates: [],
-        error: error instanceof Error ? error.message : String(error),
+        error: message,
       });
       console.warn(
         `[${index + 1}/${sample.length}] ${ledgerRow.mint.slice(0, 8)} error=${rows.at(-1)?.error}`
