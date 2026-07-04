@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { heliusAddressTransactionsUrl } from "./config.js";
 
 const WSOL = "So11111111111111111111111111111111111111112";
@@ -193,12 +194,12 @@ function extractFill(tx: HeliusTx, wallet: string): Fill | null {
   return null;
 }
 
-function buildCampaigns(fills: Fill[]): Campaign[] {
-  const campaigns = new Map<string, Campaign>();
+export function buildCampaigns(fills: Fill[]): Campaign[] {
+  const campaigns: Campaign[] = [];
+  const active = new Map<string, Campaign>();
   for (const fill of fills.sort((a, b) => a.timestamp - b.timestamp)) {
-    let campaign = campaigns.get(fill.mint);
-    if (!campaign) {
-      if (fill.side !== "buy") continue;
+    let campaign = active.get(fill.mint);
+    if (fill.side === "buy" && !campaign) {
       campaign = {
         mint: fill.mint,
         decimals: fill.decimals,
@@ -210,8 +211,10 @@ function buildCampaigns(fills: Fill[]): Campaign[] {
         receivedLamports: 0,
         soldRaw: 0,
       };
-      campaigns.set(fill.mint, campaign);
+      campaigns.push(campaign);
+      active.set(fill.mint, campaign);
     }
+    if (!campaign) continue;
     if (fill.side === "buy") {
       campaign.buys.push(fill);
       campaign.spentLamports += fill.quoteLamports;
@@ -220,9 +223,12 @@ function buildCampaigns(fills: Fill[]): Campaign[] {
       campaign.sells.push(fill);
       campaign.receivedLamports += fill.quoteLamports;
       campaign.soldRaw += fill.tokenRaw;
+      if (campaign.soldRaw >= campaign.boughtRaw) {
+        active.delete(fill.mint);
+      }
     }
   }
-  return [...campaigns.values()];
+  return campaigns;
 }
 
 type PricePoint = [number, number];
@@ -455,7 +461,9 @@ async function main(): Promise<void> {
   console.log(JSON.stringify({ jsonPath, mdPath, coverage: output.coverage }, null, 2));
 }
 
-main().catch((err) => {
-  console.error(err instanceof Error ? err.message : String(err));
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((err) => {
+    console.error(err instanceof Error ? err.message : String(err));
+    process.exit(1);
+  });
+}

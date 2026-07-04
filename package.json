@@ -48,6 +48,7 @@
     "audit:wallet-cohort": "tsx src/walletAuditBatch.ts",
     "audit:wallet-cohort:start": "bash scripts/startWalletAuditBatch.sh",
     "audit:wallet-latency": "tsx src/walletLatencyReplay.ts",
+    "audit:wallet-edge-xref": "tsx src/walletEdgeCrossReference.ts",
     "audit:omego-weekly": "bash scripts/runOmegoWeeklyAuditSlow.sh",
     "sim:omego-env": "node scripts/simulateOmegoEnvStrategies.mjs",
     "test:license": "tsx src/testLicense.ts",

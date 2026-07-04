@@ -416,3 +416,46 @@ Do not select a strategy from headline win rate. Require all of the following:
 8. **Promotion:** only promote a lane that remains positive out of sample and under execution stress.
 
 The immediate next milestone is not another EdgeSniffer threshold tweak. It is a completed, common-window cohort report followed by the latency-impact replay.
+
+## Ledger-First Single-Wallet Audit
+
+The ledger bucket audit is intentionally fast when the Helius transaction cache
+already exists. It reconstructs fills and campaigns locally; it does not fetch
+one candle path per token. Its JSON rows are the outcome-label layer, not the
+complete detector audit.
+
+Start with one wallet:
+
+```bash
+cd /root/bot/FinalBot-cya
+npx tsx src/walletLedgerBucketAudit.ts \
+  8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ \
+  10000 \
+  8ycby-ledger-10000
+```
+
+Cross-reference those labeled campaigns against every retained EdgeSniffer
+signal and rejection:
+
+```bash
+cd /root/bot/FinalBot-cya
+npm run audit:wallet-edge-xref -- \
+  data/8ycby-ledger-10000.json \
+  /root/bot/EdgeSniffer \
+  8ycby-edge-xref
+
+cat data/8ycby-edge-xref.md
+```
+
+The cross-reference reports:
+
+- Retained EdgeSniffer data-window overlap and honest coverage.
+- Strict pre-entry detections, same-second detections, and post-entry detections.
+- Winner, scalp-win, runner, and loser pre-entry indicator medians.
+- Current, aggregate-runner, and wide-scout profile replays.
+- Winner capture, loser rejection, equal-bet PnL, and missed-winner gates.
+
+Helius wallet timestamps are second-level. A detection needs at least one full
+second of lead to count as strict pre-entry. Same-second signals may have been
+triggered by the tracked wallet itself and are never credited as independent
+early detection.
