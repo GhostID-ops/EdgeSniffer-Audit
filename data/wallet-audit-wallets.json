@@ -1,0 +1,39 @@
+{
+  "defaults": {
+    "maxTxs": 10000,
+    "entryLimit": 500,
+    "continueOnError": true
+  },
+  "wallets": [
+    {
+      "label": "bwam-scalper",
+      "address": "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa",
+      "lane": "scalper",
+      "enabled": true
+    },
+    {
+      "label": "fifaw-scalper",
+      "address": "FiFawHqxeTVBhv6YbqbLwDVuvokRpPUM1bNwAyxhGc6W",
+      "lane": "scalper",
+      "enabled": true
+    },
+    {
+      "label": "2cq-scalper",
+      "address": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+      "lane": "scalper",
+      "enabled": true
+    },
+    {
+      "label": "8ycby-scalper",
+      "address": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+      "lane": "scalper",
+      "enabled": true
+    },
+    {
+      "label": "cya-runner",
+      "address": "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
+      "lane": "runner",
+      "enabled": true
+    }
+  ]
+}

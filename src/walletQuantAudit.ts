@@ -1,14 +1,24 @@
 import "dotenv/config";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { maxCumulativeDrawdownPctPoints, summarizeReturns } from "./accountingMetrics.js";
-import { heliusAddressTransactionsUrl } from "./config.js";
+import { HeliusKeyPool, heliusKeysFromEnv } from "./heliusKeyPool.js";
 import { getTokenPairInfo } from "./tokenRegistry.js";
 
 const WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112";
 const MORALIS_BASE = "https://solana-gateway.moralis.io";
 const MORALIS_API_KEY = process.env.MORALIS_API_KEY ?? "";
 const CACHE_DIR = path.resolve(process.cwd(), "data", "wallet-quant-audit-cache");
+const HELIUS_KEYS = heliusKeysFromEnv();
+const HELIUS_POOL = new HeliusKeyPool(HELIUS_KEYS, {
+  cooldownMs: Number(process.env.HELIUS_KEY_COOLDOWN_MS ?? "60000"),
+  maxAttempts: Number(process.env.HELIUS_KEY_MAX_ATTEMPTS ?? String(Math.max(8, HELIUS_KEYS.length * 4))),
+  onEvent: (event) => {
+    if (event.event === "key_selected") return;
+    console.warn(`[helius] ${event.event} keySlot=${event.keySlot}${event.status ? ` status=${event.status}` : ""}`);
+  },
+});
 
 type HeliusTx = {
   signature: string;
@@ -107,24 +117,32 @@ async function cacheSet(key: string, value: unknown): Promise<void> {
 }
 
 async function fetchAddressTxs(address: string, limit: number, before?: string): Promise<HeliusTx[]> {
-  const url = heliusAddressTransactionsUrl(address, before, limit);
-  if (!url) throw new Error("HELIUS_API_KEY is not set");
-  const response = await fetch(url, { signal: AbortSignal.timeout(15_000) });
+  const response = await HELIUS_POOL.request(
+    (apiKey) => {
+      const params = new URLSearchParams({ "api-key": apiKey, limit: String(limit) });
+      if (before) params.set("before", before);
+      return `https://api-mainnet.helius-rpc.com/v0/addresses/${address}/transactions?${params}`;
+    },
+    { signal: AbortSignal.timeout(15_000) }
+  );
   if (!response.ok) throw new Error(`Helius ${response.status}: ${(await response.text()).slice(0, 180)}`);
   return (await response.json()) as HeliusTx[];
 }
 
 async function fetchPagedWalletTxs(wallet: string, maxTxs: number): Promise<HeliusTx[]> {
   const key = `wallet-${wallet}-${maxTxs}.json`;
+  const partialKey = `wallet-${wallet}-${maxTxs}.partial.json`;
   const cached = await cacheGet<HeliusTx[]>(key);
   if (cached) return cached;
-  const all: HeliusTx[] = [];
-  let before: string | undefined;
+  const partial = await cacheGet<HeliusTx[]>(partialKey);
+  const all: HeliusTx[] = partial ?? [];
+  let before: string | undefined = all[all.length - 1]?.signature;
   while (all.length < maxTxs) {
     const batch = await fetchAddressTxs(wallet, Math.min(100, maxTxs - all.length), before);
     if (batch.length === 0) break;
     all.push(...batch);
     before = batch[batch.length - 1]?.signature;
+    await cacheSet(partialKey, all);
     await sleep(650);
   }
   await cacheSet(key, all);
@@ -414,12 +432,7 @@ async function buildLabs(campaigns: Campaign[], limit: number): Promise<EntryLab
   return labs;
 }
 
-async function main(): Promise<void> {
-  const wallet = process.argv[2] ?? "";
-  const maxTxs = Number(process.argv[3] ?? "5000");
-  const entryLimit = Number(process.argv[4] ?? "220");
-  if (!wallet) throw new Error("usage: tsx src/walletQuantAudit.ts WALLET [maxTxs] [entryLimit]");
-
+export async function runWalletQuantAudit(wallet: string, maxTxs = 5000, entryLimit = 220) {
   const txs = await fetchPagedWalletTxs(wallet, maxTxs);
   const swaps = txs.map((tx) => extractSwap(tx, wallet)).filter((x): x is Swap => x != null);
   const campaigns = buildCampaigns(swaps);
@@ -562,12 +575,54 @@ async function main(): Promise<void> {
           Math.max(1, realizedPnls.reduce((s, p) => s + p, 0))) *
         100,
     },
+    campaignRows: campaigns.map((campaign) => {
+      const soldCostBasis = campaign.boughtRaw > 0
+        ? campaign.spent * (Math.min(campaign.soldRaw, campaign.boughtRaw) / campaign.boughtRaw)
+        : 0;
+      const pnlLamports = campaign.received - soldCostBasis;
+      const lastTs = campaign.lastSell?.timestamp ?? campaign.firstBuy.timestamp;
+      return {
+        mint: campaign.mint,
+        entryTs: campaign.firstBuy.timestamp,
+        firstBuySol: sol(campaign.firstBuy.solLamports),
+        totalBuySol: sol(campaign.spent),
+        realizedPnlSol: sol(pnlLamports),
+        realizedRoiPct: soldCostBasis > 0 ? (pnlLamports / soldCostBasis) * 100 : null,
+        holdSeconds: lastTs - campaign.firstBuy.timestamp,
+        buys: campaign.buys.length,
+        sells: campaign.sells.length,
+        closed: campaign.received > 0 && campaign.soldRaw > 0,
+      };
+    }),
+    entryRows: labs.map((row) => ({
+      mint: row.mint,
+      symbol: row.symbol,
+      entryTs: row.entryTs,
+      entrySol: row.entrySol,
+      entryMarketCapUsdApprox: entryMarketCapUsdApprox(row),
+      pre5mVolumeUsd: row.pre5mVolumeUsd,
+      pre5mMomentumPct: row.pre5mMomentumPct,
+      currentLiquidityUsd: row.currentLiquidityUsd,
+      currentMarketCapUsd: row.currentMarketCapUsd,
+      sourceExitRoiPct: sourceExit(row),
+      ...returnsPath(row),
+    })),
     recentEntries: labs.slice(0, 20).map((l) => ({ mint: short(l.mint), symbol: l.symbol, entrySol: l.entrySol, ...returnsPath(l), pre5mVolumeUsd: l.pre5mVolumeUsd })),
   };
-  console.log(JSON.stringify(out, null, 2));
+  return out;
 }
 
-main().catch((err) => {
-  console.error(err instanceof Error ? err.message : String(err));
-  process.exit(1);
-});
+async function main(): Promise<void> {
+  const wallet = process.argv[2] ?? "";
+  const maxTxs = Number(process.argv[3] ?? "5000");
+  const entryLimit = Number(process.argv[4] ?? "220");
+  if (!wallet) throw new Error("usage: tsx src/walletQuantAudit.ts WALLET [maxTxs] [entryLimit]");
+  console.log(JSON.stringify(await runWalletQuantAudit(wallet, maxTxs, entryLimit), null, 2));
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((err) => {
+    console.error(err instanceof Error ? err.message : String(err));
+    process.exit(1);
+  });
+}

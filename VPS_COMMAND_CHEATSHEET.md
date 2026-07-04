@@ -503,6 +503,150 @@ JITO_SHREDSTREAM_ENABLED=true
 JITO_SHREDSTREAM_GRPC_URL=http://127.0.0.1:9999
 ```
 
+## EdgeSniffer Launch Sniffer
+
+EdgeSniffer is paper-only research unless you intentionally change it. The normal VPS folder is:
+
+```bash
+cd /root/bot/EdgeSniffer
+```
+
+### Start A Fresh Paper Scan
+
+Use this when changing profiles or after a cleanup:
+
+```bash
+cd /root/bot/EdgeSniffer
+npm run session:reset
+npm run paper:launch
+```
+
+Current preferred research posture:
+
+```env
+score=85-94
+entry mc=1500-5000
+source=0.25-1.45
+TP50 / SL20 / 120s
+maxOpen=3
+maxPerHour=20
+maxSession=60
+```
+
+If a session produces no opens for a long time, do not blindly loosen everything. Run the reports first and loosen only the gate named by the evidence.
+
+### Quick Health Check
+
+```bash
+cd /root/bot/EdgeSniffer
+npm run report:launch
+```
+
+Healthy scan signs:
+
+```text
+status=signals_active
+lastSignal is recent
+lastStream is recent
+localDecoded increasing
+pollErrors=0
+helius429=0
+```
+
+### Full Report Bundle
+
+Run after at least 1-2 hours of scanning, or sooner if you already have closes:
+
+```bash
+cd /root/bot/EdgeSniffer
+npm run report:open-quality -- 12 5
+npm run report:launch
+npm run report:missed-runners -- 12 85
+npm run report:reality-gap -- 12 85
+npm run report:entry-telemetry -- 12 25
+npm run report:viable-missed-runners -- 12 25
+npm run report:exposure-allocation -- 12 25
+npm run report:param-sweep -- 12
+npm run report:aggregate-fingerprint
+npm run ui:build
+```
+
+If actual opens are losing but scanner hypothetical paths are positive, do not increase exposure. First inspect `open-quality`, `entry-telemetry`, and `reality-gap`.
+
+### Confirmation / Entry Timing Reports
+
+Use these when scanner runners exist but paper opens are missing:
+
+```bash
+cd /root/bot/EdgeSniffer
+npm run report:confirmation-sweep -- 12
+npm run report:entry-timing -- 12
+```
+
+If `confirmation-sweep` says `viable=0` and `entry-timing` says first-entry beats confirmed-entry, confirmation gates are probably starving the lane.
+
+### Wallet / CyA Label Reports
+
+Use this to inspect CyA/lookalike wallet performance and turn winners/losers into labels:
+
+```bash
+cd /root/bot/EdgeSniffer
+WALLET_PERF_ROOTS=/root/bot/FinalBot-cya WALLET_PERF_TOP_N=50 npm run report:wallet-performance -- 24
+npm run report:wallet-fingerprint -- 24
+```
+
+Clean actual CyA winner-only list:
+
+```bash
+cd /root/bot/EdgeSniffer
+CYA_WINNER_ROOTS=/root/bot/FinalBot-cya CYA_WINNER_FILE_MODE=actual CYA_WINNER_APPEND=false CYA_WINNER_TOP_N=50 npm run report:cya-winners -- 24
+cat data/cya-winner-mints.txt
+```
+
+Target one known mint:
+
+```bash
+cd /root/bot/EdgeSniffer
+BURST_CLUSTER_TARGET_MINT=8DGnPt9FxLYsy8ynCj2WQ1LePAqhvprudxX7JLVepump npm run report:burst-clusters -- 24
+```
+
+Do not run a full `report:burst-clusters -- 24` if it is slow. Use a target mint or a short window first:
+
+```bash
+cd /root/bot/EdgeSniffer
+npm run report:burst-clusters -- 6
+```
+
+### Disk Cleanup
+
+Standard cleanup after a normal session:
+
+```bash
+cd /root/bot/EdgeSniffer
+npm run maintenance:cleanup
+df -h
+du -sh data data/* 2>/dev/null | sort -h
+```
+
+Aggressive cleanup after reports are exported or if disk is getting tight:
+
+```bash
+cd /root/bot/EdgeSniffer
+npm run maintenance:cleanup -- --aggressive
+df -h
+du -sh data data/* 2>/dev/null | sort -h
+```
+
+Aggressive cleanup is meant to protect the VPS from huge firehose files. Export the reports you care about first. Keep `data/reports` when possible because that is the useful research history.
+
+If the disk is already full and commands are failing, stop the scanner first:
+
+```bash
+pkill -f 'tsx src/commands/launchPaperTrader.ts'
+cd /root/bot/EdgeSniffer
+npm run maintenance:cleanup -- --aggressive
+df -h
+```
 ## Useful Reminder
 
 If a bot is running through `systemd`, terminal hotkeys inside `npm run bot` will not work.
@@ -595,4 +739,105 @@ Check duplicates, fee posture, and PM2 process status:
 ```bash
 cd /root/bot/FinalBot-cya
 npm run vps:doctor
+```
+
+## Friend Demo UI / SSH Tunnel
+
+Open this tunnel from your own computer terminal, not from inside the VPS:
+
+```bash
+ssh -L 3001:127.0.0.1:3001 root@87.99.145.246
+```
+
+Keep that terminal open, then open the simple UI locally:
+
+```text
+http://127.0.0.1:3001/friend-simple
+```
+
+Advanced friend cockpit:
+
+```text
+http://127.0.0.1:3001/friend
+```
+
+Direct VPS link, only works if port 3001 is reachable from the internet:
+
+```text
+http://87.99.145.246:3001/friend-simple
+```
+
+Check friend UI login:
+
+```bash
+cd /root/bot/FinalBot-cya
+grep '^UI_BASIC_AUTH_' friend-demo/.env
+```
+
+Update friend UI code on VPS:
+
+```bash
+cd /root/bot/FinalBot-cya
+git pull --ff-only origin main
+npm install
+npm run build
+```
+
+Restart friend demo UI:
+
+```bash
+cd /root/bot/FinalBot-cya
+pkill -f "demoInstance.ts friend-demo" || true
+nohup npm run friend:demo -- friend-demo 3001 > friend-demo.log 2>&1 &
+```
+
+Check if friend UI is running:
+
+```bash
+cd /root/bot/FinalBot-cya
+ss -ltnp | grep ':3001' || true
+tail -80 friend-demo.log
+```
+
+Test friend UI locally on the VPS:
+
+```bash
+cd /root/bot/FinalBot-cya
+USER=$(grep '^UI_BASIC_AUTH_USER=' friend-demo/.env | cut -d= -f2-)
+PASS=$(grep '^UI_BASIC_AUTH_PASSWORD=' friend-demo/.env | cut -d= -f2-)
+curl -i -u "$USER:$PASS" http://127.0.0.1:3001/friend-simple | head
+```
+
+Force wallet/cashflow PnL basis for the friend demo:
+
+```bash
+cd /root/bot/FinalBot-cya
+sed -i 's/^PNL_ACCOUNTING_BASIS=.*/PNL_ACCOUNTING_BASIS=wallet/' friend-demo/.env
+grep -q '^PNL_ACCOUNTING_BASIS=' friend-demo/.env || echo 'PNL_ACCOUNTING_BASIS=wallet' >> friend-demo/.env
+grep '^PNL_ACCOUNTING_BASIS=' friend-demo/.env
+```
+## Wallet Cohort Background Audit
+
+Full methodology: `WALLET_COHORT_RESEARCH_GUIDE.md`
+
+```bash
+cd /root/bot/FinalBot-cya
+npm run build
+bash scripts/startWalletAuditBatch.sh data/wallet-audit-wallets.json
+```
+
+```bash
+RUN_DIR=$(cat /root/bot/FinalBot-cya/data/wallet-audits/latest-run.txt)
+tail -f "$RUN_DIR/runner.log"
+cat "$RUN_DIR/state.json"
+```
+
+After completion:
+
+```bash
+RUN_DIR=$(cat /root/bot/FinalBot-cya/data/wallet-audits/latest-run.txt)
+cat "$RUN_DIR/cohort-summary.md"
+npm run audit:wallet-latency -- "$RUN_DIR" \
+  /root/bot/EdgeSniffer/data/launch-paper-signals.jsonl \
+  /root/bot/EdgeSniffer/data/launch-paper-events.jsonl
 ```

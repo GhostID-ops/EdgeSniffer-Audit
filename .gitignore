@@ -11,3 +11,8 @@ data/*.jsonl
 data/*.lock
 data/*-cache/
 .DS_Store
+
+# Isolated demo instances (contain a copy of .env — never commit)
+demo-instance/
+demo-*/
+data/wallet-audits/
