@@ -220,14 +220,11 @@ upsertDemoEnv({
   // a 20ms head-start + Rust backstop. Uses its own RUST_HOT_SNIPER_* fees (not the friend
   // UI caps), so the demo lands in Cented's slot instead of one hop behind. This is what the
   // prospective buyer is here to feel — do not gate it behind the cheap-demo profile.
-  RUST_HOT_SNIPER_ENABLED: "true",
-  RUST_HOT_SNIPER_PRIMARY: "true",
   RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED: "true",
   RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS: "20",
-  // The hot-sniper FEE values + COMPUTE_UNIT_LIMIT are set via defaultDemoEnv below
-  // (set-if-missing) so the friend's UI Speed selector (/api/speed) can change them and the
-  // choice survives restarts. Only RUST_HOT_SNIPER_ENABLED stays forced so the sniper is
-  // always guaranteed on regardless of tier.
+  // RUST_HOT_SNIPER_ENABLED / PRIMARY + the fee values are set via defaultDemoEnv below
+  // (set-if-missing) so the friend's UI Speed selector — including the Off tier — persists
+  // across restarts. New instances default to ON.
   JITO_TIP_ORACLE_ENABLED: "true",
   DYNAMIC_PRIORITY_FEE_ENABLED: "true",
   JITO_CONNECTION_WARMUP_ENABLED: "true",
@@ -240,6 +237,8 @@ upsertDemoEnv({
 // Same-slot fee defaults (balanced tier ~0.006 SOL/snipe). Set-if-missing so the friend's UI
 // Speed selector can switch to Max/Eco and the choice persists across restarts.
 defaultDemoEnv({
+  RUST_HOT_SNIPER_ENABLED: "true",
+  RUST_HOT_SNIPER_PRIMARY: "true",
   RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "3000000",
   RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
   RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
