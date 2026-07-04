@@ -101,7 +101,185 @@ RUST_ONLY_SELLS=true
 JUPITER_FALLBACK_ENABLED=false
 ```
 
-## Start In Background
+## Recovered Status: July 4, 2026
+
+The recovered chat establishes this checkpoint:
+
+- The CyA 1,000-transaction audit completed on the VPS.
+- It reconstructed 99 closed campaigns from 1,000 transactions.
+- Realized PnL was `+36.46 SOL`, win rate was `51.5%`, profit factor was
+  `1.75`, and median holding time was about `20 seconds`.
+- Median MFE was only `+1.68%`, while median MAE was `-29.63%`.
+- A `+50%` path occurred in about `10.2%` of measured entries and a `+100%`
+  path in about `5.1%`.
+- The first 5,000-transaction attempt failed because a single Helius key
+  reached its usage limit. The separate `: command not found` message was a
+  paste/line-break error, not an audit bug.
+
+This is evidence for a possible fast-exit plus fat-tail profile, not a finished
+strategy. The sample is one wallet, one short window, has material drawdown and
+outlier concentration risk, and has not yet been latency/impact stressed.
+
+RabbitStream, gRPC, and ShredStream can collect new observations from now on.
+They cannot reconstruct historical wallet balance and token deltas that were
+not captured at the time. Use the Helius pool and cache for historical work;
+use local streams for forward capture and millisecond replay.
+
+## Next Steps
+
+### 1. Update And Preflight The VPS
+
+```bash
+ssh root@87.99.145.246
+cd /root/bot/FinalBot-cya
+git pull origin main
+npm install
+npm run build
+
+grep -E '^(HELIUS_API_POOL_INCLUDE_PRIMARY|HELIUS_KEY_COOLDOWN_MS|HELIUS_KEY_MAX_ATTEMPTS|RUST_ONLY_BUYS|RUST_ONLY_SELLS|JUPITER_FALLBACK_ENABLED)=' .env
+```
+
+Do not paste a key into the command line. `walletQuantAudit.ts` loads the
+rotating pool from `.env`, marks quota-exhausted slots, and saves a partial
+history cache after every page.
+
+### 2. Finish The CyA 5,000-Transaction Audit
+
+Run it in the background. Standard output goes only to the JSON temporary file;
+warnings and key-slot events go to the log. The final JSON name appears only
+after a successful run.
+
+```bash
+cd /root/bot/FinalBot-cya
+nohup bash -lc '
+  cd /root/bot/FinalBot-cya
+  npx tsx src/walletQuantAudit.ts \
+    CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o \
+    5000 300 > data/cya-quant-5000.json.tmp &&
+  mv data/cya-quant-5000.json.tmp data/cya-quant-5000.json
+' > data/cya-quant-5000.log 2>&1 &
+echo $! > data/cya-quant-5000.pid
+```
+
+Monitor and check completion:
+
+```bash
+tail -f /root/bot/FinalBot-cya/data/cya-quant-5000.log
+ps -p "$(cat /root/bot/FinalBot-cya/data/cya-quant-5000.pid)" -o pid,etime,cmd
+test -s /root/bot/FinalBot-cya/data/cya-quant-5000.json && echo "5k JSON ready"
+```
+
+If every pool slot is exhausted, update the pool and run the same command
+again. The 5k partial cache resumes that same request. The completed 1k cache
+does not seed a differently named 5k request.
+
+Validate and print the useful summary:
+
+```bash
+cd /root/bot/FinalBot-cya
+node -e '
+const fs=require("fs");
+const p="data/cya-quant-5000.json";
+const r=JSON.parse(fs.readFileSync(p,"utf8"));
+console.log(JSON.stringify({
+  sample:r.sample,
+  walletPerformance:r.walletPerformance,
+  entryStats:r.entryStats,
+  targetProbabilities:r.targetProbabilities,
+  downsideProbabilities:r.downsideProbabilities,
+  buckets:r.buckets,
+  strategies:r.strategies,
+  concentration:r.concentration
+},null,2));
+'
+```
+
+### 3. Run The Five-Wallet Pilot Cohort
+
+The pilot uses 2,500 transactions and 250 enriched entries per wallet. This is
+the quota-conscious comparison pass. Do not jump directly to the 10k config
+until the pilot proves all wallets parse correctly and share a useful time
+window.
+
+```bash
+cd /root/bot/FinalBot-cya
+bash scripts/startWalletAuditBatch.sh data/wallet-audit-wallets-pilot.json
+```
+
+Monitor it:
+
+```bash
+RUN_DIR=$(cat /root/bot/FinalBot-cya/data/wallet-audits/latest-run.txt)
+tail -f "$RUN_DIR/runner.log"
+cat "$RUN_DIR/state.json"
+```
+
+When finished:
+
+```bash
+RUN_DIR=$(cat /root/bot/FinalBot-cya/data/wallet-audits/latest-run.txt)
+cat "$RUN_DIR/cohort-summary.md"
+```
+
+Promote to the full config only if the pilot has no parser failures, enough
+closed campaigns, and an exact common comparison window:
+
+```bash
+cd /root/bot/FinalBot-cya
+bash scripts/startWalletAuditBatch.sh data/wallet-audit-wallets.json
+```
+
+### 4. Keep Forward Stream Capture Running
+
+Do not add an API call to the trading hot path. Do not change the bot's live or
+simulation posture merely to run this research. Verify that the existing
+EdgeSniffer event files are present and growing:
+
+```bash
+ls -lh \
+  /root/bot/EdgeSniffer/data/launch-paper-signals.jsonl \
+  /root/bot/EdgeSniffer/data/launch-paper-events.jsonl
+
+wc -l \
+  /root/bot/EdgeSniffer/data/launch-paper-signals.jsonl \
+  /root/bot/EdgeSniffer/data/launch-paper-events.jsonl
+```
+
+Repeat `wc -l` later. Increasing counts confirm forward capture. These local
+timestamps are what make the later 100-1,000ms replay possible.
+
+### 5. Join The Cohort To Local Millisecond Events
+
+After the pilot or full cohort finishes:
+
+```bash
+cd /root/bot/FinalBot-cya
+RUN_DIR=$(cat data/wallet-audits/latest-run.txt)
+npm run audit:wallet-latency -- "$RUN_DIR" \
+  /root/bot/EdgeSniffer/data/launch-paper-signals.jsonl \
+  /root/bot/EdgeSniffer/data/launch-paper-events.jsonl
+
+cat "$RUN_DIR/latency-impact-replay.md"
+```
+
+Low match coverage means “insufficient evidence,” not zero slippage or zero
+performance loss.
+
+### 6. Decide What To Build Next
+
+Do not tune EdgeSniffer thresholds from the CyA 1k result alone. The next code
+change should follow the evidence:
+
+1. If the scalper wallets agree out of sample, build a separate scalper score.
+2. If CyA remains fat-tail positive after delay and impact, build a separate
+   runner score.
+3. If accepted trades look good but no market negatives exist, collect
+   contemporaneous launches the cohort rejected before training anything.
+4. If latency coverage is weak, improve local event retention/join coverage
+   before changing execution.
+5. Promote only a frozen paper profile that passes the decision gates below.
+
+## Start A Full Cohort In Background
 
 ```bash
 cd /root/bot/FinalBot-cya
