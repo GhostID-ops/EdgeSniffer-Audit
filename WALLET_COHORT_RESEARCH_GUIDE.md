@@ -459,3 +459,108 @@ Helius wallet timestamps are second-level. A detection needs at least one full
 second of lead to count as strict pre-entry. Same-second signals may have been
 triggered by the tracked wallet itself and are never credited as independent
 early detection.
+
+The retained-log cross-reference is valid only when the wallet campaigns and
+EdgeSniffer files overlap in time. If `campaignsInsideEdgeWindow=0`, the command
+worked but there is no comparable dataset. Do not interpret zero matches as a
+failed detector or a failed wallet profile.
+
+## Historical Pre-Entry Audit
+
+When retained EdgeSniffer logs do not overlap the wallet ledger, reconstruct a
+bounded historical pre-entry sample directly from mint transaction histories.
+This audit:
+
+- Stratifies campaigns across losses, small wins, scalp wins, and runners.
+- Fetches the 60 seconds before each wallet entry using the rotating Helius
+  pool.
+- Excludes the target wallet's entry and all same-second rows from strict
+  pre-entry evidence.
+- Reconstructs buys, sells, unique wallets, volume, inferred market cap, and
+  flow momentum at 1/3/5/10/30/60-second windows.
+- Replays the current EdgeSniffer env, runner aggregate, and wide-scout
+  profiles.
+- Uses no Moralis or Gecko calls and adds nothing to the trading hot path.
+- Saves each mint history under `data/wallet-pre-entry-cache`, so an interrupted
+  rerun resumes instead of refetching completed mints.
+
+Pull and verify the implementation:
+
+```bash
+cd /root/bot/FinalBot-cya
+git pull origin main
+npm install
+npm run build
+npm run test:wallet-history
+```
+
+Regenerate the ledger first. The current ledger writer records each campaign's
+first-buy signature, which lets the historical audit exclude the wallet's own
+entry exactly:
+
+```bash
+cd /root/bot/FinalBot-cya
+npx tsx src/walletLedgerBucketAudit.ts \
+  8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ \
+  10000 \
+  8ycby-ledger-10000
+```
+
+Start with a stratified 120-campaign diagnostic sample. Expanding all 984
+campaigns before checking historical-flow coverage would waste API quota.
+
+```bash
+cd /root/bot/FinalBot-cya
+nohup npm run audit:wallet-history -- \
+  data/8ycby-ledger-10000.json \
+  /root/bot/EdgeSniffer \
+  120 \
+  8ycby-history-preentry-120 \
+  1000 \
+  > data/8ycby-history-preentry-120.log 2>&1 &
+echo $! > data/8ycby-history-preentry-120.pid
+```
+
+Monitor it:
+
+```bash
+cd /root/bot/FinalBot-cya
+tail -f data/8ycby-history-preentry-120.log
+```
+
+In another shell, check whether it is still running:
+
+```bash
+cd /root/bot/FinalBot-cya
+ps -p "$(cat data/8ycby-history-preentry-120.pid)" -o pid,etime,cmd
+```
+
+When the process exits, inspect the report:
+
+```bash
+cd /root/bot/FinalBot-cya
+test -s data/8ycby-history-preentry-120.json && echo "historical audit ready"
+cat data/8ycby-history-preentry-120.md
+```
+
+Read coverage before profile results. A useful pilot should have enough
+`measured` campaigns in every outcome group and few `history_truncated` or
+`fetch_error` rows. If measured coverage is sound, rerun at 400 campaigns using
+the same cache:
+
+```bash
+cd /root/bot/FinalBot-cya
+nohup npm run audit:wallet-history -- \
+  data/8ycby-ledger-10000.json \
+  /root/bot/EdgeSniffer \
+  400 \
+  8ycby-history-preentry-400 \
+  1500 \
+  > data/8ycby-history-preentry-400.log 2>&1 &
+echo $! > data/8ycby-history-preentry-400.pid
+```
+
+This historical pass discovers candidate indicators. It cannot prove
+100-1,000ms ordering because historical Helius timestamps are second-level.
+Keep EdgeSniffer collecting forward millisecond events for the final unbiased
+validation and execution-delay replay.

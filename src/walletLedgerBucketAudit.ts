@@ -49,6 +49,7 @@ type Campaign = {
 type Row = {
   mint: string;
   route: "pump" | "bags" | "other";
+  entrySignature: string;
   entryTs: number;
   entryIso: string;
   entrySolUsd: number;
@@ -316,6 +317,7 @@ function buildRows(campaigns: Campaign[], prices: PricePoint[]): Row[] {
     rows.push({
       mint: campaign.mint,
       route: route(campaign.mint),
+      entrySignature: campaign.firstBuy.signature,
       entryTs: campaign.firstBuy.timestamp,
       entryIso: new Date(campaign.firstBuy.timestamp * 1000).toISOString(),
       entrySolUsd,
