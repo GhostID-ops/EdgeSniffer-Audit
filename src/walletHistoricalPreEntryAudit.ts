@@ -74,7 +74,7 @@ export type WindowFeatures = {
   marketCapMomentumPct: number | null;
 };
 
-type Profile = {
+export type Profile = {
   name: string;
   minScore: number;
   maxScore: number;
@@ -120,8 +120,10 @@ type AuditRow = {
   rawStrictPreEntryTransactions: number;
   rawSameSecondTransactions: number;
   events: number;
+  strictFlow: FlowEvent[];
   sameSecondEvents: number;
   sameSlotEvents: number;
+  sameSecondFlow: FlowEvent[];
   sameSecondCandidates: FlowEvent[];
   firstPreEntryLeadSeconds: number | null;
   windows: Record<string, WindowFeatures>;
@@ -429,7 +431,7 @@ export function windowFeatures(
   };
 }
 
-function parseEnv(text: string): Record<string, string> {
+export function parseEnv(text: string): Record<string, string> {
   const values: Record<string, string> = {};
   for (const raw of text.split(/\r?\n/)) {
     const line = raw.trim();
@@ -446,7 +448,7 @@ function envNumber(env: Record<string, string>, key: string, fallback: number): 
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-function loadProfiles(env: Record<string, string>): Profile[] {
+export function loadProfiles(env: Record<string, string>): Profile[] {
   return [
     {
       name: "current-edge-env",
@@ -518,7 +520,7 @@ export function scoreEvent(
   return Math.max(0, Math.min(100, Math.round(score)));
 }
 
-function profileGates(
+export function profileGates(
   event: FlowEvent,
   score: number,
   context: WindowFeatures,
@@ -706,8 +708,10 @@ async function runAudit(
           rawStrictPreEntryTransactions: rawStrictPreEntry.length,
           rawSameSecondTransactions: rawSameSecond.length,
           events: 0,
+          strictFlow: [],
           sameSecondEvents: 0,
           sameSlotEvents: 0,
+          sameSecondFlow: [],
           sameSecondCandidates: [],
           firstPreEntryLeadSeconds: null,
           windows: {},
@@ -817,8 +821,10 @@ async function runAudit(
         rawStrictPreEntryTransactions: rawStrictPreEntry.length,
         rawSameSecondTransactions: rawSameSecond.length,
         events: events.length,
+        strictFlow: events,
         sameSecondEvents: sameSecondEvents.length,
         sameSlotEvents: sameSlotEvents.length,
+        sameSecondFlow: sameSecondEvents,
         sameSecondCandidates,
         firstPreEntryLeadSeconds: events.length
           ? ledgerRow.entryTs - events[0]!.timestamp
@@ -852,8 +858,10 @@ async function runAudit(
         rawStrictPreEntryTransactions: 0,
         rawSameSecondTransactions: 0,
         events: 0,
+        strictFlow: [],
         sameSecondEvents: 0,
         sameSlotEvents: 0,
+        sameSecondFlow: [],
         sameSecondCandidates: [],
         firstPreEntryLeadSeconds: null,
         windows: {},

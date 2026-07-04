@@ -588,3 +588,59 @@ This historical pass discovers candidate indicators. It cannot prove
 100-1,000ms ordering because historical Helius timestamps are second-level.
 Keep EdgeSniffer collecting forward millisecond events for the final unbiased
 validation and execution-delay replay.
+
+## Same-Slot Transaction-Order Audit
+
+When the historical diagnostic reports that most campaigns are
+`same_second_only`, do not widen the timestamp window or treat every
+same-second transaction as causal. Regenerate the historical artifact with
+flow arrays, then order those transactions using their finalized block
+positions.
+
+```bash
+cd /root/bot/FinalBot-cya
+git pull origin main
+npm run build
+npm run test:wallet-history
+npm run test:wallet-slot-order
+
+npm run audit:wallet-history -- \
+  data/8ycby-ledger-10000.json \
+  /root/bot/EdgeSniffer \
+  120 \
+  8ycby-history-flow-v3 \
+  1000
+```
+
+The mint histories are cached, so regenerating the 120-row artifact should be
+quick. Then run the block-order pass:
+
+```bash
+cd /root/bot/FinalBot-cya
+nohup npm run audit:wallet-slot-order -- \
+  data/8ycby-history-flow-v3.json \
+  /root/bot/EdgeSniffer \
+  8ycby-slot-order-120 \
+  > data/8ycby-slot-order-120.log 2>&1 &
+echo $! > data/8ycby-slot-order-120.pid
+```
+
+Monitor and read the result:
+
+```bash
+cd /root/bot/FinalBot-cya
+tail -f data/8ycby-slot-order-120.log
+ps -p "$(cat data/8ycby-slot-order-120.pid)" -o pid,etime,cmd
+cat data/8ycby-slot-order-120.md
+```
+
+The audit treats a transaction as proven prior only when it is in a lower slot
+or has a lower transaction index than the target wallet inside the same
+finalized block. Higher indexes are post-entry and excluded. Missing signatures
+or blocks are reported as unknown rather than guessed.
+
+Block order establishes causality, but not the millisecond lead available to a
+live scanner. Profile PF still uses source-wallet outcomes and is not an
+EdgeSniffer exit simulation. Do not expand the campaign sample or tune the live
+profile until this report has balanced proven-prior coverage across winners and
+losses.
