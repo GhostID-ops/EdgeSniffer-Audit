@@ -33,6 +33,7 @@ type TokenBalanceChange = {
 
 export type HeliusTx = {
   signature: string;
+  slot?: number;
   timestamp?: number;
   feePayer?: string;
   nativeTransfers?: Array<{
@@ -49,6 +50,7 @@ export type HeliusTx = {
 
 export type FlowEvent = {
   signature: string;
+  slot?: number;
   timestamp: number;
   side: "buy" | "sell";
   wallet: string;
@@ -98,10 +100,29 @@ type CandidateEvaluation = {
 type AuditRow = {
   ledger: LedgerRow;
   outcome: "loss" | "small_win" | "scalp_win" | "runner";
-  fetchStatus: "measured" | "no_pre_entry_flow" | "history_truncated" | "fetch_error";
+  fetchStatus:
+    | "measured"
+    | "same_second_only"
+    | "first_seen_entry"
+    | "pre_entry_decode_gap"
+    | "entry_not_found"
+    | "entry_decode_failed"
+    | "history_truncated"
+    | "fetch_error";
   fetchedTransactions: number;
   oldestFetchedTs: number | null;
+  entrySlot: number | null;
+  entrySignatureFound: boolean;
+  entryDecoded: boolean;
+  entryWalletMatched: boolean;
+  entrySourceDeltaPct: number | null;
+  entryMarketCapDeltaPct: number | null;
+  rawStrictPreEntryTransactions: number;
+  rawSameSecondTransactions: number;
   events: number;
+  sameSecondEvents: number;
+  sameSlotEvents: number;
+  sameSecondCandidates: FlowEvent[];
   firstPreEntryLeadSeconds: number | null;
   windows: Record<string, WindowFeatures>;
   candidates: CandidateEvaluation[];
@@ -116,6 +137,8 @@ const MAX_MINT_TXS_DEFAULT = Number(process.env.WALLET_PREENTRY_MAX_MINT_TXS ?? 
 const PAGE_SLEEP_MS = Number(process.env.WALLET_PREENTRY_PAGE_SLEEP_MS ?? "350");
 const MINT_SLEEP_MS = Number(process.env.WALLET_PREENTRY_MINT_SLEEP_MS ?? "250");
 const WINDOWS = [1, 3, 5, 10, 30, 60];
+const USE_CURRENT_PRECURSORS =
+  /^(true|1|yes)$/i.test(process.env.WALLET_PREENTRY_USE_CURRENT_PRECURSORS ?? "false");
 
 const HELIUS_KEYS = heliusKeysFromEnv();
 const HELIUS_POOL = new HeliusKeyPool(HELIUS_KEYS, {
@@ -163,6 +186,13 @@ function percentage(value: number, total: number): number {
   return (value / Math.max(1, total)) * 100;
 }
 
+function deltaPct(actual: number | null, expected: number): number | null {
+  if (actual == null || !Number.isFinite(actual) || !Number.isFinite(expected) || expected === 0) {
+    return null;
+  }
+  return ((actual / expected) - 1) * 100;
+}
+
 function fmtPct(value: number | null | undefined): string {
   return value == null ? "-" : `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`;
 }
@@ -176,6 +206,25 @@ function outcome(row: LedgerRow): AuditRow["outcome"] {
   if (row.sourceExitRoiPct >= 50) return "runner";
   if (row.sourceExitRoiPct >= 10) return "scalp_win";
   return "small_win";
+}
+
+export function classifyFetchStatus(input: {
+  strictEvents: number;
+  sameSecondEvents: number;
+  entrySignatureFound: boolean;
+  entryDecoded: boolean;
+  entryWalletMatched: boolean;
+  rawStrictPreEntryTransactions: number;
+  rawSameSecondTransactions: number;
+}): AuditRow["fetchStatus"] {
+  if (!input.entrySignatureFound) return "entry_not_found";
+  if (!input.entryDecoded || !input.entryWalletMatched) return "entry_decode_failed";
+  if (input.strictEvents > 0) return "measured";
+  if (input.sameSecondEvents > 0) return "same_second_only";
+  if (input.rawStrictPreEntryTransactions > 0 || input.rawSameSecondTransactions > 0) {
+    return "pre_entry_decode_gap";
+  }
+  return "first_seen_entry";
 }
 
 async function readJson<T>(file: string): Promise<T | null> {
@@ -333,6 +382,7 @@ export function extractFlowEvent(
     tokens > 0 && sol > 0 ? ((sol * solUsd) / tokens) * SUPPLY : null;
   return {
     signature: tx.signature,
+    slot: tx.slot,
     timestamp: tx.timestamp ?? 0,
     side: isBuy ? "buy" : "sell",
     wallet: selected.wallet,
@@ -543,21 +593,37 @@ function groupFeatures(rows: AuditRow[], group: AuditRow["outcome"] | "winners")
   const selected = rows.filter((row) =>
     group === "winners" ? row.ledger.sourceExitRoiPct > 0 : row.outcome === group
   );
+  const valid = selected.filter((row) => row.fetchStatus === "measured");
   const window = (row: AuditRow, seconds: number) => row.windows[String(seconds)];
   return {
     n: selected.length,
-    measured: selected.filter((row) => row.fetchStatus === "measured").length,
-    buys5: median(selected.map((row) => window(row, 5)?.buys ?? NaN)),
-    wallets5: median(selected.map((row) => window(row, 5)?.uniqueWallets ?? NaN)),
-    buyVolume5: median(selected.map((row) => window(row, 5)?.buyVolumeSol ?? NaN)),
-    sells5: median(selected.map((row) => window(row, 5)?.sells ?? NaN)),
-    netBuy5: median(selected.map((row) => window(row, 5)?.netBuySol ?? NaN)),
-    momentum5: median(selected.map((row) => window(row, 5)?.marketCapMomentumPct ?? NaN)),
-    buys60: median(selected.map((row) => window(row, 60)?.buys ?? NaN)),
-    wallets60: median(selected.map((row) => window(row, 60)?.uniqueWallets ?? NaN)),
-    buyVolume60: median(selected.map((row) => window(row, 60)?.buyVolumeSol ?? NaN)),
-    sells60: median(selected.map((row) => window(row, 60)?.sells ?? NaN)),
-    leadSeconds: median(selected.map((row) => row.firstPreEntryLeadSeconds ?? NaN)),
+    measured: valid.length,
+    buys5: median(valid.map((row) => window(row, 5)?.buys ?? NaN)),
+    wallets5: median(valid.map((row) => window(row, 5)?.uniqueWallets ?? NaN)),
+    buyVolume5: median(valid.map((row) => window(row, 5)?.buyVolumeSol ?? NaN)),
+    sells5: median(valid.map((row) => window(row, 5)?.sells ?? NaN)),
+    netBuy5: median(valid.map((row) => window(row, 5)?.netBuySol ?? NaN)),
+    momentum5: median(valid.map((row) => window(row, 5)?.marketCapMomentumPct ?? NaN)),
+    buys60: median(valid.map((row) => window(row, 60)?.buys ?? NaN)),
+    wallets60: median(valid.map((row) => window(row, 60)?.uniqueWallets ?? NaN)),
+    buyVolume60: median(valid.map((row) => window(row, 60)?.buyVolumeSol ?? NaN)),
+    sells60: median(valid.map((row) => window(row, 60)?.sells ?? NaN)),
+    leadSeconds: median(valid.map((row) => row.firstPreEntryLeadSeconds ?? NaN)),
+  };
+}
+
+function groupCoverage(rows: AuditRow[], group: AuditRow["outcome"]) {
+  const selected = rows.filter((row) => row.outcome === group);
+  return {
+    n: selected.length,
+    strictMeasured: selected.filter((row) => row.fetchStatus === "measured").length,
+    sameSecondOnly: selected.filter((row) => row.fetchStatus === "same_second_only").length,
+    firstSeenEntry: selected.filter((row) => row.fetchStatus === "first_seen_entry").length,
+    decodeGap: selected.filter((row) => row.fetchStatus === "pre_entry_decode_gap").length,
+    entryMissing: selected.filter((row) => row.fetchStatus === "entry_not_found").length,
+    entryDecodeFailed: selected.filter((row) => row.fetchStatus === "entry_decode_failed").length,
+    truncated: selected.filter((row) => row.fetchStatus === "history_truncated").length,
+    fetchErrors: selected.filter((row) => row.fetchStatus === "fetch_error").length,
   };
 }
 
@@ -594,6 +660,36 @@ async function runAudit(
       const oldestFetchedTs = fetchedTimestamps.length
         ? Math.min(...fetchedTimestamps)
         : null;
+      const entryTx = ledgerRow.entrySignature
+        ? history.txs.find((tx) => tx.signature === ledgerRow.entrySignature)
+        : undefined;
+      const entryEvent = entryTx
+        ? extractFlowEvent(entryTx, ledgerRow.mint, ledgerRow.entrySolUsd)
+        : null;
+      const entrySignatureFound = Boolean(entryTx);
+      const entrySlot = entryTx?.slot ?? null;
+      const entryDecoded = Boolean(entryEvent);
+      const entryWalletMatched = entryEvent?.wallet === ledger.wallet;
+      const entrySourceDeltaPct = deltaPct(
+        entryEvent?.sol ?? null,
+        ledgerRow.firstBuySol
+      );
+      const entryMarketCapDeltaPct = deltaPct(
+        entryEvent?.marketCapUsd ?? null,
+        ledgerRow.entryMarketCapUsd
+      );
+      const rawStrictPreEntry = history.txs.filter(
+        (tx) =>
+          tx.signature !== ledgerRow.entrySignature &&
+          tx.timestamp != null &&
+          tx.timestamp >= ledgerRow.entryTs - LOOKBACK_SECONDS &&
+          tx.timestamp < ledgerRow.entryTs
+      );
+      const rawSameSecond = history.txs.filter(
+        (tx) =>
+          tx.signature !== ledgerRow.entrySignature &&
+          tx.timestamp === ledgerRow.entryTs
+      );
       if (!history.reachedWindow) {
         rows.push({
           ledger: ledgerRow,
@@ -601,7 +697,18 @@ async function runAudit(
           fetchStatus: "history_truncated",
           fetchedTransactions: history.txs.length,
           oldestFetchedTs,
+          entrySlot,
+          entrySignatureFound,
+          entryDecoded,
+          entryWalletMatched,
+          entrySourceDeltaPct,
+          entryMarketCapDeltaPct,
+          rawStrictPreEntryTransactions: rawStrictPreEntry.length,
+          rawSameSecondTransactions: rawSameSecond.length,
           events: 0,
+          sameSecondEvents: 0,
+          sameSlotEvents: 0,
+          sameSecondCandidates: [],
           firstPreEntryLeadSeconds: null,
           windows: {},
           candidates: [],
@@ -609,16 +716,27 @@ async function runAudit(
         console.log(`[${index + 1}/${sample.length}] ${ledgerRow.mint.slice(0, 8)} truncated txs=${history.txs.length}`);
         continue;
       }
-      const events = history.txs
+      const decodedWindow = history.txs
         .map((tx) => extractFlowEvent(tx, ledgerRow.mint, ledgerRow.entrySolUsd))
         .filter((event): event is FlowEvent => Boolean(event))
         .filter(
           (event) =>
             event.timestamp >= ledgerRow.entryTs - LOOKBACK_SECONDS &&
-            event.timestamp < ledgerRow.entryTs &&
+            event.timestamp <= ledgerRow.entryTs &&
             event.signature !== ledgerRow.entrySignature
-        )
+        );
+      const events = decodedWindow
+        .filter((event) => event.timestamp < ledgerRow.entryTs)
         .sort((a, b) => a.timestamp - b.timestamp);
+      const sameSecondEvents = decodedWindow
+        .filter((event) => event.timestamp === ledgerRow.entryTs)
+        .sort((a, b) => a.signature.localeCompare(b.signature));
+      const sameSlotEvents = sameSecondEvents.filter(
+        (event) => entrySlot != null && event.slot === entrySlot
+      );
+      const sameSecondCandidates = sameSecondEvents.filter(
+        (event) => event.side === "buy"
+      );
       const windows = Object.fromEntries(
         WINDOWS.map((seconds) => [
           String(seconds),
@@ -639,13 +757,15 @@ async function runAudit(
             60
           );
           const knownPrecursor = precursors.has(event.wallet);
+          const scoreAsPrecursor =
+            knownPrecursor && USE_CURRENT_PRECURSORS;
           const profileScores = Object.fromEntries(
             profiles.map((profile) => [
               profile.name,
               scoreEvent(
                 event,
                 context,
-                knownPrecursor,
+                scoreAsPrecursor,
                 ledgerRow.route === "pump",
                 profile.maxBuys,
                 profile.maxSells,
@@ -677,10 +797,29 @@ async function runAudit(
       rows.push({
         ledger: ledgerRow,
         outcome: outcome(ledgerRow),
-        fetchStatus: events.length ? "measured" : "no_pre_entry_flow",
+        fetchStatus: classifyFetchStatus({
+          strictEvents: events.length,
+          sameSecondEvents: sameSecondEvents.length,
+          entrySignatureFound,
+          entryDecoded,
+          entryWalletMatched,
+          rawStrictPreEntryTransactions: rawStrictPreEntry.length,
+          rawSameSecondTransactions: rawSameSecond.length,
+        }),
         fetchedTransactions: history.txs.length,
         oldestFetchedTs,
+        entrySlot,
+        entrySignatureFound,
+        entryDecoded,
+        entryWalletMatched,
+        entrySourceDeltaPct,
+        entryMarketCapDeltaPct,
+        rawStrictPreEntryTransactions: rawStrictPreEntry.length,
+        rawSameSecondTransactions: rawSameSecond.length,
         events: events.length,
+        sameSecondEvents: sameSecondEvents.length,
+        sameSlotEvents: sameSlotEvents.length,
+        sameSecondCandidates,
         firstPreEntryLeadSeconds: events.length
           ? ledgerRow.entryTs - events[0]!.timestamp
           : null,
@@ -689,7 +828,9 @@ async function runAudit(
       });
       console.log(
         `[${index + 1}/${sample.length}] ${ledgerRow.mint.slice(0, 8)} ` +
-          `outcome=${outcome(ledgerRow)} events=${events.length} candidates=${candidates.length}`
+          `outcome=${outcome(ledgerRow)} status=${rows.at(-1)?.fetchStatus} ` +
+          `strict=${events.length} sameSecond=${sameSecondEvents.length} ` +
+          `entry=${entrySignatureFound ? entryWalletMatched ? "matched" : "decode_mismatch" : "missing"}`
       );
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -702,7 +843,18 @@ async function runAudit(
         fetchStatus: "fetch_error",
         fetchedTransactions: 0,
         oldestFetchedTs: null,
+        entrySlot: null,
+        entrySignatureFound: false,
+        entryDecoded: false,
+        entryWalletMatched: false,
+        entrySourceDeltaPct: null,
+        entryMarketCapDeltaPct: null,
+        rawStrictPreEntryTransactions: 0,
+        rawSameSecondTransactions: 0,
         events: 0,
+        sameSecondEvents: 0,
+        sameSlotEvents: 0,
+        sameSecondCandidates: [],
         firstPreEntryLeadSeconds: null,
         windows: {},
         candidates: [],
@@ -716,19 +868,21 @@ async function runAudit(
   }
 
   const profileResults = profiles.map((profile) => {
-    const evaluated = rows.map((row) => {
-      const passing = row.candidates.find(
-        (candidate) => candidate.profileGates[profile.name]?.length === 0
-      );
-      const closest = [...row.candidates].sort(
-        (a, b) =>
-          (a.profileGates[profile.name]?.length ?? Infinity) -
-            (b.profileGates[profile.name]?.length ?? Infinity) ||
-          (b.profileScores[profile.name] ?? 0) -
-            (a.profileScores[profile.name] ?? 0)
-      )[0];
-      return { row, passing, closest };
-    });
+    const evaluated = rows
+      .filter((row) => row.fetchStatus === "measured")
+      .map((row) => {
+        const passing = row.candidates.find(
+          (candidate) => candidate.profileGates[profile.name]?.length === 0
+        );
+        const closest = [...row.candidates].sort(
+          (a, b) =>
+            (a.profileGates[profile.name]?.length ?? Infinity) -
+              (b.profileGates[profile.name]?.length ?? Infinity) ||
+            (b.profileScores[profile.name] ?? 0) -
+              (a.profileScores[profile.name] ?? 0)
+        )[0];
+        return { row, passing, closest };
+      });
     const passedRows = evaluated.filter((item) => item.passing).map((item) => item.row.ledger);
     const measurable = evaluated.filter((item) => item.closest);
     const winners = measurable.filter((item) => item.row.ledger.sourceExitRoiPct > 0);
@@ -749,8 +903,11 @@ async function runAudit(
         passedRows.length
       ),
       medianRoiPct: median(rois),
-      profitFactor: profitFactor(rois),
-      equalBetPnlSol: rois.reduce((sum, roi) => sum + 0.5 * (roi / 100), 0),
+      sourceExitProfitFactor: profitFactor(rois),
+      sourceExitEqualBetPnlSol: rois.reduce(
+        (sum, roi) => sum + 0.5 * (roi / 100),
+        0
+      ),
       winnerCapturePct: percentage(
         passedRows.filter((row) => row.sourceExitRoiPct > 0).length,
         winners.length
@@ -778,6 +935,57 @@ async function runAudit(
       (group) => [group, groupFeatures(rows, group)]
     )
   );
+  const coverageGroups = Object.fromEntries(
+    (["loss", "small_win", "scalp_win", "runner"] as const).map((group) => [
+      group,
+      groupCoverage(rows, group),
+    ])
+  );
+  const strictRows = rows.filter((row) => row.fetchStatus === "measured");
+  const strictWinners = strictRows.filter(
+    (row) => row.ledger.sourceExitRoiPct > 0
+  ).length;
+  const strictLosers = strictRows.filter(
+    (row) => row.ledger.sourceExitRoiPct < 0
+  ).length;
+  const profileReplayWarnings: string[] = [];
+  if (strictRows.length < 20) {
+    profileReplayWarnings.push(
+      `only ${strictRows.length} campaigns have validated strict pre-entry flow`
+    );
+  }
+  if (strictWinners < 5) {
+    profileReplayWarnings.push(
+      `only ${strictWinners} winning campaigns have validated strict pre-entry flow`
+    );
+  }
+  if (strictLosers < 5) {
+    profileReplayWarnings.push(
+      `only ${strictLosers} losing campaigns have validated strict pre-entry flow`
+    );
+  }
+  const anchorEligibleRows = rows.filter(
+    (row) =>
+      row.fetchStatus !== "history_truncated" &&
+      row.fetchStatus !== "fetch_error"
+  );
+  const anchorMatchPct = percentage(
+    anchorEligibleRows.filter((row) => row.entryWalletMatched).length,
+    anchorEligibleRows.length
+  );
+  if (anchorMatchPct < 80) {
+    profileReplayWarnings.push(
+      `entry-anchor wallet validation is only ${anchorMatchPct.toFixed(1)}%`
+    );
+  }
+  const profileReplayValidity = {
+    eligible: profileReplayWarnings.length === 0,
+    strictRows: strictRows.length,
+    strictWinners,
+    strictLosers,
+    entryAnchorMatchPct: anchorMatchPct,
+    warnings: profileReplayWarnings,
+  };
   const output = {
     generatedAt: new Date().toISOString(),
     wallet: ledger.wallet,
@@ -790,15 +998,32 @@ async function runAudit(
       lookbackSeconds: LOOKBACK_SECONDS,
       maxMintTransactions: maxMintTxs,
       note:
-        "Historical pre-entry flow is reconstructed from Helius transactions that mention each mint. Same-second target-wallet activity is excluded. This is a stratified diagnostic sample, not population PnL.",
+        "Historical pre-entry flow is reconstructed from Helius transactions that mention each mint. Same-second activity is diagnosed separately and excluded from strict profile replay. This is a stratified diagnostic sample, not population PnL.",
+      currentPrecursorScoringEnabled: USE_CURRENT_PRECURSORS,
+      currentPrecursorWarning:
+        "Current precursor membership can contain future information relative to old campaigns and is disabled by default.",
     },
     coverage: {
       rows: rows.length,
       measured: rows.filter((row) => row.fetchStatus === "measured").length,
-      noPreEntryFlow: rows.filter((row) => row.fetchStatus === "no_pre_entry_flow").length,
+      sameSecondOnly: rows.filter((row) => row.fetchStatus === "same_second_only").length,
+      firstSeenEntry: rows.filter((row) => row.fetchStatus === "first_seen_entry").length,
+      preEntryDecodeGap: rows.filter((row) => row.fetchStatus === "pre_entry_decode_gap").length,
+      entryNotFound: rows.filter((row) => row.fetchStatus === "entry_not_found").length,
+      entryDecodeFailed: rows.filter((row) => row.fetchStatus === "entry_decode_failed").length,
       historyTruncated: rows.filter((row) => row.fetchStatus === "history_truncated").length,
       fetchErrors: rows.filter((row) => row.fetchStatus === "fetch_error").length,
+      entrySignaturesFound: rows.filter((row) => row.entrySignatureFound).length,
+      entryWalletsMatched: rows.filter((row) => row.entryWalletMatched).length,
+      sameSlotEvents: rows.reduce((sum, row) => sum + row.sameSlotEvents, 0),
+      medianEntrySourceDeltaPct: median(
+        rows.map((row) => row.entrySourceDeltaPct ?? NaN)
+      ),
+      medianEntryMarketCapDeltaPct: median(
+        rows.map((row) => row.entryMarketCapDeltaPct ?? NaN)
+      ),
       knownPrecursorsLoaded: precursors.size,
+      currentPrecursorScoringEnabled: USE_CURRENT_PRECURSORS,
     },
     fullLedger: {
       campaigns: ledger.rows.length,
@@ -807,6 +1032,8 @@ async function runAudit(
       medianRoiPct: median(ledger.rows.map((row) => row.sourceExitRoiPct)),
       profitFactor: profitFactor(ledger.rows.map((row) => row.sourceExitRoiPct)),
     },
+    profileReplayValidity,
+    coverageGroups,
     featureGroups,
     profiles: profileResults,
     rows,
@@ -821,6 +1048,10 @@ async function runAudit(
     string,
     ReturnType<typeof groupFeatures>
   >;
+  const coverageGroupRows = coverageGroups as Record<
+    string,
+    ReturnType<typeof groupCoverage>
+  >;
   const markdown = [
     "# Historical Wallet Pre-Entry Flow Audit",
     "",
@@ -832,11 +1063,34 @@ async function runAudit(
     `- Full ledger campaigns: ${output.fullLedger.campaigns}`,
     `- Stratified campaigns requested: ${sampleSize}`,
     `- Campaigns audited: ${output.coverage.rows}`,
-    `- Measured pre-entry flow: ${output.coverage.measured}`,
-    `- No pre-entry flow decoded: ${output.coverage.noPreEntryFlow}`,
+    `- Strict pre-entry flow measured: ${output.coverage.measured}`,
+    `- Same-second flow only: ${output.coverage.sameSecondOnly}`,
+    `- Target wallet was first decoded entry: ${output.coverage.firstSeenEntry}`,
+    `- Raw pre-entry rows but decoder gap: ${output.coverage.preEntryDecodeGap}`,
+    `- Entry signature not found: ${output.coverage.entryNotFound}`,
+    `- Entry decode/wallet validation failed: ${output.coverage.entryDecodeFailed}`,
     `- History truncated before entry window: ${output.coverage.historyTruncated}`,
     `- Fetch errors: ${output.coverage.fetchErrors}`,
+    `- Entry signatures found: ${output.coverage.entrySignaturesFound}`,
+    `- Entry signatures decoded to target wallet: ${output.coverage.entryWalletsMatched}`,
+    `- Decoded same-slot events awaiting transaction-order validation: ${output.coverage.sameSlotEvents}`,
+    `- Median entry source-size calibration delta: ${fmtPct(output.coverage.medianEntrySourceDeltaPct)}`,
+    `- Median entry MC calibration delta: ${fmtPct(output.coverage.medianEntryMarketCapDeltaPct)}`,
     `- Known precursor wallets loaded: ${output.coverage.knownPrecursorsLoaded}`,
+    `- Current precursor scoring enabled: ${output.coverage.currentPrecursorScoringEnabled}`,
+    `- Profile replay valid: ${output.profileReplayValidity.eligible}`,
+    ...output.profileReplayValidity.warnings.map(
+      (warning) => `- Validation warning: ${warning}`
+    ),
+    "",
+    "## Coverage By Outcome",
+    "",
+    "| Outcome | n | strict | same-second | first entry | decode gap | entry missing | entry decode fail | truncated | fetch errors |",
+    "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ...["loss", "small_win", "scalp_win", "runner"].map((name) => {
+      const row = coverageGroupRows[name]!;
+      return `| ${name} | ${row.n} | ${row.strictMeasured} | ${row.sameSecondOnly} | ${row.firstSeenEntry} | ${row.decodeGap} | ${row.entryMissing} | ${row.entryDecodeFailed} | ${row.truncated} | ${row.fetchErrors} |`;
+    }),
     "",
     "## Pre-Entry Indicators",
     "",
@@ -849,11 +1103,15 @@ async function runAudit(
     "",
     "## EdgeSniffer Profile Replay",
     "",
-    "| Profile | measurable | passed | win | median ROI | PF | equal-bet PnL | winner capture | >=10% capture | runner capture | loser rejection |",
+    `Validity: **${output.profileReplayValidity.eligible ? "eligible for diagnostic comparison" : "invalid due to coverage/anchor bias"}**`,
+    "",
+    "Only strict pre-entry candidates are replayed. PF and PnL below use the tracked wallet's source-exit ROI; they do not simulate EdgeSniffer exits.",
+    "",
+    "| Profile | measurable | passed | source win | source median ROI | source-exit PF | source-exit equal-bet PnL | winner capture | >=10% capture | runner capture | loser rejection |",
     "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ...profileResults.map(
       (row) =>
-        `| ${row.profile.name} | ${row.measurable} | ${row.passed} | ${row.winRatePct.toFixed(1)}% | ${fmtPct(row.medianRoiPct)} | ${row.profitFactor?.toFixed(2) ?? "-"} | ${row.equalBetPnlSol.toFixed(3)} SOL | ${row.winnerCapturePct.toFixed(1)}% | ${row.scalpCapturePct.toFixed(1)}% | ${row.runnerCapturePct.toFixed(1)}% | ${row.loserRejectionPct.toFixed(1)}% |`
+        `| ${row.profile.name} | ${row.measurable} | ${row.passed} | ${row.winRatePct.toFixed(1)}% | ${fmtPct(row.medianRoiPct)} | ${row.sourceExitProfitFactor?.toFixed(2) ?? "-"} | ${row.sourceExitEqualBetPnlSol.toFixed(3)} SOL | ${row.winnerCapturePct.toFixed(1)}% | ${row.scalpCapturePct.toFixed(1)}% | ${row.runnerCapturePct.toFixed(1)}% | ${row.loserRejectionPct.toFixed(1)}% |`
     ),
     "",
     "## Missed Winner Gates",
@@ -870,7 +1128,10 @@ async function runAudit(
     "",
     "- This report reconstructs historical pre-entry on-chain flow without Moralis or Gecko.",
     "- The sample is stratified across outcome classes. Do not treat its win rate as the wallet's population win rate.",
-    "- Profile replay is diagnostic and in-sample. A compact forward collector is still required for unbiased validation.",
+    "- Same-second rows are not treated as causal until transaction order is established from slot/block ordering.",
+    "- Current precursor membership is disabled by default because it can leak future information into old campaigns.",
+    "- Profile replay measures selection against source-wallet outcomes, not EdgeSniffer TP/SL execution.",
+    "- A compact forward collector is still required for unbiased validation and millisecond timing.",
     "- Mint-address history may be incomplete for routes that do not include the mint account in every swap; coverage is reported explicitly.",
     "",
   ].join("\n");
@@ -881,12 +1142,13 @@ async function runAudit(
         jsonPath,
         mdPath,
         coverage: output.coverage,
+        profileReplayValidity: output.profileReplayValidity,
         profileSummary: profileResults.map((row) => ({
           profile: row.profile.name,
           measurable: row.measurable,
           passed: row.passed,
           medianRoiPct: row.medianRoiPct,
-          profitFactor: row.profitFactor,
+          sourceExitProfitFactor: row.sourceExitProfitFactor,
           winnerCapturePct: row.winnerCapturePct,
           loserRejectionPct: row.loserRejectionPct,
         })),

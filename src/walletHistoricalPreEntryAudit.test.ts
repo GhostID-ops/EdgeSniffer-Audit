@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  classifyFetchStatus,
   extractFlowEvent,
   scoreEvent,
   windowFeatures,
@@ -13,6 +14,7 @@ const pool = "Pool111111111111111111111111111111111111";
 
 const tx: HeliusTx = {
   signature: "sig-buy",
+  slot: 123,
   timestamp: 100,
   feePayer: trader,
   nativeTransfers: [
@@ -51,6 +53,7 @@ const tx: HeliusTx = {
 const decoded = extractFlowEvent(tx, mint, 150);
 assert(decoded);
 assert.equal(decoded.wallet, trader);
+assert.equal(decoded.slot, 123);
 assert.equal(decoded.side, "buy");
 assert.equal(decoded.sol, 0.5);
 assert.equal(decoded.tokens, 100);
@@ -93,5 +96,45 @@ const score = scoreEvent(
   25
 );
 assert.equal(score, 66);
+
+const coverageBase = {
+  strictEvents: 0,
+  sameSecondEvents: 0,
+  entrySignatureFound: true,
+  entryDecoded: true,
+  entryWalletMatched: true,
+  rawStrictPreEntryTransactions: 0,
+  rawSameSecondTransactions: 0,
+};
+assert.equal(
+  classifyFetchStatus({ ...coverageBase, strictEvents: 1 }),
+  "measured"
+);
+assert.equal(
+  classifyFetchStatus({ ...coverageBase, sameSecondEvents: 2 }),
+  "same_second_only"
+);
+assert.equal(classifyFetchStatus(coverageBase), "first_seen_entry");
+assert.equal(
+  classifyFetchStatus({
+    ...coverageBase,
+    rawStrictPreEntryTransactions: 3,
+  }),
+  "pre_entry_decode_gap"
+);
+assert.equal(
+  classifyFetchStatus({
+    ...coverageBase,
+    entrySignatureFound: false,
+  }),
+  "entry_not_found"
+);
+assert.equal(
+  classifyFetchStatus({
+    ...coverageBase,
+    entryDecoded: false,
+  }),
+  "entry_decode_failed"
+);
 
 console.log("walletHistoricalPreEntryAudit tests passed");

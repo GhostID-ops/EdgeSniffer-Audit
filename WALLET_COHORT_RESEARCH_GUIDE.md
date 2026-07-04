@@ -543,10 +543,34 @@ test -s data/8ycby-history-preentry-120.json && echo "historical audit ready"
 cat data/8ycby-history-preentry-120.md
 ```
 
-Read coverage before profile results. A useful pilot should have enough
-`measured` campaigns in every outcome group and few `history_truncated` or
-`fetch_error` rows. If measured coverage is sound, rerun at 400 campaigns using
-the same cache:
+Read coverage before profile results. The diagnostic separates:
+
+- `measured`: strict full-second pre-entry flow with a validated entry anchor.
+- `same_second_only`: flow exists, but historical timestamps cannot prove
+  whether it preceded the wallet.
+- `first_seen_entry`: the target wallet is the first decoded mint transaction
+  in the retained window.
+- `pre_entry_decode_gap`: raw transactions exist but the historical decoder did
+  not reconstruct them.
+- `entry_not_found` / `entry_decode_failed`: the campaign anchor itself is not
+  trustworthy and is excluded from feature and profile results.
+
+Current precursor membership is disabled in historical scoring by default
+because the list can contain future information relative to an old campaign.
+Profile PF and PnL use the tracked wallet's source-exit ROI and measure
+selection only; they are not an EdgeSniffer TP/SL simulation.
+
+Do not expand merely because the command completed. If strict coverage is low:
+
+1. Same-second winners dominating means the next audit must establish
+   transaction order from slot/block position.
+2. First-entry winners dominating means current flow features cannot precede
+   the wallet; creation, deployer, bundle, and first-buyer features are needed.
+3. Decoder or entry-anchor failures mean fix historical reconstruction before
+   interpreting any profile.
+
+Only if strict measured coverage is balanced across winners and losses should
+you rerun at 400 campaigns using the same cache:
 
 ```bash
 cd /root/bot/FinalBot-cya
