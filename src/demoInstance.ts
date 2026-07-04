@@ -86,6 +86,21 @@ function upsertDemoEnv(values: Record<string, string>): void {
   writeFileSync(demoEnvPath, `${lines.join("\n").replace(/\n+$/, "")}\n`);
 }
 
+// Set keys ONLY if absent. Used for values the friend can change from the UI (the same-slot
+// fee tier via /api/speed) — forcing them on every launch would clobber his choice.
+function defaultDemoEnv(values: Record<string, string>): void {
+  const existing = existsSync(demoEnvPath) ? readFileSync(demoEnvPath, "utf8") : "";
+  let lines = existing.length ? existing.split(/\r?\n/) : [];
+  let changed = false;
+  for (const [key, value] of Object.entries(values)) {
+    if (!lines.some((line) => line.trimStart().startsWith(`${key}=`))) {
+      lines.push(`${key}=${value}`);
+      changed = true;
+    }
+  }
+  if (changed) writeFileSync(demoEnvPath, `${lines.join("\n").replace(/\n+$/, "")}\n`);
+}
+
 if (!existsSync(demoEnvPath)) {
   const mainEnv = existsSync(join(repoRoot, ".env")) ? readFileSync(join(repoRoot, ".env"), "utf8") : "";
   const kept = mainEnv
@@ -209,10 +224,10 @@ upsertDemoEnv({
   RUST_HOT_SNIPER_PRIMARY: "true",
   RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED: "true",
   RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS: "20",
-  RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "3000000",
-  RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
-  RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
-  COMPUTE_UNIT_LIMIT: "400000",
+  // The hot-sniper FEE values + COMPUTE_UNIT_LIMIT are set via defaultDemoEnv below
+  // (set-if-missing) so the friend's UI Speed selector (/api/speed) can change them and the
+  // choice survives restarts. Only RUST_HOT_SNIPER_ENABLED stays forced so the sniper is
+  // always guaranteed on regardless of tier.
   JITO_TIP_ORACLE_ENABLED: "true",
   DYNAMIC_PRIORITY_FEE_ENABLED: "true",
   JITO_CONNECTION_WARMUP_ENABLED: "true",
@@ -220,6 +235,15 @@ upsertDemoEnv({
   JITO_SEND_MODE: "race",
   EXECUTION_MULTI_SEND_ENABLED: "true",
   SENDER_RPC_FALLBACK_ENABLED: "true",
+});
+
+// Same-slot fee defaults (balanced tier ~0.006 SOL/snipe). Set-if-missing so the friend's UI
+// Speed selector can switch to Max/Eco and the choice persists across restarts.
+defaultDemoEnv({
+  RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "3000000",
+  RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
+  RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
+  COMPUTE_UNIT_LIMIT: "400000",
 });
 
 for (const file of ["execution-telemetry.jsonl", "trades.jsonl"]) {

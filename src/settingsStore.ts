@@ -239,6 +239,68 @@ export function persistFriendRiskSettings(body: Record<string, unknown>): { risk
   return { riskUpdated: true };
 }
 
+export type SpeedTier = "max" | "balanced" | "eco";
+
+// Same-slot fee tiers for the friend demo. The hot sniper stays ENABLED in every tier —
+// only the fee level changes, so the prospective buyer always has the speed. Priority is
+// charged per compute unit, so cheaper tiers also shrink COMPUTE_UNIT_LIMIT. Approx cost
+// per landed snipe: max ~0.037, balanced ~0.006, eco ~0.004 SOL. These keys are read by the
+// Rust sidecar at startup, so persisting a tier requires a process restart to take effect.
+const SPEED_TIERS: Record<SpeedTier, Record<string, string>> = {
+  max: {
+    RUST_HOT_SNIPER_ENABLED: "true",
+    RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "10000000",
+    RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "1500000",
+    RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "18000000",
+    COMPUTE_UNIT_LIMIT: "1400000",
+  },
+  balanced: {
+    RUST_HOT_SNIPER_ENABLED: "true",
+    RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "3000000",
+    RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
+    RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
+    COMPUTE_UNIT_LIMIT: "400000",
+  },
+  eco: {
+    RUST_HOT_SNIPER_ENABLED: "true",
+    RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "2000000",
+    RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
+    RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "5000000",
+    COMPUTE_UNIT_LIMIT: "300000",
+  },
+};
+
+function normalizeSpeedTier(tier: unknown): SpeedTier {
+  return tier === "max" || tier === "eco" ? tier : "balanced";
+}
+
+/** Current tier inferred from the hot-sniper Jito tip in the environment. */
+export function getSpeedTier(): SpeedTier {
+  const tip = Number(process.env.RUST_HOT_SNIPER_JITO_TIP_LAMPORTS ?? 0);
+  if (tip >= 10_000_000) return "max";
+  if (tip > 0 && tip <= 2_000_000) return "eco";
+  return "balanced";
+}
+
+/**
+ * Persist a same-slot fee tier to the friend .env. The hot sniper stays ON in every tier.
+ * These values are consumed by the Rust sidecar at startup, so the caller must restart the
+ * process (under pm2) for them to take effect.
+ */
+export function persistSpeedTier(tier: unknown): { tier: SpeedTier } {
+  const key = normalizeSpeedTier(tier);
+  const values = SPEED_TIERS[key];
+  const existing = existsSync(envPath) ? readFileSync(envPath, "utf8") : "";
+  let lines = existing.length ? existing.split(/\r?\n/) : [];
+  if (lines.length === 1 && lines[0] === "") lines = [];
+  for (const [k, v] of Object.entries(values)) {
+    lines = setEnvLine(lines, k, v);
+    process.env[k] = v;
+  }
+  writeFileSync(envPath, `${lines.join("\n").replace(/\n+$/, "")}\n`);
+  return { tier: key };
+}
+
 function validatePrivateKeyBase58(value: string): void {
   try {
     const decoded = bs58.decode(value);

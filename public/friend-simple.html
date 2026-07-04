@@ -133,6 +133,12 @@
     .notice { border: 1px solid rgba(156,199,255,.22); border-radius: 15px; background: rgba(156,199,255,.055); padding: 13px 14px; color: var(--soft); font-size: 13px; line-height: 1.45; }
     .sniper-badge { display: flex; gap: 8px; align-items: baseline; border: 1px solid rgba(105,230,190,.38); border-radius: 15px; background: rgba(105,230,190,.09); padding: 12px 14px; color: var(--soft); font-size: 12.5px; line-height: 1.45; }
     .sniper-badge b { color: var(--green); }
+    .speed-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .speed-row .speed-label { color: var(--muted); font-size: 11px; font-weight: 950; text-transform: uppercase; letter-spacing: .4px; }
+    .speed-btn { border: 1px solid var(--line); border-radius: 12px; background: rgba(4,6,9,.68); color: var(--soft); min-height: 46px; padding: 6px 13px; font-weight: 950; display: grid; gap: 1px; line-height: 1.15; text-align: center; }
+    .speed-btn small { color: var(--muted); font-size: 10.5px; font-weight: 800; }
+    .speed-btn.active { border-color: transparent; background: linear-gradient(135deg, var(--green), var(--blue)); color: #02100a; }
+    .speed-btn.active small { color: #02100a; opacity: .85; }
     .warning { border-color: rgba(255,116,116,.42); background: rgba(255,116,116,.08); color: #ffd9d9; }
     .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .primary, .danger, .secondary {
@@ -277,6 +283,12 @@
         </div>
       </div>
       <div class="sniper-badge">⚡ <span><b>Same-Slot Sniper active.</b> Your copy is submitted through Jito ShredStream to land in the <b>same slot</b> as the tracked wallet — not seconds behind. Bigger buys make the fixed speed fee a smaller %.</span></div>
+      <div class="speed-row" id="speedRow">
+        <span class="speed-label">⚡ Speed</span>
+        <button class="speed-btn" data-tier="max" type="button">Max <small>~0.037 SOL/snipe</small></button>
+        <button class="speed-btn" data-tier="balanced" type="button">Balanced <small>~0.006 SOL/snipe</small></button>
+        <button class="speed-btn" data-tier="eco" type="button">Eco <small>~0.004 SOL/snipe</small></button>
+      </div>
       <div class="notice" id="summaryText">Choose a strategy, pick the SOL amount, then start in Shadow mode first.</div>
       <div class="actions" id="startArea">
         <button class="primary" id="startBtn" type="button">Start Bot</button>
@@ -544,6 +556,22 @@
       $("toast").textContent = msg;
       $("toast").classList.add("show");
       setTimeout(() => $("toast").classList.remove("show"), 3800);
+    }
+    let currentSpeed = "balanced";
+    function renderSpeed() {
+      document.querySelectorAll("[data-tier]").forEach((b) => b.classList.toggle("active", b.dataset.tier === currentSpeed));
+    }
+    async function loadSpeed() {
+      try { const d = await api("/api/speed"); currentSpeed = d.tier || "balanced"; renderSpeed(); } catch {}
+    }
+    async function setSpeed(tier) {
+      if (tier === currentSpeed) return;
+      if (!confirm("Switch speed to " + tier.toUpperCase() + "?\n\nThe sniper stays ON — only the fee level changes. This restarts the bot (~10s). If it was running, press Start again after.")) return;
+      try {
+        toast("Applying " + tier + " speed — restarting sniper, back in ~10s...");
+        await api("/api/speed", { method: "POST", body: JSON.stringify({ tier }) });
+      } catch (e) { /* server exits mid-restart; expected */ }
+      setTimeout(() => location.reload(), 10000);
     }
     async function api(path, opts = {}) {
       const res = await fetch(path, { ...opts, headers: { "content-type": "application/json", ...(opts.headers || {}) } });
@@ -971,6 +999,8 @@
       if (step) placeTourCard($(step.id));
     });
     $("maxBuy").addEventListener("input", render);
+    document.querySelectorAll("[data-tier]").forEach((b) => b.addEventListener("click", () => setSpeed(b.dataset.tier)));
+    loadSpeed();
     render();
     refresh().catch((e) => toast(e.message));
     setInterval(() => { api("/api/state").then((s) => { state = s; render(); renderPositions(); }).catch(() => {}); refreshLogs().catch(() => {}); refreshTradeReceipts().catch(() => {}); }, 2500);

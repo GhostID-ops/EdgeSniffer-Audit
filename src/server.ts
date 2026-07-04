@@ -23,6 +23,8 @@ import {
   persistFriendRiskSettings,
   persistFriendSecretSettings,
   persistFriendSettings,
+  persistSpeedTier,
+  getSpeedTier,
 } from "./settingsStore.js";
 import { getTokenPairInfo, WRAPPED_SOL_MINT } from "./tokenRegistry.js";
 import { getQuote } from "./jupiter.js";
@@ -324,6 +326,25 @@ async function handle(
         ...secretStatus,
         ...riskStatus,
       });
+    } catch (err) {
+      return sendError(res, 400, err instanceof Error ? err.message : String(err));
+    }
+  }
+
+  if (req.method === "GET" && url === "/api/speed") {
+    return sendJson(res, 200, { tier: getSpeedTier() });
+  }
+
+  if (req.method === "POST" && url === "/api/speed") {
+    try {
+      const body = await readJsonBody(req);
+      const result = persistSpeedTier(body.tier);
+      // The hot sniper's fees are read by the Rust sidecar at startup, so applying a tier
+      // needs a full restart. We reply first, then exit; pm2 respawns the process, which
+      // re-reads the .env (demoInstance keeps these values as set-if-missing defaults).
+      sendJson(res, 200, { ok: true, tier: result.tier, restarting: true });
+      setTimeout(() => process.exit(0), 300);
+      return;
     } catch (err) {
       return sendError(res, 400, err instanceof Error ? err.message : String(err));
     }
