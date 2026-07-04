@@ -117,7 +117,8 @@ if (!existsSync(demoEnvPath)) {
     "WEB_HOST=0.0.0.0",
     "UI_BASIC_AUTH_USER=friend",
     `UI_BASIC_AUTH_PASSWORD=${randomPassword()}`,
-    "FRIEND_MAX_LIVE_BUY_SOL=0.5",
+    // No imposed per-buy ceiling — the friend controls his own Max Buy + session cap in the UI.
+    "FRIEND_MAX_LIVE_BUY_SOL=",
     // Ceiling on TOTAL buy fees (tip + priority + helius) in SOL. Raised to 0.02 so the
     // same-slot cheap tier (~0.006/snipe) is not clamped. Priority is charged per compute
     // unit (price x COMPUTE_UNIT_LIMIT), which is why the tier lowers the CU limit to 400k.
@@ -173,9 +174,10 @@ if (!existsSync(demoEnvPath)) {
 ensureDemoAuth();
 upsertDemoEnv({
   // Sales demo: the friend is trialing the bot to buy it, so he gets the REAL same-slot
-  // sniper (below) and room to size up. These caps are raised from the old cheap-demo
-  // values so the same-slot fee tier is not clamped and he can place meaningful bets.
-  FRIEND_MAX_LIVE_BUY_SOL: "0.5",
+  // sniper (below). No imposed per-buy ceiling — the friend sets his own Max Buy and
+  // session cap in the UI (advanced controls). Empty FRIEND_MAX_LIVE_BUY_SOL makes
+  // settingsStore skip the clamp entirely, so his UI value is authoritative.
+  FRIEND_MAX_LIVE_BUY_SOL: "",
   MAX_BUY_EXECUTION_FEE_SOL: "0.02",
   FRIEND_MAX_LIVE_TIP_LAMPORTS: "5000000",
   FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS: "10000000",
