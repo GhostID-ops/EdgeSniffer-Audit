@@ -340,10 +340,20 @@ async function handle(
       const body = await readJsonBody(req);
       const result = persistSpeedTier(body.tier);
       // The hot sniper's fees are read by the Rust sidecar at startup, so applying a tier
-      // needs a full restart. We reply first, then exit; pm2 respawns the process, which
-      // re-reads the .env (demoInstance keeps these values as set-if-missing defaults).
+      // needs a full restart. Reply first, then stop the bot so its run loop tears down and
+      // KILLS the Rust sidecar — an orphaned autonomous hot sniper would keep trading with
+      // the wallet. Only exit once the bot has fully stopped (running=false is set after the
+      // sidecar teardown). pm2 then respawns the process, which re-reads the .env
+      // (demoInstance keeps these fee values as set-if-missing defaults).
       sendJson(res, 200, { ok: true, tier: result.tier, restarting: true });
-      setTimeout(() => process.exit(0), 300);
+      stopBot();
+      const deadline = Date.now() + 6000;
+      const waitStop = setInterval(() => {
+        if (!getBotState().running || Date.now() > deadline) {
+          clearInterval(waitStop);
+          process.exit(0);
+        }
+      }, 200);
       return;
     } catch (err) {
       return sendError(res, 400, err instanceof Error ? err.message : String(err));
