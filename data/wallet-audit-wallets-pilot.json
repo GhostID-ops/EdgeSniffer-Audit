@@ -33,6 +33,8 @@
       "label": "cya-runner",
       "address": "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
       "lane": "runner",
+      "maxTxs": 5000,
+      "entryLimit": 300,
       "enabled": true
     }
   ]

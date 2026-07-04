@@ -143,7 +143,29 @@ Do not paste a key into the command line. `walletQuantAudit.ts` loads the
 rotating pool from `.env`, marks quota-exhausted slots, and saves a partial
 history cache after every page.
 
-### 2. Finish The CyA 5,000-Transaction Audit
+### 2. Verify Or Finish The CyA 5,000-Transaction Audit
+
+First check whether the 5k report is already complete:
+
+```bash
+cd /root/bot/FinalBot-cya
+node -e '
+const fs=require("fs");
+const p="data/cya-quant-5000.json";
+if (!fs.existsSync(p)) {
+  console.log("missing");
+  process.exit(2);
+}
+const r=JSON.parse(fs.readFileSync(p,"utf8"));
+console.log(JSON.stringify(r.sample,null,2));
+if ((r.sample?.txsFetched ?? 0) < 4900) process.exit(3);
+console.log("CyA 5k is complete; skip the rerun below.");
+'
+```
+
+If this prints `CyA 5k is complete`, continue at step 3. It is the same report.
+Only run the following command when the report is missing, invalid, or clearly
+short of 5,000 transactions.
 
 Run it in the background. Standard output goes only to the JSON temporary file;
 warnings and key-slot events go to the log. The final JSON name appears only
@@ -196,10 +218,12 @@ console.log(JSON.stringify({
 
 ### 3. Run The Five-Wallet Pilot Cohort
 
-The pilot uses 2,500 transactions and 250 enriched entries per wallet. This is
-the quota-conscious comparison pass. Do not jump directly to the 10k config
-until the pilot proves all wallets parse correctly and share a useful time
-window.
+The pilot runs each of the four scalper wallets at 2,500 transactions and 250
+enriched entries. CyA stays at 5,000 transactions and 300 entries so the batch
+can reuse the completed CyA 5k cache while producing one common cohort report.
+This is the quota-conscious comparison pass. Do not jump directly to the 10k
+config until the pilot proves all wallets parse correctly and share a useful
+time window.
 
 ```bash
 cd /root/bot/FinalBot-cya
