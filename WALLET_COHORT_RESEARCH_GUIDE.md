@@ -37,6 +37,70 @@ With `HELIUS_API_POOL_INCLUDE_PRIMARY=false`, audit key slots map directly to
 the order in `HELIUS_API_KEYS`. The runner logs key slot numbers only. It never
 writes key values to reports.
 
+### Replace Slots 1 And 3 And Append A Key On The VPS
+
+The commands below prompt silently, so API keys do not enter shell history.
+They replace pool slots 1 and 3, remove any existing copy of the appended key,
+append it once, and retain the other slots in their current order.
+
+```bash
+ssh root@87.99.145.246
+cd /root/bot/FinalBot-cya
+
+read -rsp "New Helius key for slot 1: " NEW_SLOT_1; echo
+read -rsp "New Helius key for slot 3: " NEW_SLOT_3; echo
+read -rsp "Helius key to append: " APPENDED_KEY; echo
+
+ENV_FILE=/root/bot/FinalBot-cya/.env
+POOL_LINE=$(grep -m1 '^HELIUS_API_KEYS=' "$ENV_FILE")
+IFS=',' read -r -a KEYS <<< "${POOL_LINE#*=}"
+
+if [ "${#KEYS[@]}" -lt 3 ]; then
+  echo "Expected at least three Helius pool keys; no change made." >&2
+else
+  KEYS[0]="$NEW_SLOT_1"
+  KEYS[2]="$NEW_SLOT_3"
+  FILTERED_KEYS=()
+  for KEY in "${KEYS[@]}"; do
+    [ "$KEY" != "$APPENDED_KEY" ] && FILTERED_KEYS+=("$KEY")
+  done
+  FILTERED_KEYS+=("$APPENDED_KEY")
+  JOINED_KEYS=$(IFS=,; echo "${FILTERED_KEYS[*]}")
+  sed -i.bak -E "s|^HELIUS_API_KEYS=.*$|HELIUS_API_KEYS=$JOINED_KEYS|" "$ENV_FILE"
+  unset NEW_SLOT_1 NEW_SLOT_3 APPENDED_KEY KEY JOINED_KEYS
+fi
+```
+
+Verify the slot count and key suffixes without printing complete keys:
+
+```bash
+awk -F= '/^HELIUS_API_KEYS=/ {
+  n=split($2, key, ",")
+  printf "slots=%d", n
+  for (i=1; i<=n; i++) printf " slot%d=...%s", i, substr(key[i], length(key[i])-3)
+  print ""
+}' /root/bot/FinalBot-cya/.env
+```
+
+Confirm the expected live-testing posture, then restart the CYA service so it
+reloads the environment:
+
+```bash
+grep -E '^(RUST_ONLY_BUYS|RUST_ONLY_SELLS|JUPITER_FALLBACK_ENABLED)=' \
+  /root/bot/FinalBot-cya/.env
+systemctl restart finalbot-cya
+systemctl status finalbot-cya --no-pager
+journalctl -u finalbot-cya -n 100 --no-pager
+```
+
+Expected values:
+
+```text
+RUST_ONLY_BUYS=true
+RUST_ONLY_SELLS=true
+JUPITER_FALLBACK_ENABLED=false
+```
+
 ## Start In Background
 
 ```bash
