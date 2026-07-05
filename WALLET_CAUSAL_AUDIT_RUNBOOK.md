@@ -450,6 +450,10 @@ Requirements:
 Do not consider live execution until the frozen paper lane remains positive
 across multiple windows under stress assumptions.
 
+The first frozen 2CQ lane is implemented separately in EdgeSniffer. Its exact
+VPS commands, immutable profile, telemetry files, and rejection criteria are
+documented in `TWO_CQ_FROZEN_PAPER_RUNBOOK.md`.
+
 ## Failure Modes
 
 - `Helius 429`: allow the configured key pool to rotate; do not paste keys into

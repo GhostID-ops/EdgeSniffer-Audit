@@ -341,6 +341,26 @@ Decision:
 10. Run latency, impact, confirmation, exposure, and exit replay.
 11. Freeze a paper profile before any live consideration.
 
+## Frozen 2CQ Lane Implemented
+
+The next step was completed locally in EdgeSniffer as
+`2cq-flow-projection-v1`.
+
+- It is disabled unless `TWO_CQ_FROZEN_ENABLED=true`.
+- It consumes the existing local stream without changing the existing launch
+  strategy.
+- It requires Pump flow with at least one buy, one wallet, 5 SOL buy volume,
+  and an observed stream slot.
+- It waits 1,000ms for a new stream quote.
+- One shared entry feeds runner TP50/SL20/120s and scalper TP20/SL10/30s.
+- It applies 250bps round-trip paper cost, maxOpen 3, and maxPerHour 20.
+- It logs separate signals, events, runner closes, scalper closes, and summary
+  files.
+- It does not claim or apply the historical creation feature.
+
+Run and evaluate it with `TWO_CQ_FROZEN_PAPER_RUNBOOK.md`. It remains
+paper-only.
+
 ## Relevant Commands And Scripts
 
 Package scripts:
@@ -417,18 +437,16 @@ copytrader. Keep scalper and runner lanes separate. Do not add HTTP calls to the
 hot path. Prefer Rust execution and preserve RUST_ONLY_BUYS/SELLS with Jupiter
 fallback disabled.
 
-Current checkpoint: 8Y is a self-originated atomic creation benchmark and is
-excluded as a generic external-sniper model. The 2CQ 10k/120-campaign causal
-audit is now complete. It found 92 campaigns with proven-prior flow, 318
-same-slot events before 2CQ, 83 explicit prior creations, no entry-contained
-creations, no 2CQ-paid creations, and no creator funding of 2CQ. Prior buy
-volume and wallet diversity were higher for scalp wins and runners than losses.
+Current checkpoint: 8Y is excluded as a generic external-sniper model. The 2CQ
+causal sweep, market-negative control, chronological forward latency/exit
+replay, and constrained portfolio replay are complete. They justified a
+separate frozen paper-only EdgeSniffer lane, not live execution.
 
-Treat 2CQ as the primary external same-slot burst/scalper template. Do not
-lower the existing Edge score or widen global source-buy limits. Next build
-market-negative controls and a separate causal feature sweep using only
-observable prior flow and walk-forward identity history. Recover the truncated
-runner rows, then audit BWAM and FiFaw independently. Only after cross-wallet,
-market-negative, latency, fee, impact, and exit validation should a frozen
-paper profile be created.
+The frozen lane is `2cq-flow-projection-v1`, enabled only by
+TWO_CQ_FROZEN_ENABLED=true. It leaves the existing Edge strategy unchanged,
+uses one shared entry for paired runner/scalper exits, and records independent
+telemetry. Read TWO_CQ_FROZEN_PAPER_RUNBOOK.md before operating it. Keep the
+profile unchanged through at least 40 paired closes across multiple time
+blocks. Then audit BWAM and FiFaw independently and compare unchanged features
+across wallets.
 ```

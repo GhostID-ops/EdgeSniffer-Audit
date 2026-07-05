@@ -606,6 +606,20 @@ npm run audit:wallet-causal-forward-replay -- \
 Read `WALLET_CAUSAL_AUDIT_RUNBOOK.md` for validity gates, the full creator and
 predecessor lists, and interpretation rules.
 
+The constrained forward replay has now justified one frozen paper-only test,
+not live execution. The implementation is an isolated EdgeSniffer lane:
+
+- Frozen flow projection: `b1_w1_v5_l0_cs_in__flow_projection`.
+- Intended entry delay: 1,000ms; observed replay delay was tracked separately.
+- Shared exposure: `maxOpen=3`, `maxPerHour=20`.
+- Base paper cost: 250bps round trip.
+- Paired exits: TP50/SL20/120s and TP20/SL10/30s.
+- Existing Edge launch score and CyA lane remain unchanged.
+- The unsupported historical creation gate is explicitly not applied.
+
+Use `TWO_CQ_FROZEN_PAPER_RUNBOOK.md` to install, run, monitor, report, and
+evaluate this lane. Do not tune it during its collection window.
+
 Do not expand merely because the command completed. If strict coverage is low:
 
 1. Same-second winners dominating means the next audit must establish
