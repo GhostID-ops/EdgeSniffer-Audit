@@ -282,6 +282,49 @@ Important limitations:
 - Validate against launches 2CQ did not buy before paper-opening anything.
 - Keep CyA's runner lane and the existing EdgeSniffer profile separate.
 
+### 2CQ Constrained Forward Replay
+
+The final forward replay applied the flow-only projection to retained
+EdgeSniffer market data with `maxOpen=3`, `maxPerHour=20`, chronological
+allocation, bounded quote gaps, independent exits, and a later test partition.
+
+Coverage:
+
+- `1,932,670` parsed signal rows.
+- `2,864` triggered market mints.
+- `2,004/860` chronological train/test market mints.
+- `24` scenarios remained positive on the executed train sample.
+
+Primary train-selected scenario:
+
+- Requested delay `1000ms`; median effective test delay `1422ms`.
+- Exit `TP50 / SL20 / 120s`.
+- At `100bps`: train PF `2.11`; later-test PF `2.19`, `+2.406 SOL` over
+  `40` constrained equal-size entries.
+- At `250bps`: later-test PF `1.96`, `+2.066 SOL`.
+- At `500bps`: later-test PF `1.64`, `+1.500 SOL`.
+- At `1000bps`, train PF fell below one even though the later test was
+  positive, so that stress level is not accepted.
+
+Later-test hourly stability for the primary scenario:
+
+- `17:00Z`: `20` entries, PF `2.92`, `+1.633 SOL`.
+- `18:00Z`: `20` entries, PF `1.66`, `+0.772 SOL`.
+
+A shorter `TP20 / SL10 / 30s` exit at the same requested delay also remained
+positive at `100bps`: train PF `1.92`, later-test PF `2.05`, `+1.010 SOL`.
+
+Decision:
+
+- Promote the 2CQ flow projection to a separate frozen paper candidate.
+- Do not merge it into the existing Edge score.
+- Do not use live capital.
+- Record the missing same-slot creation feature in the forward collector.
+- Run runner and short-scalp exits as separate shadow ledgers on the same
+  frozen entry stream.
+- Require additional market windows and actual paper opens/closes before
+  increasing confidence.
+
 ## Recommended Research Order
 
 1. Build market-negative controls and a causal feature sweep for 2CQ.
