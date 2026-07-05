@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  applyPortfolioLimits,
   attachWalkForwardIdentity,
   profilePasses,
   simulateExit,
@@ -79,5 +80,36 @@ const exit = simulateExit(
 );
 assert.equal(exit.reason, "take_profit");
 assert.ok(exit.roiPct > 18 && exit.roiPct < 19);
+
+const constrained = applyPortfolioLimits(
+  [
+    {
+      ...exit,
+      mint: "low",
+      entryMs: 1_000,
+      exitMs: 11_000,
+      quality: 1,
+    },
+    {
+      ...exit,
+      mint: "high",
+      entryMs: 1_000,
+      exitMs: 11_000,
+      quality: 2,
+    },
+    {
+      ...exit,
+      mint: "later",
+      entryMs: 12_000,
+      exitMs: 13_000,
+      quality: 1,
+    },
+  ],
+  { maxOpen: 1, maxPerHour: 2, maxSession: 0 }
+);
+assert.deepEqual(
+  constrained.map((row) => row.mint),
+  ["high", "later"]
+);
 
 console.log("walletCausalResearch tests passed");

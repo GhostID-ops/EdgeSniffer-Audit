@@ -312,6 +312,61 @@ export type ExitResult = {
   holdSeconds: number;
 };
 
+export type TimedExitResult = ExitResult & {
+  mint: string;
+  entryMs: number;
+  exitMs: number;
+  quality: number;
+};
+
+export type PortfolioLimits = {
+  maxOpen: number;
+  maxPerHour: number;
+  maxSession: number;
+};
+
+export function applyPortfolioLimits(
+  candidates: TimedExitResult[],
+  limits: PortfolioLimits
+): TimedExitResult[] {
+  const ordered = [...candidates].sort(
+    (a, b) =>
+      a.entryMs - b.entryMs ||
+      b.quality - a.quality ||
+      a.mint.localeCompare(b.mint)
+  );
+  const accepted: TimedExitResult[] = [];
+  const openExitTimes: number[] = [];
+  const rollingOpenTimes: number[] = [];
+  for (const candidate of ordered) {
+    while (openExitTimes.length && openExitTimes[0]! <= candidate.entryMs) {
+      openExitTimes.shift();
+    }
+    while (
+      rollingOpenTimes.length &&
+      rollingOpenTimes[0]! <= candidate.entryMs - 3_600_000
+    ) {
+      rollingOpenTimes.shift();
+    }
+    if (limits.maxSession > 0 && accepted.length >= limits.maxSession) break;
+    if (limits.maxOpen > 0 && openExitTimes.length >= limits.maxOpen) continue;
+    if (
+      limits.maxPerHour > 0 &&
+      rollingOpenTimes.length >= limits.maxPerHour
+    ) {
+      continue;
+    }
+    accepted.push(candidate);
+    rollingOpenTimes.push(candidate.entryMs);
+    const insertAt = openExitTimes.findIndex(
+      (exitMs) => exitMs > candidate.exitMs
+    );
+    if (insertAt < 0) openExitTimes.push(candidate.exitMs);
+    else openExitTimes.splice(insertAt, 0, candidate.exitMs);
+  }
+  return accepted;
+}
+
 export function simulateExit(
   entry: PathPoint,
   path: PathPoint[],

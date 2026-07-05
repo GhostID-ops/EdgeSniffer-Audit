@@ -4,11 +4,13 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { createInterface } from "node:readline";
 import {
+  applyPortfolioLimits,
   median,
   simulateExit,
   type CausalProfile,
   type ExitResult,
   type PathPoint,
+  type TimedExitResult,
 } from "./walletCausalResearch.js";
 
 type SweepReport = {
@@ -40,6 +42,11 @@ const DELAYS_MS = [100, 250, 500, 1000];
 const MAX_DELAY_POINT_GAP_MS = Number(
   process.env.WALLET_FORWARD_MAX_DELAY_POINT_GAP_MS ?? "5000"
 );
+const PORTFOLIO_LIMITS = {
+  maxOpen: Number(process.env.WALLET_FORWARD_MAX_OPEN ?? "3"),
+  maxPerHour: Number(process.env.WALLET_FORWARD_MAX_PER_HOUR ?? "20"),
+  maxSession: Number(process.env.WALLET_FORWARD_MAX_SESSION ?? "0"),
+};
 const ROUND_TRIP_COST_BPS = [100, 250, 500, 1000];
 const EXIT_RULES = [
   { id: "tp10_sl10_20s", takeProfitPct: 10, stopLossPct: -10, maxHoldSeconds: 20 },
@@ -163,6 +170,41 @@ function summarize(results: ExitResult[]) {
   };
 }
 
+function quality(point: StreamPoint): number {
+  return (
+    (point.wallets ?? 0) * 3 +
+    (point.buys ?? 0) +
+    Math.log1p(Math.max(0, point.buyVolumeSol ?? 0)) * 4
+  );
+}
+
+function hourly(rows: TimedExitResult[]) {
+  const byHour = new Map<string, TimedExitResult[]>();
+  for (const row of rows) {
+    const hour = new Date(row.entryMs).toISOString().slice(0, 13) + ":00:00Z";
+    const values = byHour.get(hour) ?? [];
+    values.push(row);
+    byHour.set(hour, values);
+  }
+  return [...byHour.entries()].map(([hour, values]) => ({
+    hour,
+    ...summarize(values),
+  }));
+}
+
+type ReplaySummary = ReturnType<typeof summarize>;
+type ReplayHour = ReturnType<typeof hourly>[number];
+type ReplayScenario = {
+  delayMs: number;
+  roundTripCostBps: number;
+  rule: (typeof EXIT_RULES)[number];
+  rawTrain: ReplaySummary;
+  rawTest: ReplaySummary;
+  train: ReplaySummary;
+  test: ReplaySummary;
+  testHours: ReplayHour[];
+};
+
 export async function runForwardReplay(
   sweepPath: string,
   eventFiles: string[],
@@ -244,12 +286,12 @@ export async function runForwardReplay(
     .sort((a, b) => a.triggerMs - b.triggerMs);
   const splitIndex = Math.floor(paths.length * 0.7);
   const splitMs = paths[Math.max(0, splitIndex - 1)]?.triggerMs ?? Infinity;
-  const scenarios = [];
+  const scenarios: ReplayScenario[] = [];
   for (const delayMs of DELAYS_MS) {
     for (const roundTripCostBps of ROUND_TRIP_COST_BPS) {
       for (const rule of EXIT_RULES) {
-        const train: ExitResult[] = [];
-        const test: ExitResult[] = [];
+        const rawTrain: TimedExitResult[] = [];
+        const rawTest: TimedExitResult[] = [];
         for (const row of paths) {
           const delayed = row.points.find(
             (point) =>
@@ -274,15 +316,27 @@ export async function runForwardReplay(
             rule,
             roundTripCostBps
           );
-          if (row.triggerMs <= splitMs) train.push(result);
-          else test.push(result);
+          const timed: TimedExitResult = {
+            ...result,
+            mint: row.mint,
+            entryMs: delayed.timestampMs,
+            exitMs: delayed.timestampMs + result.holdSeconds * 1000,
+            quality: quality(row.points[0] ?? delayed),
+          };
+          if (row.triggerMs <= splitMs) rawTrain.push(timed);
+          else rawTest.push(timed);
         }
+        const train = applyPortfolioLimits(rawTrain, PORTFOLIO_LIMITS);
+        const test = applyPortfolioLimits(rawTest, PORTFOLIO_LIMITS);
         scenarios.push({
           delayMs,
           roundTripCostBps,
           rule,
+          rawTrain: summarize(rawTrain),
+          rawTest: summarize(rawTest),
           train: summarize(train),
           test: summarize(test),
+          testHours: hourly(test),
         });
       }
     }
@@ -302,6 +356,32 @@ export async function runForwardReplay(
         (b.train.profitFactor ?? Infinity) -
           (a.train.profitFactor ?? Infinity)
     );
+  const stressMatrix = DELAYS_MS.flatMap((delayMs) =>
+    ROUND_TRIP_COST_BPS.map((roundTripCostBps) => {
+      const best = scenarios
+        .filter(
+          (row) =>
+            row.delayMs === delayMs &&
+            row.roundTripCostBps === roundTripCostBps
+        )
+        .sort(
+          (a, b) =>
+            b.train.equalBetPnlSol - a.train.equalBetPnlSol ||
+            (b.train.profitFactor ?? Infinity) -
+              (a.train.profitFactor ?? Infinity)
+        )[0];
+      return best
+        ? {
+            delayMs,
+            roundTripCostBps,
+            rule: best.rule,
+            train: best.train,
+            test: best.test,
+            testHours: best.testHours,
+          }
+        : null;
+    })
+  ).filter((row): row is NonNullable<typeof row> => Boolean(row));
   const output = {
     generatedAt: new Date().toISOString(),
     walletTemplate: sweep.wallet,
@@ -315,6 +395,7 @@ export async function runForwardReplay(
       maxDelayPointGapMs: MAX_DELAY_POINT_GAP_MS,
       roundTripCostBps: ROUND_TRIP_COST_BPS,
       exitRules: EXIT_RULES,
+      portfolioLimits: PORTFOLIO_LIMITS,
       warning:
         "This replay uses Edge stream timestamps and independent exits. It does not assume the source wallet's exit.",
     },
@@ -326,6 +407,8 @@ export async function runForwardReplay(
       scenarios: scenarios.length,
       viableScenarios: viable.length,
     },
+    stressMatrix,
+    allScenarios: scenarios,
     topScenarios: viable.slice(0, 30),
   };
   const dataDir = path.resolve(process.cwd(), "data");
@@ -348,6 +431,7 @@ export async function runForwardReplay(
     `- Triggered market mints: ${paths.length}`,
     `- Chronological train/test mints: ${output.coverage.trainMints}/${output.coverage.testMints}`,
     `- Viable train scenarios: ${viable.length}`,
+    `- Portfolio limits: maxOpen=${PORTFOLIO_LIMITS.maxOpen}, maxPerHour=${PORTFOLIO_LIMITS.maxPerHour}, maxSession=${PORTFOLIO_LIMITS.maxSession || "unlimited"}`,
     "",
     "## Top Train-Selected Scenarios",
     "",
@@ -358,10 +442,29 @@ export async function runForwardReplay(
         `| ${row.delayMs}ms | ${row.roundTripCostBps}bps | ${row.rule.id} | ${row.train.entries} | ${row.train.profitFactor?.toFixed(2) ?? "-"} | ${row.train.equalBetPnlSol.toFixed(3)} | ${row.test.entries} | ${row.test.profitFactor?.toFixed(2) ?? "-"} | ${row.test.equalBetPnlSol.toFixed(3)} | ${row.test.winRatePct.toFixed(1)}% | ${row.test.stopLosses} |`
     ),
     "",
+    "## Cost And Delay Stress Matrix",
+    "",
+    "| Delay | Cost | Train-selected exit | Train n | Train PF | Test n | Test PF | Test PnL | Test win |",
+    "|---:|---:|---|---:|---:|---:|---:|---:|---:|",
+    ...stressMatrix.map(
+      (row) =>
+        `| ${row.delayMs}ms | ${row.roundTripCostBps}bps | ${row.rule.id} | ${row.train.entries} | ${row.train.profitFactor?.toFixed(2) ?? "-"} | ${row.test.entries} | ${row.test.profitFactor?.toFixed(2) ?? "-"} | ${row.test.equalBetPnlSol.toFixed(3)} | ${row.test.winRatePct.toFixed(1)}% |`
+    ),
+    "",
+    "## Later Test Hours For Best Scenario",
+    "",
+    "| Hour | Entries | PF | PnL | Win |",
+    "|---|---:|---:|---:|---:|",
+    ...(viable[0]?.testHours ?? []).map(
+      (row) =>
+        `| ${row.hour} | ${row.entries} | ${row.profitFactor?.toFixed(2) ?? "-"} | ${row.equalBetPnlSol.toFixed(3)} | ${row.winRatePct.toFixed(1)}% |`
+    ),
+    "",
     "## Decision Rule",
     "",
     "- A scenario is selected using only the chronological train partition.",
     "- The later test result is the decision evidence.",
+    "- Portfolio limits are enforced chronologically; skipped triggers do not contribute PnL.",
     "- Zero viable scenarios is a valid rejection of the template under retained market conditions.",
     "",
   ].join("\n");

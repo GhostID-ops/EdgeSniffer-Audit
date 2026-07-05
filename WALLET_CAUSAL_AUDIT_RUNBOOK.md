@@ -359,7 +359,21 @@ cat data/2cq-causal-forward-replay.md
 
 This applies a train-selected, control-compatible profile to independent
 market mints and replays `100/250/500/1000ms` delays with independent exits.
-The later chronological test partition is the decision evidence.
+It defaults to `maxOpen=3`, `maxPerHour=20`, and no session cap:
+
+```bash
+WALLET_FORWARD_MAX_OPEN=3 \
+WALLET_FORWARD_MAX_PER_HOUR=20 \
+WALLET_FORWARD_MAX_SESSION=0 \
+npm run audit:wallet-causal-forward-replay -- \
+  data/2cq-causal-sweep.json \
+  2cq-causal-forward-replay \
+  "${EVENT_FILES[@]}"
+```
+
+The report includes unconstrained coverage, constrained execution, a
+cost/delay stress matrix, and later-test hourly stability. The later
+chronological test partition is the decision evidence.
 
 ## Step 10: Cross-Wallet Comparison
 
