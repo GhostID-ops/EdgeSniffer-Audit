@@ -644,3 +644,51 @@ live scanner. Profile PF still uses source-wallet outcomes and is not an
 EdgeSniffer exit simulation. Do not expand the campaign sample or tune the live
 profile until this report has balanced proven-prior coverage across winners and
 losses.
+
+## Launch-Origin Audit
+
+If the slot-order report shows that profitable wallet entries precede nearly
+all decoded swaps, prior public buy flow cannot explain the edge. Audit the
+transactions that create the mint and immediately precede entry instead.
+
+Regenerate the cached historical artifact with origin metadata:
+
+```bash
+cd /root/bot/FinalBot-cya
+git pull origin main
+npm run build
+npm run test:wallet-launch-origin
+
+npm run audit:wallet-history -- \
+  data/8ycby-ledger-10000.json \
+  /root/bot/EdgeSniffer \
+  120 \
+  8ycby-history-origin-v4 \
+  1000
+```
+
+Run the local origin analysis. It reuses the existing mint-history and
+slot-order caches and should not perform another broad API scan:
+
+```bash
+cd /root/bot/FinalBot-cya
+npm run audit:wallet-launch-origin -- \
+  data/8ycby-history-origin-v4.json \
+  8ycby-launch-origin-120
+
+cat data/8ycby-launch-origin-120.md
+```
+
+The report compares losses, small wins, scalp wins, and runners on:
+
+- Whether an explicit creation transaction was proven to occur before entry.
+- Creation-to-entry slot, second, and transaction-index distance.
+- Whether creation immediately preceded the wallet entry.
+- Creator/deployer fee payer recurrence.
+- Immediate-predecessor fee payer recurrence.
+- Whether the creation transaction funded the target wallet.
+
+Do not promote a creator or predecessor to a live rule from one appearance.
+Repeated identities and stable launch timing are candidate features for
+forward collection; market-wide rejected launches are still required to
+measure false positives.

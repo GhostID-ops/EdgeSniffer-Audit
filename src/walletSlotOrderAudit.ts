@@ -137,7 +137,7 @@ export function extractBlockSignatures(result: BlockResult): string[] {
     .filter((value): value is string => typeof value === "string");
 }
 
-async function fetchBlockSignatures(slot: number): Promise<string[]> {
+export async function fetchBlockSignatures(slot: number): Promise<string[]> {
   const cachePath = path.join(CACHE_DIR, `${slot}.json`);
   const cached = await readJson<{ signatures: string[] }>(cachePath);
   if (cached?.signatures?.length) return cached.signatures;
@@ -183,7 +183,7 @@ async function fetchBlockSignatures(slot: number): Promise<string[]> {
 }
 
 export function classifySlotEvent(
-  event: FlowEvent,
+  event: { signature: string; slot?: number | null },
   entrySlot: number | null,
   entrySignature: string | undefined,
   signatures: string[]

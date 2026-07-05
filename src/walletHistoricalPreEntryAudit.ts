@@ -36,6 +36,9 @@ export type HeliusTx = {
   slot?: number;
   timestamp?: number;
   feePayer?: string;
+  type?: string;
+  source?: string;
+  description?: string;
   nativeTransfers?: Array<{
     fromUserAccount?: string;
     toUserAccount?: string;
@@ -45,6 +48,21 @@ export type HeliusTx = {
     account: string;
     nativeBalanceChange?: number;
     tokenBalanceChanges?: TokenBalanceChange[];
+  }>;
+};
+
+export type OriginTransaction = {
+  signature: string;
+  slot: number | null;
+  timestamp: number | null;
+  feePayer: string | null;
+  type: string | null;
+  source: string | null;
+  description: string | null;
+  nativeTransfers: Array<{
+    from: string | null;
+    to: string | null;
+    amountLamports: number;
   }>;
 };
 
@@ -125,6 +143,7 @@ type AuditRow = {
   sameSlotEvents: number;
   sameSecondFlow: FlowEvent[];
   sameSecondCandidates: FlowEvent[];
+  originTransactions: OriginTransaction[];
   firstPreEntryLeadSeconds: number | null;
   windows: Record<string, WindowFeatures>;
   candidates: CandidateEvaluation[];
@@ -208,6 +227,23 @@ function outcome(row: LedgerRow): AuditRow["outcome"] {
   if (row.sourceExitRoiPct >= 50) return "runner";
   if (row.sourceExitRoiPct >= 10) return "scalp_win";
   return "small_win";
+}
+
+function originTransaction(tx: HeliusTx): OriginTransaction {
+  return {
+    signature: tx.signature,
+    slot: tx.slot ?? null,
+    timestamp: tx.timestamp ?? null,
+    feePayer: tx.feePayer ?? null,
+    type: tx.type ?? null,
+    source: tx.source ?? null,
+    description: tx.description?.slice(0, 500) ?? null,
+    nativeTransfers: (tx.nativeTransfers ?? []).map((transfer) => ({
+      from: transfer.fromUserAccount ?? null,
+      to: transfer.toUserAccount ?? null,
+      amountLamports: transfer.amount ?? 0,
+    })),
+  };
 }
 
 export function classifyFetchStatus(input: {
@@ -692,6 +728,15 @@ async function runAudit(
           tx.signature !== ledgerRow.entrySignature &&
           tx.timestamp === ledgerRow.entryTs
       );
+      const originTransactions = history.txs
+        .filter(
+          (tx) =>
+            tx.signature === ledgerRow.entrySignature ||
+            (tx.timestamp != null &&
+              tx.timestamp >= ledgerRow.entryTs - LOOKBACK_SECONDS &&
+              tx.timestamp <= ledgerRow.entryTs)
+        )
+        .map(originTransaction);
       if (!history.reachedWindow) {
         rows.push({
           ledger: ledgerRow,
@@ -713,6 +758,7 @@ async function runAudit(
           sameSlotEvents: 0,
           sameSecondFlow: [],
           sameSecondCandidates: [],
+          originTransactions,
           firstPreEntryLeadSeconds: null,
           windows: {},
           candidates: [],
@@ -826,6 +872,7 @@ async function runAudit(
         sameSlotEvents: sameSlotEvents.length,
         sameSecondFlow: sameSecondEvents,
         sameSecondCandidates,
+        originTransactions,
         firstPreEntryLeadSeconds: events.length
           ? ledgerRow.entryTs - events[0]!.timestamp
           : null,
@@ -863,6 +910,7 @@ async function runAudit(
         sameSlotEvents: 0,
         sameSecondFlow: [],
         sameSecondCandidates: [],
+        originTransactions: [],
         firstPreEntryLeadSeconds: null,
         windows: {},
         candidates: [],
