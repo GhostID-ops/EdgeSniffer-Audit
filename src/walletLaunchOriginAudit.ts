@@ -321,6 +321,10 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
             (row) => row.creationIndexLead === 1
           ).length,
           entryIsCreation: group.filter((row) => row.entryIsCreation).length,
+          entryCreationPaidByTarget: group.filter(
+            (row) =>
+              row.entryIsCreation && row.entryFeePayer === input.wallet
+          ).length,
           creationUnresolved: group.filter(
             (row) => !row.creationSignature && !row.entryIsCreation
           ).length,
@@ -391,6 +395,9 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
         (row) => row.creationIndexLead === 1
       ).length,
       entriesContainingCreation: rows.filter((row) => row.entryIsCreation).length,
+      entryCreationsPaidByTarget: rows.filter(
+        (row) => row.entryIsCreation && row.entryFeePayer === input.wallet
+      ).length,
       creationUnresolved: rows.filter(
         (row) => !row.creationSignature && !row.entryIsCreation
       ).length,
@@ -425,6 +432,7 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
       creationSameSlot: number;
       creationImmediatelyBefore: number;
       entryIsCreation: number;
+      entryCreationPaidByTarget: number;
       creationUnresolved: number;
       medianOldestRetainedOriginSecondsLead: number | null;
       medianCreationSecondsLead: number | null;
@@ -455,6 +463,7 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
     `- Prior creations in the same slot: ${output.coverage.priorSameSlotCreations}`,
     `- Creation immediately before target entry: ${output.coverage.creationsImmediatelyBeforeEntry}`,
     `- Target entries containing creation: ${output.coverage.entriesContainingCreation}`,
+    `- Entry creations fee-paid by target wallet: ${output.coverage.entryCreationsPaidByTarget}`,
     `- Creation unresolved inside retained history: ${output.coverage.creationUnresolved}`,
     `- Creation transaction funded target wallet: ${output.coverage.creatorFundedTarget}`,
     `- Missing slot-order block caches: ${output.coverage.missingBlockCaches}`,
@@ -463,11 +472,11 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
     "",
     "## Launch Timing By Outcome",
     "",
-    "| Outcome | n | prior creation | entry creates | unresolved | same-slot creation | immediately before | median seconds lead | median retained age | median slots lead | median tx-index lead | creator funded target | median raw prior txs |",
-    "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    "| Outcome | n | prior creation | entry creates | target fee payer | unresolved | same-slot creation | immediately before | median seconds lead | median retained age | median slots lead | median tx-index lead | creator funded target | median raw prior txs |",
+    "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ...["loss", "small_win", "scalp_win", "runner"].map((name) => {
       const row = groupRows[name]!;
-      return `| ${name} | ${row.n} | ${row.withCreation} | ${row.entryIsCreation} | ${row.creationUnresolved} | ${row.creationSameSlot} | ${row.creationImmediatelyBefore} | ${row.medianCreationSecondsLead?.toFixed(1) ?? "-"} | ${row.medianOldestRetainedOriginSecondsLead?.toFixed(1) ?? "-"} | ${row.medianCreationSlotsLead?.toFixed(1) ?? "-"} | ${row.medianCreationIndexLead?.toFixed(1) ?? "-"} | ${row.creatorFundedTarget} | ${row.medianRawPriorTransactions?.toFixed(1) ?? "-"} |`;
+      return `| ${name} | ${row.n} | ${row.withCreation} | ${row.entryIsCreation} | ${row.entryCreationPaidByTarget} | ${row.creationUnresolved} | ${row.creationSameSlot} | ${row.creationImmediatelyBefore} | ${row.medianCreationSecondsLead?.toFixed(1) ?? "-"} | ${row.medianOldestRetainedOriginSecondsLead?.toFixed(1) ?? "-"} | ${row.medianCreationSlotsLead?.toFixed(1) ?? "-"} | ${row.medianCreationIndexLead?.toFixed(1) ?? "-"} | ${row.creatorFundedTarget} | ${row.medianRawPriorTransactions?.toFixed(1) ?? "-"} |`;
     }),
     "",
     "## Repeated Creators",

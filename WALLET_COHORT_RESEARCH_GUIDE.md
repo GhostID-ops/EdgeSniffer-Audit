@@ -1,5 +1,12 @@
 # Wallet Cohort Research Guide
 
+Continuation documents:
+
+- `EDGESNIFFER_RESEARCH_HANDOFF_2026-07-05.md` preserves the research history,
+  current evidence, decisions, and a ready-to-paste new-chat prompt.
+- `WALLET_CAUSAL_AUDIT_RUNBOOK.md` is the one-wallet-at-a-time procedure for
+  2CQ, BWAM, FiFaw, and later cohort wallets.
+
 ## Objective
 
 Build two independently evaluated research lanes:
