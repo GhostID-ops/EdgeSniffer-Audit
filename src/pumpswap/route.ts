@@ -633,8 +633,32 @@ async function resolvePumpSwapSellAccountPlan(args: {
   // (3007). We therefore never reuse buy metas; we only take the buy plan's pool
   // address (index 0) and rebuild the correct canonical SELL layout from
   // verified on-chain pool state.
-  const cachedBuyPool = pumpSwapBuyAccountPlanByMint.get(args.mint.toBase58())?.[0]?.pubkey ?? null;
+  const cachedBuyPlan = pumpSwapBuyAccountPlanByMint.get(args.mint.toBase58()) ?? null;
+  const cachedBuyPool = cachedBuyPlan?.[0]?.pubkey ?? null;
   const poolHint = hintedAccounts?.[0]?.pubkey ?? cachedBuyPool;
+
+  // A cashback / volume-tracking coin — our confirmed buy carried the cashback
+  // tail beyond the canonical 23-account layout — MUST sell with the matching
+  // user_volume_accumulator + cashback ATA tail. A naked 21-account sell template
+  // (a non-cashback trader's sell, or the hand-built canonical layout below) is
+  // missing those accounts and the pump AMM rejects the sell with Custom(6013),
+  // which then re-triggers the hybrid TP on the still-full position in a loop.
+  // Convert OUR own proven buy plan to the sell layout via the sanctioned
+  // buyTemplateToSellTemplate helper so the tail is always consistent with the
+  // buy that actually landed. Guarded + fail-safe: any layout drift returns null
+  // and we fall through to the existing template/canonical resolution.
+  if (cachedBuyPlan && cachedBuyPlan.length > PUMPSWAP_MIN_BUY_ACCOUNT_COUNT) {
+    const converted = buyTemplateToSellTemplate(cachedBuyPlan);
+    if (converted && !validatePumpSwapSellAccountLayout(converted, args.mint)) {
+      return {
+        accounts: applySourceProtocolFeeAccounts(converted, hintedAccounts),
+        source: "cached-buy-account-plan",
+        diagnostics: hintedAccounts
+          ? comparePumpSwapAccounts(converted, hintedAccounts, "detector-pubkey-hints")
+          : { comparedTo: "cached-buy-account-plan", candidateAccounts: converted.length },
+      };
+    }
+  }
 
   // AGENTS.md: do not trust source/detector metas for PumpSwap sells. Build the
   // account list from a recent real on-chain SELL on the verified pool — that is
