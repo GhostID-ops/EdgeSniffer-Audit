@@ -28,9 +28,10 @@ Recommended order:
 4. Compare those three scalper wallets.
 5. Keep CyA in the separate runner lane.
 
-8Ycby has already been audited. Its profitable entries predominantly contain
-token creation and precede public swap flow, so it is retained as a
-creation-time benchmark rather than the next generic sniffer template.
+8Ycby has already been audited. `102/120` target entries contained token
+creation, and all `102` were fee-paid by 8Y itself. Its profitable entries
+preceded public swap flow, so it is retained as a self-originated creation-time
+benchmark rather than an external sniffer template.
 
 Addresses:
 

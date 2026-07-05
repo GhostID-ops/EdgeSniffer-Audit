@@ -186,6 +186,7 @@ The final origin classification found:
 - `0` creations immediately preceding entry.
 - `0` creation transactions funding the target wallet.
 - `102` target entry transactions containing creation.
+- All `102` entry-creation transactions were fee-paid by 8Ycby itself.
 - `11` unresolved creation origins.
 
 By outcome:
@@ -195,15 +196,14 @@ By outcome:
 - Scalp wins: `30/30` entry transactions contained creation.
 - Runners: `24/30` entry transactions contained creation; six were truncated.
 
-The latest code also reports how many entry-creation transactions are fee-paid
-by the target wallet. Run the short re-report command below to record that
-final count.
-
 ### 8Ycby Decision
 
 8Ycby is not a suitable primary template for an independent public-flow
 sniffer. In this sample it behaves predominantly as an atomic
-creation-plus-entry wallet, especially on profitable campaigns.
+creation-plus-entry wallet, especially on profitable campaigns. The target
+wallet fee-paid every one of the `102` entry transactions that contained token
+creation, confirming this is self-originated activity rather than an external
+sniper reacting to a public launch.
 
 Keep 8Ycby as:
 
@@ -220,23 +220,7 @@ Do not:
 
 ## Current Immediate Action
 
-Record the final target-fee-payer count from the existing V4 artifact:
-
-```bash
-cd /root/bot/FinalBot-cya
-git pull origin main
-npm run build
-
-npm run audit:wallet-launch-origin -- \
-  data/8ycby-history-origin-v4.json \
-  8ycby-launch-origin-final
-
-cat data/8ycby-launch-origin-final.md
-```
-
-This is a local re-report over cached data.
-
-After that, stop expanding 8Y and audit `2CQ` next using
+The 8Y audit is complete. Stop expanding it and audit `2CQ` next using
 `WALLET_CAUSAL_AUDIT_RUNBOOK.md`.
 
 ## Recommended Research Order
@@ -329,8 +313,9 @@ Current checkpoint: the 8Ycby 10k/120-campaign causal audit is complete.
 Finalized block ordering showed 724 decoded swaps after entry versus only 33
 before; proven-prior flow existed in 10 losses and only 1 small winner. The
 launch-origin audit found 102/120 target entry transactions containing token
-creation, including every measured scalp win and runner. Treat 8Y as an atomic
-creation/first-slot benchmark, not the next generic sniffer model.
+creation, including every measured scalp win and runner, and 8Y fee-paid all
+102. Treat 8Y as a self-originated atomic creation/first-slot benchmark, not the
+next generic sniffer model.
 
 Next task: audit 2CQ one wallet at a time using
 WALLET_CAUSAL_AUDIT_RUNBOOK.md. Validate the ledger, historical entry anchors,
