@@ -14,7 +14,11 @@ import {
 type SweepReport = {
   wallet: string;
   controlValidity: { eligible: boolean; reason: string | null };
-  controlComparableProfiles: Array<{ profile: CausalProfile }>;
+  controlComparableProfiles: Array<{
+    profile: CausalProfile;
+    sourceProfileId: string;
+    droppedGates: string[];
+  }>;
 };
 
 type StreamPoint = {
@@ -167,8 +171,9 @@ export async function runForwardReplay(
   const sweep = JSON.parse(
     (await readFile(sweepPath, "utf8")).replace(/^\uFEFF/, "")
   ) as SweepReport;
-  const profile = sweep.controlComparableProfiles[0]?.profile;
-  if (!profile) {
+  const projected = sweep.controlComparableProfiles[0];
+  const profile = projected?.profile;
+  if (!profile || !projected) {
     throw new Error(
       "Sweep has no train-viable profile that can be evaluated on market controls"
     );
@@ -301,6 +306,8 @@ export async function runForwardReplay(
     generatedAt: new Date().toISOString(),
     walletTemplate: sweep.wallet,
     profile,
+    sourceProfileId: projected.sourceProfileId,
+    droppedGates: projected.droppedGates,
     inputs: { sweepPath, eventFiles },
     methodology: {
       split: "chronological 70/30 train/test by independent market trigger",
@@ -332,6 +339,8 @@ export async function runForwardReplay(
     `Generated: ${output.generatedAt}`,
     `Template wallet: \`${output.walletTemplate}\``,
     `Profile: \`${profile.id}\``,
+    `Source profile: \`${output.sourceProfileId}\``,
+    `Dropped unsupported gates: ${output.droppedGates.join(", ") || "none"}`,
     "",
     "## Coverage",
     "",

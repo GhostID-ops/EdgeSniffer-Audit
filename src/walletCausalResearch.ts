@@ -345,10 +345,15 @@ export function simulateExit(
       break;
     }
   }
-  const grossRoiPct = (last.marketCapUsd / entry.marketCapUsd - 1) * 100;
+  const observedRoiPct = (last.marketCapUsd / entry.marketCapUsd - 1) * 100;
+  const grossRoiPct =
+    reason === "take_profit"
+      ? rule.takeProfitPct
+      : reason === "stop_loss"
+        ? rule.stopLossPct
+        : observedRoiPct;
   const netMultiple =
-    (last.marketCapUsd / entry.marketCapUsd) *
-    (1 - roundTripCostBps / 10_000);
+    (1 + grossRoiPct / 100) * (1 - roundTripCostBps / 10_000);
   return {
     roiPct: (netMultiple - 1) * 100,
     grossRoiPct,

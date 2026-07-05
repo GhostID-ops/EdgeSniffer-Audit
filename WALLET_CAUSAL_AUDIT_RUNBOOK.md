@@ -309,11 +309,15 @@ The sweep:
 
 - Uses a chronological `70/30` train/test split.
 - Reweights the stratified sample toward the full wallet outcome distribution.
+- Labels reweighted equal-bet PnL as population-projected rather than literal
+  sample PnL.
 - Computes creator and predecessor reputation using only earlier campaigns.
 - Scans retained Edge data for non-wallet market controls.
 - Labels market negatives using less than `+10%` MFE over 120 seconds.
 - Marks the control comparison invalid when retained Edge coverage is
   insufficient.
+- Produces an explicit flow-only projection for market controls and lists
+  creation, transaction-order, or identity gates removed from that projection.
 
 Do not promote a profile selected only among 2CQ-bought tokens.
 

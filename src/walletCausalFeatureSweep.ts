@@ -389,17 +389,48 @@ export async function runCausalSweep(
     endMs,
     new Set(ledger.rows.map((row) => row.mint))
   );
-  const controlComparableProfiles = evaluated
-    .filter(
-      (row) =>
-        row.profile.minIndexLead === 0 &&
-        row.profile.creation === "any" &&
-        row.profile.identity === "none"
-    )
+  const projectionIds = new Set<string>();
+  const controlComparableProfiles = top
+    .map((row) => {
+      const profile: CausalProfile = {
+        ...row.profile,
+        id: `${row.profile.id}__flow_projection`,
+        minIndexLead: 0,
+        creation: "any",
+        identity: "none",
+      };
+      const projectionKey = [
+        profile.minBuys,
+        profile.minWallets,
+        profile.minBuyVolumeSol,
+      ].join(":");
+      if (projectionIds.has(projectionKey)) return null;
+      projectionIds.add(projectionKey);
+      const trainSelected = train.filter((item) =>
+        profilePasses(item, profile)
+      );
+      const testSelected = test.filter((item) =>
+        profilePasses(item, profile)
+      );
+      return {
+        profile,
+        sourceProfileId: row.profile.id,
+        droppedGates: [
+          ...(row.profile.minIndexLead > 0 ? ["transaction_index_lead"] : []),
+          ...(row.profile.creation !== "any" ? ["creation"] : []),
+          ...(row.profile.identity !== "none" ? ["identity_reputation"] : []),
+        ],
+        train: summarizeWeighted(train, trainSelected, populationByOutcome),
+        test: summarizeWeighted(test, testSelected, populationByOutcome),
+      };
+    })
+    .filter((row): row is NonNullable<typeof row> => Boolean(row))
     .slice(0, 10);
   const controlRows = controlComparableProfiles
     .map((row) => ({
       profile: row.profile.id,
+      sourceProfile: row.sourceProfileId,
+      droppedGates: row.droppedGates,
       controlsEvaluated: controls.observations.length,
       controlsWithPath: controls.observations.filter(
         (control) => control.mfe120Pct != null
@@ -459,6 +490,8 @@ export async function runCausalSweep(
       populationReweighting: populationByOutcome,
       identity:
         "Creator and predecessor reputation uses only earlier sampled campaigns.",
+      projectedPnl:
+        "Equal-bet PnL is population-projected after stratified-sample reweighting; it is not literal PnL from the displayed row count.",
       warning:
         "Source-wallet ROI is a selection label, not an executable EdgeSniffer exit.",
     },
@@ -512,7 +545,7 @@ export async function runCausalSweep(
     "",
     "## Top Chronological Profiles",
     "",
-    "| Profile | Train n | Train PF | Train PnL | Test n | Test PF | Test PnL | Test win | Test scalp capture | Test runner capture | Test loser rejection |",
+    "| Profile | Train n | Train PF | Train projected PnL | Test n | Test PF | Test projected PnL | Test win | Test scalp capture | Test runner capture | Test loser rejection |",
     "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ...top.map(
       (row) =>
@@ -521,16 +554,16 @@ export async function runCausalSweep(
     "",
     "## Market-Control Trigger Counts",
     "",
-    "| Profile | Controls | With path | Triggered | Negatives | Triggered negatives | Triggered >=10% | Triggered runners |",
-    "|---|---:|---:|---:|---:|---:|---:|---:|",
+    "| Flow projection | Source profile | Dropped gates | Controls | With path | Triggered | Negatives | Triggered negatives | Triggered >=10% | Triggered runners |",
+    "|---|---|---|---:|---:|---:|---:|---:|---:|---:|",
     ...controlRows.map(
       (row) =>
-        `| ${row.profile} | ${row.controlsEvaluated} | ${row.controlsWithPath} | ${row.controlsTriggered} | ${row.negativeControls} | ${row.triggeredNegatives} | ${row.triggeredPathWins} | ${row.triggeredRunners} |`
+        `| ${row.profile} | ${row.sourceProfile} | ${row.droppedGates.join(", ") || "none"} | ${row.controlsEvaluated} | ${row.controlsWithPath} | ${row.controlsTriggered} | ${row.negativeControls} | ${row.triggeredNegatives} | ${row.triggeredPathWins} | ${row.triggeredRunners} |`
     ),
     ...(controlRows.length
       ? []
       : [
-          "| - | 0 | 0 | 0 | 0 | 0 | 0 | 0 |",
+          "| - | - | - | 0 | 0 | 0 | 0 | 0 | 0 | 0 |",
           "",
           "No top profile used only fields shared with retained Edge controls.",
         ]),
@@ -539,7 +572,9 @@ export async function runCausalSweep(
     "",
     "- Profiles are selected on the chronological train partition and displayed on untouched later rows.",
     "- Population reweighting corrects the 30/30/30/30 stratified audit toward the full wallet outcome distribution.",
+    "- Projected PnL estimates a full-population equal-bet result; it is not literal PnL from the displayed sample rows.",
     "- Identity history is walk-forward and does not use future campaign outcomes.",
+    "- Market controls use an explicit flow-only projection and list every unsupported gate that was dropped.",
     "- Market controls must be valid before treating a profile as a detector.",
     "- A positive source-exit profile still requires transaction-lag, cost, and independent exit replay.",
     "",

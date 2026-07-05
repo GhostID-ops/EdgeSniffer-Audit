@@ -78,6 +78,6 @@ const exit = simulateExit(
   100
 );
 assert.equal(exit.reason, "take_profit");
-assert.ok(exit.roiPct > 19 && exit.roiPct < 21);
+assert.ok(exit.roiPct > 18 && exit.roiPct < 19);
 
 console.log("walletCausalResearch tests passed");
