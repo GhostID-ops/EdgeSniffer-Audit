@@ -54,6 +54,8 @@ npm run build
 npm run test:wallet-history
 npm run test:wallet-slot-order
 npm run test:wallet-launch-origin
+npm run test:wallet-causal
+npm run test:wallet-causal-sweep
 ```
 
 Confirm the Helius pool is configured without printing complete keys:
@@ -69,6 +71,44 @@ awk -F= '/^HELIUS_API_KEYS=/ {
 
 Never place API keys directly in commands, reports, Markdown, commits, or chat
 handoffs.
+
+## 2CQ Identity Checkpoint
+
+These identities came from the initial 120-campaign 2CQ origin audit. They are
+research inputs, not permanent allowlists.
+
+Repeated creators:
+
+```text
+6Fy8LxPMdETrkaU1xMF3uvz4w6ofJC5dHsk1LqAPUP5r
+6ujZxnphRxTqveaQtLAQHFoWz16xhLWZbTijcgZN4fRp
+8NJ7Ujpji8uMF2675mqaTSEm2DCbfJA7fiRKtiaqkaLN
+DRY2uEb6niBnbyN9kUv3HMiDAZKZ4jhjbJDLJv5jna47
+95ZCf3jKMHeFYvPXVZW3Ek6AEPDyjebosqnc7eNioVMo
+5SW7p56x22LKj8gYcE8DVVd1S59UJUGR9jKq2PFdKiKg
+7moqFjvm2MwAiMtCZoqYoTAPzRBxxMRT2ddyHThQuWjr
+```
+
+Repeated immediate-predecessor fee payers:
+
+```text
+1mGRiNd5QgddUpASfGRftpQRKMB2peE5hj1gMF6f5Hp
+4W2aBdR5mAu5zddVTxXVX7mY4wV9zayKbR5sMspgY6SU
+4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9
+4sWPwW2BwGgGX7L4eGe5XCsAe4fLVU8yCjusH1icH6MW
+2mqrindMAjJEQPLhroYWyiYPo5h9iAsahfdd4QtsjwdY
+3BLjRcxWGtR7WRshJ3hL25U3RjWr5Ud98wMcczQqk4Ei
+Cjud2kUcU3WYki6meUmaHsBN1aNCzzBw2d18aXoFYojd
+4ctgBoNaMRZN1J31BHDFCXJuWwXFVRTbzt3cuco2wVgk
+3ansVDDVNHZB7BYVMtyaAiq3jMP6rQ8hQwPXnVsC7KFc
+SLoWPaXdRLHMu1hbRKU5ephmKC6dJZNWPCzU2zewJyf
+JEBy7VuMsCqZDdprhmUNjB1MHTmt5dUFDeMXytbhTLdR
+FxN3VZ4BosL5urG2yoeQ156JSdmavm9K5fdLxjkPmaMR
+```
+
+`1mGR...` and `4W2a...` are predecessor fee payers, not confirmed creators.
+Identity reputation must be computed walk-forward. Never apply the final
+full-sample win rate to an earlier campaign.
 
 ## Select One Wallet
 
@@ -248,7 +288,76 @@ For every wallet, record:
 
 Do not merge lanes because two wallets share a headline win rate.
 
-## Step 7: Cross-Wallet Comparison
+## Step 7: Causal Feature Sweep And Market Controls
+
+After ledger, historical, slot-order, and origin validation:
+
+```bash
+cd /root/bot/FinalBot-cya
+
+npm run audit:wallet-causal-sweep -- \
+  data/2cq-ledger-10000.json \
+  data/2cq-slot-order-120.json \
+  data/2cq-launch-origin-120.json \
+  /root/bot/EdgeSniffer \
+  2cq-causal-sweep
+
+cat data/2cq-causal-sweep.md
+```
+
+The sweep:
+
+- Uses a chronological `70/30` train/test split.
+- Reweights the stratified sample toward the full wallet outcome distribution.
+- Computes creator and predecessor reputation using only earlier campaigns.
+- Scans retained Edge data for non-wallet market controls.
+- Labels market negatives using less than `+10%` MFE over 120 seconds.
+- Marks the control comparison invalid when retained Edge coverage is
+  insufficient.
+
+Do not promote a profile selected only among 2CQ-bought tokens.
+
+## Step 8: Historical Transaction-Lag And Exit Replay
+
+```bash
+cd /root/bot/FinalBot-cya
+
+npm run audit:wallet-causal-replay -- \
+  data/2cq-causal-sweep.json \
+  data/2cq-history-120.json \
+  data/2cq-slot-order-120.json \
+  data/wallet-pre-entry-cache \
+  2cq-causal-replay
+
+cat data/2cq-causal-replay.md
+```
+
+This replays independent exits at `0/1/3/5/10` subsequent decoded
+transactions, multiple round-trip cost assumptions, and bounded TP/SL/hold
+rules. Historical Helius timestamps are second-resolution, so this report does
+not invent millisecond precision.
+
+## Step 9: Forward Millisecond Latency And Exit Replay
+
+Run this after EdgeSniffer has retained a broad forward market window:
+
+```bash
+cd /root/bot/FinalBot-cya
+
+npm run audit:wallet-causal-forward-replay -- \
+  data/2cq-causal-sweep.json \
+  2cq-causal-forward-replay \
+  /root/bot/EdgeSniffer/data/launch-paper-signals.jsonl \
+  /root/bot/EdgeSniffer/data/launch-paper-stream-events.jsonl
+
+cat data/2cq-causal-forward-replay.md
+```
+
+This applies a train-selected, control-compatible profile to independent
+market mints and replays `100/250/500/1000ms` delays with independent exits.
+The later chronological test partition is the decision evidence.
+
+## Step 10: Cross-Wallet Comparison
 
 Only compare wallets after each individual audit is valid.
 
@@ -271,7 +380,7 @@ Use leave-one-wallet-out validation:
 2. Test unchanged rules on the third.
 3. Reject rules that only explain one wallet.
 
-## Step 8: Add Market Negatives
+## Step 11: Add Market Negatives
 
 Wallet-bought tokens measure capture, not precision.
 
@@ -290,7 +399,7 @@ Sample contemporaneous launches no cohort wallet bought. Without these
 negatives, a rule may capture wallet winners while buying thousands of trash
 launches.
 
-## Step 9: Executable Replay
+## Step 12: Executable Replay
 
 Before a paper profile is promoted, include:
 
@@ -304,7 +413,7 @@ Before a paper profile is promoted, include:
 
 Current historical profile replay measures selection only.
 
-## Step 10: Frozen Paper Test
+## Step 13: Frozen Paper Test
 
 Requirements:
 

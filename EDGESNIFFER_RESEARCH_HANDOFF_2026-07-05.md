@@ -222,8 +222,9 @@ Do not:
 
 The initial 2CQ causal audit is complete and validates an external same-slot
 launch-burst lane. Do not lower the current EdgeSniffer score or widen its
-source-buy range globally. Build and validate a separate 2CQ-inspired scalper
-lane against contemporaneous market negatives.
+source-buy range globally. Run the separate 2CQ causal sweep, historical
+transaction-lag replay, and forward millisecond replay against contemporaneous
+market negatives.
 
 ## 2CQ Audit: Validated External Burst Lane
 
@@ -305,9 +306,14 @@ Package scripts:
 - `audit:wallet-history`
 - `audit:wallet-slot-order`
 - `audit:wallet-launch-origin`
+- `audit:wallet-causal-sweep`
+- `audit:wallet-causal-replay`
+- `audit:wallet-causal-forward-replay`
 - `audit:wallet-latency`
 - `test:wallet-history`
 - `test:wallet-slot-order`
+- `test:wallet-causal`
+- `test:wallet-causal-sweep`
 - `test:wallet-launch-origin`
 
 Primary source files:

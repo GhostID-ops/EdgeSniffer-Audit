@@ -567,6 +567,45 @@ because the list can contain future information relative to an old campaign.
 Profile PF and PnL use the tracked wallet's source-exit ROI and measure
 selection only; they are not an EdgeSniffer TP/SL simulation.
 
+## 2CQ Causal Sweep And Replay
+
+The validated 2CQ checkpoint is an external same-slot launch-burst lane. Keep
+it separate from the existing Edge score and CyA runner lane.
+
+```bash
+cd /root/bot/FinalBot-cya
+git pull origin main
+npm run build
+npm run test:wallet-causal
+
+npm run audit:wallet-causal-sweep -- \
+  data/2cq-ledger-10000.json \
+  data/2cq-slot-order-120.json \
+  data/2cq-launch-origin-120.json \
+  /root/bot/EdgeSniffer \
+  2cq-causal-sweep
+
+npm run audit:wallet-causal-replay -- \
+  data/2cq-causal-sweep.json \
+  data/2cq-history-120.json \
+  data/2cq-slot-order-120.json \
+  data/wallet-pre-entry-cache \
+  2cq-causal-replay
+```
+
+For true millisecond replay after a broad forward Edge window:
+
+```bash
+npm run audit:wallet-causal-forward-replay -- \
+  data/2cq-causal-sweep.json \
+  2cq-causal-forward-replay \
+  /root/bot/EdgeSniffer/data/launch-paper-signals.jsonl \
+  /root/bot/EdgeSniffer/data/launch-paper-stream-events.jsonl
+```
+
+Read `WALLET_CAUSAL_AUDIT_RUNBOOK.md` for validity gates, the full creator and
+predecessor lists, and interpretation rules.
+
 Do not expand merely because the command completed. If strict coverage is low:
 
 1. Same-second winners dominating means the next audit must establish
