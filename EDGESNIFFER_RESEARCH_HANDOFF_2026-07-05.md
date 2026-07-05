@@ -220,23 +220,82 @@ Do not:
 
 ## Current Immediate Action
 
-The 8Y audit is complete. Stop expanding it and audit `2CQ` next using
-`WALLET_CAUSAL_AUDIT_RUNBOOK.md`.
+The initial 2CQ causal audit is complete and validates an external same-slot
+launch-burst lane. Do not lower the current EdgeSniffer score or widen its
+source-buy range globally. Build and validate a separate 2CQ-inspired scalper
+lane against contemporaneous market negatives.
+
+## 2CQ Audit: Validated External Burst Lane
+
+Ledger coverage:
+
+- `10,000` transactions.
+- `2,437` closed measured campaigns.
+- `+274.5530 SOL` source-wallet realized PnL.
+- `1,401` losses, `492` small wins, `453` scalp wins, and `91` runners.
+- Top five winners supplied only `11.5%` of gross positive PnL, so the result
+  was not concentrated in a handful of jackpots.
+
+Historical and finalized block-order evidence:
+
+- `93/93` found entry signatures decoded to the target wallet.
+- Median source-size and market-cap calibration delta was about `-1.1%`.
+- `92/120` sampled campaigns had transactions proven to precede 2CQ's entry.
+- Finalized ordering found `318` same-slot events before entry and `305` after,
+  with `0` unknown-order events.
+- Median proven-prior buy volume increased from `7.12 SOL` for losses to
+  `11.86 SOL` for scalp wins and `12.59 SOL` for runners.
+- Median proven-prior wallet count increased from `3` for losses to `4` for
+  scalp wins and runners.
+
+Launch-origin evidence:
+
+- `83` explicit prior creation transactions.
+- `58` prior creations occurred in the same slot as 2CQ's entry.
+- `0` target entries contained token creation.
+- `0` creation transactions were fee-paid by 2CQ.
+- `0` creators funded the target wallet.
+- The result is eligible for comparison and establishes that 2CQ is reacting
+  to externally created launches rather than manufacturing the setup.
+
+Important limitations:
+
+- `37` origins remain unresolved, heavily concentrated in runners, because
+  retained mint history was truncated.
+- Current EdgeSniffer profiles passed `0` comparable rows. The dominant missed
+  gates were `score_low` and `source_buy_high`.
+- This does not justify lowering the global score. The current score models a
+  different lane.
+- The accepted-wallet cohort cannot measure market-wide false positives.
+- Source-wallet exits do not prove executable EdgeSniffer exits after latency,
+  fees, and price impact.
+
+2CQ decision:
+
+- Promote 2CQ to the primary external scalper research template.
+- Model a separate same-slot launch-burst lane using causal features such as
+  prior buy count, unique wallets, prior SOL volume, transaction-index lead,
+  creator history, and predecessor fee-payer history.
+- Compute identity reputation walk-forward only. Never score an old campaign
+  using creator outcomes learned in the future.
+- Validate against launches 2CQ did not buy before paper-opening anything.
+- Keep CyA's runner lane and the existing EdgeSniffer profile separate.
 
 ## Recommended Research Order
 
-1. `2CQ` as the next scalper wallet.
-2. `BWAM`.
-3. `FiFaw`.
-4. Compare the three independently audited scalper wallets.
-5. Keep CyA as the separate runner lane.
-6. Keep 8Y as a creation-time benchmark, not a generic external sniper.
-7. Build contemporaneous market negatives from EdgeSniffer's forward launch
+1. Build market-negative controls and a causal feature sweep for 2CQ.
+2. Recover truncated 2CQ runner origins without changing the live profile.
+3. Audit `BWAM`.
+4. Audit `FiFaw`.
+5. Compare the three independently audited external scalper wallets.
+6. Keep CyA as the separate runner lane.
+7. Keep 8Y as a creation-time benchmark, not a generic external sniper.
+8. Build contemporaneous market negatives from EdgeSniffer's forward launch
    stream.
-8. Design separate creation-time scalper and runner scores only after
+9. Design separate creation-time scalper and runner scores only after
    cross-wallet evidence exists.
-9. Run latency, impact, confirmation, exposure, and exit replay.
-10. Freeze a paper profile before any live consideration.
+10. Run latency, impact, confirmation, exposure, and exit replay.
+11. Freeze a paper profile before any live consideration.
 
 ## Relevant Commands And Scripts
 
@@ -309,19 +368,18 @@ copytrader. Keep scalper and runner lanes separate. Do not add HTTP calls to the
 hot path. Prefer Rust execution and preserve RUST_ONLY_BUYS/SELLS with Jupiter
 fallback disabled.
 
-Current checkpoint: the 8Ycby 10k/120-campaign causal audit is complete.
-Finalized block ordering showed 724 decoded swaps after entry versus only 33
-before; proven-prior flow existed in 10 losses and only 1 small winner. The
-launch-origin audit found 102/120 target entry transactions containing token
-creation, including every measured scalp win and runner, and 8Y fee-paid all
-102. Treat 8Y as a self-originated atomic creation/first-slot benchmark, not the
-next generic sniffer model.
+Current checkpoint: 8Y is a self-originated atomic creation benchmark and is
+excluded as a generic external-sniper model. The 2CQ 10k/120-campaign causal
+audit is now complete. It found 92 campaigns with proven-prior flow, 318
+same-slot events before 2CQ, 83 explicit prior creations, no entry-contained
+creations, no 2CQ-paid creations, and no creator funding of 2CQ. Prior buy
+volume and wallet diversity were higher for scalp wins and runners than losses.
 
-Next task: audit 2CQ one wallet at a time using
-WALLET_CAUSAL_AUDIT_RUNBOOK.md. Validate the ledger, historical entry anchors,
-same-slot ordering, and launch origin before interpreting any score. Then
-compare 2CQ with BWAM and FiFaw and build market-negative labels from
-EdgeSniffer's forward stream.
-
-Do not change EdgeSniffer strategy settings from the 8Y result alone.
+Treat 2CQ as the primary external same-slot burst/scalper template. Do not
+lower the existing Edge score or widen global source-buy limits. Next build
+market-negative controls and a separate causal feature sweep using only
+observable prior flow and walk-forward identity history. Recover the truncated
+runner rows, then audit BWAM and FiFaw independently. Only after cross-wallet,
+market-negative, latency, fee, impact, and exit validation should a frozen
+paper profile be created.
 ```
