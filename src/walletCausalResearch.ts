@@ -317,6 +317,7 @@ export type TimedExitResult = ExitResult & {
   entryMs: number;
   exitMs: number;
   quality: number;
+  effectiveDelayMs?: number;
 };
 
 export type PortfolioLimits = {

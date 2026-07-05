@@ -365,6 +365,9 @@ It defaults to `maxOpen=3`, `maxPerHour=20`, and no session cap:
 WALLET_FORWARD_MAX_OPEN=3 \
 WALLET_FORWARD_MAX_PER_HOUR=20 \
 WALLET_FORWARD_MAX_SESSION=0 \
+WALLET_FORWARD_MAX_DELAY_POINT_GAP_MS=1500 \
+WALLET_FORWARD_MIN_TRAIN_ENTRIES=30 \
+WALLET_FORWARD_MIN_TEST_ENTRIES=20 \
 npm run audit:wallet-causal-forward-replay -- \
   data/2cq-causal-sweep.json \
   2cq-causal-forward-replay \
@@ -372,8 +375,10 @@ npm run audit:wallet-causal-forward-replay -- \
 ```
 
 The report includes unconstrained coverage, constrained execution, a
-cost/delay stress matrix, and later-test hourly stability. The later
-chronological test partition is the decision evidence.
+cost/delay stress matrix, effective observed delay, and later-test hourly
+stability. Validity floors apply to executed portfolio entries rather than raw
+market triggers. The later chronological test partition is the decision
+evidence.
 
 ## Step 10: Cross-Wallet Comparison
 

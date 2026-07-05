@@ -40,7 +40,13 @@ type TriggeredPath = {
 
 const DELAYS_MS = [100, 250, 500, 1000];
 const MAX_DELAY_POINT_GAP_MS = Number(
-  process.env.WALLET_FORWARD_MAX_DELAY_POINT_GAP_MS ?? "5000"
+  process.env.WALLET_FORWARD_MAX_DELAY_POINT_GAP_MS ?? "1500"
+);
+const MIN_TRAIN_ENTRIES = Number(
+  process.env.WALLET_FORWARD_MIN_TRAIN_ENTRIES ?? "30"
+);
+const MIN_TEST_ENTRIES = Number(
+  process.env.WALLET_FORWARD_MIN_TEST_ENTRIES ?? "20"
 );
 const PORTFOLIO_LIMITS = {
   maxOpen: Number(process.env.WALLET_FORWARD_MAX_OPEN ?? "3"),
@@ -167,6 +173,13 @@ function summarize(results: ExitResult[]) {
       results.reduce((sum, row) => sum + 0.5 * (row.roiPct / 100), 0),
     takeProfits: results.filter((row) => row.reason === "take_profit").length,
     stopLosses: results.filter((row) => row.reason === "stop_loss").length,
+    medianEffectiveDelayMs: median(
+      results.map((row) =>
+        "effectiveDelayMs" in row
+          ? Number((row as TimedExitResult).effectiveDelayMs)
+          : NaN
+      )
+    ),
   };
 }
 
@@ -322,6 +335,7 @@ export async function runForwardReplay(
             entryMs: delayed.timestampMs,
             exitMs: delayed.timestampMs + result.holdSeconds * 1000,
             quality: quality(row.points[0] ?? delayed),
+            effectiveDelayMs: delayed.timestampMs - row.triggerMs,
           };
           if (row.triggerMs <= splitMs) rawTrain.push(timed);
           else rawTest.push(timed);
@@ -341,8 +355,8 @@ export async function runForwardReplay(
       }
     }
   }
-  const minimumTrain = Math.max(10, Math.floor(paths.length * 0.2));
-  const minimumTest = Math.max(5, Math.floor(paths.length * 0.1));
+  const minimumTrain = MIN_TRAIN_ENTRIES;
+  const minimumTest = MIN_TEST_ENTRIES;
   const viable = scenarios
     .filter(
       (row) =>
@@ -396,6 +410,10 @@ export async function runForwardReplay(
       roundTripCostBps: ROUND_TRIP_COST_BPS,
       exitRules: EXIT_RULES,
       portfolioLimits: PORTFOLIO_LIMITS,
+      minimumExecutedEntries: {
+        train: MIN_TRAIN_ENTRIES,
+        test: MIN_TEST_ENTRIES,
+      },
       warning:
         "This replay uses Edge stream timestamps and independent exits. It does not assume the source wallet's exit.",
     },
@@ -432,6 +450,8 @@ export async function runForwardReplay(
     `- Chronological train/test mints: ${output.coverage.trainMints}/${output.coverage.testMints}`,
     `- Viable train scenarios: ${viable.length}`,
     `- Portfolio limits: maxOpen=${PORTFOLIO_LIMITS.maxOpen}, maxPerHour=${PORTFOLIO_LIMITS.maxPerHour}, maxSession=${PORTFOLIO_LIMITS.maxSession || "unlimited"}`,
+    `- Executed-entry validity floor: train>=${MIN_TRAIN_ENTRIES}, test>=${MIN_TEST_ENTRIES}`,
+    `- Maximum quote gap after requested delay: ${MAX_DELAY_POINT_GAP_MS}ms`,
     "",
     "## Top Train-Selected Scenarios",
     "",
@@ -444,11 +464,11 @@ export async function runForwardReplay(
     "",
     "## Cost And Delay Stress Matrix",
     "",
-    "| Delay | Cost | Train-selected exit | Train n | Train PF | Test n | Test PF | Test PnL | Test win |",
-    "|---:|---:|---|---:|---:|---:|---:|---:|---:|",
+    "| Delay | Cost | Train-selected exit | Train n | Train PF | Test n | Effective delay | Test PF | Test PnL | Test win |",
+    "|---:|---:|---|---:|---:|---:|---:|---:|---:|---:|",
     ...stressMatrix.map(
       (row) =>
-        `| ${row.delayMs}ms | ${row.roundTripCostBps}bps | ${row.rule.id} | ${row.train.entries} | ${row.train.profitFactor?.toFixed(2) ?? "-"} | ${row.test.entries} | ${row.test.profitFactor?.toFixed(2) ?? "-"} | ${row.test.equalBetPnlSol.toFixed(3)} | ${row.test.winRatePct.toFixed(1)}% |`
+        `| ${row.delayMs}ms | ${row.roundTripCostBps}bps | ${row.rule.id} | ${row.train.entries} | ${row.train.profitFactor?.toFixed(2) ?? "-"} | ${row.test.entries} | ${row.test.medianEffectiveDelayMs?.toFixed(0) ?? "-"}ms | ${row.test.profitFactor?.toFixed(2) ?? "-"} | ${row.test.equalBetPnlSol.toFixed(3)} | ${row.test.winRatePct.toFixed(1)}% |`
     ),
     "",
     "## Later Test Hours For Best Scenario",
