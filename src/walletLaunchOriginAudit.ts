@@ -48,6 +48,11 @@ type OriginRow = {
   rawPriorTransactions: number;
   rawAfterTransactions: number;
   priorSwapEvents: number;
+  entryType: string | null;
+  entrySource: string | null;
+  entryIsCreation: boolean;
+  entryFeePayer: string | null;
+  oldestRetainedOriginSecondsLead: number | null;
   creationSignature: string | null;
   creationType: string | null;
   creationSource: string | null;
@@ -220,6 +225,16 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
     const explicitCreation =
       priorOrigins.find(isCreationTransaction) ?? null;
     const creation = explicitCreation;
+    const entryOrigin =
+      orderedOrigins.find(
+        (tx) => tx.signature === source.ledger.entrySignature
+      ) ?? null;
+    const retainedTimestamps = orderedOrigins
+      .map((tx) => tx.timestamp)
+      .filter((timestamp): timestamp is number => timestamp != null);
+    const oldestRetainedOriginSecondsLead = retainedTimestamps.length
+      ? source.ledger.entryTs - Math.min(...retainedTimestamps)
+      : null;
     const immediatePredecessor =
       priorOrigins
         .filter((tx) => tx.relation === "prior_same_slot")
@@ -249,6 +264,13 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
       rawPriorTransactions: priorOrigins.length,
       rawAfterTransactions: afterOrigins.length,
       priorSwapEvents: strictSwaps.length + orderedSameSecondSwaps.length,
+      entryType: entryOrigin?.type ?? null,
+      entrySource: entryOrigin?.source ?? null,
+      entryIsCreation: entryOrigin
+        ? isCreationTransaction(entryOrigin)
+        : false,
+      entryFeePayer: entryOrigin?.feePayer ?? null,
+      oldestRetainedOriginSecondsLead,
       creationSignature: creation?.signature ?? null,
       creationType: creation?.type ?? null,
       creationSource: creation?.source ?? null,
@@ -298,6 +320,13 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
           creationImmediatelyBefore: withCreation.filter(
             (row) => row.creationIndexLead === 1
           ).length,
+          entryIsCreation: group.filter((row) => row.entryIsCreation).length,
+          creationUnresolved: group.filter(
+            (row) => !row.creationSignature && !row.entryIsCreation
+          ).length,
+          medianOldestRetainedOriginSecondsLead: median(
+            group.map((row) => row.oldestRetainedOriginSecondsLead ?? NaN)
+          ),
           medianCreationSecondsLead: median(
             withCreation.map((row) => row.creationSecondsLead ?? NaN)
           ),
@@ -361,6 +390,10 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
       creationsImmediatelyBeforeEntry: explicitCreations.filter(
         (row) => row.creationIndexLead === 1
       ).length,
+      entriesContainingCreation: rows.filter((row) => row.entryIsCreation).length,
+      creationUnresolved: rows.filter(
+        (row) => !row.creationSignature && !row.entryIsCreation
+      ).length,
       creatorFundedTarget: explicitCreations.filter(
         (row) => row.creatorFundedTargetWallet
       ).length,
@@ -391,6 +424,9 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
       withCreation: number;
       creationSameSlot: number;
       creationImmediatelyBefore: number;
+      entryIsCreation: number;
+      creationUnresolved: number;
+      medianOldestRetainedOriginSecondsLead: number | null;
       medianCreationSecondsLead: number | null;
       medianCreationSlotsLead: number | null;
       medianCreationIndexLead: number | null;
@@ -418,6 +454,8 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
     `- Explicit prior creation transactions: ${output.coverage.explicitPriorCreations}`,
     `- Prior creations in the same slot: ${output.coverage.priorSameSlotCreations}`,
     `- Creation immediately before target entry: ${output.coverage.creationsImmediatelyBeforeEntry}`,
+    `- Target entries containing creation: ${output.coverage.entriesContainingCreation}`,
+    `- Creation unresolved inside retained history: ${output.coverage.creationUnresolved}`,
     `- Creation transaction funded target wallet: ${output.coverage.creatorFundedTarget}`,
     `- Missing slot-order block caches: ${output.coverage.missingBlockCaches}`,
     `- Comparison valid: ${output.validity.eligible}`,
@@ -425,11 +463,11 @@ async function run(inputPath: string, outputTag: string): Promise<void> {
     "",
     "## Launch Timing By Outcome",
     "",
-    "| Outcome | n | creation found | same-slot creation | immediately before | median seconds lead | median slots lead | median tx-index lead | creator funded target | median raw prior txs |",
-    "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    "| Outcome | n | prior creation | entry creates | unresolved | same-slot creation | immediately before | median seconds lead | median retained age | median slots lead | median tx-index lead | creator funded target | median raw prior txs |",
+    "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ...["loss", "small_win", "scalp_win", "runner"].map((name) => {
       const row = groupRows[name]!;
-      return `| ${name} | ${row.n} | ${row.withCreation} | ${row.creationSameSlot} | ${row.creationImmediatelyBefore} | ${row.medianCreationSecondsLead?.toFixed(1) ?? "-"} | ${row.medianCreationSlotsLead?.toFixed(1) ?? "-"} | ${row.medianCreationIndexLead?.toFixed(1) ?? "-"} | ${row.creatorFundedTarget} | ${row.medianRawPriorTransactions?.toFixed(1) ?? "-"} |`;
+      return `| ${name} | ${row.n} | ${row.withCreation} | ${row.entryIsCreation} | ${row.creationUnresolved} | ${row.creationSameSlot} | ${row.creationImmediatelyBefore} | ${row.medianCreationSecondsLead?.toFixed(1) ?? "-"} | ${row.medianOldestRetainedOriginSecondsLead?.toFixed(1) ?? "-"} | ${row.medianCreationSlotsLead?.toFixed(1) ?? "-"} | ${row.medianCreationIndexLead?.toFixed(1) ?? "-"} | ${row.creatorFundedTarget} | ${row.medianRawPriorTransactions?.toFixed(1) ?? "-"} |`;
     }),
     "",
     "## Repeated Creators",
