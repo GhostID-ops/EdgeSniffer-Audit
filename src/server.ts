@@ -31,6 +31,7 @@ import { getQuote } from "./jupiter.js";
 import { getPriceSampleMs, getPriceSeries, startPriceSampler } from "./priceSampler.js";
 import { getExecutionTelemetrySummary, getTopTrades } from "./friendTelemetry.js";
 import { readRecentTradeLogs } from "./tradeLog.js";
+import { dataDir, envPath, instanceId, instanceRoot, logDir } from "./runtimePaths.js";
 
 const PORT = parseInt(process.env.WEB_PORT ?? "3000", 10);
 // Interface to bind. Default 127.0.0.1 (localhost only). Set WEB_HOST to your

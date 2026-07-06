@@ -86,7 +86,8 @@
     "env:wallet:4bdk": "node scripts/applyWalletPreset.mjs 4bdk",
     "env:wallet:gug": "node scripts/applyWalletPreset.mjs gug",
     "audit:missed-routes": "node scripts/auditMissedRoutes.mjs",
-    "audit:missed-route-protocols": "node scripts/classifyMissedRouteProtocols.mjs"
+    "audit:missed-route-protocols": "node scripts/classifyMissedRouteProtocols.mjs",
+    "retail:instance": "node scripts/retailInstance.mjs"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.0",

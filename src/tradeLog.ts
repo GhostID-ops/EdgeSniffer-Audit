@@ -1,5 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { dataPath } from "./runtimePaths.js";
 import {
   simulationMode,
   stopLossPct,
@@ -13,7 +14,7 @@ import {
   maxEntryPriceImpactPct,
 } from "./config.js";
 
-const TRADE_LOG_PATH = path.resolve(process.cwd(), "data", "trades.jsonl");
+const TRADE_LOG_PATH = dataPath("trades.jsonl");
 
 let directoryReady = false;
 let warnedOnFailure = false;

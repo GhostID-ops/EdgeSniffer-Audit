@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { dataPath } from "./runtimePaths.js";
 
 const HELIUS_API_KEY = process.env.HELIUS_API_KEY ?? "";
 const SENDER_ENDPOINT =
@@ -323,7 +324,7 @@ export const executionTelemetryEnabled =
   EXECUTION_TELEMETRY_ENABLED_RAW !== "false" &&
   EXECUTION_TELEMETRY_ENABLED_RAW !== "0" &&
   EXECUTION_TELEMETRY_ENABLED_RAW !== "no";
-export const executionTelemetryPath = process.env.EXECUTION_TELEMETRY_PATH ?? "data/execution-telemetry.jsonl";
+export const executionTelemetryPath = process.env.EXECUTION_TELEMETRY_PATH ?? dataPath("execution-telemetry.jsonl");
 const SENDER_RPC_FALLBACK_ENABLED_RAW = (process.env.SENDER_RPC_FALLBACK_ENABLED ?? "true").toLowerCase();
 export const senderRpcFallbackEnabled =
   SENDER_RPC_FALLBACK_ENABLED_RAW !== "false" &&

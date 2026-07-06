@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { executionTelemetryPath } from "./config.js";
+import { dataPath } from "./runtimePaths.js";
 
 type Row = {
   tsMs?: number;
@@ -84,7 +84,7 @@ function emptySummary(): TelemetrySummary {
 
 // ---------------- Top trades (PnL cards) ----------------
 
-const TRADES_PATH = resolve(process.cwd(), "data", "trades.jsonl");
+const TRADES_PATH = dataPath("trades.jsonl");
 
 type TradeRow = {
   ts?: number | string;

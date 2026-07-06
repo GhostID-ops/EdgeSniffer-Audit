@@ -9,7 +9,7 @@
  * not touch your main .env, wallet, data, or live process.
  */
 import { randomBytes } from "node:crypto";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { Keypair } from "@solana/web3.js";
 import bs58 from "bs58";
@@ -18,11 +18,15 @@ const repoRoot = process.cwd();
 const demoName = process.argv[2] && !/^\d+$/.test(process.argv[2]) ? process.argv[2] : "demo-instance";
 const port = process.env.WEB_PORT || process.argv.find((a, i) => i >= 2 && /^\d+$/.test(a)) || "3001";
 const demoDir = resolve(repoRoot, demoName);
+const instanceId = demoName.split(/[\\/]+/).filter(Boolean).pop()?.replace(/[^a-zA-Z0-9_.-]/g, "-") || "demo-instance";
 const demoEnvPath = join(demoDir, ".env");
+const demoDataDir = join(demoDir, "data");
+const demoLogDir = join(demoDir, "logs");
 const rustSidecarBin = join(repoRoot, "rust-sidecar", "target", "release", process.platform === "win32" ? "pumpfun-sidecar.exe" : "pumpfun-sidecar");
 
 mkdirSync(demoDir, { recursive: true });
-mkdirSync(join(demoDir, "data"), { recursive: true });
+mkdirSync(demoDataDir, { recursive: true });
+mkdirSync(demoLogDir, { recursive: true });
 
 const STRIP_EXACT = new Set([
   "PRIVATE_KEY_BASE58",
@@ -32,6 +36,12 @@ const STRIP_EXACT = new Set([
   "SIMULATION_SOL_BALANCE",
   "STARTING_SOL_BALANCE",
   "BOT_CONTROL_API_ENABLED",
+  "INSTANCE_ID",
+  "INSTANCE_ROOT",
+  "INSTANCE_ENV_PATH",
+  "DATA_DIR",
+  "LOG_DIR",
+  "EXECUTION_TELEMETRY_PATH",
   "UI_BASIC_AUTH_USER",
   "UI_BASIC_AUTH_PASSWORD",
 ]);
@@ -125,6 +135,12 @@ if (!existsSync(demoEnvPath)) {
     "",
     "# --- demo overrides ---",
     "BOT_CONTROL_API_ENABLED=true",
+    `INSTANCE_ID=${instanceId}`,
+    `INSTANCE_ROOT=${demoDir}`,
+    `INSTANCE_ENV_PATH=${demoEnvPath}`,
+    `DATA_DIR=${demoDataDir}`,
+    `LOG_DIR=${demoLogDir}`,
+    `EXECUTION_TELEMETRY_PATH=${join(demoDataDir, "execution-telemetry.jsonl")}`,
     "SIMULATION_MODE=true",
     "SIMULATION_SOL_BALANCE=1",
     "STARTING_SOL_BALANCE=1",
@@ -199,6 +215,12 @@ upsertDemoEnv({
   // Fast pump.fun tokens move between quote and fill. 12% was too tight and caused
   // first-attempt buy (6042) / sell (6003) reverts + retries. Match the proven CyA
   // configs (60%). The UI strategy presets override per-strategy on start.
+  INSTANCE_ID: instanceId,
+  INSTANCE_ROOT: demoDir,
+  INSTANCE_ENV_PATH: demoEnvPath,
+  DATA_DIR: demoDataDir,
+  LOG_DIR: demoLogDir,
+  EXECUTION_TELEMETRY_PATH: join(demoDataDir, "execution-telemetry.jsonl"),
   MIRROR_SLIPPAGE_BPS: "5000",
   SIMULATION_SOL_BALANCE: "1",
   STARTING_SOL_BALANCE: "1",
@@ -245,25 +267,22 @@ defaultDemoEnv({
   COMPUTE_UNIT_LIMIT: "400000",
 });
 
-for (const file of ["execution-telemetry.jsonl", "trades.jsonl"]) {
-  const src = join(repoRoot, "data", file);
-  const dst = join(demoDir, "data", file);
-  if (existsSync(src) && !existsSync(dst)) {
-    try {
-      copyFileSync(src, dst);
-    } catch {
-      // Non-fatal: the dashboard can run without seeded telemetry.
-    }
-  }
-}
-
 process.chdir(demoDir);
 process.env.WEB_PORT = String(port);
 process.env.BOT_CONTROL_API_ENABLED = "true";
+process.env.INSTANCE_ID = instanceId;
+process.env.INSTANCE_ROOT = demoDir;
+process.env.INSTANCE_ENV_PATH = demoEnvPath;
+process.env.DATA_DIR = demoDataDir;
+process.env.LOG_DIR = demoLogDir;
+process.env.EXECUTION_TELEMETRY_PATH = join(demoDataDir, "execution-telemetry.jsonl");
 
 console.log("Obsidian Labs - ISOLATED demo instance");
 console.log("  dir:    " + demoDir);
+console.log("  id:     " + instanceId);
 console.log("  env:    " + demoEnvPath + "  (the friend's key writes here only)");
+console.log("  data:   " + demoDataDir + "  (isolated trade history + telemetry)");
+console.log("  logs:   " + demoLogDir);
 if (burnerPub) console.log("  burner: " + burnerPub + "  (empty throwaway - your wallet is untouched)");
 console.log("  login:  " + uiUser + " / " + uiPassword);
 console.log("  open:   http://localhost:" + port + "/friend-simple   (or tunnel local port -> this VPS port)");

@@ -1,5 +1,4 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
 import bs58 from "bs58";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import {
@@ -9,7 +8,7 @@ import {
   type FriendBotSettings,
 } from "./config.js";
 
-const envPath = resolve(process.cwd(), ".env");
+import { envPath } from "./runtimePaths.js";
 
 const SETTINGS_KEYS = [
   "TRACKED_WALLETS",
