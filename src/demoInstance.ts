@@ -150,14 +150,13 @@ if (!existsSync(demoEnvPath)) {
     `UI_BASIC_AUTH_PASSWORD=${randomPassword()}`,
     // No imposed per-buy ceiling — the friend controls his own Max Buy + session cap in the UI.
     "FRIEND_MAX_LIVE_BUY_SOL=",
-    // Ceiling on TOTAL buy fees (tip + priority + helius) in SOL. Raised to 0.02 so the
-    // same-slot cheap tier (~0.006/snipe) is not clamped. Priority is charged per compute
-    // unit (price x COMPUTE_UNIT_LIMIT), which is why the tier lowers the CU limit to 400k.
-    "MAX_BUY_EXECUTION_FEE_SOL=0.02",
+    // Ceiling on TOTAL buy fees (tip + priority + helius) in SOL. Auto speed keeps a high
+    // ceiling available while MAX_BUY_EXECUTION_FEE_PCT_OF_BUY caps tiny buys.
+    "MAX_BUY_EXECUTION_FEE_SOL=0.05",
     "MAX_BUY_EXECUTION_FEE_PCT_OF_BUY=8",
     "FRIEND_MAX_LIVE_TIP_LAMPORTS=5000000",
     "FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS=10000000",
-    "MIN_BUY_SOL=0.02",
+    "MIN_BUY_SOL=0.001",
     "MAX_BUY_SOL=0.1",
     "COPY_BUY_PERCENTAGE=10",
     "SOL_RESERVE=0.05",
@@ -180,17 +179,17 @@ if (!existsSync(demoEnvPath)) {
     "RUST_ONLY_SELLS=true",
     "JITO_SHREDSTREAM_ENABLED=true",
     "JITO_SHREDSTREAM_GRPC_URL=http://127.0.0.1:9999",
-    "# Same-slot ShredStream hot sniper (cheap tier ~0.006 SOL/snipe) so the demo lands in-slot.",
+    "# Same-slot ShredStream hot sniper (Auto tier: high ceiling, capped by buy size).",
     "RUST_HOT_SNIPER_ENABLED=true",
     "RUST_HOT_SNIPER_PRIMARY=true",
-    "RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED=true",
+    "RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED=false",
     "RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS=20",
-    "RUST_HOT_SNIPER_JITO_TIP_LAMPORTS=3000000",
-    "RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS=0",
-    "RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS=8000000",
-    "RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL=0.02",
+    "RUST_HOT_SNIPER_JITO_TIP_LAMPORTS=10000000",
+    "RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS=1500000",
+    "RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS=18000000",
+    "RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL=0.05",
     "RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY=8",
-    "COMPUTE_UNIT_LIMIT=400000",
+    "COMPUTE_UNIT_LIMIT=1400000",
     "JITO_TIP_ORACLE_ENABLED=true",
     "DYNAMIC_PRIORITY_FEE_ENABLED=true",
     "JITO_CONNECTION_WARMUP_ENABLED=true",
@@ -212,8 +211,6 @@ upsertDemoEnv({
   // session cap in the UI (advanced controls). Empty FRIEND_MAX_LIVE_BUY_SOL makes
   // settingsStore skip the clamp entirely, so his UI value is authoritative.
   FRIEND_MAX_LIVE_BUY_SOL: "",
-  MAX_BUY_EXECUTION_FEE_SOL: "0.02",
-  MAX_BUY_EXECUTION_FEE_PCT_OF_BUY: "8",
   FRIEND_MAX_LIVE_TIP_LAMPORTS: "5000000",
   FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS: "10000000",
   // Fast pump.fun tokens move between quote and fill. 12% was too tight and caused
@@ -242,15 +239,9 @@ upsertDemoEnv({
   RUST_ONLY_SELLS: "true",
   JITO_SHREDSTREAM_ENABLED: "true",
   JITO_SHREDSTREAM_GRPC_URL: "http://127.0.0.1:9999",
-  // Same-slot ShredStream hot sniper, cheap fee tier (~0.006 SOL/snipe). Primary path with
-  // a 20ms head-start + Rust backstop. Uses its own RUST_HOT_SNIPER_* fees (not the friend
-  // UI caps), so the demo lands in Cented's slot instead of one hop behind. This is what the
-  // prospective buyer is here to feel — do not gate it behind the cheap-demo profile.
-  RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED: "true",
-  RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS: "20",
-  // RUST_HOT_SNIPER_ENABLED / PRIMARY + the fee values are set via defaultDemoEnv below
-  // (set-if-missing) so the friend's UI Speed selector — including the Off tier — persists
-  // across restarts. New instances default to ON.
+  // RUST_HOT_SNIPER_ENABLED / PRIMARY, fallback mode, fee values, and fee caps are set via
+  // defaultDemoEnv below (set-if-missing) so the friend's UI Speed selector and strict
+  // sniper posture persist across restarts. Do not clobber these on every launch.
   JITO_TIP_ORACLE_ENABLED: "true",
   DYNAMIC_PRIORITY_FEE_ENABLED: "true",
   JITO_CONNECTION_WARMUP_ENABLED: "true",
@@ -260,17 +251,23 @@ upsertDemoEnv({
   SENDER_RPC_FALLBACK_ENABLED: "true",
 });
 
-// Same-slot fee defaults (balanced tier ~0.006 SOL/snipe). Set-if-missing so the friend's UI
-// Speed selector can switch to Max/Eco and the choice persists across restarts.
+// Same-slot fee defaults. Set-if-missing so the friend's UI Speed selector can switch tiers
+// and strict-sniper/backstop choices persist across restarts. New instances default to Auto:
+// Max-grade fee ceiling, capped by buy size, with late fallback disabled.
 defaultDemoEnv({
   RUST_HOT_SNIPER_ENABLED: "true",
   RUST_HOT_SNIPER_PRIMARY: "true",
-  RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "3000000",
-  RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
-  RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
-  RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL: "0.02",
+  RUST_HOT_SNIPER_PRIMARY_FALLBACK_ENABLED: "false",
+  RUST_HOT_SNIPER_PRIMARY_FALLBACK_DELAY_MS: "20",
+  RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "10000000",
+  RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "1500000",
+  RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "18000000",
+  RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL: "0.05",
   RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY: "8",
-  COMPUTE_UNIT_LIMIT: "400000",
+  MAX_BUY_EXECUTION_FEE_SOL: "0.05",
+  MAX_BUY_EXECUTION_FEE_PCT_OF_BUY: "8",
+  MIN_BUY_SOL: "0.001",
+  COMPUTE_UNIT_LIMIT: "1400000",
 });
 
 process.chdir(demoDir);
