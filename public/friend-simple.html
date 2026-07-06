@@ -119,7 +119,33 @@
     .strategy b { display: block; font-size: 15px; }
     .strategy p { margin: 5px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.35; }
     .strategy .fee-line { display: block; margin-top: 7px; color: var(--blue); font-size: 11.5px; font-weight: 850; }
+    .wallet-mini { display: block; margin-top: 6px; color: var(--soft); font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; opacity: .86; }
     .badge { display: inline-flex; align-items: center; border-radius: 999px; background: rgba(93,242,174,.13); color: var(--green); padding: 5px 8px; font-size: 11px; font-weight: 950; white-space: nowrap; }
+    .research-panel {
+      border: 1px solid rgba(156,199,255,.2); border-radius: 16px;
+      background: linear-gradient(180deg, rgba(13,17,24,.72), rgba(5,8,12,.66));
+      padding: 14px; display: grid; gap: 12px; box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+    }
+    .research-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .research-head b { display: block; font-size: 15px; }
+    .research-head p { margin: 5px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+    .address-box {
+      border: 1px solid var(--line); border-radius: 13px; padding: 10px;
+      background: rgba(255,255,255,.025); display: grid; gap: 7px;
+    }
+    .address-box span { color: var(--muted); font-size: 10.5px; font-weight: 950; text-transform: uppercase; letter-spacing: .45px; }
+    .address-box code { color: var(--soft); font-size: 11px; overflow-wrap: anywhere; }
+    .mini-copy { min-height: 36px; padding: 7px 10px; border-radius: 11px; border: 1px solid var(--line); background: rgba(4,6,9,.72); color: var(--soft); font-weight: 950; white-space: nowrap; }
+    .research-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .research-stat { border: 1px solid var(--line); border-radius: 13px; padding: 10px; background: rgba(4,6,9,.54); min-width: 0; }
+    .research-stat span { display: block; color: var(--muted); font-size: 10px; font-weight: 950; text-transform: uppercase; letter-spacing: .45px; margin-bottom: 5px; }
+    .research-stat b { display: block; color: var(--text); font-size: 14px; line-height: 1.25; overflow-wrap: anywhere; }
+    .bucket-list, .takeaway-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+    .bucket-list li, .takeaway-list li {
+      border: 1px solid rgba(148,163,184,.13); border-radius: 12px;
+      background: rgba(255,255,255,.023); padding: 9px 10px; color: var(--soft); font-size: 12px; line-height: 1.42;
+    }
+    .research-source { color: var(--muted); font-size: 11px; line-height: 1.4; }
     .amount-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .amount { border: 1px solid var(--line); border-radius: 13px; background: rgba(4,6,9,.68); color: var(--soft); min-height: 46px; font-weight: 950; }
     .amount.active { border-color: transparent; background: linear-gradient(135deg, var(--green), var(--blue)); color: #02100a; }
@@ -253,8 +279,9 @@
       box-shadow: 0 0 0 1px rgba(105,230,190,.35), 0 0 60px rgba(105,230,190,.16) !important;
     }
     @media (max-width: 820px) {
-      .main-grid, .wallet-row, .row { grid-template-columns: 1fr; }
+      .main-grid, .wallet-row, .row, .research-grid { grid-template-columns: 1fr; }
       .amount-grid { grid-template-columns: 1fr 1fr; }
+      .research-head { display: grid; }
       .top { align-items: stretch; flex-direction: column; }
       #activityCard { position: static; height: min(680px, 78vh); max-height: none; }
       #activityCard .body { min-height: 0; }
@@ -332,6 +359,7 @@
           <div class="field" id="strategyStep">
             <label>2. Strategy</label>
             <div class="strategies" id="strategyGrid"></div>
+            <div class="research-panel" id="strategyResearch"></div>
             <details>
               <summary>Use my own wallet to copy</summary>
               <div class="details-body">
@@ -483,11 +511,176 @@
 
   <script>
     const STRATEGIES = [
-      { id: "cya", name: "Cented Strategy", short: "Fast runner wallet", wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o", risk: "Medium/High", amount: 0.01, maxBuy: 0.015, slippage: 50, tipLamports: 1500000, priorityFee: 1000000, feeHelp: "Competitive boost (~0.003 SOL total) so buys land near Cented without overpaying." },
-      { id: "4bdk", name: "Anchor Strategy", short: "Higher win-rate source exits", wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk", risk: "Medium", amount: 0.01, maxBuy: 0.015, slippage: 40, tipLamports: 1000000, priorityFee: 700000, feeHelp: "Lighter boost (~0.002 SOL total). This strategy does not need max aggression." },
-      { id: "2cq", name: "Scout Strategy", short: "Early launch hunter", wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG", risk: "High", amount: 0.005, maxBuy: 0.01, slippage: 55, tipLamports: 2000000, priorityFee: 1200000, feeHelp: "Most aggressive preset (~0.004 SOL total) because early-launch signals move fast." },
-      { id: "bwam", name: "Whale Tape", short: "Research whale-flow pool", wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa", risk: "High", amount: 0.01, maxBuy: 0.02, slippage: 50, tipLamports: 1500000, priorityFee: 1000000, feeHelp: "Normal competitive boost (~0.003 SOL total) for whale-flow copies." },
-      { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 40, tipLamports: 1000000, priorityFee: 700000, feeHelp: "Starter boost (~0.002 SOL total) for unknown wallets. Raise only after testing." }
+      {
+        id: "cya",
+        name: "Cented Strategy",
+        short: "Fast runner wallet",
+        wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
+        risk: "Medium/High",
+        amount: 0.01,
+        maxBuy: 0.015,
+        slippage: 50,
+        tipLamports: 1500000,
+        priorityFee: 1000000,
+        feeHelp: "Competitive boost (~0.003 SOL total) so buys land near Cented without overpaying.",
+        research: {
+          title: "Why this wallet?",
+          headline: "Cented is the fast-runner wallet. The audit says his best edge is early, low-market-cap entries with source sells plus a 50% profit lock at +30%.",
+          stats: [
+            ["Audit PnL", "+539.281 SOL"],
+            ["Win rate", "55.5%"],
+            ["Median ROI", "+4.43%"],
+            ["Profit factor", "2.14"]
+          ],
+          buckets: [
+            "$0-5k entry MC: 758 trades, 57.4% win, avg +19.4%, profit factor 4.16.",
+            "Pump route $0-5k: 616 trades, 58.9% win, median +5.6%, profit factor 4.23.",
+            "$100k+ entries were weak in the 7d bucket, but hybrid +30 profit lock improved that lane."
+          ],
+          takeaways: [
+            "Best use: copy early buys, avoid chasing very late high-MC entries.",
+            "Default exit: sell 50% at +30%, then follow the copied wallet.",
+            "Needs speed. Balanced or Max speed makes more sense than 0-fee for acquisition demos."
+          ],
+          source: "Sources: data/cya-quant.json, data/cya-ledger-buckets-latest.md, data/cya-100k-last7d.md"
+        }
+      },
+      {
+        id: "4bdk",
+        name: "Anchor Strategy",
+        short: "Higher win-rate source exits",
+        wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk",
+        risk: "Medium",
+        amount: 0.01,
+        maxBuy: 0.015,
+        slippage: 40,
+        tipLamports: 1000000,
+        priorityFee: 700000,
+        feeHelp: "Lighter boost (~0.002 SOL total). This strategy does not need max aggression.",
+        research: {
+          title: "Why this wallet?",
+          headline: "Anchor is the steadier source-exit wallet. The audit showed stronger win rate than Cented, larger median buys, and source exits that mattered more than aggressive manual exits.",
+          stats: [
+            ["Audit PnL", "+858.936 SOL"],
+            ["Win rate", "70.7%"],
+            ["Median ROI", "+30.19%"],
+            ["Profit factor", "5.94"]
+          ],
+          buckets: [
+            "Measured sample: 51 entries from 5,000 fetched transactions.",
+            "Source exit strategy: 70.6% win, avg +159.6%, median +30.6%, profit factor 25.11.",
+            "Hybrid +30 profit lock: 82.4% win, median +30.3%, profit factor 53.14 in the measured sample."
+          ],
+          takeaways: [
+            "Best use: let the wallet exit guide the trade instead of trying to over-manage.",
+            "Default exit: hybrid +30 lock, then source exit.",
+            "Risk is still real because drawdowns can be large before winners resolve."
+          ],
+          source: "Sources: data/4bdk-quant.json, data/path-wallet-audit-4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk.md"
+        }
+      },
+      {
+        id: "2cq",
+        name: "Scout Strategy",
+        short: "Early launch hunter",
+        wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+        risk: "High",
+        amount: 0.005,
+        maxBuy: 0.01,
+        slippage: 55,
+        tipLamports: 2000000,
+        priorityFee: 1200000,
+        feeHelp: "Most aggressive preset (~0.004 SOL total) because early-launch signals move fast.",
+        research: {
+          title: "Why this wallet?",
+          headline: "Scout is an early-launch hunter with many short campaigns. The audit says source exit is the cleanest model; many trades are tiny and fast, so this is not the beginner-safe lane.",
+          stats: [
+            ["Ledger PnL", "+364.685 SOL"],
+            ["Ledger win rate", "52.5%"],
+            ["Profit factor", "2.28"],
+            ["Median hold", "0.1 min"]
+          ],
+          buckets: [
+            "Wallet ledger: 6,254 realized trades, avg ROI +8.8%, median ROI +0.9%.",
+            "Path audit: source exit win 59.6%, avg +28.0%, median +2.8%, profit factor 3.44.",
+            "Hit rates in path sample: +30 on 14/50, +50 on 12/50, +100 on 9/50."
+          ],
+          takeaways: [
+            "Best use: small size, high speed, strict max-per-token cap.",
+            "Default exit: follow copied wallet sells; trailing/TP-only variants were weaker in the audit.",
+            "Expect more noise and more skipped/rejected trades than the steadier wallets."
+          ],
+          source: "Sources: data/wallet-ledger-audit-2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG.md, data/path-wallet-audit-2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG.md"
+        }
+      },
+      {
+        id: "bwam",
+        name: "Whale Tape",
+        short: "Research whale-flow pool",
+        wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa",
+        risk: "High",
+        amount: 0.01,
+        maxBuy: 0.02,
+        slippage: 50,
+        tipLamports: 1500000,
+        priorityFee: 1000000,
+        feeHelp: "Normal competitive boost (~0.003 SOL total) for whale-flow copies.",
+        research: {
+          title: "Why this wallet?",
+          headline: "Whale Tape is the large-flow research wallet. The audit is very strong, but open marks can be unstable, so this belongs in advanced testing rather than a first retail demo.",
+          stats: [
+            ["Realized PnL", "+2201.003 SOL"],
+            ["Win rate", "79.9%"],
+            ["Median ROI", "+47.6%"],
+            ["Profit factor", "13.58"]
+          ],
+          buckets: [
+            "$0-5k entry MC: 979 trades, avg +19.9%, profit factor 14.71, but median -2.2%.",
+            "$5k-10k entry MC: 8 trades, 87.5% win, median +542.9%, small sample.",
+            "7d window: +2186.0339 SOL net PnL, 79.6% win, profit factor 13.16."
+          ],
+          takeaways: [
+            "Best use: research/advanced pool, not the first beginner wallet.",
+            "Use hard exposure caps because the wallet flow can be large and fast.",
+            "Open-position marks may exaggerate results; prefer realized PnL and closed buckets."
+          ],
+          source: "Sources: data/wallet-ledger-audit-bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa.md, data/wallet-ledger-buckets-bwam-5000.md, data/wallet-pnl-windows-bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa.md"
+        }
+      },
+      {
+        id: "custom",
+        name: "Custom Wallet",
+        short: "Paste your own WalletTracker result",
+        wallet: "",
+        risk: "Custom",
+        amount: 0.01,
+        maxBuy: 0.01,
+        slippage: 40,
+        tipLamports: 1000000,
+        priorityFee: 700000,
+        feeHelp: "Starter boost (~0.002 SOL total) for unknown wallets. Raise only after testing.",
+        research: {
+          title: "Custom Wallet",
+          headline: "Use this after WalletTracker finds a wallet you want to test. Start in Shadow first because Obsidian has no saved audit summary for custom addresses yet.",
+          stats: [
+            ["Audit status", "Not preloaded"],
+            ["Best first mode", "Shadow"],
+            ["Suggested size", "0.005-0.01 SOL"],
+            ["Exit model", "Source sells"]
+          ],
+          buckets: [
+            "No bucket report is attached to custom wallets in this UI yet.",
+            "Use WalletTracker or a bucket audit before increasing live size.",
+            "Keep Max SOL in one token and Max SOL this session low for the first run."
+          ],
+          takeaways: [
+            "Paste one wallet address, save settings, then run Shadow.",
+            "Only move to Live after you see clean buy/sell behavior.",
+            "If the wallet buys huge or late, cap your bot size with the advanced limits."
+          ],
+          source: "Source: user-provided wallet. No built-in audit."
+        }
+      }
     ];
     const AMOUNTS = [0.01, 0.05, 0.1, 0.25];
     const AUTO_PRESETS = {
@@ -594,8 +787,8 @@
       {
         id: "strategyStep",
         title: "Pick who to copy",
-        text: "A strategy is a prebuilt wallet-following setup. It chooses the tracked wallet and loads the default risk settings for that trader.",
-        note: "Beginners should pick one strategy and leave the defaults alone for the first run."
+        text: "A strategy is a prebuilt wallet-following setup. The research card shows the full wallet address, audit stats, bucket highlights, and the simple reason this wallet is in the menu.",
+        note: "Beginners should pick one strategy, read the takeaways, and leave the defaults alone for the first run."
       },
       {
         id: "amountStep",
@@ -646,6 +839,9 @@
       if (n <= 0) return "0 priority";
       const sol = (n * COMPUTE_UNITS) / 1e6 / 1e9;
       return `~${sol.toFixed(4)} SOL priority`;
+    }
+    function shortWallet(wallet) {
+      return wallet ? `${wallet.slice(0, 6)}...${wallet.slice(-6)}` : "Custom wallet";
     }
     function setFeeDefaults(strategy = selected, force = false) {
       if (!strategy) return;
@@ -800,7 +996,7 @@
     function renderStrategies() {
       $("strategyGrid").innerHTML = STRATEGIES.map((s) => `
         <button class="strategy ${s.id === selected.id ? "active" : ""}" data-strategy="${esc(s.id)}" type="button">
-          <span><b>${esc(s.name)}</b><p>${esc(s.short)}<span class="fee-line">Fee boost: ${esc(fmtTip(s.tipLamports))} + ${esc(fmtPriority(s.priorityFee))}</span></p></span>
+          <span><b>${esc(s.name)}</b><p>${esc(s.short)}<span class="wallet-mini">${esc(shortWallet(s.wallet))}</span><span class="fee-line">Fee boost: ${esc(fmtTip(s.tipLamports))} + ${esc(fmtPriority(s.priorityFee))}</span></p></span>
           <span class="badge">${esc(s.risk)}</span>
         </button>
       `).join("");
@@ -811,6 +1007,49 @@
         setFeeDefaults(selected, feeMode);
         toast(`${selected.name} selected.`);
       }));
+    }
+    function renderStrategyResearch() {
+      const research = selected.research || {};
+      const stats = Array.isArray(research.stats) ? research.stats : [];
+      const buckets = Array.isArray(research.buckets) ? research.buckets : [];
+      const takeaways = Array.isArray(research.takeaways) ? research.takeaways : [];
+      const address = selected.id === "custom" ? ($("customWallets").value.trim() || "Paste a wallet below to show it here.") : selected.wallet;
+      $("strategyResearch").innerHTML = `
+        <div class="research-head">
+          <div>
+            <b>${esc(research.title || "Why this strategy?")}</b>
+            <p>${esc(research.headline || "Historical research appears here for prebuilt wallets.")}</p>
+          </div>
+          <button class="mini-copy" id="copyStrategyWallet" type="button" ${selected.id === "custom" && !address.startsWith("Paste") ? "" : selected.wallet ? "" : "disabled"}>Copy address</button>
+        </div>
+        <div class="address-box">
+          <span>Full wallet address</span>
+          <code>${esc(address)}</code>
+        </div>
+        <div class="research-grid">
+          ${stats.map(([label, value]) => `<div class="research-stat"><span>${esc(label)}</span><b>${esc(value)}</b></div>`).join("")}
+        </div>
+        <div>
+          <label>Bucket highlights</label>
+          <ul class="bucket-list">${buckets.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+        </div>
+        <div>
+          <label>Plain-English takeaways</label>
+          <ul class="takeaway-list">${takeaways.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+        </div>
+        <div class="research-source">${esc(research.source || "")}</div>
+      `;
+      const copyBtn = $("copyStrategyWallet");
+      if (copyBtn) copyBtn.addEventListener("click", async () => {
+        const wallet = selected.id === "custom" ? $("customWallets").value.trim() : selected.wallet;
+        if (!wallet) return toast("Paste a custom wallet first.");
+        try {
+          await navigator.clipboard.writeText(wallet);
+          toast("Wallet address copied.");
+        } catch {
+          toast(wallet);
+        }
+      });
     }
     function renderAmounts() {
       $("amountGrid").innerHTML = AMOUNTS.map((a) => `<button class="amount ${a === amount ? "active" : ""}" data-amount="${a}" type="button">${a} SOL</button>`).join("");
@@ -877,6 +1116,7 @@
     }
     function render() {
       renderStrategies();
+      renderStrategyResearch();
       renderAmounts();
       renderAutomationPresets();
       renderActivityStats();
@@ -1130,6 +1370,7 @@
       render();
     });
     $("customAmount").addEventListener("input", () => { const n = Number($("customAmount").value); if (Number.isFinite(n) && n > 0) amount = n; render(); });
+    $("customWallets").addEventListener("input", () => { if (selected.id === "custom") renderStrategyResearch(); });
     $("liveToggle").addEventListener("click", () => {
       if (!liveMode && !confirm("Live Money mode can spend real SOL. Use a tiny amount first. Switch to Live?")) return;
       liveMode = !liveMode; render();
