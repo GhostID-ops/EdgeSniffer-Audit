@@ -326,6 +326,7 @@
       <div class="sniper-badge" id="sniperBadge">⚡ <span><b>Same-Slot Sniper active.</b> Your copy is submitted through Jito ShredStream to land in the <b>same slot</b> as the tracked wallet — not seconds behind. Bigger buys make the fixed speed fee a smaller %.</span></div>
       <div class="speed-row" id="speedRow">
         <span class="speed-label">⚡ Speed</span>
+        <button class="speed-btn" data-tier="auto" type="button">Auto <small>Max when needed · capped</small></button>
         <button class="speed-btn" data-tier="max" type="button">Max <small>~0.037 SOL/snipe</small></button>
         <button class="speed-btn" data-tier="balanced" type="button">Balanced <small>~0.006 SOL/snipe</small></button>
         <button class="speed-btn" data-tier="eco" type="button">Eco <small>~0.004 SOL/snipe</small></button>
@@ -540,7 +541,7 @@
           takeaways: [
             "Best use: copy early buys, avoid chasing very late high-MC entries.",
             "Default exit: sell 50% at +30%, then follow the copied wallet.",
-            "Needs speed. Balanced or Max speed makes more sense than 0-fee for acquisition demos."
+            "Needs speed. Auto speed is best for demos: it can compete on huge source buys but caps fee spend by your buy size."
           ],
           source: "Sources: data/cya-quant.json, data/cya-ledger-buckets-latest.md, data/cya-100k-last7d.md"
         }
@@ -721,7 +722,7 @@
       balanced: {
         name: "Balanced Live",
         short: "Recommended acquisition demo.",
-        speed: "balanced",
+        speed: "auto",
         live: true,
         amountMax: null,
         reserve: 0.05,
@@ -733,7 +734,7 @@
         maxFeePct: 8,
         slippageBoost: 0,
         feeMode: false,
-        note: "Default retail preset: same-slot sniper on, capped fees, auto-sells, and moderate exposure."
+        note: "Default retail preset: same-slot sniper on, Auto speed with capped fees, auto-sells, and moderate exposure."
       },
       max: {
         name: "Max Speed",
@@ -873,6 +874,8 @@
       if (tier === currentSpeed) return;
       const msg = tier === "off"
         ? "Turn the Same-Slot Sniper OFF?\n\nBuys will use the slower gRPC mirror (no snipe fee, but you land about a slot behind). This restarts the bot (~10s). If it was running, press Start again after."
+        : tier === "auto"
+          ? "Switch speed to AUTO?\n\nAuto uses Max-grade sniper fees when needed, but caps fee spend by buy size so tiny buys do not pay full Max cost. This restarts the bot (~10s). If it was running, press Start again after."
         : "Switch speed to " + tier.toUpperCase() + "?\n\nThe sniper stays ON — only the fee level changes. This restarts the bot (~10s). If it was running, press Start again after.";
       if (!confirm(msg)) return;
       try {
@@ -1136,7 +1139,7 @@
       $("feeRecommendation").innerHTML = feeMode
         ? `<span class="plain-word">Extra fallback fees ON:</span> ${esc(fmtTip(feeTip))} + ${esc(fmtPriority(feePriority))}. ${esc(selected.feeHelp || "Use small values first.")}`
         : liveMode
-          ? `<span class="plain-word">Extra fallback fees OFF:</span> regular tip/priority is 0. Same-slot cost comes only from the Speed choice above (${esc(currentSpeed)}), capped by Max speed fee budget.`
+          ? `<span class="plain-word">Extra fallback fees OFF:</span> regular tip/priority is 0. Same-slot cost comes only from the Speed choice above (${esc(currentSpeed)}), capped by Max speed fee budget and % of buy size.`
           : `<span class="plain-word">Extra fallback fees OFF:</span> Shadow mode needs no fees. Use Speed Off for 0 same-slot fees, or Balanced/Eco/Max for competitive same-slot attempts.`;
       $("summaryText").className = `notice ${liveMode ? "warning" : ""}`;
       $("summaryText").textContent = `Selected: ${selected.name}. Normal buy: ${amount.toFixed(3)} SOL. Hard max: ${Number($("maxBuy").value || amount).toFixed(3)} SOL. Sells: ${mirrorSells ? "follow copied wallet" : "manual only"}. Profit lock: sell 50% at +30%, then follow the copied wallet.`;

@@ -259,14 +259,29 @@ export function persistFriendRiskSettings(body: Record<string, unknown>): { risk
   return { riskUpdated: true };
 }
 
-export type SpeedTier = "max" | "balanced" | "eco" | "off";
+export type SpeedTier = "auto" | "max" | "balanced" | "eco" | "off";
 
 // Same-slot fee tiers for the friend demo. Max/Balanced/Eco keep the hot sniper ON and only
 // change the fee level (priority is charged per compute unit, so cheaper tiers also shrink
 // COMPUTE_UNIT_LIMIT). Off disables the sniper so buys use the slower gRPC mirror with no
-// snipe fee. Approx cost per landed snipe: max ~0.037, balanced ~0.006, eco ~0.004 SOL. These
-// keys are read by the Rust sidecar at startup, so persisting a tier requires a restart.
+// snipe fee. Approx cost per landed snipe before caps: max/auto ~0.037, balanced ~0.006,
+// eco ~0.004 SOL. Auto keeps Max-grade fee ceilings available, then the executor caps the
+// actual spend by buy size (MAX_BUY_EXECUTION_FEE_PCT_OF_BUY), so tiny buys do not pay
+// full Max fees. These keys are read by the Rust sidecar at startup, so persisting a tier
+// requires a restart.
 const SPEED_TIERS: Record<SpeedTier, Record<string, string>> = {
+  auto: {
+    RUST_HOT_SNIPER_ENABLED: "true",
+    RUST_HOT_SNIPER_PRIMARY: "true",
+    RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "10000000",
+    RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "1500000",
+    RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "18000000",
+    COMPUTE_UNIT_LIMIT: "1400000",
+    MAX_BUY_EXECUTION_FEE_SOL: "0.05",
+    MAX_BUY_EXECUTION_FEE_PCT_OF_BUY: "8",
+    RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL: "0.05",
+    RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY: "8",
+  },
   max: {
     RUST_HOT_SNIPER_ENABLED: "true",
     RUST_HOT_SNIPER_PRIMARY: "true",
@@ -317,13 +332,15 @@ const SPEED_TIERS: Record<SpeedTier, Record<string, string>> = {
 };
 
 function normalizeSpeedTier(tier: unknown): SpeedTier {
-  return tier === "max" || tier === "eco" || tier === "off" ? tier : "balanced";
+  return tier === "auto" || tier === "max" || tier === "eco" || tier === "off" ? tier : "balanced";
 }
 
 /** Current tier from the hot-sniper state/tip in the environment. */
 export function getSpeedTier(): SpeedTier {
   if (String(process.env.RUST_HOT_SNIPER_ENABLED ?? "").trim().toLowerCase() === "false") return "off";
   const tip = Number(process.env.RUST_HOT_SNIPER_JITO_TIP_LAMPORTS ?? 0);
+  const pct = Number(process.env.RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY ?? process.env.MAX_BUY_EXECUTION_FEE_PCT_OF_BUY ?? NaN);
+  if (tip >= 10_000_000 && Number.isFinite(pct) && pct <= 8) return "auto";
   if (tip >= 10_000_000) return "max";
   if (tip > 0 && tip <= 2_000_000) return "eco";
   return "balanced";
