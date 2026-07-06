@@ -209,7 +209,7 @@
     .toast { position: fixed; right: 16px; bottom: 16px; z-index: 30; border: 1px solid var(--line); border-radius: 14px; background: rgba(17,23,34,.86); color: var(--text); padding: 12px; display: none; max-width: min(420px, calc(100% - 32px)); font-size: 13px; backdrop-filter: blur(18px); }
     .toast.show { display: block; }
     .tour {
-      position: fixed; inset: 0; z-index: 40; display: none;
+      position: fixed; inset: 0; z-index: 1000; display: none;
       background: radial-gradient(circle at var(--tour-x, 50%) var(--tour-y, 28%), transparent 0 150px, rgba(0,0,0,.58) 310px, rgba(0,0,0,.82) 100%);
       padding: 22px; pointer-events: none;
     }
@@ -221,7 +221,7 @@
       border-radius: 20px; background: linear-gradient(180deg, rgba(18,22,29,.9), rgba(7,10,14,.88));
       padding: 24px; box-shadow: 0 26px 90px rgba(0,0,0,.68), inset 0 1px 0 rgba(255,255,255,.06);
       backdrop-filter: blur(22px) saturate(135%); pointer-events: auto;
-      max-height: calc(100vh - 44px); overflow-y: auto;
+      max-height: calc(100vh - 44px); overflow-y: auto; z-index: 1001;
     }
     .tour-kicker { color: var(--green); font-size: 11px; font-weight: 950; letter-spacing: .7px; text-transform: uppercase; margin-bottom: 9px; }
     .tour-card h2 { margin-bottom: 10px; font-size: 23px; letter-spacing: -.2px; }
@@ -237,7 +237,7 @@
     .tour-actions .primary, .tour-actions .secondary { min-height: 46px; min-width: 96px; }
     .tour-actions button:disabled { opacity: .38; cursor: not-allowed; }
     .focus-ring {
-      outline: 2px solid rgba(105,230,190,.98); outline-offset: 9px; position: relative; z-index: 45;
+      outline: 2px solid rgba(105,230,190,.98); outline-offset: 9px; position: relative; z-index: 35;
       box-shadow: 0 0 0 1px rgba(105,230,190,.35), 0 0 60px rgba(105,230,190,.16) !important;
     }
     @media (max-width: 820px) {
