@@ -2,82 +2,110 @@
 
 Wallet: `CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o`
 
-Last updated: 2026-06-26
+Last updated: 2026-07-06
 
 Fresh runs used:
 
 - Quant audit: `npx tsx src/walletQuantAudit.ts CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 6000 260`
 - Quant artifact: `data/cya-quant.json`
-- Expanded quant audit: `npx tsx src/walletQuantAudit.ts CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 10000 600`
-- Expanded quant artifact: `data/cya-quant-large.json`
-- 100k+ last-7d audit: `node scripts/analyzeCya100kLast7d.mjs 100000 7 24`
-- 100k+ last-7d artifacts: `data/cya-100k-last7d.json`, `data/cya-100k-last7d.md`
-- Recent path audit: `PATH_AUDIT_QUIET=true npx tsx src/pathBasedWalletAudit.ts CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 6000 60 24 20`
-- Generated recent-trade detail: `data/path-wallet-audit-CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o.md`
-- Latest 48h ledger bucket audit: `npm run audit:wallet-ledger-buckets -- CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 2500 cya-ledger-buckets-latest-48h`
-- Latest 48h ledger artifacts: `data/cya-ledger-buckets-latest-48h.json`, `data/cya-ledger-buckets-latest-48h.md`
+- Latest-day ledger bucket audit: `npm run audit:wallet-ledger-buckets -- CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 2500 cya-ledger-buckets-latest-48h`
+- Latest-day ledger artifacts: `data/cya-ledger-buckets-latest-48h.json`, `data/cya-ledger-buckets-latest-48h.md`
+- Latest 12,001-tx ledger bucket audit: `npm run audit:wallet-ledger-buckets -- CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o 12001 cya-ledger-buckets-latest`
+- Latest 12,001-tx ledger artifacts: `data/cya-ledger-buckets-latest.json`, `data/cya-ledger-buckets-latest.md`
+- Older historical context retained below: expanded quant, 100k+ last-7d, and path audits from the June research pass.
 
 ## Current Verdict
 
-CyA is still an exit-led wallet. The fresh 6,000-tx sample continues to reject simple fixed TP/SL and time exits. The best tested behavior is still to stay close to CyA's exit, with the best current backtest variant being `50% at +30%, 50% source exit`.
+CyA is still an exit-led wallet. The July 6 refresh continues to reject simple fixed TP/SL and time exits. The best tested behavior is still to stay close to CyA's exit, with the best current backtest variant being `50% at +30%, 50% source exit`.
 
-Latest update: the fresh 48h ledger-first scan changed the market-cap read. The recent edge is concentrated under `$20k`, and both `$0-5k` and `$5k-10k` were positive in source-exit ROI. Do not blindly tighten CyA to a hard `$10k` or `$20k` minimum from old notes.
+Latest update: the fresh latest-day ledger scan now covers `2026-07-05T23:16:24Z` to `2026-07-06T21:11:54Z`. The source-exit edge remains strongest below `$50k` entry MC, while `$100k+` is currently bad. Do not blindly chase CyA's high-MC buys just because they look safer on the chart.
 
 Best current approach:
 
 - Copy once per mint.
-- Use `0.25 SOL` fixed-size entries.
-- Cap live exposure to `0.75 SOL` per session and `2` open positions.
+- Use small fixed-size entries for validation; size up only after execution telemetry shows we are consistently same-slot/next-slot.
+- Cap live exposure tightly during research runs.
 - Keep impact/drift protection.
 - Use the already-implemented CyA hybrid/source-exit mode: `HYBRID_EXIT_ENABLED=true`, `HYBRID_EXIT_TP_PCT=30`, `HYBRID_EXIT_TP_SELL_PCT=50`, `HYBRID_EXIT_SOURCE_EXIT_REMAINING=true`.
 - Keep `MIRROR_SELLS=true` so the remainder exits on CyA/source sell signals.
-- Do not add hot-path HTTP filters for same-slot copy. Use local inferred MC only if deliberately testing a filter; the latest 48h bucket scan does not justify a hard `$10k+` minimum.
+- Do not add hot-path HTTP filters for same-slot copy. Use local inferred MC only if deliberately testing a filter; the latest scan does not justify a hard `$10k+` minimum.
 - Treat Moralis volume/liquidity/momentum filters as research-only for same-slot copy because they add hot-path latency.
 - Do not use the latest 3-entry path audit as a broad strategy sample; use it only as a last-trades sanity check.
 
-## Latest 48h Ledger Bucket Audit
+## Latest-Day Ledger Bucket Audit
 
-Generated `2026-06-26T18:39:24Z` from a fresh `2,500` transaction Helius scan. This is a high-coverage ledger-first source-exit audit, not a slow candle/MFE path audit. It covers `2026-06-24T18:34:44Z` to `2026-06-26T18:35:34Z`.
+Generated `2026-07-06T21:12:37Z` from a fresh `2,500` transaction Helius scan. This is a high-coverage ledger-first source-exit audit, not a slow candle/MFE path audit. It covers `2026-07-05T23:16:24Z` to `2026-07-06T21:11:54Z`.
 
 Coverage:
 
 - Transactions fetched: `2,500`
-- Reconstructed fills: `1,891`
-- Campaigns: `235`
-- Closed measured campaigns: `232`
-- Pump rows: `195`
-- BAGS rows: `2`
-- Other rows: `35`
+- Reconstructed fills: `1,863`
+- Campaigns: `283`
+- Closed measured campaigns: `281`
+- Pump rows: `221`
+- BAGS rows: `3`
+- Other rows: `57`
 
 All-route market-cap bucket performance:
 
 | Entry MC | n | Win | Avg ROI | Median ROI | PF | Total PnL | Median hold |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| `$0-5k` | 123 | 65.0% | +22.9% | +8.2% | 4.97 | +170.69 SOL | 0.42m |
-| `$5k-10k` | 60 | 51.7% | +17.2% | +3.6% | 2.50 | +77.71 SOL | 0.55m |
-| `$10k-20k` | 28 | 60.7% | +40.2% | +8.3% | 5.95 | +102.03 SOL | 1.49m |
-| `$20k-50k` | 17 | 35.3% | +9.8% | -16.7% | 1.49 | +1.40 SOL | 2.72m |
-| `$50k-100k` | 2 | 0.0% | -6.1% | -6.1% | 0.00 | -0.79 SOL | 0.18m |
-| `$100k+` | 2 | 0.0% | -13.9% | -13.9% | 0.00 | -5.75 SOL | 25.66m |
+| `$0-5k` | 137 | 62.8% | +26.1% | +7.0% | 6.75 | +189.67 SOL | 0.32m |
+| `$5k-10k` | 64 | 53.1% | +13.4% | +3.9% | 2.29 | +90.69 SOL | 0.32m |
+| `$10k-20k` | 29 | 44.8% | +13.1% | -6.0% | 1.83 | +68.21 SOL | 0.73m |
+| `$20k-50k` | 24 | 58.3% | +52.5% | +10.2% | 6.90 | +36.78 SOL | 0.49m |
+| `$50k-100k` | 11 | 27.3% | +8.6% | -7.0% | 1.63 | +4.09 SOL | 0.82m |
+| `$100k+` | 16 | 18.8% | -12.6% | -15.8% | 0.26 | -35.20 SOL | 0.84m |
 
 Pump-only bucket performance:
 
 | Entry MC | n | Win | Avg ROI | Median ROI | PF | Total PnL | Median hold |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| `$0-5k` | 102 | 65.7% | +23.2% | +8.3% | 5.15 | +134.83 SOL | 0.49m |
-| `$5k-10k` | 50 | 54.0% | +13.7% | +6.5% | 2.30 | +59.95 SOL | 0.69m |
-| `$10k-20k` | 25 | 60.0% | +43.0% | +3.6% | 5.73 | +94.72 SOL | 0.85m |
-| `$20k-50k` | 15 | 26.7% | +3.1% | -19.7% | 1.14 | -16.56 SOL | 2.72m |
-| `$50k-100k` | 1 | 0.0% | -2.7% | -2.7% | 0.00 | -0.27 SOL | 0.12m |
-| `$100k+` | 2 | 0.0% | -13.9% | -13.9% | 0.00 | -5.75 SOL | 25.66m |
+| `$0-5k` | 108 | 58.3% | +20.7% | +5.9% | 5.05 | +107.38 SOL | 0.38m |
+| `$5k-10k` | 50 | 48.0% | +12.0% | -2.6% | 2.07 | +82.78 SOL | 0.32m |
+| `$10k-20k` | 22 | 54.5% | +23.7% | +0.5% | 2.73 | +77.63 SOL | 0.85m |
+| `$20k-50k` | 18 | 50.0% | +66.2% | +5.9% | 7.41 | +35.68 SOL | 0.58m |
+| `$50k-100k` | 10 | 20.0% | -4.3% | -7.4% | 0.71 | -3.91 SOL | 0.79m |
+| `$100k+` | 13 | 23.1% | -12.1% | -17.2% | 0.31 | -27.82 SOL | 1.12m |
 
 Latest 48h read:
 
-- The recent edge is concentrated below `$20k` entry MC, with `$10k-20k` the strongest current bucket by average ROI and profit factor.
-- `$20k+` is not attractive in this fresh window. The sample is thinner, but the median ROI turns negative and source-capital results weaken sharply.
+- The latest-day edge is broad below `$50k`, not just one neat bucket.
+- `$100k+` is the clear avoid zone in this fresh window: negative average ROI, negative median ROI, weak profit factor, and `-35.20 SOL` total PnL.
 - The old instinct to blindly tighten CyA to `PREBUY_MIN_MARKET_CAP_USD=10000` is not obviously correct: `$0-5k` and `$5k-10k` both printed positive median ROI in the latest ledger scan.
-- For live CyA, the safer current interpretation is: keep broad low-cap access, prefer fast execution and sell-following, and do not overfit a hard `$10k` minimum from older/stale logs.
+- For live CyA, the safer current interpretation is: keep broad low-cap access, prefer fast execution and sell-following, cap high-MC exposure, and do not overfit a hard `$10k` minimum from older/stale logs.
 - This audit measures source-exit performance only. It does not answer MFE/target-hit timing; use candle audits for TP/trailing design when we specifically need that.
+
+## Latest 12,001-Tx Ledger Bucket Audit
+
+Generated `2026-07-06T21:15:33Z` from a fresh `12,001` transaction Helius scan. This covers `2026-06-30T05:02:37Z` to `2026-07-06T21:12:21Z`.
+
+Coverage:
+
+- Transactions fetched: `12,001`
+- Reconstructed fills: `7,906`
+- Campaigns: `1,192`
+- Closed measured campaigns: `1,188`
+- Pump rows: `961`
+- BAGS rows: `9`
+- Other rows: `218`
+
+All-route market-cap bucket performance:
+
+| Entry MC | n | Win | Avg ROI | Median ROI | PF | Total PnL | Median hold |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `$0-5k` | 556 | 60.6% | +20.0% | +5.9% | 3.99 | +526.42 SOL | 0.30m |
+| `$5k-10k` | 260 | 48.1% | +12.4% | -0.4% | 2.17 | +371.43 SOL | 0.34m |
+| `$10k-20k` | 126 | 37.3% | +3.3% | -8.3% | 1.21 | +82.12 SOL | 0.82m |
+| `$20k-50k` | 103 | 46.6% | +20.6% | -2.9% | 2.36 | +132.44 SOL | 0.63m |
+| `$50k-100k` | 63 | 39.7% | +12.3% | -4.8% | 1.88 | +147.90 SOL | 0.50m |
+| `$100k+` | 80 | 36.3% | +1.0% | -13.8% | 1.07 | +1.83 SOL | 0.72m |
+
+Broad read:
+
+- The week-scale source-exit edge is still positive across most buckets, but median ROI weakens above `$10k`.
+- The latest-day scan is harsher on `$100k+` than the week-scale scan. Treat high-MC CyA entries as a special case, not the default lane.
+- Pump route remains the core strategy surface. BAGS sample size is too small for a confident CyA-specific rule.
 
 ## Expanded 10k-Tx Check
 
@@ -169,57 +197,55 @@ Coverage:
 Quant pass:
 
 - Wallet tx cache: `6000` txs
-- Swaps reconstructed: `4621`
-- Buys/sells: `3440 / 1181`
-- Campaigns: `619`
-- Closed campaigns: `618`
-- Candle-enriched entries: `212`
-- Window: `2026-06-14T01:13:01Z` to `2026-06-17T12:42:25Z`
+- Swaps reconstructed: `3944`
+- Buys/sells: `2871 / 1073`
+- Campaigns: `582`
+- Closed campaigns: `580`
+- Candle-enriched entries: `260`
+- Window: `2026-07-03T00:13:33Z` to `2026-07-06T21:14:50Z`
 
 Wallet-level stats:
 
-- Realized PnL: `+539.28 SOL`
-- Closed-campaign win rate: `55.5%`
-- Average source ROI: `+12.5%`
-- Median source ROI: `+4.4%`
-- Profit factor: `2.14`
-- Median hold time: `0.60 min`
+- Realized PnL: `+601.67 SOL`
+- Closed-campaign win rate: `54.0%`
+- Average source ROI: `+18.2%`
+- Median source ROI: `+2.8%`
+- Profit factor: `2.64`
+- Median hold time: `0.42 min`
 - Median entry size: `3.008 SOL`
-- Average entry size: `3.721 SOL`
-- Largest win/loss: `+82.14 SOL / -22.17 SOL`
-- Top 5 winners contributed `45.0%` of total realized SOL
+- Average entry size: `3.855 SOL`
+- Largest win/loss: `+104.80 SOL / -14.21 SOL`
 
 Entry environment:
 
-- Median pre-5m volume: `$8.0k`
-- P75 pre-5m volume: `$17.7k`
-- Median current liquidity: `$3.6k`
-- Median current market cap: `$2.1k`
-- Median MFE: `+0.9%`
-- Median MAE: `-46.3%`
+- Median pre-5m volume: `$9.6k`
+- P75 pre-5m volume: `$18.6k`
+- Median current liquidity: `$4.5k`
+- Median current market cap: `$2.3k`
+- Median MFE: `+3.9%`
+- Median MAE: `-37.3%`
 
 Approximation caveat: entry market cap uses entry candle USD price and assumes 1B supply. It is useful for Pump.fun/Bags-style historical bucket research, but it is not a precise live DexScreener market cap.
 
 ## Strategy Backtest
 
-Fresh `212` candle-enriched entry sample:
+Fresh `260` candle-enriched entry sample:
 
 | Strategy | Trades | Win % | Avg ROI | Median ROI | Profit factor | Max drawdown |
 |---|---:|---:|---:|---:|---:|---:|
-| 50% at +30, 50% CyA exit | 212 | 57.5% | +9.9% | +5.5% | 2.18 | -179.9% |
-| Sell when CyA sells | 212 | 50.9% | +9.5% | +0.7% | 1.93 | -214.4% |
-| 20% trailing stop | 212 | 22.2% | -1.9% | -4.1% | 0.76 | -581.0% |
-| TP30 SL20 | 212 | 12.7% | -9.1% | -20.0% | 0.22 | -1923.8% |
-| TP50 SL25 | 212 | 12.3% | -10.2% | -24.7% | 0.28 | -2176.5% |
-| Time exit 30m | 212 | 12.7% | -25.6% | -17.0% | 0.15 | -5443.4% |
-| Time exit 1h | 212 | 9.4% | -28.5% | -25.3% | 0.16 | -6082.1% |
-| Time exit 4h | 212 | 8.0% | -35.3% | -32.0% | 0.06 | -7482.2% |
-| Time exit 24h | 212 | 7.1% | -37.2% | -39.6% | 0.07 | -7880.2% |
+| Sell when CyA sells | 260 | 55.0% | +20.4% | +3.8% | 3.53 | -105.2% |
+| 50% at +30, 50% CyA exit | 260 | 63.8% | +20.3% | +10.1% | 4.18 | -105.2% |
+| 20% trailing stop | 260 | 21.5% | +17.5% | -3.8% | 3.33 | -384.3% |
+| TP30 SL20 | 260 | 10.0% | -9.9% | -20.0% | 0.18 | -2578.4% |
+| TP50 SL25 | 260 | 10.4% | -10.8% | -24.1% | 0.25 | -2841.0% |
+| TP60 SL30 | 260 | 12.3% | -11.0% | -18.7% | 0.33 | -2921.5% |
+| Time exit 30m | 260 | 8.1% | -21.0% | -20.6% | 0.32 | -5581.8% |
+| Time exit 1h | 260 | 6.9% | -30.0% | -24.7% | 0.09 | -7831.4% |
 
 Read:
 
 - The strongest tested live-compatible behavior remains `MIRROR_SELLS=true`.
-- The best tested behavior overall is the hybrid `50% at +30%, 50% CyA exit`.
+- The best tested behavior overall is still the hybrid `50% at +30%, 50% CyA exit`: it has the best win rate, median ROI, and profit factor in the fresh quant pass.
 - Fixed TP/SL remains a bad CyA fit.
 - Time exits are very poor because the wallet often enters violent paths where the realized edge comes from CyA's exit timing, not passive holding.
 
@@ -227,17 +253,17 @@ Read:
 
 | Target | Hit probability | Avg time to hit |
 |---|---:|---:|
-| `+10%` | 34.4% | 2265s |
-| `+20%` | 27.8% | 2723s |
-| `+30%` | 23.1% | 2880s |
-| `+50%` | 18.4% | 3990s |
-| `+100%` | 7.5% | 7259s |
+| `+10%` | 38.1% | 528s |
+| `+20%` | 27.7% | 851s |
+| `+30%` | 21.5% | 976s |
+| `+50%` | 15.8% | 1000s |
+| `+100%` | 6.9% | 2588s |
 
 | Downside | Hit probability |
 |---|---:|
-| `-10%` | 62.7% |
-| `-20%` | 57.1% |
-| `-30%` | 53.8% |
+| `-10%` | 61.5% |
+| `-20%` | 56.5% |
+| `-30%` | 51.5% |
 
 Read:
 
@@ -249,17 +275,18 @@ Read:
 
 | Approx entry MC | n | Win % source exit | Avg source ROI | Median source ROI | Hit +20 | Hit +30 | Hit +50 | Median MFE | Median MAE |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `$0-5k` | 112 | 43.8% | -2.6% | -4.2% | 10.7% | 8.0% | 6.3% | 0.0% | -3.5% |
-| `$5k-10k` | 34 | 61.8% | +14.6% | +10.4% | 41.2% | 38.2% | 35.3% | +18.1% | -70.2% |
-| `$10k-20k` | 12 | 41.7% | +7.5% | -7.7% | 33.3% | 16.7% | 16.7% | +6.7% | -83.0% |
-| `$20k-50k` | 38 | 63.2% | +33.4% | +12.6% | 52.6% | 44.7% | 28.9% | +20.7% | -92.1% |
-| `$50k-100k` | 5 | 80.0% | +63.9% | +36.9% | 40.0% | 40.0% | 40.0% | +4.9% | -49.0% |
-| `$100k+` | 11 | 45.5% | +12.3% | -1.9% | 63.6% | 54.5% | 45.5% | +40.3% | -72.3% |
+| `$0-5k` | 142 | 53.5% | +5.7% | +3.7% | 10.6% | 8.5% | 4.9% | 0.0% | -5.1% |
+| `$5k-10k` | 40 | 60.0% | +22.9% | +12.3% | 40.0% | 27.5% | 25.0% | +16.9% | -62.5% |
+| `$10k-20k` | 23 | 73.9% | +38.2% | +25.1% | 39.1% | 30.4% | 8.7% | +17.0% | -72.0% |
+| `$20k-50k` | 36 | 47.2% | +37.0% | -4.2% | 55.6% | 41.7% | 36.1% | +21.1% | -89.7% |
+| `$50k-100k` | 9 | 77.8% | +153.0% | +43.3% | 55.6% | 44.4% | 44.4% | +23.7% | -92.2% |
+| `$100k+` | 10 | 20.0% | -1.2% | -17.0% | 70.0% | 70.0% | 50.0% | +45.5% | -83.6% |
 
 Read:
 
-- This older candle-enriched sample suggested `$0-5k` was weaker and `$5k-10k` / `$20k-50k` were stronger, but the newer 48h ledger-first scan now supersedes it for current live posture.
-- Do not use this older section alone to force a live MC floor. Treat it as historical context for MFE/MAE and target-hit behavior.
+- This candle-enriched sample suggests the best path quality is not the same as the best source-exit ledger bucket.
+- `$100k+` can still hit `+30%` often, but source-exit results are poor in both the latest-day ledger scan and this quant pass. High-MC CyA entries need the hybrid partial-profit rule if traded at all.
+- Do not use this section alone to force a live MC floor. Treat it as context for MFE/MAE and target-hit behavior.
 - Current CyA presets keep hot-path HTTP MC filters off. If testing a local inferred MC gate, compare it against a no-floor control using live telemetry.
 
 Current live filter posture:
