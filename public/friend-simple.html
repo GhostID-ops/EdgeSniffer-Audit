@@ -123,6 +123,15 @@
     .amount-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .amount { border: 1px solid var(--line); border-radius: 13px; background: rgba(4,6,9,.68); color: var(--soft); min-height: 46px; font-weight: 950; }
     .amount.active { border-color: transparent; background: linear-gradient(135deg, var(--green), var(--blue)); color: #02100a; }
+    .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+    .preset-card {
+      border: 1px solid var(--line); border-radius: 15px; background: linear-gradient(180deg, rgba(12,16,22,.72), rgba(4,6,9,.62));
+      color: var(--soft); padding: 13px; text-align: left; display: grid; gap: 6px; min-height: 118px;
+    }
+    .preset-card.active { border-color: rgba(105,230,190,.78); box-shadow: 0 0 0 2px rgba(105,230,190,.12) inset, 0 14px 42px rgba(105,230,190,.08); }
+    .preset-card b { display: block; font-size: 15px; }
+    .preset-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .preset-card small { color: var(--blue); font-weight: 900; }
     .hint { color: var(--muted); font-size: 12.5px; line-height: 1.45; }
     .setting-help {
       margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.45;
@@ -350,14 +359,11 @@
             <div class="hint">Recommended: 0.005-0.01 SOL for a first live test, or any size in Shadow mode.</div>
           </div>
 
-          <div class="field">
-            <label>Safety preset</label>
-            <select id="preset">
-              <option value="safe">Safe Test - recommended first</option>
-              <option value="balanced">Balanced - normal demo</option>
-              <option value="aggressive">Aggressive - faster, more risk</option>
-            </select>
-            <div class="hint" id="presetHelp">Safe Test keeps Shadow mode on and uses conservative hidden settings. You still choose SOL amount.</div>
+          <div class="field" id="automationStep">
+            <label>4. Choose an automated setup</label>
+            <div class="preset-grid" id="presetGrid"></div>
+            <div class="hint" id="presetHelp">Shadow Practice is safest for the first run. The preset fills the advanced fields for you.</div>
+            <button class="secondary" id="applyPresetBtn" type="button">Apply Setup</button>
           </div>
 
           <details id="advancedBox">
@@ -484,6 +490,76 @@
       { id: "custom", name: "Custom Wallet", short: "Paste your own WalletTracker result", wallet: "", risk: "Custom", amount: 0.01, maxBuy: 0.01, slippage: 40, tipLamports: 1000000, priorityFee: 700000, feeHelp: "Starter boost (~0.002 SOL total) for unknown wallets. Raise only after testing." }
     ];
     const AMOUNTS = [0.01, 0.05, 0.1, 0.25];
+    const AUTO_PRESETS = {
+      safe: {
+        name: "Shadow Practice",
+        short: "No real buys. Best first click.",
+        speed: "off",
+        live: false,
+        amountMax: 0.01,
+        reserve: 0.03,
+        maxOpenPositions: 1,
+        maxSolPerToken: 0.03,
+        maxSession: 0.06,
+        maxOpen: 0.03,
+        maxFeeSol: 0,
+        maxFeePct: 0,
+        slippageBoost: 0,
+        feeMode: false,
+        note: "Practice mode, no same-slot snipe fees, auto-sells on. Good for teaching and UI demos."
+      },
+      tiny: {
+        name: "Tiny Live Test",
+        short: "Real SOL, tiny size, cheap speed.",
+        speed: "eco",
+        live: true,
+        amountMax: 0.01,
+        reserve: 0.05,
+        maxOpenPositions: 1,
+        maxSolPerToken: 0.03,
+        maxSession: 0.06,
+        maxOpen: 0.03,
+        maxFeeSol: 0.005,
+        maxFeePct: 5,
+        slippageBoost: 0,
+        feeMode: false,
+        note: "Small real-money smoke test. Uses Eco same-slot speed and strict exposure limits."
+      },
+      balanced: {
+        name: "Balanced Live",
+        short: "Recommended acquisition demo.",
+        speed: "balanced",
+        live: true,
+        amountMax: null,
+        reserve: 0.05,
+        maxOpenPositions: 2,
+        maxSolPerToken: 0.15,
+        maxSession: 0.5,
+        maxOpen: 0.3,
+        maxFeeSol: 0.008,
+        maxFeePct: 8,
+        slippageBoost: 0,
+        feeMode: false,
+        note: "Default retail preset: same-slot sniper on, capped fees, auto-sells, and moderate exposure."
+      },
+      max: {
+        name: "Max Speed",
+        short: "Most competitive, higher cost.",
+        speed: "max",
+        live: true,
+        amountMax: null,
+        reserve: 0.05,
+        maxOpenPositions: 3,
+        maxSolPerToken: 0.3,
+        maxSession: 1,
+        maxOpen: 0.6,
+        maxFeeSol: 0.05,
+        maxFeePct: 12,
+        slippageBoost: 10,
+        feeMode: false,
+        note: "For competitive wallets like Cented when the tester accepts higher speed-fee spend."
+      }
+    };
     const $ = (id) => document.getElementById(id);
     let selected = STRATEGIES[0];
     let amount = selected.amount;
@@ -494,6 +570,8 @@
     let liveMode = false;
     let mirrorSells = true;
     let feeMode = false;
+    let selectedPreset = "balanced";
+    let desiredSpeed = "balanced";
     let tourIndex = 0;
     const renderedStatusMessages = new Set();
     const renderedTradeReceipts = new Set();
@@ -524,6 +602,12 @@
         title: "Choose SOL per buy",
         text: "This is the normal amount the bot tries to spend when the tracked wallet buys. If you choose 0.01 SOL, each copied buy is tiny and easier to test.",
         note: "Recommended first Live test: 0.005 to 0.01 SOL. Bigger numbers mean bigger wins and bigger losses."
+      },
+      {
+        id: "automationStep",
+        title: "Pick an automated setup",
+        text: "These presets fill the advanced controls for you: Shadow or Live mode, same-slot speed, fee caps, auto-sells, and wallet exposure limits.",
+        note: "Use Balanced Live for the acquisition demo, Tiny Live Test for a cautious real-money test, or Shadow Practice when teaching without spending."
       },
       {
         id: "advancedBox",
@@ -722,13 +806,9 @@
       `).join("");
       document.querySelectorAll("[data-strategy]").forEach((btn) => btn.addEventListener("click", () => {
         selected = STRATEGIES.find((s) => s.id === btn.dataset.strategy) || selected;
-        amount = selected.amount;
-        $("customAmount").value = "";
-        $("maxBuy").value = selected.maxBuy;
-        $("slippage").value = selected.slippage;
-        setFeeDefaults(selected, feeMode);
         if (selected.wallet) $("customWallets").value = selected.wallet;
-        render();
+        applyPreset(selectedPreset, false);
+        setFeeDefaults(selected, feeMode);
         toast(`${selected.name} selected.`);
       }));
     }
@@ -741,20 +821,64 @@
         render();
       }));
     }
-    function applyPreset() {
-      const preset = $("preset").value;
-      if (preset === "safe") {
-        liveMode = false; feeMode = false; mirrorSells = true; $("slippage").value = Math.max(10, selected.slippage); $("presetHelp").textContent = "Safe Test: practice mode, no extra speed fees, auto-follow sells on. Good for the first run.";
-      } else if (preset === "balanced") {
-        feeMode = false; mirrorSells = true; $("slippage").value = selected.slippage; $("presetHelp").textContent = "Balanced: normal strategy settings. You still choose when to switch Live Money on.";
-      } else {
-        feeMode = true; mirrorSells = true; $("slippage").value = Math.max(15, selected.slippage); setFeeDefaults(selected, true); $("presetHelp").textContent = "Aggressive: gives buys more room to land and turns on the strategy fee boost. Use only after a successful tiny test.";
-      }
+    function presetAmount(preset) {
+      const strategyAmount = Number(selected.amount || 0.01);
+      return preset.amountMax ? Math.min(strategyAmount, preset.amountMax) : strategyAmount;
+    }
+    function renderAutomationPresets() {
+      $("presetGrid").innerHTML = Object.entries(AUTO_PRESETS).map(([id, p]) => `
+        <button class="preset-card ${id === selectedPreset ? "active" : ""}" data-preset="${esc(id)}" type="button">
+          <b>${esc(p.name)}</b>
+          <p>${esc(p.short)}</p>
+          <small>${p.live ? "Live" : "Shadow"} · ${esc(p.speed.toUpperCase())} speed · ${presetAmount(p).toFixed(3)} SOL/buy</small>
+        </button>
+      `).join("");
+      document.querySelectorAll("[data-preset]").forEach((btn) => btn.addEventListener("click", () => {
+        applyPreset(btn.dataset.preset || "safe", false);
+      }));
+    }
+    function applyPreset(id = selectedPreset, shouldToast = true) {
+      const preset = AUTO_PRESETS[id] || AUTO_PRESETS.safe;
+      selectedPreset = id;
+      desiredSpeed = preset.speed;
+      liveMode = preset.live;
+      feeMode = preset.feeMode;
+      mirrorSells = true;
+      amount = presetAmount(preset);
+      $("customAmount").value = amount.toString();
+      $("reserveSol").value = preset.reserve;
+      $("maxBuy").value = Math.max(amount, selected.maxBuy);
+      $("maxOpenPositions").value = preset.maxOpenPositions;
+      $("maxSolPerToken").value = preset.maxSolPerToken;
+      $("maxSessionDeployed").value = preset.maxSession;
+      $("maxOpenDeployed").value = preset.maxOpen;
+      $("maxFeeSol").value = preset.maxFeeSol;
+      $("maxFeePct").value = preset.maxFeePct;
+      $("slippage").value = Math.min(100, Math.max(selected.slippage, selected.slippage + preset.slippageBoost));
+      setFeeDefaults(selected, false);
+      $("presetHelp").textContent = `${preset.name}: ${preset.note} ${preset.speed !== currentSpeed ? "Apply Setup will update the speed engine and may restart for about 10 seconds." : "Already using this speed tier."}`;
       render();
+      if (shouldToast) toast(`${preset.name} loaded.`);
+    }
+    async function applyPresetAndSave() {
+      const preset = AUTO_PRESETS[selectedPreset] || AUTO_PRESETS.safe;
+      const speedChanged = desiredSpeed !== currentSpeed;
+      if (speedChanged && !confirm(`${preset.name} uses ${desiredSpeed.toUpperCase()} speed. Applying it may restart the bot for about 10 seconds. Continue?`)) return;
+      await saveSettings({ quiet: true });
+      if (speedChanged) {
+        toast(`Applying ${desiredSpeed} speed. The page will reload in ~10s.`);
+        try {
+          await api("/api/speed", { method: "POST", body: JSON.stringify({ tier: desiredSpeed }) });
+        } catch {}
+        setTimeout(() => location.reload(), 10000);
+        return;
+      }
+      toast(`${preset.name} applied and saved.`);
     }
     function render() {
       renderStrategies();
       renderAmounts();
+      renderAutomationPresets();
       renderActivityStats();
       renderBotStatus();
       $("modeText").textContent = liveMode ? "Live" : "Shadow";
@@ -903,9 +1027,12 @@
       await refreshTradeReceipts();
     }
     async function saveSettings(extra = {}) {
-      const saved = await api("/api/settings", { method: "POST", body: JSON.stringify(payload(extra)) });
+      const quiet = extra.quiet === true;
+      const cleanExtra = { ...extra };
+      delete cleanExtra.quiet;
+      const saved = await api("/api/settings", { method: "POST", body: JSON.stringify(payload(cleanExtra)) });
       settings = saved.settings || settings;
-      toast("Settings saved.");
+      if (!quiet) toast("Settings saved.");
       await refresh();
     }
     function clamp(n, min, max) {
@@ -996,8 +1123,12 @@
       toast(saved.state?.ourWallet ? "Wallet saved and loaded." : "Wallet saved. Refreshing wallet state...");
       await refresh();
     });
-    $("preset").addEventListener("change", applyPreset);
-    $("useCustomBtn").addEventListener("click", () => { selected = STRATEGIES.find((s) => s.id === "custom"); render(); });
+    $("applyPresetBtn").addEventListener("click", () => applyPresetAndSave().catch((e) => toast(e.message)));
+    $("useCustomBtn").addEventListener("click", () => {
+      selected = STRATEGIES.find((s) => s.id === "custom");
+      applyPreset(selectedPreset, false);
+      render();
+    });
     $("customAmount").addEventListener("input", () => { const n = Number($("customAmount").value); if (Number.isFinite(n) && n > 0) amount = n; render(); });
     $("liveToggle").addEventListener("click", () => {
       if (!liveMode && !confirm("Live Money mode can spend real SOL. Use a tiny amount first. Switch to Live?")) return;
@@ -1012,10 +1143,15 @@
     });
     $("saveSettingsBtn").addEventListener("click", () => saveSettings().catch((e) => toast(e.message)));
     $("startBtn").addEventListener("click", async () => {
+      if (desiredSpeed !== currentSpeed) {
+        await applyPresetAndSave();
+        return;
+      }
       if (liveMode) {
         const maxBuy = Number($("maxBuy").value || amount);
         if (!confirm(`Live Money warning: this can spend real SOL. Max per buy is ${maxBuy.toFixed(3)} SOL. Start bot?`)) return;
       }
+      await saveSettings({ quiet: true });
       await api("/api/start", { method: "POST", body: JSON.stringify(payload()) });
       toast("Bot started.");
       await refresh();
@@ -1034,6 +1170,7 @@
     });
     $("maxBuy").addEventListener("input", render);
     document.querySelectorAll("[data-tier]").forEach((b) => b.addEventListener("click", () => setSpeed(b.dataset.tier)));
+    applyPreset("balanced", false);
     loadSpeed();
     render();
     refresh().catch((e) => toast(e.message));
