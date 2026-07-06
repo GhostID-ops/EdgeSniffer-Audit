@@ -369,10 +369,10 @@
                 <button class="switch on" id="mirrorToggle" type="button" aria-label="Toggle mirror sells"></button>
               </div>
               <div class="toggle-row">
-                <div><b>Speed tip + priority fee</b><p>Optional boost for competitive buys. Defaults change by strategy. Leave off for cheap demos.</p></div>
+                <div><b>Extra fallback tip + priority fee</b><p>Optional extra boost for the slower fallback path. The Speed buttons above control the main same-slot sniper. Leave this off for 0 regular tip/priority fees.</p></div>
                 <button class="switch" id="feeToggle" type="button" aria-label="Toggle fees"></button>
               </div>
-              <div class="setting-help" id="feeRecommendation">Fees are off. Turn on only when faster landing matters more than attempt cost.</div>
+              <div class="setting-help" id="feeRecommendation">Extra regular fees are off. Use the Speed buttons above for Max/Balanced/Eco/Off same-slot fees.</div>
               <div class="row">
                 <div>
                   <label for="slippage">Max price change allowed (%)</label>
@@ -408,6 +408,11 @@
                   <input id="maxOpenDeployed" type="number" min="0" step="0.001" placeholder="Optional" />
                   <div class="setting-help">Optional. Limits how much SOL can be sitting in open trades at once. Useful for bigger wallets or multiple active trades.</div>
                 </div>
+              </div>
+              <div class="field">
+                <label for="maxFeeSol">Max speed fee budget per buy</label>
+                <input id="maxFeeSol" type="number" min="0" step="0.001" value="0.02" />
+                <div class="setting-help">Safety cap for buy execution fees. If fee math tries to spend more than this on tip + priority for one buy, Obsidian scales it down. Use 0.006 for Balanced, 0.004 for Eco, 0.02 for roomier demos, or 0 with Speed Off.</div>
               </div>
               <div class="row" id="feeFields" style="display:none">
                 <div>
@@ -516,7 +521,7 @@
         id: "advancedBox",
         title: "Safety limits protect the wallet",
         text: "These controls are optional. Max active trades, max SOL per token, and max SOL this session stop the bot from using too much money at once.",
-        note: "Price movement room means how much worse the token price may move before the bot refuses the buy. Default 12% is balanced. Lower is safer, higher is more aggressive."
+        note: "Price movement room means how much worse the token price may move before the bot refuses the buy. Default is usually 40-55% for fast copy-trading. Lower is safer but misses more; higher lands more but accepts worse fills."
       },
       {
         id: "startArea",
@@ -684,11 +689,11 @@
         mirrorSlippageBps: Math.round(Number($("slippage").value || selected.slippage) * 100),
         mirrorSells,
         simulationMode: !liveMode,
-        // Live buys must pay to land in time. If the friend hasn't opened the manual
-        // fee controls, auto-apply the selected strategy's recommended tip/priority so
-        // picking a strategy is enough to be competitive. Shadow needs no fees.
-        tipLamports: (feeMode || liveMode) ? (Number($("tipLamports").value || 0) || selected.tipLamports || 0) : 0,
-        priorityFeeMicroLamports: (feeMode || liveMode) ? (Number($("priorityFee").value || 0) || selected.priorityFee || 0) : 0,
+        maxBuyExecutionFeeSol: $("maxFeeSol").value.trim() ? Number($("maxFeeSol").value) : null,
+        // These are only the regular fallback fees. The same-slot sniper's real fees are
+        // controlled by the Speed row. Keeping this toggle off must mean 0 regular tip/priority.
+        tipLamports: feeMode ? (Number($("tipLamports").value || 0) || selected.tipLamports || 0) : 0,
+        priorityFeeMicroLamports: feeMode ? (Number($("priorityFee").value || 0) || selected.priorityFee || 0) : 0,
         stopLossPct: "35",
         takeProfitPct: "",
         minHoldBeforeStopLossMs: "15000",
@@ -756,10 +761,10 @@
       const feeTip = Number($("tipLamports").value || selected.tipLamports || 0);
       const feePriority = Number($("priorityFee").value || selected.priorityFee || 0);
       $("feeRecommendation").innerHTML = feeMode
-        ? `<span class="plain-word">Fee boost ON (manual):</span> ${esc(fmtTip(feeTip))} + ${esc(fmtPriority(feePriority))}. ${esc(selected.feeHelp || "Use small values first.")}`
+        ? `<span class="plain-word">Extra fallback fees ON:</span> ${esc(fmtTip(feeTip))} + ${esc(fmtPriority(feePriority))}. ${esc(selected.feeHelp || "Use small values first.")}`
         : liveMode
-          ? `<span class="plain-word">Auto fees (Live):</span> ${esc(selected.name)} sends ${esc(fmtTip(selected.tipLamports))} + ${esc(fmtPriority(selected.priorityFee))} automatically so buys land in time. Turn this on to customize.`
-          : `<span class="plain-word">Fee boost OFF:</span> Shadow mode needs no fees. Going Live auto-applies ${esc(selected.name)}'s ${esc(fmtTip(selected.tipLamports))} + ${esc(fmtPriority(selected.priorityFee))}.`;
+          ? `<span class="plain-word">Extra fallback fees OFF:</span> regular tip/priority is 0. Same-slot cost comes only from the Speed choice above (${esc(currentSpeed)}), capped by Max speed fee budget.`
+          : `<span class="plain-word">Extra fallback fees OFF:</span> Shadow mode needs no fees. Use Speed Off for 0 same-slot fees, or Balanced/Eco/Max for competitive same-slot attempts.`;
       $("summaryText").className = `notice ${liveMode ? "warning" : ""}`;
       $("summaryText").textContent = `Selected: ${selected.name}. Normal buy: ${amount.toFixed(3)} SOL. Hard max: ${Number($("maxBuy").value || amount).toFixed(3)} SOL. Sells: ${mirrorSells ? "follow copied wallet" : "manual only"}. Profit lock: sell 50% at +30%, then follow the copied wallet.`;
       const customMissing = selected.id === "custom" && !$("customWallets").value.trim();
@@ -872,6 +877,7 @@
         $("maxSolPerToken").value = settings.maxSolPerTokenSol ?? "";
         $("maxSessionDeployed").value = settings.maxSessionDeployedSol ?? "";
         $("maxOpenDeployed").value = settings.maxOpenDeployedSol ?? "";
+        $("maxFeeSol").value = settings.maxBuyExecutionFeeSol ?? 0.02;
         $("slippage").value = ((settings.mirrorSlippageBps ?? selected.slippage * 100) / 100).toString();
         $("tipLamports").value = settings.tipLamports ?? 0;
         $("priorityFee").value = settings.priorityFeeMicroLamports ?? 0;

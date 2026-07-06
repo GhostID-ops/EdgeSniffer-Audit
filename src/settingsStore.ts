@@ -25,6 +25,7 @@ const SETTINGS_KEYS = [
   "MAX_SOL_PER_TOKEN",
   "MAX_SESSION_DEPLOYED_SOL",
   "MAX_OPEN_DEPLOYED_SOL",
+  "MAX_BUY_EXECUTION_FEE_SOL",
 ] as const;
 
 type SettingsKey = (typeof SETTINGS_KEYS)[number];
@@ -109,6 +110,7 @@ export function normalizeFriendSettings(body: Record<string, unknown>): FriendBo
     maxSolPerTokenSol: optionalNumberFromBody(body, "maxSolPerTokenSol", current.maxSolPerTokenSol),
     maxSessionDeployedSol: optionalNumberFromBody(body, "maxSessionDeployedSol", current.maxSessionDeployedSol),
     maxOpenDeployedSol: optionalNumberFromBody(body, "maxOpenDeployedSol", current.maxOpenDeployedSol),
+    maxBuyExecutionFeeSol: optionalNumberFromBody(body, "maxBuyExecutionFeeSol", current.maxBuyExecutionFeeSol),
   };
 
   if (!settings.simulationMode) {
@@ -141,6 +143,7 @@ export function normalizeFriendSettings(body: Record<string, unknown>): FriendBo
   if (settings.maxSolPerTokenSol != null && settings.maxSolPerTokenSol < 0) throw new Error("Max per-token deployed SOL cannot be negative");
   if (settings.maxSessionDeployedSol != null && settings.maxSessionDeployedSol < 0) throw new Error("Max session deployed SOL cannot be negative");
   if (settings.maxOpenDeployedSol != null && settings.maxOpenDeployedSol < 0) throw new Error("Max open deployed SOL cannot be negative");
+  if (settings.maxBuyExecutionFeeSol != null && settings.maxBuyExecutionFeeSol < 0) throw new Error("Max fee budget cannot be negative");
   if (settings.tipLamports < 0) throw new Error("Tip cannot be negative");
   if (settings.priorityFeeMicroLamports < 0) throw new Error("Priority fee cannot be negative");
   if (settings.mirrorSlippageBps < 1 || settings.mirrorSlippageBps > 10000) {
@@ -189,6 +192,7 @@ export function persistFriendSettings(settings: FriendBotSettings): FriendBotSet
     MAX_SOL_PER_TOKEN: applied.maxSolPerTokenSol != null ? String(applied.maxSolPerTokenSol) : "",
     MAX_SESSION_DEPLOYED_SOL: applied.maxSessionDeployedSol != null ? String(applied.maxSessionDeployedSol) : "",
     MAX_OPEN_DEPLOYED_SOL: applied.maxOpenDeployedSol != null ? String(applied.maxOpenDeployedSol) : "",
+    MAX_BUY_EXECUTION_FEE_SOL: applied.maxBuyExecutionFeeSol != null ? String(applied.maxBuyExecutionFeeSol) : "",
   };
 
   for (const key of SETTINGS_KEYS) lines = setEnvLine(lines, key, values[key]);
@@ -253,6 +257,7 @@ const SPEED_TIERS: Record<SpeedTier, Record<string, string>> = {
     RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "1500000",
     RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "18000000",
     COMPUTE_UNIT_LIMIT: "1400000",
+    MAX_BUY_EXECUTION_FEE_SOL: "0.05",
   },
   balanced: {
     RUST_HOT_SNIPER_ENABLED: "true",
@@ -261,6 +266,7 @@ const SPEED_TIERS: Record<SpeedTier, Record<string, string>> = {
     RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
     RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
     COMPUTE_UNIT_LIMIT: "400000",
+    MAX_BUY_EXECUTION_FEE_SOL: "0.008",
   },
   eco: {
     RUST_HOT_SNIPER_ENABLED: "true",
@@ -269,10 +275,15 @@ const SPEED_TIERS: Record<SpeedTier, Record<string, string>> = {
     RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
     RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "5000000",
     COMPUTE_UNIT_LIMIT: "300000",
+    MAX_BUY_EXECUTION_FEE_SOL: "0.005",
   },
   off: {
     RUST_HOT_SNIPER_ENABLED: "false",
     RUST_HOT_SNIPER_PRIMARY: "false",
+    RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "0",
+    RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
+    RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "0",
+    MAX_BUY_EXECUTION_FEE_SOL: "0",
   },
 };
 

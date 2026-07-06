@@ -303,10 +303,11 @@ export const dynamicPriorityFeeRefreshMs = Math.max(
 export const dynamicPriorityFeeMaxMicroLamports = parseOptionalPositiveInteger(
   process.env.DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS
 );
-export const maxBuyExecutionFeeLamports = (() => {
-  const sol = parseOptionalPositiveNumber(process.env.MAX_BUY_EXECUTION_FEE_SOL);
-  return sol == null ? null : Math.max(0, Math.round(sol * LAMPORTS_PER_SOL));
-})();
+let MAX_BUY_EXECUTION_FEE_SOL = parseOptionalPositiveNumber(process.env.MAX_BUY_EXECUTION_FEE_SOL);
+export let maxBuyExecutionFeeLamports =
+  MAX_BUY_EXECUTION_FEE_SOL == null
+    ? null
+    : Math.max(0, Math.round(MAX_BUY_EXECUTION_FEE_SOL * LAMPORTS_PER_SOL));
 
 /** Helius staked RPC URL for read-only operations (blockhash, ALTs). */
 export const readRpcUrl =
@@ -860,6 +861,7 @@ export type FriendBotSettings = {
   maxSolPerTokenSol: number | null;
   maxSessionDeployedSol: number | null;
   maxOpenDeployedSol: number | null;
+  maxBuyExecutionFeeSol: number | null;
 };
 
 export function getFriendBotSettings(): FriendBotSettings {
@@ -878,6 +880,7 @@ export function getFriendBotSettings(): FriendBotSettings {
     maxSolPerTokenSol: maxSolPerTokenLamports != null ? maxSolPerTokenLamports / LAMPORTS_PER_SOL : null,
     maxSessionDeployedSol: maxSessionDeployedLamports != null ? maxSessionDeployedLamports / LAMPORTS_PER_SOL : null,
     maxOpenDeployedSol: maxOpenDeployedLamports != null ? maxOpenDeployedLamports / LAMPORTS_PER_SOL : null,
+    maxBuyExecutionFeeSol: maxBuyExecutionFeeLamports != null ? maxBuyExecutionFeeLamports / LAMPORTS_PER_SOL : null,
   };
 }
 
@@ -918,6 +921,10 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
   if (settings.maxSolPerTokenSol !== undefined) MAX_SOL_PER_TOKEN = settings.maxSolPerTokenSol != null ? Math.max(0, settings.maxSolPerTokenSol) : null;
   if (settings.maxSessionDeployedSol !== undefined) MAX_SESSION_DEPLOYED_SOL = settings.maxSessionDeployedSol != null ? Math.max(0, settings.maxSessionDeployedSol) : null;
   if (settings.maxOpenDeployedSol !== undefined) MAX_OPEN_DEPLOYED_SOL = settings.maxOpenDeployedSol != null ? Math.max(0, settings.maxOpenDeployedSol) : null;
+  if (settings.maxBuyExecutionFeeSol !== undefined) {
+    MAX_BUY_EXECUTION_FEE_SOL =
+      settings.maxBuyExecutionFeeSol != null ? Math.max(0, settings.maxBuyExecutionFeeSol) : null;
+  }
 
   tipLamports = TIP_LAMPORTS;
   priorityFeeMicroLamports = PRIORITY_FEE_MICRO_LAMPORTS;
@@ -929,6 +936,10 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
   maxSolPerTokenLamports = MAX_SOL_PER_TOKEN != null && MAX_SOL_PER_TOKEN > 0 ? Math.round(MAX_SOL_PER_TOKEN * LAMPORTS_PER_SOL) : null;
   maxSessionDeployedLamports = MAX_SESSION_DEPLOYED_SOL != null && MAX_SESSION_DEPLOYED_SOL > 0 ? Math.round(MAX_SESSION_DEPLOYED_SOL * LAMPORTS_PER_SOL) : null;
   maxOpenDeployedLamports = MAX_OPEN_DEPLOYED_SOL != null && MAX_OPEN_DEPLOYED_SOL > 0 ? Math.round(MAX_OPEN_DEPLOYED_SOL * LAMPORTS_PER_SOL) : null;
+  maxBuyExecutionFeeLamports =
+    MAX_BUY_EXECUTION_FEE_SOL != null && MAX_BUY_EXECUTION_FEE_SOL > 0
+      ? Math.round(MAX_BUY_EXECUTION_FEE_SOL * LAMPORTS_PER_SOL)
+      : null;
   if (typeof settings.simulationMode === "boolean") setSimulationMode(settings.simulationMode);
 
   process.env.MIN_BUY_SOL = String(MIN_BUY_SOL);
@@ -940,6 +951,7 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
   process.env.MIRROR_SLIPPAGE_BPS = String(MIRROR_SLIPPAGE_BPS);
   process.env.MIRROR_SELLS = mirrorSells ? "true" : "false";
   process.env.SIMULATION_MODE = simulationMode ? "true" : "false";
+  process.env.MAX_BUY_EXECUTION_FEE_SOL = MAX_BUY_EXECUTION_FEE_SOL != null ? String(MAX_BUY_EXECUTION_FEE_SOL) : "";
 
   return getFriendBotSettings();
 }
