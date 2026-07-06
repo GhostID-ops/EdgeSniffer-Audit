@@ -892,58 +892,61 @@
       toast("Settings saved.");
       await refresh();
     }
+    function clamp(n, min, max) {
+      return Math.max(min, Math.min(n, max));
+    }
     function placeTourCard(target) {
       const tour = $("tour");
-      if (!target) {
-        tour.style.setProperty("--tour-left", "50%");
-        tour.style.setProperty("--tour-top", "50%");
-        tour.style.setProperty("--tour-shift-x", "-50%");
-        tour.style.setProperty("--tour-shift-y", "-50%");
-        return;
-      }
-      const rect = target.getBoundingClientRect();
+      const card = tour.querySelector(".tour-card");
+      const margin = 18;
+      const gap = 18;
       const viewportW = window.innerWidth;
       const viewportH = window.innerHeight;
-      const cardW = Math.min(460, viewportW - 36);
-      const cardH = 245;
-      const gap = 24;
+      const cardW = Math.min(card?.offsetWidth || 460, viewportW - margin * 2);
+      const cardH = Math.min(card?.offsetHeight || 260, viewportH - margin * 2);
+
+      if (!target) {
+        tour.style.setProperty("--tour-left", `${Math.round((viewportW - cardW) / 2)}px`);
+        tour.style.setProperty("--tour-top", `${Math.round((viewportH - cardH) / 2)}px`);
+        tour.style.setProperty("--tour-shift-x", "0");
+        tour.style.setProperty("--tour-shift-y", "0");
+        return;
+      }
+
+      const rect = target.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      let left = rect.right + gap;
-      let top = Math.max(18, Math.min(rect.top, viewportH - cardH - 18));
-      let shiftX = "0";
-      let shiftY = "0";
+      let left;
+      let top;
 
-      if (left + cardW > viewportW - 18) {
-        left = rect.left - gap;
-        shiftX = "-100%";
+      if (rect.right + gap + cardW <= viewportW - margin) {
+        left = rect.right + gap;
+        top = clamp(rect.top, margin, viewportH - cardH - margin);
+      } else if (rect.left - gap - cardW >= margin) {
+        left = rect.left - gap - cardW;
+        top = clamp(rect.top, margin, viewportH - cardH - margin);
+      } else {
+        left = clamp(centerX - cardW / 2, margin, viewportW - cardW - margin);
+        const below = rect.bottom + gap;
+        const above = rect.top - gap - cardH;
+        top = below + cardH <= viewportH - margin ? below : above >= margin ? above : margin;
       }
-      if (left - cardW < 18 && shiftX === "-100%") {
-        left = Math.max(18, Math.min(centerX, viewportW - 18));
-        top = rect.bottom + gap;
-        shiftX = centerX < viewportW / 2 ? "0" : "-100%";
-        if (top + cardH > viewportH - 18) {
-          top = rect.top - gap;
-          shiftY = "-100%";
-        }
-      }
+
       if (viewportW < 760) {
-        left = 18;
-        top = Math.min(rect.bottom + 18, viewportH - cardH - 18);
-        shiftX = "0";
-        shiftY = "0";
-        if (top < 18 || top + cardH > viewportH - 18) {
-          top = 18;
-        }
+        left = margin;
+        const below = rect.bottom + gap;
+        top = below + cardH <= viewportH - margin ? below : margin;
       }
-      tour.style.setProperty("--tour-left", `${left}px`);
-      tour.style.setProperty("--tour-top", `${top}px`);
-      tour.style.setProperty("--tour-shift-x", shiftX);
-      tour.style.setProperty("--tour-shift-y", shiftY);
+
+      top = clamp(top, margin, viewportH - cardH - margin);
+      left = clamp(left, margin, viewportW - cardW - margin);
+      tour.style.setProperty("--tour-left", `${Math.round(left)}px`);
+      tour.style.setProperty("--tour-top", `${Math.round(top)}px`);
+      tour.style.setProperty("--tour-shift-x", "0");
+      tour.style.setProperty("--tour-shift-y", "0");
       tour.style.setProperty("--tour-x", `${Math.round(centerX)}px`);
       tour.style.setProperty("--tour-y", `${Math.round(centerY)}px`);
     }
-
     function startTour() { tourIndex = 0; showTour(); }
     function showTour() {
       document.querySelectorAll(".focus-ring").forEach((el) => el.classList.remove("focus-ring"));
