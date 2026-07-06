@@ -21,7 +21,6 @@ import {
   executionMultiSendEnabled,
   executionAltAddresses,
 } from "./config.js";
-import { getDynamicPriorityFeeForRoute } from "./feeOracle.js";
 import {
   getConfiguredAltAccounts,
   diagnoseV0Transaction,
@@ -32,6 +31,7 @@ import { invalidateBlockhashCache } from "./blockhashCache.js";
 import { buildTipInstructions } from "./tipBuilder.js";
 import { classifyExecutionError } from "./errorClassifier.js";
 import { recordExecutionTelemetrySync } from "./executionTelemetry.js";
+import { getExecutionFeeParamsForRoute } from "./executionFeeCaps.js";
 
 export type SwapResponse = { swapTransaction: string; [key: string]: unknown };
 export type BroadcastOptions = {
@@ -136,10 +136,15 @@ export async function createSenderTransactionFromSwapResponse(
     (ix) => getComputeInstructionType(ix) === "RequestHeapFrame"
   );
 
+  const fees = getExecutionFeeParamsForRoute(options.route);
   const priorityFeeIx = ComputeBudgetProgram.setComputeUnitPrice({
-    microLamports: getDynamicPriorityFeeForRoute(options.route),
+    microLamports: fees.priorityFeeMicroLamports,
   });
-  const tipIxs = buildTipInstructions(keypair.publicKey, { route: options.route });
+  const tipIxs = buildTipInstructions(keypair.publicKey, {
+    route: options.route,
+    jitoTipLamports: fees.jitoTipLamports,
+    heliusTipLamports: fees.heliusTipLamports,
+  });
 
   const mandatoryComputeInstructions: TransactionInstruction[] = [];
   if (computeUnitLimit > 0) {

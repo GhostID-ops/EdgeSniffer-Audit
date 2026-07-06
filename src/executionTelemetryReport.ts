@@ -168,6 +168,16 @@ for (const [sig, group] of chainRows) {
   const landingSlot = detailNumber(confirm ?? sorted[0]!, "landingSlot");
   const broadcastAt = broadcast?.tsMs ?? null;
   const confirmAt = confirm?.tsMs ?? null;
+  const rustElapsedMs = detailNumber(broadcast ?? source ?? sorted[0]!, "rustElapsedMs");
+  const rustBroadcastMs = detailNumber(broadcast ?? source ?? sorted[0]!, "rustBroadcastMs");
+  const seenToBroadcastMs =
+    providerCreatedAt != null && broadcastAt != null
+      ? broadcastAt - providerCreatedAt
+      : rustElapsedMs ?? (broadcast?.detector === "rust-hot-sniper" ? broadcast.elapsedMs ?? null : null);
+  const processToBroadcastMs =
+    processStartedAt != null && broadcastAt != null
+      ? broadcastAt - processStartedAt
+      : rustBroadcastMs ?? (broadcast?.detector === "rust-hot-sniper" ? broadcast.elapsedMs ?? null : null);
   chains.push({
     sig,
     mint: (source?.mint ?? broadcast?.mint ?? confirm?.mint ?? "unknown").slice(0, 8),
@@ -176,10 +186,8 @@ for (const [sig, group] of chainRows) {
     sourceTransactionIndex,
     landingSlot,
     slotDelta: sourceSlot != null && landingSlot != null ? landingSlot - sourceSlot : null,
-    seenToBroadcastMs:
-      providerCreatedAt != null && broadcastAt != null ? broadcastAt - providerCreatedAt : null,
-    processToBroadcastMs:
-      processStartedAt != null && broadcastAt != null ? broadcastAt - processStartedAt : null,
+    seenToBroadcastMs,
+    processToBroadcastMs,
     broadcastToConfirmMs:
       broadcastAt != null && confirmAt != null ? confirmAt - broadcastAt : null,
     providerToConfirmMs:

@@ -100,6 +100,8 @@ struct HotSniperConfig {
     priority_fee_micro_lamports: u64,
     jito_tip_lamports: u64,
     helius_tip_lamports: u64,
+    max_execution_fee_lamports: Option<u64>,
+    max_execution_fee_pct_of_buy: Option<f64>,
     use_jito_direct: bool,
     use_jito_fallback: bool,
     sender_rpc_fallback_enabled: bool,
@@ -342,10 +344,26 @@ impl HotSniperConfig {
                 .or_else(|| parse_env_optional_u64("DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS"))
                 .unwrap_or_else(|| parse_env_u64("PRIORITY_FEE_MICRO_LAMPORTS", 50_000));
         eprintln!(
-            "rust-sidecar: hot sniper fees priority={} microLamports/CU jito_tip={} helius_tip={}",
-            priority_fee_micro_lamports, jito_tip_lamports, helius_tip_lamports
+            "rust-sidecar: hot sniper fees priority={} microLamports/CU jito_tip={} helius_tip={} cap={} pct={}",
+            priority_fee_micro_lamports,
+            jito_tip_lamports,
+            helius_tip_lamports,
+            parse_env_optional_u64("RUST_HOT_SNIPER_MAX_EXECUTION_FEE_LAMPORTS")
+                .or_else(|| optional_sol_env_lamports_nonnegative("RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL"))
+                .or_else(|| optional_sol_env_lamports_nonnegative("MAX_BUY_EXECUTION_FEE_SOL"))
+                .map(|v| v.to_string())
+                .unwrap_or_else(|| "off".to_string()),
+            parse_env_optional_nonnegative_f64("RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY")
+                .or_else(|| parse_env_optional_nonnegative_f64("MAX_BUY_EXECUTION_FEE_PCT_OF_BUY"))
+                .map(|v| v.to_string())
+                .unwrap_or_else(|| "off".to_string())
         );
         let configured_regions = configured_jito_regions();
+        let max_execution_fee_lamports = parse_env_optional_u64("RUST_HOT_SNIPER_MAX_EXECUTION_FEE_LAMPORTS")
+            .or_else(|| optional_sol_env_lamports_nonnegative("RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL"))
+            .or_else(|| optional_sol_env_lamports_nonnegative("MAX_BUY_EXECUTION_FEE_SOL"));
+        let max_execution_fee_pct_of_buy = parse_env_optional_nonnegative_f64("RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY")
+            .or_else(|| parse_env_optional_nonnegative_f64("MAX_BUY_EXECUTION_FEE_PCT_OF_BUY"));
         Self {
             enabled,
             buy_once_per_token: parse_env_bool("BUY_ONCE_PER_TOKEN", true),
@@ -383,6 +401,8 @@ impl HotSniperConfig {
             priority_fee_micro_lamports,
             jito_tip_lamports,
             helius_tip_lamports,
+            max_execution_fee_lamports,
+            max_execution_fee_pct_of_buy,
             use_jito_direct: parse_env_bool("USE_JITO_DIRECT", false),
             use_jito_fallback: parse_env_bool("USE_JITO_FALLBACK", true),
             sender_rpc_fallback_enabled: parse_env_bool("SENDER_RPC_FALLBACK_ENABLED", true),
@@ -464,6 +484,20 @@ fn parse_env_optional_f64(name: &str) -> Option<f64> {
         .filter(|v| v.is_finite() && *v > 0.0)
 }
 
+fn parse_env_optional_nonnegative_f64(name: &str) -> Option<f64> {
+    env::var(name)
+        .ok()
+        .and_then(|v| {
+            let trimmed = v.trim();
+            if trimmed.is_empty() {
+                None
+            } else {
+                trimmed.parse::<f64>().ok()
+            }
+        })
+        .filter(|v| v.is_finite() && *v >= 0.0)
+}
+
 fn sol_env_lamports(name: &str, fallback_sol: f64) -> u64 {
     (parse_env_f64(name, fallback_sol).max(0.0) * LAMPORTS_PER_SOL).round() as u64
 }
@@ -481,6 +515,77 @@ fn optional_sol_env_lamports(name: &str) -> Option<u64> {
         })
         .filter(|v| v.is_finite() && *v > 0.0)
         .map(|v| (v * LAMPORTS_PER_SOL).round() as u64)
+}
+
+fn optional_sol_env_lamports_nonnegative(name: &str) -> Option<u64> {
+    env::var(name)
+        .ok()
+        .and_then(|v| {
+            let trimmed = v.trim();
+            if trimmed.is_empty() {
+                None
+            } else {
+                trimmed.parse::<f64>().ok()
+            }
+        })
+        .filter(|v| v.is_finite() && *v >= 0.0)
+        .map(|v| (v * LAMPORTS_PER_SOL).round() as u64)
+}
+
+fn capped_hot_fees(hot: &HotSniperConfig, sol_in_lamports: u64) -> (u64, u64, u64) {
+    let mut priority_fee_micro_lamports = hot.priority_fee_micro_lamports;
+    let mut jito_tip_lamports = hot.jito_tip_lamports;
+    let mut helius_tip_lamports = hot.helius_tip_lamports;
+    let mut caps = Vec::new();
+    if let Some(cap) = hot.max_execution_fee_lamports {
+        caps.push(cap);
+    }
+    if let Some(pct) = hot.max_execution_fee_pct_of_buy {
+        caps.push(((sol_in_lamports as f64) * (pct / 100.0)).floor().max(0.0) as u64);
+    }
+    let Some(cap_lamports) = caps.into_iter().min() else {
+        return (priority_fee_micro_lamports, jito_tip_lamports, helius_tip_lamports);
+    };
+    let estimate = estimated_fee_lamports(
+        priority_fee_micro_lamports,
+        jito_tip_lamports,
+        helius_tip_lamports,
+        hot.compute_unit_limit,
+    );
+    if estimate <= cap_lamports {
+        return (priority_fee_micro_lamports, jito_tip_lamports, helius_tip_lamports);
+    }
+    let scale = (cap_lamports as f64 / estimate.max(1) as f64).clamp(0.0, 1.0);
+    priority_fee_micro_lamports = ((priority_fee_micro_lamports as f64) * scale).floor() as u64;
+    jito_tip_lamports = ((jito_tip_lamports as f64) * scale).floor() as u64;
+    helius_tip_lamports = ((helius_tip_lamports as f64) * scale).floor() as u64;
+    while estimated_fee_lamports(
+        priority_fee_micro_lamports,
+        jito_tip_lamports,
+        helius_tip_lamports,
+        hot.compute_unit_limit,
+    ) > cap_lamports
+        && priority_fee_micro_lamports > 0
+    {
+        priority_fee_micro_lamports -= 1;
+    }
+    (priority_fee_micro_lamports, jito_tip_lamports, helius_tip_lamports)
+}
+
+fn estimated_fee_lamports(
+    priority_fee_micro_lamports: u64,
+    jito_tip_lamports: u64,
+    helius_tip_lamports: u64,
+    compute_unit_limit: u32,
+) -> u64 {
+    let units = u64::from(compute_unit_limit.min(1_400_000).max(1));
+    let priority_lamports = priority_fee_micro_lamports
+        .saturating_mul(units)
+        .saturating_add(999_999)
+        / 1_000_000;
+    priority_lamports
+        .saturating_add(jito_tip_lamports)
+        .saturating_add(helius_tip_lamports)
 }
 
 fn configured_jito_regions() -> Vec<String> {
@@ -770,6 +875,8 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
             return HotDecision::Fallback(Some(format!("blockhash fetch failed: {err}")));
         }
     };
+    let (priority_fee_micro_lamports, jito_tip_lamports, helius_tip_lamports) =
+        capped_hot_fees(hot, sol_in_lamports);
 
     let command = executor::ExecutePumpfunBuyCommand {
         id: format!(
@@ -795,9 +902,9 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
         token_program_id: None,
         blockhash,
         compute_unit_limit: hot.compute_unit_limit,
-        priority_fee_micro_lamports: hot.priority_fee_micro_lamports,
-        jito_tip_lamports: hot.jito_tip_lamports,
-        helius_tip_lamports: hot.helius_tip_lamports,
+        priority_fee_micro_lamports,
+        jito_tip_lamports,
+        helius_tip_lamports,
         use_jito_direct: hot.use_jito_direct,
         use_jito_fallback: hot.use_jito_fallback,
         sender_rpc_fallback_enabled: hot.sender_rpc_fallback_enabled,

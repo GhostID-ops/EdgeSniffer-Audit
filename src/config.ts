@@ -41,6 +41,12 @@ function parseNonNegativeNumber(value: string | undefined, fallback: number): nu
   return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
 
+function parseOptionalNonNegativeNumber(value: string | undefined): number | null {
+  if (value == null || value.trim() === "") return null;
+  const n = parseFloat(value);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}
+
 function parsePositiveNumber(value: string | undefined, fallback: number): number {
   if (value == null || value.trim() === "") return fallback;
   const n = parseFloat(value);
@@ -304,10 +310,19 @@ export const dynamicPriorityFeeMaxMicroLamports = parseOptionalPositiveInteger(
   process.env.DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS
 );
 let MAX_BUY_EXECUTION_FEE_SOL = parseOptionalPositiveNumber(process.env.MAX_BUY_EXECUTION_FEE_SOL);
+let MAX_BUY_EXECUTION_FEE_PCT_OF_BUY = parseOptionalNonNegativeNumber(
+  process.env.MAX_BUY_EXECUTION_FEE_PCT_OF_BUY
+);
 export let maxBuyExecutionFeeLamports =
   MAX_BUY_EXECUTION_FEE_SOL == null
     ? null
     : Math.max(0, Math.round(MAX_BUY_EXECUTION_FEE_SOL * LAMPORTS_PER_SOL));
+export let maxBuyExecutionFeePctOfBuy: number | null =
+  MAX_BUY_EXECUTION_FEE_PCT_OF_BUY != null &&
+  Number.isFinite(MAX_BUY_EXECUTION_FEE_PCT_OF_BUY) &&
+  MAX_BUY_EXECUTION_FEE_PCT_OF_BUY >= 0
+    ? MAX_BUY_EXECUTION_FEE_PCT_OF_BUY
+    : null;
 
 /** Helius staked RPC URL for read-only operations (blockhash, ALTs). */
 export const readRpcUrl =
@@ -862,6 +877,7 @@ export type FriendBotSettings = {
   maxSessionDeployedSol: number | null;
   maxOpenDeployedSol: number | null;
   maxBuyExecutionFeeSol: number | null;
+  maxBuyExecutionFeePctOfBuy: number | null;
 };
 
 export function getFriendBotSettings(): FriendBotSettings {
@@ -881,6 +897,7 @@ export function getFriendBotSettings(): FriendBotSettings {
     maxSessionDeployedSol: maxSessionDeployedLamports != null ? maxSessionDeployedLamports / LAMPORTS_PER_SOL : null,
     maxOpenDeployedSol: maxOpenDeployedLamports != null ? maxOpenDeployedLamports / LAMPORTS_PER_SOL : null,
     maxBuyExecutionFeeSol: maxBuyExecutionFeeLamports != null ? maxBuyExecutionFeeLamports / LAMPORTS_PER_SOL : null,
+    maxBuyExecutionFeePctOfBuy,
   };
 }
 
@@ -925,6 +942,10 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
     MAX_BUY_EXECUTION_FEE_SOL =
       settings.maxBuyExecutionFeeSol != null ? Math.max(0, settings.maxBuyExecutionFeeSol) : null;
   }
+  if (settings.maxBuyExecutionFeePctOfBuy !== undefined) {
+    MAX_BUY_EXECUTION_FEE_PCT_OF_BUY =
+      settings.maxBuyExecutionFeePctOfBuy != null ? Math.max(0, settings.maxBuyExecutionFeePctOfBuy) : 0;
+  }
 
   tipLamports = TIP_LAMPORTS;
   priorityFeeMicroLamports = PRIORITY_FEE_MICRO_LAMPORTS;
@@ -940,6 +961,12 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
     MAX_BUY_EXECUTION_FEE_SOL != null && MAX_BUY_EXECUTION_FEE_SOL > 0
       ? Math.round(MAX_BUY_EXECUTION_FEE_SOL * LAMPORTS_PER_SOL)
       : null;
+  maxBuyExecutionFeePctOfBuy =
+    MAX_BUY_EXECUTION_FEE_PCT_OF_BUY != null &&
+    Number.isFinite(MAX_BUY_EXECUTION_FEE_PCT_OF_BUY) &&
+    MAX_BUY_EXECUTION_FEE_PCT_OF_BUY >= 0
+      ? MAX_BUY_EXECUTION_FEE_PCT_OF_BUY
+      : null;
   if (typeof settings.simulationMode === "boolean") setSimulationMode(settings.simulationMode);
 
   process.env.MIN_BUY_SOL = String(MIN_BUY_SOL);
@@ -952,6 +979,12 @@ export function applyFriendBotSettings(settings: Partial<FriendBotSettings>): Fr
   process.env.MIRROR_SELLS = mirrorSells ? "true" : "false";
   process.env.SIMULATION_MODE = simulationMode ? "true" : "false";
   process.env.MAX_BUY_EXECUTION_FEE_SOL = MAX_BUY_EXECUTION_FEE_SOL != null ? String(MAX_BUY_EXECUTION_FEE_SOL) : "";
+  process.env.MAX_BUY_EXECUTION_FEE_PCT_OF_BUY =
+    maxBuyExecutionFeePctOfBuy != null ? String(maxBuyExecutionFeePctOfBuy) : "";
+  process.env.RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL =
+    MAX_BUY_EXECUTION_FEE_SOL != null ? String(MAX_BUY_EXECUTION_FEE_SOL) : "";
+  process.env.RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY =
+    maxBuyExecutionFeePctOfBuy != null ? String(maxBuyExecutionFeePctOfBuy) : "";
 
   return getFriendBotSettings();
 }

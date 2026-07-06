@@ -26,6 +26,9 @@ const SETTINGS_KEYS = [
   "MAX_SESSION_DEPLOYED_SOL",
   "MAX_OPEN_DEPLOYED_SOL",
   "MAX_BUY_EXECUTION_FEE_SOL",
+  "MAX_BUY_EXECUTION_FEE_PCT_OF_BUY",
+  "RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL",
+  "RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY",
 ] as const;
 
 type SettingsKey = (typeof SETTINGS_KEYS)[number];
@@ -111,6 +114,11 @@ export function normalizeFriendSettings(body: Record<string, unknown>): FriendBo
     maxSessionDeployedSol: optionalNumberFromBody(body, "maxSessionDeployedSol", current.maxSessionDeployedSol),
     maxOpenDeployedSol: optionalNumberFromBody(body, "maxOpenDeployedSol", current.maxOpenDeployedSol),
     maxBuyExecutionFeeSol: optionalNumberFromBody(body, "maxBuyExecutionFeeSol", current.maxBuyExecutionFeeSol),
+    maxBuyExecutionFeePctOfBuy: optionalNumberFromBody(
+      body,
+      "maxBuyExecutionFeePctOfBuy",
+      current.maxBuyExecutionFeePctOfBuy
+    ),
   };
 
   if (!settings.simulationMode) {
@@ -144,6 +152,9 @@ export function normalizeFriendSettings(body: Record<string, unknown>): FriendBo
   if (settings.maxSessionDeployedSol != null && settings.maxSessionDeployedSol < 0) throw new Error("Max session deployed SOL cannot be negative");
   if (settings.maxOpenDeployedSol != null && settings.maxOpenDeployedSol < 0) throw new Error("Max open deployed SOL cannot be negative");
   if (settings.maxBuyExecutionFeeSol != null && settings.maxBuyExecutionFeeSol < 0) throw new Error("Max fee budget cannot be negative");
+  if (settings.maxBuyExecutionFeePctOfBuy != null && settings.maxBuyExecutionFeePctOfBuy < 0) {
+    throw new Error("Max fee percent cannot be negative");
+  }
   if (settings.tipLamports < 0) throw new Error("Tip cannot be negative");
   if (settings.priorityFeeMicroLamports < 0) throw new Error("Priority fee cannot be negative");
   if (settings.mirrorSlippageBps < 1 || settings.mirrorSlippageBps > 10000) {
@@ -193,6 +204,12 @@ export function persistFriendSettings(settings: FriendBotSettings): FriendBotSet
     MAX_SESSION_DEPLOYED_SOL: applied.maxSessionDeployedSol != null ? String(applied.maxSessionDeployedSol) : "",
     MAX_OPEN_DEPLOYED_SOL: applied.maxOpenDeployedSol != null ? String(applied.maxOpenDeployedSol) : "",
     MAX_BUY_EXECUTION_FEE_SOL: applied.maxBuyExecutionFeeSol != null ? String(applied.maxBuyExecutionFeeSol) : "",
+    MAX_BUY_EXECUTION_FEE_PCT_OF_BUY:
+      applied.maxBuyExecutionFeePctOfBuy != null ? String(applied.maxBuyExecutionFeePctOfBuy) : "",
+    RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL:
+      applied.maxBuyExecutionFeeSol != null ? String(applied.maxBuyExecutionFeeSol) : "",
+    RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY:
+      applied.maxBuyExecutionFeePctOfBuy != null ? String(applied.maxBuyExecutionFeePctOfBuy) : "",
   };
 
   for (const key of SETTINGS_KEYS) lines = setEnvLine(lines, key, values[key]);
@@ -258,6 +275,9 @@ const SPEED_TIERS: Record<SpeedTier, Record<string, string>> = {
     RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "18000000",
     COMPUTE_UNIT_LIMIT: "1400000",
     MAX_BUY_EXECUTION_FEE_SOL: "0.05",
+    MAX_BUY_EXECUTION_FEE_PCT_OF_BUY: "12",
+    RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL: "0.05",
+    RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY: "12",
   },
   balanced: {
     RUST_HOT_SNIPER_ENABLED: "true",
@@ -267,6 +287,9 @@ const SPEED_TIERS: Record<SpeedTier, Record<string, string>> = {
     RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
     COMPUTE_UNIT_LIMIT: "400000",
     MAX_BUY_EXECUTION_FEE_SOL: "0.008",
+    MAX_BUY_EXECUTION_FEE_PCT_OF_BUY: "8",
+    RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL: "0.008",
+    RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY: "8",
   },
   eco: {
     RUST_HOT_SNIPER_ENABLED: "true",
@@ -276,6 +299,9 @@ const SPEED_TIERS: Record<SpeedTier, Record<string, string>> = {
     RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "5000000",
     COMPUTE_UNIT_LIMIT: "300000",
     MAX_BUY_EXECUTION_FEE_SOL: "0.005",
+    MAX_BUY_EXECUTION_FEE_PCT_OF_BUY: "5",
+    RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL: "0.005",
+    RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY: "5",
   },
   off: {
     RUST_HOT_SNIPER_ENABLED: "false",
@@ -284,6 +310,9 @@ const SPEED_TIERS: Record<SpeedTier, Record<string, string>> = {
     RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
     RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "0",
     MAX_BUY_EXECUTION_FEE_SOL: "0",
+    MAX_BUY_EXECUTION_FEE_PCT_OF_BUY: "0",
+    RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL: "0",
+    RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY: "0",
   },
 };
 

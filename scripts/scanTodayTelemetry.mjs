@@ -153,6 +153,16 @@ for (const [sourceSignature, group] of chainGroups) {
   const processStartedAt = detailNum(source ?? basis, "processStartedAtMs");
   const broadcastAt = num(broadcast?.tsMs);
   const confirmAt = num(confirm?.tsMs);
+  const rustElapsedMs = detailNum(broadcast ?? source ?? basis, "rustElapsedMs");
+  const rustBroadcastMs = detailNum(broadcast ?? source ?? basis, "rustBroadcastMs");
+  const providerToBroadcastMs =
+    providerCreatedAt != null && broadcastAt != null
+      ? broadcastAt - providerCreatedAt
+      : rustElapsedMs ?? (broadcast?.detector === "rust-hot-sniper" ? num(broadcast.elapsedMs) : null);
+  const processToBroadcastMs =
+    processStartedAt != null && broadcastAt != null
+      ? broadcastAt - processStartedAt
+      : rustBroadcastMs ?? (broadcast?.detector === "rust-hot-sniper" ? num(broadcast.elapsedMs) : null);
   chains.push({
     sourceSignature,
     mint: source?.mint ?? broadcast?.mint ?? confirm?.mint ?? "unknown",
@@ -162,8 +172,8 @@ for (const [sourceSignature, group] of chainGroups) {
     sourceSlot,
     landingSlot,
     slotDelta: sourceSlot != null && landingSlot != null ? landingSlot - sourceSlot : null,
-    providerToBroadcastMs: providerCreatedAt != null && broadcastAt != null ? broadcastAt - providerCreatedAt : null,
-    processToBroadcastMs: processStartedAt != null && broadcastAt != null ? broadcastAt - processStartedAt : null,
+    providerToBroadcastMs,
+    processToBroadcastMs,
     broadcastToConfirmMs: broadcastAt != null && confirmAt != null ? confirmAt - broadcastAt : null,
     confirmed: Boolean(confirm?.success),
   });

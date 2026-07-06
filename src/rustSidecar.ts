@@ -21,8 +21,7 @@ import {
   useJitoFallback,
 } from "./config.js";
 import { getCachedBlockhash } from "./blockhashCache.js";
-import { getDynamicPriorityFeeForRoute } from "./feeOracle.js";
-import { getHeliusTipLamportsForRoute, getJitoTipLamportsForRoute } from "./tipBuilder.js";
+import { getExecutionFeeParamsForRoute } from "./executionFeeCaps.js";
 import type { DetectedSwap, RustHotBuy, SourcePumpSwapAccountMeta, SourceRaydiumCpmmAccountMeta } from "./types.js";
 import type { SignatureDedupe } from "./watcher.js";
 
@@ -103,8 +102,10 @@ export type RustPumpSwapBuyArgs = {
   mint: string;
   sourceSignature: string;
   buyLockOwner?: string;
-  quoteMint: string;
-  quoteAmountInRaw: number;
+  quoteMint?: string;
+  /** Backward-compatible alias used by older PumpSwap callers. */
+  solInLamports?: number;
+  quoteAmountInRaw?: number;
   expectedBaseOutRaw: number;
   minBaseOutRaw: number;
   slippageBps: number;
@@ -332,12 +333,13 @@ export async function startRustPumpFunSidecar(
       `, Rust hot sniper=${rustHotSniperEnabled ? "ON" : "OFF"}`
   );
   console.log(
-    `Execution fee config: buy priority=${getDynamicPriorityFeeForRoute("buy")} microLamports/CU, ` +
-      `sell priority=${getDynamicPriorityFeeForRoute("sell")} microLamports/CU, ` +
-      `buy Jito tip=${getJitoTipLamportsForRoute("buy")} lamports, ` +
-      `sell Jito tip=${getJitoTipLamportsForRoute("sell")} lamports, ` +
-      `buy Helius tip=${getHeliusTipLamportsForRoute("buy")} lamports, ` +
-      `sell Helius tip=${getHeliusTipLamportsForRoute("sell")} lamports, ` +
+    `Execution fee config: buy priority=${getExecutionFeeParamsForRoute("buy").priorityFeeMicroLamports} microLamports/CU, ` +
+      `sell priority=${getExecutionFeeParamsForRoute("sell").priorityFeeMicroLamports} microLamports/CU, ` +
+      `buy Jito tip=${getExecutionFeeParamsForRoute("buy").jitoTipLamports} lamports, ` +
+      `sell Jito tip=${getExecutionFeeParamsForRoute("sell").jitoTipLamports} lamports, ` +
+      `buy Helius tip=${getExecutionFeeParamsForRoute("buy").heliusTipLamports} lamports, ` +
+      `sell Helius tip=${getExecutionFeeParamsForRoute("sell").heliusTipLamports} lamports, ` +
+      `buy cap=${formatFeeCap(getExecutionFeeParamsForRoute("buy"))}, ` +
       `Jito direct=${useJitoDirect ? "ON" : "OFF"}, fallback=${useJitoFallback ? "ON" : "OFF"}, ` +
       `sendMode=${jitoSendMode}, race=${(executionMultiSendEnabled || broadcastRaceEnabled) ? "ON" : "OFF"}`
   );
@@ -625,6 +627,7 @@ export async function executeRustPumpFunBuy(args: RustPumpFunBuyArgs): Promise<R
   } catch (err) {
     return commandValidationFailure(err);
   }
+  const fees = getExecutionFeeParamsForRoute(args.route, solInLamports);
   const command = {
     kind: "executePumpfunBuy",
     id,
@@ -632,7 +635,7 @@ export async function executeRustPumpFunBuy(args: RustPumpFunBuyArgs): Promise<R
     route: args.route,
     mint: args.mint,
     sourceSignature: args.sourceSignature,
-    quoteMint: args.quoteMint,
+    quoteMint: args.quoteMint ?? "So11111111111111111111111111111111111111112",
     solInLamports,
     tokensOutRaw,
     slippageBps,
@@ -644,9 +647,9 @@ export async function executeRustPumpFunBuy(args: RustPumpFunBuyArgs): Promise<R
     tokenProgramId: args.tokenProgramId,
     blockhash,
     computeUnitLimit,
-    priorityFeeMicroLamports: getDynamicPriorityFeeForRoute(args.route),
-    jitoTipLamports: getJitoTipLamportsForRoute(args.route),
-    heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
+    priorityFeeMicroLamports: fees.priorityFeeMicroLamports,
+    jitoTipLamports: fees.jitoTipLamports,
+    heliusTipLamports: fees.heliusTipLamports,
     useJitoDirect,
     useJitoFallback,
     senderRpcFallbackEnabled,
@@ -672,6 +675,11 @@ export async function executeRustPumpFunBuy(args: RustPumpFunBuyArgs): Promise<R
   });
 }
 
+function formatFeeCap(fees: ReturnType<typeof getExecutionFeeParamsForRoute>): string {
+  if (fees.capLamports == null) return "off";
+  return `${(fees.estimatedMaxLamports / 1_000_000_000).toFixed(6)}/${(fees.capLamports / 1_000_000_000).toFixed(6)} SOL${fees.capped ? " capped" : ""}`;
+}
+
 export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise<RustPumpSwapBuyResult | null> {
   if (!rustExecutorEnabled || !executorStdin || (executorStdin as { destroyed?: boolean }).destroyed) return null;
   const id = `rust-pumpswap-${Date.now()}-${++executorSeq}`;
@@ -681,13 +689,16 @@ export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise
   let minBaseOutRaw: number;
   let slippageBps: number;
   try {
-    quoteAmountInRaw = integerCommandField(args.quoteAmountInRaw, "quoteAmountInRaw", 1);
+    const rawQuoteAmount = args.quoteAmountInRaw ?? args.solInLamports;
+    if (rawQuoteAmount == null) throw new Error("quoteAmountInRaw must be provided");
+    quoteAmountInRaw = integerCommandField(rawQuoteAmount, "quoteAmountInRaw", 1);
     expectedBaseOutRaw = integerCommandField(args.expectedBaseOutRaw, "expectedBaseOutRaw", 1);
     minBaseOutRaw = integerCommandField(args.minBaseOutRaw, "minBaseOutRaw", 1);
     slippageBps = integerCommandField(args.slippageBps, "slippageBps", 0);
   } catch (err) {
     return commandValidationFailure(err);
   }
+  const fees = getExecutionFeeParamsForRoute(args.route, quoteAmountInRaw);
   const command = {
     kind: "executePumpSwapBuy",
     id,
@@ -695,7 +706,7 @@ export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise
     mint: args.mint,
     sourceSignature: args.sourceSignature,
     buyLockOwner: args.buyLockOwner,
-    quoteMint: args.quoteMint,
+    quoteMint: args.quoteMint ?? "So11111111111111111111111111111111111111112",
     quoteAmountInRaw,
     expectedBaseOutRaw,
     minBaseOutRaw,
@@ -705,9 +716,9 @@ export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise
     baseTokenProgramId: args.baseTokenProgramId,
     blockhash,
     computeUnitLimit,
-    priorityFeeMicroLamports: getDynamicPriorityFeeForRoute(args.route),
-    jitoTipLamports: getJitoTipLamportsForRoute(args.route),
-    heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
+    priorityFeeMicroLamports: fees.priorityFeeMicroLamports,
+    jitoTipLamports: fees.jitoTipLamports,
+    heliusTipLamports: fees.heliusTipLamports,
     useJitoDirect,
     useJitoFallback,
     senderRpcFallbackEnabled,
@@ -744,6 +755,7 @@ export async function executeRustPumpSwapSell(args: RustPumpSwapSellArgs): Promi
   } catch (err) {
     return commandValidationFailure(err);
   }
+  const fees = getExecutionFeeParamsForRoute(args.route);
   const command = {
     kind: "executePumpSwapSell",
     id,
@@ -756,9 +768,9 @@ export async function executeRustPumpSwapSell(args: RustPumpSwapSellArgs): Promi
     baseTokenProgramId: args.baseTokenProgramId,
     blockhash,
     computeUnitLimit,
-    priorityFeeMicroLamports: getDynamicPriorityFeeForRoute(args.route),
-    jitoTipLamports: getJitoTipLamportsForRoute(args.route),
-    heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
+    priorityFeeMicroLamports: fees.priorityFeeMicroLamports,
+    jitoTipLamports: fees.jitoTipLamports,
+    heliusTipLamports: fees.heliusTipLamports,
     useJitoDirect,
     useJitoFallback,
     senderRpcFallbackEnabled,
@@ -795,6 +807,7 @@ export async function executeRustPumpFunSell(args: RustPumpFunSellArgs): Promise
   } catch (err) {
     return commandValidationFailure(err);
   }
+  const fees = getExecutionFeeParamsForRoute(args.route);
   const command = {
     kind: "executePumpfunSell",
     id,
@@ -807,9 +820,9 @@ export async function executeRustPumpFunSell(args: RustPumpFunSellArgs): Promise
     accounts: args.accounts,
     blockhash,
     computeUnitLimit,
-    priorityFeeMicroLamports: getDynamicPriorityFeeForRoute(args.route),
-    jitoTipLamports: getJitoTipLamportsForRoute(args.route),
-    heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
+    priorityFeeMicroLamports: fees.priorityFeeMicroLamports,
+    jitoTipLamports: fees.jitoTipLamports,
+    heliusTipLamports: fees.heliusTipLamports,
     useJitoDirect,
     useJitoFallback,
     senderRpcFallbackEnabled,
@@ -872,6 +885,7 @@ export async function executeRustRaydiumCpmmSwap(args: RustRaydiumCpmmSwapArgs):
   } catch (err) {
     return commandValidationFailure(err);
   }
+  const fees = getExecutionFeeParamsForRoute(args.route, args.side === "buy" ? amountInRaw : null);
   const command = {
     kind: "executeRaydiumCpmmSwap",
     id,
@@ -887,9 +901,9 @@ export async function executeRustRaydiumCpmmSwap(args: RustRaydiumCpmmSwapArgs):
     sourceRaydiumCpmmAccounts: args.sourceRaydiumCpmmAccounts.map(normalizePumpSwapAccountMeta),
     blockhash,
     computeUnitLimit,
-    priorityFeeMicroLamports: getDynamicPriorityFeeForRoute(args.route),
-    jitoTipLamports: getJitoTipLamportsForRoute(args.route),
-    heliusTipLamports: getHeliusTipLamportsForRoute(args.route),
+    priorityFeeMicroLamports: fees.priorityFeeMicroLamports,
+    jitoTipLamports: fees.jitoTipLamports,
+    heliusTipLamports: fees.heliusTipLamports,
     useJitoDirect,
     useJitoFallback,
     senderRpcFallbackEnabled,

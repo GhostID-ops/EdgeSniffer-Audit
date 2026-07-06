@@ -2073,6 +2073,12 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
   }
   const ts = Date.now();
   const route = hotBuy.route ?? "pumpfun-hot-source-replay-buy";
+  const rustElapsedMs =
+    typeof hotBuy.elapsedMs === "number" && Number.isFinite(hotBuy.elapsedMs) ? Math.max(0, hotBuy.elapsedMs) : null;
+  const rustBroadcastMs =
+    typeof hotBuy.broadcastMs === "number" && Number.isFinite(hotBuy.broadcastMs) ? Math.max(0, hotBuy.broadcastMs) : null;
+  const rustBuildMs =
+    typeof hotBuy.buildMs === "number" && Number.isFinite(hotBuy.buildMs) ? Math.max(0, hotBuy.buildMs) : null;
   const sourceSwap: DetectedSwap = {
     signature: hotBuy.sourceSignature,
     wallet: hotBuy.wallet,
@@ -2103,7 +2109,13 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
     details: {
       sourceSlot: hotBuy.sourceSlot,
       sourceTransactionIndex: hotBuy.sourceTransactionIndex,
-      rustElapsedMs: hotBuy.elapsedMs,
+      providerCreatedAtMs: rustElapsedMs != null ? ts - rustElapsedMs : hotBuy.detectedAtMs,
+      processStartedAtMs: rustBroadcastMs != null ? ts - rustBroadcastMs : ts,
+      detectedAtMs: hotBuy.detectedAtMs,
+      receivedAtMs: hotBuy.receivedAtMs,
+      rustElapsedMs,
+      rustBuildMs,
+      rustBroadcastMs,
       senderPath: hotBuy.senderPath,
     },
   });
@@ -2130,7 +2142,7 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
       detector: "rust-hot-sniper",
       elapsedMs: hotBuy.buildMs,
       success: true,
-      details: { txBytes: hotBuy.txBytes },
+      details: { txBytes: hotBuy.txBytes, rustElapsedMs, rustBuildMs, rustBroadcastMs },
     });
   }
   recordExecutionTelemetrySync({
@@ -2144,7 +2156,15 @@ async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> 
     detector: "rust-hot-sniper",
     elapsedMs: hotBuy.broadcastMs ?? hotBuy.elapsedMs,
     success: true,
-    details: { senderPath: hotBuy.senderPath, txBytes: hotBuy.txBytes },
+    details: {
+      sourceSlot: hotBuy.sourceSlot,
+      sourceTransactionIndex: hotBuy.sourceTransactionIndex,
+      senderPath: hotBuy.senderPath,
+      txBytes: hotBuy.txBytes,
+      rustElapsedMs,
+      rustBuildMs,
+      rustBroadcastMs,
+    },
   });
 
   const inputMeta = await getTokenMeta(WRAPPED_SOL_MINT);

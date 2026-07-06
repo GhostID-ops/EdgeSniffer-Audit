@@ -58,8 +58,10 @@ function routeTipLamports(route?: string, baseLamports = tipLamports): number {
   return Math.max(0, Math.round(baseLamports * routeMultiplier(route)));
 }
 
-function jitoTip(user: PublicKey, route?: string): TransactionInstruction | null {
-  const lamports = routeTipLamports(route, getDynamicJitoTipLamports());
+function jitoTip(user: PublicKey, route?: string, overrideLamports?: number): TransactionInstruction | null {
+  const lamports = overrideLamports == null
+    ? routeTipLamports(route, getDynamicJitoTipLamports())
+    : Math.max(0, Math.round(overrideLamports));
   if (lamports <= 0) return null;
   return SystemProgram.transfer({
     fromPubkey: user,
@@ -68,7 +70,16 @@ function jitoTip(user: PublicKey, route?: string): TransactionInstruction | null
   });
 }
 
-function heliusTip(user: PublicKey, route?: string): TransactionInstruction | null {
+function heliusTip(user: PublicKey, route?: string, overrideLamports?: number): TransactionInstruction | null {
+  if (overrideLamports != null) {
+    const lamports = Math.max(0, Math.round(overrideLamports));
+    if (lamports <= 0) return null;
+    return SystemProgram.transfer({
+      fromPubkey: user,
+      toPubkey: randomAccount(HELIUS_TIP_ACCOUNTS),
+      lamports,
+    });
+  }
   const routeLamports = routeTipLamports(route);
   if (routeLamports <= 0) return null;
   const heliusLamports = Math.max(routeLamports, HELIUS_TIP_MIN_LAMPORTS);
@@ -96,38 +107,43 @@ export function getHeliusTipLamportsForRoute(route?: string): number {
  */
 export function buildTipInstructions(
   user: PublicKey,
-  options: { selection?: TipSelection; route?: string } = {}
+  options: { selection?: TipSelection; route?: string; jitoTipLamports?: number; heliusTipLamports?: number } = {}
 ): TransactionInstruction[] {
   const selection = options.selection ?? "all";
   if (selection === "none") return [];
 
   if (selection === "primary") {
-    const ix = useJitoDirect ? jitoTip(user, options.route) : heliusTip(user, options.route);
+    const ix = useJitoDirect
+      ? jitoTip(user, options.route, options.jitoTipLamports)
+      : heliusTip(user, options.route, options.heliusTipLamports);
     return ix ? [ix] : [];
   }
 
   if (selection === "fallback") {
     const ix = useJitoDirect && useJitoFallback
-      ? heliusTip(user, options.route)
+      ? heliusTip(user, options.route, options.heliusTipLamports)
       : useJitoDirect
-        ? jitoTip(user, options.route)
-        : heliusTip(user, options.route);
+        ? jitoTip(user, options.route, options.jitoTipLamports)
+        : heliusTip(user, options.route, options.heliusTipLamports);
     return ix ? [ix] : [];
   }
 
   const ixs: TransactionInstruction[] = [];
-  const jitoIx = useJitoDirect ? jitoTip(user, options.route) : null;
-  const heliusIx = !useJitoDirect || useJitoFallback ? heliusTip(user, options.route) : null;
+  const jitoIx = useJitoDirect ? jitoTip(user, options.route, options.jitoTipLamports) : null;
+  const heliusIx = !useJitoDirect || useJitoFallback ? heliusTip(user, options.route, options.heliusTipLamports) : null;
   if (jitoIx) ixs.push(jitoIx);
   if (heliusIx) ixs.push(heliusIx);
   return ixs;
 }
 
-export function buildTipInstructionSets(user: PublicKey, options: { route?: string } = {}): TipInstructionSet[] {
+export function buildTipInstructionSets(
+  user: PublicKey,
+  options: { route?: string; jitoTipLamports?: number; heliusTipLamports?: number } = {}
+): TipInstructionSet[] {
   const sets: TipInstructionSet[] = [
-    { label: "all", instructions: buildTipInstructions(user, { selection: "all", route: options.route }) },
-    { label: "primary", instructions: buildTipInstructions(user, { selection: "primary", route: options.route }) },
-    { label: "fallback", instructions: buildTipInstructions(user, { selection: "fallback", route: options.route }) },
+    { label: "all", instructions: buildTipInstructions(user, { selection: "all", route: options.route, jitoTipLamports: options.jitoTipLamports, heliusTipLamports: options.heliusTipLamports }) },
+    { label: "primary", instructions: buildTipInstructions(user, { selection: "primary", route: options.route, jitoTipLamports: options.jitoTipLamports, heliusTipLamports: options.heliusTipLamports }) },
+    { label: "fallback", instructions: buildTipInstructions(user, { selection: "fallback", route: options.route, jitoTipLamports: options.jitoTipLamports, heliusTipLamports: options.heliusTipLamports }) },
   ];
 
   const seen = new Set<string>();

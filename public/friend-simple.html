@@ -417,6 +417,11 @@
                 <input id="maxFeeSol" type="number" min="0" step="0.001" value="0.02" />
                 <div class="setting-help">Safety cap for buy execution fees. If fee math tries to spend more than this on tip + priority for one buy, Obsidian scales it down. Use 0.006 for Balanced, 0.004 for Eco, 0.02 for roomier demos, or 0 with Speed Off.</div>
               </div>
+              <div class="field">
+                <label for="maxFeePct">Max speed fee % of buy</label>
+                <input id="maxFeePct" type="number" min="0" step="0.1" value="8" />
+                <div class="setting-help">Second safety cap for small buys. Example: 8% on a 0.015 SOL buy caps speed fees around 0.0012 SOL even if the absolute budget is higher. Obsidian uses whichever cap is lower. Use 5 for cheap tests, 8 balanced, 12 max-speed.</div>
+              </div>
               <div class="row" id="feeFields" style="display:none">
                 <div>
                   <label for="tipLamports">Speed tip</label>
@@ -693,6 +698,7 @@
         mirrorSells,
         simulationMode: !liveMode,
         maxBuyExecutionFeeSol: $("maxFeeSol").value.trim() ? Number($("maxFeeSol").value) : null,
+        maxBuyExecutionFeePctOfBuy: $("maxFeePct").value.trim() ? Number($("maxFeePct").value) : null,
         // These are only the regular fallback fees. The same-slot sniper's real fees are
         // controlled by the Speed row. Keeping this toggle off must mean 0 regular tip/priority.
         tipLamports: feeMode ? (Number($("tipLamports").value || 0) || selected.tipLamports || 0) : 0,
@@ -881,6 +887,7 @@
         $("maxSessionDeployed").value = settings.maxSessionDeployedSol ?? "";
         $("maxOpenDeployed").value = settings.maxOpenDeployedSol ?? "";
         $("maxFeeSol").value = settings.maxBuyExecutionFeeSol ?? 0.02;
+        $("maxFeePct").value = settings.maxBuyExecutionFeePctOfBuy ?? 8;
         $("slippage").value = ((settings.mirrorSlippageBps ?? selected.slippage * 100) / 100).toString();
         $("tipLamports").value = settings.tipLamports ?? 0;
         $("priorityFee").value = settings.priorityFeeMicroLamports ?? 0;

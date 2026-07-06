@@ -10,8 +10,8 @@ import {
 } from "@solana/web3.js";
 import { buildTipInstructionSets } from "./tipBuilder.js";
 import { executionAltAddresses, readConnection } from "./config.js";
-import { getDynamicPriorityFee } from "./feeOracle.js";
 import { recordExecutionStage } from "./executionTelemetry.js";
+import { getExecutionFeeParamsForRoute } from "./executionFeeCaps.js";
 
 export const PACKET_DATA_SIZE = 1232;
 
@@ -296,7 +296,11 @@ function findFittingTransaction(args: {
   includeTips: boolean;
 }): FitAttempt | null {
   const tipSets = args.includeTips
-    ? buildTipInstructionSets(args.payer, { route: args.route })
+    ? buildTipInstructionSets(args.payer, {
+        route: args.route,
+        jitoTipLamports: getExecutionFeeParamsForRoute(args.route).jitoTipLamports,
+        heliusTipLamports: getExecutionFeeParamsForRoute(args.route).heliusTipLamports,
+      })
     : [{ label: "none" as const, instructions: [] as TransactionInstruction[] }];
 
   // Without ALT first (cheapest, no RPC dependency), then with ALT if configured.
@@ -447,8 +451,9 @@ export async function buildSizeSafeV0Transaction(args: {
     if (swapFit) {
       // Setup tx carries only a priority-fee ix + the setup instructions (no tip; it just needs
       // to land before the swap). Recompute its size and refuse to ship it oversized too.
+      const setupFees = getExecutionFeeParamsForRoute(route);
       const setupBase = [
-        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: getDynamicPriorityFee() }),
+        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: setupFees.priorityFeeMicroLamports }),
         ...sanitizeInstructions(setupInstructions).instructions,
       ];
       const setupTx = compileSignedV0({

@@ -154,6 +154,7 @@ if (!existsSync(demoEnvPath)) {
     // same-slot cheap tier (~0.006/snipe) is not clamped. Priority is charged per compute
     // unit (price x COMPUTE_UNIT_LIMIT), which is why the tier lowers the CU limit to 400k.
     "MAX_BUY_EXECUTION_FEE_SOL=0.02",
+    "MAX_BUY_EXECUTION_FEE_PCT_OF_BUY=8",
     "FRIEND_MAX_LIVE_TIP_LAMPORTS=5000000",
     "FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS=10000000",
     "MIN_BUY_SOL=0.02",
@@ -187,6 +188,8 @@ if (!existsSync(demoEnvPath)) {
     "RUST_HOT_SNIPER_JITO_TIP_LAMPORTS=3000000",
     "RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS=0",
     "RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS=8000000",
+    "RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL=0.02",
+    "RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY=8",
     "COMPUTE_UNIT_LIMIT=400000",
     "JITO_TIP_ORACLE_ENABLED=true",
     "DYNAMIC_PRIORITY_FEE_ENABLED=true",
@@ -210,6 +213,7 @@ upsertDemoEnv({
   // settingsStore skip the clamp entirely, so his UI value is authoritative.
   FRIEND_MAX_LIVE_BUY_SOL: "",
   MAX_BUY_EXECUTION_FEE_SOL: "0.02",
+  MAX_BUY_EXECUTION_FEE_PCT_OF_BUY: "8",
   FRIEND_MAX_LIVE_TIP_LAMPORTS: "5000000",
   FRIEND_MAX_LIVE_PRIORITY_FEE_MICRO_LAMPORTS: "10000000",
   // Fast pump.fun tokens move between quote and fill. 12% was too tight and caused
@@ -264,6 +268,8 @@ defaultDemoEnv({
   RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "3000000",
   RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
   RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "8000000",
+  RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL: "0.02",
+  RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY: "8",
   COMPUTE_UNIT_LIMIT: "400000",
 });
 

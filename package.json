@@ -42,6 +42,7 @@
     "friend:update:recommended": "powershell -ExecutionPolicy Bypass -File scripts/updateFriendBot.ps1 -ApplyRecommended",
     "telemetry:execution": "tsx src/executionTelemetryReport.ts",
     "telemetry:scan-today": "node scripts/scanTodayTelemetry.mjs",
+    "telemetry:tx-order": "node scripts/auditTxOrder.mjs",
     "audit:source-coverage": "node scripts/auditSourceCoverage.mjs",
     "audit:wallet-ledger-buckets": "tsx src/walletLedgerBucketAudit.ts",
     "audit:wallet-quant": "tsx src/walletQuantAudit.ts",
