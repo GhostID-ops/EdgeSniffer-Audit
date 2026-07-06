@@ -159,18 +159,21 @@
     .switch.on { background: rgba(93,242,174,.2); border-color: rgba(93,242,174,.55); }
     .switch.on::after { left: 25px; background: var(--green); }
     #activityCard {
-      max-height: min(760px, calc(100vh - 118px));
+      height: min(760px, calc(100vh - 96px));
+      max-height: calc(100vh - 32px);
       display: flex;
       flex-direction: column;
       position: sticky;
       top: 16px;
     }
     #activityCard .body {
-      min-height: 360px;
+      flex: 1 1 auto;
+      min-height: 0;
       overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-width: thin;
       scrollbar-color: rgba(105,230,190,.55) rgba(255,255,255,.06);
+      padding-bottom: 18px;
     }
     #activityCard .body::-webkit-scrollbar { width: 10px; }
     #activityCard .body::-webkit-scrollbar-track { background: rgba(255,255,255,.04); border-radius: 999px; }
@@ -244,8 +247,8 @@
       .main-grid, .wallet-row, .row { grid-template-columns: 1fr; }
       .amount-grid { grid-template-columns: 1fr 1fr; }
       .top { align-items: stretch; flex-direction: column; }
-      #activityCard { position: static; max-height: 72vh; }
-      #activityCard .body { min-height: 300px; }
+      #activityCard { position: static; height: min(680px, 78vh); max-height: none; }
+      #activityCard .body { min-height: 0; }
       .activity-stats { grid-template-columns: 1fr 1fr; }
     }
   </style>
