@@ -99,6 +99,7 @@ import {
   prebuyInferredMcFilterEnabled,
   copyBuyPercentage,
   minBuyBehavior,
+  minSourceBuyLamports,
   executionRescueRetries,
   executionRescueDelayMs,
   pnlAccountingBasis,
@@ -3053,6 +3054,22 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     const blocked = shouldBlockNewBuys();
     if (blocked) {
       console.log(`⛔ Skipping buy: ${blocked}.`);
+      return;
+    }
+  }
+
+  if (isBuySignal(swap) && minSourceBuyLamports != null) {
+    const quoteMint = mirrorQuoteMintForBuy(swap);
+    const sourceSpendLamports = quoteMint === WRAPPED_SOL_MINT && swap.isNativeInput ? swap.amountRaw : null;
+    if (sourceSpendLamports != null && sourceSpendLamports < minSourceBuyLamports) {
+      console.log(
+        `Skipping buy: source SOL spend ${formatSolAmount(sourceSpendLamports)} SOL ` +
+          `< ${formatSolAmount(minSourceBuyLamports)} SOL minimum source buy.`
+      );
+      recordMirrorSkip(swap, "source SOL spend below minimum", {
+        sourceSpendLamports,
+        minSourceBuyLamports,
+      });
       return;
     }
   }

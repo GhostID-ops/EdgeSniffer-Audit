@@ -114,6 +114,14 @@ if (COPY_BUY_PERCENTAGE_PARSED < 0) {
 /** Percentage of source wallet buy size to copy. Values above 100 are clamped to 100. */
 let COPY_BUY_PERCENTAGE = Math.min(100, COPY_BUY_PERCENTAGE_PARSED);
 export let copyBuyPercentage = COPY_BUY_PERCENTAGE;
+const MIN_SOURCE_BUY_SOL = parseOptionalNonNegativeNumber(process.env.MIN_SOURCE_BUY_SOL);
+/**
+ * Optional source-spend gate for SOL copy buys. This is especially important in
+ * fixed-size mode: a detector can surface a launch/create/failed source event
+ * with a zero SOL spend, and fixed-size copying would otherwise buy anyway.
+ */
+export const minSourceBuyLamports =
+  MIN_SOURCE_BUY_SOL != null ? Math.round(MIN_SOURCE_BUY_SOL * LAMPORTS_PER_SOL) : null;
 const MIN_BUY_USDC = parsePositiveNumber(process.env.MIN_BUY_USDC, 50);
 const MAX_BUY_USDC = parsePositiveNumber(process.env.MAX_BUY_USDC, 60);
 /** SOL reserve amount to keep for gas fees. Prevents wallet from going to 0 SOL. Default 0.1 SOL. */
