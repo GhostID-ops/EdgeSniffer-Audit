@@ -933,6 +933,7 @@ let unsubscribeRabbit: RabbitUnsubscribe | null = null;
 let unsubscribeRustSidecar: RustSidecarUnsubscribe | null = null;
 let unsubscribeHeliusTx: HeliusTxUnsubscribe | null = null;
 let riskPositionCursor = 0;
+let riskCheckInFlight = false;
 
 function trackedSourcePublicKeys(): PublicKey[] {
   return trackedWallets
@@ -1131,8 +1132,8 @@ async function reconcileFastBuyTokens(args: {
   });
   extendFastBuyLocalCloseGuard(args.mint);
   const actualTokens = execution.tokenAmountRaw;
+  confirmedFastBuyTokensByMint.set(args.mint, actualTokens);
   if (actualTokens !== args.expectedTokenAmountRaw && adjustBuyTokenAmount(args.mint, args.expectedTokenAmountRaw, actualTokens)) {
-    confirmedFastBuyTokensByMint.set(args.mint, actualTokens);
     console.warn(
       `🧮 Fast buy token amount corrected for ${args.mint.slice(0, 8)}…: ` +
         `${formatTokenAmount(args.expectedTokenAmountRaw, 6)} quoted → ${formatTokenAmount(actualTokens, 6)} actual.`
@@ -1162,8 +1163,9 @@ async function reconcileFastBuyTokens(args: {
       `🧾 Fast buy wallet debit observed for ${args.mint.slice(0, 8)}…: ` +
         `${formatSolAmount(execution.solSpentLamports)} SOL all-in vs ${formatSolAmount(args.expectedSolLamports)} SOL trade basis ` +
         `(PnL basis=${pnlAccountingBasis}).`
-    );
+      );
   }
+  queueImmediateRiskCheck(args.mint, "confirmed fast buy");
 }
 
 async function reconcileOpenPositionWithConfirmedBuy(
@@ -4197,7 +4199,7 @@ async function loop(): Promise<void> {
         riskNormalIntervalMs
       );
       if (riskControlsEnabled && now - lastRiskCheck >= minRiskInterval) {
-        await checkRiskExits();
+        await runRiskCheck("scheduled");
         lastRiskCheck = now;
       }
       if (sourceHoldExitEnabled && now - lastSourceHoldCheck >= sourceHoldExitIntervalMs) {
@@ -5696,6 +5698,31 @@ async function checkRiskExits(): Promise<void> {
       );
       if (isJupiterRateLimitError(err)) break;
     }
+  }
+}
+
+function queueImmediateRiskCheck(mint: string, reason: string): void {
+  if (!riskControlsEnabled) return;
+  const timer = setTimeout(() => {
+    runRiskCheck(`immediate:${reason}:${mint.slice(0, 8)}`).catch((err) => {
+      console.warn(
+        `Immediate risk check failed for ${mint.slice(0, 8)}...: ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+    });
+  }, 0);
+  timer.unref?.();
+}
+
+async function runRiskCheck(reason = "scheduled"): Promise<void> {
+  void reason;
+  if (!riskControlsEnabled || riskCheckInFlight) return;
+  riskCheckInFlight = true;
+  try {
+    await checkRiskExits();
+  } finally {
+    riskCheckInFlight = false;
   }
 }
 
