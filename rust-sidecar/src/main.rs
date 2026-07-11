@@ -965,7 +965,11 @@ async fn try_hot_sniper_buy(cfg: &Config, line: &DetectedSwapLine) -> HotDecisio
 }
 
 fn hot_sized_lamports(hot: &HotSniperConfig, source_lamports: u64) -> Option<u64> {
-    let copied = ((source_lamports as f64) * (hot.copy_buy_percentage / 100.0)).floor() as u64;
+    let copied = if hot.copy_buy_percentage <= 0.0 {
+        hot.min_buy_lamports
+    } else {
+        ((source_lamports as f64) * (hot.copy_buy_percentage / 100.0)).floor() as u64
+    };
     let mut sized = copied;
     if sized < hot.min_buy_lamports {
         match hot.min_buy_behavior.as_str() {
@@ -1740,6 +1744,57 @@ fn now_ms() -> u128 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn test_hot_sniper_config(copy_buy_percentage: f64) -> HotSniperConfig {
+        HotSniperConfig {
+            enabled: true,
+            buy_once_per_token: true,
+            bought_mints: Arc::new(Mutex::new(HashSet::new())),
+            bought_signatures: Arc::new(Mutex::new(HashSet::new())),
+            session_deployed_lamports: Arc::new(AtomicU64::new(0)),
+            blockhash_cache: Arc::new(Mutex::new(None)),
+            max_session_deployed_lamports: None,
+            min_market_cap_usd: None,
+            max_market_cap_usd: None,
+            min_market_cap_sol: None,
+            max_market_cap_sol: None,
+            sol_price_usd: None,
+            market_cap_filter_enabled: false,
+            market_cap_filter_fail_open: false,
+            market_cap_rpc_timeout_ms: 80,
+            min_buy_lamports: 10_000_000,
+            max_buy_lamports: 10_000_000,
+            max_sol_per_token_lamports: None,
+            copy_buy_percentage,
+            min_buy_behavior: "skip".to_string(),
+            slippage_bps: 5_000,
+            compute_unit_limit: 1_400_000,
+            priority_fee_micro_lamports: 0,
+            jito_tip_lamports: 0,
+            helius_tip_lamports: 0,
+            max_execution_fee_lamports: None,
+            max_execution_fee_pct_of_buy: None,
+            use_jito_direct: false,
+            use_jito_fallback: false,
+            sender_rpc_fallback_enabled: false,
+            execution_multi_send_enabled: false,
+            jito_send_mode: "rpc".to_string(),
+            jito_transaction_urls: Vec::new(),
+            jito_bundle_urls: Vec::new(),
+            sender_endpoint_url: String::new(),
+            rpc_fallback_url: String::new(),
+            jito_auth_uuid: None,
+            blockhash_refresh_ms: 150,
+            blockhash_max_age_ms: 800,
+        }
+    }
+
+    #[test]
+    fn hot_sized_lamports_uses_min_buy_for_fixed_size_mode() {
+        let hot = test_hot_sniper_config(0.0);
+        assert_eq!(hot_sized_lamports(&hot, 1_500_000), Some(10_000_000));
+        assert_eq!(hot_sized_lamports(&hot, 100_000_000), Some(10_000_000));
+    }
 
     #[test]
     fn detects_pumpfun_v2_usdc_buy_quote_asset() {
