@@ -15,6 +15,8 @@ export type RetryDecision = ClassifiedExecutionError & {
 };
 
 export function decideRetryAction(err: unknown): RetryDecision {
+  const raw = err instanceof Error ? err.message : String(err ?? "");
+  const lower = raw.toLowerCase();
   const classified = classifyExecutionError(err);
   switch (classified.category) {
     case "account-constraint-seeds":
@@ -54,6 +56,13 @@ export function decideRetryAction(err: unknown): RetryDecision {
       };
     case "liquidity-overflow":
       if (classified.program === "pump_amm") {
+        if (lower.includes("canonical-pool-state")) {
+          return {
+            ...classified,
+            action: "skip",
+            shouldQuarantine: true,
+          };
+        }
         return {
           ...classified,
           action: "rebuild-pool-state",

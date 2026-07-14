@@ -3157,15 +3157,19 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     if (maxSolPerTokenLamports != null) {
       const nextBuyLamports =
         mirrorQuoteMintForBuy(swap) === WRAPPED_SOL_MINT ? mirroredBuyAmountRaw(swap) : null;
-      const projectedLamports = (existing?.totalSolSpentLamports ?? 0) + (nextBuyLamports ?? 0);
+      const currentOpenCostLamports =
+        existing != null && existing.heldRaw > 0
+          ? Math.max(0, Math.round(existing.costBasisRemainingLamports))
+          : 0;
+      const projectedLamports = currentOpenCostLamports + (nextBuyLamports ?? 0);
       if (nextBuyLamports != null && projectedLamports > maxSolPerTokenLamports) {
         console.log(
           `Skipping buy: ${mint.slice(0, 8)}... max SOL per token exposure would be exceeded ` +
-            `(${formatSolAmount(existing?.totalSolSpentLamports ?? 0)} + ${formatSolAmount(nextBuyLamports)} > ` +
+            `(${formatSolAmount(currentOpenCostLamports)} open + ${formatSolAmount(nextBuyLamports)} > ` +
             `${formatSolAmount(maxSolPerTokenLamports)} SOL).`
         );
         recordMirrorSkip(swap, "max SOL per token exceeded", {
-          currentLamports: existing?.totalSolSpentLamports ?? 0,
+          currentLamports: currentOpenCostLamports,
           nextBuyLamports,
           maxSolPerTokenLamports,
         });

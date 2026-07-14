@@ -32,6 +32,16 @@ assertDecision(
   }
 );
 
+assertDecision(
+  'PumpSwap canonical-pool-state confirmation failed: Transaction failed: {"InstructionError":[6,{"Custom":6023}]}',
+  {
+    action: "skip",
+    shouldQuarantine: true,
+    category: "liquidity-overflow",
+    program: "pump_amm",
+  }
+);
+
 assertDecision("PumpSwap preflight failed: {\"InstructionError\":[6,\"PrivilegeEscalation\"]}", {
   action: "rebuild-derived-accounts",
   shouldQuarantine: false,

@@ -1837,6 +1837,16 @@ export async function tryPumpSwapDirectBuy(args: {
   };
   const retryRustOverflow = async (mode: "background" | "blocking", originalMsg: string): Promise<string | null> => {
     if (!isPumpSwapOverflowError(originalMsg)) return null;
+    const retryWouldRepeatPrimary =
+      accountPlan.source === "canonical-pool-state" &&
+      buyInstruction === overflowRetryBuyInstruction &&
+      safeOverflowRetryMinBaseOut === minBaseOut;
+    if (retryWouldRepeatPrimary) {
+      args.log(
+        `PumpSwap overflow retry skipped: canonical ${buyInstruction} already failed with unchanged minOut=${minBaseOut}.`
+      );
+      return null;
+    }
     releaseRustBoughtMint(args.mint, `PumpSwap overflow retry after ${buyInstruction} failed: ${originalMsg}`);
     args.log(
       `PumpSwap Rust overflow retry: ${buyInstruction} failed with 6023; ` +
@@ -1967,7 +1977,12 @@ export async function tryPumpSwapDirectBuy(args: {
           });
           if (retrySignature) return;
           releaseRustBoughtMint(args.mint, `PumpSwap confirmation failed after Rust broadcast: ${msg}`);
-          args.onConfirmFailure?.(args.mint, Number(expectedBaseOut), args.solInLamports, msg);
+          args.onConfirmFailure?.(
+            args.mint,
+            Number(expectedBaseOut),
+            args.solInLamports,
+            `PumpSwap ${accountPlan.source} confirmation failed: ${msg}`
+          );
         });
       return {
         ok: true,
@@ -1985,7 +2000,11 @@ export async function tryPumpSwapDirectBuy(args: {
       const retrySignature = await retryRustOverflow("blocking", confirmed.message).catch(() => null);
       if (!retrySignature) {
         releaseRustBoughtMint(args.mint, "PumpSwap Rust blocking confirmation failed");
-        return { ok: false, recoverable: true, reason: `PumpSwap Rust confirmation failed: ${confirmed.message}` };
+        return {
+          ok: false,
+          recoverable: true,
+          reason: `PumpSwap ${accountPlan.source} Rust confirmation failed: ${confirmed.message}`,
+        };
       }
       finalSignature = retrySignature;
     }
