@@ -1809,8 +1809,9 @@ fn build_pumpswap_buy_ix(
                 PUMPSWAP_USER_BASE_ATA_INDEX => *user_base_ata,
                 PUMPSWAP_USER_QUOTE_ATA_INDEX => *user_quote_ata,
                 PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX => user_volume_accumulator,
-                PUMPSWAP_MIN_BUY_ACCOUNT_COUNT if source == template_cashback_ata => {
-                    user_cashback_ata
+                _ if i >= PUMPSWAP_MIN_BUY_ACCOUNT_COUNT && source == template_cashback_ata => user_cashback_ata,
+                _ if i >= PUMPSWAP_MIN_BUY_ACCOUNT_COUNT && source == template_volume_accumulator => {
+                    user_volume_accumulator
                 }
                 _ => source,
             };

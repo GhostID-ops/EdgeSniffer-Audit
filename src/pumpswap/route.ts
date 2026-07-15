@@ -1033,13 +1033,16 @@ export function replacePumpSwapUserAccounts(args: {
       new PublicKey(WRAPPED_SOL_MINT),
       TOKEN_PROGRAM_ID
     );
-    if (accounts[PUMPSWAP_MIN_BUY_ACCOUNT_COUNT]?.pubkey.equals(templateCashbackAta)) {
-      const userVolume = derivePumpSwapUserVolumeAccumulatorPda(args.user);
-      accounts[PUMPSWAP_MIN_BUY_ACCOUNT_COUNT] = {
-        pubkey: deriveAta(userVolume, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID),
-        isSigner: false,
-        isWritable: true,
-      };
+    const userVolume = derivePumpSwapUserVolumeAccumulatorPda(args.user);
+    const userCashbackAta = deriveAta(userVolume, new PublicKey(WRAPPED_SOL_MINT), TOKEN_PROGRAM_ID);
+    for (let i = PUMPSWAP_MIN_BUY_ACCOUNT_COUNT; i < accounts.length; i++) {
+      const account = accounts[i];
+      if (!account) continue;
+      if (account.pubkey.equals(templateCashbackAta)) {
+        accounts[i] = { pubkey: userCashbackAta, isSigner: false, isWritable: true };
+      } else if (account.pubkey.equals(templateVolume)) {
+        accounts[i] = { pubkey: userVolume, isSigner: false, isWritable: true };
+      }
     }
   }
   if (args.replaceSellCashbackAccounts && templateUser) {
