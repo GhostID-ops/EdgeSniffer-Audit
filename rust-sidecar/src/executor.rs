@@ -1785,7 +1785,16 @@ fn build_pumpswap_buy_ix(
         bail!("source PumpSwap accounts do not match base token program");
     }
 
+    let template_user = source_accounts
+        .get(PUMPSWAP_USER_INDEX)
+        .copied()
+        .context("source PumpSwap user account missing")?;
+    let wsol = parse_pubkey(WRAPPED_SOL_MINT, "wsol mint")?;
+    let token_program = parse_pubkey(TOKEN_PROGRAM_ID, "token program")?;
+    let template_volume_accumulator = derive_pumpswap_user_volume_accumulator(&template_user)?;
+    let template_cashback_ata = derive_ata(&template_volume_accumulator, &wsol, &token_program)?;
     let user_volume_accumulator = derive_pumpswap_user_volume_accumulator(user)?;
+    let user_cashback_ata = derive_ata(&user_volume_accumulator, &wsol, &token_program)?;
     let keys = cmd
         .source_pump_swap_accounts
         .iter()
@@ -1800,6 +1809,9 @@ fn build_pumpswap_buy_ix(
                 PUMPSWAP_USER_BASE_ATA_INDEX => *user_base_ata,
                 PUMPSWAP_USER_QUOTE_ATA_INDEX => *user_quote_ata,
                 PUMPSWAP_USER_VOLUME_ACCUMULATOR_INDEX => user_volume_accumulator,
+                PUMPSWAP_MIN_BUY_ACCOUNT_COUNT if source == template_cashback_ata => {
+                    user_cashback_ata
+                }
                 _ => source,
             };
             let is_signer = i == PUMPSWAP_USER_INDEX;
