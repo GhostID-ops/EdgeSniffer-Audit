@@ -373,26 +373,31 @@ export function persistFriendSafetySettings(body: Record<string, unknown>): { sa
 
 export type SpeedTier = "auto" | "max" | "balanced" | "eco" | "off";
 
-// Same-slot fee tiers for the friend demo. Max/Balanced/Eco keep the hot sniper ON and only
-// change the fee level (priority is charged per compute unit, so cheaper tiers also shrink
-// COMPUTE_UNIT_LIMIT). Off disables the sniper so buys use the slower gRPC mirror with no
-// snipe fee. Approx cost per landed snipe before caps: max/auto ~0.037, balanced ~0.006,
-// eco ~0.004 SOL. Auto keeps Max-grade fee ceilings available, then the executor caps the
-// actual spend by buy size (MAX_BUY_EXECUTION_FEE_PCT_OF_BUY), so tiny buys do not pay
-// full Max fees. These keys are read by the Rust sidecar at startup, so persisting a tier
-// requires a restart.
+// Same-slot fee tiers for the friend demo. Auto is the default retail posture: keep the Rust
+// hot path on, but do not hardcode a fixed tip/priority on every buy. Blank Rust hot-sniper
+// fee keys let the sidecar use the low dynamic/oracle caps below. Max/Balanced/Eco remain
+// explicit static-fee choices for users who deliberately want to pay more for ordering.
+// These keys are read by the Rust sidecar at startup, so persisting a tier requires a restart.
 const SPEED_TIERS: Record<SpeedTier, Record<string, string>> = {
   auto: {
     RUST_HOT_SNIPER_ENABLED: "true",
     RUST_HOT_SNIPER_PRIMARY: "true",
-    RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "10000000",
-    RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "1500000",
-    RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "18000000",
-    COMPUTE_UNIT_LIMIT: "1400000",
-    MAX_BUY_EXECUTION_FEE_SOL: "0.05",
-    MAX_BUY_EXECUTION_FEE_PCT_OF_BUY: "8",
-    RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL: "0.05",
-    RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY: "8",
+    RUST_HOT_SNIPER_JITO_TIP_LAMPORTS: "",
+    RUST_HOT_SNIPER_HELIUS_TIP_LAMPORTS: "0",
+    RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS: "",
+    JITO_TIP_ORACLE_ENABLED: "true",
+    JITO_TIP_ORACLE_PERCENTILE: "p75",
+    JITO_TIP_ORACLE_REFRESH_MS: "5000",
+    JITO_TIP_ORACLE_MIN_LAMPORTS: "0",
+    JITO_TIP_ORACLE_MAX_LAMPORTS: "1500000",
+    DYNAMIC_PRIORITY_FEE_ENABLED: "true",
+    DYNAMIC_PRIORITY_FEE_REFRESH_MS: "5000",
+    DYNAMIC_PRIORITY_FEE_MAX_MICROLAMPORTS: "5000000",
+    COMPUTE_UNIT_LIMIT: "400000",
+    MAX_BUY_EXECUTION_FEE_SOL: "0.004",
+    MAX_BUY_EXECUTION_FEE_PCT_OF_BUY: "5",
+    RUST_HOT_SNIPER_MAX_EXECUTION_FEE_SOL: "0.004",
+    RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY: "5",
   },
   max: {
     RUST_HOT_SNIPER_ENABLED: "true",
@@ -450,6 +455,9 @@ function normalizeSpeedTier(tier: unknown): SpeedTier {
 /** Current tier from the hot-sniper state/tip in the environment. */
 export function getSpeedTier(): SpeedTier {
   if (String(process.env.RUST_HOT_SNIPER_ENABLED ?? "").trim().toLowerCase() === "false") return "off";
+  const rawTip = String(process.env.RUST_HOT_SNIPER_JITO_TIP_LAMPORTS ?? "").trim();
+  const rawPriority = String(process.env.RUST_HOT_SNIPER_PRIORITY_FEE_MICRO_LAMPORTS ?? "").trim();
+  if (!rawTip && !rawPriority) return "auto";
   const tip = Number(process.env.RUST_HOT_SNIPER_JITO_TIP_LAMPORTS ?? 0);
   const pct = Number(process.env.RUST_HOT_SNIPER_MAX_FEE_PCT_OF_BUY ?? process.env.MAX_BUY_EXECUTION_FEE_PCT_OF_BUY ?? NaN);
   if (tip >= 10_000_000 && Number.isFinite(pct) && pct <= 8) return "auto";

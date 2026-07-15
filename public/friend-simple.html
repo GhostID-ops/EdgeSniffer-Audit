@@ -323,10 +323,10 @@
           <small id="statusHelp">Streams and executor start with the bot.</small>
         </div>
       </div>
-      <div class="sniper-badge" id="sniperBadge">⚡ <span><b>Same-Slot Sniper active.</b> Your copy is submitted through Jito ShredStream to land in the <b>same slot</b> as the tracked wallet — not seconds behind. Bigger buys make the fixed speed fee a smaller %.</span></div>
+      <div class="sniper-badge" id="sniperBadge">⚡ <span><b>Same-Slot Sniper active.</b> Your copy is submitted through Jito ShredStream to land in the <b>same slot</b> as the tracked wallet — not seconds behind. Auto uses low dynamic fees with strict caps.</span></div>
       <div class="speed-row" id="speedRow">
         <span class="speed-label">⚡ Speed</span>
-        <button class="speed-btn" data-tier="auto" type="button">Auto <small>Max when needed · capped</small></button>
+        <button class="speed-btn" data-tier="auto" type="button">Auto <small>dynamic low · capped</small></button>
         <button class="speed-btn" data-tier="max" type="button">Max <small>~0.037 SOL/snipe</small></button>
         <button class="speed-btn" data-tier="balanced" type="button">Balanced <small>~0.006 SOL/snipe</small></button>
         <button class="speed-btn" data-tier="eco" type="button">Eco <small>~0.004 SOL/snipe</small></button>
@@ -548,7 +548,7 @@
           ],
           buckets: [
             "Rust-only buys and sells keep execution local and fast.",
-            "Regular fallback tips are 0; same-slot/dynamic infra handles speed with buy-size fee caps.",
+            "Regular fallback tips are 0; Auto same-slot speed uses low dynamic fee caps instead of fixed tips on every buy.",
             "Source-hold exit checks whether the copied wallet actually holds the token after entry.",
             "If the copied wallet never ended up holding the token, the bot exits instead of waiting forever for a source sell that cannot happen."
           ],
@@ -912,7 +912,7 @@
         badge.innerHTML = '⚡ <span><b>Same-Slot Sniper is OFF.</b> Buys use the slower gRPC mirror path — cheaper (no snipe fee), but they land about a slot behind the tracked wallet. Pick Max, Balanced, or Eco to switch same-slot back on.</span>';
       } else {
         badge.classList.remove("off");
-        badge.innerHTML = '⚡ <span><b>Same-Slot Sniper active.</b> Your copy is submitted through Jito ShredStream to land in the <b>same slot</b> as the tracked wallet — not seconds behind. Bigger buys make the fixed speed fee a smaller %.</span>';
+        badge.innerHTML = '⚡ <span><b>Same-Slot Sniper active.</b> Your copy is submitted through Jito ShredStream to land in the <b>same slot</b> as the tracked wallet — not seconds behind. Auto uses low dynamic fees with strict caps.</span>';
       }
     }
     async function loadSpeed() {
@@ -923,7 +923,7 @@
       const msg = tier === "off"
         ? "Turn the Same-Slot Sniper OFF?\n\nBuys will use the slower gRPC mirror (no snipe fee, but you land about a slot behind). This restarts the bot (~10s). If it was running, press Start again after."
         : tier === "auto"
-          ? "Switch speed to AUTO?\n\nAuto uses Max-grade sniper fees when needed, but caps fee spend by buy size so tiny buys do not pay full Max cost. This restarts the bot (~10s). If it was running, press Start again after."
+        ? "Switch speed to AUTO?\n\nAuto keeps the Rust hot path on but uses low dynamic fee caps instead of fixed tips on every buy. This restarts the bot (~10s). If it was running, press Start again after."
         : "Switch speed to " + tier.toUpperCase() + "?\n\nThe sniper stays ON — only the fee level changes. This restarts the bot (~10s). If it was running, press Start again after.";
       if (!confirm(msg)) return;
       try {
