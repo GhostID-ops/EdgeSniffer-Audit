@@ -496,6 +496,12 @@ pub fn start_executor_stdin(
     });
 }
 
+fn format_error_chain(err: &anyhow::Error) -> String {
+    let mut parts = err.chain().map(|cause| cause.to_string()).collect::<Vec<_>>();
+    parts.dedup();
+    parts.join(": ")
+}
+
 async fn handle_line(
     line: &str,
     shared_bought_mints: Option<SharedBoughtMints>,
@@ -582,7 +588,7 @@ async fn handle_line(
                         build_ms: None,
                         broadcast_ms: None,
                         tx_bytes: None,
-                        error: Some(err.to_string()),
+                        error: Some(format_error_chain(&err)),
                     }
                 }
             }
@@ -607,7 +613,7 @@ async fn handle_line(
                     build_ms: None,
                     broadcast_ms: None,
                     tx_bytes: None,
-                    error: Some(err.to_string()),
+                    error: Some(format_error_chain(&err)),
                 },
             }
         }
@@ -690,7 +696,7 @@ async fn handle_line(
                         build_ms: None,
                         broadcast_ms: None,
                         tx_bytes: None,
-                        error: Some(err.to_string()),
+                        error: Some(format_error_chain(&err)),
                     };
                 }
             };
@@ -723,7 +729,7 @@ async fn handle_line(
                         build_ms: None,
                         broadcast_ms: None,
                         tx_bytes: None,
-                        error: Some(err.to_string()),
+                        error: Some(format_error_chain(&err)),
                     }
                 }
             }
@@ -748,7 +754,7 @@ async fn handle_line(
                     build_ms: None,
                     broadcast_ms: None,
                     tx_bytes: None,
-                    error: Some(err.to_string()),
+                    error: Some(format_error_chain(&err)),
                 },
             }
         }
@@ -772,7 +778,7 @@ async fn handle_line(
                     build_ms: None,
                     broadcast_ms: None,
                     tx_bytes: None,
-                    error: Some(err.to_string()),
+                    error: Some(format_error_chain(&err)),
                 },
             }
         }
