@@ -21,6 +21,7 @@ import { getFriendBotSettings } from "./config.js";
 import {
   normalizeFriendSettings,
   persistFriendRiskSettings,
+  persistFriendSafetySettings,
   persistFriendSecretSettings,
   persistFriendSettings,
   persistSpeedTier,
@@ -318,6 +319,7 @@ async function handle(
       const secretStatus = persistFriendSecretSettings(body);
       const settings = normalizeFriendSettings(body);
       const riskStatus = persistFriendRiskSettings(body);
+      const safetyStatus = persistFriendSafetySettings(body);
       if (secretStatus.privateKeyUpdated) await reloadWalletFromEnv();
       setMirrorSellsEnabled(settings.mirrorSells);
       return sendJson(res, 200, {
@@ -326,6 +328,7 @@ async function handle(
         state: getBotState(),
         ...secretStatus,
         ...riskStatus,
+        ...safetyStatus,
       });
     } catch (err) {
       return sendError(res, 400, err instanceof Error ? err.message : String(err));

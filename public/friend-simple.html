@@ -513,6 +513,53 @@
   <script>
     const STRATEGIES = [
       {
+        id: "ar2y",
+        name: "Archer Strategy",
+        short: "Strict fast-copy wallet",
+        wallet: "Ar2Y6o1QmrRAskjii1cRfijeKugHH13ycxW5cd7rro1x",
+        risk: "High",
+        amount: 0.075,
+        maxBuy: 0.075,
+        slippage: 90,
+        tipLamports: 10000000,
+        priorityFee: 18000000,
+        feeHelp: "Same hardcoded live posture we used: Rust-only, ShredStream, high price room, source-hold exit, and fee caps by buy size.",
+        hardcoded: {
+          maxBuysPerToken: 1,
+          sourceHoldExitEnabled: true,
+          sourceHoldExitIntervalMs: 1000,
+          sourceHoldExitConsecutiveMisses: 2,
+          sourceHoldExitMinPositionAgeMs: 2000,
+          pumpSwapRustPreflight: false,
+          pumpSwapPreflightMode: "canonical",
+          pumpSwapPreflightTimeoutMs: 350,
+          rustOnlyBuys: true,
+          rustOnlySells: true,
+          jupiterFallbackEnabled: false
+        },
+        research: {
+          title: "Why this strategy?",
+          headline: "Archer is the strict fast-copy lane for Ar2Y. It is set up for early entries while protecting against the nasty case where the copied wallet attempted a buy, failed on-chain, and our bot still landed.",
+          stats: [
+            ["Default buy", "0.075 SOL"],
+            ["Price room", "90%"],
+            ["Buy cap", "1 per token"],
+            ["Exit backstop", "Source-hold check"]
+          ],
+          buckets: [
+            "Rust-only buys and sells keep execution local and fast.",
+            "Source-hold exit checks whether the copied wallet actually holds the token after entry.",
+            "If the copied wallet never ended up holding the token, the bot exits instead of waiting forever for a source sell that cannot happen."
+          ],
+          takeaways: [
+            "Best use: Marcus live-testing the same Ar2Y wallet and strict settings.",
+            "Default exit: hybrid 50% at +30%, then source sell, plus source-hold protection.",
+            "Do not widen size until the telemetry shows clean source buys, bot buys, and bot sells."
+          ],
+          source: "Preset source: FinalBot live Ar2Y strict posture."
+        }
+      },
+      {
         id: "cya",
         name: "Cented Strategy",
         short: "Fast runner wallet",
@@ -993,6 +1040,17 @@
         hybridExitTpPct: "30",
         hybridExitTpSellPct: "50",
         hybridExitSourceExitRemaining: true,
+        maxBuysPerToken: selected.hardcoded?.maxBuysPerToken ?? 1,
+        sourceHoldExitEnabled: selected.hardcoded?.sourceHoldExitEnabled ?? true,
+        sourceHoldExitIntervalMs: selected.hardcoded?.sourceHoldExitIntervalMs ?? 1000,
+        sourceHoldExitConsecutiveMisses: selected.hardcoded?.sourceHoldExitConsecutiveMisses ?? 2,
+        sourceHoldExitMinPositionAgeMs: selected.hardcoded?.sourceHoldExitMinPositionAgeMs ?? 2000,
+        pumpSwapRustPreflight: selected.hardcoded?.pumpSwapRustPreflight ?? false,
+        pumpSwapPreflightMode: selected.hardcoded?.pumpSwapPreflightMode ?? "canonical",
+        pumpSwapPreflightTimeoutMs: selected.hardcoded?.pumpSwapPreflightTimeoutMs ?? 350,
+        rustOnlyBuys: selected.hardcoded?.rustOnlyBuys ?? true,
+        rustOnlySells: selected.hardcoded?.rustOnlySells ?? true,
+        jupiterFallbackEnabled: selected.hardcoded?.jupiterFallbackEnabled ?? false,
         ...extra
       };
     }

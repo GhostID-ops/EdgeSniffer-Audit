@@ -45,6 +45,20 @@ const RISK_SETTINGS_KEYS = [
   "PROFIT_LADDER_STEPS",
 ] as const;
 
+const SAFETY_SETTINGS_KEYS = [
+  "MAX_BUYS_PER_TOKEN",
+  "SOURCE_HOLD_EXIT_ENABLED",
+  "SOURCE_HOLD_EXIT_INTERVAL_MS",
+  "SOURCE_HOLD_EXIT_CONSECUTIVE_MISSES",
+  "SOURCE_HOLD_EXIT_MIN_POSITION_AGE_MS",
+  "PUMPSWAP_RUST_PREFLIGHT",
+  "PUMPSWAP_PREFLIGHT_MODE",
+  "PUMPSWAP_PREFLIGHT_TIMEOUT_MS",
+  "RUST_ONLY_BUYS",
+  "RUST_ONLY_SELLS",
+  "JUPITER_FALLBACK_ENABLED",
+] as const;
+
 function assertPublicKey(value: string): void {
   try {
     new PublicKey(value);
@@ -257,6 +271,104 @@ export function persistFriendRiskSettings(body: Record<string, unknown>): { risk
   writeFileSync(envPath, `${lines.join("\n").replace(/\n+$/, "")}\n`);
   applyFriendRiskSettings(runtimeUpdates);
   return { riskUpdated: true };
+}
+
+function optionalNonNegativeIntegerFromBody(
+  body: Record<string, unknown>,
+  key: string
+): number | null | undefined {
+  const raw = body[key];
+  if (raw == null) return undefined;
+  const text = String(raw).trim();
+  if (text === "") return null;
+  const n = Number(text);
+  if (!Number.isInteger(n) || n < 0) throw new Error(`${key} must be a non-negative integer`);
+  return n;
+}
+
+function optionalBooleanStringFromBody(
+  body: Record<string, unknown>,
+  key: string
+): string | undefined {
+  const raw = body[key];
+  if (raw == null || raw === "") return undefined;
+  return boolFromBody(body, key, false) ? "true" : "false";
+}
+
+export function persistFriendSafetySettings(body: Record<string, unknown>): { safetyUpdated: boolean } {
+  const updates: Array<[string, string]> = [];
+
+  const maxBuysPerToken = optionalNonNegativeIntegerFromBody(body, "maxBuysPerToken");
+  if (maxBuysPerToken !== undefined) updates.push(["MAX_BUYS_PER_TOKEN", maxBuysPerToken == null ? "" : String(maxBuysPerToken)]);
+
+  const sourceHoldExitEnabled = optionalBooleanStringFromBody(body, "sourceHoldExitEnabled");
+  if (sourceHoldExitEnabled !== undefined) updates.push(["SOURCE_HOLD_EXIT_ENABLED", sourceHoldExitEnabled]);
+
+  const sourceHoldExitIntervalMs = optionalNonNegativeIntegerFromBody(body, "sourceHoldExitIntervalMs");
+  if (sourceHoldExitIntervalMs !== undefined) {
+    updates.push(["SOURCE_HOLD_EXIT_INTERVAL_MS", sourceHoldExitIntervalMs == null ? "" : String(sourceHoldExitIntervalMs)]);
+  }
+
+  const sourceHoldExitConsecutiveMisses = optionalNonNegativeIntegerFromBody(
+    body,
+    "sourceHoldExitConsecutiveMisses"
+  );
+  if (sourceHoldExitConsecutiveMisses !== undefined) {
+    updates.push([
+      "SOURCE_HOLD_EXIT_CONSECUTIVE_MISSES",
+      sourceHoldExitConsecutiveMisses == null ? "" : String(Math.max(1, sourceHoldExitConsecutiveMisses)),
+    ]);
+  }
+
+  const sourceHoldExitMinPositionAgeMs = optionalNonNegativeIntegerFromBody(
+    body,
+    "sourceHoldExitMinPositionAgeMs"
+  );
+  if (sourceHoldExitMinPositionAgeMs !== undefined) {
+    updates.push([
+      "SOURCE_HOLD_EXIT_MIN_POSITION_AGE_MS",
+      sourceHoldExitMinPositionAgeMs == null ? "" : String(sourceHoldExitMinPositionAgeMs),
+    ]);
+  }
+
+  const pumpSwapRustPreflight = optionalBooleanStringFromBody(body, "pumpSwapRustPreflight");
+  if (pumpSwapRustPreflight !== undefined) updates.push(["PUMPSWAP_RUST_PREFLIGHT", pumpSwapRustPreflight]);
+
+  const preflightModeRaw = body.pumpSwapPreflightMode == null ? undefined : String(body.pumpSwapPreflightMode).trim();
+  if (preflightModeRaw !== undefined) {
+    const allowedModes = new Set(["", "off", "always", "canonical", "after-failure"]);
+    const mode = preflightModeRaw.toLowerCase();
+    if (!allowedModes.has(mode)) throw new Error("pumpSwapPreflightMode must be off, always, canonical, or after-failure");
+    updates.push(["PUMPSWAP_PREFLIGHT_MODE", mode]);
+  }
+
+  const pumpSwapPreflightTimeoutMs = optionalNonNegativeIntegerFromBody(body, "pumpSwapPreflightTimeoutMs");
+  if (pumpSwapPreflightTimeoutMs !== undefined) {
+    updates.push(["PUMPSWAP_PREFLIGHT_TIMEOUT_MS", pumpSwapPreflightTimeoutMs == null ? "" : String(pumpSwapPreflightTimeoutMs)]);
+  }
+
+  const rustOnlyBuys = optionalBooleanStringFromBody(body, "rustOnlyBuys");
+  if (rustOnlyBuys !== undefined) updates.push(["RUST_ONLY_BUYS", rustOnlyBuys]);
+
+  const rustOnlySells = optionalBooleanStringFromBody(body, "rustOnlySells");
+  if (rustOnlySells !== undefined) updates.push(["RUST_ONLY_SELLS", rustOnlySells]);
+
+  const jupiterFallbackEnabled = optionalBooleanStringFromBody(body, "jupiterFallbackEnabled");
+  if (jupiterFallbackEnabled !== undefined) updates.push(["JUPITER_FALLBACK_ENABLED", jupiterFallbackEnabled]);
+
+  if (updates.length === 0) return { safetyUpdated: false };
+
+  const allowed = new Set<string>(SAFETY_SETTINGS_KEYS);
+  const existing = existsSync(envPath) ? readFileSync(envPath, "utf8") : "";
+  let lines = existing.length ? existing.split(/\r?\n/) : [];
+  if (lines.length === 1 && lines[0] === "") lines = [];
+  for (const [key, value] of updates) {
+    if (!allowed.has(key)) continue;
+    lines = setEnvLine(lines, key, value);
+    process.env[key] = value;
+  }
+  writeFileSync(envPath, `${lines.join("\n").replace(/\n+$/, "")}\n`);
+  return { safetyUpdated: true };
 }
 
 export type SpeedTier = "auto" | "max" | "balanced" | "eco" | "off";
