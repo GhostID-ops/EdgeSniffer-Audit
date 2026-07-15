@@ -1140,15 +1140,17 @@
     }
     function applyPreset(id = selectedPreset, shouldToast = true) {
       const preset = AUTO_PRESETS[id] || AUTO_PRESETS.safe;
+      const custom = Number($("customAmount").value);
+      const hasCustomAmount = Number.isFinite(custom) && custom > 0;
       selectedPreset = id;
       desiredSpeed = preset.speed;
       liveMode = preset.live;
       feeMode = preset.feeMode;
       mirrorSells = true;
-      amount = presetAmount(preset);
+      amount = hasCustomAmount ? custom : presetAmount(preset);
       $("customAmount").value = amount.toString();
       $("reserveSol").value = preset.reserve;
-      $("maxBuy").value = Math.max(amount, selected.maxBuy);
+      $("maxBuy").value = hasCustomAmount ? amount : Math.max(amount, selected.maxBuy);
       $("maxOpenPositions").value = preset.maxOpenPositions;
       $("maxSolPerToken").value = preset.maxSolPerToken;
       $("maxSessionDeployed").value = preset.maxSession;
@@ -1431,7 +1433,14 @@
       applyPreset(selectedPreset, false);
       render();
     });
-    $("customAmount").addEventListener("input", () => { const n = Number($("customAmount").value); if (Number.isFinite(n) && n > 0) amount = n; render(); });
+    $("customAmount").addEventListener("input", () => {
+      const n = Number($("customAmount").value);
+      if (Number.isFinite(n) && n > 0) {
+        amount = n;
+        $("maxBuy").value = n.toString();
+      }
+      render();
+    });
     $("customWallets").addEventListener("input", () => { if (selected.id === "custom") renderStrategyResearch(); });
     $("liveToggle").addEventListener("click", () => {
       if (!liveMode && !confirm("Live Money mode can spend real SOL. Use a tiny amount first. Switch to Live?")) return;
