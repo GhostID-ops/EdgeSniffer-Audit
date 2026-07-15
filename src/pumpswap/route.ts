@@ -75,7 +75,11 @@ const PUMPSWAP_SELL_CASHBACK_ATA_INDEX = 21;
 const PUMPSWAP_SELL_CASHBACK_USER_VOLUME_INDEX = 22;
 const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT = 23;
 const PUMPSWAP_MIN_SELL_ACCOUNT_COUNT = 21;
-const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 17, 20, 23]);
+const PUMPSWAP_CANONICAL_WRITABLE_INDEXES = new Set([0, 1, 5, 6, 7, 8, 10, 17, 20]);
+
+function isPumpSwapCanonicalBuyWritable(index: number): boolean {
+  return PUMPSWAP_CANONICAL_WRITABLE_INDEXES.has(index) || index >= PUMPSWAP_MIN_BUY_ACCOUNT_COUNT;
+}
 const PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS_RAW = Number.parseInt(
   process.env.PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS ?? "0",
   10
@@ -442,7 +446,7 @@ function pumpSwapMetaFromSourceKey(pubkey: PublicKey, idx: number): AccountMeta 
   return {
     pubkey,
     isSigner: idx === PUMPSWAP_USER_INDEX,
-    isWritable: PUMPSWAP_CANONICAL_WRITABLE_INDEXES.has(idx),
+    isWritable: isPumpSwapCanonicalBuyWritable(idx),
   };
 }
 

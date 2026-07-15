@@ -71,7 +71,7 @@ const PUMPSWAP_MIN_BUY_ACCOUNT_COUNT: usize = 23;
 const PUMPSWAP_MIN_SELL_ACCOUNT_COUNT: usize = 21;
 
 fn pumpswap_canonical_buy_writable(index: usize) -> bool {
-    matches!(index, 0 | 1 | 5 | 6 | 7 | 8 | 10 | 17 | 20 | 23)
+    matches!(index, 0 | 1 | 5 | 6 | 7 | 8 | 10 | 17 | 20) || index >= PUMPSWAP_MIN_BUY_ACCOUNT_COUNT
 }
 
 fn pumpswap_canonical_sell_writable(index: usize, has_cashback_sell_tail: bool) -> bool {
