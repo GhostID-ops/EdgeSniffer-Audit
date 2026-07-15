@@ -285,6 +285,15 @@ export const pumpSwapRustPreflight =
   PUMPSWAP_RUST_PREFLIGHT_RAW === "true" ||
   PUMPSWAP_RUST_PREFLIGHT_RAW === "1" ||
   PUMPSWAP_RUST_PREFLIGHT_RAW === "yes";
+const PUMPSWAP_PREFLIGHT_MODE_RAW = (process.env.PUMPSWAP_PREFLIGHT_MODE ?? "").toLowerCase();
+export type PumpSwapPreflightMode = "off" | "always" | "canonical" | "after-failure";
+export const pumpSwapPreflightMode: PumpSwapPreflightMode =
+  PUMPSWAP_PREFLIGHT_MODE_RAW === "off" ||
+  PUMPSWAP_PREFLIGHT_MODE_RAW === "always" ||
+  PUMPSWAP_PREFLIGHT_MODE_RAW === "canonical" ||
+  PUMPSWAP_PREFLIGHT_MODE_RAW === "after-failure"
+    ? PUMPSWAP_PREFLIGHT_MODE_RAW
+    : "canonical";
 const JUPITER_FALLBACK_ENABLED_RAW = (process.env.JUPITER_FALLBACK_ENABLED ?? "true").toLowerCase();
 export const jupiterFallbackEnabled =
   JUPITER_FALLBACK_ENABLED_RAW !== "false" &&

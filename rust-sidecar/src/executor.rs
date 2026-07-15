@@ -1072,9 +1072,17 @@ async fn execute_pumpswap_buy(
     if cmd.preflight {
         let tx_base64 =
             BASE64_STANDARD.encode(bincode::serialize(&built.tx).context("serialize tx for preflight")?);
-        simulate_transaction(&cmd.rpc_fallback_url, &tx_base64)
-            .await
-            .context("PumpSwap rust preflight failed")?;
+        match simulate_transaction(&cmd.rpc_fallback_url, &tx_base64).await {
+            Ok(PreflightOutcome::Ok) => {}
+            Ok(PreflightOutcome::Rejected(reason)) => {
+                bail!("PumpSwap rust preflight rejected: {reason}");
+            }
+            Err(err) => {
+                eprintln!(
+                    "rust-sidecar: PumpSwap preflight inconclusive ({err:#}); proceeding to broadcast"
+                );
+            }
+        }
     }
     let broadcast_started = Instant::now();
     let sender_path = broadcast_signed_tx(
@@ -2434,7 +2442,15 @@ fn tip_instruction_sets(
     Ok(sets)
 }
 
-async fn simulate_transaction(rpc_url: &str, tx_base64: &str) -> Result<()> {
+enum PreflightOutcome {
+    Ok,
+    Rejected(String),
+}
+
+async fn simulate_transaction(rpc_url: &str, tx_base64: &str) -> Result<PreflightOutcome> {
+    if rpc_url.trim().is_empty() {
+        bail!("no RPC URL configured for preflight");
+    }
     let body = json!({
         "jsonrpc": "2.0",
         "id": 1,
@@ -2449,17 +2465,21 @@ async fn simulate_transaction(rpc_url: &str, tx_base64: &str) -> Result<()> {
             }
         ],
     });
+    let timeout_ms = env::var("PUMPSWAP_PREFLIGHT_TIMEOUT_MS")
+        .ok()
+        .and_then(|value| value.parse::<u64>().ok())
+        .unwrap_or(350);
     let response = http_client()
         .post(rpc_url)
-        .timeout(Duration::from_millis(700))
+        .timeout(Duration::from_millis(timeout_ms))
         .json(&body)
         .send()
         .await
-        .context("simulateTransaction rpc send failed")?;
+        .context("preflight http send failed")?;
     let json = response
         .json::<JsonRpcResponse>()
         .await
-        .context("simulateTransaction rpc response parse failed")?;
+        .context("preflight json-rpc response parse failed")?;
     if let Some(error) = json.error {
         let code = error.code.map(|c| format!(" code {c}")).unwrap_or_default();
         bail!(
@@ -2472,8 +2492,11 @@ async fn simulate_transaction(rpc_url: &str, tx_base64: &str) -> Result<()> {
     }
     let value = json
         .result
-        .and_then(|v| v.get("value").cloned())
-        .context("simulateTransaction returned no value")?;
+        .context("simulateTransaction returned no result")?;
+    let value = value
+        .get("value")
+        .cloned()
+        .context("simulateTransaction result missing value")?;
     if !value.get("err").unwrap_or(&Value::Null).is_null() {
         let err = value.get("err").cloned().unwrap_or(Value::Null);
         let logs = value
@@ -2500,9 +2523,9 @@ async fn simulate_transaction(rpc_url: &str, tx_base64: &str) -> Result<()> {
         } else {
             format!(" logs={logs}")
         };
-        bail!("preflight simulation rejected transaction: {err}{logs_suffix}");
+        return Ok(PreflightOutcome::Rejected(format!("{err}{logs_suffix}")));
     }
-    Ok(())
+    Ok(PreflightOutcome::Ok)
 }
 
 async fn broadcast_signed_tx(

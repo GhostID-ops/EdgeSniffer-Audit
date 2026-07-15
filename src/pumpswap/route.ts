@@ -15,6 +15,7 @@ import {
   keepWsolAtaOpen,
   pumpSwapDirectMinOutBps,
   pumpSwapDirectPreflight,
+  pumpSwapPreflightMode,
   readConnection,
   rustOnlyBuys,
   rustOnlySells,
@@ -83,6 +84,7 @@ const PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS =
   Number.isFinite(PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS_RAW) && PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS_RAW > 0
     ? Math.min(10_000, PUMPSWAP_OVERFLOW_RETRY_MIN_OUT_BPS_RAW)
     : 0;
+const pumpSwapDeterministicFailureMints = new Set<string>();
 
 type PumpSwapAccountPlan = {
   accounts: AccountMeta[];
@@ -93,6 +95,20 @@ type PumpSwapAccountPlan = {
 type PumpSwapBuyInstruction = "buy" | "buy_exact_quote_in";
 
 const pumpSwapBuyAccountPlanByMint = new Map<string, AccountMeta[]>();
+
+function shouldRustPreflightPumpSwap(mint: string, plan: PumpSwapAccountPlan): boolean {
+  switch (pumpSwapPreflightMode) {
+    case "off":
+      return false;
+    case "always":
+      return true;
+    case "after-failure":
+      return plan.source === "canonical-pool-state" || pumpSwapDeterministicFailureMints.has(mint);
+    case "canonical":
+    default:
+      return plan.source === "canonical-pool-state";
+  }
+}
 
 function cloneAccountMetas(accounts: AccountMeta[]): AccountMeta[] {
   return accounts.map((account) => ({ ...account }));
@@ -1722,6 +1738,7 @@ export async function tryPumpSwapDirectBuy(args: {
     minBaseOutForAttempt: bigint = minBaseOut
   ) => {
     const rustBuildStartedAt = Date.now();
+    const preflight = shouldRustPreflightPumpSwap(args.mint, plan);
     const rust = await executeRustPumpSwapBuy({
       route: "pumpswap-direct-buy",
       mint: args.mint,
@@ -1735,6 +1752,7 @@ export async function tryPumpSwapDirectBuy(args: {
       buyInstruction: attemptInstruction,
       sourcePumpSwapAccounts: rustAccountsForPlan(plan),
       baseTokenProgramId: baseTokenProgramId.toBase58(),
+      preflight,
     });
     if (rust?.ok) {
       recordExecutionStage({
@@ -1753,6 +1771,7 @@ export async function tryPumpSwapDirectBuy(args: {
           accountPlan: plan.source,
           buyInstruction: attemptInstruction,
           attempt,
+          preflight,
         },
       });
       recordExecutionStage({
@@ -1770,6 +1789,7 @@ export async function tryPumpSwapDirectBuy(args: {
           accountPlan: plan.source,
           buyInstruction: attemptInstruction,
           attempt,
+          preflight,
         },
       });
       args.log(
@@ -1777,6 +1797,16 @@ export async function tryPumpSwapDirectBuy(args: {
           `${rust.signature}` +
           (rust.elapsedMs != null ? ` (${rust.elapsedMs}ms)` : "")
       );
+    } else if (rust?.error) {
+      const classified = classifyExecutionError(rust.error);
+      if (
+        classified.category === "liquidity-overflow" ||
+        classified.category === "liquidity-no-liquidity" ||
+        classified.category === "not-tradable" ||
+        classified.category === "no-route"
+      ) {
+        pumpSwapDeterministicFailureMints.add(args.mint);
+      }
     }
     return rust;
   };

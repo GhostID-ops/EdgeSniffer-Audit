@@ -113,6 +113,7 @@ export type RustPumpSwapBuyArgs = {
   buyInstruction: "buy" | "buy_exact_quote_in";
   sourcePumpSwapAccounts: SourcePumpSwapAccountMeta[] | string[];
   baseTokenProgramId: string;
+  preflight?: boolean;
 };
 
 export type RustRaydiumCpmmSwapArgs = {
@@ -715,7 +716,7 @@ export async function executeRustPumpSwapBuy(args: RustPumpSwapBuyArgs): Promise
     buyInstruction: args.buyInstruction,
     sourcePumpSwapAccounts: args.sourcePumpSwapAccounts.map(normalizePumpSwapAccountMeta),
     baseTokenProgramId: args.baseTokenProgramId,
-    preflight: pumpSwapRustPreflight,
+    preflight: args.preflight ?? pumpSwapRustPreflight,
     blockhash,
     computeUnitLimit,
     priorityFeeMicroLamports: fees.priorityFeeMicroLamports,
