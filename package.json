@@ -75,6 +75,7 @@
     "test:post-sell-lifecycle": "tsx src/testPostSellLifecycle.ts",
     "test:confirmed-inventory": "tsx src/testConfirmedInventory.ts",
     "test:source-hold-exit": "tsx src/testSourceHoldExit.ts",
+    "test:panic-liquidate": "tsx src/testPanicLiquidate.ts",
     "test:hybrid-exit": "tsx src/testHybridExit.ts",
     "test:execution-planner": "tsx src/testExecutionPlanner.ts",
     "env:wallet": "node scripts/applyWalletPreset.mjs",

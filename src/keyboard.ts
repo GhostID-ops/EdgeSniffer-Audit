@@ -5,6 +5,7 @@ import {
   getBotState,
   sellAllPositions,
   sellAllWalletDust,
+  panicLiquidateAll,
   sellPositionByIndex,
   sellPositionPercentByIndex,
   toggleMirrorSells,
@@ -65,6 +66,7 @@ export function registerKeyboardShortcuts(onQuit: () => void): void {
     { key: "#", label: "Sell 50% of Trade #3 position", action: () => runShortcut(() => sellPositionPercentByIndex(3, 0.5)) },
     { key: "a", label: "Sell ALL open positions (sim/live)", action: () => runShortcut(sellAllPositions) },
     { key: "d", label: "Sell ALL wallet token dust/balances (live)", action: () => runShortcut(sellAllWalletDust) },
+    { key: "p", label: "PANIC: stop bot + sell tracked positions + sell all wallet balances", action: () => runShortcut(async () => { await panicLiquidateAll(); }) },
     { key: "e", label: "Close all open positions (sim) at market & report", action: () => runShortcut(closeAllOpenPositionsSimulated) },
     { key: "r", label: "Print PnL report", action: () => runShortcut(printPnlReport) },
     { key: "x", label: "Clear all positions & history", action: resetTradingState },
@@ -97,6 +99,7 @@ export function registerKeyboardShortcuts(onQuit: () => void): void {
     else if (key === "#") runShortcut(() => sellPositionPercentByIndex(3, 0.5));
     else if (key === "a") runShortcut(sellAllPositions);
     else if (key === "d") runShortcut(sellAllWalletDust);
+    else if (key === "p") runShortcut(async () => { await panicLiquidateAll(); });
     else if (key === "e") runShortcut(closeAllOpenPositionsSimulated);
     else if (key === "r") runShortcut(printPnlReport);
     else if (key === "x") resetTradingState();

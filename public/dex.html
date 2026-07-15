@@ -351,10 +351,29 @@ document.getElementById('sellAllBtn').addEventListener('click', async ()=>{
   try{ await api('/api/actions/sell-all','POST'); toast('Sell-all sent'); setTimeout(refreshAll,800); }catch(e){ toast('Failed: '+e.message); }
 });
 document.getElementById('panicBtn').addEventListener('click', async ()=>{
-  const ok = await confirmModal('🛑 PANIC',
-    'This <b>stops the bot</b> and <b>market-sells every position</b>. You will need to restart the bot to trade again.', '🛑 STOP & SELL ALL');
+  const ok = await confirmModal('🛑 PANIC LIQUIDATE',
+    'This will <b>Stop bot</b>, <b>Sell tracked positions</b>, and <b>Sell all wallet balances</b> (untracked tokens &amp; dust too), then report any <b>final leftover tokens</b> with no local route. You will need to restart the bot to trade again.',
+    '🛑 STOP & LIQUIDATE ALL');
   if(!ok) return;
-  try{ await api('/api/actions/panic','POST'); toast('🛑 PANIC sent — bot stopping, selling all'); setTimeout(refreshAll,800); }catch(e){ toast('Failed: '+e.message); }
+  try{
+    const r = await api('/api/actions/panic-liquidate','POST');
+    const rep = r && r.report;
+    if(rep){
+      const trackedOk = (rep.trackedSold||[]).length;
+      const walletOk = (rep.walletSold||[]).filter(w=>w.ok).length;
+      const left = (rep.remaining||[]).length;
+      if(left>0){
+        const mints = rep.remaining.map(x=>x.mint.slice(0,8)+'… ('+(x.noLocalRoute?'no local route':(x.lastReason||'still held'))+')').join('\n');
+        toast('🛑 Liquidated. Final leftover tokens: '+left);
+        alert('PANIC LIQUIDATE done.\n\nSell tracked positions: '+trackedOk+' sold\nSell all wallet balances: '+walletOk+' sold\n\nFinal leftover tokens ('+left+'):\n'+mints);
+      } else {
+        toast('🛑 Liquidated — wallet clean ('+trackedOk+' positions, '+walletOk+' balances sold)');
+      }
+    } else {
+      toast('🛑 PANIC sent — bot stopping, liquidating all');
+    }
+    setTimeout(refreshAll,800);
+  }catch(e){ toast('Failed: '+e.message); }
 });
 document.getElementById('modeValue').addEventListener('click', ()=>{ chartMode='value';
   document.getElementById('modeValue').className='go'; document.getElementById('modePrice').className='ghost'; refreshChart(); });

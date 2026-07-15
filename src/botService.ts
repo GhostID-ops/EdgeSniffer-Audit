@@ -209,6 +209,11 @@ import {
   type PositionSnapshot,
   type PnlTotals,
 } from "./pnl.js";
+import {
+  runPanicLiquidate,
+  formatPanicLiquidateReport,
+  type PanicLiquidateReport,
+} from "./panicLiquidate.js";
 import { logTradeAsync } from "./tradeLog.js";
 import {
   shouldBlockNewBuys,
@@ -5286,6 +5291,52 @@ export async function sellAllWalletDust(): Promise<void> {
     }
   }
   await printPnlReport();
+}
+
+export async function panicLiquidateAll(): Promise<PanicLiquidateReport> {
+  if (!simulationMode && !keypair) {
+    throw new Error("Wallet is not loaded yet. Start the bot before panic-liquidating.");
+  }
+
+  const report = await runPanicLiquidate({
+    pauseBuys: () => setBuysPaused(true),
+    stopBot: () => stopBot(),
+    isSimulationMode: () => simulationMode,
+    jupiterFallbackEnabled,
+    getTrackedPositions: () =>
+      getPositions()
+        .filter((p) => p.heldRaw > 0)
+        .map((p) => ({ mint: p.mint, symbol: p.symbol, heldRaw: p.heldRaw })),
+    sellTrackedPosition: async (ref) => {
+      const position = getPosition(ref.mint);
+      if (!position || position.heldRaw <= 0) return;
+      if (simulationMode) {
+        await sellSimulatedPosition(position, "Panic liquidate");
+      } else {
+        await sellLivePosition(position, "Panic liquidate", undefined, false);
+      }
+    },
+    listWalletBalances: async () => {
+      if (!keypair) return [];
+      return (await getWalletTokenBalances(keypair.publicKey)).map((b) => ({
+        mint: b.mint,
+        amountRaw: b.amountRaw,
+      }));
+    },
+    sellWalletBalance: (mint, amountRaw) => sellLiveWalletTokenBalance(mint, amountRaw),
+    isSkippableMint: (mint) => mint === WRAPPED_SOL_MINT || mint === USDC_MINT,
+    isFastBuyPending: (mint) => hasFastBuyConfirmationPending(mint),
+    log: (message) => console.log(message),
+    sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+  });
+
+  const summary = formatPanicLiquidateReport(report);
+  console.log("");
+  console.log(summary);
+  console.log("");
+  await printPnlReport();
+  void telegram.notifyInfo("Panic liquidate", summary);
+  return report;
 }
 
 /**

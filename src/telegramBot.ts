@@ -13,10 +13,10 @@ import {
   recentSwaps,
   resetTradingState,
   sellAllPositions,
+  panicLiquidateAll,
   sellPositionByIndex,
   setBotSimulationMode,
   setBuysPaused,
-  stopBot,
   toggleBuyOncePerToken,
   toggleMirrorSells,
   toggleShowMarketCap,
@@ -753,15 +753,17 @@ class TelegramBotHandler {
         this.menuStatusLine(),
         "",
         "This emergency kill-switch will immediately:",
-        "• <b>stop the bot</b> (halt every new buy)",
-        `• <b>market-sell all ${open} open position(s)</b>`,
+        "• <b>Stop bot</b> (halt every new buy)",
+        `• <b>Sell tracked positions</b> (${open} open)`,
+        "• <b>Sell all wallet balances</b> (untracked tokens & dust too)",
         "",
+        "Then it reports any <b>final leftover tokens</b> that had no local route.",
         "You'll need to restart the bot afterwards to trade again.",
       ].join("\n"),
       {
         reply_markup: {
           inline_keyboard: [
-            [{ text: "🛑 YES — STOP & SELL ALL", callback_data: "confirm_panic" }],
+            [{ text: "🛑 YES — STOP & LIQUIDATE ALL", callback_data: "confirm_panic" }],
             [{ text: "Cancel", callback_data: "menu" }],
           ],
         },
@@ -770,15 +772,45 @@ class TelegramBotHandler {
   }
 
   private async executePanic(chatId: number): Promise<void> {
-    await this.sendMessage(chatId, "🛑 <b>PANIC</b> — stopping bot and selling everything...");
+    await this.sendMessage(
+      chatId,
+      [
+        "🛑 <b>PANIC LIQUIDATE</b>",
+        "• Stop bot",
+        "• Sell tracked positions",
+        "• Sell all wallet balances",
+        "",
+        "Draining now…",
+      ].join("\n")
+    );
     try {
-      setBuysPaused(true);
-      stopBot();
-      await sellAllPositions();
-      await this.sendMessage(
-        chatId,
-        "🛑 PANIC done — bot stopped and sell-all requested.\n\nVerify with /positions, and restart the bot when you want to trade again."
-      );
+      // panicLiquidateAll() pauses buys + stops the bot itself, sells tracked positions, then
+      // rescans and drains untracked wallet balances/dust with bounded retries.
+      const report = await panicLiquidateAll();
+      const trackedOk = report.trackedSold.length;
+      const walletOk = report.walletSold.filter((w) => w.ok).length;
+      const lines: string[] = [
+        "🛑 <b>PANIC LIQUIDATE done</b> — bot stopped.",
+        "",
+        `<b>Sell tracked positions:</b> ${trackedOk} sold` +
+          (report.trackedFailed.length ? `, ${report.trackedFailed.length} failed` : ""),
+      ];
+      if (!report.simulation) {
+        lines.push(`<b>Sell all wallet balances:</b> ${walletOk} sold (in ${report.passes} pass(es))`);
+        if (report.remaining.length === 0) {
+          lines.push("<b>Final leftover tokens:</b> none — wallet is clean. ✅");
+        } else {
+          lines.push(`<b>Final leftover tokens:</b> ${report.remaining.length} ⚠️`);
+          for (const r of report.remaining) {
+            const why = r.noLocalRoute
+              ? "no local Pump.fun/PumpSwap route (Jupiter disabled)"
+              : r.lastReason ?? "still holding after sweep";
+            lines.push(`• <code>${escapeHtml(r.mint)}</code> — ${escapeHtml(why)}`);
+          }
+        }
+      }
+      lines.push("", "Restart the bot when you want to trade again.");
+      await this.sendMessage(chatId, lines.join("\n"));
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       await this.sendMessage(

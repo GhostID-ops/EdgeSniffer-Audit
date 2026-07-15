@@ -9,6 +9,7 @@ import {
   getBotState,
   reloadWalletFromEnv,
   sellAllPositions,
+  panicLiquidateAll,
   sellPositionByIndex,
   sellPositionPercentByIndex,
   closeAllOpenPositionsSimulated,
@@ -416,11 +417,16 @@ async function handle(
     }
   }
 
-  if (req.method === "POST" && url === "/api/actions/panic") {
+  if (
+    req.method === "POST" &&
+    (url === "/api/actions/panic" || url === "/api/actions/panic-liquidate")
+  ) {
     try {
-      stopBot();
-      await sellAllPositions();
-      return sendJson(res, 200, { ok: true, state: getBotState() });
+      // Full emergency liquidation: pause buys, stop the bot, sell tracked positions, then rescan
+      // and drain untracked wallet balances/dust. Returns a report of sold/failed/remaining mints so
+      // the UI can show any token that could not be sold locally (no Pump.fun/PumpSwap route).
+      const report = await panicLiquidateAll();
+      return sendJson(res, 200, { ok: true, report, state: getBotState() });
     } catch (err) {
       return sendError(res, 400, err instanceof Error ? err.message : String(err));
     }
