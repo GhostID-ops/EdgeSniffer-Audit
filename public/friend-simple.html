@@ -521,9 +521,9 @@
         amount: 0.075,
         maxBuy: 0.075,
         slippage: 90,
-        tipLamports: 10000000,
-        priorityFee: 18000000,
-        feeHelp: "Same hardcoded live posture we used: Rust-only, ShredStream, high price room, source-hold exit, and fee caps by buy size.",
+        tipLamports: 0,
+        priorityFee: 0,
+        feeHelp: "Same low-fee posture we used: no regular fallback tip/priority. Speed comes from the dynamic/Rust same-slot infra and remains capped by buy size.",
         hardcoded: {
           maxBuysPerToken: 1,
           sourceHoldExitEnabled: true,
@@ -543,11 +543,12 @@
           stats: [
             ["Default buy", "0.075 SOL"],
             ["Price room", "90%"],
-            ["Buy cap", "1 per token"],
+            ["Regular fees", "0 tip / 0 priority"],
             ["Exit backstop", "Source-hold check"]
           ],
           buckets: [
             "Rust-only buys and sells keep execution local and fast.",
+            "Regular fallback tips are 0; same-slot/dynamic infra handles speed with buy-size fee caps.",
             "Source-hold exit checks whether the copied wallet actually holds the token after entry.",
             "If the copied wallet never ended up holding the token, the bot exits instead of waiting forever for a source sell that cannot happen."
           ],
