@@ -533,8 +533,8 @@
           pumpSwapRustPreflight: false,
           pumpSwapPreflightMode: "canonical",
           pumpSwapPreflightTimeoutMs: 350,
-          rustOnlyBuys: true,
-          rustOnlySells: true,
+          rustOnlyBuys: false,
+          rustOnlySells: false,
           jupiterFallbackEnabled: false
         },
         research: {
@@ -547,7 +547,7 @@
             ["Exit backstop", "Source-hold check"]
           ],
           buckets: [
-            "Rust-only buys and sells keep execution local and fast.",
+            "Rust-first buys and sells keep the hot path local and fast, with local non-Jupiter fallback if Rust lacks the accounts for a specific trade.",
             "Regular fallback tips are 0; Auto same-slot speed uses low dynamic fee caps instead of fixed tips on every buy.",
             "Source-hold exit checks whether the copied wallet actually holds the token after entry.",
             "If the copied wallet never ended up holding the token, the bot exits instead of waiting forever for a source sell that cannot happen."

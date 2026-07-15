@@ -3498,7 +3498,7 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
     // Check if we have enough SOL after reserving gas fees
     if (quoteMint === WRAPPED_SOL_MINT && !hasEnoughSOLForTrade(mirroredAmount, currentBalance)) {
       const balanceInfo = getBalanceInfo(currentBalance);
-      console.log(`⛽ Insufficient SOL (reserve check):`);
+      console.log(`Insufficient usable SOL after reserve check:`);
       console.log(`   Total: ${balanceInfo.total} SOL`);
       console.log(`   Available: ${balanceInfo.available} SOL`);
       console.log(`   Reserved: ${balanceInfo.reserved} SOL`);
@@ -3506,11 +3506,11 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       if (mirroredAmount !== swap.amountRaw) {
         console.log(`   Source trade: ${quoteAmountDisplay(swap.amountRaw, swap.inputMint)}`);
       }
-      console.log(`   ⚠️ Skipping trade to preserve gas fees`);
+      console.log(`   Skipping buy: top up, lower buy size, or lower SOL reserve.`);
       
       // Send Telegram notification for reserve protection
       void telegram.notifyError(
-        `⛽ Trade skipped: Insufficient SOL for gas fees`,
+        `Trade skipped: not enough usable SOL after reserve`,
         `Available: ${balanceInfo.available} SOL | Required: ${(mirroredAmount / LAMPORTS_PER_SOL).toFixed(4)} SOL`
       );
       releaseBuyLocks();
