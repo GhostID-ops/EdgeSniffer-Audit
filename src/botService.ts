@@ -3144,6 +3144,16 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       return;
     }
     if (!buyOncePerTokenEnabled && maxBuysPerToken != null && existing && existing.buysCount >= maxBuysPerToken) {
+      const hasOpenInventory = (existing.heldRaw ?? 0) > 0;
+      const hasPendingBuy =
+        hasFastBuyConfirmationPending(mint) ||
+        pendingBuyRetryByMint.has(mint);
+      if (!hasOpenInventory && !hasPendingBuy) {
+        console.log(
+          `Allowing re-entry for ${mint.slice(0, 8)}... despite max buys per token ` +
+            `(${existing.buysCount}/${maxBuysPerToken}) because wallet is flat and no buy is pending.`
+        );
+      } else {
       console.log(
         `Skipping buy: ${mint.slice(0, 8)}... max buys per token reached ` +
           `(${existing.buysCount}/${maxBuysPerToken}).`
@@ -3151,8 +3161,11 @@ async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
       recordMirrorSkip(swap, "max buys per token reached", {
         buysCount: existing.buysCount,
         maxBuysPerToken,
+        heldRaw: existing.heldRaw,
+        hasPendingBuy,
       });
       return;
+      }
     }
     if (maxSolPerTokenLamports != null) {
       const nextBuyLamports =
