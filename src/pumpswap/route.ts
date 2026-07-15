@@ -2021,7 +2021,11 @@ export async function tryPumpSwapDirectBuy(args: {
   if (rustOnlyBuys) {
     const reason = rust && !rust.ok ? rust.error : "Rust PumpSwap executor unavailable";
     args.log(`Rust-only PumpSwap buy failed; TypeScript fallback disabled: ${reason}`);
-    return { ok: false, recoverable: true, reason: `Rust-only PumpSwap buy failed: ${reason}` };
+    return {
+      ok: false,
+      recoverable: isRecoverablePumpSwapFailure(reason),
+      reason: `Rust-only PumpSwap buy failed: ${reason}`,
+    };
   }
 
   const computeIxs: TransactionInstruction[] = [];

@@ -180,6 +180,8 @@ pub struct ExecutePumpSwapBuyCommand {
     pub buy_instruction: String,
     pub source_pump_swap_accounts: Vec<SourcePumpSwapAccountMeta>,
     pub base_token_program_id: String,
+    #[serde(default)]
+    pub preflight: bool,
     pub blockhash: String,
     pub compute_unit_limit: u32,
     pub priority_fee_micro_lamports: u64,
@@ -1061,6 +1063,13 @@ async fn execute_pumpswap_buy(
     started: Instant,
 ) -> Result<ExecutorResponse> {
     let built = build_pumpswap_buy_tx(&cmd)?;
+    if cmd.preflight {
+        let tx_base64 =
+            BASE64_STANDARD.encode(bincode::serialize(&built.tx).context("serialize tx for preflight")?);
+        simulate_transaction(&cmd.rpc_fallback_url, &tx_base64)
+            .await
+            .context("PumpSwap rust preflight failed")?;
+    }
     let broadcast_started = Instant::now();
     let sender_path = broadcast_signed_tx(
         &BroadcastConfig::from_pumpswap(&cmd),
@@ -2417,6 +2426,77 @@ fn tip_instruction_sets(
     }
     sets.push(Vec::new());
     Ok(sets)
+}
+
+async fn simulate_transaction(rpc_url: &str, tx_base64: &str) -> Result<()> {
+    let body = json!({
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "simulateTransaction",
+        "params": [
+            tx_base64,
+            {
+                "encoding": "base64",
+                "sigVerify": false,
+                "replaceRecentBlockhash": true,
+                "commitment": "processed"
+            }
+        ],
+    });
+    let response = http_client()
+        .post(rpc_url)
+        .timeout(Duration::from_millis(700))
+        .json(&body)
+        .send()
+        .await
+        .context("simulateTransaction rpc send failed")?;
+    let json = response
+        .json::<JsonRpcResponse>()
+        .await
+        .context("simulateTransaction rpc response parse failed")?;
+    if let Some(error) = json.error {
+        let code = error.code.map(|c| format!(" code {c}")).unwrap_or_default();
+        bail!(
+            "{}{}",
+            error
+                .message
+                .unwrap_or_else(|| "simulateTransaction json-rpc error".to_string()),
+            code
+        );
+    }
+    let value = json
+        .result
+        .and_then(|v| v.get("value").cloned())
+        .context("simulateTransaction returned no value")?;
+    if !value.get("err").unwrap_or(&Value::Null).is_null() {
+        let err = value.get("err").cloned().unwrap_or(Value::Null);
+        let logs = value
+            .get("logs")
+            .and_then(Value::as_array)
+            .map(|rows| {
+                rows.iter()
+                    .filter_map(Value::as_str)
+                    .filter(|line| {
+                        let lower = line.to_lowercase();
+                        lower.contains("error")
+                            || lower.contains("failed")
+                            || lower.contains("overflow")
+                            || lower.contains("6023")
+                            || lower.contains("slippage")
+                    })
+                    .take(6)
+                    .collect::<Vec<_>>()
+                    .join(" | ")
+            })
+            .unwrap_or_default();
+        let logs_suffix = if logs.is_empty() {
+            String::new()
+        } else {
+            format!(" logs={logs}")
+        };
+        bail!("preflight simulation rejected transaction: {err}{logs_suffix}");
+    }
+    Ok(())
 }
 
 async fn broadcast_signed_tx(

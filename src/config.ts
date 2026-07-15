@@ -280,6 +280,11 @@ export const pumpSwapDirectPreflight =
   PUMPSWAP_DIRECT_PREFLIGHT_RAW !== "false" &&
   PUMPSWAP_DIRECT_PREFLIGHT_RAW !== "0" &&
   PUMPSWAP_DIRECT_PREFLIGHT_RAW !== "no";
+const PUMPSWAP_RUST_PREFLIGHT_RAW = (process.env.PUMPSWAP_RUST_PREFLIGHT ?? "false").toLowerCase();
+export const pumpSwapRustPreflight =
+  PUMPSWAP_RUST_PREFLIGHT_RAW === "true" ||
+  PUMPSWAP_RUST_PREFLIGHT_RAW === "1" ||
+  PUMPSWAP_RUST_PREFLIGHT_RAW === "yes";
 const JUPITER_FALLBACK_ENABLED_RAW = (process.env.JUPITER_FALLBACK_ENABLED ?? "true").toLowerCase();
 export const jupiterFallbackEnabled =
   JUPITER_FALLBACK_ENABLED_RAW !== "false" &&
