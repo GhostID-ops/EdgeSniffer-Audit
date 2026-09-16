@@ -1,0 +1,1381 @@
+{
+  "generatedAtUtc": "2026-09-12T18:14:16.852620Z",
+  "integrity": {
+    "modelsFit": 0,
+    "outcomesRead": 0,
+    "policiesModified": 0,
+    "routesPooled": false,
+    "submissions": 0,
+    "thresholdsTuned": 0,
+    "validationRowsRead": 0
+  },
+  "routeSiblings": {
+    "LAUNCHLAB_ACTIVE_5000MS_SAME_SPEND_ASSET": {
+      "N": 46,
+      "choiceRowIdentitySha256": "2e33184e8fb397500ea3adae5bf2252fda93ee3fa1290270b0d48e2dafb3904c",
+      "classification": "NON_AUTHORITATIVE_DESCRIPTIVE_HYPOTHESIS_ONLY",
+      "topUnivariate": [
+        {
+          "chronologyBlockMeanPercentiles": [
+            0.2604166666666667,
+            0.22670634920634922,
+            0.29444444444444445
+          ],
+          "controlMedianOfMedians": 1360.16932075,
+          "distanceFromChance": 0.2394798136645963,
+          "episodeN": 46,
+          "feature": "lastEventAgeMs",
+          "pairedMedianDifference": -1212.195143,
+          "preferredDirection": "LOW",
+          "selectedAboveControlMedianPct": 8.695652173913043,
+          "selectedBelowControlMedianPct": 91.30434782608695,
+          "selectedMeanWithinChoicePercentile": 0.2605201863354037,
+          "selectedMedian": 47.927032499999996,
+          "stableDirectionAcrossBlocks": true
+        },
+        {
+          "chronologyBlockMeanPercentiles": [
+            0.6666666666666666,
+            0.5459126984126984,
+            0.7194444444444444
+          ],
+          "controlMedianOfMedians": 1.25,
+          "distanceFromChance": 0.1445005175983437,
+          "episodeN": 46,
+          "feature": "buyCount",
+          "pairedMedianDifference": 3.25,
+          "preferredDirection": "HIGH",
+          "selectedAboveControlMedianPct": 65.21739130434783,
+          "selectedBelowControlMedianPct": 26.08695652173913,
+          "selectedMeanWithinChoicePercentile": 0.6445005175983437,
+          "selectedMedian": 5.0,
+          "stableDirectionAcrossBlocks": true
+        },
+        {
+          "chronologyBlockMeanPercentiles": [
+            0.6302083333333334,
+            0.5381349206349206,
+            0.6527777777777778
+          ],
+          "controlMedianOfMedians": 3.0,
+          "distanceFromChance": 0.10754399585921326,
+          "episodeN": 46,
+          "feature": "eventCount",
+          "pairedMedianDifference": 2.5,
+          "preferredDirection": "HIGH",
+          "selectedAboveControlMedianPct": 58.69565217391305,
+          "selectedBelowControlMedianPct": 32.608695652173914,
+          "selectedMeanWithinChoicePercentile": 0.6075439958592133,
+          "selectedMedian": 7.0,
+          "stableDirectionAcrossBlocks": true
+        },
+        {
+          "chronologyBlockMeanPercentiles": [
+            0.6145833333333334,
+            0.5214682539682539,
+            0.6777777777777777
+          ],
+          "controlMedianOfMedians": 3.0,
+          "distanceFromChance": 0.10482660455486548,
+          "episodeN": 46,
+          "feature": "uniqueActorCount",
+          "pairedMedianDifference": 2.0,
+          "preferredDirection": "HIGH",
+          "selectedAboveControlMedianPct": 54.34782608695652,
+          "selectedBelowControlMedianPct": 30.434782608695652,
+          "selectedMeanWithinChoicePercentile": 0.6048266045548655,
+          "selectedMedian": 5.5,
+          "stableDirectionAcrossBlocks": true
+        },
+        {
+          "chronologyBlockMeanPercentiles": [
+            0.5208333333333334,
+            0.4861507936507936,
+            0.5527777777777777
+          ],
+          "controlMedianOfMedians": 1.0,
+          "distanceFromChance": 0.01994047619047623,
+          "episodeN": 46,
+          "feature": "sellCount",
+          "pairedMedianDifference": 0.0,
+          "preferredDirection": "HIGH",
+          "selectedAboveControlMedianPct": 45.65217391304348,
+          "selectedBelowControlMedianPct": 36.95652173913044,
+          "selectedMeanWithinChoicePercentile": 0.5199404761904762,
+          "selectedMedian": 1.0,
+          "stableDirectionAcrossBlocks": false
+        }
+      ]
+    },
+    "PUMPSWAP_ACTIVE_5000MS_SAME_SPEND_ASSET": {
+      "N": 1,
+      "classification": "TINY_N_NO_FINGERPRINT",
+      "topUnivariate": []
+    }
+  },
+  "schema": "2CQ_PRELIMINARY_CHOICE_FINGERPRINT_PEEK_V1",
+  "scope": "NON_AUTHORITATIVE_SANDBOX_PEEK_OUTCOME_BLIND",
+  "solPump": {
+    "N": 123,
+    "choiceRowIdentitySha256": "12d546b13a450a93da499485395070c8c396829ae748d12f2d39fd60b2bcc10b",
+    "chronologicalHalves": [
+      {
+        "N": 61,
+        "block": 1,
+        "chanceTop1Pct": 10.434522698519437,
+        "meanChoiceSetN": 13.0,
+        "meanReciprocalRank": 0.9276606817590425,
+        "medianMarginToBestControl": 3.870507865930581,
+        "top1Pct": 88.52459016393442,
+        "top3Pct": 96.72131147540983
+      },
+      {
+        "N": 62,
+        "block": 2,
+        "chanceTop1Pct": 8.240685601036011,
+        "meanChoiceSetN": 14.983870967741936,
+        "meanReciprocalRank": 0.9346774193548387,
+        "medianMarginToBestControl": 3.7100550446084015,
+        "top1Pct": 88.70967741935483,
+        "top3Pct": 96.7741935483871
+      }
+    ],
+    "frozenModelForward": {
+      "N": 123,
+      "chanceTop1Pct": 9.328686112796085,
+      "meanChoiceSetN": 14.0,
+      "meanReciprocalRank": 0.9311975738805007,
+      "medianMarginToBestControl": 3.835421009947615,
+      "top1Pct": 88.6178861788618,
+      "top3Pct": 96.7479674796748
+    },
+    "frozenPolicyPath": "/mnt/HC_Volume_106775198/edgesniffer-research/2cq-transition-hazard-freeze-v2/primary-policy.json",
+    "frozenPolicySha256": "ab23b3be089e1e762f3d42696bd884186906a8475e4eb80a3bc0747d2e2a94b6",
+    "rankingRows": [
+      {
+        "choiceN": 8,
+        "marginToBestControl": 5.747579841503032,
+        "mint": "85jj5yP2yYVEEuupHcfgeedSHQvAi7UgJjnQk8mVpump",
+        "rank": 1,
+        "signature": "66bTQFK7mX1KeeB4pLvUonYndsZsxmbunYHE64ss66tG2SA1XRd3eVq4EMsBiyWWwDzY5Wxiw7YLoW1JHUgJx3cC"
+      },
+      {
+        "choiceN": 11,
+        "marginToBestControl": 8.075716168650334,
+        "mint": "CkGRNAvqXAa3vc2DLSdeCZfUHfXqnqC5WVpeuLm4pump",
+        "rank": 1,
+        "signature": "kkSQGxB3cT1FvXfuAugFYQGMzuDbuUWPSSgb3UVP25wKYfKo3DsCChDK1CwT1jZTvDRMYYMRmRQM5PQ15ytAFVY"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 1.7349849939049085,
+        "mint": "9yVk5b897KuGKByGchCgYDV8gEQ98LLNstDMet6apump",
+        "rank": 1,
+        "signature": "4Guxjy241FS9Ef3teuez19hdzk6CcQEze7YAKKkGitDJL86PiHTnN8QMFhK5FPHaSU6rbFf4vGpctPBUFsunuX9F"
+      },
+      {
+        "choiceN": 6,
+        "marginToBestControl": -0.19296909096610193,
+        "mint": "7GUdE4DYuBhxT77TKu2c77oPoqTrp2QLJZoGQcHSpump",
+        "rank": 2,
+        "signature": "4sQz4ssj8ofsiGuEyLVBXZiTy1YFVGZj2d8mF87yBWLnqQH6eAVMbyMasoURHmKme62oT75NyDJrSvXdKYDMAinj"
+      },
+      {
+        "choiceN": 13,
+        "marginToBestControl": 3.870507865930581,
+        "mint": "Hn9gCVmmCnRHomce8Q9FCkoRUGkQF3vBNKUhwA1eTWr4",
+        "rank": 1,
+        "signature": "2k1uz8nq8wgnACb4hQoczYQ9pmXtaNCumfSK2nPN6CQx7ZmS3MfNXKucTyAxW9xddbcvnqwdQUztDNAQk1Uc6e7R"
+      },
+      {
+        "choiceN": 5,
+        "marginToBestControl": 5.745060477757883,
+        "mint": "APrnTwnkG9NNLLt498sZRmuCTtenBwN2AbhEDiuCpump",
+        "rank": 1,
+        "signature": "3W4cMxkmunaRgf1zitfB5qnh3fRbqUBwzT5zJD7zDZY8Y5t8sSrbeGEmmWFNNt2t9FdCCiCn8iqx6wT4TVknwThm"
+      },
+      {
+        "choiceN": 26,
+        "marginToBestControl": 2.235458885260954,
+        "mint": "BLtorZg7iyJkAhbCSeJB2QyFCjBmVPCy7huKrBywpump",
+        "rank": 1,
+        "signature": "4jxioQtacxS74AEsWs5iReiUSYTLGWuesfnEwa3sDxvdoCyvj21EkfTxWEXrYLa2DvemmdLRxbddMZUTxWAZ694K"
+      },
+      {
+        "choiceN": 13,
+        "marginToBestControl": 5.729804704151456,
+        "mint": "Aq816a4qUr6czbTmtbg8LTjBdtEUqjb5rynQXnJupump",
+        "rank": 1,
+        "signature": "5GsFdk4kmcxu2BTS6hU4Dyx8kfzRWNw5Vu2Q6Yb3eWyjorcENNE2aRH4pNZ4eEU6QPMPiYvQiMCikp7zw3gSRJGJ"
+      },
+      {
+        "choiceN": 23,
+        "marginToBestControl": 10.479629070627356,
+        "mint": "7z77u6hb9sn4HxAYSfRq1fMbgHRWUdFrUgzRcGpwpump",
+        "rank": 1,
+        "signature": "3N6hPrpxHzNzYTySbj7eaSRkCed6Zpgdge4Znz4MEqFP9WGNUoNL5tigVwAX6aEY3FwuZSvsSU684ABP8m6bRmnm"
+      },
+      {
+        "choiceN": 27,
+        "marginToBestControl": 4.019309370550317,
+        "mint": "Hxchbu1XZon5VfC4aEiGJY3KdruSQynM2Yjs5MPRpump",
+        "rank": 1,
+        "signature": "2CfmaJybL8sshuYjxStP3Vd1VPmTkqhhVPoKKA71c7yHB9KMf6NFiYRmFQekzcWhkncXW8T11ZmATWPqKEn28rGo"
+      },
+      {
+        "choiceN": 6,
+        "marginToBestControl": 2.1213341207153795,
+        "mint": "5ZywDdEUvdbENuzzUQ6wLC8yWSj9SySgq65iceVJpump",
+        "rank": 1,
+        "signature": "4r7QzJviU96bqDnLvWCQjzTFMWBjJoNvvo9V8ZYcpNybuoyq6dJDQuiK9nLRzherC8tXWUcK7Z9FioP2f3NMstPv"
+      },
+      {
+        "choiceN": 20,
+        "marginToBestControl": -1.1101562069335937,
+        "mint": "EUuT9bpQQtzaaQn7SqVgRZ2qe1pkbrQvgifwaFqApump",
+        "rank": 2,
+        "signature": "JSM6yDMuTpBeEkBZNj4RPYTusuVYXNPbTpwJx5oW3eDQBRsgjUqMU5bhzT64vCZM64xsQqosQfpktK6es674tbp"
+      },
+      {
+        "choiceN": 23,
+        "marginToBestControl": 2.0237242187741757,
+        "mint": "DS4XVHYo1pSMBMB7U2iNtA52NTcEGukLbRZpfEfnpump",
+        "rank": 1,
+        "signature": "3uYw4WB5YpcoXndZnVW2iwrs8k65xQ12WdKGSKTm6uk72FJUfDfRQHv6kwgJ8KVZ54PhyxCeeXw8w6C4QEUw5T4C"
+      },
+      {
+        "choiceN": 22,
+        "marginToBestControl": 3.484962371619361,
+        "mint": "Wm3s5CWNdo1P8zh9ekfb3LRjHXP8Dei5DUEXu45pump",
+        "rank": 1,
+        "signature": "5nHqB5dobdVxHXHZ3oNPDahyrkSqBjtfCncb1nRUrbyarNu32uKFm32UxMFo7x1sVEmyCYhS8naYiu7CaQEyXK9"
+      },
+      {
+        "choiceN": 11,
+        "marginToBestControl": 3.825490263045016,
+        "mint": "9RdJiwnk76oPf8E2uJcNY8z2EAgxYKYdmFP4A5pLpump",
+        "rank": 1,
+        "signature": "4Ntv22zwsm9s4vpMzMLEsV8kUW7SfvvphqHtGddcotr7NXafKxHkTZKbxhXvH2Uyo9nWY9m1Uo7eUqss78qmbqLc"
+      },
+      {
+        "choiceN": 4,
+        "marginToBestControl": 16.690197351594005,
+        "mint": "DVYCHqnN8b3714RPk6k8gBHqsRzjREPC5Wnzp9Pipump",
+        "rank": 1,
+        "signature": "4xKqRaUeMGDgsHrcZtaemcubEFKiAHav6RN8zY26Q1WDqeY1tQZkt9onwvMRPueXYaGyAYtLu7sh5ia2ypFHDTqV"
+      },
+      {
+        "choiceN": 16,
+        "marginToBestControl": 3.835421009947615,
+        "mint": "8RKDk39bP2mP93wmKVN8pyTMezzomF4vM8mqGvAwpump",
+        "rank": 1,
+        "signature": "4C9BdTpnrqc4QFLNW3gEzBGNgaYuCTtFCR8bVzmcobe3Hv4J6BLVyczqH3pZi3KemRGuvmLfGd6YEUFgzHjGry91"
+      },
+      {
+        "choiceN": 16,
+        "marginToBestControl": 5.81947577594924,
+        "mint": "9rrGtgG1ksjQrVLwySQWCUWTc9xv6ZVmSUufBWU4pump",
+        "rank": 1,
+        "signature": "3D4a4dQbiQECeYPwKedNrmJq8RnJno2U3iwQFN9P8REaixVu6DPqtaVZM3QGHJJ9Sjx2kEik6tNUiztxVmgTLdEN"
+      },
+      {
+        "choiceN": 25,
+        "marginToBestControl": 2.162551117081927,
+        "mint": "6tYbG5U5TPEyn1LCw8j4sDwH5hQzrZmq7nqXdQxBpump",
+        "rank": 1,
+        "signature": "5Y13Qux827vjBTez7jFwqftes8dWgxjdAhZX1QcW2HJXvSJQtnmeDxFjK2YJ963poHXwGEMC4ztJpADf6nH98AG2"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 7.252803341654959,
+        "mint": "GAUWEjksP5ikHbQMseyTcfUCTbe6AKDRQJpw4oc1pump",
+        "rank": 1,
+        "signature": "2j8VUfnAE2yw2uxgWcUrMahR5bJzqDudtGyVkpSQztEbqWS5VVEEUnDfP6XoMAB2DCbxErvh4ns2vnPgJa9Zyt6t"
+      },
+      {
+        "choiceN": 11,
+        "marginToBestControl": -1.4571251488543526,
+        "mint": "BpaW7kNm6bNwNpJc4HgeTddXC61sTsVDquJUbfywpump",
+        "rank": 9,
+        "signature": "4W7zJGTi9xCVtpMKLKv77QSqgsntXokeTcQjP4cEKFdi8dLbxamSQfPpUpyPeDbL5PQRLdWq11V79wMcpP54bWqU"
+      },
+      {
+        "choiceN": 5,
+        "marginToBestControl": 4.1086672861618965,
+        "mint": "8Ecodgv3xQpnbVQZZE2NYLd5HrtLmePE7Uh5HEh2pump",
+        "rank": 1,
+        "signature": "5cmsjrgr3t1Ueuz4dnnqsCAjvapg5Pappnua63JTbVm1qW62sb91rhhKd5xeyrxPJAxiwgRCY3K1ktF6KBKJzPn6"
+      },
+      {
+        "choiceN": 9,
+        "marginToBestControl": -0.9242747499152666,
+        "mint": "EA7YdNLJd63ayNTPR3M7agqgu8dhQjZ4JLzHM8b8pump",
+        "rank": 3,
+        "signature": "5hUa6M4LNU9i1aQPkUcJ3eb9EfZdJuJhFh5Av1tWCmePcNot27Z4oGX6ocdi1pnHAUwVH8QG9shFtfyWmYqbbz4j"
+      },
+      {
+        "choiceN": 9,
+        "marginToBestControl": -3.0175389083925768,
+        "mint": "6upP8ncNxAYmgpgyounNoaeQths4xwM7zT2TEf3bpump",
+        "rank": 7,
+        "signature": "3HGnLxHnMa9ADfNgfFRmYsnBv954K1FfXdS4AzMu8dgoPWQh91SkLABc4trWL5vxxYe8WaN61nchEHtaUADAwBs6"
+      },
+      {
+        "choiceN": 8,
+        "marginToBestControl": 2.415916028907457,
+        "mint": "AfD8qzYggJCNdmzoWfmNt56T6MycWrbv4C12nZo1pump",
+        "rank": 1,
+        "signature": "5bFweoUVzdyWcUqcmgLvx4GaoXrmgTtBPxuVPtg6ZiTuk3FhEVFhCTPozWHxnGv1uX7mYQZLhZUiEm8jnfvYf71x"
+      },
+      {
+        "choiceN": 13,
+        "marginToBestControl": 6.790417593703127,
+        "mint": "6Jp4Fri7SsZ7ZJzJexDRtLBJgtsWcqhfjDNv7Dqppump",
+        "rank": 1,
+        "signature": "4f7CuyrM7qxNLqMzxNJGthmmX6X69PJpFSpmm4H5nnupuuKktX56gttPcyZ98drvKPFizvSxsujDGdGMuD6X7RSG"
+      },
+      {
+        "choiceN": 16,
+        "marginToBestControl": 4.865617476158111,
+        "mint": "7Y6M1nm5mFvLuivGp7v5ULJUKdnUs4hHgTbLE7Vmpump",
+        "rank": 1,
+        "signature": "27tPGGWkLmvUQCrcr8qkGRk47aKzADcBpCYokESAa26Jyd83TQgEJiZxQc94pEXWxALmVfwjAeKLWQKAJJwcD4gq"
+      },
+      {
+        "choiceN": 6,
+        "marginToBestControl": 12.366394064590198,
+        "mint": "GTXD8ZqX8puKAkmLodfKiWo5LPX5ynnapNXzHkwgpump",
+        "rank": 1,
+        "signature": "4uCmoVK9L4mWymWqNGznma4XxpkHXsvGFGw4Xacnm1fMBxNjNsJDvSPA7jerZ628qvm1UdrknEy8NeVcH4KasrnK"
+      },
+      {
+        "choiceN": 6,
+        "marginToBestControl": 3.5880552288660645,
+        "mint": "GTXD8ZqX8puKAkmLodfKiWo5LPX5ynnapNXzHkwgpump",
+        "rank": 1,
+        "signature": "4jMNwJ4PDDfEQADieVBF8PTXx6D2NR3vYFiYTFRtT5fHTmoLD2ek5Pihyvc2nQTq8tLs65fbz77a9NcoMycdEnj6"
+      },
+      {
+        "choiceN": 5,
+        "marginToBestControl": 10.512128633061165,
+        "mint": "GmDcoZCp7Z6CAmVf7iERYpHKFaGNSVFiXeqDTMhSpump",
+        "rank": 1,
+        "signature": "4jtWa7ykK1YuYoBc4pT1AjzZH24p7G6cetNgJ5FnRLiVbqreDyYy1B3o9PTu6GcAeE8PczhVyxm5swAtzAMF1g7K"
+      },
+      {
+        "choiceN": 4,
+        "marginToBestControl": 0.45145653390606366,
+        "mint": "GmDcoZCp7Z6CAmVf7iERYpHKFaGNSVFiXeqDTMhSpump",
+        "rank": 1,
+        "signature": "2HYNhzVHpp8iXGkLA93Zasuv51ky4DEjgWGpTWyXFfjWnhJqgowuABNgkXLi22XSnV45GY2xqnaKFPaL44cTxW83"
+      },
+      {
+        "choiceN": 17,
+        "marginToBestControl": 2.0802930436938607,
+        "mint": "B3P72m7E3AbHKUmKBeA3FGU4GJCDxvJ9W4Fa9SRZpump",
+        "rank": 1,
+        "signature": "2qQQU1mCa9ATywAxzgcgD13Ujf5JoSbd7ZSriaKw9EgQ45e3DMQW8QLiGRsuXVR2KE9Hsk2TKkACydRUKorngyhC"
+      },
+      {
+        "choiceN": 10,
+        "marginToBestControl": 2.321706651035595,
+        "mint": "35Jt9h4UJ8u5deUQPCEPPAVbqTaRgFmK31qSSe1hpump",
+        "rank": 1,
+        "signature": "2PoGVwNJePorU7Ku9NQd3NBXqSHYfKmPSqiRw8ggr9psJhuM2zaNNYWbbX8LzrSX7wB86Rcf9UKtYYmJ2xJWD59V"
+      },
+      {
+        "choiceN": 29,
+        "marginToBestControl": 3.740226708282715,
+        "mint": "5NJiDLjfA3mBjymsX5qG4NYePTh8R16TyVWJKAYmpump",
+        "rank": 1,
+        "signature": "UigHGwMfBqG7kURj1vLHQ5E9LfSQ2KC2GLrfV1YanvSJZgZsmnFYmSBGhdDuzLFjYUViRkRjMAgbAjDZmpkpjpL"
+      },
+      {
+        "choiceN": 29,
+        "marginToBestControl": 6.23284001513033,
+        "mint": "Cj548pY4AUm95cw8xsCve5cGjBurdo7ge8U8tRvHpump",
+        "rank": 1,
+        "signature": "3PFjN7WoLqivsfZtqBWP3SSEWBsqKLd1LEjKputuXEd9Y4wofjAPPqVkfPZUd7Vm2mUVzJEv2DNAx27n9u9V3fab"
+      },
+      {
+        "choiceN": 18,
+        "marginToBestControl": -0.12599731108536072,
+        "mint": "DCvZvUSBgU7ioM3hra8WWqeJfk2CdrvGsTZSqtrspump",
+        "rank": 2,
+        "signature": "tQ3LHNeCCcXbdX1Sxt6KbrNBUftJg6WPHgFvtc4jHMrttoW1TBRKxyyY214FmNDLcFN8EKTGqoWfvvNgXFUbeAG"
+      },
+      {
+        "choiceN": 6,
+        "marginToBestControl": 4.319685273965897,
+        "mint": "53hihvxj2m4E38rNfG3DfDAJbDrJhdrVfDSs4qDQWaiE",
+        "rank": 1,
+        "signature": "2kgZvxCJKVsFwDeSxFfjFWtXbTZ5X9bny5sNbBCAeRGhAnX9Ydke89dfqZezVuz5Z8t2e53dmMzMXGtihtEF6Xd"
+      },
+      {
+        "choiceN": 6,
+        "marginToBestControl": 2.387865795697941,
+        "mint": "3nt27RbMkJss4GWp1p6rKee9ykymUXMgfEt7KevMpump",
+        "rank": 1,
+        "signature": "i7SwUG57aLzcZdr4X6Y1Q5mwLCGkCd3K5Z4RF5wzJJEA78Qa3VwVFhYBejAJmean5KWqChtPptcRi6f3iErJAfJ"
+      },
+      {
+        "choiceN": 4,
+        "marginToBestControl": 5.283173877909498,
+        "mint": "FuegZrrdBrriM4JkpVKjvyp7XkGzCksd3RTfM2T2pump",
+        "rank": 1,
+        "signature": "3WnrYa1A7wpb926rYmME5Gdi9rpLNyWXfcejknRJhYWhtNfrmmuKYwdRqzwvKaWgsVJ7q88qn6NdwRge2NaERUrt"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 3.9521100875674438,
+        "mint": "6WunWmbJVRcmdGB31e4CQ5TdioTSbZpXBD5cwPNjpump",
+        "rank": 1,
+        "signature": "2D1hsAKXYEvrz4WgwG4JaBpWHuMcqZZ2qRPySEgSnvFkX1hVzdVmBuGvHt85EDrBn76kwuUFoewsWdy796wFC1oC"
+      },
+      {
+        "choiceN": 18,
+        "marginToBestControl": 4.207204401023639,
+        "mint": "5vQv5WYQsYXV1KaTyi73xxanQvB9V2bHXMYZr4JTpump",
+        "rank": 1,
+        "signature": "5HDEzT6oCroKnFei6XPhAShSW9sQwhLgp2pkf3q62UJp58Xiq9yZ16xh3g9dnqEzQ3EjAUmQGqxMydikGsJKtqem"
+      },
+      {
+        "choiceN": 5,
+        "marginToBestControl": 4.782695179659267,
+        "mint": "57eLxvGjdSKp3TNsWUCfzKkEdNd47M7ZWxBLa8pTpump",
+        "rank": 1,
+        "signature": "jndXiNKSvV7Rnpy4dHjR6vT6ZHQ3nhFKuqCPP1eWftvhqmbg4wiZf5h6RwnAi9UcPuKR7DiaGS3U5gD25TdhLYL"
+      },
+      {
+        "choiceN": 15,
+        "marginToBestControl": 3.5415410516638635,
+        "mint": "Aidp5rXqC3yC1KRB6FHnqYUFzYo5VPcihYkVsd42pump",
+        "rank": 1,
+        "signature": "5poYN7UTLu18hLS8G5ahcTpZRkh6S3bEGjnv3ERTDsJWEg8EGJwR4JPoMeV4okub117w6UW4JvUhjyLngof5SBth"
+      },
+      {
+        "choiceN": 18,
+        "marginToBestControl": 3.424968553397215,
+        "mint": "4D92RqKcmXTnNNspfesA7KjC1AFxNmo5mVKKURbHpump",
+        "rank": 1,
+        "signature": "3tmDhz6M2pfEWGsPYCWANe4hFJ3eGfiHujoyqGiith4HigPWdk3iWK7kRdVfuH5Y98HPBqv7iJG11tnorJsPMGiW"
+      },
+      {
+        "choiceN": 20,
+        "marginToBestControl": 3.286106336880522,
+        "mint": "CQLJnAssoxVGnDfHJFZPzyBUbwMx367GpVGMy1nYpump",
+        "rank": 1,
+        "signature": "4p1YYWmk8257viXZetFn2VXT58mZwsKsh8gPys1DJGJ3286Z92esCVQJuoWNi3BDfz6RnBSxf7VRmatd7gPmozop"
+      },
+      {
+        "choiceN": 21,
+        "marginToBestControl": 0.7871382566825191,
+        "mint": "3xW6297mjS3AfEhrYXFdPh6mDs2RAoiY4PxPVv9Jpump",
+        "rank": 1,
+        "signature": "4hDYsCyXnUSwS9H2LzQbkfN4saogF5gESXMnyHmGQmvQ9gK6gQC73ju7GdURCqbS8gqSr7sZhYxpthdE1YBBmFt1"
+      },
+      {
+        "choiceN": 9,
+        "marginToBestControl": -0.3632145012685539,
+        "mint": "DvDqQSgPdVLDMgVpuNyv4jodhZTxqXaNVPvGKxD1pump",
+        "rank": 2,
+        "signature": "31Mp4MvjzXzXmHiFKXmYCgQs2d7RpHE7ppb36tTB5Ghd2Vif4mL9bZie997WffpaAd3FmiZdTLPzYMvHNtU2MQLf"
+      },
+      {
+        "choiceN": 18,
+        "marginToBestControl": 6.446679396631463,
+        "mint": "HniZGroqw7youPUWpMsibgDP3g4SHLqNN6ciRf48pump",
+        "rank": 1,
+        "signature": "g2ynMtzDSUzZLpjdRJGr2tbaaa9KHwrRF37xZafDuHpX1T1obVHv91E7Ycj7gtmDrozX9etrJCjBFXc8Zn3RzC4"
+      },
+      {
+        "choiceN": 11,
+        "marginToBestControl": 6.1655171767172945,
+        "mint": "LPjCwFbUwz7P5DaQunPpGeonjvvg31TKkanFu4bpump",
+        "rank": 1,
+        "signature": "5KtKRppARqxfMDaRaGGeRNgrVzafyQ8MRE7J5CGXPHvu3kHLproRTddjSWyRPNMueBJwGi519g39Pwmz3EmaytZ7"
+      },
+      {
+        "choiceN": 11,
+        "marginToBestControl": 2.791510305569809,
+        "mint": "HhPqoqM5yYNPbswgTQgoZhoaddd5oqPRCXDujmmfpump",
+        "rank": 1,
+        "signature": "2o1VaE5E5KbZARgF1pm6Zg2bs4UFSNuy4967H5GhnV11jngPAAsTNdDngeWe7Jgms5i6odmGZJC7uTyuJT48mYoF"
+      },
+      {
+        "choiceN": 11,
+        "marginToBestControl": 5.842667177294867,
+        "mint": "FLXECohKEwFUdGj3EL6qpG927BhuCzS2TpAjuynEP43H",
+        "rank": 1,
+        "signature": "XKXkwEP3xPVR216mBDF35DmLofSkQqiTejdEQCYiqdugYPgfWev5DiNtKL9h7c39KAd8uKRKg6DZqkjHbk27X2s"
+      },
+      {
+        "choiceN": 13,
+        "marginToBestControl": 0.10567681033356813,
+        "mint": "FLXECohKEwFUdGj3EL6qpG927BhuCzS2TpAjuynEP43H",
+        "rank": 1,
+        "signature": "4Vw2YU8WEpMjzm9H27N8xhfc4HjGgdJfh2LP4tczpLy3ai2uUjiyfLAemdFjpVYXVnxLHoPFV2HVPcKcUQ2rBQrz"
+      },
+      {
+        "choiceN": 13,
+        "marginToBestControl": 0.10922160673777437,
+        "mint": "FLXECohKEwFUdGj3EL6qpG927BhuCzS2TpAjuynEP43H",
+        "rank": 1,
+        "signature": "61V2EbEBXxJHsuni6oB3ZwPHpGb6FQEpxGAdBB1gi6b61UnMiF5XNb7Wd1bnoVLJ7MkvCWzw8Ay4UaeedwdjFisT"
+      },
+      {
+        "choiceN": 23,
+        "marginToBestControl": 2.5270725797023044,
+        "mint": "A9tFTMP7a9QiCaJTPmzgaodUtqAQJXbkBAcvgmCQpump",
+        "rank": 1,
+        "signature": "5kyfeynB4JGsmr7tezpmxfSFiiJLfPpfmiVnB7RBKJQZQJZXrzXNivLjnA15im1VzELaQhubXYrskMzwmzhubHup"
+      },
+      {
+        "choiceN": 16,
+        "marginToBestControl": 4.30381693373046,
+        "mint": "E94bReeQGUjxNMdbPHRFDpBDZKrzmKJksswbtk58pump",
+        "rank": 1,
+        "signature": "3HYnEwVRNxhkDB5ZatkPWGMpMnZEjyAYzrjJcoB9y4Af8pStUDyZiSi2fD651EXWfeUkHxAVmUNfEkchYREPtQ95"
+      },
+      {
+        "choiceN": 5,
+        "marginToBestControl": 3.916935857426863,
+        "mint": "ARzU6aXhxagX2zAtKSAix5LERaNMesHfeuffoSKzpump",
+        "rank": 1,
+        "signature": "hLSJc19sDQvM7UQFgSsjZhvHCqrggipg1ChZwpBWSUBwD4tUdh2TazdBZZ7LnsXhVGKTQQc3ky5HAXb58DuNLtA"
+      },
+      {
+        "choiceN": 13,
+        "marginToBestControl": 6.722069441352661,
+        "mint": "H1JfpnyGEbG3X4puHRTsFnrTRq1DP7Dq5EkNc63ipump",
+        "rank": 1,
+        "signature": "2kPBbZi72N9SK1hAyTyyHTtcagxHYcUrZF382hyUXaeqSXSSjvcDwm51jKQ6CUL6JWwRnKhU1qZia8dPJRXArECw"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 6.553024129578642,
+        "mint": "4t8XQziiz952CLzxN4KyjdGzjQ53gX6wUVEAnfHQpump",
+        "rank": 1,
+        "signature": "4E5eGaGiFYtkyE1pQiWaP5CYfk9yi6LpqQBz4QghEec2r53jY9gYhP5gr4Tg5UW3rGW9j1HF2YuL1Q7K95X4pzWd"
+      },
+      {
+        "choiceN": 7,
+        "marginToBestControl": 8.168188653454804,
+        "mint": "bH9fNsRmZGWLi9iDymNNNJysZ1dYdU5x1UHWot5pump",
+        "rank": 1,
+        "signature": "2Ne3KYJenX8QSPVZcYJBX8UAXjnyTzMBCzSwA7QvuYcMH3oz6cihkghmKtBZrqGURwguUGTr4Npau5MapJvSxVcb"
+      },
+      {
+        "choiceN": 5,
+        "marginToBestControl": 5.178501324202398,
+        "mint": "Jo9zfeYKz3nspZbWsUEE5vavjBdzK8B8ngPm31Wpump",
+        "rank": 1,
+        "signature": "5V8SzcdVvBy4X8VBzqAsDMFyg8LBJmzj4Lq8sULYSiw3CUbDsAVb5cD9iK8vs5sjPPSbcpaPaZTjYteWcN33zAk3"
+      },
+      {
+        "choiceN": 7,
+        "marginToBestControl": 5.741390271550013,
+        "mint": "7PaUZ7bywLQwjCf5i4pVruLTDQtBHZqBk5EVTJtapump",
+        "rank": 1,
+        "signature": "DKd1z5Rut2JgGXsq2LNTi6J7tpVkFRCc52Ek7YdS8yHWEwJaiAPRrMfHzW5eNZNuZLScSRcHyq27AKHBWJ46TxE"
+      },
+      {
+        "choiceN": 9,
+        "marginToBestControl": 8.191223344343708,
+        "mint": "HdwsN8bwqubwMXzkVTGVs4XGPhb5uMhDoAbs6pwYpump",
+        "rank": 1,
+        "signature": "5ewHQR3xWxbA7QqMRYxj3WYHg2qn9Eeckjxwf1ym6Xq8NmumGrvKJoe15Y6zbsN7uHWJGS1yQ42iyGLBUFjoZCni"
+      },
+      {
+        "choiceN": 26,
+        "marginToBestControl": 4.2149975798884425,
+        "mint": "HSxQxzbUKBjcVrDEcrNd5NkuGJG14w7yRem1ts2Epump",
+        "rank": 1,
+        "signature": "2cgWUBc18AbmqMv4BC4ymVSAe1kHs2z37ZJLbpMWbyg3qGvmNurf6AKihshtJhhQJxdBRQKqYvHseRiuEmHHah4R"
+      },
+      {
+        "choiceN": 17,
+        "marginToBestControl": 3.842618927119706,
+        "mint": "1Dxtk1W9N82aiX4C1HxtrzZrvQQuktPaDRAe75epump",
+        "rank": 1,
+        "signature": "2tPqCRLzcBjAqtuARExMDsG3HZX4h6MY9rqThydGqiRQXmX6oD6U84caMLupjDXqLYfbVUt6Kbp6zQQ8n6RWWbAQ"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 5.863734923469442,
+        "mint": "ChfmWFehLciZAdvrr9oWBhhRUqDaBK1Pf59L4Dh9pump",
+        "rank": 1,
+        "signature": "4GxzQDp9nUG7Lo62Hwvbk2VgkDxpBxNZF74ShbtPCRL8UrJcR8KudD1NHaEk98Lk4mMDUXMwt4qKv9r3jAqXGPR7"
+      },
+      {
+        "choiceN": 6,
+        "marginToBestControl": 4.205191383866376,
+        "mint": "5g5hPdE4CQxP5bxSDb4ggxM2XVHbchShBgTfpwX2pump",
+        "rank": 1,
+        "signature": "2ukAG2JUn1y7t5ehpYUVSpfMSd4VztHL5Nhemwd2PAvdXJ7Zh7Xdm8Y9NSw7srvTd9CEZYLUBkQe2sN7jrdooEQt"
+      },
+      {
+        "choiceN": 10,
+        "marginToBestControl": 17.26079666648004,
+        "mint": "aruegrA6C4FaL4MqyZweetbthjozFga1CrSK6FSpump",
+        "rank": 1,
+        "signature": "3C35CRU8Jyn7K5zNPdEAKhVa5b3ZozHKVVi6Em3ArKDtXLJrzWm1VbhRRLX7v2bVc68WdBbXNZAC5ni1QKGKLWR8"
+      },
+      {
+        "choiceN": 23,
+        "marginToBestControl": 2.3999932109180873,
+        "mint": "Eijf6KStmZusYfgwXSu6DC1udhsUQCbyvyunwqcGxALL",
+        "rank": 1,
+        "signature": "bmE86ofbT74D8GJkQbkDjamGP7Zva8hdNp9KygAmEsrQCBQxXYx3v51KqKTTYpR1VNGXGy2v7CTkyxYBdwwbd7m"
+      },
+      {
+        "choiceN": 5,
+        "marginToBestControl": 3.3447604883799205,
+        "mint": "5iztSCpZfV8yM2KtAYThAFC4nYmDLPxVA88KtKjMpump",
+        "rank": 1,
+        "signature": "3pqPqmxxTRoD16AcwdMqxv9LdFYmqXokaupSBqAUhY8womdfme6VzrMDvnf8uLVDC4NWvRgstqJsa2vzhNZv3uHy"
+      },
+      {
+        "choiceN": 17,
+        "marginToBestControl": 5.184624626467336,
+        "mint": "3CUthbuaEJcJaeDWT9wXSRhJCePFUurna57Hp95Vpump",
+        "rank": 1,
+        "signature": "3rcZn7GT6p64kjCjJrijsvtWirSLmMQDwNBMgFzmn3HozPW1AuFdNDVKLTkGSGr1a4717bVVPM6bvDvSqGNtxBcF"
+      },
+      {
+        "choiceN": 14,
+        "marginToBestControl": 6.216654346240922,
+        "mint": "4y9sguMG2KFppiCUzmvTCXJ4KNsHafXioMMBX1hbpump",
+        "rank": 1,
+        "signature": "58rZr6GqjgZLKqnBHdkjf5AhkKoEL8r9yMk9vrWcZtS2BjN2fr9e9AJRboPWzk6EDhLvzWiPHeUiXwjqeCXJDUQW"
+      },
+      {
+        "choiceN": 21,
+        "marginToBestControl": 3.753880466184116,
+        "mint": "EpvdrCEhpSwx7LyjtDgmDqqqSMEn63eneJ3JpeK1pump",
+        "rank": 1,
+        "signature": "5pbKBQ2fxXBGGiLAxKAifLda3zheAvg6BZLYcFiMTfX1AKe5H1w6V4cSr6KaTy2sWJtWgFyrpj5q3qKHii1ZYpXC"
+      },
+      {
+        "choiceN": 9,
+        "marginToBestControl": 6.152638307972835,
+        "mint": "HErZv6JS63Nuri6NdwuQAFYVnP5tiib63Cd9Jdfhpump",
+        "rank": 1,
+        "signature": "2hRmqxy7reHqHnvYUDZd94JzPHJvoehwbJb7FUtNw9CNK7koQdEPuAeH24rP38AX98HBTiTV2NZMmzBTa9WRrhMW"
+      },
+      {
+        "choiceN": 15,
+        "marginToBestControl": -0.7553041207936184,
+        "mint": "32w12xmBKF99EkFiGk2sYaRNaJ2QBUn4i9yWzezWpump",
+        "rank": 2,
+        "signature": "2jNFxGBnVpY8B7LoxWGi3NaZqiBZnznUPtjTdJK7VAJye1cfSBhXKS38xuLu5RSXaJS7XvHqtjKzFnFKytNko9Yd"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 4.557672766217965,
+        "mint": "9aqSDDzvjhGiCXLjuVkCXbWHHjm6Thsqxi6CHQfnpump",
+        "rank": 1,
+        "signature": "2rawm8CfrEm8MJB1F2THHdNtAmAVYfwDFtWmUewPTNZuef8CLNupcPtUomueyy2sgyMymPy9HFdLnWewoSuAaGwy"
+      },
+      {
+        "choiceN": 13,
+        "marginToBestControl": 0.6771881664754142,
+        "mint": "HWj4FvSADeyZDDqzG279QQKf4i9vaBStyhbarpfr2ALL",
+        "rank": 1,
+        "signature": "YvPRuSwDxXJqKT4rNLxgmKAVtES93kHfgsAdoKCAJKtbgFps8UnRDeVdnodTnxXYiSrFw3uSYPn3WttnoRwqDo7"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": -0.9086068845835453,
+        "mint": "9aqSDDzvjhGiCXLjuVkCXbWHHjm6Thsqxi6CHQfnpump",
+        "rank": 2,
+        "signature": "2a4cE8tvafTq2BmrDbA6ze7YTEpByfq6BKPA2J63X8Gpfd4wutvztzNGcrDT4HhEiG5u6HQwpuYEod6EAC1H86Xi"
+      },
+      {
+        "choiceN": 10,
+        "marginToBestControl": 3.5182167985243007,
+        "mint": "7ofSgBtTN4B1Gp7EeaXrj4cyeu1R2FJkcNvvTi32pump",
+        "rank": 1,
+        "signature": "31moDwLmw1eS8aQXeChipnfWsqYyEBURwqC3QAi3n8Yn1UVLDcovtrRyZkV44UzAGjZ4K6bPbtYdWs4AMGHnTtn3"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 0.6167027582387852,
+        "mint": "6qZttkiuYBh3Mjnx587Bxg8PYowXaNnQRwLELy3Kpump",
+        "rank": 1,
+        "signature": "3Lz4gvaUoMgeVZZiStPMxwLxb4X5QKHF3Z8i27izpfLpeDmb6dJht45iE3PvYP2S96xcQ7P2YSuvgPDBgehA3GwQ"
+      },
+      {
+        "choiceN": 13,
+        "marginToBestControl": 2.3145589756753067,
+        "mint": "AskPEyC9ibJrQsuCoiHAQ7e624jyAcYM1SQTeronpump",
+        "rank": 1,
+        "signature": "65wjATNH7op3YQu9nnJPQwYkLJJ6ybWtY3JSvdVymYG9X18RabmMrVRUh2ZWqngq1qumisumQagz2cXSkYTbfdZm"
+      },
+      {
+        "choiceN": 7,
+        "marginToBestControl": 4.809031265378577,
+        "mint": "9X8yrJg9EG2nERdjjQCX1RwPLTMit8W7N6ybZgempump",
+        "rank": 1,
+        "signature": "5oerU2v3aPVnmodgFTgzo4pjnGmDQH4miCgYJtC9BbwNYTfpZcCoeK14g1cfp4Wo7rqDx78mRUtqNLyTS3v8jjm2"
+      },
+      {
+        "choiceN": 15,
+        "marginToBestControl": 4.411782605362807,
+        "mint": "hGnJXv92M83pSNv9aUptBzsvqJE5F3oKi1KfLyXpump",
+        "rank": 1,
+        "signature": "5wHJVLNPp8Qi5Xg2mGC6Kq1MFB2kg2yhTJH1eSTwB71snwRJtm3Ra6fFFK7a8ZELUMwizM5tLYxPY4L6BGiiYp8K"
+      },
+      {
+        "choiceN": 6,
+        "marginToBestControl": 3.4929472295626507,
+        "mint": "AW77RUayv5b7FkBahGWfZaU2D2rcTCyesetUgtpbpump",
+        "rank": 1,
+        "signature": "FasA64tz7mfYHJG64cVEZL2ZV8kTfxigGucHtUxhZWVQu1CtKL8GF5CvBL1LwYFKxfxcCDAsvXuuUqPMpmR93N3"
+      },
+      {
+        "choiceN": 5,
+        "marginToBestControl": 6.403359830770143,
+        "mint": "6S1APv137MJpEareK5t6uyt8Dkt8PWP9RhNjdvkzpump",
+        "rank": 1,
+        "signature": "3s1L7v3swodqjfzHVJ32kJC6VFaJY214nMUmbhnEiDbGWiRQcLjEizcTYyN9CASkMKZA2xcDVXSqUfeQYfZeEkMQ"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 3.8642620816570523,
+        "mint": "91bBCCdw26wVJhiB7VD1Rbbh74ai5QQtTi6ytdrXpump",
+        "rank": 1,
+        "signature": "nCPrWkiwAyLs7w4d9w6MJ3QVarevSDYYCnEALYNxc82eWQnfJJ9fTVZypSygmhTmmqik4REaeCTkZd9kRQsGyWx"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 6.1534348143756405,
+        "mint": "4R1Q5UNpiRwgwMzb612AKtoUqWnjEXivVc924jHApump",
+        "rank": 1,
+        "signature": "5ejBfQoCPxWhotRj1y9ACHtsFZgtcCYC2nXaEHgfobiYRYkSCAJsVn9gxqsQdhN9qaZqaVZKW7d2Ux7jAFhv9raY"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 3.5466969069286223,
+        "mint": "3eMef1CCS9FHtgELd398SPXZzLgvEYuAnXovhVWtpump",
+        "rank": 1,
+        "signature": "2eLJ4g8KkASWCRnuEZTxRhRtuUxeQktpbW7DeWTksC6a33Bo2dvKmUAVJmEb9YQyucD8FN16gSFxM6Fx59ugJgXp"
+      },
+      {
+        "choiceN": 13,
+        "marginToBestControl": 6.23032933848118,
+        "mint": "73gcBYtMquJsFub9nMFCwLXj5LdFfLc8CLVkF462pump",
+        "rank": 1,
+        "signature": "3Spxn7Y8sMkDZTreMh4Z38RNgk3vmFMnECUGxv3TgnCkbSJWDk15UrxCUZ83tndSezQ4vd5o7kM7ohTtt1sQmmDP"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 3.666229623032687,
+        "mint": "73gcBYtMquJsFub9nMFCwLXj5LdFfLc8CLVkF462pump",
+        "rank": 1,
+        "signature": "e3EUfEq3fsnDasigZ53nU6jpY6aXzNMHFx3sh97DyZCRU98GG1QpvonqxwPJYqDQRqpDLi7kEsfYQne2wFKhCV7"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 2.917593765482807,
+        "mint": "73gcBYtMquJsFub9nMFCwLXj5LdFfLc8CLVkF462pump",
+        "rank": 1,
+        "signature": "donmXYz7NHYRsJSJ84wEMtTT646LoeHvGpnwdVTopPP7bLLPm1ahkfi2u5qg5Ea1DXPmGLiHtesWvvs9q539tJV"
+      },
+      {
+        "choiceN": 16,
+        "marginToBestControl": 4.695992936501039,
+        "mint": "CfPcWM19uHShYqPAZAJo98RteUsU1bHrZXVkjQswpump",
+        "rank": 1,
+        "signature": "4VYaDa1nMnh6dhGYU4YpTnFWTwH4evRb7VARafCbd3yp1jFgUHH6dvRgTQZeQL319RVgkYV4wwTmfg2poJNpgDuZ"
+      },
+      {
+        "choiceN": 33,
+        "marginToBestControl": -2.6677163167557625,
+        "mint": "DSitzLv2rA1dVFv2SNPUauaskCV1jAQZeatbhK9bpump",
+        "rank": 5,
+        "signature": "X8sYPmwZKQunxPpS74YVqkqdfvU64VRFrttbu2DktLyk4CFKWSmDDUUYP3KKarjAYehbqwxAMKNduHUXBUKsVpY"
+      },
+      {
+        "choiceN": 29,
+        "marginToBestControl": -2.716575488766095,
+        "mint": "DSitzLv2rA1dVFv2SNPUauaskCV1jAQZeatbhK9bpump",
+        "rank": 4,
+        "signature": "2mafhvX1boHATFSiHnGAMcdVQLk75dZYTcyojGqojVR2Yr7Y3h7jK7GS2qR9GC423sRFfdMTptQ59ZamVik29JYs"
+      },
+      {
+        "choiceN": 14,
+        "marginToBestControl": 3.258992135075366,
+        "mint": "J7GcVg7zQbDgjF8TTBDJaGrgidrMGR1FAwTQCR8epump",
+        "rank": 1,
+        "signature": "trdydt7fnykAktF9K3asEgjXdxHRWrDewn2qpkKdf7YcgL2G7mDECQsNdQeFhYFqRuQZP8s6XJtyijdMFMzULRj"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 5.714430987553784,
+        "mint": "J7GcVg7zQbDgjF8TTBDJaGrgidrMGR1FAwTQCR8epump",
+        "rank": 1,
+        "signature": "5QmDc7UH78mCbRPzd2GqXTbdJoEWn7rZKcjcv3rdvaq75QGae8QNR1BspgGviLdXhBhDviHt9Ys4jUQh4hKZBwzo"
+      },
+      {
+        "choiceN": 14,
+        "marginToBestControl": 4.321492575722651,
+        "mint": "Heqdxv65iJnCPLwq45SiEBSX5bMUafqnqMb2eYV1pump",
+        "rank": 1,
+        "signature": "42CqLY99mvGRcmi85qyLfgRLmV8Fzaiytu3J3aZ9Hyckq7WoMJ7b3Jzfw4roeG5sBMCzofrCnsBbTp1zM6aC69t3"
+      },
+      {
+        "choiceN": 17,
+        "marginToBestControl": 0.8611129354312416,
+        "mint": "4uA8jDHMvKYyFenDnZjCVgaTPB6bJrTNB3f2CfJDpump",
+        "rank": 1,
+        "signature": "3EvCpqb7enSNJMMUpbrtD8c2NYkieSNPZ8iZUsfnd5uKkeH1kUxZwXksBGX1DTMWcTUH7rCvA1u5C6CBdgMXWznb"
+      },
+      {
+        "choiceN": 16,
+        "marginToBestControl": -0.04143907633491217,
+        "mint": "Ag2vpfHGJXLW9jrXbtBhzNjzBU4DPfQm4eUQ9Undpump",
+        "rank": 2,
+        "signature": "eekFYjWfswhxKEH8V4V4n93J1qSKPWgY5tsfcugu5QwBbxy6V7vJ5XQtLAmeBsjNGC3FMeDAHJjTtYApK1SR6v1"
+      },
+      {
+        "choiceN": 11,
+        "marginToBestControl": 7.48519195319789,
+        "mint": "3DFsTznPRxaZrXQtxVvKnwymTLaLkenMxcdfcrbSpump",
+        "rank": 1,
+        "signature": "3dwi67XaeSjPeftEHmez29Nh5cVWjpZMjY3hsLbkhDQhwqJrPoTA1gKraAHzdmk2eE8oxe3dCWHMS3VGKJQBFYAm"
+      },
+      {
+        "choiceN": 7,
+        "marginToBestControl": 3.857064729147923,
+        "mint": "5pbP2mR2ZAocTBuNVCfvD55PobHg4dYCgWA5u4edpump",
+        "rank": 1,
+        "signature": "38eymuX7S2FCqVrSqbH4Duq85EnYsTVnSri2hY3r4iQT3pYSUMYS7z8QoY4K2wN54NitYjYWjze4hNDibMgSvxPM"
+      },
+      {
+        "choiceN": 20,
+        "marginToBestControl": 3.559115083121014,
+        "mint": "DTpyxgvN8CnHRLi5EMo9edjE5UsC9DXnX3GDD2evpump",
+        "rank": 1,
+        "signature": "3poZ4Mpc6S8fGvVLBrzrWxVBiCABiT1UMh4aUjihqAK8R8kpGR4SRyuJqqPf3re1wn9t8USkyXpucUXWWdFG4apT"
+      },
+      {
+        "choiceN": 20,
+        "marginToBestControl": 3.023558114270145,
+        "mint": "GMBSco5LZeneZnxag1WZh58BZkvAfhDe54zNJ1VBpump",
+        "rank": 1,
+        "signature": "2kLEYm1JBWYuC5HAemmfRY3GQm8nau4JGQj9UjJm7qf2WRzS9SiAsozWPh91FU13y1dSqVxgWa3eemkFH3wFZDvo"
+      },
+      {
+        "choiceN": 14,
+        "marginToBestControl": -6.860076429494643,
+        "mint": "EZxqJ2WpQ83HK3MZzhSmugaPXt8vrM9h8rrZ7QRupump",
+        "rank": 2,
+        "signature": "3KXdoXNhaNjHefqawN1WiDmx4rMj56hrNTEqNC6VrTfB2wgcuqoUhq4ouBuDNbxwTseVuYK32mP4W8jF51xE33Ug"
+      },
+      {
+        "choiceN": 11,
+        "marginToBestControl": 1.1487926224911882,
+        "mint": "EiyA3q33HoKPSou2Jmcx3As6QnZWvNAkyAuwkjTgpump",
+        "rank": 1,
+        "signature": "JvYWMVFwDyiSND6fSE6jAAsn4EXUTtZxWyBf3GmYL1axHkE4ESrL8Mzt7rNsqNUxNHYMF3T2An7DrBJ2JxkFaQs"
+      },
+      {
+        "choiceN": 20,
+        "marginToBestControl": 7.958165387019295,
+        "mint": "74Tsyg2TypUggW1g3adeEDU8YQAN3XN378PUKAAcpump",
+        "rank": 1,
+        "signature": "5u5bxBjHpgxCkMXJPw25Re3euajnq8ze5RWuzDTahGkP55TKLezTd4fr1zbHKaRm1UCeyJR23Fvxk5ScPpchUJrw"
+      },
+      {
+        "choiceN": 23,
+        "marginToBestControl": 4.288161485750662,
+        "mint": "FiZHBmrkXHMusShHynys4BshjBjbSTz8EwqDHe9Bpump",
+        "rank": 1,
+        "signature": "4sejJ9Uk6FrwvZMFj9ZZTuLTpTggEtyvGgTByxy94Bx3mh1JyLofdioGzf1W5DeTg653PJnYSmwv5tcsdrdBgiDH"
+      },
+      {
+        "choiceN": 18,
+        "marginToBestControl": 2.5769397943668864,
+        "mint": "FiZHBmrkXHMusShHynys4BshjBjbSTz8EwqDHe9Bpump",
+        "rank": 1,
+        "signature": "4teboWNwuc2Z7fpVBJo1bqboZGmjQWhsPZ39YLjnAQbJkUtuJSyrr5Mx6p9iSEvRHWhKzJgbQv1MUQ9ZzS3DGYxQ"
+      },
+      {
+        "choiceN": 22,
+        "marginToBestControl": 2.5565783628238754,
+        "mint": "8wZEbdWXnuZsS3fzTDPwCsRYBpQFRTP4pQ12i7zUv6YC",
+        "rank": 1,
+        "signature": "5Q9zkTAvfPxNBXG4k2oSrHvdA6PsrmcbUnHztwSG8XWwENa8ZeAUgmpCDBACp6GxtstpAwxLHN7cmDXdN8iFJKj"
+      },
+      {
+        "choiceN": 21,
+        "marginToBestControl": 7.989082155439725,
+        "mint": "HLC3VYdvvcogDu2GMZoeJYgEFJoWoszkwN1uuFzupump",
+        "rank": 1,
+        "signature": "5XGGssh8DygpMWwn7ng1mJnXaYCwXK5NxUcha2EZXa4maDn7Sh8Pi3vJUpTE9RFARFUDZG4xaBC8x7LXeVsBxk9x"
+      },
+      {
+        "choiceN": 21,
+        "marginToBestControl": 7.959078586727083,
+        "mint": "4Z2S2NgKAMYfu9qxraFdSHbPExwXUi3hc8CXyehipump",
+        "rank": 1,
+        "signature": "2ebhxTH9qs2Mi9njDbXaxHxYBudjyo5b8b6SHFkvwRj6GJmfqPw3B125XM61bu8BpZQeR881XPoLZ1f689MmG6hm"
+      },
+      {
+        "choiceN": 41,
+        "marginToBestControl": 2.1748621600667972,
+        "mint": "8FdUvSVcYdK5TtfLJa5PBQmkvbFC2D68baJFErfPpump",
+        "rank": 1,
+        "signature": "34RTaSRyELYYiwxbuSetNQFrduEBYJcbwVkbFazR7seonycSkD2SP1mjBAv9eVbLWg91sRtoDrJQaMi3NznJUcJV"
+      },
+      {
+        "choiceN": 12,
+        "marginToBestControl": 8.493347174663064,
+        "mint": "HKQGDLXbUJRpL5EPBabZ8Nx4x56f3v2XJtsJvEwtpump",
+        "rank": 1,
+        "signature": "41HaXupmUAAH7b5XxUuXXUkLvPg6R3nWyFrjj5ZFzGauz2J7i6JCV1tu9N6g4t8BTdnMKtAn1Xp6wvXd6LrGNxAg"
+      },
+      {
+        "choiceN": 17,
+        "marginToBestControl": 8.615630823880858,
+        "mint": "BPeWvm789Y7rbEckewDFU5ddRoqgkqD1uxASABnRpump",
+        "rank": 1,
+        "signature": "3uKcrhSuY43CPrboPmvKAmLe8twFDa5MnTjrqPTX3RBt5RBvgKpAxp47CoRe2ZccPrnyscGtBK3SyG7cUfW2jbLq"
+      },
+      {
+        "choiceN": 20,
+        "marginToBestControl": 12.897438222567738,
+        "mint": "BtDPCfu3Z1wUscKi6tYrJXanomj1W3hY5fwxwLsJpump",
+        "rank": 1,
+        "signature": "pRkR34FLuQqKLVqhVnPN1DwLMCYhLDKnGq2SWXoBTkUB7qeWLMP2WM8X1NhekgwrKxe5DKJ54nDoVk7mDDHfSTq"
+      },
+      {
+        "choiceN": 18,
+        "marginToBestControl": 2.808287588243965,
+        "mint": "DgxKECcZ2GKMKF33zCUahoLRx7NHp7D9RWyQyYvLpump",
+        "rank": 1,
+        "signature": "fHufb1RqUrhLs9tXLkT4jQwoyqXkREXT6CsdCs9qqjcD6zLwwpekdkiYN7BYG61X156CuJEMSCfe6heyDyLJpCR"
+      },
+      {
+        "choiceN": 19,
+        "marginToBestControl": 3.6555555533019235,
+        "mint": "67eUtvWgxvjckFZJhy4BTkd82tTxPBUtzV8twGMBpump",
+        "rank": 1,
+        "signature": "RnRTbAyanr6zfC6EsCghQXf8qsECvP78mc3vvSEqkaSq6MyGJoGekwFFpLqwcyp9nfYygeiasBiVajjv5j7K8K1"
+      },
+      {
+        "choiceN": 4,
+        "marginToBestControl": -4.214719920396616,
+        "mint": "36W2RzidFRsF849r5XsLrT9z4w56kj9Ady8G2Za7pump",
+        "rank": 2,
+        "signature": "3v8BDCiwJU6ZwmPqwYrciTF5ACR5v83ivyQp849hC1XCG48q8QKejqtsNFk85nNWtvXb8trh1HrNMjG1R4g7w5RR"
+      },
+      {
+        "choiceN": 7,
+        "marginToBestControl": 2.6457727536654194,
+        "mint": "5qrQcbuEpc2dyXbAPGrMe9QvEkgoWNqYwEUb9jNapump",
+        "rank": 1,
+        "signature": "ehYKdbxQ7sbDxa8P3CyTiP1orvcKu9RFn2HqzoY17DHu2oBos2Vj8bMNnp7hFfwMU5LZDbejMrdSXWbrZYrvNkP"
+      },
+      {
+        "choiceN": 10,
+        "marginToBestControl": 0.026533709445339726,
+        "mint": "8J2d1F8cfZ4nKV5ErmhEh4gWY9xUfVsriJi4Epggpump",
+        "rank": 1,
+        "signature": "uLZ8LWquMSooiTsS6D1dvCrooKxex4tsvzFMt8tccWddXaJXESUkLzjm8CQQBiQAi2fBqpPU18As5c86rc4tn4x"
+      },
+      {
+        "choiceN": 19,
+        "marginToBestControl": 4.357512151052991,
+        "mint": "9Kui6ZrfuoiGaYkY3Xe4g79zLqRPVx32PzDxb7k8pump",
+        "rank": 1,
+        "signature": "ce9mNTmTLCgwFX1gKkFRD6e6SHkFnJzBXUo3ePhUgjBtftMwfFkTzqGSrJ155YF3N84U89TfVKMu6p2cUqotkXL"
+      },
+      {
+        "choiceN": 15,
+        "marginToBestControl": 1.6792824285398353,
+        "mint": "AsV5pDNUiMSEqF1ibr6gUgKZhEvuJhrT48EeAysypump",
+        "rank": 1,
+        "signature": "3zriDeixRLvj5w4kmh6c4Sx5uPFWgWPeUCtfWXr8pB8wMpdh12NGdvm439psEwDBcD5tUGNSUpob9ERwn19wG4sG"
+      },
+      {
+        "choiceN": 18,
+        "marginToBestControl": 4.947583231799218,
+        "mint": "6zNAU3D8gbvRvyXPxBShBNNv8A5Yd2JEwkFvvusWpump",
+        "rank": 1,
+        "signature": "BYvD2nnnWkQH8hstaqTeSTo38ZSVSh4hQ7RKAXwDVjx7o8RXFkgVEYQDpAcB16VTRdNDRcKaVUJhwsekhrtbhpf"
+      },
+      {
+        "choiceN": 8,
+        "marginToBestControl": 3.1991078305442286,
+        "mint": "8mMwRWwHtLFPvD45zE5vgqM3yRDD8G5MHezvJq9spump",
+        "rank": 1,
+        "signature": "3RW8qSPkCaLmyuPNhNyEERjTkYsYiFcxweCEL1NouvR8gTg7PiVrAPcY4RNYkuJCNbXVdveopR3EGL7paseSR4UE"
+      }
+    ],
+    "topUnivariate": [
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.11682278719211205,
+          0.06866083579053762,
+          0.06574592415885444
+        ],
+        "controlMedianOfMedians": 9.915622909459886,
+        "distanceFromChance": 0.4162568176194986,
+        "episodeN": 123,
+        "feature": "log_ms_since_last_external",
+        "pairedMedianDifference": -6.014467177134833,
+        "preferredDirection": "LOW",
+        "selectedAboveControlMedianPct": 1.6260162601626016,
+        "selectedBelowControlMedianPct": 98.3739837398374,
+        "selectedMeanWithinChoicePercentile": 0.08374318238050137,
+        "selectedMedian": 3.8501476017100584,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8772600610875403,
+          0.9105762311438034,
+          0.9027783987132386
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.3968715636481941,
+        "episodeN": 123,
+        "feature": "gross_buy_sol_1000ms",
+        "pairedMedianDifference": 4.936348863,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 89.4308943089431,
+        "selectedBelowControlMedianPct": 0.0,
+        "selectedMeanWithinChoicePercentile": 0.8968715636481941,
+        "selectedMedian": 4.936348863,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8738725272122015,
+          0.914426852067595,
+          0.902312989069395
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.39687078944973053,
+        "episodeN": 123,
+        "feature": "mean_buy_sol_1000ms",
+        "pairedMedianDifference": 1.7296730815,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 89.4308943089431,
+        "selectedBelowControlMedianPct": 0.0,
+        "selectedMeanWithinChoicePercentile": 0.8968707894497305,
+        "selectedMedian": 1.7296730815,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8810540990279198,
+          0.9149316318406674,
+          0.8939225909565965
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.39663610727506116,
+        "episodeN": 123,
+        "feature": "gross_buy_sol_250ms",
+        "pairedMedianDifference": 4.170734107,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 88.6178861788618,
+        "selectedBelowControlMedianPct": 0.0,
+        "selectedMeanWithinChoicePercentile": 0.8966361072750612,
+        "selectedMedian": 4.170734107,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8772600610875403,
+          0.9112328915565614,
+          0.8993306081137452
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.39594118691928226,
+        "episodeN": 123,
+        "feature": "largest_buy_sol_1000ms",
+        "pairedMedianDifference": 2.025,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 89.4308943089431,
+        "selectedBelowControlMedianPct": 0.0,
+        "selectedMeanWithinChoicePercentile": 0.8959411869192823,
+        "selectedMedian": 2.025,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8810540990279198,
+          0.909918081705166,
+          0.8917027599347569
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.3942249802226142,
+        "episodeN": 123,
+        "feature": "buy_count_250ms",
+        "pairedMedianDifference": 3.0,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 88.6178861788618,
+        "selectedBelowControlMedianPct": 0.0,
+        "selectedMeanWithinChoicePercentile": 0.8942249802226142,
+        "selectedMedian": 3.0,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8772600610875403,
+          0.9137121196455456,
+          0.8835752147555618
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.39151579849621576,
+        "episodeN": 123,
+        "feature": "net_flow_sol_1000ms",
+        "pairedMedianDifference": 4.0,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 88.6178861788618,
+        "selectedBelowControlMedianPct": 0.8130081300813008,
+        "selectedMeanWithinChoicePercentile": 0.8915157984962158,
+        "selectedMedian": 4.0,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8810540990279198,
+          0.9149316318406674,
+          0.8726735148294715
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.3895530818993529,
+        "episodeN": 123,
+        "feature": "net_flow_sol_250ms",
+        "pairedMedianDifference": 4.0,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 87.8048780487805,
+        "selectedBelowControlMedianPct": 0.8130081300813008,
+        "selectedMeanWithinChoicePercentile": 0.8895530818993529,
+        "selectedMedian": 4.0,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8671345750500712,
+          0.9019458371475557,
+          0.8992147440835574
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.38943171876039473,
+        "episodeN": 123,
+        "feature": "gross_buy_sol_2000ms",
+        "pairedMedianDifference": 5.2,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 89.4308943089431,
+        "selectedBelowControlMedianPct": 0.0,
+        "selectedMeanWithinChoicePercentile": 0.8894317187603947,
+        "selectedMedian": 5.2,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.859923136494518,
+          0.8862040087474402,
+          0.885825266847142
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.3773174706963668,
+        "episodeN": 123,
+        "feature": "buy_count_1000ms",
+        "pairedMedianDifference": 3.0,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 89.4308943089431,
+        "selectedBelowControlMedianPct": 0.0,
+        "selectedMeanWithinChoicePercentile": 0.8773174706963668,
+        "selectedMedian": 3.0,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.859923136494518,
+          0.8862040087474402,
+          0.885825266847142
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.3773174706963668,
+        "episodeN": 123,
+        "feature": "unique_buyers_1000ms",
+        "pairedMedianDifference": 3.0,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 89.4308943089431,
+        "selectedBelowControlMedianPct": 0.0,
+        "selectedMeanWithinChoicePercentile": 0.8773174706963668,
+        "selectedMedian": 3.0,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8548736157884812,
+          0.904632379157518,
+          0.8639637431392574
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.37448991269508547,
+        "episodeN": 123,
+        "feature": "buy_sell_imbalance_1000ms",
+        "pairedMedianDifference": 1.0,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 88.6178861788618,
+        "selectedBelowControlMedianPct": 0.8130081300813008,
+        "selectedMeanWithinChoicePercentile": 0.8744899126950855,
+        "selectedMedian": 1.0,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.846135465758279,
+          0.8904509991166314,
+          0.8830736961134299
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.3732200536627801,
+        "episodeN": 123,
+        "feature": "gross_buy_sol_5000ms",
+        "pairedMedianDifference": 5.2,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 89.4308943089431,
+        "selectedBelowControlMedianPct": 0.0,
+        "selectedMeanWithinChoicePercentile": 0.8732200536627801,
+        "selectedMedian": 5.2,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8522247039816635,
+          0.9069578982571778,
+          0.8589375335961413
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.3727067119449943,
+        "episodeN": 123,
+        "feature": "net_flow_sol_2000ms",
+        "pairedMedianDifference": 4.775270277,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 86.99186991869918,
+        "selectedBelowControlMedianPct": 2.4390243902439024,
+        "selectedMeanWithinChoicePercentile": 0.8727067119449943,
+        "selectedMedian": 4.775270277,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8394727974146219,
+          0.8886473470197972,
+          0.8850273411498664
+        ],
+        "controlMedianOfMedians": 0.00032266056556642513,
+        "distanceFromChance": 0.37104916186142856,
+        "episodeN": 123,
+        "feature": "log_price_change_1000ms",
+        "pairedMedianDifference": 0.24434646354503298,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 90.2439024390244,
+        "selectedBelowControlMedianPct": 9.75609756097561,
+        "selectedMeanWithinChoicePercentile": 0.8710491618614286,
+        "selectedMedian": 0.24533366373545856,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.84135268402958,
+          0.888955575376806,
+          0.8743566094425493
+        ],
+        "controlMedianOfMedians": 0.00033781222265710624,
+        "distanceFromChance": 0.3682216229496451,
+        "episodeN": 123,
+        "feature": "log_price_change_250ms",
+        "pairedMedianDifference": 0.21523496190931427,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 89.4308943089431,
+        "selectedBelowControlMedianPct": 10.56910569105691,
+        "selectedMeanWithinChoicePercentile": 0.8682216229496451,
+        "selectedMedian": 0.2157130869150829,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.17802554118762318,
+          0.10581154973465184,
+          0.12413631964613556
+        ],
+        "controlMedianOfMedians": 10.79965720641406,
+        "distanceFromChance": 0.36400886314386316,
+        "episodeN": 123,
+        "feature": "log_age_ms",
+        "pairedMedianDifference": -6.407795888213705,
+        "preferredDirection": "LOW",
+        "selectedAboveControlMedianPct": 8.94308943089431,
+        "selectedBelowControlMedianPct": 91.0569105691057,
+        "selectedMeanWithinChoicePercentile": 0.13599113685613687,
+        "selectedMedian": 4.219507705176107,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8276969986119957,
+          0.9118386661284016,
+          0.8445508245116593
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.3613621630840189,
+        "episodeN": 123,
+        "feature": "net_acceleration_1s",
+        "pairedMedianDifference": 4.4,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 85.36585365853658,
+        "selectedBelowControlMedianPct": 4.065040650406504,
+        "selectedMeanWithinChoicePercentile": 0.8613621630840189,
+        "selectedMedian": 4.4,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8234949293026074,
+          0.8840611473116463,
+          0.865267708770934
+        ],
+        "controlMedianOfMedians": 0.0001950839514574675,
+        "distanceFromChance": 0.3576079284617293,
+        "episodeN": 123,
+        "feature": "log_price_change_2000ms",
+        "pairedMedianDifference": 0.2612101714557382,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 89.4308943089431,
+        "selectedBelowControlMedianPct": 10.56910569105691,
+        "selectedMeanWithinChoicePercentile": 0.8576079284617293,
+        "selectedMedian": 0.2705576720692927,
+        "stableDirectionAcrossBlocks": true
+      },
+      {
+        "chronologyBlockMeanPercentiles": [
+          0.8263114699397499,
+          0.878035147081448,
+          0.8598424175338587
+        ],
+        "controlMedianOfMedians": 0.0,
+        "distanceFromChance": 0.3547296781850189,
+        "episodeN": 123,
+        "feature": "top_buyer_share_1000ms",
+        "pairedMedianDifference": 0.5,
+        "preferredDirection": "HIGH",
+        "selectedAboveControlMedianPct": 89.4308943089431,
+        "selectedBelowControlMedianPct": 0.0,
+        "selectedMeanWithinChoicePercentile": 0.8547296781850189,
+        "selectedMedian": 0.5,
+        "stableDirectionAcrossBlocks": true
+      }
+    ]
+  },
+  "verdict": "PRELIMINARY_TEACHER_CHOICE_FINGERPRINT_VISIBLE_NOT_ALPHA_PROOF"
+}

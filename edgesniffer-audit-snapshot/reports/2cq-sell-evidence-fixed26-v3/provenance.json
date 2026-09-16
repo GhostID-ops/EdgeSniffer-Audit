@@ -1,0 +1,9 @@
+{
+  "cohortManifestSha256": "b50c9f5604d2e039bcd9172718885da0e8ddbc5c77993c87d53c992e6a2a905f",
+  "holdoutRowsInspected": 0,
+  "reportSha256": "b97784f6ab819f6d3a65ed425baa47e81942124b2df1c5356d91bb4c7db897ad",
+  "schema": "TWO_CQ_EXACT_SELL_EVIDENCE_RECOVERY_V1_PROVENANCE",
+  "scriptSha256": "4efa690f4fd8a529db5e249f372bafcac199e91365d30431b52d43837ebb585f",
+  "supplementSha256": "33a0a3aa79a5b084a0098d7a51b935e8ff41f672676b938827f6abb4d466d732",
+  "validationRowsInspected": 0
+}

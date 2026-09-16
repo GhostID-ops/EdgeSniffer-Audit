@@ -1,0 +1,26 @@
+{
+  "schema": "8ycb-prospective-shadow-abort-v1",
+  "status": "ABORTED_DETECTION_INTEGRITY_BUG",
+  "abort_utc": "2026-09-03T03:32:10.787219340Z",
+  "reason": "A qualifying CREATE plus same-transaction 8YCB atomic buy was rejected because slot 443866447 was represented as a JSON integer in the CREATE feed and a numeric string in the wallet feed.",
+  "affected_known_qualifying_event": {
+    "utc_approx": "2026-09-03T03:18:57Z",
+    "mint": "tahKR4TA337akDkgfGZ5Qaeng4ABdov49rVePABpump",
+    "signature": "3msUjoGrsRfbXTrn3Q6CLpRHGtx1F8LFMkKA587BN75WXCKPWMywbwEsCw7j6PVPUVLfYWvjTcAzkuYnBpxjiQ3i",
+    "numeric_slot": 443866447
+  },
+  "service": {
+    "unit": "edgesniffer-8ycb-prospective-shadow-v1.service",
+    "pid_at_abort_request": 585749,
+    "start_time_utc": "2026-09-03T02:24:46Z",
+    "post_abort_state": "inactive",
+    "post_abort_enablement": "disabled"
+  },
+  "frozen_spec_sha256": "ce3cdd0cdee5ae93089d0f74aa395e445a532d8d0b8f38786a7f1c717dc89ec2",
+  "official_signal_count": 0,
+  "official_outcome_count": 0,
+  "decode_error_count": 51,
+  "missed_event_backfilled": false,
+  "prospective_economics_valid": false,
+  "role": "historical evidence of detection infrastructure failure only"
+}

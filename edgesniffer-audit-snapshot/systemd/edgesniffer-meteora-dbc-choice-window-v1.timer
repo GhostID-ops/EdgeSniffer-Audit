@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh bounded Meteora DBC choice windows every five minutes
+
+[Timer]
+OnBootSec=4min
+OnUnitActiveSec=5min
+AccuracySec=15s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

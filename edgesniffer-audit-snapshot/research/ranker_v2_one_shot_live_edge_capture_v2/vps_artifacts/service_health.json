@@ -1,0 +1,51 @@
+{
+  "bootstrap_start_utc": "2026-09-05T02:19:57.196000Z",
+  "canonical_cohort_start_utc": "2026-09-03T14:26:22.198000Z",
+  "classification": "RANKER_V2_SCORER_DIRECT_EMITTER_V1_COLLECTING",
+  "cohort": "RANKER_V2_SCORER_DIRECT_EMITTER_V1",
+  "counters": {
+    "eligible_market_events": 1350681,
+    "event_CONSOLIDATION_BREAKOUT": 8486,
+    "event_FIRST_IMPULSE": 8908,
+    "event_FIRST_LARGE_SELLER": 23846,
+    "event_FIRST_LARGE_SELL_ABSORPTION": 3751,
+    "event_POST_PULLBACK_BREAKOUT": 1787,
+    "event_SECOND_ACCELERATION": 4013,
+    "event_gated_after_10000ms": 24309,
+    "event_gated_after_1000ms": 27562,
+    "event_gated_after_20000ms": 22448,
+    "event_gated_after_2000ms": 26968,
+    "event_gated_after_30000ms": 21299,
+    "event_gated_after_3000ms": 26372,
+    "event_gated_after_5000ms": 25409,
+    "event_gated_after_500ms": 27997,
+    "event_gated_states_emitted": 253155,
+    "later_threshold_crossing_after_mint_signal": 811,
+    "mints_observed_unique": 54269,
+    "raw_rows_seen": 1730551,
+    "score_evaluations": 253155,
+    "threshold_crossings_observation_level": 1584,
+    "unique_triggered_mints": 773
+  },
+  "direct_errors": 257,
+  "emitted_count": 2,
+  "emitter_start_utc": "2026-09-05T02:30:55.347000Z",
+  "extra": {
+    "phase": "complete"
+  },
+  "max_emissions": 1000,
+  "no_submit": true,
+  "pid": 836306,
+  "prewarmed_mints": 106,
+  "rejects": {
+    "bad_or_out_of_range_mc": 283155,
+    "not_buy_or_sell": 96714,
+    "pre_cohort_event_ts": 1
+  },
+  "signals_per_hour": 20.981221806,
+  "submission_count": 0,
+  "template_blockers": {},
+  "updated_at_utc": "2026-09-05T02:36:38.511799Z",
+  "warmup_rows": 1728507,
+  "warmup_signals_seen": 771
+}

@@ -1,0 +1,8 @@
+{
+  "baselineReportSha256": "f1551b8eefaa8fae8db6022570cb546e4f1bae61acc7006785711c9c7eadf1f8",
+  "cohortManifestSha256": "cc603955d46a1584f7c6184929aeee0e720f88e2571de2d30b2af65f914e4152",
+  "holdoutRowsInspected": 0,
+  "reportSha256": "eefca0ac40f7ec86d31a75966f6aeb03c4bbe8df3f009d2a523081949b4f8c15",
+  "schema": "TWO_CQ_CAUSAL_CONTRIBUTION_FIXED26_V1_PROVENANCE",
+  "validationRowsInspected": 0
+}

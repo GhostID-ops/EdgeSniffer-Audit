@@ -1,0 +1,60 @@
+{
+  "broadcastSendFailures": 0,
+  "canonical": 45397,
+  "compactObserverCaptured": 45350,
+  "coveragePct": 99.89646892966496,
+  "coverageReportSha256": "baa89f7bd44c72175bb984eeb3d1805afcedfb643dd62c8e1980c6435156d784",
+  "exactLedgerReconciliationCoveragePct": 100.0,
+  "fecFinalRetryAttempts": 42,
+  "fecFinalRetryFailed": 42,
+  "fecFinalRetryFailureReasons": {
+    "COMPLETE_DESHRED_RANGE_UNAVAILABLE": 7,
+    "ENTRY_DECODE_FAILED": 3,
+    "REED_SOLOMON_RECOVERY_FAILED": 32
+  },
+  "fecFinalRetryRecovered": 0,
+  "fecRecoveryErrors": 13339,
+  "fecTerminalFailures": 42,
+  "generatedAtUtc": "2026-09-10T19:39:39.188271Z",
+  "grpcGaps": 0,
+  "instrumentationDropped": 0,
+  "instrumentationSha256": "e617d36c997a6baaec25eef82721a83cc6706fb34fbd52237da7d093c3032c46",
+  "missMap": "/mnt/HC_Volume_106775198/edgesniffer-research/allenhark-realtime-coverage-final-repair-v1/validation/final-report/canonical-miss-stage-map.jsonl",
+  "observerMissing": 47,
+  "observerRuntimeMaxSec": "infinity",
+  "outcomesRead": 0,
+  "postFixProxyMissRatePct": 0.10353107033504418,
+  "postProxyObserverMissing": 0,
+  "preFixProxyMissRatePct": 0.10591915658792522,
+  "predeclaredWindowSha256": "c6fb7ee0688c7e303a8f9484b8326c3aa2d9c8f71e997c5c0d1113cae3cfa385",
+  "provenMissBoundary": {
+    "atOrBeforeProxyDispatch": 47,
+    "betweenProxyDispatchAndObserverJournal": 0
+  },
+  "proxyCoveragePct": 99.89646892966496,
+  "proxyMissing": 47,
+  "proxyReconstructed": 45350,
+  "queueHighWater": 460,
+  "receiverLagged": 0,
+  "relativeProxyMissReductionPct": 2.254631107167726,
+  "remainingMissesByStage": {
+    "RECONSTRUCTION_ERROR_SLOT_ALIGNED": 23,
+    "TERMINAL_FEC_FINAL_RETRY_FAILED_SLOT_ALIGNED": 24
+  },
+  "schema": "ALLENHARK_REALTIME_COVERAGE_FINAL_REPAIR_V1_REPORT",
+  "submissions": 0,
+  "trySendDisconnected": 0,
+  "trySendFull": 0,
+  "trySendSuccess": 690764,
+  "udpDrops": {
+    "after": 0,
+    "before": 0,
+    "delta": 0
+  },
+  "verdict": "ALLENHARK_REALTIME_COVERAGE_BLOCKER_REMAINS",
+  "window": {
+    "endSlot": 445961461,
+    "finalizedSlots": 3072,
+    "startSlot": 445958390
+  }
+}

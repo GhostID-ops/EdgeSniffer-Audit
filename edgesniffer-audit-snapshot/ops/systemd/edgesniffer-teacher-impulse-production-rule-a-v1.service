@@ -1,0 +1,44 @@
+[Unit]
+Description=EdgeSniffer teacher impulse Rule A production-equivalent no-submit path
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/FinalBot-cya/rust-sidecar
+Environment=RUST_ONLY_BUYS=true
+Environment=RUST_ONLY_SELLS=true
+Environment=JUPITER_FALLBACK_ENABLED=false
+Environment=RUST_EXECUTOR_ENABLED=false
+Environment=RUST_HOT_SNIPER_ENABLED=false
+Environment=RUST_SELECTED_CANDIDATE_SNIPER_ENABLED=true
+Environment=RUST_SELECTED_CANDIDATE_SUBMIT_ENABLED=false
+Environment=RUST_SELECTED_CANDIDATE_NO_SUBMIT_DRY_BUILD_ENABLED=true
+Environment=RUST_SELECTED_CANDIDATE_TCP_HOST=127.0.0.1
+Environment=RUST_SELECTED_CANDIDATE_TCP_PORT=19101
+Environment=RUST_EXIT_WATCHER_ENABLED=false
+Environment=SIMULATION_MODE=false
+Environment=SHADOW_EXECUTION_MODE=false
+Environment=TEACHER_IMPULSE_PRODUCTION_CANDIDATE_RULE_A_ENABLED=true
+Environment=TEACHER_IMPULSE_PARITY_DIR=/var/lib/edgesniffer-teacher-impulse-parity-v1
+Environment=RUST_SELECTED_CANDIDATE_AUDIT_FILE=/var/lib/edgesniffer-teacher-impulse-parity-v1/research/production-candidate-path-v1/rule-a-production-path-events.jsonl
+Environment=RUST_SELECTED_CANDIDATE_CURVE_CACHE_ENABLED=true
+Environment=RUST_SELECTED_CANDIDATE_CURVE_CACHE_OWNER_WIDE=false
+Environment=RUST_SELECTED_CANDIDATE_CURVE_GRPC_URLS=https://grpc.va.shyft.to/
+Environment=RUST_SELECTED_CANDIDATE_CURVE_CACHE_WAIT_MS=25
+Environment=RUST_SELECTED_CANDIDATE_CURVE_CACHE_MAX_AGE_MS=250
+Environment=RUST_SELECTED_CANDIDATE_CURVE_RPC_FALLBACK_ENABLED=false
+Environment=RUST_SELECTED_CANDIDATE_SEND_TIME_CURVE_REFRESH_ENABLED=true
+Environment=RUST_SELECTED_CANDIDATE_BUY_OUTPUT_POLICY=fill_first
+Environment=RUST_SELECTED_CANDIDATE_FINAL_GUARD_TO_BUY_START_MAX_MS=150
+Environment=RUST_SELECTED_CANDIDATE_FILL_FIRST_FINAL_GUARD_YELLOWSTONE_REQUIRED=true
+ExecStartPre=/usr/bin/mkdir -p /var/lib/edgesniffer-teacher-impulse-parity-v1/research/production-candidate-path-v1
+ExecStart=/usr/bin/bash -c 'set -a; source /root/bot/FinalBot-cya/.env; set +a; export RUST_ONLY_BUYS=true RUST_ONLY_SELLS=true JUPITER_FALLBACK_ENABLED=false RUST_EXECUTOR_ENABLED=false RUST_HOT_SNIPER_ENABLED=false RUST_SELECTED_CANDIDATE_SNIPER_ENABLED=true RUST_SELECTED_CANDIDATE_SUBMIT_ENABLED=false RUST_SELECTED_CANDIDATE_NO_SUBMIT_DRY_BUILD_ENABLED=true RUST_SELECTED_CANDIDATE_TCP_HOST=127.0.0.1 RUST_SELECTED_CANDIDATE_TCP_PORT=19101 RUST_EXIT_WATCHER_ENABLED=false SIMULATION_MODE=false SHADOW_EXECUTION_MODE=false TEACHER_IMPULSE_PRODUCTION_CANDIDATE_RULE_A_ENABLED=true TEACHER_IMPULSE_PARITY_DIR=/var/lib/edgesniffer-teacher-impulse-parity-v1 RUST_SELECTED_CANDIDATE_AUDIT_FILE=/var/lib/edgesniffer-teacher-impulse-parity-v1/research/production-candidate-path-v1/rule-a-production-path-events.jsonl RUST_SELECTED_CANDIDATE_CURVE_CACHE_ENABLED=true RUST_SELECTED_CANDIDATE_CURVE_CACHE_OWNER_WIDE=false RUST_SELECTED_CANDIDATE_CURVE_GRPC_URLS=https://grpc.va.shyft.to/ RUST_SELECTED_CANDIDATE_CURVE_CACHE_WAIT_MS=25 RUST_SELECTED_CANDIDATE_CURVE_CACHE_MAX_AGE_MS=250 RUST_SELECTED_CANDIDATE_CURVE_RPC_FALLBACK_ENABLED=false RUST_SELECTED_CANDIDATE_SEND_TIME_CURVE_REFRESH_ENABLED=true RUST_SELECTED_CANDIDATE_BUY_OUTPUT_POLICY=fill_first RUST_SELECTED_CANDIDATE_FINAL_GUARD_TO_BUY_START_MAX_MS=150 RUST_SELECTED_CANDIDATE_FILL_FIRST_FINAL_GUARD_YELLOWSTONE_REQUIRED=true; exec /root/bot/FinalBot-cya/rust-sidecar/target/release/pumpfun-sidecar'
+StandardOutput=append:/var/lib/edgesniffer-teacher-impulse-parity-v1/research/production-candidate-path-v1/rule-a-production-path.stdout.jsonl
+StandardError=journal
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

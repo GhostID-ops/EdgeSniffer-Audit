@@ -1,0 +1,10 @@
+{
+  "developmentChoiceSetsSha256": "2e1f1f14e996b1e13e9b00ce9c1cded750c93edac3fb80de4fcf359c6a1c548e",
+  "modelFamiliesFit": [
+    "FULL_CAUSAL_PREDECLARED_NO_TOURNAMENT"
+  ],
+  "outcomesRead": 0,
+  "policySha256": "bedb0ec347876948937b92c25c2f9df9a3644ce2bb73f3ac258b956dd4d9d1cc",
+  "schema": "2CQ_SYMMETRIC_CROSS_SECTIONAL_POLICY_V1_FREEZE",
+  "validationRowsRead": 0
+}

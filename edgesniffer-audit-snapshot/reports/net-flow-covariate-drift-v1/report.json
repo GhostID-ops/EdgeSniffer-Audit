@@ -1,0 +1,275 @@
+{
+  "chronological": {
+    "discoveryBlocks": [
+      {
+        "causalAnchorN": 215,
+        "causalAnchorRate": 0.15693430656934307,
+        "distribution": {
+          "N": 215,
+          "P50": 2.7,
+          "P75": 3.6576249990000003,
+          "P80": 4.145735426,
+          "P90": 17.0222116106,
+          "P95": 20.541454077,
+          "P97_5": 29.998769533,
+          "P99": 30.063010627639997,
+          "max": 39.999999998,
+          "mean": 5.007278107706977,
+          "median": 2.7
+        },
+        "ordinalRange": [
+          1,
+          1370
+        ],
+        "thresholdExceedN": 25,
+        "thresholdExceedRateAmongAllMints": 0.01824817518248175,
+        "thresholdExceedRateAmongAnchors": 0.11627906976744186,
+        "totalMints": 1370
+      },
+      {
+        "causalAnchorN": 201,
+        "causalAnchorRate": 0.1467153284671533,
+        "distribution": {
+          "N": 201,
+          "P50": 3.0,
+          "P75": 9.064327349,
+          "P80": 15.996761788,
+          "P90": 19.227433219,
+          "P95": 20.996637618,
+          "P97_5": 29.998769533,
+          "P99": 34.999999999,
+          "max": 34.999999999,
+          "mean": 6.377864609044776,
+          "median": 3.0
+        },
+        "ordinalRange": [
+          1371,
+          2740
+        ],
+        "thresholdExceedN": 36,
+        "thresholdExceedRateAmongAllMints": 0.026277372262773723,
+        "thresholdExceedRateAmongAnchors": 0.1791044776119403,
+        "totalMints": 1370
+      },
+      {
+        "causalAnchorN": 170,
+        "causalAnchorRate": 0.12408759124087591,
+        "distribution": {
+          "N": 170,
+          "P50": 2.756617812,
+          "P75": 3.847050161,
+          "P80": 4.72,
+          "P90": 20.151019902,
+          "P95": 20.8425528233,
+          "P97_5": 20.846242682,
+          "P99": 28.619618553850003,
+          "max": 43.293030541,
+          "mean": 5.4082870616,
+          "median": 2.756617812
+        },
+        "ordinalRange": [
+          2741,
+          4110
+        ],
+        "thresholdExceedN": 20,
+        "thresholdExceedRateAmongAllMints": 0.014598540145985401,
+        "thresholdExceedRateAmongAnchors": 0.11764705882352941,
+        "totalMints": 1370
+      },
+      {
+        "causalAnchorN": 270,
+        "causalAnchorRate": 0.19708029197080293,
+        "distribution": {
+          "N": 270,
+          "P50": 2.5261875,
+          "P75": 3.1843125,
+          "P80": 3.378932871000001,
+          "P90": 5.5283259395,
+          "P95": 14.98282556665,
+          "P97_5": 21.272498909399978,
+          "P99": 26.999999997,
+          "max": 86.057926048,
+          "mean": 4.194400591074074,
+          "median": 2.5261875
+        },
+        "ordinalRange": [
+          4111,
+          5480
+        ],
+        "thresholdExceedN": 11,
+        "thresholdExceedRateAmongAllMints": 0.008029197080291971,
+        "thresholdExceedRateAmongAnchors": 0.040740740740740744,
+        "totalMints": 1370
+      },
+      {
+        "causalAnchorN": 353,
+        "causalAnchorRate": 0.2580409356725146,
+        "distribution": {
+          "N": 353,
+          "P50": 2.8,
+          "P75": 3.54375,
+          "P80": 4.684,
+          "P90": 6.804,
+          "P95": 19.970526746199994,
+          "P97_5": 25.567515271799998,
+          "P99": 34.999999999,
+          "max": 43.293030541,
+          "mean": 4.8417490116062325,
+          "median": 2.8
+        },
+        "ordinalRange": [
+          5481,
+          6848
+        ],
+        "thresholdExceedN": 32,
+        "thresholdExceedRateAmongAllMints": 0.023391812865497075,
+        "thresholdExceedRateAmongAnchors": 0.0906515580736544,
+        "totalMints": 1368
+      }
+    ],
+    "unseenHalves": [
+      {
+        "causalAnchorN": 131,
+        "causalAnchorRate": 0.18118948824343015,
+        "distribution": {
+          "N": 131,
+          "P50": 2.787869138,
+          "P75": 3.7,
+          "P80": 3.817125,
+          "P90": 5.9200875,
+          "P95": 17.2563428295,
+          "P97_5": 20.37539806525,
+          "P99": 29.999999998,
+          "max": 33.899999996,
+          "mean": 4.184462711549618,
+          "median": 2.787869138
+        },
+        "ordinalRange": [
+          6849,
+          7571
+        ],
+        "thresholdExceedN": 7,
+        "thresholdExceedRateAmongAllMints": 0.009681881051175657,
+        "thresholdExceedRateAmongAnchors": 0.05343511450381679,
+        "totalMints": 723
+      },
+      {
+        "causalAnchorN": 123,
+        "causalAnchorRate": 0.1703601108033241,
+        "distribution": {
+          "N": 123,
+          "P50": 2.703375,
+          "P75": 3.0606,
+          "P80": 3.2703750000000005,
+          "P90": 5.362827501999997,
+          "P95": 18.22292912359991,
+          "P97_5": 21.198063878750002,
+          "P99": 32.79999999878002,
+          "max": 86.06792605,
+          "mean": 4.4368999637560975,
+          "median": 2.703375
+        },
+        "ordinalRange": [
+          7572,
+          8293
+        ],
+        "thresholdExceedN": 7,
+        "thresholdExceedRateAmongAllMints": 0.009695290858725761,
+        "thresholdExceedRateAmongAnchors": 0.056910569105691054,
+        "totalMints": 722
+      }
+    ]
+  },
+  "classificationRule": {
+    "material": "KS >= 0.20 OR absolute frozen-threshold percentile displacement from discovery Q90 >= 10 percentage points",
+    "modest": "KS >= 0.10 OR absolute frozen-threshold percentile displacement >= 3 percentage points OR absolute median shift >= 0.25 discovery IQR",
+    "stable": "otherwise"
+  },
+  "contractSha256": "840b5c9cd5ae5fe69eb4acc94de551b4b08555c3509a83da488d609ce1348a6f",
+  "drift": {
+    "KSDistance": 0.07577030538676455,
+    "P90ShiftSol": -11.076471898999998,
+    "bootstrap": {
+      "KSDistance95CI": [
+        0.05787369010635455,
+        0.13731414001289535
+      ],
+      "P90Shift95CI": [
+        -13.307345719,
+        -6.520117631000088
+      ],
+      "medianShift95CI": [
+        -0.2323939062499996,
+        0.2025861834999996
+      ],
+      "wassersteinDistance95CI": [
+        0.7870823578942742,
+        2.0687867342321007
+      ]
+    },
+    "medianShiftSol": 0.008740793499999455,
+    "medianShiftVsDiscoveryIQR": 0.005965393960074701,
+    "wassersteinDistanceSol": 1.2797565224779088
+  },
+  "economicSimulations": 0,
+  "fixedStatement": "The frozen 16.996559399 SOL candidate remains unchanged and its unseen economic test remains unread.",
+  "frozenThreshold": {
+    "discovery": {
+      "aboveN": 106,
+      "belowN": 1085,
+      "equalN": 18,
+      "percentileRank": 90.48800661703888
+    },
+    "unchanged": true,
+    "unseen": {
+      "aboveN": 14,
+      "belowN": 240,
+      "equalN": 0,
+      "percentileRank": 94.48818897637796
+    },
+    "unseenPercentileRank": 94.48818897637796,
+    "valueSol": 16.996559399
+  },
+  "generatedAtUtc": "2026-09-08T01:13:46.570858+00:00",
+  "holdoutRowsInspected": 0,
+  "outcomeBlind": true,
+  "outcomeFieldsAccessed": 0,
+  "populations": {
+    "discovery": {
+      "N": 1209,
+      "P50": 2.734023404,
+      "P75": 3.66525,
+      "P80": 4.62,
+      "P90": 16.996559399,
+      "P95": 20.541454077,
+      "P97_5": 26.999999997,
+      "P99": 34.60586145192036,
+      "max": 86.057926048,
+      "mean": 5.0616624819966916,
+      "median": 2.734023404
+    },
+    "unseen": {
+      "N": 254,
+      "P50": 2.7427641974999997,
+      "P75": 3.39,
+      "P80": 3.66525,
+      "P90": 5.9200875,
+      "P95": 19.344010623299997,
+      "P97_5": 20.985587278124985,
+      "P99": 31.832999997059993,
+      "max": 86.06792605,
+      "mean": 4.306705947854331,
+      "median": 2.7427641974999997
+    }
+  },
+  "schema": "NET_FLOW_COVARIATE_DRIFT_V1_REPORT",
+  "scriptSha256": "69b480ea7c86da05f145e8e476c7e30b0607ee286bff45bbddb5b0fae32683d0",
+  "sourceHashes": {
+    "discoveryFeatureParent": "331a5239bb2ae595976b5ba92b080ce2f92452ca1bbe20a099ff9f9006c7dba7",
+    "discoveryPrefix": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+    "unseenFeatureParent": "7aff7d71c6c6efe7887b979c6c6523363832ad7d509734c0459eade1eda0a19d",
+    "unseenPrefix": "d353e345a7156d2e1cd92e538e704e4846ab39041b88e7cac6bef0f1065b07fa"
+  },
+  "validationRowsInspected": 0,
+  "verdict": "NET_FLOW_DISTRIBUTION_MODEST_DRIFT"
+}

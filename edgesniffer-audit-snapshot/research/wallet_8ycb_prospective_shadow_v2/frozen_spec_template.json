@@ -1,0 +1,107 @@
+{
+  "schema": "8ycb-prospective-shadow-frozen-spec-v2",
+  "version": "8YCB_PROSPECTIVE_SHADOW_V2",
+  "mode": "OBSERVATION_ONLY_NO_SUBMIT",
+  "cohort_start_utc": "__COHORT_START_UTC__",
+  "target_wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+  "event_definition": {
+    "create": {
+      "source": "existing normalized Jito ShredStream observation feed",
+      "required_side": "create",
+      "creation_proven": true,
+      "required_signature": true,
+      "required_mint": true
+    },
+    "atomic_initial_buy": {
+      "required_wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+      "same_signature_as_create": true,
+      "same_mint_as_create": true,
+      "same_slot_and_transaction_index_when_both_are_available": true,
+      "required_side": "buy",
+      "minimum_quote_lamports": 1,
+      "accepted_sources": [
+        "existing normalized Jito ShredStream observation feed",
+        "account-filtered read-only Yellowstone transaction observation paired to the CREATE"
+      ]
+    },
+    "metadata_filters": [],
+    "follower_wallet_trigger_filters": [],
+    "outcome_dependent_filters": []
+  },
+  "matching_representation": {
+    "slot": "unsigned integer; JSON integer and digits-only JSON string are equivalent",
+    "transaction_index": "unsigned integer when present; JSON integer and digits-only JSON string are equivalent",
+    "signature": "non-empty exact string",
+    "mint": "non-empty exact string",
+    "wallet": "non-empty exact string",
+    "malformed_numeric_policy": "fail closed, log rejection, and increment malformed numeric and dropped-row counters"
+  },
+  "position_size_lamports": 100000000,
+  "fixed_entry_lanes_ms_from_earliest_feed_receive": [25, 50, 100, 250, 500, 1000],
+  "primary_entry_lane": "ACTUAL_SHADOW_SIGNAL_READY",
+  "first_sellable_models_ms_after_modeled_entry": [122, 178, 346],
+  "primary_first_sellable_ms_after_modeled_entry": 178,
+  "first_sellable_evidence_label": "EXTERNAL_EXECUTION_TELEMETRY_REFERENCE",
+  "exit_policy": {
+    "take_profit_pct": 20.0,
+    "stop_loss_pct": -20.0,
+    "maximum_hold_ms": 120000
+  },
+  "adverse_entry_stress_pct": 5.0,
+  "external_flow_windows_ms": [25, 50, 100, 250, 500, 1000, 2000, 5000],
+  "generic_control_selection": {
+    "controls_per_target": 5,
+    "rule": "first five distinct non-target CREATE observations whose shadow-observer line-read timestamp is at or after the target signal-ready timestamp",
+    "maximum_selection_window_ms": 60000,
+    "reuse_across_overlapping_target_events": true,
+    "metadata_filters": [],
+    "wallet_filters": []
+  },
+  "recurrent_wallet_definition": {
+    "source": "immutable V3 repeat_follower_cohorts.json",
+    "minimum_distinct_target_launches": 5,
+    "maximum_buy_delay_ms": 1000,
+    "source_sha256": "__RECURRENT_SOURCE_SHA256__"
+  },
+  "curve_model": {
+    "initial_virtual_sol_reserves": 30000000000,
+    "initial_virtual_token_reserves": 1073000000000000,
+    "pump_fee_bps_each_side": 125
+  },
+  "cost_model": {
+    "network_base_fee_lamports_each_transaction": 5000,
+    "buy_compute_unit_limit": 250000,
+    "sell_compute_unit_limit": 200000,
+    "priority_fee_micro_lamports_per_cu": 18000000,
+    "jito_tip_lamports_each_transaction": 0,
+    "account_creation_lamports": 2039280,
+    "account_creation_treated_as_recoverable": true,
+    "note": "Jito submission is prohibited; tip is frozen at zero. Pump fees are included in curve replay. Base and priority estimates are reported separately from curve-gross results."
+  },
+  "max_open_reporting": {
+    "raw_signals": "all qualifying target events",
+    "secondary_lane": "MAX_OPEN1 chronological acceptance using the primary lane modeled exit timestamp"
+  },
+  "checkpoint_sizes": [25, 50, 100, 200],
+  "prospective_classification_rule": {
+    "before_n25": "8YCB_SHADOW_HEALTHY_COLLECTING",
+    "n25_through_n99": "8YCB_SHADOW_DESCRIPTIVE_CHECKPOINT",
+    "data_blocker": "one or more signal-affecting dropped rows",
+    "regime_drift_at_n100": "prospective first-external-buy P50 is outside 0.5x to 2.0x historical V3 P50",
+    "strong_at_n100": "net PF >= 1.5 and net expectancy >= 3 percent",
+    "promising_at_n100": "net PF > 1.0 and net expectancy > 0 percent",
+    "otherwise_at_n100": "8YCB_PUBLIC_EVENT_PROSPECTIVE_ALPHA_FAILS"
+  },
+  "historical_v3_reference": {
+    "external_first_buy_p50_ms": 37,
+    "external_first_buy_p75_ms": 70,
+    "external_first_buy_p90_ms": 117,
+    "creator_first_sell_p50_ms": 4000,
+    "external_first_second_mean_sol": 12.1978,
+    "recurrent_wallet_participation_pct": 99.543,
+    "follower_250ms_profit_factor": 1.3729861901386469,
+    "follower_250ms_expectancy_pct": 3.340628356164383
+  },
+  "semantic_change_rule": "Any change to target/event semantics, entry lanes, size, exit, first-sellable boundaries, control selection, or recurrent-wallet classification ends V2 and requires a new cohort version.",
+  "transaction_construction": "OMITTED_V2"
+}

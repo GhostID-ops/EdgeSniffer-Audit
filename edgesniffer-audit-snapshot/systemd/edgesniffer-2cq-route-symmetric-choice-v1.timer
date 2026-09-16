@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh route-specific 2CQ symmetric choice cohorts every five minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=5min
+AccuracySec=15s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

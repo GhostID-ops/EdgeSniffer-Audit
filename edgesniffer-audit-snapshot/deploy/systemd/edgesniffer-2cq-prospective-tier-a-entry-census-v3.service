@@ -1,0 +1,16 @@
+[Unit]
+Description=EdgeSniffer official 2CQ prospective Tier-A N500 census V3 (outcome-blind/no-submit)
+After=network-online.target edgesniffer-2cq-capture-first-v1.service pump-exact-evidence-ledger-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer/scripts
+ExecStart=/usr/bin/flock -n /run/edgesniffer-2cq-tier-a-v3.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/twoCqProspectiveTierAEntryCensusV3.py --candidates /mnt/HC_Volume_106775198/edgesniffer-research/2cq-capture-first-detector-repair-v1/prospective/candidates.jsonl --compact-arrivals /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-delivery-path-localization-v1/allenhark-signature-arrivals-v1.bin --observer-health /mnt/HC_Volume_106775198/edgesniffer-research/2cq-capture-first-detector-repair-v1/prospective/health.json --exact-root /var/lib/pump-exact-evidence-ledger-v1 --env /root/bot/EdgeSniffer/.env --output /mnt/HC_Volume_106775198/edgesniffer-research/2cq-prospective-tier-a-entry-census-v3 --capture-binary-sha256 ac9cb1355d87b03e2f2f3f6b6daf577877d542a2492a60c0d5400aa5a4961606 --tier-a-evaluator /root/bot/EdgeSniffer/scripts/twoCqPostFixEndToEndCollectionDiagnosticV1.py --research-spec /mnt/HC_Volume_106775198/edgesniffer-research/2cq-prospective-tier-a-entry-census-v3/research-spec.txt
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+NoNewPrivileges=true
+TimeoutStartSec=30min
+

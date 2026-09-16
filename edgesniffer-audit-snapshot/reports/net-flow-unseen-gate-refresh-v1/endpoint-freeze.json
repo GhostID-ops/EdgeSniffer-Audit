@@ -1,0 +1,20 @@
+{
+  "combinedPrefixSha256": "4919cf4acdba16db88b73f4d459de5f5d465927aeb960345f82a4dddea7a7381",
+  "contractSha256": "79d105ca8fcc0ac4460861884305864d62a0beeb714e55a43b6a9195401f8545",
+  "deltaOrdinalRange": [
+    8294,
+    8530
+  ],
+  "frozenAtUtc": "2026-09-08T01:37:49.639723+00:00",
+  "frozenThresholdSol": 16.996559399,
+  "indexSha256AtRefresh": "4ae18a4cb3a3e557b8ef4438cfb1b6d824c9e0877206c6dcf80111b3a62b0acf",
+  "outcomesRead": 0,
+  "schema": "NET_FLOW_UNSEEN_GATE_REFRESH_V1_ENDPOINT_FREEZE",
+  "statusSha256AtRefresh": "ca4937ca7588e37637b208ff46923185450efa472f026b592b83c41317941c0d",
+  "thresholdFreezeSha256": "c58f327c5aa4e932cd397bc96e36d9e35c1faa59466b99a1f6c41e589e647243",
+  "unseenOrdinalRange": [
+    6849,
+    8530
+  ],
+  "unseenPrefixSha256": "8c4f605b143fd7ac47b90824d0629aeabceeae7e5c7adb7397e1378e48a309be"
+}

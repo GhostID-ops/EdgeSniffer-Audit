@@ -1,0 +1,21 @@
+{
+  "schema": "2CQ_PROSPECTIVE_SYMMETRIC_CHOICE_CENSUS_V1_STATUS",
+  "atUtc": "2026-09-11T15:40:05.438000000Z",
+  "cohortStartUtc": "2026-09-11T07:15:24.437413402Z",
+  "developmentEligibleN": 0,
+  "developmentTargetN": 350,
+  "sealedValidationEligibleN": 0,
+  "sealedValidationTargetN": 150,
+  "rawCollectionActive": true,
+  "materializationPendingCheckpoint": true,
+  "validationSealed": true,
+  "outcomesRead": 0,
+  "submissions": 0,
+  "storageFreeGbAtStart": 9.2,
+  "invalidCollectionIntervals": 1,
+  "latestInvalidIntervalReason": "VOLUME_ENOSPC_COLLECTOR_OUTAGE",
+  "firstValidPostRecoveryUtc": "2026-09-11T15:40:05.438000000Z",
+  "storageSizeGiB": 591,
+  "storageFreeGiB": 522,
+  "storageHealth": "HEALTHY_AFTER_ONLINE_FILESYSTEM_EXPANSION"
+}

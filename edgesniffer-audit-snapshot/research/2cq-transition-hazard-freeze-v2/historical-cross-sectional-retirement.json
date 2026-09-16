@@ -1,0 +1,23 @@
+{
+  "schema": "2CQ_HISTORICAL_CROSS_SECTIONAL_POLICY_RETIREMENT_V1",
+  "retiredAtUtc": "2026-09-11T07:05:00Z",
+  "component": "LAUNCHED_120S cross-mint ranking and any joint policy that depends on it",
+  "status": "RETIRED_RESEARCH_ONLY_COVERAGE_BIAS",
+  "sealedValidationAuthorized": false,
+  "prospectiveDeploymentAuthorized": false,
+  "profitabilityClaim": false,
+  "originalPrimaryPolicySha256": "ab23b3be089e1e762f3d42696bd884186906a8475e4eb80a3bc0747d2e2a94b6",
+  "representativenessReportSha256": "a3735b9b802ffd794a68fd5ccb8c0e74529d1bb3c75db74d4483d1fcce702161",
+  "failedFrozenGates": [
+    "chronologicalBlockCoveredShareRange",
+    "maximumStructuralAbsoluteSmd"
+  ],
+  "preservedComponents": [
+    "same-mint causal decision tape",
+    "static timing model",
+    "transition-only timing model",
+    "base-plus-transition timing model"
+  ],
+  "reason": "Historical cross-sectional evidence survival is materially time-dependent. Coverage ranges from 82.86% to 45.71% across frozen chronological blocks, so the 211 covered episodes cannot authorize a population-wide cross-mint policy.",
+  "nextPermittedPath": "new forward-only symmetric choice-universe collection under the current stable realtime evidence stack"
+}

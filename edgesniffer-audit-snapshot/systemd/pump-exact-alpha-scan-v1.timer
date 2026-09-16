@@ -1,0 +1,12 @@
+[Unit]
+Description=Check Pump exact-alpha N3000/N5000/N10000 checkpoints hourly
+
+[Timer]
+OnCalendar=*-*-* *:24:00 UTC
+Persistent=true
+RandomizedDelaySec=15
+Unit=pump-exact-alpha-scan-v1.service
+
+[Install]
+WantedBy=timers.target
+

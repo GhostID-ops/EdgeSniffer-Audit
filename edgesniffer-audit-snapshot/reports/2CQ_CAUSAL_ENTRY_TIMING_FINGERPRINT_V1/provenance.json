@@ -1,0 +1,11 @@
+{
+  "episodesSha256": "9208afcc82f533c4f60dd39ce035fc765e8970a5417e277a7fe3e5116aa18e08",
+  "examplesSha256": "b691bcbc1ad607d4a732e389ef0fab3d24739cdd575f659ea706e3f59fd9ec9d",
+  "mintIndexSha256": "57b73b18126399debf4096d0c3de348539b17ee2c11eaa1b8fae840eac0fa205",
+  "randomness": "none",
+  "reportSha256": "1f4a183b203f62bb4dec883423660abe02e532fc627c1eea87911bcc7368182d",
+  "schema": "2CQ_CAUSAL_ENTRY_TIMING_FINGERPRINT_V1_PROVENANCE",
+  "scriptSha256": "4c0bd4e193b235e98f95d41ae1793e093a266330abc50e3b04d6ec221b624c1a",
+  "validationMetricsInspectedAfterPrimaryModelFit": true,
+  "validationUsedForFeatureOrModelTuning": false
+}

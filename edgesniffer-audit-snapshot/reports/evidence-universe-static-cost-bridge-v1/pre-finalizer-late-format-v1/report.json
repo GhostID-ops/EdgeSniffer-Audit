@@ -1,0 +1,468 @@
+{
+  "appropriateNextResearchBranch": "evidence-pipeline repair",
+  "bridgeCaveat": "Idealized market movement uses the historical no-own-order exit state. Counterfactual path interaction separately captures the reserve/path change after inserting our buy, including failed historical transaction effects. Protocol/creator fee economic effects are combined, with raw fee totals reported separately.",
+  "bridges": {
+    "top10pct": {
+      "components": {
+        "base_transaction_fees": {
+          "meanSolPerTrade": -1e-05,
+          "medianSolPerTrade": -1e-05,
+          "totalSol": -0.00194
+        },
+        "buy_pump_fees": {
+          "meanSolPerTrade": -0.0063949089226804125,
+          "medianSolPerTrade": -0.006337066,
+          "totalSol": -1.240612331
+        },
+        "counterfactual_path_interaction": {
+          "meanSolPerTrade": -0.011158779639175258,
+          "medianSolPerTrade": 0.003973392500000001,
+          "totalSol": -2.16480325
+        },
+        "decision_to_landing_movement": {
+          "meanSolPerTrade": -0.36843052860824743,
+          "medianSolPerTrade": 0.0,
+          "totalSol": -71.47552255
+        },
+        "delivery_overlay": {
+          "meanSolPerTrade": -0.001,
+          "medianSolPerTrade": -0.001,
+          "totalSol": -0.194
+        },
+        "idealized_external_market_opportunity": {
+          "meanSolPerTrade": 0.3958206800927835,
+          "medianSolPerTrade": 0.079498808,
+          "totalSol": 76.789211938
+        },
+        "own_entry_impact": {
+          "meanSolPerTrade": -0.0047530521237113404,
+          "medianSolPerTrade": -0.0048029430000000005,
+          "totalSol": -0.922092112
+        },
+        "own_exit_impact": {
+          "meanSolPerTrade": -0.004640356974226804,
+          "medianSolPerTrade": -0.004804762,
+          "totalSol": -0.900229253
+        },
+        "sell_pump_fees": {
+          "meanSolPerTrade": -0.006255539211340206,
+          "medianSolPerTrade": -0.006302478,
+          "totalSol": -1.213574607
+        }
+      },
+      "divergentN": 73,
+      "exactN": 194,
+      "failures": {},
+      "maximumAbsoluteReconciliationDifferenceSol": 0.0,
+      "meanFinalPnlSol": -0.006822485386597938,
+      "meanIdealizedOpportunitySol": 0.3958206800927835,
+      "rawFees": {
+        "baseTransactions": {
+          "meanSolPerTrade": 1e-05,
+          "totalSol": 0.00194
+        },
+        "buyCreator": {
+          "meanSolPerTrade": 0.001481482,
+          "totalSol": 0.287407508
+        },
+        "buyLp": {
+          "meanSolPerTrade": 0.0,
+          "totalSol": 0.0
+        },
+        "buyProtocol": {
+          "meanSolPerTrade": 0.004691359,
+          "totalSol": 0.910123646
+        },
+        "deliveryOverlay": {
+          "meanSolPerTrade": 0.001,
+          "totalSol": 0.194
+        },
+        "priorityTip": {
+          "meanSolPerTrade": 0.0,
+          "totalSol": 0.0
+        },
+        "sellCreator": {
+          "meanSolPerTrade": 0.0015013296701030926,
+          "totalSol": 0.291257956
+        },
+        "sellLp": {
+          "meanSolPerTrade": 0.0,
+          "totalSol": 0.0
+        },
+        "sellProtocol": {
+          "meanSolPerTrade": 0.004754209541237113,
+          "totalSol": 0.922316651
+        }
+      },
+      "requestedN": 194,
+      "totalFinalPnlSol": -1.323562165
+    },
+    "top5pct": {
+      "components": {
+        "base_transaction_fees": {
+          "meanSolPerTrade": -1e-05,
+          "medianSolPerTrade": -1e-05,
+          "totalSol": -0.0009600000000000001
+        },
+        "buy_pump_fees": {
+          "meanSolPerTrade": -0.005831990677083333,
+          "medianSolPerTrade": -0.0068219445,
+          "totalSol": -0.559871105
+        },
+        "counterfactual_path_interaction": {
+          "meanSolPerTrade": 0.03395712596875,
+          "medianSolPerTrade": 0.004781284,
+          "totalSol": 3.259884093
+        },
+        "decision_to_landing_movement": {
+          "meanSolPerTrade": 0.007453788020833334,
+          "medianSolPerTrade": 0.0,
+          "totalSol": 0.71556365
+        },
+        "delivery_overlay": {
+          "meanSolPerTrade": -0.001,
+          "medianSolPerTrade": -0.001,
+          "totalSol": -0.096
+        },
+        "idealized_external_market_opportunity": {
+          "meanSolPerTrade": -0.02544768396875,
+          "medianSolPerTrade": 0.06484152500000001,
+          "totalSol": -2.442977661
+        },
+        "own_entry_impact": {
+          "meanSolPerTrade": -0.004861890583333334,
+          "medianSolPerTrade": -0.0048747665,
+          "totalSol": -0.466741496
+        },
+        "own_exit_impact": {
+          "meanSolPerTrade": -0.005122831166666667,
+          "medianSolPerTrade": -0.005106594,
+          "totalSol": -0.491791792
+        },
+        "sell_pump_fees": {
+          "meanSolPerTrade": -0.006251832479166667,
+          "medianSolPerTrade": -0.006769324,
+          "totalSol": -0.600175918
+        }
+      },
+      "divergentN": 46,
+      "exactN": 96,
+      "failures": {},
+      "maximumAbsoluteReconciliationDifferenceSol": 0.0,
+      "meanFinalPnlSol": -0.007115314885416666,
+      "meanIdealizedOpportunitySol": -0.02544768396875,
+      "rawFees": {
+        "baseTransactions": {
+          "meanSolPerTrade": 1e-05,
+          "totalSol": 0.00096
+        },
+        "buyCreator": {
+          "meanSolPerTrade": 0.001481482,
+          "totalSol": 0.142222272
+        },
+        "buyLp": {
+          "meanSolPerTrade": 0.0,
+          "totalSol": 0.0
+        },
+        "buyProtocol": {
+          "meanSolPerTrade": 0.004691359,
+          "totalSol": 0.450370464
+        },
+        "deliveryOverlay": {
+          "meanSolPerTrade": 0.001,
+          "totalSol": 0.096
+        },
+        "priorityTip": {
+          "meanSolPerTrade": 0.0,
+          "totalSol": 0.0
+        },
+        "sellCreator": {
+          "meanSolPerTrade": 0.0015004400416666667,
+          "totalSol": 0.144042244
+        },
+        "sellLp": {
+          "meanSolPerTrade": 0.0,
+          "totalSol": 0.0
+        },
+        "sellProtocol": {
+          "meanSolPerTrade": 0.0047513924375,
+          "totalSol": 0.456133674
+        }
+      },
+      "requestedN": 96,
+      "totalFinalPnlSol": -0.683070229
+    }
+  },
+  "categories": {
+    "ACTIVITY_EXISTED_BUT_NO_ELIGIBLE_DECISION_STATE": {
+      "N": 62,
+      "blocks": {
+        "1": 19,
+        "2": 7,
+        "3": 26,
+        "4": 3,
+        "5": 7
+      },
+      "pctAll": 0.009053738317757009,
+      "pctNonEvaluable": 0.017862287525208874,
+      "risk": "SELECTION_BIAS_DANGEROUS"
+    },
+    "EXACT_REPLAY_OR_DIVERGENCE_FAILURE": {
+      "N": 30,
+      "blocks": {
+        "1": 3,
+        "2": 6,
+        "3": 7,
+        "4": 7,
+        "5": 7
+      },
+      "pctAll": 0.004380841121495327,
+      "pctNonEvaluable": 0.00864304235090752,
+      "risk": "SELECTION_BIAS_DANGEROUS"
+    },
+    "INERT_OR_NO_EXTERNAL_ACTIVITY": {
+      "N": 1802,
+      "blocks": {
+        "1": 357,
+        "2": 351,
+        "3": 327,
+        "4": 440,
+        "5": 327
+      },
+      "pctAll": 0.26314252336448596,
+      "pctNonEvaluable": 0.519158743877845,
+      "risk": "ECONOMICALLY_BENIGN"
+    },
+    "OTHER_DOCUMENTED_REASON": {
+      "N": 0,
+      "blocks": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "pctAll": 0.0,
+      "pctNonEvaluable": 0.0,
+      "risk": "SELECTION_BIAS_DANGEROUS"
+    },
+    "PARSER_COLLECTOR_OR_SOURCE_GAP": {
+      "N": 2,
+      "blocks": {
+        "1": 1,
+        "2": 0,
+        "3": 0,
+        "4": 1,
+        "5": 0
+      },
+      "pctAll": 0.0002920560747663551,
+      "pctNonEvaluable": 0.0005762028233938346,
+      "risk": "SELECTION_BIAS_DANGEROUS"
+    },
+    "RELEVANT_ACTIVITY_BUT_SOURCE_DATA_INCOMPLETE": {
+      "N": 1031,
+      "blocks": {
+        "1": 223,
+        "2": 228,
+        "3": 217,
+        "4": 179,
+        "5": 184
+      },
+      "pctAll": 0.15055490654205608,
+      "pctNonEvaluable": 0.29703255545952173,
+      "risk": "SELECTION_BIAS_DANGEROUS"
+    },
+    "UNSUPPORTED_PROGRAM_TRANSACTION_OR_PAIR_FORMAT": {
+      "N": 544,
+      "blocks": {
+        "1": 90,
+        "2": 101,
+        "3": 183,
+        "4": 105,
+        "5": 65
+      },
+      "pctAll": 0.0794392523364486,
+      "pctNonEvaluable": 0.15672716796312303,
+      "risk": "SELECTION_BIAS_DANGEROUS"
+    }
+  },
+  "chronology": [
+    {
+      "N": 1370,
+      "activeCoverage": 0.6716269841269841,
+      "activeN": 1008,
+      "block": 1,
+      "dangerousN": 336,
+      "exactN": 677,
+      "ordinals": [
+        1,
+        1370
+      ],
+      "rawCoverage": 0.49416058394160584
+    },
+    {
+      "N": 1370,
+      "activeCoverage": 0.6643768400392541,
+      "activeN": 1019,
+      "block": 2,
+      "dangerousN": 342,
+      "exactN": 677,
+      "ordinals": [
+        1371,
+        2740
+      ],
+      "rawCoverage": 0.49416058394160584
+    },
+    {
+      "N": 1370,
+      "activeCoverage": 0.5848513902205177,
+      "activeN": 1043,
+      "block": 3,
+      "dangerousN": 433,
+      "exactN": 610,
+      "ordinals": [
+        2741,
+        4110
+      ],
+      "rawCoverage": 0.44525547445255476
+    },
+    {
+      "N": 1370,
+      "activeCoverage": 0.6835306781485468,
+      "activeN": 929,
+      "block": 4,
+      "dangerousN": 295,
+      "exactN": 635,
+      "ordinals": [
+        4111,
+        5480
+      ],
+      "rawCoverage": 0.4635036496350365
+    },
+    {
+      "N": 1368,
+      "activeCoverage": 0.7473583093179635,
+      "activeN": 1041,
+      "block": 5,
+      "dangerousN": 263,
+      "exactN": 778,
+      "ordinals": [
+        5481,
+        6848
+      ],
+      "rawCoverage": 0.5687134502923976
+    }
+  ],
+  "congestion": {
+    "higherActivityPartitions": {
+      "N": 3881,
+      "activeCoverage": 0.6651311126860383,
+      "activeN": 2822,
+      "dangerousN": 950
+    },
+    "lowerActivityPartitions": {
+      "N": 2967,
+      "activeCoverage": 0.6762849413886384,
+      "activeN": 2218,
+      "dangerousN": 719
+    }
+  },
+  "coveragePopulations": {
+    "allLaunches": {
+      "N": 6848,
+      "coverage": 0.4931366822429907,
+      "exactEvaluableN": 3377
+    },
+    "anySuccessfulExternalPumpEconomicActivity": {
+      "N": 5040,
+      "coverage": 0.6700396825396825,
+      "exactEvaluableN": 3377
+    },
+    "requiredSourceEvidencePresentBeforeReplay": {
+      "N": 5271,
+      "coverage": 0.6406753936634415,
+      "exactEvaluableN": 3377
+    },
+    "sufficientExistingCandidateStateActivity": {
+      "N": 4438,
+      "coverage": 0.7609283461018477,
+      "exactEvaluableN": 3377
+    }
+  },
+  "coverageVerdict": "EVIDENCE_UNIVERSE_SELECTION_BIAS_BLOCKER",
+  "dangerousLossAmongRelevantActivity": 0.23907165389815233,
+  "economicDiagnosis": "EXECUTION_COSTS_DOMINANT",
+  "holdoutRowsInspected": 0,
+  "instructionKindsByNonEvaluableCategory": {
+    "ACTIVITY_EXISTED_BUT_NO_ELIGIBLE_DECISION_STATE": {
+      "BUY": 101,
+      "BUY_EXACT_QUOTE_IN_V2": 20,
+      "BUY_EXACT_SOL_IN": 47,
+      "BUY_V2": 129,
+      "CREATE_V2": 125,
+      "OTHER_PUMP_INSTRUCTION": 328,
+      "SELL": 65,
+      "SELL_V2": 51
+    },
+    "EXACT_REPLAY_OR_DIVERGENCE_FAILURE": {
+      "BUY": 148,
+      "BUY_EXACT_QUOTE_IN_V2": 7,
+      "BUY_EXACT_SOL_IN": 37,
+      "BUY_V2": 11,
+      "CREATE_V2": 54,
+      "OTHER_PUMP_INSTRUCTION": 114,
+      "SELL": 1,
+      "SELL_V2": 5
+    },
+    "INERT_OR_NO_EXTERNAL_ACTIVITY": {
+      "BUY": 2009,
+      "BUY_EXACT_QUOTE_IN_V2": 583,
+      "BUY_EXACT_SOL_IN": 9099,
+      "BUY_V2": 2297,
+      "CREATE": 2,
+      "CREATE_V2": 3724,
+      "OTHER_PUMP_INSTRUCTION": 3697,
+      "SELL": 287,
+      "SELL_V2": 755
+    },
+    "OTHER_DOCUMENTED_REASON": {},
+    "PARSER_COLLECTOR_OR_SOURCE_GAP": {
+      "BUY": 3,
+      "BUY_EXACT_QUOTE_IN_V2": 1,
+      "BUY_EXACT_SOL_IN": 2,
+      "BUY_V2": 5,
+      "CREATE_V2": 4,
+      "OTHER_PUMP_INSTRUCTION": 11,
+      "SELL": 3,
+      "SELL_V2": 1
+    },
+    "RELEVANT_ACTIVITY_BUT_SOURCE_DATA_INCOMPLETE": {
+      "BUY": 3541,
+      "BUY_EXACT_QUOTE_IN_V2": 6354,
+      "BUY_EXACT_SOL_IN": 29867,
+      "BUY_V2": 2595,
+      "CREATE_V2": 1997,
+      "OTHER_PUMP_INSTRUCTION": 20145,
+      "SELL": 3598,
+      "SELL_V2": 5721
+    },
+    "UNSUPPORTED_PROGRAM_TRANSACTION_OR_PAIR_FORMAT": {
+      "BUY": 1235,
+      "BUY_EXACT_QUOTE_IN_V2": 2065,
+      "BUY_EXACT_SOL_IN": 5012,
+      "BUY_V2": 1463,
+      "CREATE_V2": 1122,
+      "OTHER_PUMP_INSTRUCTION": 7002,
+      "SELL": 982,
+      "SELL_V2": 2017
+    }
+  },
+  "ordinalsAfter6848Inspected": 0,
+  "population": {
+    "exactEvaluable": 3377,
+    "nonEvaluable": 3471,
+    "total": 6848
+  },
+  "schema": "EVIDENCE_UNIVERSE_AND_STATIC_COST_BRIDGE_V1_REPORT",
+  "validationRowsInspected": 0
+}

@@ -1,0 +1,4965 @@
+{
+  "contractSha256": "82223cf3598d42f89d7a0869c73e19d4d55f1f27dbb2686c716ed0733fd28f62",
+  "counterfactualDivergence": {
+    "affectedStateCells": 42887,
+    "affectedStateRate": 0.253247750194865,
+    "exactStateCells": 169348,
+    "resubmissionModeled": false
+  },
+  "diagnosis": {
+    "allTriggered": [
+      "COUNTERFACTUAL_DIVERGENCE_BLOCKER",
+      "LATER_HORIZON_OPPORTUNITY",
+      "SELECTION_PROBLEM"
+    ],
+    "frozenInputs": {
+      "P50LatencyRetention": 0.6216640502354789,
+      "bestFrozenPolicyCaptureRatio": 0.7373737373737373,
+      "counterfactualDivergenceRate": 0.253247750194865,
+      "exactEvaluableRate": 0.9890478971962616,
+      "laterThan2sFirstHitShare": 0.8405572755417957,
+      "oneSolCapacityRetention": 0.957070707070707,
+      "referenceOpportunityPrevalence": 0.05846744426398937
+    },
+    "primary": "COUNTERFACTUAL_DIVERGENCE_BLOCKER",
+    "secondary": "LATER_HORIZON_OPPORTUNITY"
+  },
+  "economicAttribution": {
+    "creatorFeeLamports": {
+      "N": 169348,
+      "P75": 2962963.0,
+      "P90": 2962963.0,
+      "median": 1481482.0
+    },
+    "entryOwnCurveImpactLamports": {
+      "N": 169348,
+      "P75": 29025834.0,
+      "P90": 31372980.0,
+      "median": 7997202.0
+    },
+    "medianExitImpactLamports": {
+      "N": 169348,
+      "P75": 30483157.0,
+      "P90": 32504667.0,
+      "median": 9674531.5
+    },
+    "movementBeforeEntryInventoryDeteriorationPct": {
+      "N": 169348,
+      "P75": 0.6515351479972287,
+      "P90": 11.88543240738682,
+      "median": 0.0
+    },
+    "protocolFeeLamports": {
+      "N": 169348,
+      "P75": 9382717.0,
+      "P90": 9382717.0,
+      "median": 4691359.0
+    }
+  },
+  "eventStateAvailability": {
+    "AFTER_EXTERNAL_BUY_1": 3565,
+    "AFTER_EXTERNAL_BUY_2": 2577,
+    "AFTER_EXTERNAL_BUY_3": 1918,
+    "AFTER_EXTERNAL_BUY_5": 1212,
+    "AFTER_EXTERNAL_GROSS_BUY_0P5_SOL": 1824,
+    "AFTER_EXTERNAL_GROSS_BUY_1P0_SOL": 1518,
+    "AFTER_EXTERNAL_GROSS_BUY_2P0_SOL": 1209,
+    "AFTER_EXTERNAL_GROSS_BUY_5P0_SOL": 662,
+    "AFTER_FIRST_EXTERNAL_SELL": 2529,
+    "AFTER_FIRST_SELL_THEN_EXTERNAL_BUY": 1207,
+    "AFTER_REAL_TOKEN_BELOW_50PCT": 600,
+    "AFTER_REAL_TOKEN_BELOW_75PCT": 1465,
+    "AFTER_REAL_TOKEN_BELOW_90PCT": 2401,
+    "INITIAL_PRE_FIRST_SUPPORTED_TRADE": 6773
+  },
+  "frozenPolicyCapture": [
+    {
+      "capturedMints": 674,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.09951277129780009,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 536,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.07913775284216742,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 651,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.09611693488852797,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 530,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.07825188247453123,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 357,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.052709286874354055,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 489,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.07219843496235051,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 382,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.056400413406171565,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 190,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.028052561641813082,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 290,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.042817067769083124,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 666,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.09833161080761849,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 522,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.07707072198434962,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 643,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.09493577439834637,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 523,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.07721836704562232,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 344,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.050789901077808945,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 482,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0711649195334416,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 367,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.054185737487081054,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 186,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.02746198139672228,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 287,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.042374132585265026,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 642,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.09478812933707367,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 499,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.07367488557507751,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 617,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.09109700280525616,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 511,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.07544662631034992,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 334,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.04931345046508194,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 469,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0692455337368965,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 335,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.049461095526354644,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 182,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.026871401151631478,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 280,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04134061715635612,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 607,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.08962055219252917,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 453,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.06688321275653329,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 579,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.08548649047689355,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 487,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0719031448398051,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 318,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.04695112948471874,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 442,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.06525911708253358,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 293,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04326000295290122,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 166,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.02450908017126827,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 262,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.03868300605344751,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 560,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.08268123431271224,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 388,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.05728628377380777,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 523,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.07721836704562232,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 463,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0683596633692603,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 279,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.04119297209508342,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 405,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.059796249815443674,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 220,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.032481913479994094,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 146,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.021556178945814262,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 237,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.03499187952163,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 661,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.09759338550125499,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 514,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.07588956149416802,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 643,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.09493577439834637,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 518,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.07648014173925882,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 339,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.050051675771445446,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 482,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0711649195334416,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 371,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.054776317732171856,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 183,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.02701904621290418,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 285,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.042078842462719625,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 657,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.09700280525616418,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 507,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.07485604606525911,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 639,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.09434519415325557,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 515,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.07603720655544072,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 334,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.04931345046508194,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 479,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0707219843496235,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 365,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05389044736453566,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 182,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.026871401151631478,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 282,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04163590727890152,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 645,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.09523106452089178,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 493,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.07278901520744131,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 627,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.09257345341798316,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 509,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.07515133618780452,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 327,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.04827993503617304,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 473,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0698361139819873,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 352,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05197106156799055,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 179,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.026428465967813376,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 277,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04089768197253802,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 622,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.09183522811161966,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 476,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.07027904916580541,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 601,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.08873468182489296,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 497,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.07337959545253211,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 321,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.04739406466853684,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 460,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0679167281854422,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 324,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04783699985235494,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 174,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.025690240661449874,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 268,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.03956887642108371,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 584,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.08622471578325705,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 425,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.06274915104089768,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 557,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.08223829912889413,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 476,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.07027904916580541,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 305,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.04503174368817363,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 434,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.06407795659235199,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 279,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04119297209508342,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 161,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.02377085486490477,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 255,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.03764949062453861,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 398,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05876273438653477,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 283,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.041783552340174224,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 357,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.052709286874354055,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 292,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.043112357891628525,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 153,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.022589694374723166,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 241,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0355824597667208,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 215,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.031743688173630595,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 69,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.01018750922781633,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 134,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.019784438210541856,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 393,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05802450908017127,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 270,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.03986416654362911,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 352,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.05197106156799055,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 289,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04266942270781043,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 146,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.021556178945814262,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 237,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.03499187952163,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 210,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03100546286726709,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 68,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.010039864166543629,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 133,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.019636793149269156,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 379,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05595747822235346,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 255,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.03764949062453861,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 338,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04990403071017274,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 277,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04089768197253802,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 137,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.020227373394359958,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 225,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.03322013878635759,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 193,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.028495496825631184,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 65,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.009596928982725527,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 129,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.019046212904178354,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 355,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.052413996751808654,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 227,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.033515428908902994,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 313,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04621290417835523,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 272,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.040159456666174514,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 128,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.018898567842905657,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 216,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.03189133323490329,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 166,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.02450908017126827,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 62,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.009153993798907427,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 123,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.018160342536542154,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 309,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04562232393326443,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 176,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.025985530783995275,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 264,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.03897829617599291,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 257,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03794478074708401,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 112,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.016536246862542448,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 195,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.028790786948176585,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 107,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.015798021556178946,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 56,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.008268123431271224,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 116,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.01712682710763325,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 383,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05654805846744426,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 261,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.03853536099217481,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 350,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.05167577144544515,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 277,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04089768197253802,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 145,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.021408533884541562,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 232,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0342536542152665,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 209,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03085781780599439,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 66,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.009744574043998228,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 128,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.018898567842905657,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 376,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05551454303853536,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 253,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.03735420050199321,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 343,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.05064225601653625,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 274,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.040454746788719916,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 143,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.02111324376199616,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 229,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.033810719031448395,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 204,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.030119592499630886,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 66,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.009744574043998228,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 127,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.018750922781632956,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 370,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05462867267089916,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 246,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.03632068507308431,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 337,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.049756385648900045,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 270,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03986416654362911,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 139,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.02052266351690536,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 225,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.03322013878635759,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 199,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.029381367193267387,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 63,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.009301638860180128,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 125,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.018455632659087555,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 358,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05285693193562675,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 231,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.034106009153993797,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 324,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04783699985235494,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 265,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.039125941237265614,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 133,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.019636793149269156,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 217,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.032038978296175996,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 184,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.02716669127417688,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 62,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.009153993798907427,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 122,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.018012697475269453,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 332,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04901816034253654,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 202,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.029824302377085485,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 298,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04399822825926473,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 259,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03824007086962941,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 124,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.018307987597814854,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 208,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.030710172744721688,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 154,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.022737339435995867,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 59,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.008711058615089326,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 114,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.01683153698508785,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 0,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 377,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05566218809980806,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 263,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.03883065111472021,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 337,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.049756385648900045,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 282,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04163590727890152,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 142,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.02096559870072346,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 232,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0342536542152665,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 207,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.030562527683448987,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 62,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.009153993798907427,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 128,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.018898567842905657,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 372,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05492396279344456,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 252,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.03720655544072051,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 332,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04901816034253654,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 279,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04119297209508342,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 134,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.019784438210541856,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 228,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0336630739701757,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 202,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.029824302377085485,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 62,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.009153993798907427,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 127,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.018750922781632956,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 358,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05285693193562675,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 238,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.035139524582902704,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 318,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04695112948471874,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 268,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03956887642108371,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 127,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.018750922781632956,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 215,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.031743688173630595,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 186,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.02746198139672228,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 59,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.008711058615089326,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 124,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.018307987597814854,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 339,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.050051675771445446,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 210,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.03100546286726709,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 298,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04399822825926473,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 262,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03868300605344751,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 118,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.01742211723017865,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 205,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.030267237560903586,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 159,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.02347556474235937,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 56,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.008268123431271224,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 118,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.01742211723017865,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 297,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.043850583197992024,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 159,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.02347556474235937,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 253,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.03735420050199321,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 247,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.036468330134357005,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 100,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.014764506127270044,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 184,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.02716669127417688,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 102,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.015059796249815443,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 49,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.007234608002362321,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 110,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.016240956739997047,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 359,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.053004576996899457,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 242,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.035730104827993506,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 327,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04827993503617304,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 268,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03956887642108371,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 133,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.019636793149269156,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 222,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.032777203602539495,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 197,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.029086077070721986,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 61,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.009006348737634727,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 122,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.018012697475269453,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 354,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05226635169053595,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 234,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.0345489443378119,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 322,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04754170972980954,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 264,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03897829617599291,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 131,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.019341503026723755,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 217,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.032038978296175996,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 193,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.028495496825631184,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 61,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.009006348737634727,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 121,
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.017865052413996753,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 348,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.05138048132289975,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 229,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.033810719031448395,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 316,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04665583936217334,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 261,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03853536099217481,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 126,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.018603277720360255,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 214,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.03159604311235789,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 188,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.02775727151926768,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 58,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.008563413553816625,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 120,
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.017717407352724052,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 337,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.049756385648900045,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 208,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.030710172744721688,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 304,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04488409862690093,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 255,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03764949062453861,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 120,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.017717407352724052,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 206,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.030414882622176287,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 173,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.025542595600177173,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 57,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.008415768492543925,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 117,
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.01727447216890595,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 316,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04665583936217334,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 183,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.02701904621290418,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 282,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.04163590727890152,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "capturedMints": 248,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.03661597519562971,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 114,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.01683153698508785,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 196,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.028938432009449285,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 142,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.02096559870072346,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 53,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.007825188247453123,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "capturedMints": 109,
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.016093311678724347,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    }
+  ],
+  "generatedAtUtc": "2026-09-07T17:46:53.561927+00:00",
+  "headline": {
+    "bestFrozenPolicy": {
+      "capturedMints": 292,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.043112357891628525,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    "bestFrozenPolicyCaptureOfOpportunity": 0.7373737373737373,
+    "capacityRetention": 0.957070707070707,
+    "latencyRetention": 0.6216640502354789,
+    "laterThan2sFirstHitShare": 0.8405572755417957,
+    "mintClusteredReferencePrevalence95CI": {
+      "N": 6773,
+      "ciHigh": 0.06393400265761108,
+      "ciLow": 0.053152222058172154,
+      "rate": 0.05846744426398937
+    },
+    "oneSolReferenceOpportunity": {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13705.5,
+      "opportunityMints": 379,
+      "prevalence": 0.05595747822235346,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    "referenceOpportunity": {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13365.0,
+      "opportunityMints": 396,
+      "prevalence": 0.05846744426398937,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    "zeroDelayReferenceOpportunity": {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 8446.0,
+      "opportunityMints": 637,
+      "prevalence": 0.09404990403071017,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    }
+  },
+  "implementationVersion": 1,
+  "integrity": {
+    "collectorModified": false,
+    "fingerprintsSearched": false,
+    "holdoutRowsInspected": 0,
+    "liveServicesModified": false,
+    "modelsTrained": false,
+    "oracleReportedAsStrategyPnl": false,
+    "primaryUnit": "unique_mint",
+    "stateRowsTreatedAsIndependent": false,
+    "validationRowsInspected": 0
+  },
+  "opportunityPrevalence": [
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 5672.0,
+      "opportunityMints": 886,
+      "prevalence": 0.1308135242876126,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 8446.0,
+      "opportunityMints": 637,
+      "prevalence": 0.09404990403071017,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 12735.5,
+      "opportunityMints": 388,
+      "prevalence": 0.05728628377380777,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 5923.0,
+      "opportunityMints": 861,
+      "prevalence": 0.12712239775579506,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 8446.0,
+      "opportunityMints": 626,
+      "prevalence": 0.09242580835671046,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 12802.0,
+      "opportunityMints": 383,
+      "prevalence": 0.05654805846744426,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 6327.0,
+      "opportunityMints": 826,
+      "prevalence": 0.12195482061125056,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 8473.0,
+      "opportunityMints": 611,
+      "prevalence": 0.09021113243761997,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 12669.0,
+      "opportunityMints": 370,
+      "prevalence": 0.05462867267089916,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 6913.0,
+      "opportunityMints": 771,
+      "prevalence": 0.11383434224125202,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 8834.0,
+      "opportunityMints": 572,
+      "prevalence": 0.08445297504798464,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13316.5,
+      "opportunityMints": 352,
+      "prevalence": 0.05197106156799055,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 7676.5,
+      "opportunityMints": 674,
+      "prevalence": 0.09951277129780009,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 9613.0,
+      "opportunityMints": 520,
+      "prevalence": 0.07677543186180422,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13925.5,
+      "opportunityMints": 326,
+      "prevalence": 0.04813228997490034,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 5825.5,
+      "opportunityMints": 879,
+      "prevalence": 0.12978000885870367,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 8724.0,
+      "opportunityMints": 619,
+      "prevalence": 0.09139229292780157,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13085.0,
+      "opportunityMints": 377,
+      "prevalence": 0.05566218809980806,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 5963.0,
+      "opportunityMints": 862,
+      "prevalence": 0.12727004281706777,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 8754.0,
+      "opportunityMints": 614,
+      "prevalence": 0.09065406762143806,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13220.5,
+      "opportunityMints": 377,
+      "prevalence": 0.05566218809980806,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 6137.0,
+      "opportunityMints": 840,
+      "prevalence": 0.12402185146906836,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 8753.0,
+      "opportunityMints": 607,
+      "prevalence": 0.08962055219252917,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13408.0,
+      "opportunityMints": 373,
+      "prevalence": 0.05507160785471726,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 6715.0,
+      "opportunityMints": 808,
+      "prevalence": 0.11929720950834194,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 8783.0,
+      "opportunityMints": 588,
+      "prevalence": 0.08681529602834785,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13549.0,
+      "opportunityMints": 361,
+      "prevalence": 0.05329986711944486,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 7280.0,
+      "opportunityMints": 748,
+      "prevalence": 0.11043850583197992,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 9103.0,
+      "opportunityMints": 554,
+      "prevalence": 0.08179536394507604,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13641.0,
+      "opportunityMints": 347,
+      "prevalence": 0.05123283626162705,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 9460.0,
+      "opportunityMints": 637,
+      "prevalence": 0.09404990403071017,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13365.0,
+      "opportunityMints": 396,
+      "prevalence": 0.05846744426398937,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18453.5,
+      "opportunityMints": 227,
+      "prevalence": 0.033515428908902994,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 9891.5,
+      "opportunityMints": 616,
+      "prevalence": 0.09094935774398347,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13428.0,
+      "opportunityMints": 390,
+      "prevalence": 0.05758157389635317,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18341.0,
+      "opportunityMints": 226,
+      "prevalence": 0.0333677838476303,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10284.5,
+      "opportunityMints": 585,
+      "prevalence": 0.08637236084452975,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13705.5,
+      "opportunityMints": 373,
+      "prevalence": 0.05507160785471726,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 17835.0,
+      "opportunityMints": 221,
+      "prevalence": 0.03262955854126679,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10883.0,
+      "opportunityMints": 530,
+      "prevalence": 0.07825188247453123,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13792.0,
+      "opportunityMints": 354,
+      "prevalence": 0.05226635169053595,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 17870.5,
+      "opportunityMints": 213,
+      "prevalence": 0.031448398051085194,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 12316.0,
+      "opportunityMints": 429,
+      "prevalence": 0.06333973128598848,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 15328.0,
+      "opportunityMints": 316,
+      "prevalence": 0.04665583936217334,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 19580.5,
+      "opportunityMints": 197,
+      "prevalence": 0.029086077070721986,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10007.0,
+      "opportunityMints": 626,
+      "prevalence": 0.09242580835671046,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13705.5,
+      "opportunityMints": 379,
+      "prevalence": 0.05595747822235346,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 17767.0,
+      "opportunityMints": 219,
+      "prevalence": 0.0323342684187214,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10598.0,
+      "opportunityMints": 608,
+      "prevalence": 0.08976819725380186,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13792.0,
+      "opportunityMints": 375,
+      "prevalence": 0.05536689797726266,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 17775.0,
+      "opportunityMints": 219,
+      "prevalence": 0.0323342684187214,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10810.0,
+      "opportunityMints": 585,
+      "prevalence": 0.08637236084452975,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14212.0,
+      "opportunityMints": 369,
+      "prevalence": 0.054481027609626455,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 17830.0,
+      "opportunityMints": 219,
+      "prevalence": 0.0323342684187214,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 11090.0,
+      "opportunityMints": 556,
+      "prevalence": 0.08209065406762144,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14360.0,
+      "opportunityMints": 356,
+      "prevalence": 0.05256164181308135,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18121.0,
+      "opportunityMints": 213,
+      "prevalence": 0.031448398051085194,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 11679.0,
+      "opportunityMints": 508,
+      "prevalence": 0.07500369112653182,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14599.0,
+      "opportunityMints": 338,
+      "prevalence": 0.04990403071017274,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18422.5,
+      "opportunityMints": 203,
+      "prevalence": 0.029971947438358185,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 9682.0,
+      "opportunityMints": 623,
+      "prevalence": 0.09198287317289236,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13499.0,
+      "opportunityMints": 391,
+      "prevalence": 0.057729218957625866,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18822.0,
+      "opportunityMints": 223,
+      "prevalence": 0.03292484866381219,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 9959.5,
+      "opportunityMints": 602,
+      "prevalence": 0.08888232688616565,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13628.5,
+      "opportunityMints": 385,
+      "prevalence": 0.05684334858998966,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18777.0,
+      "opportunityMints": 222,
+      "prevalence": 0.032777203602539495,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10375.0,
+      "opportunityMints": 573,
+      "prevalence": 0.08460062010925734,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13843.0,
+      "opportunityMints": 368,
+      "prevalence": 0.05433338254835376,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18373.5,
+      "opportunityMints": 217,
+      "prevalence": 0.032038978296175996,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 11034.0,
+      "opportunityMints": 520,
+      "prevalence": 0.07677543186180422,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14341.0,
+      "opportunityMints": 347,
+      "prevalence": 0.05123283626162705,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18330.5,
+      "opportunityMints": 210,
+      "prevalence": 0.03100546286726709,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 12476.0,
+      "opportunityMints": 422,
+      "prevalence": 0.06230621585707958,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 15877.0,
+      "opportunityMints": 309,
+      "prevalence": 0.04562232393326443,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 19627.0,
+      "opportunityMints": 194,
+      "prevalence": 0.028643141886903884,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10279.5,
+      "opportunityMints": 612,
+      "prevalence": 0.09035877749889266,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13787.0,
+      "opportunityMints": 373,
+      "prevalence": 0.05507160785471726,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18286.0,
+      "opportunityMints": 215,
+      "prevalence": 0.031743688173630595,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10776.0,
+      "opportunityMints": 594,
+      "prevalence": 0.08770116639598405,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14096.5,
+      "opportunityMints": 369,
+      "prevalence": 0.054481027609626455,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18287.5,
+      "opportunityMints": 215,
+      "prevalence": 0.031743688173630595,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10878.0,
+      "opportunityMints": 573,
+      "prevalence": 0.08460062010925734,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14355.0,
+      "opportunityMints": 363,
+      "prevalence": 0.05359515724199026,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18336.0,
+      "opportunityMints": 215,
+      "prevalence": 0.031743688173630595,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 11266.0,
+      "opportunityMints": 544,
+      "prevalence": 0.08031891333234903,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14526.0,
+      "opportunityMints": 350,
+      "prevalence": 0.05167577144544515,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18373.5,
+      "opportunityMints": 209,
+      "prevalence": 0.03085781780599439,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 11913.0,
+      "opportunityMints": 497,
+      "prevalence": 0.07337959545253211,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 15163.0,
+      "opportunityMints": 332,
+      "prevalence": 0.04901816034253654,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18667.0,
+      "opportunityMints": 200,
+      "prevalence": 0.029529012254540087,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 9865.0,
+      "opportunityMints": 609,
+      "prevalence": 0.08991584231507456,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13739.0,
+      "opportunityMints": 381,
+      "prevalence": 0.05625276834489886,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 19071.5,
+      "opportunityMints": 216,
+      "prevalence": 0.03189133323490329,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10425.0,
+      "opportunityMints": 589,
+      "prevalence": 0.08696294108962055,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13885.5,
+      "opportunityMints": 375,
+      "prevalence": 0.05536689797726266,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18847.0,
+      "opportunityMints": 215,
+      "prevalence": 0.031743688173630595,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10761.0,
+      "opportunityMints": 558,
+      "prevalence": 0.08238594419016684,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14271.0,
+      "opportunityMints": 358,
+      "prevalence": 0.05285693193562675,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18871.0,
+      "opportunityMints": 210,
+      "prevalence": 0.03100546286726709,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 11444.0,
+      "opportunityMints": 506,
+      "prevalence": 0.07470840100398642,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14852.0,
+      "opportunityMints": 337,
+      "prevalence": 0.049756385648900045,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 19171.0,
+      "opportunityMints": 203,
+      "prevalence": 0.029971947438358185,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 12743.0,
+      "opportunityMints": 410,
+      "prevalence": 0.06053447512180717,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 16028.0,
+      "opportunityMints": 300,
+      "prevalence": 0.04429351838181013,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 20025.0,
+      "opportunityMints": 187,
+      "prevalence": 0.02760962645799498,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10644.0,
+      "opportunityMints": 599,
+      "prevalence": 0.08843939170234756,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14269.0,
+      "opportunityMints": 364,
+      "prevalence": 0.053742802303262956,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18798.0,
+      "opportunityMints": 208,
+      "prevalence": 0.030710172744721688,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10876.5,
+      "opportunityMints": 581,
+      "prevalence": 0.08578178059943894,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14482.0,
+      "opportunityMints": 360,
+      "prevalence": 0.053152222058172154,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18843.5,
+      "opportunityMints": 208,
+      "prevalence": 0.030710172744721688,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 11071.0,
+      "opportunityMints": 560,
+      "prevalence": 0.08268123431271224,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14574.0,
+      "opportunityMints": 354,
+      "prevalence": 0.05226635169053595,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 19012.5,
+      "opportunityMints": 208,
+      "prevalence": 0.030710172744721688,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 11576.0,
+      "opportunityMints": 530,
+      "prevalence": 0.07825188247453123,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 15157.0,
+      "opportunityMints": 341,
+      "prevalence": 0.05034696589399085,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18957.0,
+      "opportunityMints": 202,
+      "prevalence": 0.029824302377085485,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 12131.0,
+      "opportunityMints": 485,
+      "prevalence": 0.07160785471725971,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 16028.0,
+      "opportunityMints": 322,
+      "prevalence": 0.04754170972980954,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 19529.5,
+      "opportunityMints": 192,
+      "prevalence": 0.028347851764358483,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    }
+  ],
+  "population": {
+    "admissionRateInCoveredTimeRange": 0.5325038880248834,
+    "contractSha256": "82223cf3598d42f89d7a0869c73e19d4d55f1f27dbb2686c716ed0733fd28f62",
+    "coveredEndUtc": "2026-09-07T11:59:36.931000+00:00",
+    "coveredStartUtc": "2026-09-06T05:51:11.678000+00:00",
+    "discoveryOrdinalEnd": 6848,
+    "discoveryOrdinalStart": 1,
+    "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+    "eventStateRows": 21514,
+    "exactAdmittedLaunchesInCoveredTimeRange": 6848,
+    "exactAdmittedUniqueMints": 6848,
+    "exactEvaluableRateWithinAdmittedPrefix": 0.9890478971962616,
+    "exactEvaluableUniqueMints": 6773,
+    "excludedOrUnresolvedUniqueMints": 75,
+    "exclusionReasons": {
+      "NO_SOL_QUOTED_EXACT_EVENTS": 75
+    },
+    "mintRows": 6848,
+    "totalObservedLaunchesInCoveredTimeRange": 12860
+  },
+  "schema": "EXECUTABLE_OPPORTUNITY_CENSUS_V1_REPORT"
+}

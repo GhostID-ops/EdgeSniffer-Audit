@@ -1,0 +1,38 @@
+{
+  "schema": "2CQ_PROSPECTIVE_SYMMETRIC_CHOICE_COLLECTION_RECOVERY_V1",
+  "verifiedAtUtc": "2026-09-11T16:24:19.367138146Z",
+  "outage": {
+    "startUtc": "2026-09-11T09:44:53.915446303Z",
+    "endUtc": "2026-09-11T15:40:05.438000000Z",
+    "classification": "PAUSED_INVALID_FOR_COLLECTION",
+    "reason": "VOLUME_ENOSPC_COLLECTOR_OUTAGE"
+  },
+  "storage": {
+    "device": "/dev/sdb",
+    "filesystem": "ext4",
+    "mountedSizeGiB": 591,
+    "freeGiBAtVerification": 517
+  },
+  "healthProof15Seconds": {
+    "captureConnected": true,
+    "captureTransactionsDelta": 83760,
+    "compactObserverConnected": true,
+    "compactObserverTransactionsDelta": 84151,
+    "compactRecordsWrittenDelta": 84151,
+    "observerReconnects": 0,
+    "observerDecodeFailures": 0,
+    "udpDrops": 0
+  },
+  "services": {
+    "captureFirst": "ACTIVE_RUNNING",
+    "compactObserver": "ACTIVE_RUNNING_ENABLED",
+    "exactLedger": "ACTIVE_RUNNING",
+    "tierACumulativeReconciliation": "ACTIVE_BACKGROUND"
+  },
+  "rawEvidenceCollectionActive": true,
+  "symmetricChoiceDevelopmentMaterializedN": 0,
+  "policyFitExecuted": false,
+  "sealedValidationRead": false,
+  "outcomesRead": 0,
+  "submissions": 0
+}

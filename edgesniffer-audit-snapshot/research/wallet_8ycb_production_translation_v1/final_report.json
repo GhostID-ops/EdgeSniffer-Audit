@@ -1,0 +1,89 @@
+{
+  "schema": "8ycb-production-translation-final-report-v1",
+  "cutoff_utc": "2026-09-04T00:46:18.256979521Z",
+  "classification": "8YCB_PRODUCTION_TRANSLATION_READY_FOR_FUTURE_TINY_LIVE_CALIBRATION",
+  "scope": "NO_SUBMIT_ENGINEERING_ONLY",
+  "signal_parity": {
+    "status": "PASS",
+    "fixtures": 12,
+    "accepted_unique_intents": 12,
+    "false_negatives": 0,
+    "false_positives": 0,
+    "duplicate_intents": 0,
+    "exact_mint_signature_target_agreement": true
+  },
+  "fixture_benchmark": {
+    "prospective_data": false,
+    "buy_builds": 240,
+    "sell_builds": 720,
+    "signed_transactions": 960,
+    "submitted_transactions": 0,
+    "buy_signal_to_tx_ready_ms": {
+      "p50": 0.4515,
+      "p75": 0.507,
+      "p90": 0.6412,
+      "p95": 0.94905,
+      "max": 3.209
+    },
+    "buy_threshold_hit_rate": {
+      "le_10ms": 1.0,
+      "le_25ms": 1.0,
+      "le_50ms": 1.0,
+      "le_100ms": 1.0
+    },
+    "sell_decision_to_tx_ready_ms": {
+      "p50": 0.128,
+      "p75": 0.139,
+      "p90": 0.153,
+      "p95": 0.18015,
+      "max": 2.187
+    },
+    "buy_le_25ms_assessment": "REALISTIC_FOR_LOCAL_CONSTRUCTION_NOT_PROVEN_FOR_LANDING"
+  },
+  "prospective_production_shadow": {
+    "service": "edgesniffer-8ycb-production-translation-v1.service",
+    "active_at_cutoff": true,
+    "pid_at_cutoff": 648469,
+    "nrestarts_current_instance": 0,
+    "signals_observed": 1,
+    "real_time_latency_eligible": 0,
+    "late_startup_handoffs": 1,
+    "build_errors": 0,
+    "duplicate_intents": 0,
+    "submission_count": 0,
+    "late_handoff_event_id": "8ycb-v3-8ad6229f799983dfa46db343"
+  },
+  "broadcast_safety": {
+    "status": "PASS",
+    "reachable_broadcast_symbols": 0,
+    "broadcast_api_strings": 0,
+    "signer": "EPHEMERAL_UNFUNDED_PROCESS_KEYPAIR",
+    "sender_endpoints": 0,
+    "jito_tip_lamports": 0,
+    "helius_tip_lamports": 0,
+    "runtime_network": "READ_ONLY_GET_LATEST_BLOCKHASH_ONLY",
+    "submission_count": 0
+  },
+  "exit_probe": {
+    "actual_production_watcher_and_builder": true,
+    "take_profit_pct": 20.0,
+    "stop_loss_pct": -20.0,
+    "max_hold_ms": 120000,
+    "reasons_exercised": ["take-profit", "hard-stop-loss", "max-hold"],
+    "duplicate_before_ack": 0,
+    "duplicate_after_terminal_ack": 0,
+    "inventory_proof": "SYNTHETIC_DETERMINISTIC_NO_SUBMIT_NOT_LIVE_PROOF"
+  },
+  "v3_untouched": {
+    "service": "edgesniffer-8ycb-prospective-shadow-v3.service",
+    "active_at_cutoff": true,
+    "pid_at_cutoff": 621336,
+    "nrestarts": 0,
+    "cohort_start_utc": "2026-09-03T21:20:47.141763Z",
+    "signals": 5,
+    "resolved": 5,
+    "submission_count": 0
+  },
+  "not_live_tested": true,
+  "real_money_authorization": false
+}

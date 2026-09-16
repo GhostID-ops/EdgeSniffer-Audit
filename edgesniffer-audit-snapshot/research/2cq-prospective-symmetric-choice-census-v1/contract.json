@@ -1,0 +1,58 @@
+{
+  "schema": "2CQ_PROSPECTIVE_SYMMETRIC_CHOICE_CENSUS_V1_CONTRACT",
+  "frozenAtUtc": "2026-09-11T07:15:24.437413402Z",
+  "cohortStartUtc": "2026-09-11T07:15:24.437413402Z",
+  "purpose": "Forward-only outcome-blind reconstruction of the complete LAUNCHED_120S cross-mint choice universe at each eligible 2CQ decision.",
+  "population": {
+    "development": "first 350 fully eligible choice decisions after cohort start",
+    "validation": "next 150 fully eligible choice decisions, sealed until one primary policy is frozen",
+    "dedupe": "independent 2CQ entry episode under existing Tier-A acquisition semantics"
+  },
+  "choiceUniverse": {
+    "ageMaximumMs": 120000,
+    "boundary": "state immediately after the final successful external Pump transaction at or before the causal 2CQ decision boundary",
+    "selectedMintAndControlsUseIdenticalEvidenceRules": true,
+    "teacherOnlyBackfillPermitted": false,
+    "failedTransactionsMutateState": false,
+    "required": [
+      "canonical finalized successful Pump transaction reconciliation",
+      "AllenHark local arrival timestamp for CREATE and every state transition used",
+      "continuous compact observer interval covering the complete 120-second launch universe",
+      "canonical slot, transaction index, and instruction ordering",
+      "complete reserve/state reconstruction through the decision boundary",
+      "known teacher exposure for every candidate mint"
+    ]
+  },
+  "failClosedReasons": [
+    "global realtime continuity not proven",
+    "canonical CREATE unavailable",
+    "CREATE realtime arrival unavailable",
+    "pre-boundary transaction realtime arrival unavailable",
+    "canonical transaction history incomplete",
+    "reserve continuity incomplete",
+    "selected mint absent from symmetrically reconstructed universe",
+    "no contemporaneous alternative"
+  ],
+  "sourceFreeze": {
+    "captureFirstBinarySha256": "ac9cb1355d87b03e2f2f3f6b6daf577877d542a2492a60c0d5400aa5a4961606",
+    "compactObserverBinarySha256": "221941112d05501fcdb9088d53e85a6fdc9ced8bec8eba3f9ca008e53eead6d4",
+    "exactLedgerBinarySha256": "d80413337615040c66de642d2ba3991de4fba742c53ddbfe4f417ef6544df18a",
+    "captureFirstState": "active",
+    "compactObserverState": "active",
+    "exactLedgerState": "active",
+    "serviceRestartsAtFreeze": 0
+  },
+  "materialization": {
+    "mode": "checkpoint reconstruction from existing append-only raw sources",
+    "newRealtimeServiceRequired": false,
+    "reason": "The existing collectors already preserve every required raw source. Deferring materialization avoids another cumulative high-load writer and does not alter prospective semantics."
+  },
+  "integrity": {
+    "oldN350DevelopmentRowsPermitted": false,
+    "oldSealedValidationRowsPermitted": false,
+    "outcomesPermitted": false,
+    "profitabilityPermitted": false,
+    "submissionsPermitted": false,
+    "modelFittingBeforeDevelopmentN350": false
+  }
+}

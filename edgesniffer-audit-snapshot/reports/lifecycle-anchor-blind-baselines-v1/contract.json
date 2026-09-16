@@ -1,0 +1,138 @@
+{
+  "schema": "LIFECYCLE_ANCHOR_BLIND_BASELINES_V1_CONTRACT",
+  "purpose": "Measure blind executable economics at four frozen causal lifecycle anchors before any selector or fingerprint search.",
+  "parentCensus": {
+    "schema": "EXECUTABLE_OPPORTUNITY_CENSUS_V1",
+    "contractSha256": "82223cf3598d42f89d7a0869c73e19d4d55f1f27dbb2686c716ed0733fd28f62",
+    "finalReportSha256": "4f0e1322abfd32d19fc2c3b4d94d12ccb7e8c500706a6ed6a79ae6167bb0e8dc",
+    "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd"
+  },
+  "population": {
+    "discoveryOrdinalStart": 1,
+    "discoveryOrdinalEnd": 6848,
+    "primaryUnit": "unique_mint",
+    "validationRowsPermitted": 0,
+    "holdoutRowsPermitted": 0,
+    "mayhemMode": "EXCLUDED_AS_IN_PARENT_CENSUS"
+  },
+  "anchors": [
+    {
+      "id": "EXTERNAL_GROSS_BUY_GE_1_SOL",
+      "parentLabel": "AFTER_EXTERNAL_GROSS_BUY_1P0_SOL",
+      "semantic": "first transaction after cumulative non-creator gross buy input reaches or exceeds 1 SOL"
+    },
+    {
+      "id": "EXTERNAL_GROSS_BUY_GE_2_SOL",
+      "parentLabel": "AFTER_EXTERNAL_GROSS_BUY_2P0_SOL",
+      "semantic": "first transaction after cumulative non-creator gross buy input reaches or exceeds 2 SOL"
+    },
+    {
+      "id": "EXTERNAL_GROSS_BUY_GE_5_SOL",
+      "parentLabel": "AFTER_EXTERNAL_GROSS_BUY_5P0_SOL",
+      "semantic": "first transaction after cumulative non-creator gross buy input reaches or exceeds 5 SOL"
+    },
+    {
+      "id": "EXTERNAL_BUY_EVENT_5",
+      "parentLabel": "AFTER_EXTERNAL_BUY_5",
+      "semantic": "first transaction containing the fifth non-creator buy event; this is not fifth unique buyer"
+    }
+  ],
+  "anchorRules": {
+    "firstChronologicalCrossingPerMint": true,
+    "entryOccursAfterEntireCrossingTransaction": true,
+    "thresholdOvershootUsesActualCumulativeExternalGrossBuy": true,
+    "sameMintMayAppearInDifferentAnchorReports": true,
+    "differentAnchorReportsAreNotIndependentEvidence": true,
+    "withinAnchorMintDeduplicationRequired": true
+  },
+  "economics": {
+    "primarySizeSol": 0.5,
+    "secondarySizeSol": 1.0,
+    "primaryLatencyScenario": "P50",
+    "robustnessLatencyScenarios": ["P75", "P90"],
+    "primaryStandardizedDeliveryCostSol": 0.001,
+    "standardizedDeliveryCostSweepSol": [0.001, 0.0025, 0.005, 0.01, 0.02],
+    "mandatoryComponentsRemainSeparate": [
+      "pump_protocol_fee",
+      "creator_fee",
+      "own_entry_curve_impact",
+      "own_exit_curve_impact",
+      "base_transaction_fees",
+      "modeled_landing_deterioration"
+    ],
+    "deliveryCostWarning": "0.001 SOL is a standardized research overlay, not a claim about production delivery cost.",
+    "arbitraryWorseEntryHaircutsPermitted": false
+  },
+  "policies": {
+    "primary": "TP20_SL20_MAX120",
+    "diagnostic": ["TRAIL20_12_SL20_120S", "FIXED_5S_SL20"],
+    "bestPolicySelectionAfterResultsPermitted": false,
+    "reportEachPolicySeparately": true,
+    "p75PolicyEconomics": "UNAVAILABLE_NOT_IMPUTED_BECAUSE_PARENT_HAS_NO_EMPIRICAL_P75_SELL_LANDING"
+  },
+  "opportunityGap": {
+    "opportunityThresholdPct": 10,
+    "reportPolicyPositive": true,
+    "reportPolicyAtLeastOpportunityThreshold": true,
+    "reportBlindPolicyPfAndExpectancy": true,
+    "neverDescribeOracleOpportunityAsRealizedStrategyPnl": true
+  },
+  "counterfactualDivergence": {
+    "primaryReplay": "STRICT_NO_RESUBMISSION_PARENT_SEMANTICS",
+    "affectedRowsIncludedInPrimary": true,
+    "affectedRowsFlaggedSeparately": true,
+    "nonDivergentSubsetIsSensitivityOnly": true,
+    "doNotInventTraderResubmission": true
+  },
+  "portfolio": {
+    "reportUnconstrained": true,
+    "reportMaxOpen1": true,
+    "maxOpen1Ordering": "anchor_decision_timestamp_then_mint",
+    "positionReleaseTimestamp": "policy_sell_landing_timestamp",
+    "evaluateEachAnchorAsSeparateLane": true,
+    "combinedMultiAnchorLanePermitted": false
+  },
+  "requiredPerAnchor": [
+    "eligible_unique_mints",
+    "exact_policy_outcomes",
+    "win_rate",
+    "profit_factor",
+    "expectancy",
+    "normalized_pnl_sol",
+    "median_return",
+    "return_tails",
+    "tp_sl_max_hold_counts",
+    "max_drawdown_and_loss_concentration",
+    "opportunity_prevalence",
+    "policy_positive_prevalence",
+    "policy_gte_10_prevalence",
+    "delivery_cost_sweep",
+    "p75_p90_robustness",
+    "one_sol_robustness",
+    "max_open1",
+    "divergence",
+    "actual_threshold_overshoot"
+  ],
+  "requiredCrossAnchor": [
+    "eligibility_overlap",
+    "opportunity_overlap",
+    "policy_positive_overlap",
+    "do_not_sum_overlapping_anchor_populations"
+  ],
+  "interpretation": {
+    "pfRangesAreDescriptiveNotPromotionGates": true,
+    "laterAnchorEnrichmentMayReflectSurvivorship": true,
+    "noBestAnchorPromotionFromDiscoveryOnly": true
+  },
+  "prohibitions": [
+    "fingerprint_search",
+    "feature_separability_search",
+    "threshold_search",
+    "machine_learning",
+    "exit_optimization",
+    "best_anchor_selection",
+    "validation_or_holdout_access",
+    "live_or_shadow_deployment",
+    "collector_or_exact_math_changes"
+  ]
+}

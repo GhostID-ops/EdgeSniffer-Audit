@@ -1,0 +1,37 @@
+{
+  "schema": "CONSTRAINED_CAUSAL_RANKER_V1_FEATURE_REGISTRY",
+  "source": "Corrected SAME_ANCHOR_CAUSAL_SEPARABILITY_V1 analysis rows",
+  "causalBoundary": "Exact trigger signature and slot, inclusive; later transactions are excluded even when local arrival_ms equals decisionUnixMs.",
+  "features": [
+    {
+      "id": "net_external_flow_sol",
+      "family": "CROSSING_STRENGTH",
+      "definition": "Cumulative external gross buys minus external gross sells through the crossing transaction.",
+      "missingSemantics": "required_nonmissing",
+      "candidate": true
+    },
+    {
+      "id": "buy_size_progression_ratio",
+      "family": "BUY_SIZE_PROGRESSION",
+      "definition": "Mean external buy size in the later causal half divided by the earlier causal half.",
+      "missingSemantics": "native_missing_when_two_causal_buys_are_not_available",
+      "candidate": true
+    },
+    {
+      "id": "last_buy_size_vs_prior_median",
+      "family": "LAST_BUY_ACCELERATION",
+      "definition": "Crossing/last external buy size divided by the median of prior causal external buys.",
+      "missingSemantics": "native_missing_when_no_prior_causal_buy_is_available",
+      "candidate": true
+    },
+    {
+      "id": "gross_buy_sol_per_successful_tx",
+      "family": "TRANSACTION_EFFICIENCY",
+      "definition": "Cumulative external gross buy SOL through the crossing divided by successful transaction count.",
+      "missingSemantics": "required_nonmissing",
+      "candidate": true,
+      "conditionalExclusion": "Exclude before fitting when absolute Spearman correlation with net_external_flow_sol is >=0.75."
+    }
+  ],
+  "replacementsPermitted": false
+}

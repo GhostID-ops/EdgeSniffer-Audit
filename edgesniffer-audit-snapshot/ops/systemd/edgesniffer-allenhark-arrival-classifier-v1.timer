@@ -1,0 +1,12 @@
+[Unit]
+Description=Run AllenHark finalized Pump arrival post-classifier every five minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=5min
+AccuracySec=15s
+Persistent=true
+Unit=edgesniffer-allenhark-arrival-classifier-v1.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,14 @@
+{
+  "schema": "ALLENHARK_RECONSTRUCTION_INSTRUMENTATION_V1_WINDOW_FREEZE",
+  "frozenAtUtc": "2026-09-10T16:09:10.008Z",
+  "startSlot": 445925900,
+  "endSlot": 445928971,
+  "finalizedSlots": 3072,
+  "minimumFinalizedSlots": 512,
+  "minimumCanonicalSuccessfulPump": 10000,
+  "canonicalAuthority": "independent getBlock commitment finalized",
+  "allenharkAuthority": "capture-first compact arrival journal",
+  "proxyDispatchAuthority": "AHIRV1 fixed-record instrumentation journal",
+  "outcomesRead": 0,
+  "submissions": 0
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "2CQ_N350_FROZEN_POLICY_ECONOMICS_SANDBOX_V1_CONTRACT",
+  "classification": "NON_AUTHORITATIVE_DEVELOPMENT_SANDBOX",
+  "purpose": "Describe exact executable economics of frozen N350 teacher choices, frozen-model Top-1 choices, and a deterministic blind baseline without influencing any authoritative research decision.",
+  "population": {
+    "developmentOrdinals": [1, 350],
+    "validationOrdinalsPermitted": 0,
+    "validationRowsRead": 0,
+    "teacherDecisionBoundaryConditional": true,
+    "autonomousTimingClaim": false
+  },
+  "frozenInputs": {
+    "developmentChoiceSetsSha256": "2e1f1f14e996b1e13e9b00ce9c1cded750c93edac3fb80de4fcf359c6a1c548e",
+    "crossSectionalPolicySha256": "bedb0ec347876948937b92c25c2f9df9a3644ce2bb73f3ac258b956dd4d9d1cc",
+    "crossSectionalModelSha256": "69fabc9327db908a9aac3ed158f9353c08b6f92389e33f5b802c55978c33152c",
+    "exactCurveEngineSha256": "ed95c5de839428ae5fe238905e59f26d8956ff59f1819fda6f8ea9da9e1c732f",
+    "blindBaselineSeed": "2CQ_N350_SANDBOX_BLIND_20260914"
+  },
+  "populations": [
+    "TEACHER_SELECTED",
+    "FROZEN_MODEL_TOP1",
+    "DETERMINISTIC_BLIND_ONE_PER_CHOICE_SET"
+  ],
+  "economics": {
+    "sizesSol": [0.5, 1.0],
+    "quoteAsset": "SOL_OR_WRAPPED_SOL",
+    "mayhem": "FAIL_CLOSED_EXCLUDE",
+    "policy": {
+      "name": "TP20_SL20_MAX120",
+      "takeProfitPct": 20,
+      "stopLossPct": -20,
+      "maxHoldMs": 120000
+    },
+    "mandatoryCosts": [
+      "exact_protocol_fee",
+      "exact_creator_fee",
+      "own_entry_curve_impact",
+      "own_exit_curve_impact",
+      "base_transaction_fee_each_side"
+    ],
+    "roundTripDeliveryOverlaySol": 0.001,
+    "counterfactualRules": {
+      "successfulTransactionsReplayedChronologically": true,
+      "historicalConstraintsReevaluated": true,
+      "failedCounterfactualTransactionsMutateZeroState": true,
+      "resubmissionModeled": false
+    }
+  },
+  "latencyScenarios": {
+    "P50_PRIMARY": {
+      "entryOffsetMs": 37,
+      "firstSellableOffsetMs": 261,
+      "sellLandingOffsetMs": 351
+    },
+    "P90_STRESS": {
+      "entryOffsetMs": 48,
+      "firstSellableOffsetMs": 440,
+      "sellLandingOffsetMs": 483
+    }
+  },
+  "reporting": {
+    "metrics": [
+      "requestedN",
+      "exactEvaluableN",
+      "wins",
+      "losses",
+      "winRate",
+      "profitFactor",
+      "expectancy",
+      "totalExactPnlSol",
+      "medianRoiPct",
+      "worstRoiPct",
+      "tpCount",
+      "slCount",
+      "maxHoldCount",
+      "counterfactualDivergenceRate",
+      "maxOpen1"
+    ],
+    "matchedEpisodeComparison": true,
+    "oneOutlierConcentration": true
+  },
+  "prohibitions": {
+    "refitModel": true,
+    "changeFeatures": true,
+    "searchThresholds": true,
+    "searchExitPolicies": true,
+    "readValidationRows": true,
+    "modifyN150Gate": true,
+    "promoteStrategy": true,
+    "rejectStrategy": true,
+    "influenceAuthoritativeResearch": true,
+    "submitTrades": true
+  },
+  "interpretation": "Entertainment and hypothesis context only. Results cannot alter the frozen WHAT policy, preserved WHEN policy, sealed N150 validation, or future promotion gates."
+}

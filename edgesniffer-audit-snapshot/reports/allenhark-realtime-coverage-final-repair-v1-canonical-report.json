@@ -1,0 +1,64 @@
+{
+  "allenharkPathCoveragePct": 99.89646892966496,
+  "allenharkPathN": 45350,
+  "canonicalKinds": {
+    "buy": 12376,
+    "buy_exact_quote_in_v2": 5344,
+    "buy_exact_sol_in": 2551,
+    "buy_v2": 3047,
+    "other_pump_instruction": 55277,
+    "sell": 13232,
+    "sell_v2": 7397
+  },
+  "canonicalPumpSlotMisses": [],
+  "canonicalSuccessfulPumpN": 45397,
+  "contractSha256": "70c868f52b09c63abd287336ba369c06de59383f0b71bd54f4bb2bc8bb3398ca",
+  "entireSlotMisses": [],
+  "exactLedger": {
+    "coverageAfterReconciliationPct": 100.0,
+    "coveredBeforeRepairN": 13889,
+    "evidencePaths": [
+      "/var/lib/pump-exact-evidence-ledger-v1/partitions/2026/09/10/17/evidence.frames.zst",
+      "/var/lib/pump-exact-evidence-ledger-v1/partitions/2026/09/10/18/evidence.frames.zst",
+      "/var/lib/pump-exact-evidence-ledger-v1/partitions/2026/09/10/19/evidence.frames.partial"
+    ],
+    "repairsWrittenN": 31508
+  },
+  "gatePassed": false,
+  "generatedAtUtc": "2026-09-10T19:36:35.339395Z",
+  "kernelUdpDrops": {
+    "after": 0,
+    "before": 0,
+    "delta": 0
+  },
+  "neitherN": 33,
+  "observer": {
+    "compactRecords": 5238165,
+    "connected": true,
+    "decodeFailures": 0,
+    "firstSlot": 445957781,
+    "lastSlot": 445961815,
+    "processInstance": "2391664-1789066675927",
+    "reconnects": 0
+  },
+  "outcomesRead": 0,
+  "rabbitCoveragePct": 30.59453267837082,
+  "rabbitN": 13889,
+  "schema": "2CQ_POST_FIX_CANONICAL_COVERAGE_V1_REPORT",
+  "slotRange": {
+    "end": 445961461,
+    "finalizedNoBlockOrSkippedSlots": [],
+    "slots": 3072,
+    "start": 445958390
+  },
+  "sourceMatrix": {
+    "ALLENHARK_ONLY": 31475,
+    "BOTH": 13875,
+    "NEITHER": 33,
+    "RABBIT_ONLY": 14
+  },
+  "submissions": 0,
+  "transactionLevelAllenharkMisses": 47,
+  "unionCoveragePct": 99.92730797189242,
+  "unionN": 45364
+}

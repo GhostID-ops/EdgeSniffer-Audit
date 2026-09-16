@@ -1,0 +1,10 @@
+{
+  "contractSha256": "786143545be8bb419f3058e6e1727e2b4ab966abb4cce8cd4d51054522c9abb3",
+  "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+  "ordinalRange": [
+    1,
+    6848
+  ],
+  "schema": "EVENT_FLOW_COMPETING_RISK_V1_RUN_IDENTITY",
+  "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b"
+}

@@ -1,0 +1,24 @@
+[Unit]
+Description=EdgeSniffer AllenHark causal arrival observer V1 (no-submit)
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+Environment=ALLENHARK_SHREDSTREAM_GRPC_URL=http://127.0.0.1:9999
+Environment=ALLENHARK_PUMP_ARRIVAL_OUTPUT=/var/lib/pump-exact-evidence-ledger-v1/allenhark-arrivals-v1/pump-transactions.jsonl
+Environment=ALLENHARK_2CQ_DETECTOR_OUTPUT=/var/lib/pump-exact-evidence-ledger-v1/allenhark-arrivals-v1/2cq-detected-swaps.jsonl
+Environment=ALLENHARK_ARRIVAL_HEALTH_PATH=/var/lib/pump-exact-evidence-ledger-v1/allenhark-arrivals-v1/health.json
+Environment=ALLENHARK_CONTINUITY_OUTPUT=/var/lib/pump-exact-evidence-ledger-v1/allenhark-arrivals-v1/continuity.jsonl
+Environment=ALLENHARK_ALL_TRANSACTION_ROOT=/var/lib/pump-exact-evidence-ledger-v1/allenhark-arrivals-v1/all-transactions
+ExecStart=/usr/local/bin/edgesniffer-allenhark-arrival-observer-v1
+Restart=always
+RestartSec=500ms
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

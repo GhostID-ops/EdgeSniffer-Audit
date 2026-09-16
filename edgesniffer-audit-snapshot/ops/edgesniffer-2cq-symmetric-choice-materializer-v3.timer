@@ -1,0 +1,11 @@
+[Unit]
+Description=Run 2CQ V3 exact-multisource materializer every 30 minutes
+
+[Timer]
+OnCalendar=*:0/30
+Persistent=true
+RandomizedDelaySec=30
+Unit=edgesniffer-2cq-symmetric-choice-materializer-v3.service
+
+[Install]
+WantedBy=timers.target

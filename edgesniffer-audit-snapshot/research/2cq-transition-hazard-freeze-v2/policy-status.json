@@ -1,0 +1,22 @@
+{
+  "schema": "2CQ_TRANSITION_HAZARD_FREEZE_V2_POLICY_STATUS",
+  "adjudicatedAtUtc": "2026-09-11T06:25:00Z",
+  "originalPolicyPreservedAs": "primary-policy.original.json",
+  "status": "HISTORICAL_CROSS_SECTIONAL_COMPONENT_RETIRED",
+  "sealedValidationAuthorized": false,
+  "outcomesRead": 0,
+  "validationRowsRead": 0,
+  "timingComponent": {
+    "family": "BASE_PLUS_TRANSITION",
+    "developmentSupported": true,
+    "teacherStateRecallPct": 80.26315789473684,
+    "firstRisingIsTeacherStatePct": 34.21052631578947,
+    "firstRisingLeadP75Ms": 13142.26480275
+  },
+  "crossSectionalComponent": {
+    "developmentComparableN": 211,
+    "totalDevelopmentN": 350,
+    "representativeCoverageProven": false
+  },
+  "reason": "The frozen representativeness gate failed on chronological coverage range and structural chronology shift. Transition features remain development evidence, but the combined historical policy is retired and cannot consume sealed validation."
+}

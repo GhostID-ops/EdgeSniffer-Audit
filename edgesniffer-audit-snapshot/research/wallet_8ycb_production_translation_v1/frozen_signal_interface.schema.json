@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "8ycb-production-signal-v1",
+  "title": "Immutable 8YCB V3 production signal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "mint",
+    "createSignature",
+    "slot",
+    "transactionIndex",
+    "targetWallet",
+    "atomicTargetBuyLamports",
+    "atomicTargetTokensOutRaw",
+    "createReceiveUnixNs",
+    "finalTriggerInputReceiveUnixNs",
+    "signalReadyUnixNs",
+    "uniqueSignalId",
+    "frozenSpecSha256",
+    "interfaceSha256"
+  ],
+  "properties": {
+    "schema": {"const": "8ycb-production-signal-v1"},
+    "mint": {"type": "string", "minLength": 1},
+    "createSignature": {"type": "string", "minLength": 1},
+    "slot": {"type": "integer", "minimum": 1},
+    "transactionIndex": {"type": ["integer", "null"], "minimum": 0},
+    "targetWallet": {"const": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ"},
+    "atomicTargetBuyLamports": {"type": "integer", "minimum": 1},
+    "atomicTargetTokensOutRaw": {"type": ["integer", "null"], "minimum": 1},
+    "createReceiveUnixNs": {"type": "integer", "minimum": 1},
+    "finalTriggerInputReceiveUnixNs": {"type": "integer", "minimum": 1},
+    "signalReadyUnixNs": {"type": "integer", "minimum": 1},
+    "uniqueSignalId": {"type": "string", "minLength": 1},
+    "frozenSpecSha256": {"const": "6f42c24221a50341c8c5626ae3a987b564065ba0c9de9a1e3d948fa5ea432817"},
+    "interfaceSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

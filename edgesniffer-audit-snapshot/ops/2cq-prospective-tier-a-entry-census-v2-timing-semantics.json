@@ -1,0 +1,11 @@
+{
+  "schema": "2CQ_PROSPECTIVE_TIER_A_ENTRY_CENSUS_V2_TIMING_SEMANTICS_V1",
+  "cohort": "2CQ_PROSPECTIVE_TIER_A_ENTRY_CENSUS_V2",
+  "classification": "PROVISIONAL_REALTIME_TIMING",
+  "source": "rust-exact-ledger-yellowstone-direct-v1",
+  "meaning": "Local receipt timestamps are from the current RabbitStream/Yellowstone path and are not claimed to be historical-Jito-equivalent Tier-A timing.",
+  "chainEvidence": "Exact finalized chain order, slot, transaction index, signature, mint, and Pump instruction evidence remain independently valid when reconciliation and completeness gates pass.",
+  "doubleZeroPending": true,
+  "requiredNextValidation": "Same-transaction arrival-time comparison between current RabbitStream/Yellowstone observation and DoubleZero shred observation after DoubleZero is connected.",
+  "semanticEffect": "METADATA_ONLY_NO_COLLECTOR_OR_ELIGIBILITY_CHANGE"
+}

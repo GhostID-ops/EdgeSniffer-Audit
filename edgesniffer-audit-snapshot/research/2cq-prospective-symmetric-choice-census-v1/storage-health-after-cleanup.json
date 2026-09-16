@@ -1,0 +1,17 @@
+{
+  "schema": "2CQ_PROSPECTIVE_SYMMETRIC_CHOICE_CENSUS_V1_STORAGE_HEALTH",
+  "atUtc": "2026-09-11T07:18:00Z",
+  "volumeSizeGb": 98,
+  "freeBeforeGb": 9.2,
+  "freeAfterGb": 15,
+  "usePercentAfter": 85,
+  "deletedOpenFiles": 0,
+  "removedRebuildablePaths": [
+    "/mnt/HC_Volume_106775198/edgesniffer-research/build-target-allenhark-proxy",
+    "/mnt/HC_Volume_106775198/edgesniffer-research/build-target-allenhark-compact",
+    "/mnt/HC_Volume_106775198/edgesniffer-research/cargo-cache-allenhark",
+    "/mnt/HC_Volume_106775198/edgesniffer-build"
+  ],
+  "activeEvidenceRemoved": false,
+  "collectorServicesHealthyAfterCleanup": true
+}

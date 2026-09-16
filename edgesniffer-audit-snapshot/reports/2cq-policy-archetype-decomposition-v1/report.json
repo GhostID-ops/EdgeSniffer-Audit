@@ -1,0 +1,1771 @@
+{
+  "schema": "2CQ_POLICY_ARCHETYPE_DECOMPOSITION_V1",
+  "generatedAtUtc": "2026-09-08T18:37:00.764382Z",
+  "source": {
+    "teacherReportPath": "/mnt/HC_Volume_106775198/edgesniffer-research/2cq-teacher-validation/2CQ_TEACHER_VALIDATION_V1/report.json",
+    "teacherReportSha256": "33e1f2b2f4ab546c0fd32628501d321f7c0397becced2f3a92027bcadb0ed36a",
+    "episodesPath": "/mnt/HC_Volume_106775198/edgesniffer-research/2cq-teacher-validation/2CQ_TEACHER_VALIDATION_V1/episodes.jsonl.gz",
+    "episodesSha256": "9208afcc82f533c4f60dd39ce035fc765e8970a5417e277a7fe3e5116aa18e08",
+    "frozenWindow": {
+      "startUtc": "2026-09-01T00:00:00Z",
+      "endUtc": "2026-09-08T00:00:00Z",
+      "days": 7,
+      "extensionReason": "7-day window retained because 4685 >= 500 closed reconcilable Pump episodes",
+      "windowFreezeSha256": "9b471cc010236e9e5c5a1edae70ae4a96bfd5a45bd7c1a9f300b781a939bb4d5"
+    }
+  },
+  "population": {
+    "definition": "inside frozen window AND Pump-relevant AND fully self-contained/reconciled",
+    "n": 4685,
+    "uniqueMints": 4439,
+    "failedAttemptFeesAllocated": false
+  },
+  "sizeModeMethod": {
+    "method": "Gaussian KDE over log(firstBuySol), Silverman bandwidth; retain modes with density >=5% of the dominant mode; boundaries are intervening density valleys. Outcomes are not used.",
+    "logBandwidth": 0.07251348496213722,
+    "modesSol": [
+      1.221724963652812,
+      1.8854922188303778,
+      3.092805930269978,
+      4.2786009141393215,
+      6.993140532969803
+    ],
+    "boundariesSol": [
+      1.4907741468071136,
+      2.3847213307824298,
+      3.8559888232072037,
+      5.558985446102086
+    ]
+  },
+  "repeatedExactSizeBands": [
+    {
+      "roundedSizeSol": 1.214,
+      "n": 415,
+      "sharePct": 8.858057630736393,
+      "distinctExactCosts": 8,
+      "dominantExactCosts": [
+        {
+          "sol": 1.213867611,
+          "n": 178
+        },
+        {
+          "sol": 1.213762611,
+          "n": 103
+        },
+        {
+          "sol": 1.2137626,
+          "n": 84
+        },
+        {
+          "sol": 1.2138676,
+          "n": 46
+        },
+        {
+          "sol": 1.21364429,
+          "n": 1
+        }
+      ],
+      "genuineRecurringBand": true
+    },
+    {
+      "roundedSizeSol": 1.84,
+      "n": 233,
+      "sharePct": 4.973319103521878,
+      "distinctExactCosts": 6,
+      "dominantExactCosts": [
+        {
+          "sol": 1.839622611,
+          "n": 176
+        },
+        {
+          "sol": 1.8396226,
+          "n": 45
+        },
+        {
+          "sol": 1.840153491,
+          "n": 6
+        },
+        {
+          "sol": 1.840073235,
+          "n": 3
+        },
+        {
+          "sol": 1.840073224,
+          "n": 2
+        }
+      ],
+      "genuineRecurringBand": true
+    },
+    {
+      "roundedSizeSol": 1.876,
+      "n": 156,
+      "sharePct": 3.3297758804695836,
+      "distinctExactCosts": 4,
+      "dominantExactCosts": [
+        {
+          "sol": 1.8762938,
+          "n": 98
+        },
+        {
+          "sol": 1.8757826,
+          "n": 56
+        },
+        {
+          "sol": 1.875716932,
+          "n": 1
+        },
+        {
+          "sol": 1.87566429,
+          "n": 1
+        }
+      ],
+      "genuineRecurringBand": true
+    },
+    {
+      "roundedSizeSol": 3.072,
+      "n": 148,
+      "sharePct": 3.159018143009605,
+      "distinctExactCosts": 10,
+      "dominantExactCosts": [
+        {
+          "sol": 3.072447611,
+          "n": 53
+        },
+        {
+          "sol": 3.071762611,
+          "n": 40
+        },
+        {
+          "sol": 3.0717626,
+          "n": 31
+        },
+        {
+          "sol": 3.0724476,
+          "n": 17
+        },
+        {
+          "sol": 3.0722626,
+          "n": 2
+        }
+      ],
+      "genuineRecurringBand": true
+    }
+  ],
+  "sizeBands": [
+    {
+      "name": "SIZE_MODE_1_1.222_SOL",
+      "modeCenterSol": 1.221724963652812,
+      "lowerInclusiveSol": 0.0,
+      "upperExclusiveSol": 1.4907741468071136,
+      "range": "[0.0000, 1.4908)",
+      "representativeMedianSol": 1.215693287,
+      "statistics": {
+        "n": 1096,
+        "shareOfEpisodesPct": 23.393810032017075,
+        "deployedSol": 1341.335911783,
+        "netPnlSol": 28.248329604,
+        "grossProfitSol": 69.916924326,
+        "grossLossSol": 41.668594722,
+        "grossProfitContributionPct": 5.0456597287437415,
+        "grossLossContributionPct": 8.660649451323296,
+        "netPnlContributionPct": 3.1228842471345333,
+        "wins": 382,
+        "losses": 714,
+        "winRatePct": 34.85401459854015,
+        "profitFactor": 1.6779285404862854,
+        "expectancySol": 0.025774023361313868,
+        "medianReturnPct": -1.583795059341977,
+        "averageWinnerSol": 0.18302859771204188,
+        "averageLoserSol": -0.058359376361344535,
+        "entrySizeSol": {
+          "p10": 1.2137626,
+          "p50": 1.215693287,
+          "p90": 1.233668697
+        },
+        "holdingSeconds": {
+          "p10": 1.0,
+          "p50": 2.0,
+          "p90": 7.0
+        },
+        "winnerHoldingSecondsP50": 3.0,
+        "loserHoldingSecondsP50": 2.0,
+        "sellCount": {
+          "total": 1709,
+          "p50": 1.0,
+          "p90": 3.0
+        },
+        "stagedExitPct": 37.04379562043796,
+        "singleSellExitPct": 62.95620437956204,
+        "medianSellTimingSecondsByOrdinal": {
+          "1": 1.0,
+          "2": 4.0,
+          "3": 7.0,
+          "4": 11.0,
+          "5": 22.0,
+          "6": 21.0,
+          "7": 29.0,
+          "8": 32.0,
+          "9": 34.0,
+          "10": 37.0,
+          "11": 40.0
+        }
+      },
+      "chronology": [
+        {
+          "utcDay": "2026-09-01",
+          "n": 202,
+          "deployedSol": 246.40058851,
+          "winRatePct": 28.71287128712871,
+          "profitFactor": 1.514920020315871,
+          "expectancySol": 0.025220951019801978,
+          "netPnlSol": 5.094632106
+        },
+        {
+          "utcDay": "2026-09-02",
+          "n": 210,
+          "deployedSol": 256.260908053,
+          "winRatePct": 30.476190476190478,
+          "profitFactor": 1.2307305283727936,
+          "expectancySol": 0.01035359961904762,
+          "netPnlSol": 2.1742559200000002
+        },
+        {
+          "utcDay": "2026-09-03",
+          "n": 227,
+          "deployedSol": 277.206640181,
+          "winRatePct": 38.32599118942731,
+          "profitFactor": 1.8537777483346916,
+          "expectancySol": 0.028073217863436122,
+          "netPnlSol": 6.372620455
+        },
+        {
+          "utcDay": "2026-09-04",
+          "n": 157,
+          "deployedSol": 191.67247081099998,
+          "winRatePct": 29.29936305732484,
+          "profitFactor": 1.2955420264956643,
+          "expectancySol": 0.010734484369426752,
+          "netPnlSol": 1.685314046
+        },
+        {
+          "utcDay": "2026-09-05",
+          "n": 68,
+          "deployedSol": 83.143296365,
+          "winRatePct": 30.88235294117647,
+          "profitFactor": 2.194914825898331,
+          "expectancySol": 0.03530100414705882,
+          "netPnlSol": 2.400468282
+        },
+        {
+          "utcDay": "2026-09-06",
+          "n": 73,
+          "deployedSol": 89.090561314,
+          "winRatePct": 32.87671232876712,
+          "profitFactor": 0.9976787910795573,
+          "expectancySol": -7.955749315068543e-05,
+          "netPnlSol": -0.005807697000000037
+        },
+        {
+          "utcDay": "2026-09-07",
+          "n": 159,
+          "deployedSol": 197.56144654899998,
+          "winRatePct": 51.57232704402516,
+          "profitFactor": 3.2523019596105938,
+          "expectancySol": 0.06620658171069183,
+          "netPnlSol": 10.526846492
+        }
+      ]
+    },
+    {
+      "name": "SIZE_MODE_2_1.885_SOL",
+      "modeCenterSol": 1.8854922188303778,
+      "lowerInclusiveSol": 1.4907741468071136,
+      "upperExclusiveSol": 2.3847213307824298,
+      "range": "[1.4908, 2.3847)",
+      "representativeMedianSol": 1.8757826,
+      "statistics": {
+        "n": 1646,
+        "shareOfEpisodesPct": 35.13340448239061,
+        "deployedSol": 3178.692948839,
+        "netPnlSol": 124.090243009,
+        "grossProfitSol": 266.605586525,
+        "grossLossSol": 142.515343516,
+        "grossProfitContributionPct": 19.239992095691456,
+        "grossLossContributionPct": 29.621239685708172,
+        "netPnlContributionPct": 13.71831434100192,
+        "wins": 716,
+        "losses": 930,
+        "winRatePct": 43.49939246658566,
+        "profitFactor": 1.8707149696837277,
+        "expectancySol": 0.07538896902126367,
+        "medianReturnPct": -1.4487184880723456,
+        "averageWinnerSol": 0.3723541711243017,
+        "averageLoserSol": -0.15324230485591397,
+        "entrySizeSol": {
+          "p10": 1.8246626,
+          "p50": 1.8757826,
+          "p90": 2.028294809
+        },
+        "holdingSeconds": {
+          "p10": 1.0,
+          "p50": 3.0,
+          "p90": 16.0
+        },
+        "winnerHoldingSecondsP50": 5.0,
+        "loserHoldingSecondsP50": 2.0,
+        "sellCount": {
+          "total": 4125,
+          "p50": 2.0,
+          "p90": 6.0
+        },
+        "stagedExitPct": 59.295261239368166,
+        "singleSellExitPct": 40.704738760631834,
+        "medianSellTimingSecondsByOrdinal": {
+          "1": 2.0,
+          "2": 5.0,
+          "3": 8.0,
+          "4": 11.0,
+          "5": 14.0,
+          "6": 17.0,
+          "7": 20.0,
+          "8": 20.0,
+          "9": 19.0,
+          "10": 23.0,
+          "11": 23.5,
+          "12": 25.0,
+          "13": 41.5,
+          "14": 44.5,
+          "15": 47.5,
+          "16": 50.0
+        }
+      },
+      "chronology": [
+        {
+          "utcDay": "2026-09-01",
+          "n": 372,
+          "deployedSol": 711.959194207,
+          "winRatePct": 43.81720430107527,
+          "profitFactor": 1.5324255152528548,
+          "expectancySol": 0.056390391986559145,
+          "netPnlSol": 20.977225819
+        },
+        {
+          "utcDay": "2026-09-02",
+          "n": 332,
+          "deployedSol": 648.589151625,
+          "winRatePct": 41.566265060240966,
+          "profitFactor": 1.975360671146759,
+          "expectancySol": 0.08790405554216867,
+          "netPnlSol": 29.18414644
+        },
+        {
+          "utcDay": "2026-09-03",
+          "n": 287,
+          "deployedSol": 544.479928228,
+          "winRatePct": 49.12891986062718,
+          "profitFactor": 2.703580203218776,
+          "expectancySol": 0.09943598648432056,
+          "netPnlSol": 28.538128121
+        },
+        {
+          "utcDay": "2026-09-04",
+          "n": 213,
+          "deployedSol": 417.842911227,
+          "winRatePct": 40.375586854460096,
+          "profitFactor": 1.6246969317880369,
+          "expectancySol": 0.05245845080751174,
+          "netPnlSol": 11.173650022
+        },
+        {
+          "utcDay": "2026-09-05",
+          "n": 124,
+          "deployedSol": 237.347971814,
+          "winRatePct": 35.483870967741936,
+          "profitFactor": 1.3379783661823486,
+          "expectancySol": 0.03387674266935484,
+          "netPnlSol": 4.200716090999999
+        },
+        {
+          "utcDay": "2026-09-06",
+          "n": 106,
+          "deployedSol": 201.250729617,
+          "winRatePct": 40.56603773584906,
+          "profitFactor": 1.9271506657269089,
+          "expectancySol": 0.0662702076226415,
+          "netPnlSol": 7.024642008
+        },
+        {
+          "utcDay": "2026-09-07",
+          "n": 212,
+          "deployedSol": 417.223062121,
+          "winRatePct": 47.64150943396226,
+          "profitFactor": 2.2394010159620374,
+          "expectancySol": 0.10845157786792453,
+          "netPnlSol": 22.991734508
+        }
+      ]
+    },
+    {
+      "name": "SIZE_MODE_3_3.093_SOL",
+      "modeCenterSol": 3.092805930269978,
+      "lowerInclusiveSol": 2.3847213307824298,
+      "upperExclusiveSol": 3.8559888232072037,
+      "range": "[2.3847, 3.8560)",
+      "representativeMedianSol": 3.071762611,
+      "statistics": {
+        "n": 1395,
+        "shareOfEpisodesPct": 29.775880469583775,
+        "deployedSol": 4369.487899194,
+        "netPnlSol": 344.49712221,
+        "grossProfitSol": 512.158143167,
+        "grossLossSol": 167.661020957,
+        "grossProfitContributionPct": 36.960660707509504,
+        "grossLossContributionPct": 34.84766738228628,
+        "netPnlContributionPct": 38.08453990781993,
+        "wins": 840,
+        "losses": 555,
+        "winRatePct": 60.215053763440864,
+        "profitFactor": 3.0547239915612416,
+        "expectancySol": 0.24695134208602149,
+        "medianReturnPct": 3.570649771075096,
+        "averageWinnerSol": 0.6097120751988095,
+        "averageLoserSol": -0.30209192965225223,
+        "entrySizeSol": {
+          "p10": 2.7605626,
+          "p50": 3.071762611,
+          "p90": 3.4085930000000007
+        },
+        "holdingSeconds": {
+          "p10": 2.0,
+          "p50": 12.0,
+          "p90": 21.0
+        },
+        "winnerHoldingSecondsP50": 13.0,
+        "loserHoldingSecondsP50": 9.0,
+        "sellCount": {
+          "total": 5641,
+          "p50": 4.0,
+          "p90": 6.0
+        },
+        "stagedExitPct": 86.66666666666667,
+        "singleSellExitPct": 13.333333333333334,
+        "medianSellTimingSecondsByOrdinal": {
+          "1": 2.0,
+          "2": 6.0,
+          "3": 9.0,
+          "4": 13.0,
+          "5": 16.0,
+          "6": 19.0,
+          "7": 25.0,
+          "8": 23.0,
+          "9": 23.5,
+          "10": 26.0,
+          "11": 30.0,
+          "12": 29.0,
+          "13": 22.5,
+          "14": 17.0,
+          "15": 19.0,
+          "16": 21.0
+        }
+      },
+      "chronology": [
+        {
+          "utcDay": "2026-09-01",
+          "n": 318,
+          "deployedSol": 1010.782253948,
+          "winRatePct": 56.91823899371069,
+          "profitFactor": 2.8624402930995916,
+          "expectancySol": 0.2504956040754717,
+          "netPnlSol": 79.657602096
+        },
+        {
+          "utcDay": "2026-09-02",
+          "n": 294,
+          "deployedSol": 932.008872109,
+          "winRatePct": 62.244897959183675,
+          "profitFactor": 4.340202319430915,
+          "expectancySol": 0.3782027306632653,
+          "netPnlSol": 111.191602815
+        },
+        {
+          "utcDay": "2026-09-03",
+          "n": 226,
+          "deployedSol": 709.183829763,
+          "winRatePct": 58.849557522123895,
+          "profitFactor": 2.6567327376399055,
+          "expectancySol": 0.19127217123893803,
+          "netPnlSol": 43.227510699999996
+        },
+        {
+          "utcDay": "2026-09-04",
+          "n": 153,
+          "deployedSol": 468.27732331,
+          "winRatePct": 60.130718954248366,
+          "profitFactor": 2.6866743421090535,
+          "expectancySol": 0.20176476470588234,
+          "netPnlSol": 30.870009
+        },
+        {
+          "utcDay": "2026-09-05",
+          "n": 83,
+          "deployedSol": 255.489340715,
+          "winRatePct": 57.831325301204814,
+          "profitFactor": 2.7882003924052117,
+          "expectancySol": 0.18219440884337348,
+          "netPnlSol": 15.122135934
+        },
+        {
+          "utcDay": "2026-09-06",
+          "n": 83,
+          "deployedSol": 257.609676526,
+          "winRatePct": 55.42168674698795,
+          "profitFactor": 1.9763976500523837,
+          "expectancySol": 0.12376104324096387,
+          "netPnlSol": 10.272166589000001
+        },
+        {
+          "utcDay": "2026-09-07",
+          "n": 238,
+          "deployedSol": 736.136602823,
+          "winRatePct": 65.96638655462185,
+          "profitFactor": 2.918376514548603,
+          "expectancySol": 0.22754661796638656,
+          "netPnlSol": 54.156095076
+        }
+      ]
+    },
+    {
+      "name": "SIZE_MODE_4_4.279_SOL",
+      "modeCenterSol": 4.2786009141393215,
+      "lowerInclusiveSol": 3.8559888232072037,
+      "upperExclusiveSol": 5.558985446102086,
+      "range": "[3.8560, 5.5590)",
+      "representativeMedianSol": 4.33076261,
+      "statistics": {
+        "n": 348,
+        "shareOfEpisodesPct": 7.427961579509071,
+        "deployedSol": 1534.068529465,
+        "netPnlSol": 184.880196554,
+        "grossProfitSol": 237.320226819,
+        "grossLossSol": 52.440030265,
+        "grossProfitContributionPct": 17.12657018054308,
+        "grossLossContributionPct": 10.89944891043233,
+        "netPnlContributionPct": 20.438711297954697,
+        "wins": 219,
+        "losses": 129,
+        "winRatePct": 62.93103448275862,
+        "profitFactor": 4.52555472641278,
+        "expectancySol": 0.5312649326264368,
+        "medianReturnPct": 5.208066333785572,
+        "averageWinnerSol": 1.083654003739726,
+        "averageLoserSol": -0.4065118625193799,
+        "entrySizeSol": {
+          "p10": 4.034150300299999,
+          "p50": 4.33076261,
+          "p90": 4.7927448119000005
+        },
+        "holdingSeconds": {
+          "p10": 2.0,
+          "p50": 14.0,
+          "p90": 22.0
+        },
+        "winnerHoldingSecondsP50": 15.0,
+        "loserHoldingSecondsP50": 9.0,
+        "sellCount": {
+          "total": 1505,
+          "p50": 5.0,
+          "p90": 6.0
+        },
+        "stagedExitPct": 91.0919540229885,
+        "singleSellExitPct": 8.908045977011495,
+        "medianSellTimingSecondsByOrdinal": {
+          "1": 2.0,
+          "2": 6.0,
+          "3": 9.0,
+          "4": 13.0,
+          "5": 16.0,
+          "6": 19.0,
+          "7": 27.5,
+          "8": 25.5,
+          "9": 24.5,
+          "10": 23.0,
+          "11": 30.5,
+          "12": 33.0
+        }
+      },
+      "chronology": [
+        {
+          "utcDay": "2026-09-01",
+          "n": 93,
+          "deployedSol": 413.360458891,
+          "winRatePct": 60.215053763440864,
+          "profitFactor": 3.961014355304427,
+          "expectancySol": 0.5485672584946236,
+          "netPnlSol": 51.01675504
+        },
+        {
+          "utcDay": "2026-09-02",
+          "n": 59,
+          "deployedSol": 255.733414321,
+          "winRatePct": 64.40677966101694,
+          "profitFactor": 4.103608608281191,
+          "expectancySol": 0.5563271166440678,
+          "netPnlSol": 32.823299882
+        },
+        {
+          "utcDay": "2026-09-03",
+          "n": 54,
+          "deployedSol": 244.724594884,
+          "winRatePct": 72.22222222222221,
+          "profitFactor": 6.612046742021183,
+          "expectancySol": 0.7200648732222222,
+          "netPnlSol": 38.883503154
+        },
+        {
+          "utcDay": "2026-09-04",
+          "n": 43,
+          "deployedSol": 187.765532519,
+          "winRatePct": 67.44186046511628,
+          "profitFactor": 6.391967510790011,
+          "expectancySol": 0.40016207088372097,
+          "netPnlSol": 17.206969048
+        },
+        {
+          "utcDay": "2026-09-05",
+          "n": 31,
+          "deployedSol": 136.379013915,
+          "winRatePct": 48.38709677419355,
+          "profitFactor": 2.9918262490851024,
+          "expectancySol": 0.2495601649032258,
+          "netPnlSol": 7.736365112
+        },
+        {
+          "utcDay": "2026-09-06",
+          "n": 16,
+          "deployedSol": 69.250810747,
+          "winRatePct": 43.75,
+          "profitFactor": 2.102623516687389,
+          "expectancySol": 0.2776396445625,
+          "netPnlSol": 4.442234313
+        },
+        {
+          "utcDay": "2026-09-07",
+          "n": 52,
+          "deployedSol": 226.854704188,
+          "winRatePct": 67.3076923076923,
+          "profitFactor": 5.963770961033876,
+          "expectancySol": 0.6302128847115385,
+          "netPnlSol": 32.771070005
+        }
+      ]
+    },
+    {
+      "name": "SIZE_MODE_5_6.993_SOL",
+      "modeCenterSol": 6.993140532969803,
+      "lowerInclusiveSol": 5.558985446102086,
+      "upperExclusiveSol": null,
+      "range": "[5.5590, inf)",
+      "representativeMedianSol": 7.1635691,
+      "statistics": {
+        "n": 200,
+        "shareOfEpisodesPct": 4.268943436499466,
+        "deployedSol": 1746.344667049,
+        "netPnlSol": 222.843079386,
+        "grossProfitSol": 299.683610087,
+        "grossLossSol": 76.840530701,
+        "grossProfitContributionPct": 21.62711728751221,
+        "grossLossContributionPct": 15.970994570249921,
+        "netPnlContributionPct": 24.63555020608891,
+        "wins": 122,
+        "losses": 78,
+        "winRatePct": 61.0,
+        "profitFactor": 3.90007210196298,
+        "expectancySol": 1.11421539693,
+        "medianReturnPct": 5.733617931672422,
+        "averageWinnerSol": 2.4564230335,
+        "averageLoserSol": -0.9851350089871795,
+        "entrySizeSol": {
+          "p10": 6.1170582011,
+          "p50": 7.1635691,
+          "p90": 11.642862710000001
+        },
+        "holdingSeconds": {
+          "p10": 2.0,
+          "p50": 10.0,
+          "p90": 22.099999999999994
+        },
+        "winnerHoldingSecondsP50": 12.0,
+        "loserHoldingSecondsP50": 5.0,
+        "sellCount": {
+          "total": 728,
+          "p50": 3.0,
+          "p90": 6.0
+        },
+        "stagedExitPct": 87.0,
+        "singleSellExitPct": 13.0,
+        "medianSellTimingSecondsByOrdinal": {
+          "1": 1.0,
+          "2": 6.0,
+          "3": 9.0,
+          "4": 13.0,
+          "5": 16.0,
+          "6": 18.0,
+          "7": 22.0,
+          "8": 23.0,
+          "9": 25.5,
+          "10": 27.5,
+          "11": 38.0
+        }
+      },
+      "chronology": [
+        {
+          "utcDay": "2026-09-01",
+          "n": 40,
+          "deployedSol": 350.554531917,
+          "winRatePct": 67.5,
+          "profitFactor": 9.527922980599191,
+          "expectancySol": 2.27674731655,
+          "netPnlSol": 91.069892662
+        },
+        {
+          "utcDay": "2026-09-02",
+          "n": 47,
+          "deployedSol": 398.275363224,
+          "winRatePct": 70.2127659574468,
+          "profitFactor": 3.328149268320547,
+          "expectancySol": 0.6725024237234043,
+          "netPnlSol": 31.607613915
+        },
+        {
+          "utcDay": "2026-09-03",
+          "n": 39,
+          "deployedSol": 316.268419906,
+          "winRatePct": 43.58974358974359,
+          "profitFactor": 2.163002430162467,
+          "expectancySol": 0.7546040553589745,
+          "netPnlSol": 29.429558159000003
+        },
+        {
+          "utcDay": "2026-09-04",
+          "n": 22,
+          "deployedSol": 218.346271327,
+          "winRatePct": 50.0,
+          "profitFactor": 1.800160565381467,
+          "expectancySol": 0.5643964668181818,
+          "netPnlSol": 12.41672227
+        },
+        {
+          "utcDay": "2026-09-05",
+          "n": 14,
+          "deployedSol": 154.641017979,
+          "winRatePct": 64.28571428571429,
+          "profitFactor": 3.59145738831085,
+          "expectancySol": 1.2335538272857143,
+          "netPnlSol": 17.269753582
+        },
+        {
+          "utcDay": "2026-09-06",
+          "n": 6,
+          "deployedSol": 56.877193620999996,
+          "winRatePct": 33.33333333333333,
+          "profitFactor": 27.22774896939526,
+          "expectancySol": 1.1705271043333334,
+          "netPnlSol": 7.023162626
+        },
+        {
+          "utcDay": "2026-09-07",
+          "n": 32,
+          "deployedSol": 251.381869075,
+          "winRatePct": 71.875,
+          "profitFactor": 8.043721591138986,
+          "expectancySol": 1.063324255375,
+          "netPnlSol": 34.026376172
+        }
+      ]
+    }
+  ],
+  "exitArchetypes": [
+    {
+      "name": "RAPID_SINGLE_FULL_EXIT",
+      "statistics": {
+        "n": 1603,
+        "shareOfEpisodesPct": 34.215581643543224,
+        "deployedSol": 2968.253776063,
+        "netPnlSol": -112.940535954,
+        "grossProfitSol": 37.076834249,
+        "grossLossSol": 150.017370203,
+        "grossProfitContributionPct": 2.6757053638001302,
+        "grossLossContributionPct": 31.180505692734695,
+        "netPnlContributionPct": -12.485701828675037,
+        "wins": 379,
+        "losses": 1224,
+        "winRatePct": 23.64316905801622,
+        "profitFactor": 0.24715027465705133,
+        "expectancySol": -0.07045573047660636,
+        "medianReturnPct": -2.606332354533559,
+        "averageWinnerSol": 0.0978280587044855,
+        "averageLoserSol": -0.1225632109501634,
+        "entrySizeSol": {
+          "p10": 1.2138676,
+          "p50": 1.8246626,
+          "p90": 3.0724476109999994
+        },
+        "holdingSeconds": {
+          "p10": 1.0,
+          "p50": 2.0,
+          "p90": 2.0
+        },
+        "winnerHoldingSecondsP50": 2.0,
+        "loserHoldingSecondsP50": 2.0,
+        "sellCount": {
+          "total": 1603,
+          "p50": 1.0,
+          "p90": 1.0
+        },
+        "stagedExitPct": 0.0,
+        "singleSellExitPct": 100.0,
+        "medianSellTimingSecondsByOrdinal": {
+          "1": 2.0
+        }
+      },
+      "chronology": [
+        {
+          "utcDay": "2026-09-01",
+          "n": 320,
+          "deployedSol": 592.642416502,
+          "winRatePct": 17.8125,
+          "profitFactor": 0.1381393094350672,
+          "expectancySol": -0.09480018010624999,
+          "netPnlSol": -30.336057634
+        },
+        {
+          "utcDay": "2026-09-02",
+          "n": 299,
+          "deployedSol": 528.051962963,
+          "winRatePct": 21.40468227424749,
+          "profitFactor": 0.2764352584878274,
+          "expectancySol": -0.05947799704013378,
+          "netPnlSol": -17.783921115000002
+        },
+        {
+          "utcDay": "2026-09-03",
+          "n": 350,
+          "deployedSol": 631.595666468,
+          "winRatePct": 31.71428571428571,
+          "profitFactor": 0.295519497568848,
+          "expectancySol": -0.05760808958,
+          "netPnlSol": -20.162831353
+        },
+        {
+          "utcDay": "2026-09-04",
+          "n": 239,
+          "deployedSol": 431.054712285,
+          "winRatePct": 22.17573221757322,
+          "profitFactor": 0.20504570609308023,
+          "expectancySol": -0.06666954574895398,
+          "netPnlSol": -15.934021434
+        },
+        {
+          "utcDay": "2026-09-05",
+          "n": 109,
+          "deployedSol": 203.581460672,
+          "winRatePct": 17.431192660550458,
+          "profitFactor": 0.1436194811621132,
+          "expectancySol": -0.09141713848623854,
+          "netPnlSol": -9.964468095
+        },
+        {
+          "utcDay": "2026-09-06",
+          "n": 107,
+          "deployedSol": 212.372978111,
+          "winRatePct": 22.429906542056074,
+          "profitFactor": 0.3713357564276437,
+          "expectancySol": -0.053712809401869156,
+          "netPnlSol": -5.747270606
+        },
+        {
+          "utcDay": "2026-09-07",
+          "n": 179,
+          "deployedSol": 368.954579062,
+          "winRatePct": 28.49162011173184,
+          "profitFactor": 0.37437787868009825,
+          "expectancySol": -0.07269254590502794,
+          "netPnlSol": -13.011965717
+        }
+      ]
+    },
+    {
+      "name": "TWO_STAGE_BACK_LOADED_35_40_FIRST",
+      "statistics": {
+        "n": 719,
+        "shareOfEpisodesPct": 15.346851654215582,
+        "deployedSol": 1722.55988434,
+        "netPnlSol": 66.5468456,
+        "grossProfitSol": 141.473001064,
+        "grossLossSol": 74.926155464,
+        "grossProfitContributionPct": 10.209611350247789,
+        "grossLossContributionPct": 15.573099393881105,
+        "netPnlContributionPct": 7.35682777474059,
+        "wins": 386,
+        "losses": 333,
+        "winRatePct": 53.68567454798331,
+        "profitFactor": 1.8881657571763968,
+        "expectancySol": 0.09255472267037552,
+        "medianReturnPct": 0.8960079778987622,
+        "averageWinnerSol": 0.3665103654507772,
+        "averageLoserSol": -0.22500346986186187,
+        "entrySizeSol": {
+          "p10": 1.2168687374,
+          "p50": 1.8757826,
+          "p90": 3.4053835999999995
+        },
+        "holdingSeconds": {
+          "p10": 2.0,
+          "p50": 3.0,
+          "p90": 5.0
+        },
+        "winnerHoldingSecondsP50": 3.0,
+        "loserHoldingSecondsP50": 3.0,
+        "sellCount": {
+          "total": 1438,
+          "p50": 2.0,
+          "p90": 2.0
+        },
+        "stagedExitPct": 100.0,
+        "singleSellExitPct": 0.0,
+        "medianSellTimingSecondsByOrdinal": {
+          "1": 0.0,
+          "2": 3.0
+        }
+      },
+      "chronology": [
+        {
+          "utcDay": "2026-09-01",
+          "n": 169,
+          "deployedSol": 406.409896991,
+          "winRatePct": 52.071005917159766,
+          "profitFactor": 2.562449060304254,
+          "expectancySol": 0.15034792344378697,
+          "netPnlSol": 25.408799062
+        },
+        {
+          "utcDay": "2026-09-02",
+          "n": 183,
+          "deployedSol": 429.950239556,
+          "winRatePct": 51.91256830601093,
+          "profitFactor": 1.6510363305701556,
+          "expectancySol": 0.07114420005464481,
+          "netPnlSol": 13.01938861
+        },
+        {
+          "utcDay": "2026-09-03",
+          "n": 93,
+          "deployedSol": 218.644298243,
+          "winRatePct": 56.98924731182796,
+          "profitFactor": 1.9012439040188516,
+          "expectancySol": 0.10835995630107526,
+          "netPnlSol": 10.077475935999999
+        },
+        {
+          "utcDay": "2026-09-04",
+          "n": 74,
+          "deployedSol": 190.595097917,
+          "winRatePct": 54.054054054054056,
+          "profitFactor": 1.358385225506541,
+          "expectancySol": 0.03769720355405405,
+          "netPnlSol": 2.789593063
+        },
+        {
+          "utcDay": "2026-09-05",
+          "n": 63,
+          "deployedSol": 158.144900122,
+          "winRatePct": 55.55555555555556,
+          "profitFactor": 1.5158759487459894,
+          "expectancySol": 0.052598964079365075,
+          "netPnlSol": 3.313734737
+        },
+        {
+          "utcDay": "2026-09-06",
+          "n": 48,
+          "deployedSol": 97.692942152,
+          "winRatePct": 37.5,
+          "profitFactor": 1.295083488067985,
+          "expectancySol": 0.038684413729166665,
+          "netPnlSol": 1.856851859
+        },
+        {
+          "utcDay": "2026-09-07",
+          "n": 89,
+          "deployedSol": 221.122509359,
+          "winRatePct": 64.04494382022472,
+          "profitFactor": 2.4433636696359002,
+          "expectancySol": 0.11326968913483147,
+          "netPnlSol": 10.081002333
+        }
+      ]
+    },
+    {
+      "name": "TWO_STAGE_FRONT_LOADED_60_FIRST",
+      "statistics": {
+        "n": 235,
+        "shareOfEpisodesPct": 5.016008537886873,
+        "deployedSol": 553.209558105,
+        "netPnlSol": 67.087604404,
+        "grossProfitSol": 82.586455403,
+        "grossLossSol": 15.498850999,
+        "grossProfitContributionPct": 5.95997544491025,
+        "grossLossContributionPct": 3.221373705933036,
+        "netPnlContributionPct": 7.416609261794315,
+        "wins": 165,
+        "losses": 70,
+        "winRatePct": 70.2127659574468,
+        "profitFactor": 5.328553413948463,
+        "expectancySol": 0.28547916767659576,
+        "medianReturnPct": 9.387422072566338,
+        "averageWinnerSol": 0.5005239721393939,
+        "averageLoserSol": -0.22141215712857143,
+        "entrySizeSol": {
+          "p10": 1.2162810121999998,
+          "p50": 1.8757826,
+          "p90": 3.2680560048
+        },
+        "holdingSeconds": {
+          "p10": 3.0,
+          "p50": 5.0,
+          "p90": 7.0
+        },
+        "winnerHoldingSecondsP50": 5.0,
+        "loserHoldingSecondsP50": 5.0,
+        "sellCount": {
+          "total": 470,
+          "p50": 2.0,
+          "p90": 2.0
+        },
+        "stagedExitPct": 100.0,
+        "singleSellExitPct": 0.0,
+        "medianSellTimingSecondsByOrdinal": {
+          "1": 3.0,
+          "2": 5.0
+        }
+      },
+      "chronology": [
+        {
+          "utcDay": "2026-09-01",
+          "n": 44,
+          "deployedSol": 110.523309511,
+          "winRatePct": 68.18181818181817,
+          "profitFactor": 5.2638927979809464,
+          "expectancySol": 0.24808315370454545,
+          "netPnlSol": 10.915658763
+        },
+        {
+          "utcDay": "2026-09-02",
+          "n": 39,
+          "deployedSol": 76.141339416,
+          "winRatePct": 79.48717948717949,
+          "profitFactor": 7.458067475919658,
+          "expectancySol": 0.32166217412820514,
+          "netPnlSol": 12.544824791
+        },
+        {
+          "utcDay": "2026-09-03",
+          "n": 39,
+          "deployedSol": 98.017606319,
+          "winRatePct": 74.35897435897436,
+          "profitFactor": 13.371724786507553,
+          "expectancySol": 0.3948636596923077,
+          "netPnlSol": 15.399682728
+        },
+        {
+          "utcDay": "2026-09-04",
+          "n": 35,
+          "deployedSol": 72.597780055,
+          "winRatePct": 57.14285714285714,
+          "profitFactor": 2.6810725741670565,
+          "expectancySol": 0.16162096405714285,
+          "netPnlSol": 5.656733742
+        },
+        {
+          "utcDay": "2026-09-05",
+          "n": 9,
+          "deployedSol": 23.129022522,
+          "winRatePct": 66.66666666666666,
+          "profitFactor": 3.6545901560142986,
+          "expectancySol": 0.30550543622222226,
+          "netPnlSol": 2.749548926
+        },
+        {
+          "utcDay": "2026-09-06",
+          "n": 8,
+          "deployedSol": 18.716735034,
+          "winRatePct": 75.0,
+          "profitFactor": 12.419196582580762,
+          "expectancySol": 0.29133389575,
+          "netPnlSol": 2.330671166
+        },
+        {
+          "utcDay": "2026-09-07",
+          "n": 61,
+          "deployedSol": 154.083765248,
+          "winRatePct": 70.49180327868852,
+          "profitFactor": 4.398356023157762,
+          "expectancySol": 0.28672925062295085,
+          "netPnlSol": 17.490484288
+        }
+      ]
+    },
+    {
+      "name": "THREE_TO_FIVE_STAGE_LADDER",
+      "statistics": {
+        "n": 1226,
+        "shareOfEpisodesPct": 26.16862326574173,
+        "deployedSol": 3765.003394176,
+        "netPnlSol": 519.81138958,
+        "grossProfitSol": 621.812795798,
+        "grossLossSol": 102.001406218,
+        "grossProfitContributionPct": 44.87405321130236,
+        "grossLossContributionPct": 21.20058112566281,
+        "netPnlContributionPct": 57.46572709809471,
+        "wins": 828,
+        "losses": 398,
+        "winRatePct": 67.53670473083197,
+        "profitFactor": 6.0961198365152525,
+        "expectancySol": 0.4239897141761827,
+        "medianReturnPct": 6.422057797240747,
+        "averageWinnerSol": 0.750981637437198,
+        "averageLoserSol": -0.25628494024623116,
+        "entrySizeSol": {
+          "p10": 1.217973224,
+          "p50": 3.00636261,
+          "p90": 4.5063626
+        },
+        "holdingSeconds": {
+          "p10": 6.0,
+          "p50": 9.0,
+          "p90": 16.0
+        },
+        "winnerHoldingSecondsP50": 10.0,
+        "loserHoldingSecondsP50": 7.0,
+        "sellCount": {
+          "total": 4515,
+          "p50": 3.0,
+          "p90": 5.0
+        },
+        "stagedExitPct": 100.0,
+        "singleSellExitPct": 0.0,
+        "medianSellTimingSecondsByOrdinal": {
+          "1": 1.0,
+          "2": 5.0,
+          "3": 7.0,
+          "4": 11.0,
+          "5": 14.0
+        }
+      },
+      "chronology": [
+        {
+          "utcDay": "2026-09-01",
+          "n": 245,
+          "deployedSol": 752.194167659,
+          "winRatePct": 71.42857142857143,
+          "profitFactor": 6.646698017889961,
+          "expectancySol": 0.4948445547795919,
+          "netPnlSol": 121.236915921
+        },
+        {
+          "utcDay": "2026-09-02",
+          "n": 269,
+          "deployedSol": 880.036570467,
+          "winRatePct": 64.31226765799256,
+          "profitFactor": 4.832997767362709,
+          "expectancySol": 0.419202996732342,
+          "netPnlSol": 112.765606121
+        },
+        {
+          "utcDay": "2026-09-03",
+          "n": 200,
+          "deployedSol": 623.576234466,
+          "winRatePct": 68.5,
+          "profitFactor": 6.274794505502922,
+          "expectancySol": 0.400656776565,
+          "netPnlSol": 80.131355313
+        },
+        {
+          "utcDay": "2026-09-04",
+          "n": 129,
+          "deployedSol": 420.851676331,
+          "winRatePct": 69.76744186046511,
+          "profitFactor": 6.045732970170733,
+          "expectancySol": 0.4501334255503876,
+          "netPnlSol": 58.067211896
+        },
+        {
+          "utcDay": "2026-09-05",
+          "n": 68,
+          "deployedSol": 215.511956695,
+          "winRatePct": 61.76470588235294,
+          "profitFactor": 5.168076044137905,
+          "expectancySol": 0.3577554458088235,
+          "netPnlSol": 24.327370315
+        },
+        {
+          "utcDay": "2026-09-06",
+          "n": 75,
+          "deployedSol": 204.262312575,
+          "winRatePct": 62.66666666666667,
+          "profitFactor": 6.867165226610289,
+          "expectancySol": 0.32837696284,
+          "netPnlSol": 24.628272213
+        },
+        {
+          "utcDay": "2026-09-07",
+          "n": 240,
+          "deployedSol": 668.5704759829999,
+          "winRatePct": 68.33333333333333,
+          "profitFactor": 7.861731459637582,
+          "expectancySol": 0.4110610741708333,
+          "netPnlSol": 98.654657801
+        }
+      ]
+    },
+    {
+      "name": "SIX_STEP_30_17_RESIDUAL_LADDER",
+      "statistics": {
+        "n": 702,
+        "shareOfEpisodesPct": 14.983991462113128,
+        "deployedSol": 2233.016822468,
+        "netPnlSol": 9.150738130999999,
+        "grossProfitSol": 136.137301478,
+        "grossLossSol": 126.986563347,
+        "grossProfitContributionPct": 9.82455258535954,
+        "grossLossContributionPct": 26.393645322431915,
+        "netPnlContributionPct": 1.0116242751184377,
+        "wins": 349,
+        "losses": 353,
+        "winRatePct": 49.71509971509971,
+        "profitFactor": 1.0720606801996442,
+        "expectancySol": 0.013035239502849,
+        "medianReturnPct": -0.15965186182672175,
+        "averageWinnerSol": 0.39007822773065903,
+        "averageLoserSol": -0.35973530693201133,
+        "entrySizeSol": {
+          "p10": 2.0071626091,
+          "p50": 3.0382126004999996,
+          "p90": 4.5069926009
+        },
+        "holdingSeconds": {
+          "p10": 16.0,
+          "p50": 19.0,
+          "p90": 22.0
+        },
+        "winnerHoldingSecondsP50": 19.0,
+        "loserHoldingSecondsP50": 16.0,
+        "sellCount": {
+          "total": 4212,
+          "p50": 6.0,
+          "p90": 6.0
+        },
+        "stagedExitPct": 100.0,
+        "singleSellExitPct": 0.0,
+        "medianSellTimingSecondsByOrdinal": {
+          "1": 3.0,
+          "2": 6.0,
+          "3": 9.0,
+          "4": 13.0,
+          "5": 16.0,
+          "6": 19.0
+        }
+      },
+      "chronology": [
+        {
+          "utcDay": "2026-09-01",
+          "n": 180,
+          "deployedSol": 572.4872149720001,
+          "winRatePct": 42.22222222222222,
+          "profitFactor": 0.6738437469639939,
+          "expectancySol": -0.07460382733333333,
+          "netPnlSol": -13.428688919999999
+        },
+        {
+          "utcDay": "2026-09-02",
+          "n": 112,
+          "deployedSol": 392.895236657,
+          "winRatePct": 53.57142857142857,
+          "profitFactor": 2.0865982667930303,
+          "expectancySol": 0.16793296414285713,
+          "netPnlSol": 18.808491984
+        },
+        {
+          "utcDay": "2026-09-03",
+          "n": 125,
+          "deployedSol": 402.082488432,
+          "winRatePct": 52.0,
+          "profitFactor": 0.9594626388725019,
+          "expectancySol": -0.007761310184000004,
+          "netPnlSol": -0.9701637730000005
+        },
+        {
+          "utcDay": "2026-09-04",
+          "n": 93,
+          "deployedSol": 274.616273377,
+          "winRatePct": 49.46236559139785,
+          "profitFactor": 0.6203615262865778,
+          "expectancySol": -0.06929685593548386,
+          "netPnlSol": -6.444607602
+        },
+        {
+          "utcDay": "2026-09-05",
+          "n": 59,
+          "deployedSol": 191.737361128,
+          "winRatePct": 44.06779661016949,
+          "profitFactor": 1.3707772181337274,
+          "expectancySol": 0.051395193169491524,
+          "netPnlSol": 3.0323163969999998
+        },
+        {
+          "utcDay": "2026-09-06",
+          "n": 39,
+          "deployedSol": 113.772504512,
+          "winRatePct": 51.28205128205128,
+          "profitFactor": 1.2172922807458026,
+          "expectancySol": 0.02818798771794872,
+          "netPnlSol": 1.099331521
+        },
+        {
+          "utcDay": "2026-09-07",
+          "n": 94,
+          "deployedSol": 285.42574339,
+          "winRatePct": 59.57446808510638,
+          "profitFactor": 1.4912722942705123,
+          "expectancySol": 0.07504317578723405,
+          "netPnlSol": 7.054058524
+        }
+      ]
+    },
+    {
+      "name": "OTHER_SIX_PLUS_COMPLEX_LADDER",
+      "statistics": {
+        "n": 200,
+        "shareOfEpisodesPct": 4.268943436499466,
+        "deployedSol": 927.886521178,
+        "netPnlSol": 354.902929002,
+        "grossProfitSol": 366.598102932,
+        "grossLossSol": 11.695173930000001,
+        "grossProfitContributionPct": 26.456102044379932,
+        "grossLossContributionPct": 2.43079475935644,
+        "netPnlContributionPct": 39.23491341892697,
+        "wins": 172,
+        "losses": 28,
+        "winRatePct": 86.0,
+        "profitFactor": 31.34610097517378,
+        "expectancySol": 1.77451464501,
+        "medianReturnPct": 23.37761696290164,
+        "averageWinnerSol": 2.131384319372093,
+        "averageLoserSol": -0.4176847832142857,
+        "entrySizeSol": {
+          "p10": 2.0115626,
+          "p50": 3.077973688,
+          "p90": 5.569019370499997
+        },
+        "holdingSeconds": {
+          "p10": 17.0,
+          "p50": 23.0,
+          "p90": 34.099999999999994
+        },
+        "winnerHoldingSecondsP50": 23.0,
+        "loserHoldingSecondsP50": 21.5,
+        "sellCount": {
+          "total": 1470,
+          "p50": 6.0,
+          "p90": 11.0
+        },
+        "stagedExitPct": 100.0,
+        "singleSellExitPct": 0.0,
+        "medianSellTimingSecondsByOrdinal": {
+          "1": 4.0,
+          "2": 8.0,
+          "3": 11.0,
+          "4": 15.0,
+          "5": 18.0,
+          "6": 21.0,
+          "7": 22.5,
+          "8": 22.0,
+          "9": 22.0,
+          "10": 24.0,
+          "11": 30.0,
+          "12": 25.5,
+          "13": 27.0,
+          "14": 29.0,
+          "15": 32.0,
+          "16": 34.0
+        }
+      },
+      "chronology": [
+        {
+          "utcDay": "2026-09-01",
+          "n": 67,
+          "deployedSol": 298.800021838,
+          "winRatePct": 88.05970149253731,
+          "profitFactor": 41.50192965213786,
+          "expectancySol": 2.00029075419403,
+          "netPnlSol": 134.019480531
+        },
+        {
+          "utcDay": "2026-09-02",
+          "n": 40,
+          "deployedSol": 183.79236027299999,
+          "winRatePct": 82.5,
+          "profitFactor": 20.114870436970495,
+          "expectancySol": 1.690663214525,
+          "netPnlSol": 67.626528581
+        },
+        {
+          "utcDay": "2026-09-03",
+          "n": 26,
+          "deployedSol": 117.947119034,
+          "winRatePct": 84.61538461538461,
+          "profitFactor": 27.150093894247085,
+          "expectancySol": 2.3836846822307693,
+          "netPnlSol": 61.975801738
+        },
+        {
+          "utcDay": "2026-09-04",
+          "n": 18,
+          "deployedSol": 94.188969229,
+          "winRatePct": 83.33333333333334,
+          "profitFactor": 32.629223494691445,
+          "expectancySol": 1.623208595611111,
+          "netPnlSol": 29.217754721
+        },
+        {
+          "utcDay": "2026-09-05",
+          "n": 12,
+          "deployedSol": 74.895939649,
+          "winRatePct": 75.0,
+          "profitFactor": 70.8970763307975,
+          "expectancySol": 1.93924472675,
+          "netPnlSol": 23.270936720999998
+        },
+        {
+          "utcDay": "2026-09-06",
+          "n": 7,
+          "deployedSol": 27.261499440999998,
+          "winRatePct": 100.0,
+          "profitFactor": null,
+          "expectancySol": 0.6555059551428571,
+          "netPnlSol": 4.588541686
+        },
+        {
+          "utcDay": "2026-09-07",
+          "n": 30,
+          "deployedSol": 131.000611714,
+          "winRatePct": 90.0,
+          "profitFactor": 28.998920634870636,
+          "expectancySol": 1.1401295008,
+          "netPnlSol": 34.203885024
+        }
+      ]
+    }
+  ],
+  "sizeExitRelationship": {
+    "exitColumns": [
+      "RAPID_SINGLE_FULL_EXIT",
+      "TWO_STAGE_BACK_LOADED_35_40_FIRST",
+      "TWO_STAGE_FRONT_LOADED_60_FIRST",
+      "THREE_TO_FIVE_STAGE_LADDER",
+      "SIX_STEP_30_17_RESIDUAL_LADDER",
+      "OTHER_SIX_PLUS_COMPLEX_LADDER"
+    ],
+    "matrix": [
+      {
+        "sizeBand": "SIZE_MODE_1_1.222_SOL",
+        "n": 1096,
+        "counts": {
+          "RAPID_SINGLE_FULL_EXIT": 690,
+          "TWO_STAGE_BACK_LOADED_35_40_FIRST": 167,
+          "TWO_STAGE_FRONT_LOADED_60_FIRST": 58,
+          "THREE_TO_FIVE_STAGE_LADDER": 180,
+          "SIX_STEP_30_17_RESIDUAL_LADDER": 0,
+          "OTHER_SIX_PLUS_COMPLEX_LADDER": 1
+        },
+        "rowPct": {
+          "RAPID_SINGLE_FULL_EXIT": 62.95620437956204,
+          "TWO_STAGE_BACK_LOADED_35_40_FIRST": 15.237226277372262,
+          "TWO_STAGE_FRONT_LOADED_60_FIRST": 5.291970802919708,
+          "THREE_TO_FIVE_STAGE_LADDER": 16.423357664233578,
+          "SIX_STEP_30_17_RESIDUAL_LADDER": 0.0,
+          "OTHER_SIX_PLUS_COMPLEX_LADDER": 0.09124087591240876
+        }
+      },
+      {
+        "sizeBand": "SIZE_MODE_2_1.885_SOL",
+        "n": 1646,
+        "counts": {
+          "RAPID_SINGLE_FULL_EXIT": 670,
+          "TWO_STAGE_BACK_LOADED_35_40_FIRST": 316,
+          "TWO_STAGE_FRONT_LOADED_60_FIRST": 96,
+          "THREE_TO_FIVE_STAGE_LADDER": 353,
+          "SIX_STEP_30_17_RESIDUAL_LADDER": 166,
+          "OTHER_SIX_PLUS_COMPLEX_LADDER": 45
+        },
+        "rowPct": {
+          "RAPID_SINGLE_FULL_EXIT": 40.704738760631834,
+          "TWO_STAGE_BACK_LOADED_35_40_FIRST": 19.19805589307412,
+          "TWO_STAGE_FRONT_LOADED_60_FIRST": 5.83232077764277,
+          "THREE_TO_FIVE_STAGE_LADDER": 21.445929526123937,
+          "SIX_STEP_30_17_RESIDUAL_LADDER": 10.08505467800729,
+          "OTHER_SIX_PLUS_COMPLEX_LADDER": 2.7339003645200486
+        }
+      },
+      {
+        "sizeBand": "SIZE_MODE_3_3.093_SOL",
+        "n": 1395,
+        "counts": {
+          "RAPID_SINGLE_FULL_EXIT": 186,
+          "TWO_STAGE_BACK_LOADED_35_40_FIRST": 166,
+          "TWO_STAGE_FRONT_LOADED_60_FIRST": 62,
+          "THREE_TO_FIVE_STAGE_LADDER": 474,
+          "SIX_STEP_30_17_RESIDUAL_LADDER": 398,
+          "OTHER_SIX_PLUS_COMPLEX_LADDER": 109
+        },
+        "rowPct": {
+          "RAPID_SINGLE_FULL_EXIT": 13.333333333333334,
+          "TWO_STAGE_BACK_LOADED_35_40_FIRST": 11.899641577060931,
+          "TWO_STAGE_FRONT_LOADED_60_FIRST": 4.444444444444445,
+          "THREE_TO_FIVE_STAGE_LADDER": 33.97849462365591,
+          "SIX_STEP_30_17_RESIDUAL_LADDER": 28.530465949820787,
+          "OTHER_SIX_PLUS_COMPLEX_LADDER": 7.813620071684587
+        }
+      },
+      {
+        "sizeBand": "SIZE_MODE_4_4.279_SOL",
+        "n": 348,
+        "counts": {
+          "RAPID_SINGLE_FULL_EXIT": 31,
+          "TWO_STAGE_BACK_LOADED_35_40_FIRST": 37,
+          "TWO_STAGE_FRONT_LOADED_60_FIRST": 11,
+          "THREE_TO_FIVE_STAGE_LADDER": 133,
+          "SIX_STEP_30_17_RESIDUAL_LADDER": 111,
+          "OTHER_SIX_PLUS_COMPLEX_LADDER": 25
+        },
+        "rowPct": {
+          "RAPID_SINGLE_FULL_EXIT": 8.908045977011495,
+          "TWO_STAGE_BACK_LOADED_35_40_FIRST": 10.632183908045976,
+          "TWO_STAGE_FRONT_LOADED_60_FIRST": 3.1609195402298855,
+          "THREE_TO_FIVE_STAGE_LADDER": 38.2183908045977,
+          "SIX_STEP_30_17_RESIDUAL_LADDER": 31.896551724137932,
+          "OTHER_SIX_PLUS_COMPLEX_LADDER": 7.183908045977011
+        }
+      },
+      {
+        "sizeBand": "SIZE_MODE_5_6.993_SOL",
+        "n": 200,
+        "counts": {
+          "RAPID_SINGLE_FULL_EXIT": 26,
+          "TWO_STAGE_BACK_LOADED_35_40_FIRST": 33,
+          "TWO_STAGE_FRONT_LOADED_60_FIRST": 8,
+          "THREE_TO_FIVE_STAGE_LADDER": 86,
+          "SIX_STEP_30_17_RESIDUAL_LADDER": 27,
+          "OTHER_SIX_PLUS_COMPLEX_LADDER": 20
+        },
+        "rowPct": {
+          "RAPID_SINGLE_FULL_EXIT": 13.0,
+          "TWO_STAGE_BACK_LOADED_35_40_FIRST": 16.5,
+          "TWO_STAGE_FRONT_LOADED_60_FIRST": 4.0,
+          "THREE_TO_FIVE_STAGE_LADDER": 43.0,
+          "SIX_STEP_30_17_RESIDUAL_LADDER": 13.5,
+          "OTHER_SIX_PLUS_COMPLEX_LADDER": 10.0
+        }
+      }
+    ],
+    "association": {
+      "chiSquare": 1264.7874210137136,
+      "cramersV": 0.2597909245793524
+    },
+    "globalMajorityAccuracyPct": 34.215581643543224,
+    "sizeConditionedModalAccuracyPct": 43.82070437566703,
+    "modalAccuracyUpliftPctPoints": 9.6051227321238
+  },
+  "dominance": [
+    {
+      "family": "SIZE",
+      "name": "SIZE_MODE_1_1.222_SOL",
+      "n": 1096,
+      "tradeCountSharePct": 23.393810032017075,
+      "deployedSol": 1341.335911783,
+      "deployedSharePct": 11.02172252918617,
+      "grossProfitSol": 69.916924326,
+      "grossProfitSharePct": 5.0456597287437415,
+      "grossLossSol": 41.668594722,
+      "grossLossSharePct": 8.660649451323296,
+      "netPnlSol": 28.248329604,
+      "netPnlSharePct": 3.1228842471345333
+    },
+    {
+      "family": "SIZE",
+      "name": "SIZE_MODE_2_1.885_SOL",
+      "n": 1646,
+      "tradeCountSharePct": 35.13340448239061,
+      "deployedSol": 3178.692948839,
+      "deployedSharePct": 26.11923782836279,
+      "grossProfitSol": 266.605586525,
+      "grossProfitSharePct": 19.239992095691456,
+      "grossLossSol": 142.515343516,
+      "grossLossSharePct": 29.621239685708172,
+      "netPnlSol": 124.090243009,
+      "netPnlSharePct": 13.71831434100192
+    },
+    {
+      "family": "SIZE",
+      "name": "SIZE_MODE_3_3.093_SOL",
+      "n": 1395,
+      "tradeCountSharePct": 29.775880469583775,
+      "deployedSol": 4369.487899194,
+      "deployedSharePct": 35.903969167228276,
+      "grossProfitSol": 512.158143167,
+      "grossProfitSharePct": 36.960660707509504,
+      "grossLossSol": 167.661020957,
+      "grossLossSharePct": 34.84766738228628,
+      "netPnlSol": 344.49712221,
+      "netPnlSharePct": 38.08453990781993
+    },
+    {
+      "family": "SIZE",
+      "name": "SIZE_MODE_4_4.279_SOL",
+      "n": 348,
+      "tradeCountSharePct": 7.427961579509071,
+      "deployedSol": 1534.068529465,
+      "deployedSharePct": 12.60540146878231,
+      "grossProfitSol": 237.320226819,
+      "grossProfitSharePct": 17.12657018054308,
+      "grossLossSol": 52.440030265,
+      "grossLossSharePct": 10.89944891043233,
+      "netPnlSol": 184.880196554,
+      "netPnlSharePct": 20.438711297954697
+    },
+    {
+      "family": "SIZE",
+      "name": "SIZE_MODE_5_6.993_SOL",
+      "n": 200,
+      "tradeCountSharePct": 4.268943436499466,
+      "deployedSol": 1746.344667049,
+      "deployedSharePct": 14.349669006440468,
+      "grossProfitSol": 299.683610087,
+      "grossProfitSharePct": 21.62711728751221,
+      "grossLossSol": 76.840530701,
+      "grossLossSharePct": 15.970994570249921,
+      "netPnlSol": 222.843079386,
+      "netPnlSharePct": 24.63555020608891
+    },
+    {
+      "family": "EXIT",
+      "name": "RAPID_SINGLE_FULL_EXIT",
+      "n": 1603,
+      "tradeCountSharePct": 34.215581643543224,
+      "deployedSol": 2968.253776063,
+      "deployedSharePct": 24.390064583067783,
+      "grossProfitSol": 37.076834249,
+      "grossProfitSharePct": 2.6757053638001302,
+      "grossLossSol": 150.017370203,
+      "grossLossSharePct": 31.180505692734695,
+      "netPnlSol": -112.940535954,
+      "netPnlSharePct": -12.485701828675037
+    },
+    {
+      "family": "EXIT",
+      "name": "TWO_STAGE_BACK_LOADED_35_40_FIRST",
+      "n": 719,
+      "tradeCountSharePct": 15.346851654215582,
+      "deployedSol": 1722.55988434,
+      "deployedSharePct": 14.154230061480652,
+      "grossProfitSol": 141.473001064,
+      "grossProfitSharePct": 10.209611350247789,
+      "grossLossSol": 74.926155464,
+      "grossLossSharePct": 15.573099393881105,
+      "netPnlSol": 66.5468456,
+      "netPnlSharePct": 7.35682777474059
+    },
+    {
+      "family": "EXIT",
+      "name": "TWO_STAGE_FRONT_LOADED_60_FIRST",
+      "n": 235,
+      "tradeCountSharePct": 5.016008537886873,
+      "deployedSol": 553.209558105,
+      "deployedSharePct": 4.545708644915057,
+      "grossProfitSol": 82.586455403,
+      "grossProfitSharePct": 5.95997544491025,
+      "grossLossSol": 15.498850999,
+      "grossLossSharePct": 3.221373705933036,
+      "netPnlSol": 67.087604404,
+      "netPnlSharePct": 7.416609261794315
+    },
+    {
+      "family": "EXIT",
+      "name": "THREE_TO_FIVE_STAGE_LADDER",
+      "n": 1226,
+      "tradeCountSharePct": 26.16862326574173,
+      "deployedSol": 3765.003394176,
+      "deployedSharePct": 30.936935608390186,
+      "grossProfitSol": 621.812795798,
+      "grossProfitSharePct": 44.87405321130236,
+      "grossLossSol": 102.001406218,
+      "grossLossSharePct": 21.20058112566281,
+      "netPnlSol": 519.81138958,
+      "netPnlSharePct": 57.46572709809471
+    },
+    {
+      "family": "EXIT",
+      "name": "SIX_STEP_30_17_RESIDUAL_LADDER",
+      "n": 702,
+      "tradeCountSharePct": 14.983991462113128,
+      "deployedSol": 2233.016822468,
+      "deployedSharePct": 18.348641532702754,
+      "grossProfitSol": 136.137301478,
+      "grossProfitSharePct": 9.82455258535954,
+      "grossLossSol": 126.986563347,
+      "grossLossSharePct": 26.393645322431915,
+      "netPnlSol": 9.150738130999999,
+      "netPnlSharePct": 1.0116242751184377
+    },
+    {
+      "family": "EXIT",
+      "name": "OTHER_SIX_PLUS_COMPLEX_LADDER",
+      "n": 200,
+      "tradeCountSharePct": 4.268943436499466,
+      "deployedSol": 927.886521178,
+      "deployedSharePct": 7.624419569443572,
+      "grossProfitSol": 366.598102932,
+      "grossProfitSharePct": 26.456102044379932,
+      "grossLossSol": 11.695173930000001,
+      "grossLossSharePct": 2.43079475935644,
+      "netPnlSol": 354.902929002,
+      "netPnlSharePct": 39.23491341892697
+    }
+  ],
+  "verdict": {
+    "classification": "2CQ_SINGLE_DOMINANT_POLICY",
+    "answers": {
+      "oneStrategyWithVariableSizing": "YES. The evidence best supports one recurring acquisition-and-management system with configured size tiers and outcome-responsive exit branches.",
+      "multipleDistinctPolicies": "NOT ESTABLISHED. Distinct exit templates exist, but all recur throughout the seven days and are nested by realized trade path; no separate causal entry policies were tested here.",
+      "sizeBandsAsConvictionTiers": "LIKELY. Larger pre-outcome entries have progressively more staged exits and stronger economics, but size is only a moderate predictor of the eventual exit branch.",
+      "exitDiffersBySize": "YES, MODERATELY. Cramer's V and the cross-tab show a real relationship, especially the shift from rapid full exits at the smallest tier to ladders at larger tiers.",
+      "dominantArchetype": "The coherent parent policy is one initial Pump bonding-curve acquisition followed by rapid full invalidation or staged ladder management. The three-to-five-stage branch contributes most net profit, but it is future-defined and must not be used to select the next entry-study population.",
+      "nextStudyPopulationChoice": "ALL_CLEAN_2CQ_ENTRIES_WITH_SIZE_TIER_AS_ACTION_LABEL"
+    },
+    "nextCausalFingerprintPopulation": "Use all 4,685 clean, reconciled 2CQ entry episodes as one causal population. Preserve the outcome-blind entry-size mode as a teacher action/conviction label and stratification variable. Do not condition inclusion on the eventual exit archetype.",
+    "rationale": [
+      "All five natural size modes and all major exit branches persist across the frozen chronology.",
+      "Size-conditioned modal exit prediction improves only modestly over the global majority, so size does not uniquely identify separate exit policies.",
+      "Rapid exits and progressively longer ladders form a nested response to post-entry trade development.",
+      "Selecting the profitable ladder branches for entry research would use future information and create leakage."
+    ]
+  },
+  "boundaries": {
+    "entryFeatureSearchPerformed": false,
+    "chosenVsIgnoredPerformed": false,
+    "exitOptimizationPerformed": false,
+    "rightCensoredInventoryExcluded": true,
+    "servicesModified": false,
+    "eightYcbTouched": false
+  },
+  "reportSha256": "fdd85cedd613b635b0cb08a692771c501d1bf7999f868651e308371549524aed"
+}

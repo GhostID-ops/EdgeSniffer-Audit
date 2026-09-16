@@ -1,0 +1,87 @@
+{
+  "schema": "PUMP_EXACT_ALPHA_N5000_HUMAN_ADJUDICATION_V2",
+  "supersedes": "human-review-v1; conclusions and numeric verdict unchanged; top-three runner-up characterization expanded",
+  "checkpointN": 5000,
+  "humanVerdict": "N5000_PROMISING_ALPHA_LEADS_NEED_MORE_N",
+  "automaticScreenVerdict": "N5000_STRONG_SELECTIVE_ALPHA_FOUND",
+  "automaticSeriousLeadN": 1,
+  "humanConvincingAlphaFound": false,
+  "strongestCandidate": {
+    "candidateId": "C-4cf71d36f6e15aac",
+    "state": "FIXED_25MS",
+    "clauses": [
+      [
+        "firstBuyerShareBps",
+        "le",
+        360.40437631955825
+      ]
+    ],
+    "uniqueMintN": 120,
+    "frequencyOfN5000": 0.024,
+    "matchesPerHour": 4.8777796504491215,
+    "decisionAgeMs": 25.0,
+    "economics": {
+      "0.50": {
+        "passN": 120,
+        "PF": 2.940871475856452,
+        "expectancyReturnPct": 5.471604787285461,
+        "totalPnlSol": 3.282995702
+      },
+      "1.00": {
+        "passN": 116,
+        "PF": 2.5817257149978428,
+        "expectancyReturnPct": 4.986956220391312,
+        "totalPnlSol": 5.78489814
+      }
+    },
+    "positiveBothPrimary1kBlocks": 4,
+    "later3001To5000": {
+      "matchingUniqueN": 33,
+      "0.50": {
+        "passN": 33,
+        "PF": 1.1027011307231724,
+        "expectancyReturnPct": 0.46510181564851044,
+        "totalPnlSol": 0.07674256700000001
+      },
+      "1.00": {
+        "passN": 31,
+        "PF": 1.135995833552948,
+        "expectancyReturnPct": 0.6388873152408432,
+        "totalPnlSol": 0.198056058
+      }
+    },
+    "automaticClassifications": {
+      "chronology": "MOSTLY_CONSISTENT",
+      "capacity": "SIZE_ROBUST",
+      "aggregateNearby": "STABLE",
+      "outliers": "OUTLIER_RESILIENT",
+      "coarseFactorShape": "IRREGULAR"
+    }
+  },
+  "downgradeReasons": [
+    "The coarse FIXED_25MS firstBuyerShareBps factor shape is IRREGULAR and broadly points HIGHER_BETTER, opposite the selected low-tail rule.",
+    "The selected edge is an extreme sub-tail inside an otherwise losing lowest quintile after 3995 frozen candidate tests.",
+    "The later 3001-5000 sample is only 33 matches and has thin PF margins of 1.103 and 1.136, with block D negative at both sizes.",
+    "The adjacent broader frozen threshold remains aggregate-positive but is EARLY_ONLY, so nearby aggregate stability does not imply chronological stability.",
+    "The winner is a stricter realization of the previously discussed low-first-buyer motif rather than an independent new motif."
+  ],
+  "nextGate": "STOP_FOR_HUMAN_REVIEW; if later authorized, preregister the exact candidate and evaluate prospectively on untouched ordinals 5001-10000 without retuning",
+  "noTouch": {
+    "ordinalRowsAbove5000EvaluatedOrReported": 0,
+    "validationRowsInspected": 0,
+    "holdoutRowsInspected": 0,
+    "newFeaturesAdded": 0,
+    "thresholdsRetuned": false,
+    "deployments": 0,
+    "shadowTrades": 0,
+    "liveTrades": 0,
+    "followOnResearchLanes": 0
+  },
+  "identities": {
+    "checkpointPrefixSha256": "b61b4ffdef0b01ad380578b20b35c11329d13a1c4bac3ff88c712a4b784cc741",
+    "correctedFreezeSha256": "5af9661520c4c6e36d87806af36db673f53429da8bc97a4bd924f8b2e0f2f7b2",
+    "frozenScannerCodeSha256": "46e7336fe34ccdd655940a04d3da2654ac1693cdaf2c13835266c22659672569",
+    "frozenScannerArtifactSha256": "c871c96d681e2ea842a1f74c5d2e92801bea0c89ccb8b66e1fdb5e5b2f8c47cd",
+    "integrityGateSha256": "68ddff350d8b2b512e9c97447f3db6536965bfe3d9daf6a7193a2d100650dc2e"
+  }
+}

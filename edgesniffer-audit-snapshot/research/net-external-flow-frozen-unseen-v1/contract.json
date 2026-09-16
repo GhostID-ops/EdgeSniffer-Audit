@@ -1,0 +1,56 @@
+{
+  "schema": "NET_EXTERNAL_FLOW_FROZEN_UNSEEN_V1_CONTRACT",
+  "study": "NET_EXTERNAL_FLOW_FROZEN_UNSEEN_V1",
+  "population": {
+    "discoveryOrdinalStart": 1,
+    "discoveryOrdinalEnd": 6848,
+    "unseenOrdinalStart": 6849,
+    "unseenOrdinalMaximumEnd": 9999,
+    "anchor": "EXTERNAL_GROSS_BUY_GE_2_SOL",
+    "unit": "unique_mint"
+  },
+  "feature": {
+    "id": "net_external_flow_sol",
+    "definition": "Cumulative external gross buys minus gross sells through the first causal external-gross-buy >=2 SOL crossing.",
+    "sameTimestampPostTriggerRowsPermitted": false
+  },
+  "threshold": {
+    "method": "EMPIRICAL_LINEAR_INTERPOLATION_POSITION_(N_MINUS_1)_TIMES_0.90",
+    "quantile": 0.9,
+    "comparison": "GREATER_THAN_OR_EQUAL"
+  },
+  "sampleGate": {
+    "minimumExactEvaluableMatches": 40,
+    "failureVerdict": "TOO_FEW_UNSEEN_MATCHES",
+    "outcomesPermittedBeforePass": false
+  },
+  "primaryEconomics": {
+    "sizeSol": 0.5,
+    "executionScenario": "P50",
+    "policy": "TP20_SL20_MAX120",
+    "counterfactualReplay": "STRICT_NO_RESUBMISSION",
+    "standardizedDeliveryCostSol": 0.001
+  },
+  "prohibitions": [
+    "threshold_search",
+    "neighboring_percentile_inspection",
+    "additional_features",
+    "model_training",
+    "exit_optimization",
+    "validation_access",
+    "holdout_access",
+    "shadow_trading",
+    "live_trading",
+    "collector_changes",
+    "service_restarts",
+    "package_installation"
+  ],
+  "parents": {
+    "sameAnchorAnalysisRowsSha256": "331a5239bb2ae595976b5ba92b080ce2f92452ca1bbe20a099ff9f9006c7dba7",
+    "sameAnchorContractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+    "sameAnchorFeatureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+    "sameAnchorCorrectedCodeSha256": "1e56012a7dea5f380fb276885ebaae8de959be0b9bb4d0c59a68c3d2c12c9bb4",
+    "constrainedRankerStudy": "CONSTRAINED_CAUSAL_RANKER_V1",
+    "survivingFeature": "net_external_flow_sol"
+  }
+}

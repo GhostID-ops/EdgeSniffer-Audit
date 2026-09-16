@@ -1,0 +1,12 @@
+{
+  "atMs": 1788575578046,
+  "autoDisarmed": true,
+  "consumePoint": "economic_buy_admitted_pre_executor_submit",
+  "key": "ranker-v2-direct-scorer-emitter-v1:HwJXFJSqTqhuCZJvPiqCeSpPFtDgYiiNRGUzcACNpump:1788575578043:0.628576264",
+  "kind": "RUST_SELECTED_CANDIDATE_PERSISTENT_ONE_SHOT_STATE",
+  "liveEntriesUsed": 1,
+  "maxLiveEntries": 1,
+  "mint": "HwJXFJSqTqhuCZJvPiqCeSpPFtDgYiiNRGUzcACNpump",
+  "sourceSignature": "2M6W5qdwBeCimRZDyV3H2jyCwVQSNa3MPHUyaFQQMY8VHQFfXmbmTpSecxa9YUw3dM38mmF29yFrLVkLyLMRWjyd",
+  "submissionEnabled": false
+}

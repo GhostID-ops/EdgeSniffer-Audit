@@ -1,0 +1,61 @@
+{
+  "schema": "8ycb-canonical-matcher-historical-fixture-v2",
+  "provenance": {
+    "historical_v2_target_launches": {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/wallet-8ycb-opening-sniper-v2/target_launches.jsonl.gz",
+      "sha256": "8fe17330d31bd44a5f2b318fc3486d1a7d67007b5e32136524136ac76ac5ab68"
+    },
+    "historical_v3_generic_controls": {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/wallet-8ycb-causal-followability-v3/generic_control_selection.jsonl.gz",
+      "sha256": "b19770c6852f99d964f46dbd20e244a57794883339b9498be2403498a01ed7ee"
+    },
+    "missed_event_feeds": {
+      "global_sha256": "ebed3330f47daecca64d03429e3bbb2b1447ea36554cf6fbf9962e3e0507ac20",
+      "wallet_sha256": "8d9ee715e01dabad38e4c7fb984c7533ef878075a111d99220a7c59c485acd7f"
+    }
+  },
+  "cases": [
+    {
+      "id": "missed-tahkr4",
+      "expected": true,
+      "create": {"signature": "3msUjoGrsRfbXTrn3Q6CLpRHGtx1F8LFMkKA587BN75WXCKPWMywbwEsCw7j6PVPUVLfYWvjTcAzkuYnBpxjiQ3i", "mint": "tahKR4TA337akDkgfGZ5Qaeng4ABdov49rVePABpump", "source_slot": 443866447, "source_transaction_index": 44},
+      "atomic": {"signature": "3msUjoGrsRfbXTrn3Q6CLpRHGtx1F8LFMkKA587BN75WXCKPWMywbwEsCw7j6PVPUVLfYWvjTcAzkuYnBpxjiQ3i", "mint": "tahKR4TA337akDkgfGZ5Qaeng4ABdov49rVePABpump", "slot": "443866447", "tx_index": null, "wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ", "side": "buy", "quote_lamports": 3048926880}
+    },
+    {
+      "id": "historical-v2-bthdh",
+      "expected": true,
+      "create": {"signature": "3R1VrGS84Z9hbaEf62Hy2iKeoP5mUCBYA69wLeaVdHK13Gjvu5C9KLSsUn7A7ZKwotvSn2fRqU9KBKByKtNuMVXD", "mint": "BTHDhVmgHtS9fYc8UX5F7UgLowAxMj6XuWugAGYbpump", "source_slot": 437063128, "source_transaction_index": null},
+      "atomic": {"signature": "3R1VrGS84Z9hbaEf62Hy2iKeoP5mUCBYA69wLeaVdHK13Gjvu5C9KLSsUn7A7ZKwotvSn2fRqU9KBKByKtNuMVXD", "mint": "BTHDhVmgHtS9fYc8UX5F7UgLowAxMj6XuWugAGYbpump", "slot": 437063128, "tx_index": null, "wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ", "side": "buy", "quote_lamports": 1000000000}
+    },
+    {
+      "id": "historical-v2-7xnij",
+      "expected": true,
+      "create": {"signature": "5hhgUDXecu3i1WZT1YiqfToi7VjwAYbKJsmnFbpWAUQ1ef4Yx1XTgXHaC63ueiApjSpCnGEiUH6hrxMN1n5WUDoe", "mint": "7XnijEfHVkG9MfMATeMbQUCqat92s1g8fathedMmpump", "source_slot": 437063414, "source_transaction_index": null},
+      "atomic": {"signature": "5hhgUDXecu3i1WZT1YiqfToi7VjwAYbKJsmnFbpWAUQ1ef4Yx1XTgXHaC63ueiApjSpCnGEiUH6hrxMN1n5WUDoe", "mint": "7XnijEfHVkG9MfMATeMbQUCqat92s1g8fathedMmpump", "slot": "437063414", "tx_index": null, "wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ", "side": "buy", "quote_lamports": 1000000000}
+    },
+    {
+      "id": "historical-v2-bccc",
+      "expected": true,
+      "create": {"signature": "2PiYTKobkpGfPQSvtMuq92SuA1p1GsD1WKpZn5oghbuYhyigfe8trERqtFic6ef61fNZYjjEnYbkG1qqch4hzvDE", "mint": "BCcC6YpJsm8GGTnhqofZ5Bs4s9YYnndpPUhZRSMipump", "source_slot": "437064721", "source_transaction_index": null},
+      "atomic": {"signature": "2PiYTKobkpGfPQSvtMuq92SuA1p1GsD1WKpZn5oghbuYhyigfe8trERqtFic6ef61fNZYjjEnYbkG1qqch4hzvDE", "mint": "BCcC6YpJsm8GGTnhqofZ5Bs4s9YYnndpPUhZRSMipump", "slot": 437064721, "tx_index": null, "wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ", "side": "buy", "quote_lamports": 1010000000}
+    },
+    {
+      "id": "historical-v3-control-7dhs",
+      "expected": false,
+      "create": {"signature": "5jaBR8eu7gY2qJRr9xq3NHGt2xTFZvs13ycRXuSjGvofU6ykBZNDYin9nVvxt9rxVGKX3uksV55L3B528iicxrED", "mint": "7DhSgBVW4Yoog4ejdPBhQEw4THeawAKFY6PD7eGSpump", "source_slot": 442351012, "source_transaction_index": 51},
+      "atomic": {"signature": "5jaBR8eu7gY2qJRr9xq3NHGt2xTFZvs13ycRXuSjGvofU6ykBZNDYin9nVvxt9rxVGKX3uksV55L3B528iicxrED", "mint": "7DhSgBVW4Yoog4ejdPBhQEw4THeawAKFY6PD7eGSpump", "slot": "442351012", "tx_index": "51", "wallet": "NOT_8YCB", "side": "buy", "quote_lamports": 1000000000}
+    },
+    {
+      "id": "historical-v3-control-bbpy",
+      "expected": false,
+      "create": {"signature": "38JBQbHQdcwnXiediCYzCQoab59bWqhH3wofCwZV4ajf36JK71AD6rSnVRM36vLj6Z5MKrkXnsVgkg4kUjBKZ5h2", "mint": "BbpYtQSpasJntRnryXsVtxiTJHFbWHK7wqhajvHypump", "source_slot": 442351009, "source_transaction_index": 33},
+      "atomic": {"signature": "DIFFERENT_SIGNATURE", "mint": "BbpYtQSpasJntRnryXsVtxiTJHFbWHK7wqhajvHypump", "slot": 442351009, "tx_index": 33, "wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ", "side": "buy", "quote_lamports": 1000000000}
+    },
+    {
+      "id": "historical-v3-control-3ing",
+      "expected": false,
+      "create": {"signature": "3GhNg6LiHFRHpyqQ6XYvWYNqTjbtf36WCZY9tpbLwwa4kHooS8Db7RwCdGFx9SVomD6JuStpWGp4zpussAsjA6DU", "mint": "3inGj8CBGdwp51udifCDH39yLbTDHxv9zj25q65Npump", "source_slot": 442351007, "source_transaction_index": 32},
+      "atomic": {"signature": "3GhNg6LiHFRHpyqQ6XYvWYNqTjbtf36WCZY9tpbLwwa4kHooS8Db7RwCdGFx9SVomD6JuStpWGp4zpussAsjA6DU", "mint": "DIFFERENT_MINT", "slot": 442351007, "tx_index": 32, "wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ", "side": "buy", "quote_lamports": 1000000000}
+    }
+  ]
+}

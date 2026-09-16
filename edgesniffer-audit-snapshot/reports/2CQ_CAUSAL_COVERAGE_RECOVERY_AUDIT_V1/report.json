@@ -1,0 +1,57 @@
+{
+  "classificationRules": {
+    "A": "complete exact-ledger partition, finalized exact event, and trustworthy local millisecond arrival join",
+    "B": "complete exact-ledger partition and finalized teacher entry, but no trustworthy millisecond join",
+    "C": "some raw ShredStream/finalized entry evidence, but success or full external history cannot be proven",
+    "D": "no usable existing pre-entry evidence"
+  },
+  "coverageCensus": {
+    "A_FULL_REALTIME_CAUSAL_COVERAGE": {
+      "N": 108,
+      "pct": 2.039274924471299
+    },
+    "B_EXACT_CHAIN_ORDER_COVERAGE": {
+      "N": 83,
+      "pct": 1.5672205438066464
+    },
+    "C_PARTIAL_CHAIN_HISTORY": {
+      "N": 4003,
+      "pct": 75.58534743202416
+    },
+    "D_NO_USABLE_PRE_ENTRY_HISTORY": {
+      "N": 1102,
+      "pct": 20.808157099697887
+    }
+  },
+  "generatedAtUtc": "2026-09-08T20:51:41.904584Z",
+  "normalizedArchive": {
+    "malformedRows": 572,
+    "semanticWarning": "raw ShredStream observations have millisecond arrival/order but canonical_state is null; they are not proof of successful canonical execution or complete history",
+    "targetMintRows": 916090,
+    "targetReceiveMaxUtc": "2026-09-08T17:32:28.999000Z",
+    "targetReceiveMinUtc": "2026-08-28T13:41:01.701000Z",
+    "totalRows": 8904745
+  },
+  "outcomesRead": 0,
+  "population": {
+    "episodeN": 5296,
+    "uniqueMintN": 5004
+  },
+  "schema": "2CQ_CAUSAL_COVERAGE_RECOVERY_AUDIT_V1",
+  "servicesModified": 0,
+  "sourceCounts": {
+    "exactEntryArrivalJoinedEpisodes": 108,
+    "exactLedgerIndexedEpisodes": 200,
+    "exactLedgerIndexedUniqueMints": 191,
+    "finalizedTeacherEntryEpisodes": 1303,
+    "normalizedAnyEvidenceEpisodes": 3679,
+    "normalizedEntrySignatureObservedEpisodes": 3368,
+    "normalizedStrictPreEntryEvidenceEpisodes": 1774
+  },
+  "tiers": {
+    "tierAFullOriginalTimingSemanticsN": 108,
+    "tierBStrictChainOrderedAdditionalN": 83,
+    "tierBStrictChainOrderedTotalN": 191,
+    "tierCInsufficientN": 5105
+  }
+}

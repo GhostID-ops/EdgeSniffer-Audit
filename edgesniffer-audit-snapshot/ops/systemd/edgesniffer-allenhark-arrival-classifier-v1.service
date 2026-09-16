@@ -1,0 +1,19 @@
+[Unit]
+Description=EdgeSniffer AllenHark finalized Pump arrival post-classifier V1 (no-submit)
+After=pump-exact-evidence-ledger-v1-reconcile.service edgesniffer-allenhark-arrival-observer-v1.service
+Requires=edgesniffer-allenhark-arrival-observer-v1.service
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+RuntimeDirectory=edgesniffer-allenhark-arrival-classifier-v1
+ExecStart=/usr/bin/flock -n /run/edgesniffer-allenhark-arrival-classifier-v1/run.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/twoCqAllenharkArrivalClassifierV1.py --exact-root /var/lib/pump-exact-evidence-ledger-v1 --all-transaction-root /var/lib/pump-exact-evidence-ledger-v1/allenhark-arrivals-v1/all-transactions --allenhark-health /var/lib/pump-exact-evidence-ledger-v1/allenhark-arrivals-v1/health.json --output-root /var/lib/pump-exact-evidence-ledger-v1/allenhark-arrivals-v1
+Nice=10
+IOSchedulingClass=idle
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/pump-exact-evidence-ledger-v1
+PrivateTmp=true
+

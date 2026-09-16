@@ -1,0 +1,15 @@
+{
+  "schema": "2CQ_CHOICE_SET_COVERAGE_REPAIR_V2_ADJUDICATION",
+  "adjudicatedAtUtc": "2026-09-11T06:25:00Z",
+  "originalReportPreservedAs": "report.original.json",
+  "originalComparableN": 211,
+  "repairedComparableN": 211,
+  "recoveredN": 0,
+  "regressedN": 0,
+  "stillNonComparableN": 139,
+  "correctedVerdict": "2CQ_CHOICE_SET_EXISTING_EVIDENCE_COVERAGE_BLOCKER",
+  "historicalCanonicalBlockReconstructionRequired": true,
+  "teacherOnlyBackfillPermitted": false,
+  "crossSectionalPolicyEligibleForSealedValidation": false,
+  "reason": "The exhaustive all-successful-transaction scan recovered zero omitted LAUNCHED_120S episodes. Teacher-only backfill would create asymmetric chosen/control coverage."
+}

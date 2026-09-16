@@ -1,0 +1,200 @@
+{
+  "research_as_of": "2026-09-06",
+  "scope": "Pump.fun exact-alpha V2 feature research only; no V1 outcomes, validation, holdout, or 8YCB material inspected",
+  "evidence_grades": {
+    "A": "Repeated empirical support in large data and/or an unusually direct platform mechanism, with causal-time construction possible.",
+    "B": "Strong single-study, open-data, or mechanism-backed evidence, but not yet replicated for the exact Pump.fun early-entry objective.",
+    "C": "Indirect empirical or practitioner evidence; useful as a falsifiable hypothesis.",
+    "D": "Speculative, highly proxy-dependent, or contradicted/too weak for promotion without new prospective evidence."
+  },
+  "sources": [
+    {
+      "id": "CODE-V1-BUILDER",
+      "title": "buildPumpExactAlphaResearchV1.py",
+      "type": "local source code",
+      "path": "scripts/buildPumpExactAlphaResearchV1.py",
+      "use": "Authoritative inventory of frozen V1 feature definitions, checkpoints, receive-clock semantics, and exact-economics inputs."
+    },
+    {
+      "id": "CODE-V1-SCANNER",
+      "title": "scanPumpExactAlphaFingerprintsV1.py",
+      "type": "local source code",
+      "path": "scripts/scanPumpExactAlphaFingerprintsV1.py",
+      "use": "Authoritative inventory of scan eligibility and the four hard-coded descriptive rules."
+    },
+    {
+      "id": "CODE-LEDGER",
+      "title": "rust-exact-ledger source",
+      "type": "local source code",
+      "path": "rust-exact-ledger/src/lib.rs",
+      "use": "Raw Yellowstone/RPC evidence envelope, ordering, transaction metadata, instruction/log/account payload, and decoded Pump trade fields."
+    },
+    {
+      "id": "CODE-ECON",
+      "title": "exactCurveEconomicsV1.py",
+      "type": "local source code",
+      "path": "scripts/exactCurveEconomicsV1.py",
+      "use": "Exact buy/sell quote accounting semantics only; no label or outcome files were inspected."
+    },
+    {
+      "id": "PUMP-CURVE",
+      "title": "Pump bonding curve",
+      "publisher": "Pump",
+      "type": "official documentation",
+      "url": "https://pump.fun/docs/bonding-curve",
+      "use": "Constant-product curve, deterministic price impact, and graduation mechanics."
+    },
+    {
+      "id": "PUMP-FEES",
+      "title": "Pump fees",
+      "publisher": "Pump",
+      "type": "official documentation",
+      "url": "https://pump.fun/docs/fees",
+      "use": "Current fee components and protocol/creator economics."
+    },
+    {
+      "id": "PUMP-CREATE",
+      "title": "Coin creation",
+      "publisher": "Pump",
+      "type": "official public repository",
+      "url": "https://github.com/pump-fun/pump-public-docs/blob/main/docs/instructions/COIN_CREATION.md",
+      "use": "Create arguments, creator/user distinction, metadata fields, Mayhem/cashback flags, and create-plus-buy transactions."
+    },
+    {
+      "id": "PUMP-BUY",
+      "title": "Buy instruction",
+      "publisher": "Pump",
+      "type": "official public repository",
+      "url": "https://github.com/pump-fun/pump-public-docs/blob/main/docs/instructions/BUY.md",
+      "use": "Canonical instruction semantics and quote constraints."
+    },
+    {
+      "id": "PUMP-IDL",
+      "title": "Pump program IDL",
+      "publisher": "Pump",
+      "type": "official public repository",
+      "url": "https://github.com/pump-fun/pump-public-docs/blob/main/idl/pump.ts",
+      "use": "Canonical fields/events/accounts for local decoding."
+    },
+    {
+      "id": "PUMPSWAP",
+      "title": "PumpSwap technical README",
+      "publisher": "Pump",
+      "type": "official public repository",
+      "url": "https://github.com/pump-fun/pump-public-docs/blob/main/docs/PUMP_SWAP_README.md",
+      "use": "Canonical pool identity, effective reserves, migration, pool creator, and post-graduation state."
+    },
+    {
+      "id": "SOL-FEES",
+      "title": "Transaction fees",
+      "publisher": "Solana",
+      "type": "official documentation",
+      "url": "https://solana.com/docs/core/fees",
+      "use": "Base fee, compute-unit limit/price, priority fee, and scheduler incentives."
+    },
+    {
+      "id": "SOL-TX",
+      "title": "Transactions and instructions",
+      "publisher": "Solana",
+      "type": "official documentation",
+      "url": "https://solana.com/docs/core/transactions",
+      "use": "Signer/account/instruction/message structure and address lookup tables."
+    },
+    {
+      "id": "JITO-SEND",
+      "title": "Low Latency Transaction Send",
+      "publisher": "Jito Labs",
+      "type": "official documentation",
+      "url": "https://docs.jito.wtf/lowlatencytxnsend/",
+      "use": "Bundles, atomic same-slot execution, tips, account-lock auctions, and tip-per-compute-unit efficiency."
+    },
+    {
+      "id": "JITO-SHREDS",
+      "title": "Low Latency Transaction Feed",
+      "publisher": "Jito Labs",
+      "type": "official documentation",
+      "url": "https://docs.jito.wtf/lowlatencytxnfeed/",
+      "use": "ShredStream timing context and the documented September 5, 2026 feed retirement notice; cited as infrastructure risk, not as authority to change V1."
+    },
+    {
+      "id": "MARINO-2026",
+      "title": "Predicting Success in the Pump.fun Ecosystem",
+      "year": 2026,
+      "type": "research paper",
+      "url": "https://arxiv.org/html/2602.14860",
+      "use": "Time-consistent bonding-curve state paths, trades-to-liquidity, direct-contract proxy, ex-ante trader history, creator history, and creator sell behavior."
+    },
+    {
+      "id": "MELT-2026",
+      "title": "MELT: Meme Economy Lifecycle Tracker",
+      "year": 2026,
+      "type": "research paper",
+      "url": "https://arxiv.org/abs/2602.13480",
+      "use": "Early ownership concentration, bundled/entity grouping, behavioral traces, and risk modeling."
+    },
+    {
+      "id": "MELT-CODE",
+      "title": "MELT open-source feature generator",
+      "year": 2026,
+      "type": "open-source definitions",
+      "url": "https://github.com/git-disl/MELT/blob/master/src/feat_gen.py",
+      "use": "Auditable definitions for holder Gini/top-k, sniper windows, early-buyer holdings, activity, and cluster-adjusted features."
+    },
+    {
+      "id": "SOLMEMES-2025",
+      "title": "SOLMEMES: A Dataset for Benchmarking Solana Meme Coin Market Dynamics",
+      "year": 2025,
+      "type": "peer-reviewed dataset paper",
+      "url": "https://doi.org/10.1145/3789982.3790023",
+      "use": "Metadata/text/image/social fields and the incremental value and limitations of text embeddings."
+    },
+    {
+      "id": "SOLMEMES-DATA",
+      "title": "SOLMEMES dataset",
+      "year": 2025,
+      "type": "open dataset",
+      "url": "https://huggingface.co/datasets/rucyfer/solmemes",
+      "use": "Public schema for metadata, social links, and minute-level market series; graduated-token selection bias is material."
+    },
+    {
+      "id": "SOLRUG-2026",
+      "title": "From Hype to Collapse: A Data-Driven Analysis of Rug Pulls in Solana Meme Tokens",
+      "year": 2026,
+      "type": "research paper",
+      "url": "https://arxiv.org/html/2603.24625",
+      "use": "Funding graphs, recurring entities, wash-trading caveats, metadata/social unreliability, and retrospective-label limitations."
+    },
+    {
+      "id": "PINE-2025",
+      "title": "Exit Liquidity Machines",
+      "year": 2025,
+      "type": "practitioner investigation",
+      "url": "https://pineanalytics.substack.com/p/exit-liquidity-machines",
+      "use": "Falsifiable deployer-funded sniper, hub-and-spoke funding, same-block, multi-signer, and split-buy hypotheses; treated as grade C, not causal proof."
+    },
+    {
+      "id": "TRUST-2025",
+      "title": "Trust Dynamics and Social Signals in Meme-Coin Markets",
+      "year": 2025,
+      "type": "research paper",
+      "url": "https://faculty.washington.edu/weicaics/paper/papers/YueyaoLYHC2025.pdf",
+      "use": "Social/on-chain co-evolution and manipulation-sensitive sentiment context."
+    },
+    {
+      "id": "MIDSUMMER-2025",
+      "title": "A Midsummer Meme's Dream",
+      "year": 2025,
+      "type": "research paper",
+      "url": "https://arxiv.org/abs/2507.01963",
+      "use": "Cross-chain wash-trading and liquidity-pattern evidence; indirect for canonical Pump bonding curves."
+    },
+    {
+      "id": "CATCH-RUG-2026",
+      "title": "Catching the Rug",
+      "year": 2026,
+      "type": "research paper",
+      "url": "https://arxiv.org/abs/2608.20271",
+      "use": "Large-scale evidence that early dynamic trading behavior can support risk prediction; five-minute horizon is too late for immediate entry."
+    }
+  ]
+}

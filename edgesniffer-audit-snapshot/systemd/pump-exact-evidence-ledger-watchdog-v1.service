@@ -1,0 +1,10 @@
+[Unit]
+Description=Pump exact evidence ledger independent liveness watchdog
+After=pump-exact-evidence-ledger-v1.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/monitorPumpExactEvidenceLedgerV1.py
+Nice=0
+CPUWeight=100
+IOWeight=100

@@ -1,0 +1,5 @@
+[Timer]
+OnCalendar=
+OnCalendar=*-*-* 01/6:15:00 UTC
+AccuracySec=10s
+Persistent=true

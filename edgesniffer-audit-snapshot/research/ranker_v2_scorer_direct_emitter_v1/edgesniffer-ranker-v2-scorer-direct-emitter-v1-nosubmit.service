@@ -1,0 +1,20 @@
+[Unit]
+Description=EdgeSniffer Ranker V2 scorer-owned direct emitter Rust no-submit receiver v1
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/FinalBot-cya/rust-sidecar
+EnvironmentFile=/root/bot/FinalBot-cya/.env
+EnvironmentFile=/etc/edgesniffer-ranker-v2-live-edge-capture-v1.env
+EnvironmentFile=/etc/edgesniffer-ranker-v2-scorer-direct-emitter-v1-nosubmit.env
+ExecStartPre=/usr/bin/mkdir -p /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-scorer-direct-emitter-v1
+ExecStart=/root/bot/FinalBot-cya/rust-sidecar/target/release/pumpfun-sidecar
+StandardOutput=append:/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-scorer-direct-emitter-v1/pumpfun-sidecar.stdout.jsonl
+StandardError=journal
+Restart=no
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,19 @@
+[Unit]
+Description=EdgeSniffer 2CQ prospective symmetric choice materializer V3 exact multisource
+After=network-online.target edgesniffer-2cq-capture-first-v1.service pump-exact-evidence-ledger-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer/scripts
+ExecStartPre=/usr/local/bin/edgesniffer-allenhark-compact-slot-index-v1 /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-delivery-path-localization-v1/allenhark-signature-arrivals-v1.bin /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-delivery-path-localization-v1/allenhark-slot-block-index-v1.bin
+ExecStartPre=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/twoCqRealtimeClockCalibrationV1.py --allenhark /mnt/HC_Volume_106775198/edgesniffer-research/2cq-capture-first-detector-repair-v1/prospective/candidates.jsonl --yellowstone /var/lib/pump-exact-evidence-ledger-v1/2cq-direct-detected-swaps-v1.jsonl --start-ms 1789110924437 --output /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-clock-calibration-v1/report.json
+ExecStart=/usr/bin/flock -w 900 -E 75 /run/edgesniffer-2cq-symmetric-choice-v2.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/twoCqProspectiveSymmetricChoiceMaterializerV3.py --contract /root/bot/EdgeSniffer/research/2cq-prospective-symmetric-choice-census-v3/contract.json --invalid-intervals /mnt/HC_Volume_106775198/edgesniffer-research/2cq-prospective-symmetric-choice-census-v1/invalid-collection-intervals.jsonl --candidates /mnt/HC_Volume_106775198/edgesniffer-research/2cq-capture-first-detector-repair-v1/prospective/candidates.jsonl --compact-arrivals /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-delivery-path-localization-v1/allenhark-signature-arrivals-v1.bin --compact-slot-index /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-delivery-path-localization-v1/allenhark-slot-block-index-v1.bin --compact-observer-health /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-delivery-path-localization-v1/observer-health.json --compact-observer-continuity /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-delivery-path-localization-v1/observer-continuity.jsonl --yellowstone-direct /var/lib/pump-exact-evidence-ledger-v1/2cq-direct-detected-swaps-v1.jsonl --clock-calibration /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-clock-calibration-v1/report.json --exact-root /var/lib/pump-exact-evidence-ledger-v1 --env /root/bot/EdgeSniffer/.env --output /mnt/HC_Volume_106775198/edgesniffer-research/2cq-prospective-symmetric-choice-census-v3
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+NoNewPrivileges=true
+TimeoutStartSec=infinity
+MemoryHigh=5G
+MemoryMax=6G

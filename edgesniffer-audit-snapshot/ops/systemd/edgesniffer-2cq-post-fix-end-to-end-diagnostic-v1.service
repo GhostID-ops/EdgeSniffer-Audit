@@ -1,0 +1,19 @@
+[Unit]
+Description=EdgeSniffer bounded post-fix 2CQ end-to-end collection diagnostic V1
+After=pump-exact-evidence-ledger-v1.service edgesniffer-allenhark-compact-delivery-observer-v1.service
+Requires=edgesniffer-allenhark-compact-delivery-observer-v1.service
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+RuntimeDirectory=edgesniffer-2cq-post-fix-e2e-v1
+ExecStartPre=/usr/bin/sha256sum --check /mnt/HC_Volume_106775198/edgesniffer-research/2cq-post-fix-end-to-end-collection-diagnostic-v1/final-implementation.sha256
+ExecStart=/usr/bin/flock -n /run/edgesniffer-2cq-post-fix-e2e-v1/run.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/twoCqPostFixEndToEndCollectionDiagnosticV1.py --detector /var/lib/pump-exact-evidence-ledger-v1/2cq-direct-detected-swaps-v1.jsonl --exact-root /var/lib/pump-exact-evidence-ledger-v1 --compact-arrivals /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-delivery-path-localization-v1/allenhark-signature-arrivals-v1.bin --observer-health /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-delivery-path-localization-v1/observer-health.json --env /root/bot/EdgeSniffer/.env --output /mnt/HC_Volume_106775198/edgesniffer-research/2cq-post-fix-end-to-end-collection-diagnostic-v1 --sample-start-utc 2026-09-09T16:13:54.307Z
+Nice=10
+IOSchedulingClass=idle
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-research/2cq-post-fix-end-to-end-collection-diagnostic-v1
+PrivateTmp=true

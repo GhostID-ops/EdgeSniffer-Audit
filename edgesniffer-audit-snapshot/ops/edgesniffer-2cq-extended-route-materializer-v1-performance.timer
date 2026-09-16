@@ -1,0 +1,6 @@
+[Timer]
+OnBootSec=
+OnUnitActiveSec=
+OnCalendar=*-*-* 05/6:45:00 UTC
+AccuracySec=10s
+Persistent=true

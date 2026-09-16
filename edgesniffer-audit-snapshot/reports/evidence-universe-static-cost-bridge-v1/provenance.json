@@ -1,0 +1,19 @@
+{
+  "bridgeRowsSha256": "b5645d09ec7be03c191803119ba544753419528d9c011b7136cc80ab7b242215",
+  "censusRowsSha256": "563974019f4eadc868580475070981b239323bd1206d0b284a4eaec4db06048c",
+  "classificationScriptSha256": "2bcf06edb9ced239c106c793245a136ad1d62f5c3c2e20b7b1ef1042aea7906f",
+  "contractSha256": "2f91ac6e8cb8e4bbdf8fb136778306dc826268c30ab3fdfd5d2677a25e40203a",
+  "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+  "eventBuildProvenanceSha256": "e3e1cbb3a025c30f69889592f3ee5f0c84212df0602fe7699828c0a9cb0306ab",
+  "finalizerScriptSha256": "65a62237d933dd077d459e317ad82c9fbc901e9d233a50b16ab203d8c3cb89a4",
+  "holdoutRowsInspected": 0,
+  "ordinalsAfter6848Inspected": 0,
+  "reportSha256": "6764ffbfb6e86e87200510f69a17bc34105d0f4075677bd7e44bcd654c4dfee6",
+  "scannerScriptSha256": "6b2ada6e12552bec8317bc89c4830537e8f610b417473909f050ff291aae6802",
+  "schema": "EVIDENCE_UNIVERSE_AND_STATIC_COST_BRIDGE_V1_PROVENANCE",
+  "scriptSha256": "6b2ada6e12552bec8317bc89c4830537e8f610b417473909f050ff291aae6802",
+  "selectedRowsSha256": "29d5f16c2b46693474cd430ee61c33420410c3436b0efd0fedb045a1eabfc297",
+  "sourceCensusRowsSha256": "af6a47ad058a72149b589a9135ece143c5fdd2735a80f08656eab6d432917b87",
+  "sourceReportSha256": "08388193d115ad01b826dd449857b0b8066568bc2f4c045419ac52c3fe7d8f31",
+  "validationRowsInspected": 0
+}

@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh bounded post-fix 2CQ end-to-end diagnostic every five minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+AccuracySec=5s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

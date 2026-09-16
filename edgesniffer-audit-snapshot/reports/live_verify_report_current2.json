@@ -1,0 +1,1139 @@
+{
+  "since": 1788022943160,
+  "firstAt": 1788022946460,
+  "lastAt": 1788027658201,
+  "elapsedHours": 1.3088169444444444,
+  "summary": {
+    "accepted": 24,
+    "attempts": 10,
+    "landed": 10,
+    "exited": 10,
+    "failedBuys": 0,
+    "localRejects": 158,
+    "cacheRejects": 7
+  },
+  "rejectReasons": {
+    "selected_candidate_session_attempt_capacity_reached": 756,
+    "duplicate_or_out_of_order_flow": 196,
+    "timeout_tick": 105,
+    "stream_update": 52,
+    "pre_buy_fast_exit_template_unavailable": 44,
+    "duplicate_bought_mint": 42,
+    "release_reservations": 40,
+    "token2022_legacy_sell_template_veto": 38,
+    "fill_first_send_time_curve_cache_miss": 17,
+    "send_time_entry_mc_above_max": 15,
+    "fill_first_min_out_is_not_inventory_proof": 10,
+    "safe_sell_amount_unavailable": 10,
+    "early_balance_activated": 10,
+    "release_mint_capacity": 10,
+    "hard-stop-loss": 9,
+    "guaranteed_min_out_unavailable": 8,
+    "take-profit": 7,
+    "sell_template_build_failed": 6,
+    "awaiting_exact_balance_proof": 5,
+    "stale_selected_candidate": 5,
+    "wallet_zero_balance_after_seen": 4,
+    "canonical_seed_missing": 2,
+    "already_proved": 1
+  },
+  "buyErrors": {},
+  "sellErrors": {
+    "Custom_6003": 4
+  },
+  "rates": {
+    "landedBuyRate": 1,
+    "exitSuccessRate": 1,
+    "cacheRejectPctOfAccepted": 0.2916666666666667
+  },
+  "latencies": {
+    "selectedToBuy": {
+      "n": 10,
+      "median": 126,
+      "p90": 162,
+      "avg": 133.9,
+      "worst": 221
+    },
+    "guardToBuy": {
+      "n": 10,
+      "median": 84,
+      "p90": 126,
+      "avg": 87.4,
+      "worst": 184
+    },
+    "firstUsableProof": {
+      "n": 10,
+      "median": 1,
+      "p90": 3,
+      "avg": 1.6,
+      "worst": 7
+    },
+    "exactProof": {
+      "n": 9,
+      "median": 592,
+      "p90": 1771,
+      "avg": 825.3333333333334,
+      "worst": 1771
+    }
+  },
+  "fillQuality": {
+    "n": 9,
+    "degradationPct": {
+      "median": 14.896948237169227,
+      "p75": 27.012704065537797,
+      "p90": 59.74397429698146,
+      "worst": 59.74397429698146
+    },
+    "selectedToImpliedMcChangePct": {
+      "median": 17.504599339968152,
+      "p90": 148.4100162736672,
+      "worst": 148.4100162736672
+    }
+  },
+  "landedRows": [
+    {
+      "mint": "8Qf44LdkCpzWpvperbbSVo1MjqsWz8KQqyBDZ3REpump",
+      "selectedMc": 4922.480618148619,
+      "guardMc": 4475.135683277673,
+      "reserveSource": "yellowstone-cache",
+      "reserveAgeMs": 60,
+      "selectedToGuardMs": 38,
+      "guardToBuildMs": 0,
+      "selectedToBuyMs": 221,
+      "guardToBuyMs": 184,
+      "broadcastMs": 183,
+      "submittedMin": 1,
+      "guardExpectedTokens": 34356648607,
+      "actualTokens": 35310500037,
+      "fillDegPct": 0.23706290626250848,
+      "impliedMc": 4934.177723259535,
+      "buyFinalityStatus": "landed_ok",
+      "buyFinalityMs": 1893,
+      "pumpVariant": "pumpfun_buy_exact_quote_in_v2",
+      "tokenProgramId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "accountLayout": "derived_source_layout_mismatch",
+      "routeUsed": "derived",
+      "firstUsableProofSource": "submitted-buy-result",
+      "firstUsableProofMs": 0,
+      "exactProofElapsedMs": 1238,
+      "exactOk": false,
+      "exactError": "cannot update while a Rust exit sell is pending",
+      "inventoryUpdated": false,
+      "provisionalAmount": 35394407047,
+      "exitReason": "hard-stop-loss",
+      "triggerToSellBroadcastMs": 10,
+      "sellBroadcastMs": 10,
+      "sellFinality": "landed_ok",
+      "sellAckOk": true,
+      "sellPhase": "closed",
+      "sellPnlPct": -23.564300000000003,
+      "sellAmount": 35310500037
+    },
+    {
+      "mint": "2FEbWQXNCVitxi7AadgsmpkWQ5phRuwmbHc5kmmNpump",
+      "selectedMc": 4924.551717167605,
+      "guardMc": 5080.260434937108,
+      "reserveSource": "reserve-observation-file",
+      "reserveAgeMs": 43,
+      "selectedToGuardMs": 36,
+      "guardToBuildMs": 0,
+      "selectedToBuyMs": 119,
+      "guardToBuyMs": 83,
+      "broadcastMs": 82,
+      "submittedMin": 1,
+      "guardExpectedTokens": 30264387675,
+      "actualTokens": 28299412414,
+      "fillDegPct": 9.234319940805724,
+      "impliedMc": 5425.565823950176,
+      "buyFinalityStatus": "landed_ok",
+      "buyFinalityMs": 740,
+      "pumpVariant": "pumpfun_buy_exact_sol_in_legacy",
+      "tokenProgramId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "accountLayout": "source_accounts_legacy",
+      "routeUsed": "source-replay",
+      "firstUsableProofSource": "submitted-buy-result",
+      "firstUsableProofMs": 1,
+      "exactProofElapsedMs": 430,
+      "exactOk": true,
+      "exactError": null,
+      "inventoryUpdated": true,
+      "provisionalAmount": 31178538403,
+      "exitReason": "hard-stop-loss",
+      "triggerToSellBroadcastMs": 18,
+      "sellBroadcastMs": 18,
+      "sellFinality": "landed_ok",
+      "sellAckOk": true,
+      "sellPhase": "closed",
+      "sellPnlPct": -21.595799999999997,
+      "sellAmount": 28299412414
+    },
+    {
+      "mint": "6TkyhjP7aRwuTVFqrPrJqJuRi8Pz339WG5bNT8tWpump",
+      "selectedMc": 4862.816755220657,
+      "guardMc": 4871.21438527441,
+      "reserveSource": "reserve-observation-file",
+      "reserveAgeMs": 51,
+      "selectedToGuardMs": 36,
+      "guardToBuildMs": 0,
+      "selectedToBuyMs": 126,
+      "guardToBuyMs": 89,
+      "broadcastMs": 88,
+      "submittedMin": 1,
+      "guardExpectedTokens": 31563150278,
+      "actualTokens": 23732936313,
+      "fillDegPct": 27.012704065537797,
+      "impliedMc": 6662.552287986044,
+      "buyFinalityStatus": "landed_ok",
+      "buyFinalityMs": 1227,
+      "pumpVariant": "pumpfun_buy_exact_sol_in_legacy",
+      "tokenProgramId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "accountLayout": "source_accounts_legacy",
+      "routeUsed": "source-replay",
+      "firstUsableProofSource": "submitted-buy-result",
+      "firstUsableProofMs": 7,
+      "exactProofElapsedMs": 1015,
+      "exactOk": false,
+      "exactError": "cannot update while a Rust exit sell is pending",
+      "inventoryUpdated": false,
+      "provisionalAmount": 32516530458,
+      "exitReason": "hard-stop-loss",
+      "triggerToSellBroadcastMs": 22,
+      "sellBroadcastMs": 22,
+      "sellFinality": "landed_ok",
+      "sellAckOk": true,
+      "sellPhase": "closed",
+      "sellPnlPct": -30.371000000000002,
+      "sellAmount": 23732936313
+    },
+    {
+      "mint": "HAvuwMiVHdKV61NynEsWTGrttiNdi5pNmU4KiCDspump",
+      "selectedMc": 4952.916889336572,
+      "guardMc": 5398.021244318948,
+      "reserveSource": "yellowstone-cache",
+      "reserveAgeMs": 54,
+      "selectedToGuardMs": 37,
+      "guardToBuildMs": 0,
+      "selectedToBuyMs": 121,
+      "guardToBuyMs": 84,
+      "broadcastMs": 83,
+      "submittedMin": 1,
+      "guardExpectedTokens": 28482865206,
+      "actualTokens": 29964080494,
+      "fillDegPct": -2.1159104406086815,
+      "impliedMc": 4850.289115541131,
+      "buyFinalityStatus": "landed_ok",
+      "buyFinalityMs": 2256,
+      "pumpVariant": "pumpfun_buy_exact_sol_in_legacy",
+      "tokenProgramId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "accountLayout": "source_accounts_legacy",
+      "routeUsed": "source-replay",
+      "firstUsableProofSource": "submitted-buy-result",
+      "firstUsableProofMs": 2,
+      "exactProofElapsedMs": 1771,
+      "exactOk": true,
+      "exactError": null,
+      "inventoryUpdated": true,
+      "provisionalAmount": 29343204565,
+      "exitReason": "take-profit",
+      "triggerToSellBroadcastMs": 78,
+      "sellBroadcastMs": 78,
+      "sellFinality": "landed_ok",
+      "sellAckOk": true,
+      "sellPhase": "closed",
+      "sellPnlPct": 29.379500000000004,
+      "sellAmount": 29964080494
+    },
+    {
+      "mint": "91iDqWWc8Ft5AaogXEyDBSzJwcMmseDf5xFKvzqopump",
+      "selectedMc": 4371.387969122976,
+      "guardMc": 4354.0978515045335,
+      "reserveSource": "reserve-observation-file",
+      "reserveAgeMs": 30,
+      "selectedToGuardMs": 81,
+      "guardToBuildMs": 0,
+      "selectedToBuyMs": 99,
+      "guardToBuyMs": 18,
+      "broadcastMs": 14,
+      "submittedMin": 1,
+      "guardExpectedTokens": 35311699548,
+      "actualTokens": 19852075367,
+      "fillDegPct": 45.42880683128967,
+      "impliedMc": 8010.431356354167,
+      "buyFinalityStatus": "landed_ok",
+      "buyFinalityMs": 771,
+      "pumpVariant": "pumpfun_buy_exact_quote_in_v2",
+      "tokenProgramId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "accountLayout": "derived_source_layout_mismatch",
+      "routeUsed": "derived",
+      "firstUsableProofSource": "submitted-buy-result",
+      "firstUsableProofMs": 0,
+      "exactProofElapsedMs": 563,
+      "exactOk": false,
+      "exactError": "cannot update while a Rust exit sell is pending",
+      "inventoryUpdated": false,
+      "provisionalAmount": 36378305502,
+      "exitReason": "hard-stop-loss",
+      "triggerToSellBroadcastMs": 49,
+      "sellBroadcastMs": 49,
+      "sellFinality": "landed_ok",
+      "sellAckOk": true,
+      "sellPhase": "closed",
+      "sellPnlPct": -27.056100000000004,
+      "sellAmount": 19852075367
+    },
+    {
+      "mint": "8RgNybK2P3Ts3xvoV3QQX8TenVkxHiWytyp4yBDapump",
+      "selectedMc": 4787.4232520423275,
+      "guardMc": 4833.231528208201,
+      "reserveSource": "reserve-observation-file",
+      "reserveAgeMs": 51,
+      "selectedToGuardMs": 37,
+      "guardToBuildMs": 0,
+      "selectedToBuyMs": 45,
+      "guardToBuyMs": 8,
+      "broadcastMs": 8,
+      "submittedMin": 1,
+      "guardExpectedTokens": 31811191331,
+      "buyFinalityStatus": "landed_ok",
+      "buyFinalityMs": 429,
+      "pumpVariant": "pumpfun_buy_exact_sol_in_legacy",
+      "tokenProgramId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "accountLayout": "source_accounts_legacy",
+      "routeUsed": "source-replay",
+      "firstUsableProofSource": "submitted-buy-result",
+      "firstUsableProofMs": 1,
+      "provisionalAmount": 32772063651,
+      "exitReason": "hard-stop-loss",
+      "triggerToSellBroadcastMs": 53,
+      "sellBroadcastMs": 53,
+      "sellFinality": "landed_ok",
+      "sellAckOk": true,
+      "sellPhase": "closed",
+      "sellPnlPct": -41.7206,
+      "sellAmount": 20717084437
+    },
+    {
+      "mint": "GpWGPrcpNjndMR3wgnupzuSDWVq9CqXw97Q2egt1aAu3",
+      "selectedMc": 4976.3160985915265,
+      "guardMc": 5551.125014279283,
+      "reserveSource": "reserve-observation-file",
+      "reserveAgeMs": 31,
+      "selectedToGuardMs": 40,
+      "guardToBuildMs": 0,
+      "selectedToBuyMs": 155,
+      "guardToBuyMs": 115,
+      "broadcastMs": 113,
+      "submittedMin": 1,
+      "guardExpectedTokens": 27697299970,
+      "actualTokens": 21592265423,
+      "fillDegPct": 24.3277048744304,
+      "impliedMc": 6576.140039540091,
+      "buyFinalityStatus": "landed_ok",
+      "buyFinalityMs": 1113,
+      "pumpVariant": "pumpfun_buy_exact_sol_in_legacy",
+      "tokenProgramId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "accountLayout": "source_accounts_legacy",
+      "routeUsed": "source-replay",
+      "firstUsableProofSource": "submitted-buy-result",
+      "firstUsableProofMs": 3,
+      "exactProofElapsedMs": 543,
+      "exactOk": false,
+      "exactError": "cannot update while a Rust exit sell is pending",
+      "inventoryUpdated": false,
+      "provisionalAmount": 28533911106,
+      "exitReason": "hard-stop-loss",
+      "triggerToSellBroadcastMs": 148,
+      "sellBroadcastMs": 148,
+      "sellFinality": "landed_ok",
+      "sellAckOk": true,
+      "sellPhase": "closed",
+      "sellPnlPct": -24.952300000000005,
+      "sellAmount": 21592265423
+    },
+    {
+      "mint": "GLdwqiqyjUPB1ZgsKpRiRU6iDoQ6arH4E9cTjGD6pump",
+      "selectedMc": 4778.695839251516,
+      "guardMc": 5704.127020924681,
+      "reserveSource": "yellowstone-cache",
+      "reserveAgeMs": 5,
+      "selectedToGuardMs": 45,
+      "guardToBuildMs": 0,
+      "selectedToBuyMs": 152,
+      "guardToBuyMs": 107,
+      "broadcastMs": 106,
+      "submittedMin": 1,
+      "guardExpectedTokens": 26954384909,
+      "actualTokens": 23631888652,
+      "fillDegPct": 14.896948237169227,
+      "impliedMc": 5615.187399588222,
+      "buyFinalityStatus": "landed_ok",
+      "buyFinalityMs": 962,
+      "pumpVariant": "pumpfun_buy_exact_quote_in_v2",
+      "tokenProgramId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "accountLayout": "derived_source_layout_mismatch",
+      "routeUsed": "derived",
+      "firstUsableProofSource": "submitted-buy-result",
+      "firstUsableProofMs": 2,
+      "exactProofElapsedMs": 713,
+      "exactOk": false,
+      "exactError": "cannot update while a Rust exit sell is pending",
+      "inventoryUpdated": false,
+      "provisionalAmount": 27768556077,
+      "exitReason": "hard-stop-loss",
+      "triggerToSellBroadcastMs": 23,
+      "sellBroadcastMs": 23,
+      "sellFinality": "landed_ok",
+      "sellAckOk": true,
+      "sellPhase": "closed",
+      "sellPnlPct": -25.022699999999997,
+      "sellAmount": 23631888652
+    },
+    {
+      "mint": "4NS1vGm3y1qvFFc4vEZdb7ZQ2U9begpJWuoK8KQ9hJWa",
+      "selectedMc": 4976.316098591532,
+      "guardMc": 5164.4292289217465,
+      "reserveSource": "reserve-observation-file",
+      "reserveAgeMs": 19,
+      "selectedToGuardMs": 36,
+      "guardToBuildMs": 1,
+      "selectedToBuyMs": 162,
+      "guardToBuyMs": 126,
+      "broadcastMs": 121,
+      "submittedMin": 1,
+      "guardExpectedTokens": 29771152410,
+      "actualTokens": 12346686054,
+      "fillDegPct": 59.74397429698146,
+      "impliedMc": 12361.667630340346,
+      "buyFinalityStatus": "landed_ok",
+      "buyFinalityMs": 825,
+      "pumpVariant": "pumpfun_buy_exact_sol_in_legacy",
+      "tokenProgramId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "accountLayout": "source_accounts_legacy",
+      "routeUsed": "source-replay",
+      "firstUsableProofSource": "submitted-buy-result",
+      "firstUsableProofMs": 0,
+      "exactProofElapsedMs": 592,
+      "exactOk": true,
+      "exactError": null,
+      "inventoryUpdated": true,
+      "provisionalAmount": 30670404836,
+      "exitReason": "hard-stop-loss",
+      "triggerToSellBroadcastMs": 10,
+      "sellBroadcastMs": 10,
+      "sellFinality": "landed_ok",
+      "sellAckOk": true,
+      "sellPhase": "closed",
+      "sellPnlPct": -22.495699999999996,
+      "sellAmount": 12346686054
+    },
+    {
+      "mint": "492njCri8GM12tfVhEptts9DBLBanragUMonRZxvpump",
+      "selectedMc": 4611.597921569678,
+      "guardMc": 4264.55501744936,
+      "reserveSource": "reserve-observation-file",
+      "reserveAgeMs": 38,
+      "selectedToGuardMs": 73,
+      "guardToBuildMs": 1,
+      "selectedToBuyMs": 139,
+      "guardToBuyMs": 60,
+      "broadcastMs": 58,
+      "submittedMin": 1,
+      "guardExpectedTokens": 36053126664,
+      "actualTokens": 32370789146,
+      "fillDegPct": 12.846163475021088,
+      "impliedMc": 5291.330944734672,
+      "buyFinalityStatus": "landed_ok",
+      "buyFinalityMs": 883,
+      "pumpVariant": "pumpfun_buy_exact_quote_in_v2",
+      "tokenProgramId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "accountLayout": "derived_source_layout_mismatch",
+      "routeUsed": "derived",
+      "firstUsableProofSource": "submitted-buy-result",
+      "firstUsableProofMs": 0,
+      "exactProofElapsedMs": 563,
+      "exactOk": true,
+      "exactError": null,
+      "inventoryUpdated": true,
+      "provisionalAmount": 37142127572,
+      "exitReason": "hard-stop-loss",
+      "triggerToSellBroadcastMs": 11,
+      "sellBroadcastMs": 11,
+      "sellFinality": "landed_ok",
+      "sellAckOk": true,
+      "sellPhase": "closed",
+      "sellPnlPct": -22.9754,
+      "sellAmount": 32370789146
+    }
+  ],
+  "rejectedRows": [
+    {
+      "mint": "J8k7Bj1paCDhCS4ZMAc7GRurMtnPcwtwA2J5GJa8pump",
+      "selectedMc": 4995.8339342767285,
+      "reason": "fill_first_send_time_curve_cache_miss",
+      "curveCacheMiss": true,
+      "waitedMs": 53
+    },
+    {
+      "mint": "9vh1MWRopJr5huy2EXFAPkvVsC9L52Exz8mZqLXupump",
+      "selectedMc": 4935.083632216032,
+      "reason": "fill_first_send_time_curve_cache_miss",
+      "curveCacheMiss": true,
+      "waitedMs": 50
+    },
+    {
+      "mint": "Epg2X17MKKe9SgayTB6g4CyKVNnv7Qw9EkQiz6U4pump",
+      "selectedMc": 4800.026597445155,
+      "reason": "send_time_entry_mc_above_max"
+    },
+    {
+      "mint": "5SZ74eBYwPtpq73baqUHVYfRzun5VtCap9kskKBd4Grp",
+      "selectedMc": 4876.148378744123,
+      "reason": "guaranteed_min_out_unavailable"
+    },
+    {
+      "mint": "CZ42s9LMFc64JSPbG7QEK32VLAUV8Tiju3s5P2vWpump",
+      "selectedMc": 4980.143019325607,
+      "reason": "send_time_entry_mc_above_max"
+    },
+    {
+      "mint": "FDx1G3yRMSLibATDSxNmix2LfjuPneuXLCzNHpiUpump",
+      "selectedMc": 4763.582815230921,
+      "reason": "fill_first_send_time_curve_cache_miss",
+      "curveCacheMiss": true,
+      "waitedMs": 50
+    },
+    {
+      "mint": "6zKG6TRo7Ue9KArzQvxBZhQwyQ3ed2AnmT9d7t1bpump",
+      "selectedMc": 3269.922320516546,
+      "reason": "guaranteed_min_out_unavailable"
+    },
+    {
+      "mint": "9xNtHAzSvQH7ACg1R2tpFve4GEek4rASMGXLKUTQXd82",
+      "selectedMc": 4857.448277695961,
+      "reason": "send_time_entry_mc_above_max"
+    },
+    {
+      "mint": "GU5PwxGVERYTLNHD7dav6dTYMCYJSHL64rmGTE1CfA8",
+      "selectedMc": 4949.948955163025,
+      "reason": "fill_first_send_time_curve_cache_miss",
+      "curveCacheMiss": true,
+      "waitedMs": 54
+    },
+    {
+      "mint": "FeboFqNeYajR1yiT3hXvEnzZi1Mp62zkt2CVqhVLpump",
+      "selectedMc": 4973.039737303188,
+      "reason": "send_time_entry_mc_above_max"
+    },
+    {
+      "mint": "Az4Cht92UfoRj7HWnH2Q7AsKQrJoatdBz8ZiL5NEpump",
+      "selectedMc": 3354.480994391891,
+      "reason": "fill_first_send_time_curve_cache_miss",
+      "curveCacheMiss": true,
+      "waitedMs": 55
+    },
+    {
+      "mint": "GMogeMjrWFaEceasCPathoibjAh8qwhTC3Chw4Bfpump",
+      "reason": "pre_buy_fast_exit_template_unavailable"
+    },
+    {
+      "mint": "Am224NexL1H1tjcrARWEcfjyaCrjwQXnQupMm32hpump",
+      "selectedMc": 4775.819753557115,
+      "reason": "fill_first_send_time_curve_cache_miss",
+      "curveCacheMiss": true,
+      "waitedMs": 52
+    },
+    {
+      "mint": "6rnqPPzgR8paAh5Tj8fPhR7uHV5GdK9NappqJfQkpump",
+      "selectedMc": 4992.583896357495,
+      "reason": "send_time_entry_mc_above_max"
+    },
+    {
+      "mint": "CjEuRYxEgVqY38TFD4RAi2V7rtAxmcKKRjBBLVp2pump",
+      "reason": "pre_buy_fast_exit_template_unavailable"
+    },
+    {
+      "mint": "3ydo5QeTUsbjUG2Z2p8dmJZQMvhDKTwr5MUS9jxApump",
+      "selectedMc": 4908.9006264511945,
+      "reason": "fill_first_send_time_curve_cache_miss",
+      "curveCacheMiss": true,
+      "waitedMs": 50
+    },
+    {
+      "mint": "BzVZTSzkgHJr1tF4fAsvxf7wHEBWXUm9SBaAtZbFpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "J6Pj2ZZXv3RSTY38vrGEZ69o1qcGD9BznRsh5fTTpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "513U71RxTdFU33VuAXDGh4iBwB5mWuqUfjbNGL8eW5d3",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "2uDSxqZybdMpRJ9BXLM1CrGYRZ2X91MJmkTT7VJupump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "9LzJ3SK7BJ4DKYDBAwQoxftrggf2Q5CgzJnNZNyCpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "EzkCbg7V1zTo3ZPxFXgz1vdgC1iQbuXLbiVCQZ1Apump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "7RBxTrr9uWdnLifz6Wos9rRXiP5ZFCETrej71RBapump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "7VD68HJeN4viL7xtXeBpZvCC2idqH1m8pL81apJEpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "81AVif9DeQ1jpUAwmZMBjQsh2djh6APSevCAhwmHpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "BA2PnhgJhz28dCDBr3MezwGx2J6RSwnMGXisNUeepump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "DxatRCQde3v59pD1qPphVKMr543vzdXyC5xp1dXE2cDC",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "GATXjcSD6tzB3cHZwrJF2obQjiSZJRKgWGpaYReipump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "3VPgE81wstTMeimkwrrcjBAQzB6dVCb3j56qHCfApump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "4vPiXVDxhmBvrAksLtftrAfPhEDiaQbp3AAraD1gpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "C11tB4AXDSs2Mefk17qQgcUf7fSN1fqnpoJfwNgNpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "F6b1JzJy75bz8n3vzZqm3ysgTbLjPr3raoufvtqgpump",
+      "reason": "pre_buy_fast_exit_template_unavailable"
+    },
+    {
+      "mint": "7U247MnntkZqNmwvx7QKU8Rnoje4jebtFVjNL2SmaJG4",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "DxsHYhV28xdMvikboN4MjntPGAr6yRjtnBbA5zgpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "DHg4A4c8o9NkCyW7BKDtG1VhMz7m5nnh7wVewNhxpump",
+      "reason": "pre_buy_fast_exit_template_unavailable"
+    },
+    {
+      "mint": "HidLzAtyS2dBp8xZVNMYPcq5EuatQ33NRQjxmrFaeQkv",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "AsCy46EZVTnF9q5fo9EbDbpioaaR52c7h8Ws8H3apump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "7T4N2DJv1gNn1SPK88ddwq98ZGpJgKq77KJLnZsrj2mw",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "291B1ADkKThKPBEXCCoPeQnAbFbUHk36jp81J2uepump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "66F6pjK97qWvKNok3okh1nJFCXHrgE5Rhy1v53y6pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "DQHycxShcSCmrq17cXnJqWRkpzFynYEvL8Bo1w8fpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "2W4tXMMRFr21wZSr1G7jpjeLAXhcKYUyRNjCK2K8pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "66sMAhTiDo5PxR8SHZFxCbWN9vgbMzdE4tsaMA7gpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "3erKrhmB89aix3N7z571P7VX9zPqMztFPfHMjJ64pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "9B3jG9APh2EXGrxX7v8M3nNghoADWVhzD4bRcGh7pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "46RK25LdsdMW9oaDXfDcwTEz3oRwBurxvskFqKzpabJk",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "GredVceyNGxVnmkVnDXgD6cjMSFv21i7gAvyxtgQgjTy",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "DhYQQyTr4rNngBYYVVVZUVfRKspFZRknmruJdsPE5GCV",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "987qxhmhGBPmfnDxxky3CHtg3giPoqCy2rqAemyJpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "5ignrhCG9P96eM6DUTnzc3uErQakZzD2Ha38fMo3wkwf",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "CrxYSnMa5HDRBzcy6ydCNE1pqJkefcuWz97yJWQrx8dN",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "7EUpyNHJ8D3wZ87D6d3XVenHNUQK4bH12x9PHMM2pump",
+      "reason": "pre_buy_fast_exit_template_unavailable"
+    },
+    {
+      "mint": "8qVQzX1br7BVAFZS1cCTeW27gMqtK7RWS2GVonf5ZT78",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "CSKzxjUHtcN6Y46tvq5zZ18G5mpKUNQA5cxN9GGgpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "6bQTfd9jzCUKdeudsVVBwGLrbJTDmnAN1vzSLR3qpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "8WBmaeSk8gJUxi3kfLaCNoYZWSCs3u63BP7L2dwi76xV",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "5HeBdfMuvr65GhLibNx5tSQcRmzbYcCkUDSnWDy8pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "63ux7HcunZtSLbhVBWhvG1L6poGGiT5vgMp6jwygpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "EFnktf53Xch5N9FpmSuXEBbcyKtRwCWEF1ZaNUPHpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "24ruQj6Y1pa4ZRwEPdthMKpu28jhjtkDLAKKn1ESpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "29L3ZakwhmHrV1EKiQEeSa6MBkKBESyCJzANqE8jG7eW",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "B3QBDGirhCCp8ptLpKpo98MXrh16uvKPBddJ97S3pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "Gv8hKowmYm1MRUnwVrv6YkTMR3WKSoxpMUK3QUVm1bn1",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "HmXUJuSLrSUg8EjnHxw8aXXtcMMo4jvDg8yzRBkksvuQ",
+      "reason": "pre_buy_fast_exit_template_unavailable"
+    },
+    {
+      "mint": "Dnryox1MN9y9yFa2cKqoUEMbBmShAk7dxaqxYPZ4pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "AGtYFF19dXZWJ1TTbYticNjb5ZBiY5mnjd5JqT2Spump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "BHJsp4Q5dX3NzkszChXMAe47ppmpHRctB13v65VKpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "CDZFb1wk945fU4LsBRmVwuwHbTuhKWiNZ5gtsC48pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "AuxKQfc1PvHogFNMkf4KvQVDP5WNiMy6b24W9bjwpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "3i5Bcv5ZKFXxhLXJ96PTebDGa62eFeY7ZKCB1fBspump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "A7PTDEuxGQN9VtoBaV7kLQpsR3LSTL1x179gcG5mSvD3",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "A84rvyYAw6G5AcD8nDbbAcW8P4gZL4mpwJWXZVmmpump",
+      "reason": "pre_buy_fast_exit_template_unavailable"
+    },
+    {
+      "mint": "DMw9jm9PAxUqSCrvjn45QBdEmLdjPPbqfADGCnQNpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "47JRZsoV7yaGXBNvm6jtyevZNeqEb6ZR3U813RMKpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "HsJgdnP9d7FFeRVfwJJrVsnui2CiMrthszzPcgQNpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "BPUdLZjUTq68CmuabycjEvbhEEnuB2QckfFkJ1AHuVVG",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "95j1yd9Zt5PYrcqeBJ5r8MLt1Ti75e9keztfgQJipump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "6kXg7WexMJHPqGFk2vaPApJ3UCZxXdkaAG9pM2CuuRd3",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "8R3xXYdmpzpMBZnth7tY77hjMocrFb1HGDQgMTxBpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "2iQbSBSghJAa7wu5paQSpahMsSenGJ3iAfA8caQEpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "Axwi7rcu8uzLMprb1YtRBrV4nCdqfdqrthgMwswApump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "jQXAgHrehGYGdStQKTyLQLbyc3XNXcgBM9S7uBXJzbM",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "AoyeKrgqZVZqLXFeDukDR9hTCKaz94npQMyo44CZpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "72s2NKEJBcgArixYUVsXdwkfquf2wsRiG3Lg8Hibpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "JWHwufBZGcmAXkhrWzbPautF8TegFfTbkDvuFnnpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "Fe6VaYE9PCTRVTtXCGqostqN2nUvdNiuP6NLi4jBpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "BK97mdUsGx7YBW1CfSpMf7bHScwtEYB7x22JkpZU8xKD",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "8RBRaQt8g4KyqrTMDj7FmAqRFSM7tunefueAw91Kpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "3wDBN7o47oUNBZa57itsYeNtdXZxG1MR7tmahhw7pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "5CmZUKSNRU3sNJD6XZR4Cq77uSmRTM4QDkLZbN4tkEML",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "9vhHgf2PL78k3mA4qrs6QfWH7mJ6YnQefxWYonw4pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "8riDFobBCXQn3bEsSjaHgiF1oDUFDe3DHHSuCjiPpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "AyXmczRHnvx3jBd6RxTBMDWaKZFqvobXbG5Wqj76pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "2QztLba6jaL3dWXSTgzE33P4ssCAvs1AmvaQuX1GTdHt",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "2KLHbnBuFLpzWsqsJJvoacq9ckG78mP1A6w6aaUBoUQY",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "GrGAa3pSkcM2sR6r5fRXGqKLqvVma7fZKRA23diSpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "9AXyfY5J5BqcPDUfH1KF9bNH1NNdZP8vRerK2vNtpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "HV9876UNZE3qfbZLfUGyVkzgBT7Y6AMTniVsXWzwpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "8TwnRGwhtfqV7XbThNUfE1LxSB5RkuknouDkqazvpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "9pLtGJs77A2Y1dxdUkos5S71D6UUyayb74MLDetRpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "5jLFWycneD9rzGRtGVSHZs5L39Szhnh5DEwtVmsh9npZ",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "68EhbKY5NSxKJSgBQ3QDSAyzFMwVhPjc4zpXbepipump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "AgqvzPHt87MzvKfAe9uqV5aGgqsYXHUWSs3PRnhupump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "c8gn6ocJwbvKMXP4kKGaPwxGyPwLE8JngQN2JkPpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "66pmfJ9i6he2tEF94AnmB2qoQQrs7wdWCSQ44ruVpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "Lxu5rmR2yZDzkdrPcQTuM9YABiUsb4CeF2ykmJTpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "FSumAVjnUD6C7nbKhY45syhPF9Rzc3uf7aqTpcAepump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "3wJeTMzYMwrpoHThGXznWQuNc3RJ3ayfVu8G11Tbpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "6Q6rE59tcbRatyvgATb3Fjx9LU6CcQnfun8Rv2Fepump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "6Xn46EdjoNZDNJDBptv58qtc4PfS9fxQABLT6Sa9pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "5121MesWFGmh5Sg44puMQezpGLyMspVkCdisCNpLpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "6whRHjZz76RknSLXaaW6hivJvffUuV1G9qvqR9iRpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "8WySKBNXzodcocvMod4iZvZCTXsh82HnfVydpKTppump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "5jXzN7d3wanRYfXaXgPbL5Wi1UMzmUN6iT5xbjy8VqwP",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "5RHYjMX1SeViD8BveZaUmeLugCSrsF5e2jBesaKipump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "Ah2U3CFMuLYYccY2T9A2zkkYWFuZ2wkDtiDDoE3bpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "ASgwMXbqwPDk3ZnkUzt5KtH7grxcw7yaoc6aK2cepump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "7TrhzN6go8hsrFciMi8Sh76jge3yDXXFijLK8kktpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "28gTNPFmPkrD38uWvu7ABdXvvc4jaGvMZVqfBtWL3SLm",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "Av656rhzwea1AfXmtZyGhWTzavvYk2zbkDeiWha3pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "DSuKNY77atjDsPUBcztv1FoPAkeHqAVmn769Ji7spump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "Cpu5D8SDeLUtpjVBwjA35bEaPycKdWp6sfH7EA5Upump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "2gVV7hqgkC2q7U5oZ1LVu2UTDLbPPJH8v7GhrngDpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "5QdHE2qq9yLGmd4fhyJgqTo3EbHtRr1YCEP6yKUUpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "BCXuRdGVdU9Ez612bHZhD57tMbXdfmGkuFySnYMUpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "H8zTgCCDsxZuDKc83zWhjJNwcdZQDpKS617vnNZ2pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "4Nrv3Bz3joCQpuN9u1VYdf7XxtUXSm65dRLMum6dpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "35UsiZS8N5Z7H1sFX128PjuiAqVLMw18espKQaxmpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "BkSWR7qe1EAMVtdvrgKcCZuNEdpbZjkAPGXrZDJ8pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "3CUZisJyLEX8LsWSkgGE2c2A1X9djvTkZsww5caNpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "9kjLyCjNuysU58V6GsRp5FkAgVRnmRty2ugYAzmepump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "6T1BNshzGAKAHvJ3NZ5n62X2eg5rqqsMipUMZJvLpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "H9yXe9TWN7Kd15gT29M6sMNWw5NHRZ8JgXB6TEQopump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "9ZnqznpfG3VrvvFGGRmcaCZC7wmL5wu9eYz3aLNxpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "4zCySmVqftRprdErx4vfKKK5UkReo5v1AEAWB7Pspump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "HzhxkajcyaCPZcVuFvE4f2XH5wg5fNyjUPKgqQaLpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "Chc1ewzLkTUh5WeQCwPMM5TzWMaUouTtGwbSVudrpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "HAcs1RL4KWQSZPPdm58hnUiEnhST1Ty2n9BMj7Ghpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "GHxiCrvZK37e8KpHZVMtZqvszjTGduyYx4ZjL27apump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "D5Xyffq73GkSP49TEbhrUStV53rfPjrvHMWQo6tWuvig",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "8JgwQ6trYjcpMhD5XKJQ9rN8RBwsfDS3VXPvW1Kepump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "EqZ2my4uSzWZk3HtvXdfeKeaaY5fqGoYZToRSfogpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "4N5d7DZ8UGKPw6Qso1eV4Pu52jHeZEuLfH3j8p4hpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "5MmL6AnRNEjFthgRMZ5Lksn3T8Z9Utea1zyMWcxUpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "3kN6Du84SNtmbNx6huQGHxMeUV2nS8PzrZwPnZL2pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "6ALLG6h6tpSKnsthFKrrViYP82nSjR9u9We7QCExWvvs",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "DHeUQg7NVA7ttR84Qnnh48ZquRua8Rt1cTD8o4h8ZK3a",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "6v3sygt3ozJ8GccfS1BDqEBhg1LS4HV14Xygy2C1pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "69F9xZBoyK3aQGiEs6Sh9Kz4CGLaWi6a49nkXDUkpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "HjPf5Rf4Pfs3oXqCfdYCqRGvpXa4189zsP2JthBwpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "2bxKWZtaiwUY2rzC49asP7jFakWETY5yhdVfNg1yfT5L",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "GoKGrETiAd12vB3gFT1Exkf7Hw7dEENnPGYotM8spump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "3bNfzkwNQF6jF5iJDbkQyqPLRE1TdNSg2WXZEVV3pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "HxFUaScLMJtZxmV1DGdDVunY3UcGyhvWVUc9wr7Gpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "9UfNXTZQzk8bDa2maPM2YvTYaCXBvJpeJkBdvBk8pump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "9VzdpJJNa3coRcVo7YtYBUm5xyadxcWY1YHG6qiYZXWg",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "GutPevwcfhwNCgFp6Em2L81ToB8H2qvX7F9i4NGwpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    },
+    {
+      "mint": "D7iaWjevbiXWLWxDudmjLEGeoZmZpdBHc6TeV4jvpump",
+      "reason": "selected_candidate_session_attempt_capacity_reached"
+    }
+  ],
+  "openOrProblemRows": [],
+  "lastWalletReconcile": {
+    "atMs": 1788027658201,
+    "autoFlattenEnabled": false,
+    "kind": "rustSelectedCandidateWalletReconcile",
+    "managed": 0,
+    "positions": 0,
+    "unmanaged": 0
+  }
+}

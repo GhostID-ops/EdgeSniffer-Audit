@@ -1,0 +1,10 @@
+[Unit]
+Description=Run EdgeSniffer teacher impulse parity epoch report hourly
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=edgesniffer-teacher-impulse-parity-v1-epoch-report.service
+
+[Install]
+WantedBy=timers.target

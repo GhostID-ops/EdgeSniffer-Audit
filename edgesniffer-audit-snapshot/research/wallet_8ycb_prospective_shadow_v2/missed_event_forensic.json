@@ -1,0 +1,53 @@
+{
+  "atomic_buy": {
+    "mint": "tahKR4TA337akDkgfGZ5Qaeng4ABdov49rVePABpump",
+    "quote_lamports": 3048926880,
+    "quote_sol": 3.04892688,
+    "signature": "3msUjoGrsRfbXTrn3Q6CLpRHGtx1F8LFMkKA587BN75WXCKPWMywbwEsCw7j6PVPUVLfYWvjTcAzkuYnBpxjiQ3i",
+    "slot_canonical": 443866447,
+    "slot_raw": "443866447",
+    "tokens_out_raw": 97545454545454,
+    "transaction_index": null,
+    "transaction_index_note": "wallet provider did not expose it; frozen semantics compare only when both are available",
+    "wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ"
+  },
+  "chain": {
+    "block_time": 1788405537,
+    "fee_lamports": 1010000,
+    "pump_instruction_count": 2,
+    "slot": 443866447,
+    "target_account_index": 0
+  },
+  "checks": {
+    "chain_slot_matches": true,
+    "chain_success": true,
+    "one_proven_create": true,
+    "same_canonical_slot": true,
+    "same_mint": true,
+    "same_signature": true,
+    "target_and_mint_in_pump_instructions": true,
+    "target_atomic_buy": true,
+    "target_is_signer_and_writable": true,
+    "target_received_mint_in_same_transaction": true
+  },
+  "classification": "MISSED_EVENT_WOULD_TRIGGER_WITH_CANONICAL_TYPES",
+  "create": {
+    "mint": "tahKR4TA337akDkgfGZ5Qaeng4ABdov49rVePABpump",
+    "signature": "3msUjoGrsRfbXTrn3Q6CLpRHGtx1F8LFMkKA587BN75WXCKPWMywbwEsCw7j6PVPUVLfYWvjTcAzkuYnBpxjiQ3i",
+    "slot": 443866447,
+    "transaction_index": 44,
+    "wallet_creator": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+    "wallet_creator_basis": "target is transaction signer/fee payer and creator account in the Pump create instruction"
+  },
+  "frozen_semantics": {
+    "only_v1_failure": "raw int-versus-string slot equality",
+    "proven_create": true,
+    "same_mint": true,
+    "same_signature": true,
+    "slot_match_after_canonicalization": true,
+    "target_buy": true,
+    "transaction_index_rule_satisfied": true
+  },
+  "prospective_cohort_inclusion": "EXCLUDED_FROM_V2_AND_NOT_BACKFILLED_INTO_V1",
+  "schema": "8ycb-missed-event-forensic-v1"
+}

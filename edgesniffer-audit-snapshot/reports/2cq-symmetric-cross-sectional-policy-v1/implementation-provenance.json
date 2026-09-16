@@ -1,0 +1,38 @@
+{
+  "schema": "2CQ_SYMMETRIC_CROSS_SECTIONAL_POLICY_V1_IMPLEMENTATION_PROVENANCE",
+  "frozenAtUtc": "2026-09-14T21:36:35.087813Z",
+  "developmentOrdinals": [1, 350],
+  "sealedValidationOrdinals": [351, 500],
+  "modelFamily": "FULL_CAUSAL_PREDECLARED_NO_TOURNAMENT",
+  "featureCount": 48,
+  "policyCountFit": 1,
+  "outcomesRead": 0,
+  "validationRowsRead": 0,
+  "submissions": 0,
+  "hashes": {
+    "cohortContractSha256": "6d3395b21c067e00776c21fcaa4d1f24076af43e0252147afbc4d7abd93f8bb1",
+    "developmentChoiceSetsSha256": "2e1f1f14e996b1e13e9b00ce9c1cded750c93edac3fb80de4fcf359c6a1c548e",
+    "policySha256": "bedb0ec347876948937b92c25c2f9df9a3644ce2bb73f3ac258b956dd4d9d1cc",
+    "crossMintModelSha256": "69fabc9327db908a9aac3ed158f9353c08b6f92389e33f5b802c55978c33152c",
+    "featureOrderSha256": "ea30c08655bcf709b1bb20db3a5681c2979d890520545fd85877b42029dbabcd",
+    "coefficientsSha256": "cdef18f706ba5ddddab44f4ffc0d715af427f0420632749ed4bda358ece7d1d9",
+    "standardizationSha256": "c25e730de04a4e5591111d5a39bf9331ca8f0f6e56c8a3f706184c304b2f5b28",
+    "researchGateSourceSha256": "2129a6a002e13c3ea07140e95532d1fa62bf08d0c7211437cbd3636f5ccb585a",
+    "policyFitterSourceSha256": "febda319f2cb818503cb9f70fe7478e066c0903cfc21a0acc466cfb400bd1cf8",
+    "causalFeatureSourceSha256": "4c0bd4e193b235e98f95d41ae1793e093a266330abc50e3b04d6ec221b624c1a",
+    "decisionSystemSourceSha256": "0d80156db9e553af57b2883898f75f86ac7e4202ec36ea1c2464248a2fb55af0",
+    "modelSerializationSourceSha256": "140399f5c6615747fa76b0f3915b5a7e6bbe44d664194e3375babdf1438928d6",
+    "preservedTimingPolicySha256": "ab23b3be089e1e762f3d42696bd884186906a8475e4eb80a3bc0747d2e2a94b6",
+    "exactCurveEngineSha256": "ed95c5de839428ae5fe238905e59f26d8956ff59f1819fda6f8ea9da9e1c732f"
+  },
+  "integrity": {
+    "developmentArtifactMatchesFreezeMembership": true,
+    "developmentArtifactMatchesCurrentFirst350": true,
+    "storedMetricsMatchIndependentReplay": true,
+    "featureOrderExact": true,
+    "coefficientsFinite": true,
+    "validationExported": false,
+    "validationConsumed": false,
+    "economicReplayRun": false
+  }
+}

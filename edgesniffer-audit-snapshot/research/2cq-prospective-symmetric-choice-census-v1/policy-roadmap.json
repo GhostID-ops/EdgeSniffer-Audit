@@ -1,0 +1,43 @@
+{
+  "schema": "2CQ_PROSPECTIVE_SYMMETRIC_POLICY_ROADMAP_V1",
+  "activeHypothesis": "2CQ's cross-mint choice is reproducible from a complete causal LAUNCHED_120S universe and adds useful discrimination to the preserved BASE_PLUS_TRANSITION timing component.",
+  "invalidatesHypothesis": "The one frozen cross-sectional policy fails on its own subsequent sealed N150 or the combined policy fails prospective full-market imitation.",
+  "sequence": [
+    {
+      "gate": 1,
+      "action": "collect and materialize first 350 fully symmetric choice decisions",
+      "status": "COLLECTING"
+    },
+    {
+      "gate": 2,
+      "action": "fit exactly one predeclared FULL_CAUSAL cross-sectional policy and freeze it",
+      "status": "BLOCKED_UNTIL_DEVELOPMENT_N350"
+    },
+    {
+      "gate": 3,
+      "action": "test frozen policy exactly once on its subsequent sealed ordinals 351-500",
+      "status": "BLOCKED_UNTIL_POLICY_FROZEN_AND_N500"
+    },
+    {
+      "gate": 4,
+      "action": "assemble validated cross-sectional policy with preserved BASE_PLUS_TRANSITION timing component",
+      "status": "BLOCKED_UNTIL_ONE_TIME_VALIDATION"
+    },
+    {
+      "gate": 5,
+      "action": "run prospective no-submit teacher-imitation test",
+      "status": "BLOCKED_UNTIL_JOINT_POLICY"
+    },
+    {
+      "gate": 6,
+      "action": "evaluate exact executable profitability",
+      "status": "BLOCKED_UNTIL_PROSPECTIVE_IMITATION"
+    }
+  ],
+  "frozenPolicyFamily": "FULL_CAUSAL_PREDECLARED_NO_TOURNAMENT",
+  "developmentOrdinals": [1, 350],
+  "sealedValidationOrdinals": [351, 500],
+  "validationRunsPermitted": 1,
+  "outcomesPermittedBeforeProspectiveImitation": false,
+  "submissionsPermitted": false
+}

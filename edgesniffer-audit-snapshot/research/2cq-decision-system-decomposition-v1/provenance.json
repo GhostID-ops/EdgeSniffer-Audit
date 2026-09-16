@@ -1,0 +1,12 @@
+{
+  "artifacts": {
+    "entry-decision-tape.jsonl.gz": "6319ec4b88698c93bbac2351f30336b90e0b00201fcf2347af532bf957aa3400",
+    "report.json": "a6cf89a628e7435d01f00c1d39a5e91fc81d6a9944bff13ef4933174af9a7886",
+    "report.md": "9f12f4c4924944020e4c9939d1b30e05001aaa8f0b8267ba406f357b4d37db00",
+    "same-mint-temporal-examples.jsonl.gz": "31daf285c7bdcc425cb98b130d358fd8e527007faf290eab23aff4a97b96ac6b"
+  },
+  "contractSha256": "c7873752eb36b085683458265a892d6648af9efe854a438d5a4717d17d70922b",
+  "developmentSha256": "b3a843cb545eccb3303148f37eb8037fb8c0f618b5c6fa97916130e2813e0155",
+  "schema": "2CQ_DECISION_SYSTEM_DECOMPOSITION_V1_PROVENANCE",
+  "scriptSha256": "0d80156db9e553af57b2883898f75f86ac7e4202ec36ea1c2464248a2fb55af0"
+}

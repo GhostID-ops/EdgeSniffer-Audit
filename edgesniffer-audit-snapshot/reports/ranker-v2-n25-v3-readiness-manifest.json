@@ -1,0 +1,59 @@
+{
+  "schema": "ranker-v2-n25-v3-readiness-v1",
+  "generatedAtUtc": "2026-09-05T21:42:02Z",
+  "classification": "RANKER_V2_POSITION_RECOVERED_LIFECYCLE_REPAIR_COMPLETE_READY_FOR_N25_V3",
+  "n25V2": {
+    "immutableAttempts": 11,
+    "maxAttempts": 25,
+    "emitterActive": false,
+    "resumed": false,
+    "walletFlat": true
+  },
+  "recovery": {
+    "mint": "9Zr7Un5XvCtuVqbkqZNNCC2tMyxFKiiH5jHXuQ8Upump",
+    "signature": "36CLA5v4Lr6bN11TD9UqWt8huHaw2dSaWQV5vM27fCjkrMiy1n7t1eFVdLdaa22GvB9WTLc5WSUmvhDa3AYAm89f",
+    "finalizedSlot": 444611185,
+    "grossProceedsLamports": 8890572,
+    "transactionFeeLamports": 5000,
+    "finalTokenBalanceRaw": 0
+  },
+  "release": {
+    "path": "/mnt/HC_Volume_106775198/edgesniffer-bin/pumpfun-sidecar-ranker-v2-lifecycle-repair-v3-7992d04956cdc56d",
+    "sha256": "7992d04956cdc56d5edadc92836d2da5724e475f1a6865c88ad7eda01b9b8724"
+  },
+  "sourceHashes": {
+    "main.rs": "5505079430b583d0b6f8102c724123373d67d2c2788036771c2ba87e8fb63635",
+    "exit_watcher.rs": "affc47228734d88402158d0346a310127d037d4f2fe0ac616eebbb2d8e178055",
+    "ownership_lifecycle.rs": "928601613237ad4fc05886afa2dcf7ed63a2df38f27a8dca8989d6e94b3c60df",
+    "lib.rs": "6a5747a5282c2393f091f8d0a9fc7c44303f9ec391d28e66a25ddc7da8269650"
+  },
+  "canonicalHashes": {
+    "scoreSpec": "ca785e8d919ccc795be2c41c9787ad5a77617767cd75f748a111f93eb00cacee",
+    "semanticFreeze": "e545f43aa2b008e769fa11f85ed3a8b7c9318dc2a22a51e4f61de1eb5a9d4b95",
+    "atlas": "641c14b1190b5999ffddc7cf1f4ec0bb2ccd405d397d95ba19dfa210b51cac2b",
+    "directEmitter": "4701aabc74dcc9f1d2a924ff9de3465cc587cab4906fba468d1bc0e5ced010a6"
+  },
+  "v3": {
+    "receiverEnabled": false,
+    "receiverActive": false,
+    "emitterEnabled": false,
+    "emitterActive": false,
+    "stateFilesExist": false,
+    "started": false,
+    "counter": "0/25"
+  },
+  "verification": {
+    "cargoFmtCheck": "PASS",
+    "localCargoTestAllTargets": "PASS",
+    "linuxCargoTestAllTargets": "PASS",
+    "failureInjectionCases": 20,
+    "systemdAnalyzeVerify": "PASS",
+    "postPatchLiveTested": false
+  },
+  "storageWarning": {
+    "rootFreeGbApprox": 49,
+    "dataVolumeFreeGbApprox": 3.1,
+    "dataVolumeUsePercent": 97,
+    "canonicalCorpusGrowthGbPerDayApprox": 5.2
+  }
+}

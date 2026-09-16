@@ -1,0 +1,12 @@
+[Unit]
+Description=Run official 2CQ prospective Tier-A N500 census V3 every five minutes
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=5min
+AccuracySec=10s
+Persistent=true
+Unit=edgesniffer-2cq-prospective-tier-a-entry-census-v3.service
+
+[Install]
+WantedBy=timers.target

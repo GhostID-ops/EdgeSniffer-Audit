@@ -1,0 +1,1702 @@
+[
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 17.31444489154012,
+      "max_hold": -4,
+      "profit_factor": 6.13237749802397,
+      "sl": -1,
+      "total_pnl_sol": 0.008657222000000001,
+      "tp": 3,
+      "win_rate_pct": 20.0
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 0.02497103866609951,
+        "p50": 0.023382964130092,
+        "p75": 0.026653357780936915,
+        "p90": 0.02919386350482167
+      },
+      "exit_impact_pct": {
+        "mean": 0.02412341619931979,
+        "p50": 0.022848935286057248,
+        "p75": 0.02340803395649571,
+        "p90": 0.027311028998628917
+      },
+      "expectancy_pct": -7.207231999999999,
+      "external_status_flip_fraction": 0.04081632653061224,
+      "external_status_flips": 2,
+      "external_transactions": 49,
+      "fee_burden_pct": {
+        "mean": 2.40918,
+        "p50": 2.47158,
+        "p75": 2.54016,
+        "p90": 2.5641119999999997
+      },
+      "losses": 3,
+      "max_drawdown_sol": 0.004547016,
+      "max_hold": 4,
+      "median_return_pct": -2.2770599999999974,
+      "profit_factor": 0.2074767275945367,
+      "resolved": 5,
+      "sl": 1,
+      "total_pnl_sol": -0.003603616,
+      "tp": 0,
+      "win_rate_pct": 40.0,
+      "wins": 2
+    },
+    "matched_n": 5,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 0.02497103866609951,
+        "p50": 0.023382964130092,
+        "p75": 0.026653357780936915,
+        "p90": 0.02919386350482167
+      },
+      "exit_impact_pct": {
+        "mean": 0.02412341619931979,
+        "p50": 0.022848935286057248,
+        "p75": 0.02340803395649571,
+        "p90": 0.027311028998628917
+      },
+      "expectancy_pct": 10.107212891540119,
+      "external_status_flip_fraction": 0.04081632653061224,
+      "external_status_flips": 2,
+      "external_transactions": 49,
+      "fee_burden_pct": {
+        "mean": 2.40918,
+        "p50": 2.47158,
+        "p75": 2.54016,
+        "p90": 2.5641119999999997
+      },
+      "losses": 2,
+      "max_drawdown_sol": 0.0009463939999999997,
+      "max_hold": 0,
+      "median_return_pct": 20.0,
+      "profit_factor": 6.339854225618506,
+      "resolved": 5,
+      "sl": 0,
+      "total_pnl_sol": 0.005053606,
+      "tp": 3,
+      "win_rate_pct": 60.0,
+      "wins": 3
+    },
+    "population": "final_test",
+    "size_lamports": 10000000,
+    "size_sol": 0.01
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 17.401792291540122,
+      "max_hold": -4,
+      "profit_factor": 6.134571199139463,
+      "sl": -1,
+      "total_pnl_sol": 0.087008962,
+      "tp": 3,
+      "win_rate_pct": 20.0
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 0.24971043664107295,
+        "p50": 0.23382968685872196,
+        "p75": 0.2665336301450605,
+        "p90": 0.2919386921699463
+      },
+      "exit_impact_pct": {
+        "mean": 0.24056485673747297,
+        "p50": 0.22806473145889905,
+        "p75": 0.23350124443120013,
+        "p90": 0.2720161617279304
+      },
+      "expectancy_pct": -7.2945794000000035,
+      "external_status_flip_fraction": 0.08163265306122448,
+      "external_status_flips": 4,
+      "external_transactions": 49,
+      "fee_burden_pct": {
+        "mean": 2.4080564000000004,
+        "p50": 2.471438,
+        "p75": 2.539926,
+        "p90": 2.5640418
+      },
+      "losses": 3,
+      "max_drawdown_sol": 0.04589438999999999,
+      "max_hold": 4,
+      "median_return_pct": -2.287402000000005,
+      "profit_factor": 0.2052863759601119,
+      "resolved": 5,
+      "sl": 1,
+      "total_pnl_sol": -0.036472897,
+      "tp": 0,
+      "win_rate_pct": 40.0,
+      "wins": 2
+    },
+    "matched_n": 5,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 0.24971043664107295,
+        "p50": 0.23382968685872196,
+        "p75": 0.2665336301450605,
+        "p90": 0.2919386921699463
+      },
+      "exit_impact_pct": {
+        "mean": 0.24056485673747297,
+        "p50": 0.22806473145889905,
+        "p75": 0.23350124443120013,
+        "p90": 0.2720161617279304
+      },
+      "expectancy_pct": 10.107212891540119,
+      "external_status_flip_fraction": 0.08163265306122448,
+      "external_status_flips": 4,
+      "external_transactions": 49,
+      "fee_burden_pct": {
+        "mean": 2.4080564000000004,
+        "p50": 2.471438,
+        "p75": 2.539926,
+        "p90": 2.5640418
+      },
+      "losses": 2,
+      "max_drawdown_sol": 0.009463935,
+      "max_hold": 0,
+      "median_return_pct": 20.0,
+      "profit_factor": 6.339857575099575,
+      "resolved": 5,
+      "sl": 0,
+      "total_pnl_sol": 0.050536065,
+      "tp": 3,
+      "win_rate_pct": 60.0,
+      "wins": 3
+    },
+    "population": "final_test",
+    "size_lamports": 100000000,
+    "size_sol": 0.1
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 14.610052714425146,
+      "max_hold": -3,
+      "profit_factor": 3.975251873846794,
+      "sl": -1,
+      "total_pnl_sol": 0.29220105500000004,
+      "tp": 2,
+      "win_rate_pct": 0.0
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 1.1745959978310794,
+        "p50": 1.1354930266055385,
+        "p75": 1.2100283831052383,
+        "p90": 1.283612256673441
+      },
+      "exit_impact_pct": {
+        "mean": 1.1205978638857168,
+        "p50": 1.1251987563006827,
+        "p75": 1.1368027893600752,
+        "p90": 1.1484301714632061
+      },
+      "expectancy_pct": -6.9760366,
+      "external_status_flip_fraction": 0.06976744186046512,
+      "external_status_flips": 3,
+      "external_transactions": 43,
+      "fee_burden_pct": {
+        "mean": 2.41208695,
+        "p50": 2.5046348000000003,
+        "p75": 2.5493193,
+        "p90": 2.5679610000000004
+      },
+      "losses": 2,
+      "max_drawdown_sol": 0.186355545,
+      "max_hold": 3,
+      "median_return_pct": 0.335239599999998,
+      "profit_factor": 0.2513196642471787,
+      "resolved": 4,
+      "sl": 1,
+      "total_pnl_sol": -0.139520732,
+      "tp": 0,
+      "win_rate_pct": 50.0,
+      "wins": 2
+    },
+    "matched_n": 4,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 1.1745959978310794,
+        "p50": 1.1354930266055385,
+        "p75": 1.2100283831052383,
+        "p90": 1.283612256673441
+      },
+      "exit_impact_pct": {
+        "mean": 1.1205978638857168,
+        "p50": 1.1251987563006827,
+        "p75": 1.1368027893600752,
+        "p90": 1.1484301714632061
+      },
+      "expectancy_pct": 7.634016114425147,
+      "external_status_flip_fraction": 0.06976744186046512,
+      "external_status_flips": 3,
+      "external_transactions": 43,
+      "fee_burden_pct": {
+        "mean": 2.41208695,
+        "p50": 2.5046348000000003,
+        "p75": 2.5493193,
+        "p90": 2.5679610000000004
+      },
+      "losses": 2,
+      "max_drawdown_sol": 0.047319677000000004,
+      "max_hold": 0,
+      "median_return_pct": 7.9981453733023375,
+      "profit_factor": 4.226571538093973,
+      "resolved": 4,
+      "sl": 0,
+      "total_pnl_sol": 0.152680323,
+      "tp": 2,
+      "win_rate_pct": 50.0,
+      "wins": 2
+    },
+    "population": "final_test",
+    "size_lamports": 500000000,
+    "size_sol": 0.5
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 14.683484464425149,
+      "max_hold": -3,
+      "profit_factor": 3.978521446835089,
+      "sl": -1,
+      "total_pnl_sol": 0.587339378,
+      "tp": 2,
+      "win_rate_pct": 0.0
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 2.349192002791561,
+        "p50": 2.270986060101954,
+        "p75": 2.4200567735526146,
+        "p90": 2.567224521139999
+      },
+      "exit_impact_pct": {
+        "mean": 2.21489856521955,
+        "p50": 2.2254307159570272,
+        "p75": 2.24849161085213,
+        "p90": 2.270579167722503
+      },
+      "expectancy_pct": -7.0494683500000015,
+      "external_status_flip_fraction": 0.06976744186046512,
+      "external_status_flips": 3,
+      "external_transactions": 43,
+      "fee_burden_pct": {
+        "mean": 2.411157125,
+        "p50": 2.5037014500000003,
+        "p75": 2.5485275,
+        "p90": 2.5678514
+      },
+      "losses": 2,
+      "max_drawdown_sol": 0.37499665499999996,
+      "max_hold": 3,
+      "median_return_pct": 0.2615329500000041,
+      "profit_factor": 0.24805000193935067,
+      "resolved": 4,
+      "sl": 1,
+      "total_pnl_sol": -0.28197873399999995,
+      "tp": 0,
+      "win_rate_pct": 50.0,
+      "wins": 2
+    },
+    "matched_n": 4,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 2.349192002791561,
+        "p50": 2.270986060101954,
+        "p75": 2.4200567735526146,
+        "p90": 2.567224521139999
+      },
+      "exit_impact_pct": {
+        "mean": 2.21489856521955,
+        "p50": 2.2254307159570272,
+        "p75": 2.24849161085213,
+        "p90": 2.270579167722503
+      },
+      "expectancy_pct": 7.634016114425147,
+      "external_status_flip_fraction": 0.06976744186046512,
+      "external_status_flips": 3,
+      "external_transactions": 43,
+      "fee_burden_pct": {
+        "mean": 2.411157125,
+        "p50": 2.5037014500000003,
+        "p75": 2.5485275,
+        "p90": 2.5678514
+      },
+      "losses": 2,
+      "max_drawdown_sol": 0.09463935600000001,
+      "max_hold": 0,
+      "median_return_pct": 7.9981453733023375,
+      "profit_factor": 4.22657144877444,
+      "resolved": 4,
+      "sl": 0,
+      "total_pnl_sol": 0.305360644,
+      "tp": 2,
+      "win_rate_pct": 50.0,
+      "wins": 2
+    },
+    "population": "final_test",
+    "size_lamports": 1000000000,
+    "size_sol": 1.0
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 8.786949737033654,
+      "max_hold": -12,
+      "profit_factor": 1.436310989876187,
+      "sl": -32,
+      "total_pnl_sol": 0.182768557,
+      "tp": 44,
+      "win_rate_pct": 18.75
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 0.03069416226922404,
+        "p50": 0.03181553504590928,
+        "p75": 0.03247102104784183,
+        "p90": 0.03263114989482396
+      },
+      "exit_impact_pct": {
+        "mean": 0.029963170718903063,
+        "p50": 0.03173681603210188,
+        "p75": 0.03244040797892034,
+        "p90": 0.032693679573367884
+      },
+      "expectancy_pct": -7.1972887019230765,
+      "external_status_flip_fraction": 0.05211726384364821,
+      "external_status_flips": 80,
+      "external_transactions": 1535,
+      "fee_burden_pct": {
+        "mean": 2.4093084134615386,
+        "p50": 2.460175,
+        "p75": 2.4713225,
+        "p90": 2.4991570000000003
+      },
+      "losses": 190,
+      "max_drawdown_sol": 0.14970360499999993,
+      "max_hold": 169,
+      "median_return_pct": -3.1789100000000015,
+      "profit_factor": 0.08899807707155996,
+      "resolved": 208,
+      "sl": 36,
+      "total_pnl_sol": -0.149703605,
+      "tp": 3,
+      "win_rate_pct": 8.653846153846153,
+      "wins": 18
+    },
+    "matched_n": 208,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 0.03069416226922404,
+        "p50": 0.03181553504590928,
+        "p75": 0.03247102104784183,
+        "p90": 0.03263114989482396
+      },
+      "exit_impact_pct": {
+        "mean": 0.029963170718903063,
+        "p50": 0.03173681603210188,
+        "p75": 0.03244040797892034,
+        "p90": 0.032693679573367884
+      },
+      "expectancy_pct": 1.5896610351105769,
+      "external_status_flip_fraction": 0.05211726384364821,
+      "external_status_flips": 80,
+      "external_transactions": 1535,
+      "fee_burden_pct": {
+        "mean": 2.4093084134615386,
+        "p50": 2.460175,
+        "p75": 2.4713225,
+        "p90": 2.4991570000000003
+      },
+      "losses": 151,
+      "max_drawdown_sol": 0.020286715999999948,
+      "max_hold": 157,
+      "median_return_pct": -2.6246084334999997,
+      "profit_factor": 1.525309066947747,
+      "resolved": 208,
+      "sl": 4,
+      "total_pnl_sol": 0.033064952,
+      "tp": 47,
+      "win_rate_pct": 27.403846153846153,
+      "wins": 57
+    },
+    "population": "full_prospective",
+    "size_lamports": 10000000,
+    "size_sol": 0.01
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 8.81342557402439,
+      "max_hold": -11,
+      "profit_factor": 1.427775697710934,
+      "sl": -32,
+      "total_pnl_sol": 1.806752246,
+      "tp": 43,
+      "win_rate_pct": 18.536585365853657
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 0.3067703304617378,
+        "p50": 0.3181549643550996,
+        "p75": 0.3247169283552509,
+        "p90": 0.3263117922950354
+      },
+      "exit_impact_pct": {
+        "mean": 0.29855850877262613,
+        "p50": 0.31635888756155195,
+        "p75": 0.3234622716357771,
+        "p90": 0.3259418304463835
+      },
+      "expectancy_pct": -7.251700043902439,
+      "external_status_flip_fraction": 0.0607661822985469,
+      "external_status_flips": 92,
+      "external_transactions": 1514,
+      "fee_burden_pct": {
+        "mean": 2.4085990975609755,
+        "p50": 2.460156,
+        "p75": 2.470515,
+        "p90": 2.4991060000000003
+      },
+      "losses": 187,
+      "max_drawdown_sol": 1.4865985090000007,
+      "max_hold": 166,
+      "median_return_pct": -3.178652999999998,
+      "profit_factor": 0.08865640825265768,
+      "resolved": 205,
+      "sl": 36,
+      "total_pnl_sol": -1.486598509,
+      "tp": 3,
+      "win_rate_pct": 8.78048780487805,
+      "wins": 18
+    },
+    "matched_n": 205,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 0.3067703304617378,
+        "p50": 0.3181549643550996,
+        "p75": 0.3247169283552509,
+        "p90": 0.3263117922950354
+      },
+      "exit_impact_pct": {
+        "mean": 0.29855850877262613,
+        "p50": 0.31635888756155195,
+        "p75": 0.3234622716357771,
+        "p90": 0.3259418304463835
+      },
+      "expectancy_pct": 1.5617255301219513,
+      "external_status_flip_fraction": 0.0607661822985469,
+      "external_status_flips": 92,
+      "external_transactions": 1514,
+      "fee_burden_pct": {
+        "mean": 2.4085990975609755,
+        "p50": 2.460156,
+        "p75": 2.470515,
+        "p90": 2.4991060000000003
+      },
+      "losses": 149,
+      "max_drawdown_sol": 0.19809255099999962,
+      "max_hold": 155,
+      "median_return_pct": -2.624547733,
+      "profit_factor": 1.5164321059635917,
+      "resolved": 205,
+      "sl": 4,
+      "total_pnl_sol": 0.320153737,
+      "tp": 46,
+      "win_rate_pct": 27.317073170731707,
+      "wins": 56
+    },
+    "population": "full_prospective",
+    "size_lamports": 100000000,
+    "size_sol": 0.1
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 9.231220070274112,
+      "max_hold": -11,
+      "profit_factor": 1.504942135301675,
+      "sl": -32,
+      "total_pnl_sol": 9.092751770000001,
+      "tp": 43,
+      "win_rate_pct": 19.796954314720814
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 1.5309910271087255,
+        "p50": 1.5893725972449868,
+        "p75": 1.6235846681072363,
+        "p90": 1.6315553241806047
+      },
+      "exit_impact_pct": {
+        "mean": 1.4703498640118358,
+        "p50": 1.5615919137332623,
+        "p75": 1.595909815079244,
+        "p90": 1.6079625592609337
+      },
+      "expectancy_pct": -7.469558204060913,
+      "external_status_flip_fraction": 0.07756232686980609,
+      "external_status_flips": 112,
+      "external_transactions": 1444,
+      "fee_burden_pct": {
+        "mean": 2.4058398131979697,
+        "p50": 2.460067,
+        "p75": 2.4704878,
+        "p90": 2.49620076
+      },
+      "losses": 181,
+      "max_drawdown_sol": 7.357514831,
+      "max_hold": 158,
+      "median_return_pct": -3.18562,
+      "profit_factor": 0.08249348369885408,
+      "resolved": 197,
+      "sl": 36,
+      "total_pnl_sol": -7.3575148310000005,
+      "tp": 3,
+      "win_rate_pct": 8.121827411167512,
+      "wins": 16
+    },
+    "matched_n": 197,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 1.5309910271087255,
+        "p50": 1.5893725972449868,
+        "p75": 1.6235846681072363,
+        "p90": 1.6315553241806047
+      },
+      "exit_impact_pct": {
+        "mean": 1.4703498640118358,
+        "p50": 1.5615919137332623,
+        "p75": 1.595909815079244,
+        "p90": 1.6079625592609337
+      },
+      "expectancy_pct": 1.7616618662131982,
+      "external_status_flip_fraction": 0.07756232686980609,
+      "external_status_flips": 112,
+      "external_transactions": 1444,
+      "fee_burden_pct": {
+        "mean": 2.4058398131979697,
+        "p50": 2.460067,
+        "p75": 2.4704878,
+        "p90": 2.49620076
+      },
+      "losses": 142,
+      "max_drawdown_sol": 0.9395150530000009,
+      "max_hold": 147,
+      "median_return_pct": -2.624547733,
+      "profit_factor": 1.587435619000529,
+      "resolved": 197,
+      "sl": 4,
+      "total_pnl_sol": 1.7352369390000002,
+      "tp": 46,
+      "win_rate_pct": 27.918781725888326,
+      "wins": 55
+    },
+    "population": "full_prospective",
+    "size_lamports": 500000000,
+    "size_sol": 0.5
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 9.45445683768617,
+      "max_hold": -10,
+      "profit_factor": 1.5435405485997085,
+      "sl": -32,
+      "total_pnl_sol": 17.774378859000002,
+      "tp": 42,
+      "win_rate_pct": 20.21276595744681
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 3.056295386455361,
+        "p50": 3.17991664615489,
+        "p75": 3.2471693955407446,
+        "p90": 3.2631101934625972
+      },
+      "exit_impact_pct": {
+        "mean": 2.8902001564339272,
+        "p50": 3.0752865824184408,
+        "p75": 3.1414102005931115,
+        "p90": 3.1646681261310428
+      },
+      "expectancy_pct": -7.583140417553191,
+      "external_status_flip_fraction": 0.09803921568627451,
+      "external_status_flips": 130,
+      "external_transactions": 1326,
+      "fee_burden_pct": {
+        "mean": 2.4044017611702126,
+        "p50": 2.4600631,
+        "p75": 2.4711407,
+        "p90": 2.4962808
+      },
+      "losses": 172,
+      "max_drawdown_sol": 14.256303984999995,
+      "max_hold": 149,
+      "median_return_pct": -3.185893649999999,
+      "profit_factor": 0.0780015350002883,
+      "resolved": 188,
+      "sl": 36,
+      "total_pnl_sol": -14.256303985,
+      "tp": 3,
+      "win_rate_pct": 8.51063829787234,
+      "wins": 16
+    },
+    "matched_n": 188,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 3.056295386455361,
+        "p50": 3.17991664615489,
+        "p75": 3.2471693955407446,
+        "p90": 3.2631101934625972
+      },
+      "exit_impact_pct": {
+        "mean": 2.8902001564339272,
+        "p50": 3.0752865824184408,
+        "p75": 3.1414102005931115,
+        "p90": 3.1646681261310428
+      },
+      "expectancy_pct": 1.8713164201329788,
+      "external_status_flip_fraction": 0.09803921568627451,
+      "external_status_flips": 130,
+      "external_transactions": 1326,
+      "fee_burden_pct": {
+        "mean": 2.4044017611702126,
+        "p50": 2.4600631,
+        "p75": 2.4711407,
+        "p90": 2.4962808
+      },
+      "losses": 134,
+      "max_drawdown_sol": 1.731630882000001,
+      "max_hold": 139,
+      "median_return_pct": -2.6246084334999997,
+      "profit_factor": 1.6215420835999967,
+      "resolved": 188,
+      "sl": 4,
+      "total_pnl_sol": 3.5180748740000003,
+      "tp": 45,
+      "win_rate_pct": 28.72340425531915,
+      "wins": 54
+    },
+    "population": "full_prospective",
+    "size_lamports": 1000000000,
+    "size_sol": 1.0
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 2.1722262604505493,
+      "max_hold": 0,
+      "profit_factor": 0.36488565444759224,
+      "sl": -5,
+      "total_pnl_sol": 0.019767258000000003,
+      "tp": 5,
+      "win_rate_pct": 4.395604395604396
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 0.03152715563666991,
+        "p50": 0.031966060511656735,
+        "p75": 0.03247168717609439,
+        "p90": 0.032631027284391045
+      },
+      "exit_impact_pct": {
+        "mean": 0.03136202317028704,
+        "p50": 0.031966506722647114,
+        "p75": 0.03247919640100294,
+        "p90": 0.032759339700505485
+      },
+      "expectancy_pct": -3.386080659340659,
+      "external_status_flip_fraction": 0.051666666666666666,
+      "external_status_flips": 31,
+      "external_transactions": 600,
+      "fee_burden_pct": {
+        "mean": 2.4575518681318678,
+        "p50": 2.46753,
+        "p75": 2.475325,
+        "p90": 2.5009099999999997
+      },
+      "losses": 81,
+      "max_drawdown_sol": 0.03081333399999998,
+      "max_hold": 83,
+      "median_return_pct": -2.598160000000005,
+      "profit_factor": 0.24496128057961877,
+      "resolved": 91,
+      "sl": 5,
+      "total_pnl_sol": -0.030813334,
+      "tp": 3,
+      "win_rate_pct": 10.989010989010989,
+      "wins": 10
+    },
+    "matched_n": 91,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 0.03152715563666991,
+        "p50": 0.031966060511656735,
+        "p75": 0.03247168717609439,
+        "p90": 0.032631027284391045
+      },
+      "exit_impact_pct": {
+        "mean": 0.03136202317028704,
+        "p50": 0.031966506722647114,
+        "p75": 0.03247919640100294,
+        "p90": 0.032759339700505485
+      },
+      "expectancy_pct": -1.2138543988901098,
+      "external_status_flip_fraction": 0.051666666666666666,
+      "external_status_flips": 31,
+      "external_transactions": 600,
+      "fee_burden_pct": {
+        "mean": 2.4575518681318678,
+        "p50": 2.46753,
+        "p75": 2.475325,
+        "p90": 2.5009099999999997
+      },
+      "losses": 77,
+      "max_drawdown_sol": 0.01271283,
+      "max_hold": 83,
+      "median_return_pct": -2.922244707,
+      "profit_factor": 0.609846935027211,
+      "resolved": 91,
+      "sl": 0,
+      "total_pnl_sol": -0.011046075999999998,
+      "tp": 8,
+      "win_rate_pct": 15.384615384615385,
+      "wins": 14
+    },
+    "population": "last_24h",
+    "size_lamports": 10000000,
+    "size_sol": 0.01
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 2.2363219197912088,
+      "max_hold": 0,
+      "profit_factor": 0.37056401107665193,
+      "sl": -5,
+      "total_pnl_sol": 0.20350529700000003,
+      "tp": 5,
+      "win_rate_pct": 4.395604395604396
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 0.31527162030909456,
+        "p50": 0.31966066897419765,
+        "p75": 0.32471693824984715,
+        "p90": 0.3263103371880627
+      },
+      "exit_impact_pct": {
+        "mean": 0.31263464868400975,
+        "p50": 0.3187292752821702,
+        "p75": 0.3236726754192454,
+        "p90": 0.326617939098206
+      },
+      "expectancy_pct": -3.4501763186813186,
+      "external_status_flip_fraction": 0.06166666666666667,
+      "external_status_flips": 37,
+      "external_transactions": 600,
+      "fee_burden_pct": {
+        "mean": 2.4567196373626374,
+        "p50": 2.4673939999999996,
+        "p75": 2.475084,
+        "p90": 2.500942
+      },
+      "losses": 81,
+      "max_drawdown_sol": 0.3139660450000001,
+      "max_hold": 83,
+      "median_return_pct": -2.606845000000002,
+      "profit_factor": 0.2392829525547688,
+      "resolved": 91,
+      "sl": 5,
+      "total_pnl_sol": -0.313966045,
+      "tp": 3,
+      "win_rate_pct": 10.989010989010989,
+      "wins": 10
+    },
+    "matched_n": 91,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 0.31527162030909456,
+        "p50": 0.31966066897419765,
+        "p75": 0.32471693824984715,
+        "p90": 0.3263103371880627
+      },
+      "exit_impact_pct": {
+        "mean": 0.31263464868400975,
+        "p50": 0.3187292752821702,
+        "p75": 0.3236726754192454,
+        "p90": 0.326617939098206
+      },
+      "expectancy_pct": -1.2138543988901098,
+      "external_status_flip_fraction": 0.06166666666666667,
+      "external_status_flips": 37,
+      "external_transactions": 600,
+      "fee_burden_pct": {
+        "mean": 2.4567196373626374,
+        "p50": 2.4673939999999996,
+        "p75": 2.475084,
+        "p90": 2.500942
+      },
+      "losses": 77,
+      "max_drawdown_sol": 0.127128292,
+      "max_hold": 83,
+      "median_return_pct": -2.922244707,
+      "profit_factor": 0.6098469636314208,
+      "resolved": 91,
+      "sl": 0,
+      "total_pnl_sol": -0.110460748,
+      "tp": 8,
+      "win_rate_pct": 15.384615384615385,
+      "wins": 14
+    },
+    "population": "last_24h",
+    "size_lamports": 100000000,
+    "size_sol": 0.1
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 2.30064358478161,
+      "max_hold": 0,
+      "profit_factor": 0.3918672106507242,
+      "sl": -5,
+      "total_pnl_sol": 1.000779959,
+      "tp": 5,
+      "win_rate_pct": 4.597701149425289
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 1.575226506601837,
+        "p50": 1.5983033707541727,
+        "p75": 1.6235847175655405,
+        "p90": 1.6315508747033869
+      },
+      "exit_impact_pct": {
+        "mean": 1.5427438545645402,
+        "p50": 1.5728260529706661,
+        "p75": 1.596647574182175,
+        "p90": 1.6101846742427894
+      },
+      "expectancy_pct": -3.438992386206897,
+      "external_status_flip_fraction": 0.07079646017699115,
+      "external_status_flips": 40,
+      "external_transactions": 565,
+      "fee_burden_pct": {
+        "mean": 2.456859627586207,
+        "p50": 2.4645156000000004,
+        "p75": 2.4743797,
+        "p90": 2.5032214400000004
+      },
+      "losses": 77,
+      "max_drawdown_sol": 1.495961688000001,
+      "max_hold": 79,
+      "median_return_pct": -2.8341587999999973,
+      "profit_factor": 0.2436227742820311,
+      "resolved": 87,
+      "sl": 5,
+      "total_pnl_sol": -1.495961688,
+      "tp": 3,
+      "win_rate_pct": 11.494252873563218,
+      "wins": 10
+    },
+    "matched_n": 87,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 1.575226506601837,
+        "p50": 1.5983033707541727,
+        "p75": 1.6235847175655405,
+        "p90": 1.6315508747033869
+      },
+      "exit_impact_pct": {
+        "mean": 1.5427438545645402,
+        "p50": 1.5728260529706661,
+        "p75": 1.596647574182175,
+        "p90": 1.6101846742427894
+      },
+      "expectancy_pct": -1.1383488014252874,
+      "external_status_flip_fraction": 0.07079646017699115,
+      "external_status_flips": 40,
+      "external_transactions": 565,
+      "fee_burden_pct": {
+        "mean": 2.456859627586207,
+        "p50": 2.4645156000000004,
+        "p75": 2.4743797,
+        "p90": 2.5032214400000004
+      },
+      "losses": 73,
+      "max_drawdown_sol": 0.584693762,
+      "max_hold": 79,
+      "median_return_pct": -3.076944813,
+      "profit_factor": 0.6354899849327553,
+      "resolved": 87,
+      "sl": 0,
+      "total_pnl_sol": -0.49518172899999996,
+      "tp": 8,
+      "win_rate_pct": 16.091954022988507,
+      "wins": 14
+    },
+    "population": "last_24h",
+    "size_lamports": 500000000,
+    "size_sol": 0.5
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 2.448556245963415,
+      "max_hold": 0,
+      "profit_factor": 0.43368866584249366,
+      "sl": -5,
+      "total_pnl_sol": 2.0078161270000003,
+      "tp": 5,
+      "win_rate_pct": 4.878048780487806
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 3.147272498651861,
+        "p50": 3.1967925255751983,
+        "p75": 3.247169494453078,
+        "p90": 3.2631006350746627
+      },
+      "exit_impact_pct": {
+        "mean": 3.0348800588586804,
+        "p50": 3.0954770940781695,
+        "p75": 3.1430674537860637,
+        "p90": 3.1668740841665124
+      },
+      "expectancy_pct": -3.4765614121951223,
+      "external_status_flip_fraction": 0.09861932938856016,
+      "external_status_flips": 50,
+      "external_transactions": 507,
+      "fee_burden_pct": {
+        "mean": 2.4563837792682923,
+        "p50": 2.46500725,
+        "p75": 2.47428085,
+        "p90": 2.5048692
+      },
+      "losses": 72,
+      "max_drawdown_sol": 2.8507803579999997,
+      "max_hold": 74,
+      "median_return_pct": -2.7953053000000008,
+      "profit_factor": 0.23825513708671628,
+      "resolved": 82,
+      "sl": 5,
+      "total_pnl_sol": -2.850780358,
+      "tp": 3,
+      "win_rate_pct": 12.195121951219512,
+      "wins": 10
+    },
+    "matched_n": 82,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 3.147272498651861,
+        "p50": 3.1967925255751983,
+        "p75": 3.247169494453078,
+        "p90": 3.2631006350746627
+      },
+      "exit_impact_pct": {
+        "mean": 3.0348800588586804,
+        "p50": 3.0954770940781695,
+        "p75": 3.1430674537860637,
+        "p90": 3.1668740841665124
+      },
+      "expectancy_pct": -1.0280051662317073,
+      "external_status_flip_fraction": 0.09861932938856016,
+      "external_status_flips": 50,
+      "external_transactions": 507,
+      "fee_burden_pct": {
+        "mean": 2.4563837792682923,
+        "p50": 2.46500725,
+        "p75": 2.47428085,
+        "p90": 2.5048692
+      },
+      "losses": 68,
+      "max_drawdown_sol": 1.048222428,
+      "max_hold": 74,
+      "median_return_pct": -3.1815136375,
+      "profit_factor": 0.67194380292921,
+      "resolved": 82,
+      "sl": 0,
+      "total_pnl_sol": -0.842964231,
+      "tp": 8,
+      "win_rate_pct": 17.073170731707318,
+      "wins": 14
+    },
+    "population": "last_24h",
+    "size_lamports": 1000000000,
+    "size_sol": 1.0
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": -10.931655403,
+      "max_hold": 1,
+      "profit_factor": -3.025716932291138,
+      "sl": 0,
+      "total_pnl_sol": -0.002186331,
+      "tp": -1,
+      "win_rate_pct": -50.0
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 0.028259216354120653,
+        "p50": 0.028259216354120653,
+        "p75": 0.030037353188105964,
+        "p90": 0.03110423528849715
+      },
+      "exit_impact_pct": {
+        "mean": 0.029367351720066548,
+        "p50": 0.029367351720066548,
+        "p75": 0.030136857007750928,
+        "p90": 0.030598560180361556
+      },
+      "expectancy_pct": 7.982135,
+      "external_status_flip_fraction": 0.058823529411764705,
+      "external_status_flips": 1,
+      "external_transactions": 17,
+      "fee_burden_pct": {
+        "mean": 2.6014549999999996,
+        "p50": 2.6014549999999996,
+        "p75": 2.7018524999999998,
+        "p90": 2.762091
+      },
+      "losses": 1,
+      "max_drawdown_sol": 0.00078808,
+      "max_hold": 1,
+      "median_return_pct": 7.982135,
+      "profit_factor": 3.025716932291138,
+      "resolved": 2,
+      "sl": 0,
+      "total_pnl_sol": 0.001596427,
+      "tp": 1,
+      "win_rate_pct": 50.0,
+      "wins": 1
+    },
+    "matched_n": 2,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 0.028259216354120653,
+        "p50": 0.028259216354120653,
+        "p75": 0.030037353188105964,
+        "p90": 0.03110423528849715
+      },
+      "exit_impact_pct": {
+        "mean": 0.029367351720066548,
+        "p50": 0.029367351720066548,
+        "p75": 0.030136857007750928,
+        "p90": 0.030598560180361556
+      },
+      "expectancy_pct": -2.949520403,
+      "external_status_flip_fraction": 0.058823529411764705,
+      "external_status_flips": 1,
+      "external_transactions": 17,
+      "fee_burden_pct": {
+        "mean": 2.6014549999999996,
+        "p50": 2.6014549999999996,
+        "p75": 2.7018524999999998,
+        "p90": 2.762091
+      },
+      "losses": 2,
+      "max_drawdown_sol": 0.000589904,
+      "max_hold": 2,
+      "median_return_pct": -2.949520403,
+      "profit_factor": 0.0,
+      "resolved": 2,
+      "sl": 0,
+      "total_pnl_sol": -0.000589904,
+      "tp": 0,
+      "win_rate_pct": 0.0,
+      "wins": 0
+    },
+    "population": "n25_v2_window",
+    "size_lamports": 10000000,
+    "size_sol": 0.01
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": -10.876787903000002,
+      "max_hold": 1,
+      "profit_factor": -3.008425500239928,
+      "sl": 0,
+      "total_pnl_sol": -0.021753574999999997,
+      "tp": -1,
+      "win_rate_pct": -50.0
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 0.28259221968243153,
+        "p50": 0.28259221968243153,
+        "p75": 0.30037359201876557,
+        "p90": 0.311042415420566
+      },
+      "exit_impact_pct": {
+        "mean": 0.2928713463628607,
+        "p50": 0.2928713463628607,
+        "p75": 0.30054224826846776,
+        "p90": 0.305144789411832
+      },
+      "expectancy_pct": 7.927267500000002,
+      "external_status_flip_fraction": 0.11764705882352941,
+      "external_status_flips": 2,
+      "external_transactions": 17,
+      "fee_burden_pct": {
+        "mean": 2.6007375,
+        "p50": 2.6007375,
+        "p75": 2.70087225,
+        "p90": 2.7609531
+      },
+      "losses": 1,
+      "max_drawdown_sol": 0.007894012,
+      "max_hold": 1,
+      "median_return_pct": 7.927267500000002,
+      "profit_factor": 3.008425500239928,
+      "resolved": 2,
+      "sl": 0,
+      "total_pnl_sol": 0.015854534999999996,
+      "tp": 1,
+      "win_rate_pct": 50.0,
+      "wins": 1
+    },
+    "matched_n": 2,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 0.28259221968243153,
+        "p50": 0.28259221968243153,
+        "p75": 0.30037359201876557,
+        "p90": 0.311042415420566
+      },
+      "exit_impact_pct": {
+        "mean": 0.2928713463628607,
+        "p50": 0.2928713463628607,
+        "p75": 0.30054224826846776,
+        "p90": 0.305144789411832
+      },
+      "expectancy_pct": -2.949520403,
+      "external_status_flip_fraction": 0.11764705882352941,
+      "external_status_flips": 2,
+      "external_transactions": 17,
+      "fee_burden_pct": {
+        "mean": 2.6007375,
+        "p50": 2.6007375,
+        "p75": 2.70087225,
+        "p90": 2.7609531
+      },
+      "losses": 2,
+      "max_drawdown_sol": 0.00589904,
+      "max_hold": 2,
+      "median_return_pct": -2.949520403,
+      "profit_factor": 0.0,
+      "resolved": 2,
+      "sl": 0,
+      "total_pnl_sol": -0.00589904,
+      "tp": 0,
+      "win_rate_pct": 0.0,
+      "wins": 0
+    },
+    "population": "n25_v2_window",
+    "size_lamports": 100000000,
+    "size_sol": 0.1
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": -10.636871002999998,
+      "max_hold": 1,
+      "profit_factor": -2.933329991803528,
+      "sl": 0,
+      "total_pnl_sol": -0.10636871,
+      "tp": -1,
+      "win_rate_pct": -50.0
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 1.4129611211798676,
+        "p50": 1.4129611211798676,
+        "p75": 1.5018679843336102,
+        "p90": 1.5552121022258558
+      },
+      "exit_impact_pct": {
+        "mean": 1.4462396328356053,
+        "p50": 1.4462396328356053,
+        "p75": 1.4838966506138447,
+        "p90": 1.5064908612807881
+      },
+      "expectancy_pct": 7.687350599999998,
+      "external_status_flip_fraction": 0.11764705882352941,
+      "external_status_flips": 2,
+      "external_transactions": 17,
+      "fee_burden_pct": {
+        "mean": 2.5976993000000004,
+        "p50": 2.5976993000000004,
+        "p75": 2.69668535,
+        "p90": 2.7560769800000005
+      },
+      "losses": 1,
+      "max_drawdown_sol": 0.039762227,
+      "max_hold": 1,
+      "median_return_pct": 7.687350599999998,
+      "profit_factor": 2.933329991803528,
+      "resolved": 2,
+      "sl": 0,
+      "total_pnl_sol": 0.07687350600000001,
+      "tp": 1,
+      "win_rate_pct": 50.0,
+      "wins": 1
+    },
+    "matched_n": 2,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 1.4129611211798676,
+        "p50": 1.4129611211798676,
+        "p75": 1.5018679843336102,
+        "p90": 1.5552121022258558
+      },
+      "exit_impact_pct": {
+        "mean": 1.4462396328356053,
+        "p50": 1.4462396328356053,
+        "p75": 1.4838966506138447,
+        "p90": 1.5064908612807881
+      },
+      "expectancy_pct": -2.949520403,
+      "external_status_flip_fraction": 0.11764705882352941,
+      "external_status_flips": 2,
+      "external_transactions": 17,
+      "fee_burden_pct": {
+        "mean": 2.5976993000000004,
+        "p50": 2.5976993000000004,
+        "p75": 2.69668535,
+        "p90": 2.7560769800000005
+      },
+      "losses": 2,
+      "max_drawdown_sol": 0.029495203999999997,
+      "max_hold": 2,
+      "median_return_pct": -2.949520403,
+      "profit_factor": 0.0,
+      "resolved": 2,
+      "sl": 0,
+      "total_pnl_sol": -0.029495203999999997,
+      "tp": 0,
+      "win_rate_pct": 0.0,
+      "wins": 0
+    },
+    "population": "n25_v2_window",
+    "size_lamports": 500000000,
+    "size_sol": 0.5
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": -10.346058802999995,
+      "max_hold": 1,
+      "profit_factor": -2.8434791516151856,
+      "sl": 0,
+      "total_pnl_sol": -0.20692117599999998,
+      "tp": -1,
+      "win_rate_pct": -50.0
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 2.8259222509492976,
+        "p50": 2.8259222509492976,
+        "p75": 3.0037359777951798,
+        "p90": 3.1104242139027094
+      },
+      "exit_impact_pct": {
+        "mean": 2.8484680339477872,
+        "p50": 2.8484680339477872,
+        "p75": 2.922083351663704,
+        "p90": 2.9662525422932537
+      },
+      "expectancy_pct": 7.396538399999995,
+      "external_status_flip_fraction": 0.11764705882352941,
+      "external_status_flips": 2,
+      "external_transactions": 17,
+      "fee_burden_pct": {
+        "mean": 2.59401795,
+        "p50": 2.59401795,
+        "p75": 2.691619725,
+        "p90": 2.75018079
+      },
+      "losses": 1,
+      "max_drawdown_sol": 0.080245425,
+      "max_hold": 1,
+      "median_return_pct": 7.396538399999995,
+      "profit_factor": 2.8434791516151856,
+      "resolved": 2,
+      "sl": 0,
+      "total_pnl_sol": 0.147930768,
+      "tp": 1,
+      "win_rate_pct": 50.0,
+      "wins": 1
+    },
+    "matched_n": 2,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 2.8259222509492976,
+        "p50": 2.8259222509492976,
+        "p75": 3.0037359777951798,
+        "p90": 3.1104242139027094
+      },
+      "exit_impact_pct": {
+        "mean": 2.8484680339477872,
+        "p50": 2.8484680339477872,
+        "p75": 2.922083351663704,
+        "p90": 2.9662525422932537
+      },
+      "expectancy_pct": -2.949520403,
+      "external_status_flip_fraction": 0.11764705882352941,
+      "external_status_flips": 2,
+      "external_transactions": 17,
+      "fee_burden_pct": {
+        "mean": 2.59401795,
+        "p50": 2.59401795,
+        "p75": 2.691619725,
+        "p90": 2.75018079
+      },
+      "losses": 2,
+      "max_drawdown_sol": 0.058990407999999994,
+      "max_hold": 2,
+      "median_return_pct": -2.949520403,
+      "profit_factor": 0.0,
+      "resolved": 2,
+      "sl": 0,
+      "total_pnl_sol": -0.058990407999999994,
+      "tp": 0,
+      "win_rate_pct": 0.0,
+      "wins": 0
+    },
+    "population": "n25_v2_window",
+    "size_lamports": 1000000000,
+    "size_sol": 1.0
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 6.949340465314286,
+      "max_hold": -7,
+      "profit_factor": 1.1097247866684956,
+      "sl": -23,
+      "total_pnl_sol": 0.12161345900000001,
+      "tp": 30,
+      "win_rate_pct": 13.714285714285714
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 0.030942837449340947,
+        "p50": 0.031862348997635515,
+        "p75": 0.0324716901216493,
+        "p90": 0.032636427832528625
+      },
+      "exit_impact_pct": {
+        "mean": 0.03035257772799544,
+        "p50": 0.03181057566565837,
+        "p75": 0.03244452145498289,
+        "p90": 0.03274640119576677
+      },
+      "expectancy_pct": -6.230193942857143,
+      "external_status_flip_fraction": 0.04958047292143402,
+      "external_status_flips": 65,
+      "external_transactions": 1311,
+      "fee_burden_pct": {
+        "mean": 2.4215502285714288,
+        "p50": 2.46058,
+        "p75": 2.47217,
+        "p90": 2.50047
+      },
+      "losses": 157,
+      "max_drawdown_sol": 0.10902839399999999,
+      "max_hold": 146,
+      "median_return_pct": -3.1468599999999958,
+      "profit_factor": 0.11827360037579905,
+      "resolved": 175,
+      "sl": 26,
+      "total_pnl_sol": -0.109028394,
+      "tp": 3,
+      "win_rate_pct": 10.285714285714286,
+      "wins": 18
+    },
+    "matched_n": 175,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 0.030942837449340947,
+        "p50": 0.031862348997635515,
+        "p75": 0.0324716901216493,
+        "p90": 0.032636427832528625
+      },
+      "exit_impact_pct": {
+        "mean": 0.03035257772799544,
+        "p50": 0.03181057566565837,
+        "p75": 0.03244452145498289,
+        "p90": 0.03274640119576677
+      },
+      "expectancy_pct": 0.7191465224571428,
+      "external_status_flip_fraction": 0.04958047292143402,
+      "external_status_flips": 65,
+      "external_transactions": 1311,
+      "fee_burden_pct": {
+        "mean": 2.4215502285714288,
+        "p50": 2.46058,
+        "p75": 2.47217,
+        "p90": 2.50047
+      },
+      "losses": 133,
+      "max_drawdown_sol": 0.020286716000000003,
+      "max_hold": 139,
+      "median_return_pct": -2.625497801,
+      "profit_factor": 1.2279983870442948,
+      "resolved": 175,
+      "sl": 3,
+      "total_pnl_sol": 0.012585065000000001,
+      "tp": 33,
+      "win_rate_pct": 24.0,
+      "wins": 42
+    },
+    "population": "recent_prospective",
+    "size_lamports": 10000000,
+    "size_sol": 0.01
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 7.110185767641618,
+      "max_hold": -7,
+      "profit_factor": 1.1328222751569437,
+      "sl": -23,
+      "total_pnl_sol": 1.2300621409999999,
+      "tp": 30,
+      "win_rate_pct": 13.872832369942195
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 0.3092524179658212,
+        "p50": 0.3185432709666314,
+        "p75": 0.32471698769556134,
+        "p90": 0.3263817609716302
+      },
+      "exit_impact_pct": {
+        "mean": 0.3023591796277012,
+        "p50": 0.3171660393466613,
+        "p75": 0.32346573607331397,
+        "p90": 0.32649780716475396
+      },
+      "expectancy_pct": -6.327787618497109,
+      "external_status_flip_fraction": 0.06018518518518518,
+      "external_status_flips": 78,
+      "external_transactions": 1296,
+      "fee_burden_pct": {
+        "mean": 2.420294196531792,
+        "p50": 2.460547,
+        "p75": 2.471575,
+        "p90": 2.5007132000000003
+      },
+      "losses": 155,
+      "max_drawdown_sol": 1.0947072580000008,
+      "max_hold": 144,
+      "median_return_pct": -3.147816999999997,
+      "profit_factor": 0.11669075740086216,
+      "resolved": 173,
+      "sl": 26,
+      "total_pnl_sol": -1.094707258,
+      "tp": 3,
+      "win_rate_pct": 10.404624277456648,
+      "wins": 18
+    },
+    "matched_n": 173,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 0.3092524179658212,
+        "p50": 0.3185432709666314,
+        "p75": 0.32471698769556134,
+        "p90": 0.3263817609716302
+      },
+      "exit_impact_pct": {
+        "mean": 0.3023591796277012,
+        "p50": 0.3171660393466613,
+        "p75": 0.32346573607331397,
+        "p90": 0.32649780716475396
+      },
+      "expectancy_pct": 0.7823981491445087,
+      "external_status_flip_fraction": 0.06018518518518518,
+      "external_status_flips": 78,
+      "external_transactions": 1296,
+      "fee_burden_pct": {
+        "mean": 2.420294196531792,
+        "p50": 2.460547,
+        "p75": 2.471575,
+        "p90": 2.5007132000000003
+      },
+      "losses": 131,
+      "max_drawdown_sol": 0.19809255100000003,
+      "max_hold": 137,
+      "median_return_pct": -2.625340646,
+      "profit_factor": 1.2495130325578059,
+      "resolved": 173,
+      "sl": 3,
+      "total_pnl_sol": 0.135354883,
+      "tp": 33,
+      "win_rate_pct": 24.277456647398843,
+      "wins": 42
+    },
+    "population": "recent_prospective",
+    "size_lamports": 100000000,
+    "size_sol": 0.1
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 7.472676696808383,
+      "max_hold": -7,
+      "profit_factor": 1.1851518958477403,
+      "sl": -23,
+      "total_pnl_sol": 6.239685043000001,
+      "tp": 30,
+      "win_rate_pct": 15.568862275449101
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 1.5439545092353855,
+        "p50": 1.5907793434377648,
+        "p75": 1.6235848659085117,
+        "p90": 1.6315582314737975
+      },
+      "exit_impact_pct": {
+        "mean": 1.4894354588696939,
+        "p50": 1.565110689246818,
+        "p75": 1.5965268732976767,
+        "p90": 1.608446171785427
+      },
+      "expectancy_pct": -6.5528914994011975,
+      "external_status_flip_fraction": 0.08067092651757188,
+      "external_status_flips": 101,
+      "external_transactions": 1252,
+      "fee_burden_pct": {
+        "mean": 2.417443189221557,
+        "p50": 2.4601704,
+        "p75": 2.471456,
+        "p90": 2.49833932
+      },
+      "losses": 151,
+      "max_drawdown_sol": 5.4716644019999965,
+      "max_hold": 138,
+      "median_return_pct": -3.1774443999999957,
+      "profit_factor": 0.10785884260954386,
+      "resolved": 167,
+      "sl": 26,
+      "total_pnl_sol": -5.471664402,
+      "tp": 3,
+      "win_rate_pct": 9.580838323353293,
+      "wins": 16
+    },
+    "matched_n": 167,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 1.5439545092353855,
+        "p50": 1.5907793434377648,
+        "p75": 1.6235848659085117,
+        "p90": 1.6315582314737975
+      },
+      "exit_impact_pct": {
+        "mean": 1.4894354588696939,
+        "p50": 1.565110689246818,
+        "p75": 1.5965268732976767,
+        "p90": 1.608446171785427
+      },
+      "expectancy_pct": 0.9197851974071857,
+      "external_status_flip_fraction": 0.08067092651757188,
+      "external_status_flips": 101,
+      "external_transactions": 1252,
+      "fee_burden_pct": {
+        "mean": 2.417443189221557,
+        "p50": 2.4601704,
+        "p75": 2.471456,
+        "p90": 2.49833932
+      },
+      "losses": 125,
+      "max_drawdown_sol": 0.9395150529999998,
+      "max_hold": 131,
+      "median_return_pct": -2.625497801,
+      "profit_factor": 1.2930107384572842,
+      "resolved": 167,
+      "sl": 3,
+      "total_pnl_sol": 0.7680206410000002,
+      "tp": 33,
+      "win_rate_pct": 25.149700598802394,
+      "wins": 42
+    },
+    "population": "recent_prospective",
+    "size_lamports": 500000000,
+    "size_sol": 0.5
+  },
+  {
+    "delta_old_minus_exact": {
+      "expectancy_pct": 7.592094318704402,
+      "max_hold": -6,
+      "profit_factor": 1.2098217188456069,
+      "sl": -23,
+      "total_pnl_sol": 12.071429971,
+      "tp": 29,
+      "win_rate_pct": 15.723270440251573
+    },
+    "exact": {
+      "entry_impact_pct": {
+        "mean": 3.0837412913897744,
+        "p50": 3.1854327706959173,
+        "p75": 3.2471708281148093,
+        "p90": 3.2631149600033194
+      },
+      "exit_impact_pct": {
+        "mean": 2.929804409432313,
+        "p50": 3.0821414238516365,
+        "p75": 3.1426826722323664,
+        "p90": 3.1651551122088217
+      },
+      "expectancy_pct": -6.606258814465408,
+      "external_status_flip_fraction": 0.09896729776247848,
+      "external_status_flips": 115,
+      "external_transactions": 1162,
+      "fee_burden_pct": {
+        "mean": 2.416767352201258,
+        "p50": 2.4602904,
+        "p75": 2.471471,
+        "p90": 2.49847778
+      },
+      "losses": 143,
+      "max_drawdown_sol": 10.503951514999995,
+      "max_hold": 130,
+      "median_return_pct": -3.1679400999999996,
+      "profit_factor": 0.1029962576513453,
+      "resolved": 159,
+      "sl": 26,
+      "total_pnl_sol": -10.503951515,
+      "tp": 3,
+      "win_rate_pct": 10.062893081761006,
+      "wins": 16
+    },
+    "matched_n": 159,
+    "old_mc_proxy": {
+      "entry_impact_pct": {
+        "mean": 3.0837412913897744,
+        "p50": 3.1854327706959173,
+        "p75": 3.2471708281148093,
+        "p90": 3.2631149600033194
+      },
+      "exit_impact_pct": {
+        "mean": 2.929804409432313,
+        "p50": 3.0821414238516365,
+        "p75": 3.1426826722323664,
+        "p90": 3.1651551122088217
+      },
+      "expectancy_pct": 0.9858355042389937,
+      "external_status_flip_fraction": 0.09896729776247848,
+      "external_status_flips": 115,
+      "external_transactions": 1162,
+      "fee_burden_pct": {
+        "mean": 2.416767352201258,
+        "p50": 2.4602904,
+        "p75": 2.471471,
+        "p90": 2.49847778
+      },
+      "losses": 118,
+      "max_drawdown_sol": 1.731630881999999,
+      "max_hold": 124,
+      "median_return_pct": -2.625497801,
+      "profit_factor": 1.312817976496952,
+      "resolved": 159,
+      "sl": 3,
+      "total_pnl_sol": 1.5674784560000004,
+      "tp": 32,
+      "win_rate_pct": 25.78616352201258,
+      "wins": 41
+    },
+    "population": "recent_prospective",
+    "size_lamports": 1000000000,
+    "size_sol": 1.0
+  }
+]

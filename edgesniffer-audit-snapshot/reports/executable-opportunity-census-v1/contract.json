@@ -1,0 +1,158 @@
+{
+  "schema": "EXECUTABLE_OPPORTUNITY_CENSUS_V1_CONTRACT",
+  "purpose": "Descriptive census of exact executable opportunity supply; no fingerprint discovery, ranking, tuning, or strategy promotion.",
+  "population": {
+    "discoveryOrdinalStart": 1,
+    "discoveryOrdinalEnd": 6848,
+    "primaryUnit": "unique_mint",
+    "stateRowsAreIndependent": false,
+    "validationRowsPermitted": 0,
+    "holdoutRowsPermitted": 0
+  },
+  "sizesSol": [0.5, 1.0],
+  "eligibility": {
+    "quoteAsset": "SOL_OR_WRAPPED_SOL",
+    "mayhemMode": "EXCLUDED",
+    "unsupportedOrInexactCases": "EXPLICITLY_EXCLUDED_WITH_REASON"
+  },
+  "eventStates": {
+    "initialPreFirstExternalTrade": {
+      "enabled": true,
+      "economicState": "pre_state_of_first_observed_supported_trade",
+      "availabilityTimestamp": "first_raw_observation_timestamp",
+      "warning": "This is not claimed to be creation-time executable; it becomes observable only with the first supported raw trade."
+    },
+    "afterExternalBuyerOrdinals": [1, 2, 3, 5],
+    "afterCumulativeExternalGrossBuySol": [0.5, 1.0, 2.0, 5.0],
+    "afterFirstExternalSell": true,
+    "afterFirstSellThenExternalBuy": true,
+    "afterRemainingRealTokenPctCrossesBelow": [90, 75, 50],
+    "fixedAgeMetadataMs": [25, 50, 100, 250, 500],
+    "sameUnderlyingEventStatesAreDeduplicated": true
+  },
+  "opportunityNetRoiThresholdsPct": [5, 10, 20],
+  "configurableRoundTripDeliveryCostSol": [0.001, 0.0025, 0.005, 0.01, 0.02],
+  "mandatoryEconomics": [
+    "exact_pump_protocol_fee",
+    "exact_creator_fee",
+    "own_entry_curve_impact",
+    "own_exit_curve_impact",
+    "base_transaction_fee_each_side"
+  ],
+  "empiricalLatencySource": {
+    "identity": "RANKER_V2_N25_V2_10_ORDINARY_RUST_ATTEMPTS",
+    "sampleN": 10,
+    "warning": "Historical Rust-path calibration overlay, not proof of exact canonical landing position and not pooled with other architectures.",
+    "decisionToBuyResultMs": {"P50": 36.5, "P75": 42.0, "P90": 47.8},
+    "decisionToFirstSellableProofMs": {"P50": 260.5, "P75": 371.25, "P90": 439.3},
+    "sellFirstSendToFinalityMs": {"P50": 351.0, "P75": null, "P90": 482.8},
+    "modeledIntegerEntryOffsetsMs": {"P50": 37, "P75": 42, "P90": 48},
+    "modeledIntegerFirstSellableOffsetsMs": {"P50": 261, "P75": 372, "P90": 440},
+    "modeledIntegerSellLandingOffsetsMs": {"P50": 351, "P75": null, "P90": 483}
+  },
+  "latencyScenarios": {
+    "ZERO_DELAY_ORACLE": {
+      "entryOffsetMs": 0,
+      "firstSellableOffsetMs": 0,
+      "sellLandingOffsetMs": 0,
+      "classification": "DESCRIPTIVE_ORDERING_CEILING_NOT_LIVE"
+    },
+    "P50": "empiricalLatencySource.modeledInteger*OffsetsMs.P50",
+    "P75": "entry and first-sellable only; policy landing is unsupported because empirical P75 sell landing is unavailable",
+    "P90": "empiricalLatencySource.modeledInteger*OffsetsMs.P90"
+  },
+  "oracleCeiling": {
+    "classification": "ORACLE_DESCRIPTIVE_ONLY",
+    "pathHorizonMs": 120000,
+    "sampleAtEverySuccessfulCounterfactualTransaction": true,
+    "reportFirstAvailableAndLongestContinuousWindow": true,
+    "neverReportAsStrategyPnl": true
+  },
+  "frozenPolicies": {
+    "TP20_SL20_MAX120": {
+      "takeProfitPct": 20,
+      "stopLossPct": -20,
+      "maxHoldMs": 120000,
+      "timeOrigin": "modeled_entry"
+    },
+    "FIXED_5S_SL20": {
+      "stopLossPct": -20,
+      "fixedExitAfterModeledEntryMs": 5000,
+      "maxHoldMs": 5000,
+      "timeOrigin": "modeled_entry"
+    },
+    "TRAIL20_12_SL20_120S": {
+      "stopLossPct": -20,
+      "armAtExecutableRoiPct": 20,
+      "drawdownFromExecutableHighWaterPctPoints": 12,
+      "maxHoldMs": 120000,
+      "timeOrigin": "modeled_entry"
+    }
+  },
+  "counterfactualSemantics": {
+    "replaySuccessfulTransactionsChronologically": true,
+    "reEvaluateOriginalInstructionConstraints": true,
+    "failedCounterfactualTransactionMutatesZeroState": true,
+    "reportDivergencePerMintAndState": true,
+    "doNotModelTraderResubmission": true
+  },
+  "requiredPopulationReporting": [
+    "total_observed_launches",
+    "exact_admitted_unique_mints",
+    "exact_evaluable_unique_mints",
+    "excluded_or_unresolved_unique_mints",
+    "admission_rate",
+    "exclusion_reasons"
+  ],
+  "diagnosis": {
+    "allowPrimaryAndSecondary": true,
+    "frozenDecisionRules": {
+      "referenceOpportunity": "unique-mint +10% net executable opportunity at P50 entry latency and 0.001 SOL configurable round-trip delivery cost",
+      "dataCoverageBlockerBelowExactEvaluableRate": 0.60,
+      "counterfactualDivergenceBlockerAboveAffectedStateRate": 0.25,
+      "opportunityTooScarceBelowPrevalence": 0.005,
+      "capacityProblemOneSolRetentionBelow": 0.50,
+      "latencyOrderingProblemP50RetentionBelow": 0.50,
+      "exitProblemBestFrozenPolicyCaptureBelow": 0.25,
+      "laterHorizonOpportunityFirstHitAfterMs": 2000,
+      "laterHorizonOpportunityShareAbove": 0.60,
+      "selectionProblemMinimumOpportunityPrevalence": 0.005,
+      "bootstrap": {
+        "unit": "unique_mint",
+        "replicates": 2000,
+        "seed": 20260907,
+        "confidenceLevel": 0.95
+      },
+      "priorityOrder": [
+        "DATA_COVERAGE_BLOCKER",
+        "COUNTERFACTUAL_DIVERGENCE_BLOCKER",
+        "OPPORTUNITY_TOO_SCARCE",
+        "CAPACITY_PROBLEM",
+        "LATENCY_ORDERING_PROBLEM",
+        "LATER_HORIZON_OPPORTUNITY",
+        "EXIT_PROBLEM",
+        "SELECTION_PROBLEM"
+      ]
+    },
+    "labels": [
+      "SELECTION_PROBLEM",
+      "EXIT_PROBLEM",
+      "LATENCY_ORDERING_PROBLEM",
+      "CAPACITY_PROBLEM",
+      "LATER_HORIZON_OPPORTUNITY",
+      "OPPORTUNITY_TOO_SCARCE",
+      "COUNTERFACTUAL_DIVERGENCE_BLOCKER",
+      "DATA_COVERAGE_BLOCKER"
+    ]
+  },
+  "prohibitions": [
+    "fingerprint_search",
+    "threshold_search",
+    "machine_learning",
+    "wallet_or_creator_scoring",
+    "policy_optimization",
+    "validation_or_holdout_access",
+    "live_or_shadow_deployment",
+    "collector_or_exact_math_changes"
+  ]
+}

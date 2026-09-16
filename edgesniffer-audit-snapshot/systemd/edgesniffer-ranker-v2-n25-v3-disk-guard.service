@@ -1,0 +1,14 @@
+[Unit]
+Description=EdgeSniffer Ranker V2 N25-v3 asynchronous disk fail-closed guard
+After=local-fs.target
+RequiresMountsFor=/mnt/HC_Volume_106775198 /root/bot/EdgeSniffer
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/edgesniffer-disk-fail-closed-guard
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

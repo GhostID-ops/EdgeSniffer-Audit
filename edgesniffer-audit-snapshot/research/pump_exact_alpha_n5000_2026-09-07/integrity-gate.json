@@ -1,0 +1,940 @@
+{
+  "accounting": {
+    "accountedExcludedMints": 62,
+    "accountedExcludedReasons": {
+      "FEATURE_EVENTS_UNRESOLVED": 62
+    },
+    "builtAndExcludedMints": [],
+    "materializedOrAccountedN": 5000,
+    "materializedUniqueMints": 4938,
+    "opportunityRows": 48494,
+    "unaccountedMints": [],
+    "uniqueMintStateRows": 48494
+  },
+  "blockers": [],
+  "classification": "PASS",
+  "generatedAtUtc": "2026-09-07T14:52:59.015481Z",
+  "labels": {
+    "size_0.10_entry_25_sellable_500": {
+      "distinctExactReturns": 5890,
+      "exactCells": 46213,
+      "maxReturnPct": 333.15380530973454,
+      "medianReturnPct": -2.4790150492475376,
+      "minReturnPct": -57.24905154742263,
+      "outcomes": {
+        "MAX_HOLD": 42951,
+        "SL": 1977,
+        "TP": 1285
+      },
+      "postEntryActivityCells": 21132,
+      "postEntryCellsWithCanonicalEvidence": 21132
+    },
+    "size_0.50_entry_25_sellable_500": {
+      "distinctExactReturns": 5851,
+      "exactCells": 45864,
+      "maxReturnPct": 323.16144218557815,
+      "medianReturnPct": -2.471111888881111,
+      "minReturnPct": -57.36618673813262,
+      "outcomes": {
+        "MAX_HOLD": 42683,
+        "SL": 1976,
+        "TP": 1205
+      },
+      "postEntryActivityCells": 20822,
+      "postEntryCellsWithCanonicalEvidence": 20822
+    },
+    "size_1.00_entry_25_sellable_500": {
+      "distinctExactReturns": 5814,
+      "exactCells": 45681,
+      "maxReturnPct": 311.45799771001145,
+      "medianReturnPct": -2.470123749381253,
+      "minReturnPct": -57.51804370978145,
+      "outcomes": {
+        "MAX_HOLD": 42526,
+        "SL": 1972,
+        "TP": 1183
+      },
+      "postEntryActivityCells": 20675,
+      "postEntryCellsWithCanonicalEvidence": 20675
+    }
+  },
+  "manifestHashes": [
+    {
+      "partitionKey": "2026/09/06/05",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-06-05.json",
+      "rowSha256": "1125bc7b04db2d6e13d534b29fa3be1e78b32ab746e894fe427b0f50a66e043b",
+      "sha256": "8d496351025cc243a70628d164b79e16c4f20b8f3ed98566ec33ff7b0369f59d",
+      "sourceFingerprintSha256": "00eb7a4cd43c27b9617c76e12b1610112b3628df2d7b94b812841314a7f17f8f"
+    },
+    {
+      "partitionKey": "2026/09/06/14",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-06-14.json",
+      "rowSha256": "ee9d014504cfd8956f960e9f9c7e0a8e10d2bfabf9b4eb6192bdcba778848ee1",
+      "sha256": "246960e6328215ab332efd4828ec9278e6d342fe1e1de38a2ec981b8ed4a71fb",
+      "sourceFingerprintSha256": "7c19526519c8341754f9556e593872996b06a915ea53fa0d149e4cab97a5afee"
+    },
+    {
+      "partitionKey": "2026/09/06/17",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-06-17.json",
+      "rowSha256": "29dba8ce120650da6fe1df918284213a99058bb96746fd02a57d7de445f8ff3d",
+      "sha256": "5db0edd1e6f54ca73df989447e2230f9dc3026f65f58c5d4de4fc6b2579e7136",
+      "sourceFingerprintSha256": "2e4159c2b7de1e25eba80eca1749406a2b10d5fc9f5b69c84cdd49f4a01035b3"
+    },
+    {
+      "partitionKey": "2026/09/06/19",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-06-19.json",
+      "rowSha256": "d829e3154a711d114831ede5369703db2469bd7576393a27f44f8c34e7110cba",
+      "sha256": "4b2f40fb6798c337c2de2a3676401dc0b814322244bb170107f8c54241a408e8",
+      "sourceFingerprintSha256": "5f5266458431b3a44ecd21e1083de16ffbaf1f11d7e04f47f27ef62dfad37cc4"
+    },
+    {
+      "partitionKey": "2026/09/06/20",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-06-20.json",
+      "rowSha256": "e6f2a17916b56b43c441be239153b65d972441c324521669a62c7a87e27d0732",
+      "sha256": "262bcc583e935037972002aceeff935f3a6eb16d61f13a2b31adf2fa77dcdd61",
+      "sourceFingerprintSha256": "56f868676ac28a7321f8165764402c24486fad60ab23dd77393b91226d014b43"
+    },
+    {
+      "partitionKey": "2026/09/06/21",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-06-21.json",
+      "rowSha256": "d16ee933f449deb812b125c958b6da33f0872714780b9618d8504156b7f7078d",
+      "sha256": "f1de46a4ef6bd7459eec0a5c665c52d84c525e716e3671955ccb6ccccab1931b",
+      "sourceFingerprintSha256": "18eadf79fdc155980be0be131df31ca21b7a5ead38954b005f294738ea1eb55b"
+    },
+    {
+      "partitionKey": "2026/09/06/22",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-06-22.json",
+      "rowSha256": "7eda1865711c9daf6cb709694431a17bb04f884c902b00028dd873d95cfb4e9c",
+      "sha256": "ab1ec0deebe0cce16a0602554d3ab08304825bb47b5d797300cd346b0c087ee8",
+      "sourceFingerprintSha256": "2db91fd6995c5b115de9e504a48b256e54027d386eb157d6d8f79c044c81cc72"
+    },
+    {
+      "partitionKey": "2026/09/06/23",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-06-23.json",
+      "rowSha256": "22829f4efd534669a15e738615649cc24c6a5880b397576b784c4d9eceaa0bf2",
+      "sha256": "b071c8fddee44fa2c50e1106dc4aec0b4e4d8a33472043ea44b6f0d55f7d9a9e",
+      "sourceFingerprintSha256": "706e5237c0e71ade380be031a7cb6422700ee066c39bffe604cf74d668fd90aa"
+    },
+    {
+      "partitionKey": "2026/09/07/00",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-07-00.json",
+      "rowSha256": "2173c52c15bd7638362e94aa4ba7152f4e85cf4f99d05aa21e3792c322d8aac8",
+      "sha256": "b41e6c8d074d9ed514dfe1f7b20888e5e1f027c3557e667aa65f4b74730e2966",
+      "sourceFingerprintSha256": "059a59e52fd6d804292b5e5f1bbba8364df81fc7c9c3805ca9b80cad7e744d1f"
+    },
+    {
+      "partitionKey": "2026/09/07/02",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-07-02.json",
+      "rowSha256": "7f5f0036bab19ce8d4dcdf54a2618cc9387bbe42868e5c8a59063e083669b481",
+      "sha256": "3de686d62160893cf84eb67aa68e659b349f1a9573e69aaabc375c150ec2019d",
+      "sourceFingerprintSha256": "53039af9775f47989d866d2ee890527c4b1a42bad2dbd0f1e3d9839a53031125"
+    },
+    {
+      "partitionKey": "2026/09/07/04",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-07-04.json",
+      "rowSha256": "48cdbf83bae00d7512dba12ca668e3cf8aed4e3d5e9fd0f797dde97cc060a693",
+      "sha256": "9fa14e092834ea669dcacc67cf7bc81cc6d74e27ddb155c83bf5ead48ffbdff8",
+      "sourceFingerprintSha256": "bc0fc41600fa5da913575753192402dd3da879bdf30199c58144f1447d35816a"
+    },
+    {
+      "partitionKey": "2026/09/07/05",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-07-05.json",
+      "rowSha256": "26befab617a538b0d5f6533d23823463bb189a60c9998d7ae9e1a1e9b9fe5e40",
+      "sha256": "1d1fdd65f93ad41d6ed96dc286dac2bf8b0150064cf52221eba3e45991c6b82b",
+      "sourceFingerprintSha256": "ba486d1d5c68df9d566706e8ebd48539b8bdf6b6d43956e8731a2a4b3014809a"
+    },
+    {
+      "partitionKey": "2026/09/07/06",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-07-06.json",
+      "rowSha256": "5a4f78fa48b1aa7a928d900e1f4f204b2a64d8140fbb2f712ee5cd8e47d22d82",
+      "sha256": "95395be3ae0e3f2b3e2029f38b0dbbbb377495a3abb4c67df86f5d0a52ba708f",
+      "sourceFingerprintSha256": "380843e8025f98d5a68abd1b6a78203ea932ac9175346076d234ef2a1c85b580"
+    },
+    {
+      "partitionKey": "2026/09/07/07",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-07-07.json",
+      "rowSha256": "6d12db6283a2e748f2c57e940ed214242d80749e306b52df060b93a5a47b0f85",
+      "sha256": "6ca3424670fa84117cd7fcb42346fe056a54ba04bfd1c130db2eaba5bef392f7",
+      "sourceFingerprintSha256": "a27a669b8eea915f0cb8d51226f359b5e331b3f2312a391fe63c034c090eb58b"
+    },
+    {
+      "partitionKey": "2026/09/07/08",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-07-08.json",
+      "rowSha256": "40e79faba75e89d53190ca8e735edcbbd583b4db5fd9cae5ad9ad8a0f216d0b5",
+      "sha256": "e0fef781aa60098a9825b92b1797f573b4bb576338ad5971500b5f98658405fe",
+      "sourceFingerprintSha256": "3fc0f0b9804b7301f926c614d81f8c594d2a4d9f37f9f614c70ced9fab4e8ec9"
+    },
+    {
+      "partitionKey": "2026/09/07/09",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-07-09.json",
+      "rowSha256": "b7f74530c406204835e5e221f8131742828a0e48067902351b550a8cb12ec6c3",
+      "sha256": "b25493de18156a13acc730ddbe152e40baec03fe1bea6cb5cb042644cfeed2ca",
+      "sourceFingerprintSha256": "56109757ffba7c3b6ad4943fa6c8812aa75d35d11bcad143b2f4f65977170408"
+    },
+    {
+      "partitionKey": "2026/09/07/10",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-07-10.json",
+      "rowSha256": "b78d11419811262a72c0057c633139a4720150c8b79f9c90ff5bbb29bce3f27f",
+      "sha256": "0a208e6264a3fba1049973ac01055b13affd0ad43b9c1eae932dc475711cb47b",
+      "sourceFingerprintSha256": "4e20d4f941791f4877500b1baedcba8630e943c32f2cfc34c75e4f5cc060b2ac"
+    },
+    {
+      "partitionKey": "2026/09/07/11",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/manifests-v2/2026-09-07-11.json",
+      "rowSha256": "c6b7f14308996e13bc24c51e60317a7bff7fa05fd61bcce02f7263947fe7d95e",
+      "sha256": "f2fafd349e1c8d9486edbfc1ab514cc8d2a3418930c7e937a221937dad14b5a6",
+      "sourceFingerprintSha256": "2a30ecaf2cca7d849f4ff69b8b8775e8d5a52a49cdaa7828f4ff7d103698f313"
+    }
+  ],
+  "prefix": {
+    "checkpointPrefixSha256": "b61b4ffdef0b01ad380578b20b35c11329d13a1c4bac3ff88c712a4b784cc741",
+    "chronological": true,
+    "ordering": "createReceivedAtUnixNs,mint",
+    "ordinalContiguous": true,
+    "ordinals": [
+      1,
+      5000
+    ],
+    "prefixFileSha256": "785089878175f066f77511f4e9de5fffe673e440addcd86ebe3e00803b6617ee",
+    "rowSource": "rows-v2 only",
+    "sourceRowFiles": [
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-06-05.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-06-14.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-06-17.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-06-19.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-06-20.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-06-21.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-06-22.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-06-23.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-00.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-02.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-04.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-05.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-06.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-07.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-08.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-09.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-10.jsonl.gz",
+      "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-11.jsonl.gz"
+    ],
+    "uniqueMintN": 5000
+  },
+  "readinessBugRecurrence": "NONE",
+  "representativeSamplePartition": "2026/09/06/22",
+  "representativeSamples": [
+    {
+      "activity": {
+        "buyCount": 3,
+        "grossBuySol": 1.098972864,
+        "grossSellSol": 0.0,
+        "sellCount": 0
+      },
+      "canonicalEvidence": {
+        "18c42254e602df9d0e53d80d11b79bff5dc30d91647e9896047fcb4f62bc5575": {
+          "discoveredMints": [
+            "6FaRwfqksgPFP34kMM7bHSWTKwNaKfQWGmmAnNtkpump"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "BUY_EXACT_SOL_IN",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "P3u6fEsKNiy7i8FZKM4eycJ7ZmB8LUkYLxxdEULUh9GDD9PZY5QfqRUMJBvhyQ1njkwJwBQNYoh5MTfKHLXYZJN",
+          "slot": 444911769,
+          "successful": true,
+          "transactionIndex": 170,
+          "txShape": {
+            "innerInstructionGroupN": 2,
+            "logMessageN": 49,
+            "rpcMetaErr": null,
+            "slot": 444911769
+          },
+          "unresolved": false
+        },
+        "599bd0507dab658d9d8f0e671e1fad84054b858bbea4d0455c20ad32b39cfafb": {
+          "discoveredMints": [
+            "6FaRwfqksgPFP34kMM7bHSWTKwNaKfQWGmmAnNtkpump"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "BUY_EXACT_SOL_IN",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "3qtSiVnPZxwgWXA8HnDNGSMBEMQN7mEipe16ZG8Tj31aAGKH8YbALmctXeHBUeDDuQK9NRfoQfsVZ5WaZRKXasD5",
+          "slot": 444911776,
+          "successful": true,
+          "transactionIndex": 138,
+          "txShape": {
+            "innerInstructionGroupN": 2,
+            "logMessageN": 53,
+            "rpcMetaErr": null,
+            "slot": 444911776
+          },
+          "unresolved": false
+        },
+        "81b9dcf99c7c1bb5859b9943c4b07df40309e813d881746cee49f110eb10e7ae": {
+          "discoveredMints": [
+            "6FaRwfqksgPFP34kMM7bHSWTKwNaKfQWGmmAnNtkpump"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "BUY_EXACT_SOL_IN",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "2TxqzuxNa3UH5tp9PB7zFZomPBuQSkicrE4yKqn3ZFTKsVswcDGNkfVzkGG8wcS3tJNMc934rbNJsq9yxSMGwAcs",
+          "slot": 444911746,
+          "successful": true,
+          "transactionIndex": 179,
+          "txShape": {
+            "innerInstructionGroupN": 2,
+            "logMessageN": 51,
+            "rpcMetaErr": null,
+            "slot": 444911746
+          },
+          "unresolved": false
+        },
+        "c7d1e5e08b79b0b9e60d1178b5e049771f166828222a15987246113d9b0cb3b3": {
+          "discoveredMints": [
+            "6FaRwfqksgPFP34kMM7bHSWTKwNaKfQWGmmAnNtkpump"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "BUY_EXACT_SOL_IN",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "26jGS4cQnv268AyBTJVM7aqJ3xfGdspKQ4aSFw8VSJwd7xg2KAWCLukctfrthLZfFKmzFU5L6KkkGSJ9S42Pui9P",
+          "slot": 444911764,
+          "successful": true,
+          "transactionIndex": 650,
+          "txShape": {
+            "innerInstructionGroupN": 2,
+            "logMessageN": 53,
+            "rpcMetaErr": null,
+            "slot": 444911764
+          },
+          "unresolved": false
+        }
+      },
+      "decisionUnixMs": 1788735421535,
+      "independentLabelChecks": {
+        "checks": {
+          "entry_clock": true,
+          "entry_evidence": true,
+          "exact": true,
+          "exit_evidence": true,
+          "max_hold_clock": true,
+          "outcome_threshold": true,
+          "own_buy_state_direction": true,
+          "pnl_arithmetic": true,
+          "post_entry_evidence_pairing": true,
+          "return_arithmetic": true,
+          "sellable_clock": true
+        },
+        "costLamports": 500005000,
+        "pass": true,
+        "proceedsLamports": 602464141,
+        "recomputedPnlSol": 0.102459141,
+        "recomputedReturnPct": 20.49162328376716
+      },
+      "label": {
+        "counterfactualFailedTransactions": 1,
+        "entryMs": 1788735421560,
+        "entryStateEvidenceId": "81b9dcf99c7c1bb5859b9943c4b07df40309e813d881746cee49f110eb10e7ae",
+        "exitMs": 1788735430390,
+        "exitStateEvidenceId": "599bd0507dab658d9d8f0e671e1fad84054b858bbea4d0455c20ad32b39cfafb",
+        "firstSellableAtMs": 1788735422035,
+        "grossBuyLamports": 500000000,
+        "outcome": "TP",
+        "pnlSol": 0.102459141,
+        "returnPct": 20.49162328376716,
+        "sellProceedsLamports": 602469141,
+        "status": "EXACT",
+        "triggerReturnPct": 20.49162328376716
+      },
+      "mint": "6FaRwfqksgPFP34kMM7bHSWTKwNaKfQWGmmAnNtkpump",
+      "observationState": "FIXED_1000MS",
+      "ordinal": 2931,
+      "partitionKey": "2026/09/06/22",
+      "replayCanonicalEvidenceN": 7,
+      "role": "TP",
+      "targetEvidenceIds": [
+        "18c42254e602df9d0e53d80d11b79bff5dc30d91647e9896047fcb4f62bc5575",
+        "599bd0507dab658d9d8f0e671e1fad84054b858bbea4d0455c20ad32b39cfafb",
+        "81b9dcf99c7c1bb5859b9943c4b07df40309e813d881746cee49f110eb10e7ae",
+        "c7d1e5e08b79b0b9e60d1178b5e049771f166828222a15987246113d9b0cb3b3"
+      ]
+    },
+    {
+      "activity": {
+        "buyCount": 3,
+        "grossBuySol": 3.650609997,
+        "grossSellSol": 0.0,
+        "sellCount": 0
+      },
+      "canonicalEvidence": {
+        "06ba8d0fe4b176d576ce085125213e67b3e2e0f83b3980e766f706333c9001bb": {
+          "discoveredMints": [
+            "AQbFELdt51SVtu4wHyx4CdELrN1ayzno6hf2BHQWgnn3"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "SELL",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "5VQWbzNkbbVhCnKKtasbwUXU3B6SwkFvnpPCDTig7f2732pS2MS5QcCJmCvPjVUf7Ym4dTQascus64Sj9S5FABop",
+          "slot": 444909911,
+          "successful": true,
+          "transactionIndex": 162,
+          "txShape": {
+            "innerInstructionGroupN": 1,
+            "logMessageN": 21,
+            "rpcMetaErr": null,
+            "slot": 444909911
+          },
+          "unresolved": false
+        },
+        "33e85af8e22e73318acf5019bf2aa26be44135ac0b35d4aeb1b80c19534952e2": {
+          "discoveredMints": [
+            "AQbFELdt51SVtu4wHyx4CdELrN1ayzno6hf2BHQWgnn3"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "SELL",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "3XXdUWiaHPByRSREp39cqR41y5T9fRoxkqLxRVdWsJmcjAbgczeqYLrbmC4KpGvJxhVMJiXKEyzFRwNrhBnWjSeb",
+          "slot": 444909922,
+          "successful": true,
+          "transactionIndex": 362,
+          "txShape": {
+            "innerInstructionGroupN": 1,
+            "logMessageN": 21,
+            "rpcMetaErr": null,
+            "slot": 444909922
+          },
+          "unresolved": false
+        },
+        "921295d6d75d4c9cda7622b1b53a062f1beeca7b2221c3636f236c18573c797d": {
+          "discoveredMints": [
+            "AQbFELdt51SVtu4wHyx4CdELrN1ayzno6hf2BHQWgnn3"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "BUY",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "65f3G5TpNsTpvbk1zStGAJrdP2r4i98QdGCCrWx6FUCUp5hx3C77G6Vw783923LbwkNLC8VJagAJNd4AwpxPWRtD",
+          "slot": 444909901,
+          "successful": true,
+          "transactionIndex": 29,
+          "txShape": {
+            "innerInstructionGroupN": 2,
+            "logMessageN": 51,
+            "rpcMetaErr": null,
+            "slot": 444909901
+          },
+          "unresolved": false
+        },
+        "93aa8421a85b1b6aa8e4bd4cd666250d2235158c1d678e3c446f457017b1a0e2": {
+          "discoveredMints": [
+            "AQbFELdt51SVtu4wHyx4CdELrN1ayzno6hf2BHQWgnn3"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "SELL",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "3CJKRKuDvubHQk1hh8U3E4jWVi4qBwo8QANg7Y8WAC3gXjETzkK3h3VQdUxYbtNTpLTGENYzCwG48AwnUoNVDEZz",
+          "slot": 444909909,
+          "successful": true,
+          "transactionIndex": 296,
+          "txShape": {
+            "innerInstructionGroupN": 1,
+            "logMessageN": 21,
+            "rpcMetaErr": null,
+            "slot": 444909909
+          },
+          "unresolved": false
+        }
+      },
+      "decisionUnixMs": 1788734837750,
+      "independentLabelChecks": {
+        "checks": {
+          "entry_clock": true,
+          "entry_evidence": true,
+          "exact": true,
+          "exit_evidence": true,
+          "max_hold_clock": true,
+          "outcome_threshold": true,
+          "own_buy_state_direction": true,
+          "pnl_arithmetic": true,
+          "post_entry_evidence_pairing": true,
+          "return_arithmetic": true,
+          "sellable_clock": true
+        },
+        "costLamports": 500005000,
+        "pass": true,
+        "proceedsLamports": 399313979,
+        "recomputedPnlSol": -0.100691021,
+        "recomputedReturnPct": -20.1380028199718
+      },
+      "label": {
+        "counterfactualFailedTransactions": 0,
+        "entryMs": 1788734837775,
+        "entryStateEvidenceId": "921295d6d75d4c9cda7622b1b53a062f1beeca7b2221c3636f236c18573c797d",
+        "exitMs": 1788734843447,
+        "exitStateEvidenceId": "33e85af8e22e73318acf5019bf2aa26be44135ac0b35d4aeb1b80c19534952e2",
+        "firstSellableAtMs": 1788734838250,
+        "grossBuyLamports": 500000000,
+        "outcome": "SL",
+        "pnlSol": -0.100691021,
+        "returnPct": -20.1380028199718,
+        "sellProceedsLamports": 399318979,
+        "status": "EXACT",
+        "triggerReturnPct": -20.1380028199718
+      },
+      "mint": "AQbFELdt51SVtu4wHyx4CdELrN1ayzno6hf2BHQWgnn3",
+      "observationState": "FIXED_1000MS",
+      "ordinal": 2833,
+      "partitionKey": "2026/09/06/22",
+      "replayCanonicalEvidenceN": 8,
+      "role": "SL",
+      "targetEvidenceIds": [
+        "06ba8d0fe4b176d576ce085125213e67b3e2e0f83b3980e766f706333c9001bb",
+        "33e85af8e22e73318acf5019bf2aa26be44135ac0b35d4aeb1b80c19534952e2",
+        "921295d6d75d4c9cda7622b1b53a062f1beeca7b2221c3636f236c18573c797d",
+        "93aa8421a85b1b6aa8e4bd4cd666250d2235158c1d678e3c446f457017b1a0e2"
+      ]
+    },
+    {
+      "activity": {
+        "buyCount": 1,
+        "grossBuySol": 2.273301214,
+        "grossSellSol": 0.0,
+        "sellCount": 0
+      },
+      "canonicalEvidence": {
+        "0abd2e5d294be220e6831a399be5a3100ea698c8825099fe25ed7298229c52d4": {
+          "discoveredMints": [
+            "hcaBdSaJnnnWimWPbd9MNVeqU66EVAED6wA5yS5pump"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "BUY",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "fuTQAPfn6nWiUGU4FV7MJ6KcACw9oq3jGaHRk8eWBEq51dy9viB54gThq1Ksb75mdRZtqZnEmb3u5D9TDTQMNB7",
+          "slot": 444909591,
+          "successful": true,
+          "transactionIndex": 315,
+          "txShape": {
+            "innerInstructionGroupN": 2,
+            "logMessageN": 51,
+            "rpcMetaErr": null,
+            "slot": 444909591
+          },
+          "unresolved": false
+        },
+        "db4ad71b382ba1705991dc5ddb4b719ef1fdc6db6deefd143de3585363b5ee05": {
+          "discoveredMints": [
+            "hcaBdSaJnnnWimWPbd9MNVeqU66EVAED6wA5yS5pump"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "CREATE_V2",
+            "BUY",
+            "OTHER_PUMP_INSTRUCTION",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "wr12CJR1u2uJz7aj7Ez6N9RDCoZBjzbNMjrkyg3hbzT9gPesfuNTuei7PAciD3wgCwrMyv7M78ZL6YWpDnPH1xD",
+          "slot": 444909415,
+          "successful": true,
+          "transactionIndex": 116,
+          "txShape": {
+            "innerInstructionGroupN": 3,
+            "logMessageN": 111,
+            "rpcMetaErr": null,
+            "slot": 444909415
+          },
+          "unresolved": false
+        }
+      },
+      "decisionUnixMs": 1788734683746,
+      "independentLabelChecks": {
+        "checks": {
+          "entry_clock": true,
+          "entry_evidence": true,
+          "exact": true,
+          "exit_evidence": true,
+          "max_hold_clock": true,
+          "outcome_threshold": true,
+          "own_buy_state_direction": true,
+          "pnl_arithmetic": true,
+          "post_entry_evidence_pairing": true,
+          "return_arithmetic": true,
+          "sellable_clock": true
+        },
+        "costLamports": 500005000,
+        "pass": true,
+        "proceedsLamports": 497589245,
+        "recomputedPnlSol": -0.002415755,
+        "recomputedReturnPct": -0.4831461685383146
+      },
+      "label": {
+        "counterfactualFailedTransactions": 0,
+        "entryMs": 1788734683771,
+        "entryStateEvidenceId": "db4ad71b382ba1705991dc5ddb4b719ef1fdc6db6deefd143de3585363b5ee05",
+        "exitMs": 1788734803746,
+        "exitStateEvidenceId": "0abd2e5d294be220e6831a399be5a3100ea698c8825099fe25ed7298229c52d4",
+        "firstSellableAtMs": 1788734684246,
+        "grossBuyLamports": 500000000,
+        "outcome": "MAX_HOLD",
+        "pnlSol": -0.002415755,
+        "returnPct": -0.4831461685383146,
+        "sellProceedsLamports": 497594245,
+        "status": "EXACT",
+        "triggerReturnPct": -0.4831461685383146
+      },
+      "mint": "hcaBdSaJnnnWimWPbd9MNVeqU66EVAED6wA5yS5pump",
+      "observationState": "FIXED_1000MS",
+      "ordinal": 2796,
+      "partitionKey": "2026/09/06/22",
+      "replayCanonicalEvidenceN": 1,
+      "role": "MAX_HOLD",
+      "targetEvidenceIds": [
+        "0abd2e5d294be220e6831a399be5a3100ea698c8825099fe25ed7298229c52d4",
+        "db4ad71b382ba1705991dc5ddb4b719ef1fdc6db6deefd143de3585363b5ee05"
+      ]
+    },
+    {
+      "activity": {
+        "buyCount": 1,
+        "grossBuySol": 1.002197528,
+        "grossSellSol": 0.0,
+        "sellCount": 0
+      },
+      "canonicalEvidence": {
+        "5fc987335061c2a4f9be7d6a6a1d010db668ab152cc8b271fccd1ee62807a177": {
+          "discoveredMints": [
+            "CDW8LU3VZeZEoBXeddpJKHFRhdCkkZey427hL7zXpump"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "CREATE_V2",
+            "BUY_V2",
+            "OTHER_PUMP_INSTRUCTION",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "5XUBW8zY299XTRyzpjERQGpgmfV2YAVMpond6zEFZeuE9YfjCQ8jZ2emUwkTmpsRYkFkysY5xZ3zXgKPTywdtxrs",
+          "slot": 444900962,
+          "successful": true,
+          "transactionIndex": 215,
+          "txShape": {
+            "innerInstructionGroupN": 3,
+            "logMessageN": 109,
+            "rpcMetaErr": null,
+            "slot": 444900962
+          },
+          "unresolved": false
+        }
+      },
+      "decisionUnixMs": 1788732006110,
+      "independentLabelChecks": {
+        "checks": {
+          "entry_clock": true,
+          "entry_evidence": true,
+          "exact": true,
+          "exit_evidence": true,
+          "max_hold_clock": true,
+          "outcome_threshold": true,
+          "own_buy_state_direction": true,
+          "pnl_arithmetic": true,
+          "post_entry_evidence_pairing": true,
+          "return_arithmetic": true,
+          "sellable_clock": true
+        },
+        "costLamports": 500005000,
+        "pass": true,
+        "proceedsLamports": 487649317,
+        "recomputedPnlSol": -0.012355683,
+        "recomputedReturnPct": -2.471111888881111
+      },
+      "label": {
+        "counterfactualFailedTransactions": 0,
+        "entryMs": 1788732006135,
+        "entryStateEvidenceId": "5fc987335061c2a4f9be7d6a6a1d010db668ab152cc8b271fccd1ee62807a177",
+        "exitMs": 1788732126110,
+        "exitStateEvidenceId": "5fc987335061c2a4f9be7d6a6a1d010db668ab152cc8b271fccd1ee62807a177",
+        "firstSellableAtMs": 1788732006610,
+        "grossBuyLamports": 500000000,
+        "outcome": "MAX_HOLD",
+        "pnlSol": -0.012355683,
+        "returnPct": -2.471111888881111,
+        "sellProceedsLamports": 487654317,
+        "status": "EXACT",
+        "triggerReturnPct": -2.471111888881111
+      },
+      "mint": "CDW8LU3VZeZEoBXeddpJKHFRhdCkkZey427hL7zXpump",
+      "observationState": "FIXED_1000MS",
+      "ordinal": 2329,
+      "partitionKey": "2026/09/06/22",
+      "replayCanonicalEvidenceN": 0,
+      "role": "LOW_ACTIVITY",
+      "targetEvidenceIds": [
+        "5fc987335061c2a4f9be7d6a6a1d010db668ab152cc8b271fccd1ee62807a177"
+      ]
+    },
+    {
+      "activity": {
+        "buyCount": 13,
+        "grossBuySol": 12.600038878,
+        "grossSellSol": 0.0,
+        "sellCount": 0
+      },
+      "canonicalEvidence": {
+        "4040343e6e2d485796ef4701edd296bee671471dc320635f76f405d7a9221983": {
+          "discoveredMints": [
+            "HVm12fpWdV3HA51ym82afCCcYHAb2X9SnzST3HSzpump"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "SELL_V2",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "3mMSoEvGxNKXqNWzT5LYpVFDNtPV4FskraTxkCe2JuN984KkBNt5rC5efhrGofvtj6Bxw8amXzm4dpTNjD1ymPaP",
+          "slot": 444907580,
+          "successful": true,
+          "transactionIndex": 738,
+          "txShape": {
+            "innerInstructionGroupN": 1,
+            "logMessageN": 27,
+            "rpcMetaErr": null,
+            "slot": 444907580
+          },
+          "unresolved": false
+        },
+        "8c72b053babfb7f78239cae1af8b1ef1756296711c5dc1125c8f862222fa4fa7": {
+          "discoveredMints": [
+            "HVm12fpWdV3HA51ym82afCCcYHAb2X9SnzST3HSzpump"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "SELL",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "36Tba8PpLATUPHq7pYaDmxgDt7xRSBWZH82W6j6oA9og2wSSY6nzM9qxziyS9qAvwjU7swXzfWp9pDMkMXGLaXW2",
+          "slot": 444907586,
+          "successful": true,
+          "transactionIndex": 303,
+          "txShape": {
+            "innerInstructionGroupN": 1,
+            "logMessageN": 23,
+            "rpcMetaErr": null,
+            "slot": 444907586
+          },
+          "unresolved": false
+        },
+        "eac7385711df73d95cd7756126778667291184c6d4641f647ba5976c15d17481": {
+          "discoveredMints": [
+            "HVm12fpWdV3HA51ym82afCCcYHAb2X9SnzST3HSzpump"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "BUY_V2",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "rrN5WyHZCLhbr7uXe2GtsxxdNyRA3L7peDsYdKFa8qaou7F4VAExMLWtJBcRyqxHGXgafZ54oNP4G4zmKbR1iqd",
+          "slot": 444907576,
+          "successful": true,
+          "transactionIndex": 93,
+          "txShape": {
+            "innerInstructionGroupN": 2,
+            "logMessageN": 51,
+            "rpcMetaErr": null,
+            "slot": 444907576
+          },
+          "unresolved": false
+        },
+        "fce0506ca32aedefae4869da86bbbcb883a54193e4d62687d3f584ba53fe0be3": {
+          "discoveredMints": [
+            "HVm12fpWdV3HA51ym82afCCcYHAb2X9SnzST3HSzpump"
+          ],
+          "failed": false,
+          "finalized": true,
+          "hasTradeEvent": true,
+          "kind": "rpc_finalized_transaction",
+          "pumpInstructionKinds": [
+            "SELL_V2",
+            "OTHER_PUMP_INSTRUCTION"
+          ],
+          "signature": "2yR67VtXmCE7Q5giE5JsVXdcysTqUnNGrZxKKNiMhKw8rE6e3bbLKkqAxPwaSqcsyXj5uFJP3JrB9gLYjTxxqWEu",
+          "slot": 444907582,
+          "successful": true,
+          "transactionIndex": 89,
+          "txShape": {
+            "innerInstructionGroupN": 2,
+            "logMessageN": 43,
+            "rpcMetaErr": null,
+            "slot": 444907582
+          },
+          "unresolved": false
+        }
+      },
+      "decisionUnixMs": 1788734103688,
+      "independentLabelChecks": {
+        "checks": {
+          "entry_clock": true,
+          "entry_evidence": true,
+          "exact": true,
+          "exit_evidence": true,
+          "max_hold_clock": true,
+          "outcome_threshold": true,
+          "own_buy_state_direction": true,
+          "pnl_arithmetic": true,
+          "post_entry_evidence_pairing": true,
+          "return_arithmetic": true,
+          "sellable_clock": true
+        },
+        "costLamports": 500005000,
+        "pass": true,
+        "proceedsLamports": 253388807,
+        "recomputedPnlSol": -0.246616193,
+        "recomputedReturnPct": -49.32274537254627
+      },
+      "label": {
+        "counterfactualFailedTransactions": 0,
+        "entryMs": 1788734103713,
+        "entryStateEvidenceId": "eac7385711df73d95cd7756126778667291184c6d4641f647ba5976c15d17481",
+        "exitMs": 1788734106415,
+        "exitStateEvidenceId": "8c72b053babfb7f78239cae1af8b1ef1756296711c5dc1125c8f862222fa4fa7",
+        "firstSellableAtMs": 1788734104188,
+        "grossBuyLamports": 500000000,
+        "outcome": "SL",
+        "pnlSol": -0.246616193,
+        "returnPct": -49.32274537254627,
+        "sellProceedsLamports": 253393807,
+        "status": "EXACT",
+        "triggerReturnPct": -49.32274537254627
+      },
+      "mint": "HVm12fpWdV3HA51ym82afCCcYHAb2X9SnzST3HSzpump",
+      "observationState": "FIXED_1000MS",
+      "ordinal": 2703,
+      "partitionKey": "2026/09/06/22",
+      "replayCanonicalEvidenceN": 6,
+      "role": "HIGH_ACTIVITY",
+      "targetEvidenceIds": [
+        "4040343e6e2d485796ef4701edd296bee671471dc320635f76f405d7a9221983",
+        "8c72b053babfb7f78239cae1af8b1ef1756296711c5dc1125c8f862222fa4fa7",
+        "eac7385711df73d95cd7756126778667291184c6d4641f647ba5976c15d17481",
+        "fce0506ca32aedefae4869da86bbbcb883a54193e4d62687d3f584ba53fe0be3"
+      ]
+    }
+  ],
+  "sampleCanonicalEvidenceResolved": 15,
+  "sampleCanonicalEvidenceTargets": 15,
+  "sampleRawEvidencePaths": [
+    "/var/lib/pump-exact-evidence-ledger-v1/partitions/2026/09/06/22/evidence.frames.zst"
+  ],
+  "scannerAuthorized": true,
+  "schema": "PUMP_EXACT_ALPHA_N5000_INTEGRITY_GATE_V1",
+  "semanticFreeze": {
+    "classification": "CORRECTED_N3000_READY_FOR_FINGERPRINT_SCAN",
+    "codeHashes": {
+      "auditPumpExactAlphaPipelineV1.py": {
+        "actual": "9dfc57eec1a8773c0e2b4f50880446c3a97223ba1502ca7ac8553ddb6add5449",
+        "expected": "9dfc57eec1a8773c0e2b4f50880446c3a97223ba1502ca7ac8553ddb6add5449",
+        "match": true,
+        "path": "/root/bot/EdgeSniffer/scripts/auditPumpExactAlphaPipelineV1.py"
+      },
+      "buildPumpExactAlphaResearchV1.py": {
+        "actual": "3a8a6d3ba4c743c644a5120b4e1d9da016513e43447102ce2dd74716a9c572ad",
+        "expected": "3a8a6d3ba4c743c644a5120b4e1d9da016513e43447102ce2dd74716a9c572ad",
+        "match": true,
+        "path": "/root/bot/EdgeSniffer/scripts/buildPumpExactAlphaResearchV1.py"
+      },
+      "exactCurveEconomicsV1.py": {
+        "actual": "badf8d417a155931498422300ffadb5ba1b3e3574bbcad9fd62d52161144ff10",
+        "expected": "badf8d417a155931498422300ffadb5ba1b3e3574bbcad9fd62d52161144ff10",
+        "match": true,
+        "path": "/root/bot/EdgeSniffer/scripts/exactCurveEconomicsV1.py"
+      },
+      "reconcilePumpExactEvidenceLedgerV1.py": {
+        "actual": "62ccc9312b317a23abd0b6d5b89b68a34073930f3a6cff30741c1bcfcb274616",
+        "expected": "62ccc9312b317a23abd0b6d5b89b68a34073930f3a6cff30741c1bcfcb274616",
+        "match": true,
+        "path": "/root/bot/EdgeSniffer/scripts/reconcilePumpExactEvidenceLedgerV1.py"
+      },
+      "scanPumpExactAlphaFingerprintsV1.py": {
+        "actual": "46e7336fe34ccdd655940a04d3da2654ac1693cdaf2c13835266c22659672569",
+        "expected": "46e7336fe34ccdd655940a04d3da2654ac1693cdaf2c13835266c22659672569",
+        "match": true,
+        "path": "/root/bot/EdgeSniffer/scripts/scanPumpExactAlphaFingerprintsV1.py"
+      },
+      "trackPumpExactEvidenceReadinessV1.py": {
+        "actual": "601bb5f88dcd8a321e80398c80be982a1ea3574bd96c05fdf3476c0a8aa17585",
+        "expected": "601bb5f88dcd8a321e80398c80be982a1ea3574bd96c05fdf3476c0a8aa17585",
+        "match": true,
+        "path": "/root/bot/EdgeSniffer/scripts/trackPumpExactEvidenceReadinessV1.py"
+      },
+      "validatePumpExactEvidenceLedgerV1.py": {
+        "actual": "ee1acc0357a80080806e1e945f200507d7f5c8f798064051eede1aced35378d2",
+        "expected": "ee1acc0357a80080806e1e945f200507d7f5c8f798064051eede1aced35378d2",
+        "match": true,
+        "path": "/root/bot/EdgeSniffer/scripts/validatePumpExactEvidenceLedgerV1.py"
+      }
+    },
+    "economicLabelSchemaSha256": "5ba0f0b999eda111c644c48e608e7d31eca891e9ddf158ce9951ff9ddd98e09b",
+    "exactIntegerPumpMathUnchanged": true,
+    "failedTransactionsMutateState": false,
+    "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/PUMP_EXACT_ALPHA_RESEARCH_PIPELINE_V1.POST_ENTRY_CANONICAL_REPLAY_FIX.freeze.json",
+    "sha256": "5af9661520c4c6e36d87806af36db673f53429da8bc97a4bd924f8b2e0f2f7b2",
+    "timingSemanticsSha256": "e5e0cb0476ad8a2dac3a89a12de962358d4e53698cb561c94136bdce0d46a38e"
+  },
+  "unitTestsRunSeparately": [
+    "testExactCurveEconomicsV1.py: 9/9 PASS",
+    "testPumpExactAlphaResearchV1.py: 9/9 PASS"
+  ],
+  "zeroPostEntryReplayBugRecurrence": "NONE"
+}

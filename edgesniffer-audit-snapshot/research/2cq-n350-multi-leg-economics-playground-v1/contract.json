@@ -1,0 +1,42 @@
+{
+  "schema": "2CQ_N350_MULTI_LEG_ECONOMICS_PLAYGROUND_V1_CONTRACT",
+  "classification": "NON_AUTHORITATIVE_DEVELOPMENT_PLAYGROUND",
+  "developmentOrdinals": [1, 350],
+  "validationRowsPermitted": 0,
+  "sizesSol": [0.5, 1.0],
+  "latencyScenarios": {
+    "P50_PRIMARY": {"entryOffsetMs": 37, "firstSellableOffsetMs": 261, "sellLandingOffsetMs": 351},
+    "P90_STRESS": {"entryOffsetMs": 48, "firstSellableOffsetMs": 440, "sellLandingOffsetMs": 483}
+  },
+  "roundTripDeliveryOverlaySol": 0.001,
+  "scenarios": {
+    "BASELINE_TP20_SL20_MAX120": {
+      "description": "Buy once; sell all at TP20, SL20, or 120 seconds."
+    },
+    "RUNNER_80_TP20_TRAIL15": {
+      "description": "Sell 80% at TP20; trail the remaining 20% by 15 percentage points from its post-arm executable high; SL20 and 120-second backstops."
+    },
+    "FREE_ROLL_PRINCIPAL_TP20_TP50": {
+      "description": "At TP20 sell the minimum inventory needed to recover total committed capital; sell remainder at TP50, SL20, or 120 seconds."
+    },
+    "LADDER_25_TP10_20_40_80": {
+      "description": "Sell 25% of original inventory at each TP10, TP20, TP40, and TP80; sell all remaining inventory at SL20 or 120 seconds."
+    },
+    "TWO_STAGE_50_50_CONFIRM5": {
+      "description": "Commit half initially and half on the first executable pre-add ROI >=5%; then sell all at TP20, SL20, or 120 seconds."
+    },
+    "TEACHER_ACTION_REPLAY": {
+      "description": "Replay teacher post-decision buy/sell fractions only where teacher identity, inventory baseline, and every leg are exactly reconstructable; otherwise exclude."
+    }
+  },
+  "prohibitions": {
+    "validationRead": true,
+    "parameterSearch": true,
+    "scenarioSelection": true,
+    "modelRefit": true,
+    "policyPromotionOrRejection": true,
+    "authoritativeResearchInfluence": true,
+    "tradeSubmission": true
+  },
+  "interpretation": "Entertainment-only development replay. Every scenario must be reported and no result may alter WHAT, WHEN, sealed N150, or any promotion gate."
+}

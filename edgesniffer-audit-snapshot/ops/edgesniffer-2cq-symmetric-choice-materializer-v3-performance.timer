@@ -1,0 +1,6 @@
+[Timer]
+OnCalendar=
+OnUnitInactiveSec=10min
+RandomizedDelaySec=0
+AccuracySec=5s
+Persistent=false

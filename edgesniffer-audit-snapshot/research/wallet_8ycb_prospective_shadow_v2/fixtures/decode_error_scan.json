@@ -1,0 +1,52 @@
+{
+  "schema": "8ycb-v1-decode-error-forensic-scan-v1",
+  "v1_service": {
+    "start_utc": "2026-09-03T02:24:46Z",
+    "abort_completed_utc": "2026-09-03T03:32:10.787219Z",
+    "final_global_offset": 17849933861,
+    "reported_decoder_errors": 51
+  },
+  "global_scan": {
+    "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl",
+    "range_start": 17220788261,
+    "range_end": 17849933861,
+    "bytes_scanned": 629145600,
+    "lines_scanned": 222811,
+    "service_window_rows": 42031,
+    "persisted_malformed_lines_total": 8,
+    "persisted_malformed_lines_during_service": 4,
+    "during_service": [
+      {
+        "offset": 17761552378,
+        "root_cause": "two complete JSON objects concatenated before one newline",
+        "contained_rows": [
+          {"side": "buy", "mint": "93F5qL8mhCCPTCQwbKYFxuj7x85qKLtbR2tjSG8Epump", "wallet": "DTpzoWbmGb2TiChBcBBNEvZCGkM682q5Xt4RMNwtqdZ3", "signature": "5RYiEwewGiXVeZAzhzmHY2vSbHp1S9dmqWK6PR1mEaZJrphBjDsVVb84WsZkd6RUMuPsNb3NtqRYr3QuU7cBXD1g"},
+          {"side": "buy", "mint": "93F5qL8mhCCPTCQwbKYFxuj7x85qKLtbR2tjSG8Epump", "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG", "signature": "QxFZnxp6yXAC3Bv7byjFPJXKfzFNUaEM11SP4tAavv4wF71JVc4yShBwH4WEJ8BefZyV4sGfgSy1Fax4etuzJbd"}
+        ],
+        "signal_admission_impact": "none: neither row is CREATE or an 8YCB-wallet buy"
+      },
+      {"offset": 17761558340, "root_cause": "blank line following concatenated producer write", "signal_admission_impact": "none"},
+      {
+        "offset": 17832915627,
+        "root_cause": "two complete JSON objects concatenated before one newline",
+        "contained_rows": [
+          {"side": "buy", "mint": "4VR6LxLiJ8EnnS685A2wKb7AfRhYvsMgomiUbzonpump", "wallet": "GVVP8N7jnxgr3QdtR461bsuCNNQmuNu4DBW2Ab4tzKVp", "signature": "2ycwiohwDYR1HRQMUeN7EvzH34K16cfKE49U3N8Bp3UPeZVBiMs5gFhVwxnes9HpusqiCAYMQDpgaa5jTRFctiV8"},
+          {"side": "state", "mint": "7v7BGfGEbHYwqVNacNDRkhYwMjhMhWEAN8X73jRopump", "wallet": null, "signature": "3QHVbHyqhsv2MTf3rx3U2QYJeePJcTesAxNyUwEaSTaA3HeYNXy6V9tG1GEEvAVLsLrqiNaPtDFAW6KBbg3qqi4L"}
+        ],
+        "signal_admission_impact": "none: neither row is CREATE or an 8YCB-wallet buy"
+      },
+      {"offset": 17832920403, "root_cause": "blank line following concatenated producer write", "signal_admission_impact": "none"}
+    ]
+  },
+  "wallet_scan": {
+    "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/8ycb-prospective-shadow-v1/wallet_stream_observations.jsonl",
+    "lines_scanned": 8,
+    "persisted_malformed_lines": 0
+  },
+  "attribution": {
+    "producer_framing_concatenated_records": 2,
+    "producer_framing_blank_lines": 2,
+    "partial_eof_reads_not_persisted": 47,
+    "basis": "V1 only incremented this counter on JSONDecodeError. Four malformed physical lines exist in the complete service-window byte range; all other complete global and wallet lines parse. V1 advanced past non-newline-terminated reads at active EOF, so the remaining 47 were consumed partial fragments. V1 did not retain those fragments or their signatures."
+  }
+}

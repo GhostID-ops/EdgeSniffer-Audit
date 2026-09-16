@@ -1,0 +1,28 @@
+{
+  "schema": "2CQ_LAUNCHLAB_COVERAGE_V1_CONTRACT",
+  "programId": "LanMV9sAd7wArD4vJFi2qDdfnVhFxYSUg6eADduJ3uj",
+  "officialIdl": {
+    "repository": "https://github.com/raydium-io/raydium-idl",
+    "commit": "e7e0c96fe77bcf6a020b84a44c47a722aac8e359",
+    "path": "raydium_launchpad/raydium_launchpad.json",
+    "sha256": "963189409945069409f32e345d4adf2892e0b3ca1be504372577fe34a23c6cdb"
+  },
+  "evidence": {
+    "arrivalSource": "ALLENHARK_SUBSCRIBE_ENTRIES_LOCAL",
+    "finalitySource": "FINALIZED_RPC_TRANSACTION",
+    "canonicalOrdering": "FINALIZED_BLOCK_SIGNATURE_INDEX",
+    "curveState": "CANONICAL_TRADE_EVENT_PRE_POST_RESERVES",
+    "inventory": "AUTHORITATIVE_WALLET_TOKEN_BALANCE_DELTA",
+    "continuity": "FAIL_CLOSED_ON_PREVIOUS_POST_TO_NEXT_PRE_MISMATCH"
+  },
+  "supportedEconomics": {
+    "constantProduct": "EXACT_INTEGER_REPLAY",
+    "fixedPrice": "FAIL_CLOSED_PENDING_VALIDATED_LIVE_FIXTURE",
+    "linearPrice": "FAIL_CLOSED_PENDING_VALIDATED_LIVE_FIXTURE",
+    "token2022TransferFees": "CURVE_OUTPUT_AND_WALLET_INVENTORY_RECORDED_SEPARATELY"
+  },
+  "researchOnly": true,
+  "outcomesRead": 0,
+  "validationRowsRead": 0,
+  "submissions": 0
+}

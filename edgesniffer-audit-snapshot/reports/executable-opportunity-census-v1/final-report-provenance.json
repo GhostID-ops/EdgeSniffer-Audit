@@ -1,0 +1,9 @@
+{
+  "contractSha256": "82223cf3598d42f89d7a0869c73e19d4d55f1f27dbb2686c716ed0733fd28f62",
+  "evaluatorSha256": "bd257ecba307d4445d13d2a4b21d682a9f62277e2d9636de6b2fd79b28814d4a",
+  "finalReportSha256": "4f0e1322abfd32d19fc2c3b4d94d12ccb7e8c500706a6ed6a79ae6167bb0e8dc",
+  "finalizerSha256": "05b2143957ff3dc606c83a4236ceafc2747f08ef44bc425cdd69475d816cb6a3",
+  "holdoutRowsInspected": 0,
+  "rawReportSha256": "dfdbad93c8e4af0c4702bb411f535c5b6f5672c00eafd5d97cdc81048e81b7d3",
+  "validationRowsInspected": 0
+}

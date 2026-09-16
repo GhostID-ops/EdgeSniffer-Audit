@@ -1,0 +1,17 @@
+[Unit]
+Description=EdgeSniffer teacher impulse bc100>=2 mc<=5000 prospective v1 analytics-only shadow
+After=network-online.target edgesniffer-teacher-impulse-parity-v1-capsule-normalizer.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/FinalBot-cya
+Environment=PYTHONUNBUFFERED=1
+ExecStartPre=/usr/bin/mkdir -p /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_mc5000_prospective_v1
+ExecStart=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_mc5000_prospective_v1 --rule bc100_ge2_mc5000_prospective_v1 --max-mc-usd 5000 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

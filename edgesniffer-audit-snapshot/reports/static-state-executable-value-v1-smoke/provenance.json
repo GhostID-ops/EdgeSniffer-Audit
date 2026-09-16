@@ -1,0 +1,13 @@
+{
+  "analysisScriptSha256": "1b1a4d836fb80060a0e3ae72f7ff69dbd5b8f3d2b00aa5f3761f842f257b9dfc",
+  "contractSha256": "b742996ac8367c6b3ce24d7160af75355ba183890c4b061e5fd5b1b47b087476",
+  "holdoutRowsInspected": 0,
+  "ordinalsAfter6848Inspected": 0,
+  "p75BuildProvenanceSha256": "e3e1cbb3a025c30f69889592f3ee5f0c84212df0602fe7699828c0a9cb0306ab",
+  "parentBuildProvenanceSha256": "e3e1cbb3a025c30f69889592f3ee5f0c84212df0602fe7699828c0a9cb0306ab",
+  "parentContractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+  "parentPredictionsSha256": "993075a5aee994db894b450a8e3413c642580abe31da5cea0ed3d40ee4f6bf9b",
+  "reportSha256": "9745b802c4188a8b04517d6019865b4ed2926e1cf879a124bd797f1971be5f33",
+  "schema": "STATIC_STATE_EXECUTABLE_VALUE_V1_PROVENANCE",
+  "validationRowsInspected": 0
+}

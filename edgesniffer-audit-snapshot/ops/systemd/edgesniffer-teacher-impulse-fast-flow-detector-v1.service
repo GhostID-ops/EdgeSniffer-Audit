@@ -1,0 +1,17 @@
+[Unit]
+Description=EdgeSniffer teacher impulse fast gross-buy flow detector v1 analytics-only
+After=network-online.target edgesniffer-teacher-impulse-parity-v1-source-feed.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/FinalBot-cya
+Environment=PYTHONUNBUFFERED=1
+ExecStartPre=/usr/bin/mkdir -p /var/lib/edgesniffer-teacher-impulse-parity-v1/research/fast-flow-detector-v1
+ExecStart=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseFastFlowDetectorV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/fast-flow-detector-v1 --poll-ms 1 --start-at-end
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

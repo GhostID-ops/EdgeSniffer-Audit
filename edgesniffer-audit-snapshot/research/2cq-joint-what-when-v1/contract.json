@@ -1,0 +1,24 @@
+{
+  "schema": "2CQ_JOINT_WHAT_WHEN_V1_CONTRACT",
+  "purpose": "Combine one frozen future symmetric cross-mint selector (WHAT) with the development-only event-level timing hazard candidate (WHEN) without reading economics or submitting trades.",
+  "what": {
+    "population": "2CQ_PROSPECTIVE_SYMMETRIC_CHOICE_CENSUS_V2",
+    "fitBoundary": "first 350 ONLINE_ELIGIBLE decisions",
+    "validationBoundary": "next sealed 150 ONLINE_ELIGIBLE decisions",
+    "modelsFit": 1,
+    "validationRuns": 1
+  },
+  "when": {
+    "family": "PROXIMAL_EVENT_LEVEL_HAZARD_V1",
+    "thresholdDomain": "LOGISTIC_PROBABILITY",
+    "trigger": "fresh below-to-at-or-above threshold crossing after a canonically ordered successful external Pump transaction",
+    "dedupe": "first threshold crossing per mint lifecycle",
+    "developmentOnly": true
+  },
+  "jointDecision": "The changed mint must produce a fresh WHEN crossing and be the unique top-ranked WHAT candidate in the complete symmetric LAUNCHED_120S risk set.",
+  "failClosed": true,
+  "prospectiveNoSubmitRequired": true,
+  "economicsPermitted": false,
+  "outcomesPermitted": false,
+  "submissionsPermitted": false
+}

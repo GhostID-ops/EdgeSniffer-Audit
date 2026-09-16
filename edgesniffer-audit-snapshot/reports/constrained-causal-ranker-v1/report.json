@@ -1,0 +1,3092 @@
+{
+  "contractSha256": "f5bf3b603a0994018101b88c844b30d9de14c176dbd49943ef013ac1869802a4",
+  "evaluation": {
+    "liftCurve": [
+      {
+        "N": 10,
+        "enrichment": 1.4511627906976743,
+        "positiveRate": 0.2,
+        "topPct": 1
+      },
+      {
+        "N": 19,
+        "enrichment": 1.909424724602203,
+        "positiveRate": 0.2631578947368421,
+        "topPct": 2
+      },
+      {
+        "N": 47,
+        "enrichment": 1.8525482434438394,
+        "positiveRate": 0.2553191489361702,
+        "topPct": 5
+      },
+      {
+        "N": 94,
+        "enrichment": 1.4666006927263728,
+        "positiveRate": 0.20212765957446807,
+        "topPct": 10
+      },
+      {
+        "N": 188,
+        "enrichment": 1.8911429985155863,
+        "positiveRate": 0.26063829787234044,
+        "topPct": 20
+      },
+      {
+        "N": 281,
+        "enrichment": 1.8074981378796655,
+        "positiveRate": 0.2491103202846975,
+        "topPct": 30
+      },
+      {
+        "N": 468,
+        "enrichment": 1.3798449612403099,
+        "positiveRate": 0.19017094017094016,
+        "topPct": 50
+      },
+      {
+        "N": 936,
+        "enrichment": 1.0,
+        "positiveRate": 0.13782051282051283,
+        "topPct": 100
+      }
+    ],
+    "nonDivergentOnly": {
+      "N": 567,
+      "allEconomics": {
+        "N": 567,
+        "bestRoiPct": 171.57165988340117,
+        "expectancyPct": -4.741337962634483,
+        "lossConcentration": {
+          "largestLossShare": 0.018851478437219373,
+          "top2LossShare": 0.032776053980390685,
+          "top5LossShare": 0.0718399280004004
+        },
+        "losses": 454,
+        "medianRoiPct": -2.671109888901111,
+        "normalizedPnlSolAt1Sol": -26.883386248137516,
+        "profitFactor": 0.3867231566161996,
+        "winRate": 0.19929453262786595,
+        "winnerConcentration": {
+          "largestWinnerShare": 0.10120872869455497,
+          "top2WinnerShare": 0.19162611419308087,
+          "top5WinnerShare": 0.29178090458022743
+        },
+        "wins": 113,
+        "worstRoiPct": -82.63667243327566
+      },
+      "auc": 0.6262159902720779,
+      "basePositiveRate": 0.08994708994708994,
+      "brierScore": 0.08433100392869787,
+      "buckets": {
+        "REMAINING_80": {
+          "N": 453,
+          "economics": {
+            "N": 453,
+            "bestRoiPct": 171.57165988340117,
+            "expectancyPct": -5.865508994799677,
+            "lossConcentration": {
+              "largestLossShare": 0.02241290112947499,
+              "top2LossShare": 0.03896810850794933,
+              "top5LossShare": 0.08541193247966151
+            },
+            "losses": 378,
+            "medianRoiPct": -2.671109888901111,
+            "normalizedPnlSolAt1Sol": -26.570755746442536,
+            "profitFactor": 0.279342083914015,
+            "winRate": 0.16556291390728478,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.16658444206011652,
+              "top2WinnerShare": 0.19535664276917958,
+              "top5WinnerShare": 0.2794108697581148
+            },
+            "wins": 75,
+            "worstRoiPct": -82.63667243327566
+          },
+          "enrichment": 0.8589793533307364,
+          "positiveRate": 0.0772626931567329
+        },
+        "TOP_10": {
+          "N": 57,
+          "economics": {
+            "N": 57,
+            "bestRoiPct": 153.2778952210478,
+            "expectancyPct": 2.0836532336431026,
+            "lossConcentration": {
+              "largestLossShare": 0.13927365789591917,
+              "top2LossShare": 0.2517421766807925,
+              "top5LossShare": 0.5637968485911394
+            },
+            "losses": 34,
+            "medianRoiPct": -1.7592854071459287,
+            "normalizedPnlSolAt1Sol": 1.1876823431765684,
+            "profitFactor": 1.5205471687826768,
+            "winRate": 0.40350877192982454,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.44181394552126063,
+              "top2WinnerShare": 0.5770963124530721,
+              "top5WinnerShare": 0.7794534505317992
+            },
+            "wins": 23,
+            "worstRoiPct": -31.776729232707673
+          },
+          "enrichment": 1.3653250773993808,
+          "positiveRate": 0.12280701754385964
+        },
+        "TOP_20": {
+          "N": 114,
+          "economics": {
+            "N": 114,
+            "bestRoiPct": 153.2778952210478,
+            "expectancyPct": -0.27423728218858145,
+            "lossConcentration": {
+              "largestLossShare": 0.05582719724911247,
+              "top2LossShare": 0.10544977019422191,
+              "top5LossShare": 0.23900971909446656
+            },
+            "losses": 76,
+            "medianRoiPct": -2.662765472345277,
+            "normalizedPnlSolAt1Sol": -0.31263050169498285,
+            "profitFactor": 0.9551173494797924,
+            "winRate": 0.3333333333333333,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.2303933516041875,
+              "top2WinnerShare": 0.3418142658041855,
+              "top5WinnerShare": 0.5544878600263681
+            },
+            "wins": 38,
+            "worstRoiPct": -38.88648393516065
+          },
+          "enrichment": 1.5603715170278638,
+          "positiveRate": 0.14035087719298245
+        },
+        "TOP_5": {
+          "N": 29,
+          "economics": {
+            "N": 29,
+            "bestRoiPct": 23.39379846201538,
+            "expectancyPct": 0.24465928444163856,
+            "lossConcentration": {
+              "largestLossShare": 0.35435300619467286,
+              "top2LossShare": 0.6405058820203724,
+              "top5LossShare": 0.7298652190443523
+            },
+            "losses": 17,
+            "medianRoiPct": -1.5989830101698983,
+            "normalizedPnlSolAt1Sol": 0.07095119248807519,
+            "profitFactor": 1.0791200635129181,
+            "winRate": 0.41379310344827586,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.24174522524803888,
+              "top2WinnerShare": 0.4541078212716225,
+              "top5WinnerShare": 0.8673087345097058
+            },
+            "wins": 12,
+            "worstRoiPct": -31.776729232707673
+          },
+          "enrichment": 1.5334685598377282,
+          "positiveRate": 0.13793103448275862
+        }
+      },
+      "calibration": [
+        {
+          "N": 208,
+          "actualPositiveRate": 0.057692307692307696,
+          "bin": 1,
+          "highExclusive": 0.1,
+          "lowInclusive": 0.0,
+          "meanPrediction": 0.08526278615108958
+        },
+        {
+          "N": 257,
+          "actualPositiveRate": 0.10116731517509728,
+          "bin": 2,
+          "highExclusive": 0.2,
+          "lowInclusive": 0.1,
+          "meanPrediction": 0.13627369378730178
+        },
+        {
+          "N": 61,
+          "actualPositiveRate": 0.13114754098360656,
+          "bin": 3,
+          "highExclusive": 0.3,
+          "lowInclusive": 0.2,
+          "meanPrediction": 0.22967490667614476
+        },
+        {
+          "N": 41,
+          "actualPositiveRate": 0.12195121951219512,
+          "bin": 4,
+          "highExclusive": 0.4,
+          "lowInclusive": 0.3,
+          "meanPrediction": 0.31281408310330966
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 5,
+          "highExclusive": 0.5,
+          "lowInclusive": 0.4,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 6,
+          "highExclusive": 0.6,
+          "lowInclusive": 0.5,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 7,
+          "highExclusive": 0.7,
+          "lowInclusive": 0.6,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 8,
+          "highExclusive": 0.8,
+          "lowInclusive": 0.7,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 9,
+          "highExclusive": 0.9,
+          "lowInclusive": 0.8,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 10,
+          "highExclusive": null,
+          "lowInclusive": 0.9,
+          "meanPrediction": null
+        }
+      ],
+      "expectedCalibrationError": 0.050427769906955404,
+      "positiveN": 51,
+      "prAuc": 0.13452327413176146,
+      "top10EconomicsAfterRemovingBestTwo": {
+        "N": 55,
+        "bestRoiPct": 26.259253207467925,
+        "expectancyPct": -1.4807815194575324,
+        "lossConcentration": {
+          "largestLossShare": 0.13927365789591917,
+          "top2LossShare": 0.2517421766807925,
+          "top5LossShare": 0.5637968485911394
+        },
+        "losses": 34,
+        "medianRoiPct": -2.0658757412425874,
+        "normalizedPnlSolAt1Sol": -0.8144298357016428,
+        "profitFactor": 0.643045004767235,
+        "winRate": 0.38181818181818183,
+        "winnerConcentration": {
+          "largestWinnerShare": 0.1789784697948804,
+          "top2WinnerShare": 0.3384265020119807,
+          "top5WinnerShare": 0.6946800640542086
+        },
+        "wins": 21,
+        "worstRoiPct": -31.776729232707673
+      }
+    },
+    "opportunityGe10Secondary": {
+      "N": 967,
+      "auc": 0.622942144032039,
+      "basePositiveRate": 0.18304033092037228,
+      "brierScore": 0.14571182677238775,
+      "buckets": {
+        "REMAINING_80": {
+          "N": 773,
+          "enrichment": 0.8057096498344553,
+          "positiveRate": 0.14747736093143596
+        },
+        "TOP_10": {
+          "N": 97,
+          "enrichment": 1.5207059234667133,
+          "positiveRate": 0.27835051546391754
+        },
+        "TOP_20": {
+          "N": 194,
+          "enrichment": 1.7741569107111657,
+          "positiveRate": 0.3247422680412371
+        },
+        "TOP_5": {
+          "N": 49,
+          "enrichment": 1.895422575809985,
+          "positiveRate": 0.3469387755102041
+        }
+      },
+      "calibration": [
+        {
+          "N": 375,
+          "actualPositiveRate": 0.14666666666666667,
+          "bin": 1,
+          "highExclusive": 0.1,
+          "lowInclusive": 0.0,
+          "meanPrediction": 0.08534145043431757
+        },
+        {
+          "N": 429,
+          "actualPositiveRate": 0.1561771561771562,
+          "bin": 2,
+          "highExclusive": 0.2,
+          "lowInclusive": 0.1,
+          "meanPrediction": 0.13901653767022787
+        },
+        {
+          "N": 113,
+          "actualPositiveRate": 0.336283185840708,
+          "bin": 3,
+          "highExclusive": 0.3,
+          "lowInclusive": 0.2,
+          "meanPrediction": 0.2296604650562942
+        },
+        {
+          "N": 50,
+          "actualPositiveRate": 0.34,
+          "bin": 4,
+          "highExclusive": 0.4,
+          "lowInclusive": 0.3,
+          "meanPrediction": 0.31416444930647175
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 5,
+          "highExclusive": 0.5,
+          "lowInclusive": 0.4,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 6,
+          "highExclusive": 0.6,
+          "lowInclusive": 0.5,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 7,
+          "highExclusive": 0.7,
+          "lowInclusive": 0.6,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 8,
+          "highExclusive": 0.8,
+          "lowInclusive": 0.7,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 9,
+          "highExclusive": 0.9,
+          "lowInclusive": 0.8,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 10,
+          "highExclusive": null,
+          "lowInclusive": 0.9,
+          "meanPrediction": null
+        }
+      ],
+      "expectedCalibrationError": 0.04519028584272837,
+      "positiveN": 177,
+      "prAuc": 0.2879733207951144
+    },
+    "pairedMintBootstrap": {
+      "baselineAuc95CI": [
+        0.6147959012161887,
+        0.7146706355898816
+      ],
+      "modelAuc95CI": [
+        0.5715706701218108,
+        0.6972902229022289
+      ],
+      "modelMinusBaselineAuc95CI": [
+        -0.07303758905920375,
+        0.01847940507466168
+      ],
+      "replicatesRequested": 500,
+      "replicatesUsable": 500
+    },
+    "policyPositiveSecondary": {
+      "N": 936,
+      "auc": 0.6266900971676659,
+      "basePositiveRate": 0.26175213675213677,
+      "brierScore": 0.19924018979888017,
+      "buckets": {
+        "REMAINING_80": {
+          "N": 748,
+          "enrichment": 0.8325220997489905,
+          "positiveRate": 0.2179144385026738
+        },
+        "TOP_10": {
+          "N": 94,
+          "enrichment": 1.6663482414242292,
+          "positiveRate": 0.43617021276595747
+        },
+        "TOP_20": {
+          "N": 188,
+          "enrichment": 1.6663482414242292,
+          "positiveRate": 0.43617021276595747
+        },
+        "TOP_5": {
+          "N": 47,
+          "enrichment": 2.0321320017368647,
+          "positiveRate": 0.5319148936170213
+        }
+      },
+      "calibration": [
+        {
+          "N": 357,
+          "actualPositiveRate": 0.20728291316526612,
+          "bin": 1,
+          "highExclusive": 0.1,
+          "lowInclusive": 0.0,
+          "meanPrediction": 0.0854955472504833
+        },
+        {
+          "N": 416,
+          "actualPositiveRate": 0.23798076923076922,
+          "bin": 2,
+          "highExclusive": 0.2,
+          "lowInclusive": 0.1,
+          "meanPrediction": 0.13797608902659067
+        },
+        {
+          "N": 113,
+          "actualPositiveRate": 0.39823008849557523,
+          "bin": 3,
+          "highExclusive": 0.3,
+          "lowInclusive": 0.2,
+          "meanPrediction": 0.2296604650562942
+        },
+        {
+          "N": 50,
+          "actualPositiveRate": 0.54,
+          "bin": 4,
+          "highExclusive": 0.4,
+          "lowInclusive": 0.3,
+          "meanPrediction": 0.31416444930647175
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 5,
+          "highExclusive": 0.5,
+          "lowInclusive": 0.4,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 6,
+          "highExclusive": 0.6,
+          "lowInclusive": 0.5,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 7,
+          "highExclusive": 0.7,
+          "lowInclusive": 0.6,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 8,
+          "highExclusive": 0.8,
+          "lowInclusive": 0.7,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 9,
+          "highExclusive": 0.9,
+          "lowInclusive": 0.8,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 10,
+          "highExclusive": null,
+          "lowInclusive": 0.9,
+          "meanPrediction": null
+        }
+      ],
+      "expectedCalibrationError": 0.12331215980751166,
+      "positiveN": 245,
+      "prAuc": 0.3947590875672281
+    },
+    "primary": {
+      "N": 936,
+      "allEconomics": {
+        "N": 936,
+        "bestRoiPct": 171.57165988340117,
+        "expectancyPct": -3.3344447388859444,
+        "lossConcentration": {
+          "largestLossShare": 0.012029511173737576,
+          "top2LossShare": 0.024037780146210115,
+          "top5LossShare": 0.059939921993061834
+        },
+        "losses": 691,
+        "medianRoiPct": -2.671109888901111,
+        "normalizedPnlSolAt1Sol": -31.210402755972442,
+        "profitFactor": 0.5464690191445805,
+        "winRate": 0.26175213675213677,
+        "winnerConcentration": {
+          "largestWinnerShare": 0.04562339435681851,
+          "top2WinnerShare": 0.09092493214363993,
+          "top5WinnerShare": 0.16591094790838926
+        },
+        "wins": 245,
+        "worstRoiPct": -82.78285377146229
+      },
+      "auc": 0.6386991729344975,
+      "basePositiveRate": 0.13782051282051283,
+      "brierScore": 0.11461086537662038,
+      "buckets": {
+        "REMAINING_80": {
+          "N": 748,
+          "economics": {
+            "N": 748,
+            "bestRoiPct": 171.57165988340117,
+            "expectancyPct": -4.631199767146714,
+            "lossConcentration": {
+              "largestLossShare": 0.014236211606056003,
+              "top2LossShare": 0.028447284329258003,
+              "top5LossShare": 0.07093533567736753
+            },
+            "losses": 585,
+            "medianRoiPct": -2.671109888901111,
+            "normalizedPnlSolAt1Sol": -34.641374258257414,
+            "profitFactor": 0.40427043548583064,
+            "winRate": 0.2179144385026738,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.0729839915464113,
+              "top2WinnerShare": 0.14545310739111336,
+              "top5WinnerShare": 0.19853863931662563
+            },
+            "wins": 163,
+            "worstRoiPct": -82.78285377146229
+          },
+          "enrichment": 0.776022882726029,
+          "positiveRate": 0.10695187165775401
+        },
+        "TOP_10": {
+          "N": 94,
+          "economics": {
+            "N": 94,
+            "bestRoiPct": 153.2778952210478,
+            "expectancyPct": 1.5301810832955502,
+            "lossConcentration": {
+              "largestLossShare": 0.11647225804179646,
+              "top2LossShare": 0.1864230402405794,
+              "top5LossShare": 0.36526153246805826
+            },
+            "losses": 53,
+            "medianRoiPct": -1.912580574194258,
+            "normalizedPnlSolAt1Sol": 1.438370218297817,
+            "profitFactor": 1.3166314604770706,
+            "winRate": 0.43617021276595747,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.25627053864807375,
+              "top2WinnerShare": 0.3347399608893719,
+              "top5WinnerShare": 0.45669647431180377
+            },
+            "wins": 41,
+            "worstRoiPct": -52.91016469835302
+          },
+          "enrichment": 1.4666006927263728,
+          "positiveRate": 0.20212765957446807
+        },
+        "TOP_20": {
+          "N": 188,
+          "economics": {
+            "N": 188,
+            "bestRoiPct": 153.2778952210478,
+            "expectancyPct": 1.8249848416409455,
+            "lossConcentration": {
+              "largestLossShare": 0.05071773710854859,
+              "top2LossShare": 0.10031957334366029,
+              "top5LossShare": 0.21874332564765508
+            },
+            "losses": 106,
+            "medianRoiPct": -1.912580574194258,
+            "normalizedPnlSolAt1Sol": 3.4309715022849776,
+            "profitFactor": 1.3216442200735996,
+            "winRate": 0.43617021276595747,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.10872354587016166,
+              "top2WinnerShare": 0.1613035217747209,
+              "top5WinnerShare": 0.2616650431284792
+            },
+            "wins": 82,
+            "worstRoiPct": -54.10049359506405
+          },
+          "enrichment": 1.8911429985155863,
+          "positiveRate": 0.26063829787234044
+        },
+        "TOP_5": {
+          "N": 47,
+          "economics": {
+            "N": 47,
+            "bestRoiPct": 153.2778952210478,
+            "expectancyPct": 6.012468526378567,
+            "lossConcentration": {
+              "largestLossShare": 0.24241088558550078,
+              "top2LossShare": 0.43816644805880844,
+              "top5LossShare": 0.7213831550280337
+            },
+            "losses": 22,
+            "medianRoiPct": 0.7558850411495885,
+            "normalizedPnlSolAt1Sol": 2.825860207397926,
+            "profitFactor": 3.1557261932139644,
+            "winRate": 0.5319148936170213,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.3705297968323974,
+              "top2WinnerShare": 0.42708132618872124,
+              "top5WinnerShare": 0.5817863150555259
+            },
+            "wins": 25,
+            "worstRoiPct": -31.776729232707673
+          },
+          "enrichment": 1.8525482434438394,
+          "positiveRate": 0.2553191489361702
+        }
+      },
+      "calibration": [
+        {
+          "N": 357,
+          "actualPositiveRate": 0.09803921568627451,
+          "bin": 1,
+          "highExclusive": 0.1,
+          "lowInclusive": 0.0,
+          "meanPrediction": 0.0854955472504833
+        },
+        {
+          "N": 416,
+          "actualPositiveRate": 0.12740384615384615,
+          "bin": 2,
+          "highExclusive": 0.2,
+          "lowInclusive": 0.1,
+          "meanPrediction": 0.13797608902659067
+        },
+        {
+          "N": 113,
+          "actualPositiveRate": 0.25663716814159293,
+          "bin": 3,
+          "highExclusive": 0.3,
+          "lowInclusive": 0.2,
+          "meanPrediction": 0.2296604650562942
+        },
+        {
+          "N": 50,
+          "actualPositiveRate": 0.24,
+          "bin": 4,
+          "highExclusive": 0.4,
+          "lowInclusive": 0.3,
+          "meanPrediction": 0.31416444930647175
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 5,
+          "highExclusive": 0.5,
+          "lowInclusive": 0.4,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 6,
+          "highExclusive": 0.6,
+          "lowInclusive": 0.5,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 7,
+          "highExclusive": 0.7,
+          "lowInclusive": 0.6,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 8,
+          "highExclusive": 0.8,
+          "lowInclusive": 0.7,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 9,
+          "highExclusive": 0.9,
+          "lowInclusive": 0.8,
+          "meanPrediction": null
+        },
+        {
+          "N": 0,
+          "actualPositiveRate": null,
+          "bin": 10,
+          "highExclusive": null,
+          "lowInclusive": 0.9,
+          "meanPrediction": null
+        }
+      ],
+      "expectedCalibrationError": 0.016701637372437527,
+      "positiveN": 129,
+      "prAuc": 0.2249645375532036,
+      "top10EconomicsAfterRemovingBestTwo": {
+        "N": 92,
+        "bestRoiPct": 26.259253207467925,
+        "expectancyPct": -0.6127630006308631,
+        "lossConcentration": {
+          "largestLossShare": 0.11647225804179646,
+          "top2LossShare": 0.1864230402405794,
+          "top5LossShare": 0.36526153246805826
+        },
+        "losses": 53,
+        "medianRoiPct": -2.154342356576434,
+        "normalizedPnlSolAt1Sol": -0.563741960580394,
+        "profitFactor": 0.8759022968912593,
+        "winRate": 0.42391304347826086,
+        "winnerConcentration": {
+          "largestWinnerShare": 0.06599485629721989,
+          "top2WinnerShare": 0.1247882406920116,
+          "top5WinnerShare": 0.29251206543175395
+        },
+        "wins": 39,
+        "worstRoiPct": -52.91016469835302
+      }
+    },
+    "univariateReference": {
+      "N": 936,
+      "allEconomics": {
+        "N": 936,
+        "bestRoiPct": 171.57165988340117,
+        "expectancyPct": -3.3344447388859444,
+        "lossConcentration": {
+          "largestLossShare": 0.012029511173737576,
+          "top2LossShare": 0.024037780146210115,
+          "top5LossShare": 0.059939921993061834
+        },
+        "losses": 691,
+        "medianRoiPct": -2.671109888901111,
+        "normalizedPnlSolAt1Sol": -31.210402755972442,
+        "profitFactor": 0.5464690191445805,
+        "winRate": 0.26175213675213677,
+        "winnerConcentration": {
+          "largestWinnerShare": 0.04562339435681851,
+          "top2WinnerShare": 0.09092493214363993,
+          "top5WinnerShare": 0.16591094790838926
+        },
+        "wins": 245,
+        "worstRoiPct": -82.78285377146229
+      },
+      "auc": 0.6648655658338376,
+      "basePositiveRate": 0.13782051282051283,
+      "brierScore": null,
+      "buckets": {
+        "REMAINING_80": {
+          "N": 748,
+          "economics": {
+            "N": 748,
+            "bestRoiPct": 54.588067319326804,
+            "expectancyPct": -4.514131645047186,
+            "lossConcentration": {
+              "largestLossShare": 0.011454368442611119,
+              "top2LossShare": 0.022500106069076046,
+              "top5LossShare": 0.05456086361489979
+            },
+            "losses": 591,
+            "medianRoiPct": -2.671109888901111,
+            "normalizedPnlSolAt1Sol": -33.76570470495295,
+            "profitFactor": 0.36636727980920064,
+            "winRate": 0.20989304812834225,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.02796036369066797,
+              "top2WinnerShare": 0.046432305071230535,
+              "top5WinnerShare": 0.09743920206734766
+            },
+            "wins": 157,
+            "worstRoiPct": -61.03927560724393
+          },
+          "enrichment": 0.7372217385897276,
+          "positiveRate": 0.10160427807486631
+        },
+        "TOP_10": {
+          "N": 94,
+          "economics": {
+            "N": 94,
+            "bestRoiPct": 153.2778952210478,
+            "expectancyPct": 7.920095760744521,
+            "lossConcentration": {
+              "largestLossShare": 0.17108534884815269,
+              "top2LossShare": 0.30924295927814965,
+              "top5LossShare": 0.5044865444466011
+            },
+            "losses": 39,
+            "medianRoiPct": 2.047373126268737,
+            "normalizedPnlSolAt1Sol": 7.444890015099849,
+            "profitFactor": 5.008315632618538,
+            "winRate": 0.5851063829787234,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.1647750542753564,
+              "top2WinnerShare": 0.21715451933127114,
+              "top5WinnerShare": 0.34287801951179947
+            },
+            "wins": 55,
+            "worstRoiPct": -31.776729232707673
+          },
+          "enrichment": 2.3928748144482928,
+          "positiveRate": 0.32978723404255317
+        },
+        "TOP_20": {
+          "N": 188,
+          "economics": {
+            "N": 188,
+            "bestRoiPct": 171.57165988340117,
+            "expectancyPct": 1.3592031643513354,
+            "lossConcentration": {
+              "largestLossShare": 0.0533140693012123,
+              "top2LossShare": 0.10653399444527653,
+              "top5LossShare": 0.2656501256696094
+            },
+            "losses": 100,
+            "medianRoiPct": -1.0657058429415707,
+            "normalizedPnlSolAt1Sol": 2.5553019489805107,
+            "profitFactor": 1.1645673457568497,
+            "winRate": 0.46808510638297873,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.09488168373508896,
+              "top2WinnerShare": 0.18909401145857374,
+              "top5WinnerShare": 0.34179777643054154
+            },
+            "wins": 88,
+            "worstRoiPct": -82.78285377146229
+          },
+          "enrichment": 2.045522018802573,
+          "positiveRate": 0.28191489361702127
+        },
+        "TOP_5": {
+          "N": 47,
+          "economics": {
+            "N": 47,
+            "bestRoiPct": 48.724694353056464,
+            "expectancyPct": 5.244550516196965,
+            "lossConcentration": {
+              "largestLossShare": 0.38736954980644805,
+              "top2LossShare": 0.41993132252917864,
+              "top5LossShare": 0.5176166406973701
+            },
+            "losses": 24,
+            "medianRoiPct": -0.0346270537294627,
+            "normalizedPnlSolAt1Sol": 2.4649387426125737,
+            "profitFactor": 4.004847364981444,
+            "winRate": 0.48936170212765956,
+            "winnerConcentration": {
+              "largestWinnerShare": 0.14831307534844923,
+              "top2WinnerShare": 0.29117339522223795,
+              "top5WinnerShare": 0.5731475915535698
+            },
+            "wins": 23,
+            "worstRoiPct": -31.776729232707673
+          },
+          "enrichment": 1.698169223156853,
+          "positiveRate": 0.23404255319148937
+        }
+      },
+      "calibration": [],
+      "expectedCalibrationError": null,
+      "positiveN": 129,
+      "prAuc": 0.2682484793189343,
+      "top10EconomicsAfterRemovingBestTwo": {
+        "N": 92,
+        "bestRoiPct": 46.93332266677333,
+        "expectancyPct": 5.896591434085659,
+        "lossConcentration": {
+          "largestLossShare": 0.17108534884815269,
+          "top2LossShare": 0.30924295927814965,
+          "top5LossShare": 0.5044865444466011
+        },
+        "losses": 39,
+        "medianRoiPct": 1.5841279587204127,
+        "normalizedPnlSolAt1Sol": 5.424864119358807,
+        "profitFactor": 3.920737258757968,
+        "winRate": 0.5760869565217391,
+        "winnerConcentration": {
+          "largestWinnerShare": 0.06444914909541437,
+          "top2WinnerShare": 0.1273847724116298,
+          "top5WinnerShare": 0.2253140711213851
+        },
+        "wins": 53,
+        "worstRoiPct": -31.776729232707673
+      }
+    }
+  },
+  "featureContribution": {
+    "crossingProgressionInteraction": {
+      "folds": [
+        {
+          "friedmanHApprox": 1.797594088944931e-16,
+          "left": "net_external_flow_sol",
+          "leftValues": [
+            1.999619506,
+            2.11333589425,
+            2.6500000000000004,
+            3.649999998,
+            16.996559399
+          ],
+          "meanPredictionGrid": [
+            [
+              0.10623816214982366,
+              0.10623816214982366,
+              0.10623816214982366,
+              0.10623816214982366,
+              0.10623816214982366
+            ],
+            [
+              0.10623816214982366,
+              0.10623816214982366,
+              0.10623816214982366,
+              0.10623816214982366,
+              0.10623816214982366
+            ],
+            [
+              0.10623816214982366,
+              0.10623816214982366,
+              0.10623816214982366,
+              0.10623816214982366,
+              0.10623816214982366
+            ],
+            [
+              0.22830525901863513,
+              0.22830525901863513,
+              0.22830525901863513,
+              0.22830525901863513,
+              0.22830525901863513
+            ],
+            [
+              0.22830525901863513,
+              0.22830525901863513,
+              0.22830525901863513,
+              0.22830525901863513,
+              0.22830525901863513
+            ]
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ],
+          "right": "buy_size_progression_ratio",
+          "rightValues": [
+            0.7386827261180371,
+            0.9567567567567568,
+            1.0,
+            1.7334727028978596,
+            5.560596236970422
+          ],
+          "testBlock": 2
+        },
+        {
+          "friedmanHApprox": 0.014007798252455421,
+          "left": "net_external_flow_sol",
+          "leftValues": [
+            1.9287903188,
+            2.1106058025000003,
+            2.787869138,
+            4.05,
+            16.996559399
+          ],
+          "meanPredictionGrid": [
+            [
+              0.10836403979861962,
+              0.10836403979861962,
+              0.1052520166648141,
+              0.10774037765537547,
+              0.10774037765537547
+            ],
+            [
+              0.10836403979861962,
+              0.10836403979861962,
+              0.1052520166648141,
+              0.10774037765537547,
+              0.10774037765537547
+            ],
+            [
+              0.10108060020646163,
+              0.10108060020646163,
+              0.09815315815732395,
+              0.10049381335213228,
+              0.10049381335213228
+            ],
+            [
+              0.18775504870159923,
+              0.18775504870159923,
+              0.18775504870159923,
+              0.19177574232036296,
+              0.19177574232036296
+            ],
+            [
+              0.26713348037983337,
+              0.26713348037983337,
+              0.26713348037983337,
+              0.26713348037983337,
+              0.26713348037983337
+            ]
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ],
+          "right": "buy_size_progression_ratio",
+          "rightValues": [
+            0.6507954205124017,
+            0.9070813757237657,
+            1.0,
+            1.622353189050661,
+            6.000984834523751
+          ],
+          "testBlock": 3
+        },
+        {
+          "friedmanHApprox": 0.07661978286054036,
+          "left": "net_external_flow_sol",
+          "leftValues": [
+            1.8517573794,
+            2.110056429,
+            2.764196033,
+            3.94875,
+            16.996559399
+          ],
+          "meanPredictionGrid": [
+            [
+              0.12208628838830693,
+              0.10820100387241115,
+              0.10820100387241115,
+              0.10820100387241115,
+              0.13052268598077113
+            ],
+            [
+              0.12208628838830693,
+              0.10820100387241115,
+              0.10820100387241115,
+              0.10820100387241115,
+              0.13052268598077113
+            ],
+            [
+              0.09734843351039928,
+              0.08600047606301094,
+              0.08600047606301094,
+              0.08600047606301094,
+              0.10427885122270186
+            ],
+            [
+              0.1585704269715825,
+              0.1585704269715825,
+              0.1585704269715825,
+              0.1585704269715825,
+              0.18870297789636747
+            ],
+            [
+              0.258587849578591,
+              0.258587849578591,
+              0.258587849578591,
+              0.258587849578591,
+              0.258587849578591
+            ]
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ],
+          "right": "buy_size_progression_ratio",
+          "rightValues": [
+            0.657395432760416,
+            0.917736364679951,
+            1.0,
+            1.597689027245269,
+            5.449585869401302
+          ],
+          "testBlock": 4
+        },
+        {
+          "friedmanHApprox": 0.11472494521518686,
+          "left": "net_external_flow_sol",
+          "leftValues": [
+            1.8590357880000004,
+            2.13173728675,
+            2.7047056310000004,
+            3.63,
+            15.996761788
+          ],
+          "meanPredictionGrid": [
+            [
+              0.10335136097353016,
+              0.10335136097353016,
+              0.10047472653596469,
+              0.10047472653596469,
+              0.15814482461086793
+            ],
+            [
+              0.10283988712384583,
+              0.10283988712384583,
+              0.10283988712384583,
+              0.10420895137983376,
+              0.16576961489132785
+            ],
+            [
+              0.08951164689484435,
+              0.08951164689484435,
+              0.08951164689484435,
+              0.09072124355681511,
+              0.14561077190199473
+            ],
+            [
+              0.14326812956265272,
+              0.14326812956265272,
+              0.14326812956265272,
+              0.16301320028247168,
+              0.18791388151422192
+            ],
+            [
+              0.2512554104670995,
+              0.2512554104670995,
+              0.2512554104670995,
+              0.2810023799795191,
+              0.28415300649561676
+            ]
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ],
+          "right": "buy_size_progression_ratio",
+          "rightValues": [
+            0.663004190934712,
+            0.9090909090909092,
+            1.0,
+            1.5384615384615385,
+            5.388489423216301
+          ],
+          "testBlock": 5
+        }
+      ],
+      "weightedMeanFriedmanHApprox": 0.06395027438251943
+    },
+    "partialDependence": {
+      "buy_size_progression_ratio": {
+        "p90MinusP10Prediction": 0.022131441809977004,
+        "quantiles": [
+          0.1,
+          0.25,
+          0.5,
+          0.75,
+          0.9
+        ],
+        "weightedMeanFeatureValues": [
+          0.6746958709075446,
+          0.9207342568951972,
+          1.0,
+          1.6083310018654204,
+          5.544640056975652
+        ],
+        "weightedMeanPredictions": [
+          0.1384651994233415,
+          0.1359218854880853,
+          0.13538871036040487,
+          0.13844870597133802,
+          0.16059664123331852
+        ]
+      },
+      "last_buy_size_vs_prior_median": {
+        "p90MinusP10Prediction": 0.036264297678045676,
+        "quantiles": [
+          0.1,
+          0.25,
+          0.5,
+          0.75,
+          0.9
+        ],
+        "weightedMeanFeatureValues": [
+          0.7809250397501241,
+          0.9846222965367536,
+          1.0498022536866025,
+          2.3438161250411076,
+          12.621505692559463
+        ],
+        "weightedMeanPredictions": [
+          0.1229823446584799,
+          0.1229823446584799,
+          0.134448765169348,
+          0.15365353490987155,
+          0.15924664233652558
+        ]
+      },
+      "net_external_flow_sol": {
+        "p90MinusP10Prediction": 0.15392913583549045,
+        "quantiles": [
+          0.1,
+          0.25,
+          0.5,
+          0.75,
+          0.9
+        ],
+        "weightedMeanFeatureValues": [
+          1.897416499501006,
+          2.118513077688129,
+          2.7240259256670023,
+          3.792457243056338,
+          16.641500488856135
+        ],
+        "weightedMeanPredictions": [
+          0.10685909774493933,
+          0.10782990556895233,
+          0.09545691449871285,
+          0.18032537478709312,
+          0.2607882335804298
+        ]
+      }
+    },
+    "permutationImportance": {
+      "buy_size_progression_ratio": {
+        "folds": [
+          {
+            "aucDropMean": -0.010530785562632757,
+            "aucDropStd": 0.012486780545388645,
+            "testBlock": 2,
+            "testN": 192
+          },
+          {
+            "aucDropMean": -0.00019813519813524454,
+            "aucDropStd": 0.005879037887797912,
+            "testBlock": 3,
+            "testN": 163
+          },
+          {
+            "aucDropMean": 0.012962693798449665,
+            "aucDropStd": 0.017990527330939716,
+            "testBlock": 4,
+            "testN": 247
+          },
+          {
+            "aucDropMean": 0.05939470537073278,
+            "aucDropStd": 0.017496793835228425,
+            "testBlock": 5,
+            "testN": 334
+          }
+        ],
+        "weightedMeanAucDrop": 0.022420309932393464
+      },
+      "last_buy_size_vs_prior_median": {
+        "folds": [
+          {
+            "aucDropMean": 0.017358204428268072,
+            "aucDropStd": 0.025831159814980114,
+            "testBlock": 2,
+            "testN": 192
+          },
+          {
+            "aucDropMean": -0.013933566433566488,
+            "aucDropStd": 0.030867187194648458,
+            "testBlock": 3,
+            "testN": 163
+          },
+          {
+            "aucDropMean": 0.012272286821705466,
+            "aucDropStd": 0.012976481386204693,
+            "testBlock": 4,
+            "testN": 247
+          },
+          {
+            "aucDropMean": 0.015473472494020464,
+            "aucDropStd": 0.008618910029315923,
+            "testBlock": 5,
+            "testN": 334
+          }
+        ],
+        "weightedMeanAucDrop": 0.009894229251624163
+      },
+      "net_external_flow_sol": {
+        "folds": [
+          {
+            "aucDropMean": 0.16818319684561722,
+            "aucDropStd": 0.037117300897805475,
+            "testBlock": 2,
+            "testN": 192
+          },
+          {
+            "aucDropMean": 0.04666666666666661,
+            "aucDropStd": 0.06407252315790048,
+            "testBlock": 3,
+            "testN": 163
+          },
+          {
+            "aucDropMean": 0.12828730620155046,
+            "aucDropStd": 0.04232903064148587,
+            "testBlock": 4,
+            "testN": 247
+          },
+          {
+            "aucDropMean": 0.1083958469232442,
+            "aucDropStd": 0.05344320617425707,
+            "testBlock": 5,
+            "testN": 334
+          }
+        ],
+        "weightedMeanAucDrop": 0.11515920722774754
+      }
+    }
+  },
+  "featureRegistrySha256": "2be66a10a9fe81aee7aa397ad4b1224c01f1471d75dc0bf83c38d06578d53c90",
+  "featureSelection": {
+    "candidates": [
+      "net_external_flow_sol",
+      "buy_size_progression_ratio",
+      "last_buy_size_vs_prior_median",
+      "gross_buy_sol_per_successful_tx"
+    ],
+    "excluded": [
+      "gross_buy_sol_per_successful_tx"
+    ],
+    "included": [
+      "net_external_flow_sol",
+      "buy_size_progression_ratio",
+      "last_buy_size_vs_prior_median"
+    ],
+    "pairwiseCorrelations": [
+      {
+        "completeCaseN": 833,
+        "left": "net_external_flow_sol",
+        "right": "buy_size_progression_ratio",
+        "spearmanRho": 0.1371008259435295
+      },
+      {
+        "completeCaseN": 833,
+        "left": "net_external_flow_sol",
+        "right": "last_buy_size_vs_prior_median",
+        "spearmanRho": -0.043859661762847266
+      },
+      {
+        "completeCaseN": 1209,
+        "left": "net_external_flow_sol",
+        "right": "gross_buy_sol_per_successful_tx",
+        "spearmanRho": 0.79054043533644
+      },
+      {
+        "completeCaseN": 833,
+        "left": "buy_size_progression_ratio",
+        "right": "last_buy_size_vs_prior_median",
+        "spearmanRho": 0.7211803915955819
+      },
+      {
+        "completeCaseN": 833,
+        "left": "buy_size_progression_ratio",
+        "right": "gross_buy_sol_per_successful_tx",
+        "spearmanRho": -0.08650664418201384
+      },
+      {
+        "completeCaseN": 833,
+        "left": "last_buy_size_vs_prior_median",
+        "right": "gross_buy_sol_per_successful_tx",
+        "spearmanRho": -0.3537512455927233
+      }
+    ]
+  },
+  "folds": [
+    {
+      "crossingProgressionInteraction": {
+        "friedmanHApprox": 1.797594088944931e-16,
+        "left": "net_external_flow_sol",
+        "leftValues": [
+          1.999619506,
+          2.11333589425,
+          2.6500000000000004,
+          3.649999998,
+          16.996559399
+        ],
+        "meanPredictionGrid": [
+          [
+            0.10623816214982366,
+            0.10623816214982366,
+            0.10623816214982366,
+            0.10623816214982366,
+            0.10623816214982366
+          ],
+          [
+            0.10623816214982366,
+            0.10623816214982366,
+            0.10623816214982366,
+            0.10623816214982366,
+            0.10623816214982366
+          ],
+          [
+            0.10623816214982366,
+            0.10623816214982366,
+            0.10623816214982366,
+            0.10623816214982366,
+            0.10623816214982366
+          ],
+          [
+            0.22830525901863513,
+            0.22830525901863513,
+            0.22830525901863513,
+            0.22830525901863513,
+            0.22830525901863513
+          ],
+          [
+            0.22830525901863513,
+            0.22830525901863513,
+            0.22830525901863513,
+            0.22830525901863513,
+            0.22830525901863513
+          ]
+        ],
+        "quantiles": [
+          0.1,
+          0.25,
+          0.5,
+          0.75,
+          0.9
+        ],
+        "right": "buy_size_progression_ratio",
+        "rightValues": [
+          0.7386827261180371,
+          0.9567567567567568,
+          1.0,
+          1.7334727028978596,
+          5.560596236970422
+        ]
+      },
+      "partialDependence": {
+        "buy_size_progression_ratio": {
+          "featureValues": [
+            0.7386827261180371,
+            0.9567567567567568,
+            1.0,
+            1.7334727028978596,
+            5.560596236970422
+          ],
+          "meanPredictions": [
+            0.16582616478326925,
+            0.16582616478326925,
+            0.16582616478326925,
+            0.16582616478326925,
+            0.16582616478326925
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        },
+        "last_buy_size_vs_prior_median": {
+          "featureValues": [
+            0.7832981703959503,
+            0.9572649572649572,
+            1.0078145903332314,
+            2.0773684210526318,
+            14.026991480623343
+          ],
+          "meanPredictions": [
+            0.13233504209359487,
+            0.13233504209359487,
+            0.13233504209359487,
+            0.19871593289966635,
+            0.19871593289966635
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        },
+        "net_external_flow_sol": {
+          "featureValues": [
+            1.999619506,
+            2.11333589425,
+            2.6500000000000004,
+            3.649999998,
+            16.996559399
+          ],
+          "meanPredictions": [
+            0.10406660557864837,
+            0.10406660557864837,
+            0.10406660557864837,
+            0.22317100300595302,
+            0.22317100300595302
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        }
+      },
+      "primaryMetrics": {
+        "N": 192,
+        "allEconomics": {
+          "N": 192,
+          "bestRoiPct": 48.724694353056464,
+          "expectancyPct": -2.9505289978350215,
+          "lossConcentration": {
+            "largestLossShare": 0.03706377890355542,
+            "top2LossShare": 0.07331207380468324,
+            "top5LossShare": 0.16758261141088382
+          },
+          "losses": 132,
+          "medianRoiPct": -2.65149528504715,
+          "normalizedPnlSolAt1Sol": -5.665015675843242,
+          "profitFactor": 0.6118946897856287,
+          "winRate": 0.3125,
+          "winnerConcentration": {
+            "largestWinnerShare": 0.05455328511400111,
+            "top2WinnerShare": 0.10586687940119639,
+            "top5WinnerShare": 0.20730724527626698
+          },
+          "wins": 60,
+          "worstRoiPct": -54.10049359506405
+        },
+        "auc": 0.6789808917197452,
+        "basePositiveRate": 0.18229166666666666,
+        "brierScore": 0.14288238431891,
+        "buckets": {
+          "REMAINING_80": {
+            "N": 153,
+            "economics": {
+              "N": 153,
+              "bestRoiPct": 45.83113908860911,
+              "expectancyPct": -4.339765611494212,
+              "lossConcentration": {
+                "largestLossShare": 0.04315484147333726,
+                "top2LossShare": 0.07789714748467638,
+                "top5LossShare": 0.1785501699764804
+              },
+              "losses": 111,
+              "medianRoiPct": -2.671109888901111,
+              "normalizedPnlSolAt1Sol": -6.639841385586144,
+              "profitFactor": 0.45803909978978974,
+              "winRate": 0.27450980392156865,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.08167108955117332,
+                "top2WinnerShare": 0.13952489535445114,
+                "top5WinnerShare": 0.2827384278747676
+              },
+              "wins": 42,
+              "worstRoiPct": -52.87121308786912
+            },
+            "enrichment": 0.7887955182072829,
+            "positiveRate": 0.1437908496732026
+          },
+          "TOP_10": {
+            "N": 20,
+            "economics": {
+              "N": 20,
+              "bestRoiPct": 26.259253207467925,
+              "expectancyPct": -3.4501725982740172,
+              "lossConcentration": {
+                "largestLossShare": 0.3462275942365529,
+                "top2LossShare": 0.503547878051511,
+                "top5LossShare": 0.7681857513449581
+              },
+              "losses": 13,
+              "medianRoiPct": -2.818040819591804,
+              "normalizedPnlSolAt1Sol": -0.6900345196548036,
+              "profitFactor": 0.5484629597312618,
+              "winRate": 0.35,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.3132980073175404,
+                "top2WinnerShare": 0.5911738267498079,
+                "top5WinnerShare": 0.9389876792034114
+              },
+              "wins": 7,
+              "worstRoiPct": -52.91016469835302
+            },
+            "enrichment": 0.8228571428571428,
+            "positiveRate": 0.15
+          },
+          "TOP_20": {
+            "N": 39,
+            "economics": {
+              "N": 39,
+              "bestRoiPct": 48.724694353056464,
+              "expectancyPct": 2.4995531019048784,
+              "lossConcentration": {
+                "largestLossShare": 0.23069781985928017,
+                "top2LossShare": 0.45631978434019477,
+                "top5LossShare": 0.7015346960421095
+              },
+              "losses": 21,
+              "medianRoiPct": -2.643216767832322,
+              "normalizedPnlSolAt1Sol": 0.9748257097429025,
+              "profitFactor": 1.4156896749662582,
+              "winRate": 0.46153846153846156,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.14676527806768852,
+                "top2WinnerShare": 0.22586165106735034,
+                "top5WinnerShare": 0.4322023398674718
+              },
+              "wins": 18,
+              "worstRoiPct": -54.10049359506405
+            },
+            "enrichment": 1.8285714285714285,
+            "positiveRate": 0.3333333333333333
+          },
+          "TOP_5": {
+            "N": 10,
+            "economics": {
+              "N": 10,
+              "bestRoiPct": 26.259253207467925,
+              "expectancyPct": -1.7392956270437294,
+              "lossConcentration": {
+                "largestLossShare": 0.3398474571222104,
+                "top2LossShare": 0.6549515131548851,
+                "top5LossShare": 0.925271778821809
+              },
+              "losses": 7,
+              "medianRoiPct": -2.818040819591804,
+              "normalizedPnlSolAt1Sol": -0.17392956270437293,
+              "profitFactor": 0.7541358130484035,
+              "winRate": 0.3,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.4922148063822926,
+                "top2WinnerShare": 0.9287786831564842,
+                "top5WinnerShare": 1.0
+              },
+              "wins": 3,
+              "worstRoiPct": -24.04153298467015
+            },
+            "enrichment": 1.0971428571428572,
+            "positiveRate": 0.2
+          }
+        },
+        "calibration": [
+          {
+            "N": 68,
+            "actualPositiveRate": 0.10294117647058823,
+            "bin": 1,
+            "highExclusive": 0.1,
+            "lowInclusive": 0.0,
+            "meanPrediction": 0.0726688657980248
+          },
+          {
+            "N": 41,
+            "actualPositiveRate": 0.07317073170731707,
+            "bin": 2,
+            "highExclusive": 0.2,
+            "lowInclusive": 0.1,
+            "meanPrediction": 0.17563604473130603
+          },
+          {
+            "N": 83,
+            "actualPositiveRate": 0.30120481927710846,
+            "bin": 3,
+            "highExclusive": 0.3,
+            "lowInclusive": 0.2,
+            "meanPrediction": 0.2239785700143589
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 4,
+            "highExclusive": 0.4,
+            "lowInclusive": 0.3,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 5,
+            "highExclusive": 0.5,
+            "lowInclusive": 0.4,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 6,
+            "highExclusive": 0.6,
+            "lowInclusive": 0.5,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 7,
+            "highExclusive": 0.7,
+            "lowInclusive": 0.6,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 8,
+            "highExclusive": 0.8,
+            "lowInclusive": 0.7,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 9,
+            "highExclusive": 0.9,
+            "lowInclusive": 0.8,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 10,
+            "highExclusive": null,
+            "lowInclusive": 0.9,
+            "meanPrediction": null
+          }
+        ],
+        "expectedCalibrationError": 0.06598632108607332,
+        "positiveN": 35,
+        "prAuc": 0.2980629840026215,
+        "top10EconomicsAfterRemovingBestTwo": {
+          "N": 18,
+          "bestRoiPct": 20.817231627683725,
+          "expectancyPct": -6.586279292762628,
+          "lossConcentration": {
+            "largestLossShare": 0.3462275942365529,
+            "top2LossShare": 0.503547878051511,
+            "top5LossShare": 0.7681857513449581
+          },
+          "losses": 13,
+          "medianRoiPct": -4.360317996820032,
+          "normalizedPnlSolAt1Sol": -1.1855302726972732,
+          "profitFactor": 0.224226012996406,
+          "winRate": 0.2777777777777778,
+          "winnerConcentration": {
+            "largestWinnerShare": 0.6075185516872267,
+            "top2WinnerShare": 0.7398768205917923,
+            "top5WinnerShare": 1.0
+          },
+          "wins": 5,
+          "worstRoiPct": -52.91016469835302
+        }
+      },
+      "scoredTestN": 201,
+      "testBlock": 2,
+      "testN": 192,
+      "testOrdinalRange": [
+        1371,
+        2740
+      ],
+      "testPositiveN": 35,
+      "trainN": 210,
+      "trainOrdinalRange": [
+        1,
+        1370
+      ],
+      "trainPositiveN": 30
+    },
+    {
+      "crossingProgressionInteraction": {
+        "friedmanHApprox": 0.014007798252455421,
+        "left": "net_external_flow_sol",
+        "leftValues": [
+          1.9287903188,
+          2.1106058025000003,
+          2.787869138,
+          4.05,
+          16.996559399
+        ],
+        "meanPredictionGrid": [
+          [
+            0.10836403979861962,
+            0.10836403979861962,
+            0.1052520166648141,
+            0.10774037765537547,
+            0.10774037765537547
+          ],
+          [
+            0.10836403979861962,
+            0.10836403979861962,
+            0.1052520166648141,
+            0.10774037765537547,
+            0.10774037765537547
+          ],
+          [
+            0.10108060020646163,
+            0.10108060020646163,
+            0.09815315815732395,
+            0.10049381335213228,
+            0.10049381335213228
+          ],
+          [
+            0.18775504870159923,
+            0.18775504870159923,
+            0.18775504870159923,
+            0.19177574232036296,
+            0.19177574232036296
+          ],
+          [
+            0.26713348037983337,
+            0.26713348037983337,
+            0.26713348037983337,
+            0.26713348037983337,
+            0.26713348037983337
+          ]
+        ],
+        "quantiles": [
+          0.1,
+          0.25,
+          0.5,
+          0.75,
+          0.9
+        ],
+        "right": "buy_size_progression_ratio",
+        "rightValues": [
+          0.6507954205124017,
+          0.9070813757237657,
+          1.0,
+          1.622353189050661,
+          6.000984834523751
+        ]
+      },
+      "partialDependence": {
+        "buy_size_progression_ratio": {
+          "featureValues": [
+            0.6507954205124017,
+            0.9070813757237657,
+            1.0,
+            1.622353189050661,
+            6.000984834523751
+          ],
+          "meanPredictions": [
+            0.15671468221855095,
+            0.15671468221855095,
+            0.15474395226035773,
+            0.1571074523003801,
+            0.1571074523003801
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        },
+        "last_buy_size_vs_prior_median": {
+          "featureValues": [
+            0.7462235870492916,
+            0.960613566748686,
+            1.054093567251462,
+            2.0941930615048814,
+            14.253791617713633
+          ],
+          "meanPredictions": [
+            0.11988338424297301,
+            0.11988338424297301,
+            0.1586357445989529,
+            0.15630338248299547,
+            0.18900661061296076
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        },
+        "net_external_flow_sol": {
+          "featureValues": [
+            1.9287903188,
+            2.1106058025000003,
+            2.787869138,
+            4.05,
+            16.996559399
+          ],
+          "meanPredictions": [
+            0.10625759841468914,
+            0.10625759841468914,
+            0.09910094317483363,
+            0.18845143198055203,
+            0.26713348037983337
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        }
+      },
+      "primaryMetrics": {
+        "N": 163,
+        "allEconomics": {
+          "N": 163,
+          "bestRoiPct": 34.14258597414025,
+          "expectancyPct": -4.119166451280273,
+          "lossConcentration": {
+            "largestLossShare": 0.040203595165590106,
+            "top2LossShare": 0.07916976413747275,
+            "top5LossShare": 0.18458222261589888
+          },
+          "losses": 117,
+          "medianRoiPct": -2.671109888901111,
+          "normalizedPnlSolAt1Sol": -6.714241315586844,
+          "profitFactor": 0.4299253140306786,
+          "winRate": 0.2822085889570552,
+          "winnerConcentration": {
+            "largestWinnerShare": 0.06742767814266135,
+            "top2WinnerShare": 0.12416643370235511,
+            "top5WinnerShare": 0.2788753840534121
+          },
+          "wins": 46,
+          "worstRoiPct": -47.35110088899111
+        },
+        "auc": 0.5347902097902097,
+        "basePositiveRate": 0.12269938650306748,
+        "brierScore": 0.11066006851535329,
+        "buckets": {
+          "REMAINING_80": {
+            "N": 130,
+            "economics": {
+              "N": 130,
+              "bestRoiPct": 34.14258597414025,
+              "expectancyPct": -5.085943225183133,
+              "lossConcentration": {
+                "largestLossShare": 0.044512893712193795,
+                "top2LossShare": 0.08819498834013374,
+                "top5LossShare": 0.1990838102119146
+              },
+              "losses": 99,
+              "medianRoiPct": -2.712330176698233,
+              "normalizedPnlSolAt1Sol": -6.611726192738073,
+              "profitFactor": 0.35871986163277175,
+              "winRate": 0.23846153846153847,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.09231534931980206,
+                "top2WinnerShare": 0.16999647647328192,
+                "top5WinnerShare": 0.38180876466063896
+              },
+              "wins": 31,
+              "worstRoiPct": -45.89368166318337
+            },
+            "enrichment": 0.8776923076923078,
+            "positiveRate": 0.1076923076923077
+          },
+          "TOP_10": {
+            "N": 17,
+            "economics": {
+              "N": 17,
+              "bestRoiPct": 22.584156558434415,
+              "expectancyPct": 5.060581970650882,
+              "lossConcentration": {
+                "largestLossShare": 0.16630734453751272,
+                "top2LossShare": 0.33261468907502545,
+                "top5LossShare": 0.8315367226875635
+              },
+              "losses": 7,
+              "medianRoiPct": 2.5583148168518313,
+              "normalizedPnlSolAt1Sol": 0.8602989350106499,
+              "profitFactor": 6.356351379797848,
+              "winRate": 0.5882352941176471,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.22121555048306882,
+                "top2WinnerShare": 0.4255679421106181,
+                "top5WinnerShare": 0.8980577290092074
+              },
+              "wins": 10,
+              "worstRoiPct": -2.671109888901111
+            },
+            "enrichment": 1.9176470588235295,
+            "positiveRate": 0.23529411764705882
+          },
+          "TOP_20": {
+            "N": 33,
+            "economics": {
+              "N": 33,
+              "bestRoiPct": 22.584156558434415,
+              "expectancyPct": -0.3106518874205195,
+              "lossConcentration": {
+                "largestLossShare": 0.322636951036729,
+                "top2LossShare": 0.5319184513849692,
+                "top5LossShare": 0.7957968544484201
+              },
+              "losses": 18,
+              "medianRoiPct": -1.3783636163638362,
+              "normalizedPnlSolAt1Sol": -0.10251512284877144,
+              "profitFactor": 0.9301491073066624,
+              "winRate": 0.45454545454545453,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.16543802105300007,
+                "top2WinnerShare": 0.31826477845989837,
+                "top5WinnerShare": 0.7574237392056925
+              },
+              "wins": 15,
+              "worstRoiPct": -47.35110088899111
+            },
+            "enrichment": 1.481818181818182,
+            "positiveRate": 0.18181818181818182
+          },
+          "TOP_5": {
+            "N": 9,
+            "economics": {
+              "N": 9,
+              "bestRoiPct": 22.584156558434415,
+              "expectancyPct": 3.4039670936623967,
+              "lossConcentration": {
+                "largestLossShare": 0.3318991368479261,
+                "top2LossShare": 0.6637982736958522,
+                "top5LossShare": 1.0
+              },
+              "losses": 4,
+              "medianRoiPct": 2.5583148168518313,
+              "normalizedPnlSolAt1Sol": 0.3063570384296157,
+              "profitFactor": 4.806643711835726,
+              "winRate": 0.5555555555555556,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.5838164286811415,
+                "top2WinnerShare": 0.7975366869186495,
+                "top5WinnerShare": 1.0
+              },
+              "wins": 5,
+              "worstRoiPct": -2.671109888901111
+            },
+            "enrichment": 0.9055555555555556,
+            "positiveRate": 0.1111111111111111
+          }
+        },
+        "calibration": [
+          {
+            "N": 57,
+            "actualPositiveRate": 0.14035087719298245,
+            "bin": 1,
+            "highExclusive": 0.1,
+            "lowInclusive": 0.0,
+            "meanPrediction": 0.08010491810135593
+          },
+          {
+            "N": 74,
+            "actualPositiveRate": 0.08108108108108109,
+            "bin": 2,
+            "highExclusive": 0.2,
+            "lowInclusive": 0.1,
+            "meanPrediction": 0.14680345485305024
+          },
+          {
+            "N": 14,
+            "actualPositiveRate": 0.14285714285714285,
+            "bin": 3,
+            "highExclusive": 0.3,
+            "lowInclusive": 0.2,
+            "meanPrediction": 0.24153282475104193
+          },
+          {
+            "N": 18,
+            "actualPositiveRate": 0.2222222222222222,
+            "bin": 4,
+            "highExclusive": 0.4,
+            "lowInclusive": 0.3,
+            "meanPrediction": 0.328314084099419
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 5,
+            "highExclusive": 0.5,
+            "lowInclusive": 0.4,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 6,
+            "highExclusive": 0.6,
+            "lowInclusive": 0.5,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 7,
+            "highExclusive": 0.7,
+            "lowInclusive": 0.6,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 8,
+            "highExclusive": 0.8,
+            "lowInclusive": 0.7,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 9,
+            "highExclusive": 0.9,
+            "lowInclusive": 0.8,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 10,
+            "highExclusive": null,
+            "lowInclusive": 0.9,
+            "meanPrediction": null
+          }
+        ],
+        "expectedCalibrationError": 0.07109563428007704,
+        "positiveN": 20,
+        "prAuc": 0.15954780253217046,
+        "top10EconomicsAfterRemovingBestTwo": {
+          "N": 15,
+          "bestRoiPct": 20.086518734812653,
+          "expectancyPct": 2.8388773445598883,
+          "lossConcentration": {
+            "largestLossShare": 0.16630734453751272,
+            "top2LossShare": 0.33261468907502545,
+            "top5LossShare": 0.8315367226875635
+          },
+          "losses": 7,
+          "medianRoiPct": 0.017069829301707,
+          "normalizedPnlSolAt1Sol": 0.4258316016839832,
+          "profitFactor": 3.6512920037652896,
+          "winRate": 0.5333333333333333,
+          "winnerConcentration": {
+            "largestWinnerShare": 0.34251356973403013,
+            "top2WinnerShare": 0.6815574236269932,
+            "top5WinnerShare": 0.9124606034410451
+          },
+          "wins": 8,
+          "worstRoiPct": -2.671109888901111
+        }
+      },
+      "scoredTestN": 170,
+      "testBlock": 3,
+      "testN": 163,
+      "testOrdinalRange": [
+        2741,
+        4110
+      ],
+      "testPositiveN": 20,
+      "trainN": 402,
+      "trainOrdinalRange": [
+        1,
+        2740
+      ],
+      "trainPositiveN": 65
+    },
+    {
+      "crossingProgressionInteraction": {
+        "friedmanHApprox": 0.07661978286054036,
+        "left": "net_external_flow_sol",
+        "leftValues": [
+          1.8517573794,
+          2.110056429,
+          2.764196033,
+          3.94875,
+          16.996559399
+        ],
+        "meanPredictionGrid": [
+          [
+            0.12208628838830693,
+            0.10820100387241115,
+            0.10820100387241115,
+            0.10820100387241115,
+            0.13052268598077113
+          ],
+          [
+            0.12208628838830693,
+            0.10820100387241115,
+            0.10820100387241115,
+            0.10820100387241115,
+            0.13052268598077113
+          ],
+          [
+            0.09734843351039928,
+            0.08600047606301094,
+            0.08600047606301094,
+            0.08600047606301094,
+            0.10427885122270186
+          ],
+          [
+            0.1585704269715825,
+            0.1585704269715825,
+            0.1585704269715825,
+            0.1585704269715825,
+            0.18870297789636747
+          ],
+          [
+            0.258587849578591,
+            0.258587849578591,
+            0.258587849578591,
+            0.258587849578591,
+            0.258587849578591
+          ]
+        ],
+        "quantiles": [
+          0.1,
+          0.25,
+          0.5,
+          0.75,
+          0.9
+        ],
+        "right": "buy_size_progression_ratio",
+        "rightValues": [
+          0.657395432760416,
+          0.917736364679951,
+          1.0,
+          1.597689027245269,
+          5.449585869401302
+        ]
+      },
+      "partialDependence": {
+        "buy_size_progression_ratio": {
+          "featureValues": [
+            0.657395432760416,
+            0.917736364679951,
+            1.0,
+            1.597689027245269,
+            5.449585869401302
+          ],
+          "meanPredictions": [
+            0.13140819533278597,
+            0.12204503217854641,
+            0.12204503217854641,
+            0.12204503217854641,
+            0.14296371288254156
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        },
+        "last_buy_size_vs_prior_median": {
+          "featureValues": [
+            0.7685530589139683,
+            1.0,
+            1.0571895424836601,
+            2.4918497786678593,
+            12.65442468631388
+          ],
+          "meanPredictions": [
+            0.10915405409895666,
+            0.10915405409895666,
+            0.11891822346273966,
+            0.1416718665359722,
+            0.1416718665359722
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        },
+        "net_external_flow_sol": {
+          "featureValues": [
+            1.8517573794,
+            2.110056429,
+            2.764196033,
+            3.94875,
+            16.996559399
+          ],
+          "meanPredictions": [
+            0.11291996301989864,
+            0.11291996301989864,
+            0.08987046453430109,
+            0.16417303365355815,
+            0.258587849578591
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        }
+      },
+      "primaryMetrics": {
+        "N": 247,
+        "allEconomics": {
+          "N": 247,
+          "bestRoiPct": 170.36128378716214,
+          "expectancyPct": -3.8953328118540678,
+          "lossConcentration": {
+            "largestLossShare": 0.0422899301045566,
+            "top2LossShare": 0.08450439649845308,
+            "top5LossShare": 0.18340762736075988
+          },
+          "losses": 192,
+          "medianRoiPct": -2.671109888901111,
+          "normalizedPnlSolAt1Sol": -9.621472045279548,
+          "profitFactor": 0.5076140310146702,
+          "winRate": 0.22267206477732793,
+          "winnerConcentration": {
+            "largestWinnerShare": 0.171751853507784,
+            "top2WinnerShare": 0.24648389245392152,
+            "top5WinnerShare": 0.36340172492854184
+          },
+          "wins": 55,
+          "worstRoiPct": -82.63667243327566
+        },
+        "auc": 0.6489098837209303,
+        "basePositiveRate": 0.12955465587044535,
+        "brierScore": 0.10766363573514998,
+        "buckets": {
+          "REMAINING_80": {
+            "N": 197,
+            "economics": {
+              "N": 197,
+              "bestRoiPct": 170.36128378716214,
+              "expectancyPct": -4.443558672027493,
+              "lossConcentration": {
+                "largestLossShare": 0.05494057652686355,
+                "top2LossShare": 0.10978311506311626,
+                "top5LossShare": 0.23020953836166724
+              },
+              "losses": 158,
+              "medianRoiPct": -2.671109888901111,
+              "normalizedPnlSolAt1Sol": -8.753810583894161,
+              "profitFactor": 0.41800730096624344,
+              "winRate": 0.19796954314720813,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.27096140049011375,
+                "top2WinnerShare": 0.32832071707738775,
+                "top5WinnerShare": 0.45709961332326293
+              },
+              "wins": 39,
+              "worstRoiPct": -82.63667243327566
+            },
+            "enrichment": 0.7836294416243654,
+            "positiveRate": 0.10152284263959391
+          },
+          "TOP_10": {
+            "N": 25,
+            "economics": {
+              "N": 25,
+              "bestRoiPct": 74.1269793302067,
+              "expectancyPct": 3.1152730632693673,
+              "lossConcentration": {
+                "largestLossShare": 0.15593987150443603,
+                "top2LossShare": 0.2969212701811676,
+                "top5LossShare": 0.6707762452436311
+              },
+              "losses": 14,
+              "medianRoiPct": -1.7592854071459287,
+              "normalizedPnlSolAt1Sol": 0.7788182658173419,
+              "profitFactor": 1.4278846991148315,
+              "winRate": 0.44,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.28521593854818755,
+                "top2WinnerShare": 0.4657997394064244,
+                "top5WinnerShare": 0.7505462418698867
+              },
+              "wins": 11,
+              "worstRoiPct": -28.383538964610352
+            },
+            "enrichment": 2.47,
+            "positiveRate": 0.32
+          },
+          "TOP_20": {
+            "N": 50,
+            "economics": {
+              "N": 50,
+              "bestRoiPct": 74.1269793302067,
+              "expectancyPct": -1.735322922770772,
+              "lossConcentration": {
+                "largestLossShare": 0.13566068702859832,
+                "top2LossShare": 0.2045325398538561,
+                "top5LossShare": 0.3933052269141987
+              },
+              "losses": 34,
+              "medianRoiPct": -2.671109888901111,
+              "normalizedPnlSolAt1Sol": -0.867661461385386,
+              "profitFactor": 0.8071609651510838,
+              "winRate": 0.32,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.2041083600344813,
+                "top2WinnerShare": 0.3333390882665249,
+                "top5WinnerShare": 0.5753373817789531
+              },
+              "wins": 16,
+              "worstRoiPct": -61.03927560724393
+            },
+            "enrichment": 1.8524999999999998,
+            "positiveRate": 0.24
+          },
+          "TOP_5": {
+            "N": 13,
+            "economics": {
+              "N": 13,
+              "bestRoiPct": 46.93332266677333,
+              "expectancyPct": 4.069914931619914,
+              "lossConcentration": {
+                "largestLossShare": 0.2786712445764745,
+                "top2LossShare": 0.5487088060898805,
+                "top5LossShare": 0.9518868880752979
+              },
+              "losses": 7,
+              "medianRoiPct": -1.7592854071459287,
+              "normalizedPnlSolAt1Sol": 0.5290889411105889,
+              "profitFactor": 1.5745788748125653,
+              "winRate": 0.46153846153846156,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.3236963865121315,
+                "top2WinnerShare": 0.46543148661604483,
+                "top5WinnerShare": 0.8841558908732889
+              },
+              "wins": 6,
+              "worstRoiPct": -25.660858791412085
+            },
+            "enrichment": 3.5625,
+            "positiveRate": 0.46153846153846156
+          }
+        },
+        "calibration": [
+          {
+            "N": 72,
+            "actualPositiveRate": 0.09722222222222222,
+            "bin": 1,
+            "highExclusive": 0.1,
+            "lowInclusive": 0.0,
+            "meanPrediction": 0.08464268811872759
+          },
+          {
+            "N": 154,
+            "actualPositiveRate": 0.12337662337662338,
+            "bin": 2,
+            "highExclusive": 0.2,
+            "lowInclusive": 0.1,
+            "meanPrediction": 0.12608048648728543
+          },
+          {
+            "N": 13,
+            "actualPositiveRate": 0.15384615384615385,
+            "bin": 3,
+            "highExclusive": 0.3,
+            "lowInclusive": 0.2,
+            "meanPrediction": 0.2516265812270067
+          },
+          {
+            "N": 8,
+            "actualPositiveRate": 0.5,
+            "bin": 4,
+            "highExclusive": 0.4,
+            "lowInclusive": 0.3,
+            "meanPrediction": 0.31391774433804304
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 5,
+            "highExclusive": 0.5,
+            "lowInclusive": 0.4,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 6,
+            "highExclusive": 0.6,
+            "lowInclusive": 0.5,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 7,
+            "highExclusive": 0.7,
+            "lowInclusive": 0.6,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 8,
+            "highExclusive": 0.8,
+            "lowInclusive": 0.7,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 9,
+            "highExclusive": 0.9,
+            "lowInclusive": 0.8,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 10,
+            "highExclusive": null,
+            "lowInclusive": 0.9,
+            "meanPrediction": null
+          }
+        ],
+        "expectedCalibrationError": 0.016526012047531628,
+        "positiveN": 32,
+        "prAuc": 0.25691791051532714,
+        "top10EconomicsAfterRemovingBestTwo": {
+          "N": 23,
+          "bestRoiPct": 32.97443325566744,
+          "expectancyPct": -1.877325018054167,
+          "lossConcentration": {
+            "largestLossShare": 0.15593987150443603,
+            "top2LossShare": 0.2969212701811676,
+            "top5LossShare": 0.6707762452436311
+          },
+          "losses": 14,
+          "medianRoiPct": -2.671109888901111,
+          "normalizedPnlSolAt1Sol": -0.4317847541524584,
+          "profitFactor": 0.7627763783647223,
+          "winRate": 0.391304347826087,
+          "winnerConcentration": {
+            "largestWinnerShare": 0.23750389296707392,
+            "top2WinnerShare": 0.3855217995078547,
+            "top5WinnerShare": 0.8228073391536667
+          },
+          "wins": 9,
+          "worstRoiPct": -28.383538964610352
+        }
+      },
+      "scoredTestN": 270,
+      "testBlock": 4,
+      "testN": 247,
+      "testOrdinalRange": [
+        4111,
+        5480
+      ],
+      "testPositiveN": 32,
+      "trainN": 565,
+      "trainOrdinalRange": [
+        1,
+        4110
+      ],
+      "trainPositiveN": 85
+    },
+    {
+      "crossingProgressionInteraction": {
+        "friedmanHApprox": 0.11472494521518686,
+        "left": "net_external_flow_sol",
+        "leftValues": [
+          1.8590357880000004,
+          2.13173728675,
+          2.7047056310000004,
+          3.63,
+          15.996761788
+        ],
+        "meanPredictionGrid": [
+          [
+            0.10335136097353016,
+            0.10335136097353016,
+            0.10047472653596469,
+            0.10047472653596469,
+            0.15814482461086793
+          ],
+          [
+            0.10283988712384583,
+            0.10283988712384583,
+            0.10283988712384583,
+            0.10420895137983376,
+            0.16576961489132785
+          ],
+          [
+            0.08951164689484435,
+            0.08951164689484435,
+            0.08951164689484435,
+            0.09072124355681511,
+            0.14561077190199473
+          ],
+          [
+            0.14326812956265272,
+            0.14326812956265272,
+            0.14326812956265272,
+            0.16301320028247168,
+            0.18791388151422192
+          ],
+          [
+            0.2512554104670995,
+            0.2512554104670995,
+            0.2512554104670995,
+            0.2810023799795191,
+            0.28415300649561676
+          ]
+        ],
+        "quantiles": [
+          0.1,
+          0.25,
+          0.5,
+          0.75,
+          0.9
+        ],
+        "right": "buy_size_progression_ratio",
+        "rightValues": [
+          0.663004190934712,
+          0.9090909090909092,
+          1.0,
+          1.5384615384615385,
+          5.388489423216301
+        ]
+      },
+      "partialDependence": {
+        "buy_size_progression_ratio": {
+          "featureValues": [
+            0.663004190934712,
+            0.9090909090909092,
+            1.0,
+            1.5384615384615385,
+            5.388489423216301
+          ],
+          "meanPredictions": [
+            0.11949473197835261,
+            0.11949473197835261,
+            0.11894246006894323,
+            0.1264207621382456,
+            0.1727862121675089
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        },
+        "last_buy_size_vs_prior_median": {
+          "featureValues": [
+            0.8057485029940121,
+            1.0,
+            1.0659932708333333,
+            2.502521005561275,
+            11.0099493781381
+          ],
+          "meanPredictions": [
+            0.12972616771017775,
+            0.12972616771017775,
+            0.1358830940531378,
+            0.1358830940531378,
+            0.1358830940531378
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        },
+        "net_external_flow_sol": {
+          "featureValues": [
+            1.8590357880000004,
+            2.13173728675,
+            2.7047056310000004,
+            3.63,
+            15.996761788
+          ],
+          "meanPredictions": [
+            0.10410304161838978,
+            0.10683670444294764,
+            0.0930725199048987,
+            0.16436993884141493,
+            0.28083490516702386
+          ],
+          "quantiles": [
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            0.9
+          ]
+        }
+      },
+      "primaryMetrics": {
+        "N": 334,
+        "allEconomics": {
+          "N": 334,
+          "bestRoiPct": 171.57165988340117,
+          "expectancyPct": -2.7573873410966487,
+          "lossConcentration": {
+            "largestLossShare": 0.03614728091457125,
+            "top2LossShare": 0.07206886532791891,
+            "top5LossShare": 0.159189789486774
+          },
+          "losses": 250,
+          "medianRoiPct": -2.671109888901111,
+          "normalizedPnlSolAt1Sol": -9.209673719262808,
+          "profitFactor": 0.5978579525890916,
+          "winRate": 0.25149700598802394,
+          "winnerConcentration": {
+            "largestWinnerShare": 0.1253091496370878,
+            "top2WinnerShare": 0.23725725762511546,
+            "top5WinnerShare": 0.3195872303371306
+          },
+          "wins": 84,
+          "worstRoiPct": -82.78285377146229
+        },
+        "auc": 0.6789383561643836,
+        "basePositiveRate": 0.12574850299401197,
+        "brierScore": 0.10542467966677042,
+        "buckets": {
+          "REMAINING_80": {
+            "N": 267,
+            "economics": {
+              "N": 267,
+              "bestRoiPct": 171.57165988340117,
+              "expectancyPct": -4.5099812290266605,
+              "lossConcentration": {
+                "largestLossShare": 0.043760564634460944,
+                "top2LossShare": 0.08724789692392453,
+                "top5LossShare": 0.1777680415597567
+              },
+              "losses": 221,
+              "medianRoiPct": -2.6996918030819694,
+              "normalizedPnlSolAt1Sol": -12.041649881501185,
+              "profitFactor": 0.36345586804759716,
+              "winRate": 0.17228464419475656,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.2495378282960277,
+                "top2WinnerShare": 0.328931988024968,
+                "top5WinnerShare": 0.4517035625601163
+              },
+              "wins": 46,
+              "worstRoiPct": -82.78285377146229
+            },
+            "enrichment": 0.5658997681469592,
+            "positiveRate": 0.07116104868913857
+          },
+          "TOP_10": {
+            "N": 34,
+            "economics": {
+              "N": 34,
+              "bestRoiPct": 153.2778952210478,
+              "expectancyPct": 6.130283138345088,
+              "lossConcentration": {
+                "largestLossShare": 0.2734673075089344,
+                "top2LossShare": 0.5053850105648482,
+                "top5LossShare": 0.7930756452104204
+              },
+              "losses": 16,
+              "medianRoiPct": 0.4024306756932431,
+              "normalizedPnlSolAt1Sol": 2.0842962670373297,
+              "profitFactor": 2.7937242188253157,
+              "winRate": 0.5294117647058824,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.47216328828732945,
+                "top2WinnerShare": 0.5443592417217074,
+                "top5WinnerShare": 0.746584483152469
+              },
+              "wins": 18,
+              "worstRoiPct": -31.776729232707673
+            },
+            "enrichment": 1.8711484593837535,
+            "positiveRate": 0.23529411764705882
+          },
+          "TOP_20": {
+            "N": 67,
+            "economics": {
+              "N": 67,
+              "bestRoiPct": 153.2778952210478,
+              "expectancyPct": 4.226830092893101,
+              "lossConcentration": {
+                "largestLossShare": 0.2062765534685473,
+                "top2LossShare": 0.3530307839710394,
+                "top5LossShare": 0.6298759999994117
+              },
+              "losses": 29,
+              "medianRoiPct": 0.8074343256567434,
+              "normalizedPnlSolAt1Sol": 2.831976162238378,
+              "profitFactor": 1.7107808789666785,
+              "winRate": 0.5671641791044776,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.22486987747713028,
+                "top2WinnerShare": 0.2681221014589339,
+                "top5WinnerShare": 0.3807696219524624
+              },
+              "wins": 38,
+              "worstRoiPct": -82.18711272887272
+            },
+            "enrichment": 2.7299218194740584,
+            "positiveRate": 0.34328358208955223
+          },
+          "TOP_5": {
+            "N": 17,
+            "economics": {
+              "N": 17,
+              "bestRoiPct": 153.2778952210478,
+              "expectancyPct": 9.965876047121883,
+              "lossConcentration": {
+                "largestLossShare": 0.6295040690007548,
+                "top2LossShare": 0.6824193495979999,
+                "top5LossShare": 0.8411651913897347
+              },
+              "losses": 10,
+              "medianRoiPct": -1.5989830101698983,
+              "normalizedPnlSolAt1Sol": 1.69419892801072,
+              "profitFactor": 4.356245732747457,
+              "winRate": 0.4117647058823529,
+              "winnerConcentration": {
+                "largestWinnerShare": 0.6970380825940204,
+                "top2WinnerShare": 0.8034224271926863,
+                "top5WinnerShare": 0.9756633229323113
+              },
+              "wins": 7,
+              "worstRoiPct": -31.776729232707673
+            },
+            "enrichment": 1.8711484593837535,
+            "positiveRate": 0.23529411764705882
+          }
+        },
+        "calibration": [
+          {
+            "N": 160,
+            "actualPositiveRate": 0.08125,
+            "bin": 1,
+            "highExclusive": 0.1,
+            "lowInclusive": 0.0,
+            "meanPrediction": 0.09325108511144486
+          },
+          {
+            "N": 147,
+            "actualPositiveRate": 0.17006802721088435,
+            "bin": 2,
+            "highExclusive": 0.2,
+            "lowInclusive": 0.1,
+            "meanPrediction": 0.1354906436932687
+          },
+          {
+            "N": 3,
+            "actualPositiveRate": 0,
+            "bin": 3,
+            "highExclusive": 0.3,
+            "lowInclusive": 0.2,
+            "meanPrediction": 0.23626871256792784
+          },
+          {
+            "N": 24,
+            "actualPositiveRate": 0.16666666666666666,
+            "bin": 4,
+            "highExclusive": 0.4,
+            "lowInclusive": 0.3,
+            "meanPrediction": 0.3036344582012375
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 5,
+            "highExclusive": 0.5,
+            "lowInclusive": 0.4,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 6,
+            "highExclusive": 0.6,
+            "lowInclusive": 0.5,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 7,
+            "highExclusive": 0.7,
+            "lowInclusive": 0.6,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 8,
+            "highExclusive": 0.8,
+            "lowInclusive": 0.7,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 9,
+            "highExclusive": 0.9,
+            "lowInclusive": 0.8,
+            "meanPrediction": null
+          },
+          {
+            "N": 0,
+            "actualPositiveRate": null,
+            "bin": 10,
+            "highExclusive": null,
+            "lowInclusive": 0.9,
+            "meanPrediction": null
+          }
+        ],
+        "expectedCalibrationError": 0.032931383621120254,
+        "positiveN": 42,
+        "prAuc": 0.2907363306643401,
+        "top10EconomicsAfterRemovingBestTwo": {
+          "N": 32,
+          "bestRoiPct": 23.39379846201538,
+          "expectancyPct": 0.9910884828651715,
+          "lossConcentration": {
+            "largestLossShare": 0.2734673075089344,
+            "top2LossShare": 0.5053850105648482,
+            "top5LossShare": 0.7930756452104204
+          },
+          "losses": 16,
+          "medianRoiPct": -0.009456905430945683,
+          "normalizedPnlSolAt1Sol": 0.3171483145168549,
+          "profitFactor": 1.2729346214859973,
+          "winRate": 0.5,
+          "winnerConcentration": {
+            "largestWinnerShare": 0.15815789160205473,
+            "top2WinnerShare": 0.30170406407618094,
+            "top5WinnerShare": 0.7000096189936102
+          },
+          "wins": 16,
+          "worstRoiPct": -31.776729232707673
+        }
+      },
+      "scoredTestN": 353,
+      "testBlock": 5,
+      "testN": 334,
+      "testOrdinalRange": [
+        5481,
+        6848
+      ],
+      "testPositiveN": 42,
+      "trainN": 812,
+      "trainOrdinalRange": [
+        1,
+        5480
+      ],
+      "trainPositiveN": 117
+    }
+  ],
+  "freezeGate": {
+    "checks": {
+      "chronologicalStability": false,
+      "coherentPartialDependence": true,
+      "nonDivergentAuc": true,
+      "nonDivergentTop10Enrichment": false,
+      "pairedBootstrapAucDelta": false,
+      "pooledForwardAuc": false,
+      "top10Enrichment": false,
+      "top10NotBestTwoDriven": false
+    },
+    "coherence": {
+      "buy_size_progression_ratio": true,
+      "net_external_flow_sol": true
+    },
+    "criteria": {
+      "nonDivergentAucGte": 0.58,
+      "nonDivergentTop10EnrichmentGte": 1.5,
+      "pairedBootstrapAucDelta95CiLowerGt": 0.0,
+      "pooledForwardAucGte": 0.684,
+      "requiredPartialDependenceDirections": {
+        "buy_size_progression_ratio": "HIGHER_PROBABILITY_AT_P90_THAN_P10",
+        "net_external_flow_sol": "HIGHER_PROBABILITY_AT_P90_THAN_P10"
+      },
+      "stableBlockAucGt": 0.55,
+      "stableBlockTop10EnrichmentGt": 1.25,
+      "stableEvaluationBlocksRequired": 3,
+      "top10EnrichmentGte": 2.0,
+      "top10PfAfterRemovingBestTwoGt": 1.0
+    },
+    "stableEvaluationBlocks": 2
+  },
+  "generatedAtUtc": "2026-09-07T23:29:19.862661+00:00",
+  "inputAnalysisRowsSha256": "331a5239bb2ae595976b5ba92b080ce2f92452ca1bbe20a099ff9f9006c7dba7",
+  "integrity": {
+    "duplicateOofMints": 0,
+    "featureCombinationsTested": 1,
+    "futureFoldTrainingViolations": 0,
+    "holdoutRowsInspected": 0,
+    "modelFamiliesTested": 1,
+    "shadowOrLiveChanges": 0,
+    "submissions": 0,
+    "thresholdsSearched": 0,
+    "validationRowsInspected": 0
+  },
+  "model": {
+    "artifact": null,
+    "class": "HistGradientBoostingClassifier",
+    "configuration": {
+      "early_stopping": false,
+      "l2_regularization": 10.0,
+      "learning_rate": 0.05,
+      "loss": "log_loss",
+      "max_bins": 64,
+      "max_depth": 2,
+      "max_iter": 40,
+      "max_leaf_nodes": 4,
+      "min_samples_leaf": 40,
+      "random_state": 20260907
+    },
+    "libraryVersion": "1.7.2"
+  },
+  "parentHeader": {
+    "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+    "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+    "rowCount": 3389,
+    "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_ANALYSIS_ROWS"
+  },
+  "population": {
+    "anchorRows": 1209,
+    "block1EvaluationN": 0,
+    "forwardEvaluationN": 994,
+    "primaryLabelN": 1146,
+    "uniqueMints": 1209
+  },
+  "schema": "CONSTRAINED_CAUSAL_RANKER_V1_REPORT",
+  "scriptSha256": "655ef6ea95c5fa4326b9b9cecdf1a0853cc5564e54a76e81ac2ecfc8bf96e3b2",
+  "verdict": "MULTIVARIATE_SIGNAL_NOT_USEFUL"
+}

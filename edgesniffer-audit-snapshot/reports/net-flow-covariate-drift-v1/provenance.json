@@ -1,0 +1,14 @@
+{
+  "contractSha256": "840b5c9cd5ae5fe69eb4acc94de551b4b08555c3509a83da488d609ce1348a6f",
+  "outcomeBlind": true,
+  "outcomeFieldsAccessed": 0,
+  "reportSha256": "541b84eda289b25b085f50df5800a3fc4d65b5d119d6bec0c7f821104bf39310",
+  "schema": "NET_FLOW_COVARIATE_DRIFT_V1_PROVENANCE",
+  "scriptSha256": "69b480ea7c86da05f145e8e476c7e30b0607ee286bff45bbddb5b0fae32683d0",
+  "sourceHashes": {
+    "discoveryFeatureParent": "331a5239bb2ae595976b5ba92b080ce2f92452ca1bbe20a099ff9f9006c7dba7",
+    "discoveryPrefix": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+    "unseenFeatureParent": "7aff7d71c6c6efe7887b979c6c6523363832ad7d509734c0459eade1eda0a19d",
+    "unseenPrefix": "d353e345a7156d2e1cd92e538e704e4846ab39041b88e7cac6bef0f1065b07fa"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "boundaryOrdinal": 3920,
+  "holdoutRowsInspected": 0,
+  "indexPrefixSha256": "2a45d4271c9b4ed29de3312b34e2965d6e01b3204436edcae487b9ea86f0bed8",
+  "reportSha256": "f1551b8eefaa8fae8db6022570cb546e4f1bae61acc7006785711c9c7eadf1f8",
+  "schema": "TWO_CQ_ALPHA_DECOMPOSITION_V1_PROVENANCE",
+  "scriptSha256": "5df844e0282c7477ba55c3bdf073123b721d70b72bdb3d5791cbbe795f307198",
+  "validationRowsInspected": 0
+}

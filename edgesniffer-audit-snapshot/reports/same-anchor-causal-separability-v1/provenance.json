@@ -1,0 +1,303 @@
+{
+  "analysisRowsSha256": "331a5239bb2ae595976b5ba92b080ce2f92452ca1bbe20a099ff9f9006c7dba7",
+  "anchorReportSha256": "c963b69d35b409347afbeabc6b537b60b3a1f63216cdb285420efb7ae89508bf",
+  "boundaryOrdinal": 6848,
+  "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+  "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+  "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+  "holdoutRowsInspected": 0,
+  "partitions": [
+    {
+      "anchorPartitionSha256": "0b1af230d58fbc949c169e618a4e836841b12083ab7344751675ace572d99a5e",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 3636,
+        "missingRawArrival": 580
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/06/05",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-06-05.jsonl.gz",
+      "reused": false,
+      "rowCount": 22,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "38395452188825393b2565b5a30f1099eaa43fc2816f3dab1686d616d000292f",
+      "sourceReconciliationManifestSha256": "b4cfa1d76153c5d9cf690ccce12497a905d4f806f83f12e0c4dc4e6d2a89ee97"
+    },
+    {
+      "anchorPartitionSha256": "a52a928c2c966d8494f608602ef0bd001ed0fed104d08b8c0a90fc3cf699c863",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 53547,
+        "missingRawArrival": 27248
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/06/14",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-06-14.jsonl.gz",
+      "reused": false,
+      "rowCount": 192,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "d43e08ccae814f8cb2a4ab0c3618593b3903ecadc14dc37fe0e94d43b7970e62",
+      "sourceReconciliationManifestSha256": "e27f2efbca5b2b87a45a531d2cab843460a0d37878867dd81ee4d39ce534cdb0"
+    },
+    {
+      "anchorPartitionSha256": "cd8891140ed3cb79fe21a29078071adb041103a55aff07c861b989090a24506c",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 48707,
+        "missingRawArrival": 13505
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/06/17",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-06-17.jsonl.gz",
+      "reused": false,
+      "rowCount": 184,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "4ee642a1b9c8cd5e1215d07ca0cec5fe092390958935872df7e0a319410e5023",
+      "sourceReconciliationManifestSha256": "94826a952cd7e9969f6012e1beae8361f242c6c42e1b11bbe803580ae81d50a9"
+    },
+    {
+      "anchorPartitionSha256": "9a19f7a6f55c983b30da5b55a221a8f21659dfaacf55d00dc223a6cc0f415b32",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 49189,
+        "missingRawArrival": 19673
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/06/19",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-06-19.jsonl.gz",
+      "reused": false,
+      "rowCount": 241,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "fb9c0014bbc9ecf371a1f92fa967439e99d4be58b8d26843b64a3e095356ea2b",
+      "sourceReconciliationManifestSha256": "a4bc3bd35215f6902455f0438f777c06626b71a1899827fe3fa29b99f8d96793"
+    },
+    {
+      "anchorPartitionSha256": "3fe79927e755337f27e9d39143f60c14d272b26a728c7fb3d80e1ed07ad93641",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 27095,
+        "missingRawArrival": 4266
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/06/20",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-06-20.jsonl.gz",
+      "reused": false,
+      "rowCount": 130,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "54ecacf65766ca587d6c2822502649bc22ef9adaf36c1a3aa972ded7c4fd0488",
+      "sourceReconciliationManifestSha256": "27ce8d94ddeb132905fdd64c3043eb3fa54d8d248c1a9e7fdfa182d09eb79e71"
+    },
+    {
+      "anchorPartitionSha256": "69ccea0999c050f84abc49de91c912292d549f57e3bccd06eae30318c2be6513",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 42556,
+        "missingRawArrival": 16223
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/06/21",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-06-21.jsonl.gz",
+      "reused": false,
+      "rowCount": 234,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "81d88fe14200fc1e7123324d88aaa03a79a5133340bb6c92d11fd45d5d89e1c6",
+      "sourceReconciliationManifestSha256": "b5ab95132da8e984bb4feecd08ffce0c928c9f20676210e3b42c80ca9cdd25c5"
+    },
+    {
+      "anchorPartitionSha256": "88b638d019f07660b87eedb93e1a6be1cf0c2e0cfee70d7e042495f53a63b12a",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 40120,
+        "missingRawArrival": 19277
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/06/22",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-06-22.jsonl.gz",
+      "reused": false,
+      "rowCount": 230,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "ca930ebbf2919b28835b56ffb7cafafbc0826e931b5f02c87f4a54f0be45d897",
+      "sourceReconciliationManifestSha256": "e6105c20aa0a3684d0c8262ee2af69cfc4a8be6f8c98f2708f6cc564976edcfe"
+    },
+    {
+      "anchorPartitionSha256": "454e551a61ce4af6561c6f551d1de2cd6cc8b5bac9cbde3a54af718bfb442933",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 28729,
+        "missingRawArrival": 13998
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/06/23",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-06-23.jsonl.gz",
+      "reused": false,
+      "rowCount": 139,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "a6e68fe917eed692a6e0e35c8831b9b01cd72fcb5123f10102b3801c85b57f8b",
+      "sourceReconciliationManifestSha256": "604ac6e42cc3c5bc2b4265071753aa52a2399fae67f9b5c024c057b985ebdd83"
+    },
+    {
+      "anchorPartitionSha256": "69bdfc36c3ec638ad7b5d18808e5efbbe2abfc6d01c12a213d646a8da25531fd",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 46820,
+        "missingRawArrival": 13664
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/07/00",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-07-00.jsonl.gz",
+      "reused": false,
+      "rowCount": 189,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "9140b29f89e0450da435373e39218b327f6f1105430b656393f0cfc2e50e9437",
+      "sourceReconciliationManifestSha256": "11d56e58347bbfe2579ae99393455569cc7f068fc778ab0e066e62c32f3e52c3"
+    },
+    {
+      "anchorPartitionSha256": "6557f452ac79e18c38a49c5b351fe66e0a59ce9bc61284ca0e5b44f83d704015",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 24739,
+        "missingRawArrival": 9532
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/07/02",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-07-02.jsonl.gz",
+      "reused": false,
+      "rowCount": 150,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "cc6e7f66bddbc79d2b150cbf769125eecd469c5c39b3353560f7dbcd2260ad96",
+      "sourceReconciliationManifestSha256": "bcc3c08345ca4e85954133431ce765d9b0e5cac44b1201526304b9edc945be34"
+    },
+    {
+      "anchorPartitionSha256": "db684e05a4467313f7709707f019c09b6359cadc71f1328f3b71bcbe0f4a040e",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 28720,
+        "missingRawArrival": 9319
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/07/04",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-07-04.jsonl.gz",
+      "reused": false,
+      "rowCount": 134,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "cb7312a9dce5aff2ae12d3220eee899349ff260d4576e6e2dde3443929ae6730",
+      "sourceReconciliationManifestSha256": "735fd98b0aac732038010464a8ab75c79964cb3b4bdc8e1f2971993b2b140930"
+    },
+    {
+      "anchorPartitionSha256": "3fac6961ab4f7fe4ce82c7b5472f7b1e6a42922dcc3ba7a9f0baec90838474d4",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 32547,
+        "missingRawArrival": 12356
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/07/05",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-07-05.jsonl.gz",
+      "reused": false,
+      "rowCount": 260,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "fe6fa589f85292cdd0ce7f9c93d2e89135a6c3a570c50c10e6ce4bfccc32dcbc",
+      "sourceReconciliationManifestSha256": "aec216958d4f7759b840f3ea96fb0a7ab73fa9ca3c943c3c4eaef3da96ac4fd5"
+    },
+    {
+      "anchorPartitionSha256": "854ac14d44df0fdfd132be6a5e6d476d98fc9a0af1788e571e4e84a007f435b7",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 42320,
+        "missingRawArrival": 11206
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/07/06",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-07-06.jsonl.gz",
+      "reused": false,
+      "rowCount": 149,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "7fa98b16ea7273a6e8ffbfb1bd8313e9fa879abe58b7e50b493fa097bd7e9ab3",
+      "sourceReconciliationManifestSha256": "bb1496919101a177c381ddd82f0c6457906b997c186eee742d3e87ae38382c32"
+    },
+    {
+      "anchorPartitionSha256": "30f32dfad57ef041b4f687d743c6d86e84c1091a3bd6616a18ae0e6239005157",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 46175,
+        "missingRawArrival": 16243
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/07/07",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-07-07.jsonl.gz",
+      "reused": false,
+      "rowCount": 176,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "f70907e619a4a0716f9830cad059088c25c62c83a7c969512a2bf6270dc97006",
+      "sourceReconciliationManifestSha256": "4a1c1547cd0edbffaa8959d87b5e3c9f46a6c083a57bb4e3625e12841a0b325f"
+    },
+    {
+      "anchorPartitionSha256": "b7cb78ef0ed7312488c1c38fa28037634600087194b4f14f3a448fc7ff272bac",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 38578,
+        "missingRawArrival": 15395
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/07/08",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-07-08.jsonl.gz",
+      "reused": false,
+      "rowCount": 230,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "9fe4aeb5315a8cfbd4751ae5253b5abe5291ac123bcd3f786d977bb35f946035",
+      "sourceReconciliationManifestSha256": "3a7b6d26cdf2a0f6dc1dfffb32c0ec7c823e67bf1ef433b597900d7acb74ffbb"
+    },
+    {
+      "anchorPartitionSha256": "e191cc273a6d3b487257e286fd361bb65033ca0d946edbe72fef83ed82f9e5d5",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 32579,
+        "missingRawArrival": 19852
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/07/09",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-07-09.jsonl.gz",
+      "reused": false,
+      "rowCount": 229,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "341c1d55c009f02db1b70a679ba5eef9171faa74b2729d128c2bfcfec9d87b0e",
+      "sourceReconciliationManifestSha256": "5d14c45c05057a4eff445ad70abbc89ae0060c7a8e1b7f3ede99d861c9fba2dd"
+    },
+    {
+      "anchorPartitionSha256": "4ee96accd857ba79bc70ebc51119b8069240a7cad25d2e03b3555b666c4abfb3",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 34441,
+        "missingRawArrival": 22047
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/07/10",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-07-10.jsonl.gz",
+      "reused": false,
+      "rowCount": 250,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "587d31a8fa612cf2feeebbbfd1c65dde2db42e5fd148d17e5685754efef81ba8",
+      "sourceReconciliationManifestSha256": "e55e2e98bf56d1b4e69527344e6352ee0c0a2b08d8b9ea3d695e7f709d10faec"
+    },
+    {
+      "anchorPartitionSha256": "6fc101d802dff619c5c0044f531edc2d81e2f1cc9271df2c31e0d9935f9ad6fd",
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 39209,
+        "missingRawArrival": 22505
+      },
+      "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+      "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+      "partitionKey": "2026/09/07/11",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/same-anchor-causal-separability/SAME_ANCHOR_CAUSAL_SEPARABILITY_V1/partitions/2026-09-07-11.jsonl.gz",
+      "reused": false,
+      "rowCount": 250,
+      "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_PARTITION",
+      "sha256": "9961e21cb98d6303a0380310552311544b1877504fc3cbcc8dd9eb8aa85fb35b",
+      "sourceReconciliationManifestSha256": "b7da7625ac76440bcabc9006e7cf101325719fe1c004839b6a52d4205119948a"
+    }
+  ],
+  "reportSha256": "4fc9fa06e8308a054298340f925c280f609ccf69d7eec2e7567421707eeaabe0",
+  "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_RUN_IDENTITY",
+  "scriptSha256": "1e56012a7dea5f380fb276885ebaae8de959be0b9bb4d0c59a68c3d2c12c9bb4",
+  "validationRowsInspected": 0
+}

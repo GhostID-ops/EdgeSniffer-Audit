@@ -1,0 +1,418 @@
+{
+  "convictionAssessment": {
+    "adjacentAccuracyPct": 85.71428571428571,
+    "confusionActualRowsPredictedColumns": [
+      [
+        4,
+        14,
+        1,
+        0,
+        0
+      ],
+      [
+        6,
+        21,
+        3,
+        0,
+        0
+      ],
+      [
+        5,
+        14,
+        22,
+        0,
+        0
+      ],
+      [
+        2,
+        4,
+        6,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        1,
+        0,
+        0
+      ]
+    ],
+    "exactAccuracyPct": 44.76190476190476,
+    "frozenTrainTopFeatureTrendsValidation": [
+      {
+        "feature": "creator_participated",
+        "spearmanWithSizeTierValidation": -0.220707977866019
+      },
+      {
+        "feature": "total_external_sell_sol",
+        "spearmanWithSizeTierValidation": 0.36505758739633837
+      },
+      {
+        "feature": "unique_sellers_total",
+        "spearmanWithSizeTierValidation": 0.3678190752638798
+      },
+      {
+        "feature": "gross_sell_sol_5000ms",
+        "spearmanWithSizeTierValidation": 0.33126530554158234
+      },
+      {
+        "feature": "log_age_ms",
+        "spearmanWithSizeTierValidation": 0.3460590984006888
+      },
+      {
+        "feature": "unique_buyers_total",
+        "spearmanWithSizeTierValidation": 0.22891939230751143
+      },
+      {
+        "feature": "log_event_index",
+        "spearmanWithSizeTierValidation": 0.2361812070533838
+      },
+      {
+        "feature": "gross_sell_sol_2000ms",
+        "spearmanWithSizeTierValidation": 0.27608961618971123
+      },
+      {
+        "feature": "creator_buy_sol_5000ms",
+        "spearmanWithSizeTierValidation": -0.3148447418135557
+      },
+      {
+        "feature": "total_external_buy_sol",
+        "spearmanWithSizeTierValidation": 0.22836535052585152
+      },
+      {
+        "feature": "total_external_net_sol",
+        "spearmanWithSizeTierValidation": 0.19780829418577853
+      },
+      {
+        "feature": "unique_sellers_1000ms",
+        "spearmanWithSizeTierValidation": 0.2616237142306571
+      }
+    ],
+    "majorityBaselineAccuracyPct": 28.571428571428573,
+    "majorityBaselineAdjacentAccuracyPct": 85.71428571428571,
+    "majorityBaselineMeanAbsoluteTierError": 0.8857142857142857,
+    "majorityBaselineTier": 1,
+    "meanAbsoluteTierError": 0.7333333333333333,
+    "spearmanExpectedTier": 0.4109979076229586,
+    "strongerStateFeatureTrendsTrain": [
+      {
+        "feature": "creator_participated",
+        "spearmanWithSizeTierTrain": -0.4243621649333384
+      },
+      {
+        "feature": "total_external_sell_sol",
+        "spearmanWithSizeTierTrain": 0.4097050507643288
+      },
+      {
+        "feature": "unique_sellers_total",
+        "spearmanWithSizeTierTrain": 0.4092115161896469
+      },
+      {
+        "feature": "gross_sell_sol_5000ms",
+        "spearmanWithSizeTierTrain": 0.3617801014098951
+      },
+      {
+        "feature": "log_age_ms",
+        "spearmanWithSizeTierTrain": 0.35271257366336567
+      },
+      {
+        "feature": "unique_buyers_total",
+        "spearmanWithSizeTierTrain": 0.3141549951738478
+      },
+      {
+        "feature": "log_event_index",
+        "spearmanWithSizeTierTrain": 0.3136704809759636
+      },
+      {
+        "feature": "gross_sell_sol_2000ms",
+        "spearmanWithSizeTierTrain": 0.3034224649210037
+      },
+      {
+        "feature": "creator_buy_sol_5000ms",
+        "spearmanWithSizeTierTrain": -0.2973607272076565
+      },
+      {
+        "feature": "total_external_buy_sol",
+        "spearmanWithSizeTierTrain": 0.28595535449676285
+      },
+      {
+        "feature": "total_external_net_sol",
+        "spearmanWithSizeTierTrain": 0.24818948932607904
+      },
+      {
+        "feature": "unique_sellers_1000ms",
+        "spearmanWithSizeTierTrain": 0.24542602997793966
+      }
+    ],
+    "tierBoundariesSol": [
+      1.4907741468071136,
+      2.3847213307824298,
+      3.8559888232072037,
+      5.558985446102086
+    ],
+    "trainingTierCounts": {
+      "0": 49,
+      "1": 92,
+      "2": 81,
+      "3": 14,
+      "4": 9
+    },
+    "validationN": 105,
+    "validationTierCounts": {
+      "0": 19,
+      "1": 30,
+      "2": 41,
+      "3": 12,
+      "4": 3
+    }
+  },
+  "crossSectionalAssessment": {
+    "ACTIVE_1000MS": {
+      "assessmentN": 45,
+      "meanChoiceSetN": 5.8563829787234045,
+      "missingChosen": 17,
+      "models": {
+        "FULL_CAUSAL": {
+          "chanceTop1Pct": 24.47797881131214,
+          "mrr": 1.0,
+          "n": 45,
+          "rocAuc": 0.9948294829482949,
+          "top1Pct": 100.0,
+          "top3Pct": 100.0
+        },
+        "LIFECYCLE": {
+          "chanceTop1Pct": 24.47797881131214,
+          "mrr": 0.9081481481481481,
+          "n": 45,
+          "rocAuc": 0.9309130913091309,
+          "top1Pct": 86.66666666666667,
+          "top3Pct": 93.33333333333333
+        },
+        "LIFECYCLE_FLOW": {
+          "chanceTop1Pct": 24.47797881131214,
+          "mrr": 0.9296296296296297,
+          "n": 45,
+          "rocAuc": 0.9721672167216722,
+          "top1Pct": 86.66666666666667,
+          "top3Pct": 100.0
+        }
+      },
+      "trainN": 143
+    },
+    "ACTIVE_250MS": {
+      "assessmentN": 37,
+      "meanChoiceSetN": 3.625,
+      "missingChosen": 17,
+      "models": {
+        "FULL_CAUSAL": {
+          "chanceTop1Pct": 34.35328185328185,
+          "mrr": 1.0,
+          "n": 37,
+          "rocAuc": 0.9916618746405981,
+          "top1Pct": 100.0,
+          "top3Pct": 100.0
+        },
+        "LIFECYCLE": {
+          "chanceTop1Pct": 34.35328185328185,
+          "mrr": 0.9121621621621622,
+          "n": 37,
+          "rocAuc": 0.918918918918919,
+          "top1Pct": 86.48648648648648,
+          "top3Pct": 97.29729729729729
+        },
+        "LIFECYCLE_FLOW": {
+          "chanceTop1Pct": 34.35328185328185,
+          "mrr": 0.954954954954955,
+          "n": 37,
+          "rocAuc": 0.9470960322024152,
+          "top1Pct": 91.89189189189189,
+          "top3Pct": 100.0
+        }
+      },
+      "trainN": 115
+    },
+    "ACTIVE_5000MS": {
+      "assessmentN": 46,
+      "meanChoiceSetN": 9.329896907216495,
+      "missingChosen": 16,
+      "models": {
+        "FULL_CAUSAL": {
+          "chanceTop1Pct": 14.999616928964754,
+          "mrr": 1.0,
+          "n": 46,
+          "rocAuc": 0.9951621010304097,
+          "top1Pct": 100.0,
+          "top3Pct": 100.0
+        },
+        "LIFECYCLE": {
+          "chanceTop1Pct": 14.999616928964754,
+          "mrr": 0.9047101449275362,
+          "n": 46,
+          "rocAuc": 0.9481025383262126,
+          "top1Pct": 84.78260869565217,
+          "top3Pct": 95.65217391304348
+        },
+        "LIFECYCLE_FLOW": {
+          "chanceTop1Pct": 14.999616928964754,
+          "mrr": 0.9293478260869565,
+          "n": 46,
+          "rocAuc": 0.9808368936918824,
+          "top1Pct": 86.95652173913044,
+          "top3Pct": 97.82608695652173
+        }
+      },
+      "trainN": 148
+    },
+    "LAUNCHED_120S": {
+      "assessmentN": 55,
+      "meanChoiceSetN": 23.075829383886255,
+      "missingChosen": 136,
+      "models": {
+        "FULL_CAUSAL": {
+          "chanceTop1Pct": 7.969878973578766,
+          "mrr": 0.9196969696969698,
+          "n": 55,
+          "rocAuc": 0.9817613636363637,
+          "top1Pct": 85.45454545454545,
+          "top3Pct": 98.18181818181819
+        },
+        "LIFECYCLE": {
+          "chanceTop1Pct": 7.969878973578766,
+          "mrr": 0.8935198135198135,
+          "n": 55,
+          "rocAuc": 0.9612878787878788,
+          "top1Pct": 83.63636363636364,
+          "top3Pct": 94.54545454545455
+        },
+        "LIFECYCLE_FLOW": {
+          "chanceTop1Pct": 7.969878973578766,
+          "mrr": 0.9042424242424243,
+          "n": 55,
+          "rocAuc": 0.9776704545454545,
+          "top1Pct": 83.63636363636364,
+          "top3Pct": 96.36363636363636
+        }
+      },
+      "trainN": 156
+    }
+  },
+  "deferredActions": [
+    "ADD_WHILE_EXPOSED",
+    "PARTIAL_EXIT",
+    "FINAL_FLATTEN"
+  ],
+  "developmentN": 350,
+  "entryTimingAssessment": {
+    "FULL_CAUSAL": {
+      "chanceTop1Pct": 19.615714706781503,
+      "mrr": 0.7123077989907766,
+      "n": 76,
+      "rocAuc": 0.7039396526891898,
+      "top1Pct": 68.42105263157895,
+      "top3Pct": 69.73684210526316
+    },
+    "LIFECYCLE": {
+      "chanceTop1Pct": 19.615714706781503,
+      "mrr": 0.6761332113111065,
+      "n": 76,
+      "rocAuc": 0.1683701288012839,
+      "top1Pct": 56.578947368421055,
+      "top3Pct": 76.3157894736842
+    },
+    "LIFECYCLE_FLOW": {
+      "chanceTop1Pct": 19.615714706781503,
+      "mrr": 0.6849749976196278,
+      "n": 76,
+      "rocAuc": 0.6297657503806428,
+      "top1Pct": 65.78947368421052,
+      "top3Pct": 67.10526315789474
+    }
+  },
+  "evidence": {
+    "canonicalPumpSignatures": 1412610,
+    "decodeFailures": 24722,
+    "decodedTradeEvents": 253525,
+    "evidencePaths": 20,
+    "finalizedSuccessfulPumpTransactions": 1412610,
+    "mintsWithCanonicalRealtimeCreate": 6231,
+    "mintsWithEvents": 5135,
+    "tradeEventsWithoutAllenHarkArrival": 0,
+    "windowRelevantSignatures": 275296
+  },
+  "generatedAtUtc": "2026-09-11T01:50:55.109223+00:00",
+  "globalReconciliationExceptions": {
+    "2026/09/10/04": {
+      "decodeFailures": 35,
+      "missingCanonicalOrdering": 37,
+      "missingFinality": 35,
+      "missingRawTx": 35,
+      "scope": "all captured Solana transactions; Pump-only denominator scanned separately"
+    },
+    "2026/09/10/09": {
+      "decodeFailures": 1,
+      "missingCanonicalOrdering": 1,
+      "missingFinality": 1,
+      "missingRawTx": 1,
+      "scope": "all captured Solana transactions; Pump-only denominator scanned separately"
+    },
+    "2026/09/10/12": {
+      "decodeFailures": 24,
+      "missingCanonicalOrdering": 24,
+      "missingFinality": 24,
+      "missingRawTx": 24,
+      "scope": "all captured Solana transactions; Pump-only denominator scanned separately"
+    },
+    "2026/09/10/14": {
+      "decodeFailures": 49,
+      "missingCanonicalOrdering": 49,
+      "missingFinality": 49,
+      "missingRawTx": 49,
+      "scope": "all captured Solana transactions; Pump-only denominator scanned separately"
+    },
+    "2026/09/10/15": {
+      "decodeFailures": 13,
+      "missingCanonicalOrdering": 13,
+      "missingFinality": 13,
+      "missingRawTx": 13,
+      "scope": "all captured Solana transactions; Pump-only denominator scanned separately"
+    }
+  },
+  "integrity": {
+    "compactArrivalFilter": "/root/bot/EdgeSniffer/scripts/compact-arrival-filter-v1",
+    "compactArrivalFilterSha256": "1f9f115bffed6a1021cbd0cdffe42be5c1f954ce7e72333321ac43b8a917040c",
+    "correctedFromSupersededTape": "/mnt/HC_Volume_106775198/edgesniffer-research/2cq-decision-system-decomposition-v1-superseded-receipt-clock-leak",
+    "crossSectionalReportSha256": "cbe3af836aeb55b3845766d24936ab469dd2b86679f1c83e5a1c653e4e84ab8d",
+    "developmentReportSha256": "a6cf89a628e7435d01f00c1d39a5e91fc81d6a9944bff13ef4933174af9a7886",
+    "developmentSha256": "b3a843cb545eccb3303148f37eb8037fb8c0f618b5c6fa97916130e2813e0155",
+    "outcomesRead": 0,
+    "strictlyPreTeacherBoundary": true,
+    "submissions": 0,
+    "teacherEntryIncludedInFeatures": false,
+    "temporalControlsUsePostEventState": true,
+    "validationPathAccepted": false,
+    "validationRowsRead": 0
+  },
+  "population": {
+    "acquisitionClasses": {
+      "FLAT_TO_REENTRY": 17,
+      "NEW_FROM_FLAT": 333
+    },
+    "convictionCrossBoundaryRepeatEpisodesDropped": 0,
+    "crossBoundaryRepeatEpisodesDropped": 0,
+    "developmentN": 350,
+    "internalConvictionAssessmentN": 105,
+    "internalConvictionTrainN": 245,
+    "internalTimingAssessmentN": 76,
+    "internalTimingTrainN": 177,
+    "routes": {
+      "PUMP_BONDING_CURVE": 208,
+      "PUMP_CPI": 142
+    },
+    "sameMintTemporalControls": 22980,
+    "timingIdentifiableN": 253,
+    "uniqueMints": 334
+  },
+  "schema": "2CQ_DECISION_SYSTEM_DECOMPOSITION_V1_FINAL",
+  "verdict": "2CQ_DECISION_SYSTEM_DECOMPOSITION_V1_DEVELOPMENT_COMPLETE"
+}

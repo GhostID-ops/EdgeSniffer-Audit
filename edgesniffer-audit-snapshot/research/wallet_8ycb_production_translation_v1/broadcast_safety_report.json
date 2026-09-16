@@ -1,0 +1,35 @@
+{
+  "schema": "8ycb-production-translation-broadcast-safety-v1",
+  "status": "PASS",
+  "binary_sha256": "cb83b401a016ed8c43a53b4f9340310039d15228fea9e080753dc5da5fa4af3d",
+  "source_sha256": "c42224b4b2981211d0dcde68e120803ce8543f9c828bde61be06f0838ca35e59",
+  "reachable_symbol_scan": {
+    "patterns": [
+      "broadcast_signed_tx",
+      "race_broadcast",
+      "send_candidate",
+      "execute_pumpfun_buy_command",
+      "execute_pumpfun_sell_command"
+    ],
+    "matches": 0
+  },
+  "binary_string_scan": {
+    "patterns": ["sendTransaction", "sendBundle", "Jito endpoint", "executePumpfunBuy", "executePumpfunSell"],
+    "matches": 0
+  },
+  "request_commands_exposed": ["build8ycbProductionNoSubmit"],
+  "signer": "ephemeral unfunded process keypair",
+  "jito_tip_lamports": 0,
+  "helius_tip_lamports": 0,
+  "jito_transaction_urls": [],
+  "jito_bundle_urls": [],
+  "sender_endpoint_url": "",
+  "rpc_fallback_url": "",
+  "submission_booleans": false,
+  "runtime_network_observed": "HTTPS getLatestBlockhash only",
+  "rust_tests": {"passed": 83, "failed": 0},
+  "fixture_signed_transactions": 960,
+  "fixture_submitted_transactions": 0,
+  "prospective_submitted_transactions": 0,
+  "live_tested": false
+}

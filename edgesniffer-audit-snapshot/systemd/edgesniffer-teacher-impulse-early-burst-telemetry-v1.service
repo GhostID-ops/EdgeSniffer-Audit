@@ -1,0 +1,17 @@
+[Unit]
+Description=EdgeSniffer teacher impulse early burst telemetry v1 analytics-only
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/FinalBot-cya
+Environment=PYTHONUNBUFFERED=1
+ExecStartPre=/usr/bin/mkdir -p /var/lib/edgesniffer-teacher-impulse-parity-v1/research
+ExecStart=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseEarlyBurstTelemetryV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/research/early-burst-telemetry-v1.jsonl --poll-ms 25 --start-at-end
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

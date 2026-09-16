@@ -1,0 +1,22 @@
+{
+  "schema": "8ycb-production-translation-cost-model-v1",
+  "frozen_research_economics_changed": false,
+  "position_size_lamports": 100000000,
+  "pump_fee_bps_each_side": 125,
+  "pump_fee_handling": "included in frozen curve replay",
+  "buy_compute_unit_limit": 250000,
+  "sell_compute_unit_limit": 200000,
+  "priority_fee_micro_lamports_per_cu": 18000000,
+  "buy_priority_fee_configured_estimate_lamports": 4500000,
+  "sell_priority_fee_configured_estimate_lamports": 3600000,
+  "base_fee_lamports_each_transaction": 5000,
+  "successful_round_trip_non_pump_fee_configured_estimate_lamports": 8110000,
+  "jito_tip_lamports_each_transaction": 0,
+  "helius_tip_lamports_each_transaction": 0,
+  "account_creation_lamports": 2039280,
+  "account_creation_treatment": "frozen model treats as recoverable; live wallet capital remains locked until the empty account is actually closed and rent is reclaimed",
+  "failed_transaction_cost": "zero when never landed; when landed and failed, base and prioritization fees may still be charged, so the actual fee must come from transaction metadata",
+  "shadow_expected_pnl": "frozen curve-modeled sell proceeds minus 0.1 SOL position cost minus frozen estimated base/priority fees; Pump fees are already in the curve replay and account creation is treated as recoverable",
+  "actual_live_realized_pnl": "observed sell wallet credit minus observed buy wallet debit minus all successful and failed transaction fees/tips/optional fees minus unrecovered rent/account effects",
+  "reconciliation": "ACTUAL_LIVE_REALIZED_PNL - SHADOW_EXPECTED_PNL; also decompose entry price degradation, exit price degradation, fees, failures, and rent"
+}

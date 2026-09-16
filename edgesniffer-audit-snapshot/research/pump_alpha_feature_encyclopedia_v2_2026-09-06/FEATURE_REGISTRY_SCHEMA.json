@@ -1,0 +1,36 @@
+{
+  "format": "JSON Lines; one complete feature object per non-empty line",
+  "required_fields": [
+    "id", "name", "category", "definition", "rationale", "sources",
+    "evidence_grade", "evidence_relation", "availability_tier",
+    "required_raw_data", "v1_status", "v1_feature_name", "v1_scanned",
+    "cache_requirements", "compute_cost", "spoofability", "leakage_risk",
+    "selection_bias_risk", "data_quality_risk", "recommended_checkpoints",
+    "v2_priority", "notes"
+  ],
+  "v1_status_values": [
+    "ALREADY_PRESENT",
+    "PARTIALLY_PRESENT",
+    "RAW_DATA_AVAILABLE_BUT_NOT_FEATURED",
+    "REQUIRES_NEW_PROSPECTIVE_DATA",
+    "REQUIRES_PRECOMPUTED_CACHE",
+    "NOT_CAUSALLY_FEASIBLE"
+  ],
+  "availability_tiers": {
+    "A": "0-25 ms: direct real-time stream/local decode",
+    "B": "25-100 ms: local computation or in-memory/precomputed cache lookup",
+    "C": "100-500 ms: heavier local aggregation or a reliable near-real-time side feed",
+    "D": "0.5-5 s: asynchronous metadata/RPC/service result; never gate the immediate model",
+    "E": "Too slow, unstable, or hindsight-dependent for immediate entry"
+  },
+  "checkpoint_vocabulary": [
+    "FIRST_IMPULSE_EVENT", "25ms", "50ms", "100ms", "250ms", "500ms",
+    "1000ms", "2000ms", "5000ms", "10000ms", "LATE_ONLY", "REJECT"
+  ],
+  "interpretation": {
+    "availability_tier": "Earliest realistic causal availability in a prospective local implementation, not a claim that the retrospective V1 builder currently achieves that latency.",
+    "evidence_grade": "Strength for predictive/risk usefulness, not confidence that the arithmetic definition is correct.",
+    "v1_scanned": "Whether the frozen scanner actually admitted the numeric field to its generic quantile scan; false for new candidates and mintAgeMs.",
+    "priority": "P0 instrument/implement first, P1 high-value follow-on, P2 exploratory, P3 low value, REJECT do not use as immediate alpha."
+  }
+}
