@@ -1,0 +1,11 @@
+{
+  "createdAtUtc": "2026-09-17T00:18:14.969635Z",
+  "host": "sanitized-edgesniffer-vps",
+  "identifiers": "SHA256 pseudonyms truncated to 16 hex characters",
+  "outcomesRead": 0,
+  "pnlIncluded": false,
+  "readOnlyCollection": true,
+  "schema": "EDGESNIFFER_READONLY_RUNTIME_AUDIT_BUNDLE_V1",
+  "strategyLabelsIncluded": false,
+  "validationRowsIncluded": 0
+}

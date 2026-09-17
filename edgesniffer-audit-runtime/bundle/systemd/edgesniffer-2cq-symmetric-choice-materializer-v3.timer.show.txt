@@ -1,0 +1,10 @@
+NextElapseUSecRealtime=
+LastTriggerUSec=Thu 2026-09-17 00:13:51 UTC
+Result=success
+Id=edgesniffer-2cq-symmetric-choice-materializer-v3.timer
+LoadState=loaded
+ActiveState=active
+SubState=running
+UnitFileState=enabled
+ActiveEnterTimestamp=Wed 2026-09-16 18:17:48 UTC
+InactiveEnterTimestamp=

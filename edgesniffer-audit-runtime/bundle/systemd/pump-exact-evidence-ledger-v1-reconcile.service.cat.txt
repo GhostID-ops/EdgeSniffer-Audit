@@ -1,0 +1,42 @@
+# /etc/systemd/system/pump-exact-evidence-ledger-v1-reconcile.service
+[Unit]
+Description=Pump Exact Evidence Ledger V1 bounded incremental reconciliation
+After=pump-exact-evidence-ledger-v1.service
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+ExecStart=/usr/bin/flock -w 60 -E 75 /run/pump-exact-offline-v1.lock /usr/bin/flock -w 900 -E 75 /run/edgesniffer-2cq-symmetric-choice-v2.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/reconcilePumpExactEvidenceLedgerV1.py /var/lib/pump-exact-evidence-ledger-v1 --grace-seconds 90 --recent-hours 12 --max-partitions 1
+SuccessExitStatus=75
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=5
+CPUWeight=50
+IOWeight=100
+MemoryHigh=3G
+MemoryMax=4G
+OOMScoreAdjust=250
+OOMPolicy=stop
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/pump-exact-evidence-ledger-v1
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictRealtime=true
+LockPersonality=true
+
+# /run/systemd/system.control/pump-exact-evidence-ledger-v1-reconcile.service.d/50-MemoryHigh.conf
+# This is a drop-in unit file extension, created via "systemctl set-property"
+# or an equivalent operation. Do not edit.
+[Service]
+MemoryHigh=3221225472
+
+# /run/systemd/system.control/pump-exact-evidence-ledger-v1-reconcile.service.d/50-MemoryMax.conf
+# This is a drop-in unit file extension, created via "systemctl set-property"
+# or an equivalent operation. Do not edit.
+[Service]
+MemoryMax=4294967296

@@ -1,0 +1,71 @@
+Sep 16 03:02:15 CTbot kernel: PM2 v7.0.1: God invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+Sep 16 03:02:23 CTbot kernel:  oom_kill_process+0x118/0x280
+Sep 16 03:02:23 CTbot kernel:  ? oom_evaluate_task+0x143/0x1e0
+Sep 16 03:02:23 CTbot kernel:  __alloc_pages_may_oom+0x10c/0x1d0
+Sep 16 03:02:23 CTbot kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+Sep 16 03:02:23 CTbot kernel: oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=user.slice,mems_allowed=0,global_oom,task_memcg=/system.slice/edgesniffer-dashboard.service,task=node,pid=3655067,uid=0
+Sep 16 03:02:23 CTbot kernel: Out of memory: Killed process 3655067 (node) total-vm:109616kB, anon-rss:0kB, file-rss:1152kB, shmem-rss:0kB, UID:0 pgtables:56kB oom_score_adj:600
+Sep 16 03:02:23 CTbot kernel: systemd invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+Sep 16 03:02:23 CTbot kernel:  oom_kill_process+0x118/0x280
+Sep 16 03:02:23 CTbot kernel:  ? oom_evaluate_task+0x143/0x1e0
+Sep 16 03:02:23 CTbot kernel:  __alloc_pages_may_oom+0x10c/0x1d0
+Sep 16 03:02:23 CTbot kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+Sep 16 03:02:23 CTbot kernel: oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=init.scope,mems_allowed=0,global_oom,task_memcg=/system.slice/pump-exact-evidence-ledger-v1-reconcile.service,task=python3,pid=3622032,uid=0
+Sep 16 03:02:23 CTbot kernel: Out of memory: Killed process 3622032 (python3) total-vm:1893248kB, anon-rss:829952kB, file-rss:2816kB, shmem-rss:0kB, UID:0 pgtables:3580kB oom_score_adj:500
+Sep 16 03:19:28 CTbot kernel: tokio-rt-worker invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+Sep 16 03:19:28 CTbot kernel:  oom_kill_process+0x118/0x280
+Sep 16 03:19:28 CTbot kernel:  ? oom_evaluate_task+0x143/0x1e0
+Sep 16 03:19:28 CTbot kernel:  __alloc_pages_may_oom+0x10c/0x1d0
+Sep 16 03:19:28 CTbot kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+Sep 16 03:19:29 CTbot kernel: oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=8ycb-sniper.service,mems_allowed=0,global_oom,task_memcg=/system.slice/edgesniffer-dashboard.service,task=npm,pid=3657921,uid=0
+Sep 16 03:19:29 CTbot kernel: Out of memory: Killed process 3657921 (npm) total-vm:1405668kB, anon-rss:8448kB, file-rss:2560kB, shmem-rss:0kB, UID:0 pgtables:528kB oom_score_adj:600
+Sep 16 03:19:29 CTbot kernel: systemd invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+Sep 16 03:19:29 CTbot kernel:  oom_kill_process+0x118/0x280
+Sep 16 03:19:29 CTbot kernel:  ? oom_evaluate_task+0x16b/0x1e0
+Sep 16 03:19:29 CTbot kernel:  __alloc_pages_may_oom+0x10c/0x1d0
+Sep 16 03:19:29 CTbot kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+Sep 16 03:19:29 CTbot kernel: oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=init.scope,mems_allowed=0,global_oom,task_memcg=/system.slice/pump-exact-evidence-ledger-v1-reconcile.service,task=python3,pid=3655078,uid=0
+Sep 16 03:19:29 CTbot kernel: Out of memory: Killed process 3655078 (python3) total-vm:1197816kB, anon-rss:792984kB, file-rss:2432kB, shmem-rss:0kB, UID:0 pgtables:2384kB oom_score_adj:500
+Sep 16 03:29:50 CTbot kernel: tokio-rt-worker invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+Sep 16 03:29:51 CTbot kernel:  oom_kill_process+0x118/0x280
+Sep 16 03:29:51 CTbot kernel:  ? oom_evaluate_task+0x143/0x1e0
+Sep 16 03:29:51 CTbot kernel:  __alloc_pages_may_oom+0x10c/0x1d0
+Sep 16 03:29:51 CTbot kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+Sep 16 03:29:51 CTbot kernel: oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=8ycb-sniper.service,mems_allowed=0,global_oom,task_memcg=/system.slice/edgesniffer-dashboard.service,task=npm,pid=3659961,uid=0
+Sep 16 03:29:51 CTbot kernel: Out of memory: Killed process 3659961 (npm) total-vm:1408896kB, anon-rss:13024kB, file-rss:2688kB, shmem-rss:0kB, UID:0 pgtables:624kB oom_score_adj:600
+Sep 16 03:29:51 CTbot kernel: tokio-rt-worker invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+Sep 16 03:29:51 CTbot kernel:  oom_kill_process+0x118/0x280
+Sep 16 03:29:51 CTbot kernel:  ? oom_evaluate_task+0x143/0x1e0
+Sep 16 03:29:51 CTbot kernel:  __alloc_pages_may_oom+0x10c/0x1d0
+Sep 16 03:29:51 CTbot kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+Sep 16 03:29:51 CTbot kernel: oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=8ycb-sniper.service,mems_allowed=0,global_oom,task_memcg=/system.slice/edgesniffer-2cq-route-symmetric-choice-v1.service,task=python3,pid=3658849,uid=0
+Sep 16 03:29:51 CTbot kernel: Out of memory: Killed process 3658849 (python3) total-vm:2799944kB, anon-rss:2776116kB, file-rss:2304kB, shmem-rss:0kB, UID:0 pgtables:5524kB oom_score_adj:0
+Sep 16 03:29:52 CTbot kernel: oom_reaper: reaped process 3658849 (python3), now anon-rss:96kB, file-rss:24kB, shmem-rss:0kB
+Sep 16 04:12:15 CTbot kernel: tokio-rt-worker invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+Sep 16 04:12:25 CTbot kernel:  oom_kill_process+0x118/0x280
+Sep 16 04:12:25 CTbot kernel:  ? oom_evaluate_task+0x143/0x1e0
+Sep 16 04:12:25 CTbot kernel:  __alloc_pages_may_oom+0x10c/0x1d0
+Sep 16 04:12:25 CTbot kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+Sep 16 04:12:25 CTbot kernel: oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=8ycb-sniper.service,mems_allowed=0,global_oom,task_memcg=/system.slice/edgesniffer-dashboard.service,task=npm,pid=3667462,uid=0
+Sep 16 04:12:25 CTbot kernel: Out of memory: Killed process 3667462 (npm) total-vm:1442508kB, anon-rss:14020kB, file-rss:2816kB, shmem-rss:0kB, UID:0 pgtables:708kB oom_score_adj:600
+Sep 16 04:12:25 CTbot kernel: tokio-rt-worker invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+Sep 16 04:12:25 CTbot kernel:  oom_kill_process+0x118/0x280
+Sep 16 04:12:25 CTbot kernel:  ? oom_evaluate_task+0x143/0x1e0
+Sep 16 04:12:25 CTbot kernel:  __alloc_pages_may_oom+0x10c/0x1d0
+Sep 16 04:12:25 CTbot kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+Sep 16 04:12:25 CTbot kernel: oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=8ycb-sniper.service,mems_allowed=0,global_oom,task_memcg=/system.slice/pump-exact-evidence-ledger-v1-reconcile.service,task=python3,pid=3665780,uid=0
+Sep 16 04:12:25 CTbot kernel: Out of memory: Killed process 3665780 (python3) total-vm:1066296kB, anon-rss:798272kB, file-rss:2432kB, shmem-rss:0kB, UID:0 pgtables:2048kB oom_score_adj:500
+Sep 16 04:27:18 CTbot kernel: systemd invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+Sep 16 04:27:18 CTbot kernel:  oom_kill_process+0x118/0x280
+Sep 16 04:27:18 CTbot kernel:  ? oom_evaluate_task+0x143/0x1e0
+Sep 16 04:27:18 CTbot kernel:  __alloc_pages_may_oom+0x10c/0x1d0
+Sep 16 04:27:18 CTbot kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+Sep 16 04:27:18 CTbot kernel: oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=init.scope,mems_allowed=0,global_oom,task_memcg=/system.slice/edgesniffer-dashboard.service,task=MainThread,pid=3669901,uid=0
+Sep 16 04:27:18 CTbot kernel: Out of memory: Killed process 3669901 (MainThread) total-vm:1142976kB, anon-rss:7488kB, file-rss:2432kB, shmem-rss:0kB, UID:0 pgtables:464kB oom_score_adj:600
+Sep 16 04:27:18 CTbot kernel: systemd invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+Sep 16 04:27:18 CTbot kernel:  oom_kill_process+0x118/0x280
+Sep 16 04:27:18 CTbot kernel:  ? oom_evaluate_task+0x143/0x1e0
+Sep 16 04:27:18 CTbot kernel:  __alloc_pages_may_oom+0x10c/0x1d0
+Sep 16 04:27:18 CTbot kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+Sep 16 04:27:18 CTbot kernel: oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=init.scope,mems_allowed=0,global_oom,task_memcg=/system.slice/edgesniffer-2cq-symmetric-choice-materializer-v2.service,task=python3,pid=3659129,uid=0
+Sep 16 04:27:18 CTbot kernel: Out of memory: Killed process 3659129 (python3) total-vm:5466684kB, anon-rss:5160896kB, file-rss:2688kB, shmem-rss:0kB, UID:0 pgtables:10752kB oom_score_adj:0

@@ -1,0 +1,27 @@
+# /etc/systemd/system/pump-exact-evidence-ledger-v1-reconcile.timer
+[Unit]
+Description=Reconcile prior Pump evidence receive-hour after finality grace
+
+[Timer]
+OnCalendar=*-*-* *:02:00 UTC
+Persistent=true
+AccuracySec=1s
+Unit=pump-exact-evidence-ledger-v1-reconcile.service
+
+[Install]
+WantedBy=timers.target
+
+
+# /etc/systemd/system/pump-exact-evidence-ledger-v1-reconcile.timer.d/40-incremental-performance.conf
+[Unit]
+Description=Run incremental Pump exact reconciliation after the prior cycle
+
+[Timer]
+OnCalendar=
+OnUnitInactiveSec=5min
+Persistent=false
+AccuracySec=5s
+RandomizedDelaySec=0
+
+[Install]
+WantedBy=timers.target

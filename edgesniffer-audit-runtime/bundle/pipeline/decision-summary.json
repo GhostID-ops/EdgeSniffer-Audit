@@ -1,0 +1,78 @@
+{
+  "acquisitionToCurrentDecisionSeconds": {
+    "max": 273440.926408,
+    "mean": 135909.7804132373,
+    "min": 123.053625,
+    "n": 6169,
+    "p50": 108359.262012,
+    "p75": 270222.190256,
+    "p90": 272737.099584,
+    "p95": 273005.8072198,
+    "p99": 273231.4111942
+  },
+  "acquisitionToFirstDecisionSeconds": {
+    "max": 59016.052596,
+    "mean": 3964.531796824769,
+    "min": 18.870474,
+    "n": 6169,
+    "p50": 603.495925,
+    "p75": 2129.182134,
+    "p90": 9978.147364199993,
+    "p95": 25721.347494600002,
+    "p99": 50461.11451875999
+  },
+  "ageSecondsByStatus": {
+    "DEFERRED": {
+      "max": 490640.969635,
+      "mean": 280996.6590289394,
+      "min": 1108.969635,
+      "n": 264,
+      "p50": 331413.469635,
+      "p75": 440341.469635,
+      "p90": 461363.069635,
+      "p95": 488284.669635,
+      "p99": 490145.68963499996
+    },
+    "ONLINE_ELIGIBLE": {
+      "max": 493226.969635,
+      "mean": 298445.4308000485,
+      "min": 57034.969635,
+      "n": 412,
+      "p50": 292780.469635,
+      "p75": 384101.469635,
+      "p90": 432355.269635,
+      "p95": 450461.81963499996,
+      "p99": 488669.1896349996
+    },
+    "TERMINAL": {
+      "max": 493344.969635,
+      "mean": 222665.59206354542,
+      "min": 986.969635,
+      "n": 5493,
+      "p50": 200734.969635,
+      "p75": 356334.969635,
+      "p90": 432847.1696350001,
+      "p95": 460408.16963499994,
+      "p99": 482987.56963499996
+    }
+  },
+  "currentDecisionN": 6169,
+  "exactReconciliationNotReadyN": 264,
+  "outcomesRead": 0,
+  "reasonCounts": {
+    "CANONICAL_ACQUISITION_WITHOUT_REALTIME_CANDIDATE": 871,
+    "ECONOMIC_FAMILY_OUTSIDE_SOL_PUMP_ONLINE_COHORT": 2980,
+    "EXACT_RECONCILIATION_NOT_READY": 264,
+    "GLOBAL_REALTIME_CONTINUITY_NOT_PROVEN_FOR_120S_UNIVERSE": 11,
+    "NO_CONTEMPORANEOUS_ALTERNATIVE": 568,
+    "PAUSED_INVALID_COLLECTION_INTERVAL": 213,
+    "SELECTED_MINT_ABSENT_FROM_ONLINE_UNIVERSE": 1411
+  },
+  "snapshotUtc": "2026-09-17T00:18:14.969635Z",
+  "statusCounts": {
+    "DEFERRED": 264,
+    "ONLINE_ELIGIBLE": 412,
+    "TERMINAL": 5493
+  },
+  "validationRowsIncluded": 0
+}

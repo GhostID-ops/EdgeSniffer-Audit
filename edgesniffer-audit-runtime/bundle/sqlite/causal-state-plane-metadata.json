@@ -1,0 +1,538 @@
+{
+  "path": "/mnt/HC_Volume_106775198/edgesniffer-research/2cq-prospective-symmetric-choice-census-v3/causal-state-plane-v1.sqlite3",
+  "pragmas": {
+    "cache_size": -2000,
+    "freelist_count": 0,
+    "journal_mode": "wal",
+    "page_count": 2250505,
+    "page_size": 4096,
+    "synchronous": 2
+  },
+  "schema": [
+    {
+      "name": "causal_events_mint",
+      "sql": "CREATE INDEX causal_events_mint ON causal_events(mint)",
+      "table": "causal_events",
+      "type": "index"
+    },
+    {
+      "name": "create_events_mint",
+      "sql": "CREATE INDEX create_events_mint ON create_events(mint)",
+      "table": "create_events",
+      "type": "index"
+    },
+    {
+      "name": "incomplete_events_mint",
+      "sql": "CREATE INDEX incomplete_events_mint ON incomplete_events(mint)",
+      "table": "incomplete_events",
+      "type": "index"
+    },
+    {
+      "name": "sqlite_autoindex_causal_events_1",
+      "sql": null,
+      "table": "causal_events",
+      "type": "index"
+    },
+    {
+      "name": "sqlite_autoindex_create_events_1",
+      "sql": null,
+      "table": "create_events",
+      "type": "index"
+    },
+    {
+      "name": "sqlite_autoindex_evidence_files_1",
+      "sql": null,
+      "table": "evidence_files",
+      "type": "index"
+    },
+    {
+      "name": "sqlite_autoindex_incomplete_events_1",
+      "sql": null,
+      "table": "incomplete_events",
+      "type": "index"
+    },
+    {
+      "name": "sqlite_autoindex_transaction_evidence_1",
+      "sql": null,
+      "table": "transaction_evidence",
+      "type": "index"
+    },
+    {
+      "name": "sqlite_autoindex_transactions_1",
+      "sql": null,
+      "table": "transactions",
+      "type": "index"
+    },
+    {
+      "name": "transactions_block_time",
+      "sql": "CREATE INDEX transactions_block_time\n          ON transactions(block_time_s,slot,tx_index,signature)",
+      "table": "transactions",
+      "type": "index"
+    },
+    {
+      "name": "causal_events",
+      "sql": "CREATE TABLE causal_events (\n          signature TEXT NOT NULL,\n          instruction_index INTEGER NOT NULL,\n          mint TEXT NOT NULL,\n          is_buy INTEGER NOT NULL,\n          user TEXT NOT NULL,\n          creator TEXT NOT NULL,\n          quote_lamports INTEGER NOT NULL,\n          token_raw INTEGER NOT NULL,\n          pre_virtual_sol INTEGER NOT NULL,\n          pre_virtual_token INTEGER NOT NULL,\n          pre_real_sol INTEGER NOT NULL,\n          pre_real_token INTEGER NOT NULL,\n          post_virtual_sol INTEGER NOT NULL,\n          post_virtual_token INTEGER NOT NULL,\n          post_real_sol INTEGER NOT NULL,\n          post_real_token INTEGER NOT NULL,\n          PRIMARY KEY(signature,instruction_index,mint),\n          FOREIGN KEY(signature) REFERENCES transactions(signature)\n        )",
+      "table": "causal_events",
+      "type": "table"
+    },
+    {
+      "name": "create_events",
+      "sql": "CREATE TABLE create_events (\n          signature TEXT NOT NULL,\n          mint TEXT NOT NULL,\n          PRIMARY KEY(signature,mint),\n          FOREIGN KEY(signature) REFERENCES transactions(signature)\n        )",
+      "table": "create_events",
+      "type": "table"
+    },
+    {
+      "name": "evidence_files",
+      "sql": "CREATE TABLE evidence_files (\n          path TEXT PRIMARY KEY,\n          size INTEGER NOT NULL,\n          mtime_ns INTEGER NOT NULL,\n          sha256 TEXT,\n          imported_utc TEXT NOT NULL,\n          successful_tx_n INTEGER NOT NULL,\n          pump_tx_n INTEGER NOT NULL,\n          event_n INTEGER NOT NULL,\n          create_n INTEGER NOT NULL,\n          incomplete_n INTEGER NOT NULL,\n          missing_block_time_n INTEGER NOT NULL\n        )",
+      "table": "evidence_files",
+      "type": "table"
+    },
+    {
+      "name": "incomplete_events",
+      "sql": "CREATE TABLE incomplete_events (\n          signature TEXT NOT NULL,\n          mint TEXT NOT NULL,\n          reason TEXT NOT NULL,\n          PRIMARY KEY(signature,mint,reason),\n          FOREIGN KEY(signature) REFERENCES transactions(signature)\n        )",
+      "table": "incomplete_events",
+      "type": "table"
+    },
+    {
+      "name": "transaction_evidence",
+      "sql": "CREATE TABLE transaction_evidence (\n          signature TEXT NOT NULL,\n          path TEXT NOT NULL,\n          PRIMARY KEY(signature,path),\n          FOREIGN KEY(signature) REFERENCES transactions(signature),\n          FOREIGN KEY(path) REFERENCES evidence_files(path)\n        )",
+      "table": "transaction_evidence",
+      "type": "table"
+    },
+    {
+      "name": "transactions",
+      "sql": "CREATE TABLE transactions (\n          signature TEXT PRIMARY KEY,\n          block_time_s INTEGER NOT NULL,\n          slot INTEGER NOT NULL,\n          tx_index INTEGER NOT NULL,\n          kinds_json TEXT NOT NULL,\n          hinted_mints_json TEXT NOT NULL\n        )",
+      "table": "transactions",
+      "type": "table"
+    }
+  ],
+  "sizeBytes": 9218068480,
+  "tables": {
+    "causal_events": {
+      "columns": [
+        {
+          "cid": 0,
+          "default": null,
+          "name": "signature",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "cid": 1,
+          "default": null,
+          "name": "instruction_index",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 2,
+          "default": null,
+          "name": "mint",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        },
+        {
+          "cid": 3,
+          "default": null,
+          "name": "is_buy",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 4,
+          "default": null,
+          "name": "user",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 5,
+          "default": null,
+          "name": "creator",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 6,
+          "default": null,
+          "name": "quote_lamports",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 7,
+          "default": null,
+          "name": "token_raw",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 8,
+          "default": null,
+          "name": "pre_virtual_sol",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 9,
+          "default": null,
+          "name": "pre_virtual_token",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 10,
+          "default": null,
+          "name": "pre_real_sol",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 11,
+          "default": null,
+          "name": "pre_real_token",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 12,
+          "default": null,
+          "name": "post_virtual_sol",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 13,
+          "default": null,
+          "name": "post_virtual_token",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 14,
+          "default": null,
+          "name": "post_real_sol",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 15,
+          "default": null,
+          "name": "post_real_token",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "indexes": [
+        [
+          0,
+          "causal_events_mint",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_causal_events_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    "create_events": {
+      "columns": [
+        {
+          "cid": 0,
+          "default": null,
+          "name": "signature",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "cid": 1,
+          "default": null,
+          "name": "mint",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        }
+      ],
+      "indexes": [
+        [
+          0,
+          "create_events_mint",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_create_events_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    "evidence_files": {
+      "columns": [
+        {
+          "cid": 0,
+          "default": null,
+          "name": "path",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "cid": 1,
+          "default": null,
+          "name": "size",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 2,
+          "default": null,
+          "name": "mtime_ns",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 3,
+          "default": null,
+          "name": "sha256",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 4,
+          "default": null,
+          "name": "imported_utc",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 5,
+          "default": null,
+          "name": "successful_tx_n",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 6,
+          "default": null,
+          "name": "pump_tx_n",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 7,
+          "default": null,
+          "name": "event_n",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 8,
+          "default": null,
+          "name": "create_n",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 9,
+          "default": null,
+          "name": "incomplete_n",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 10,
+          "default": null,
+          "name": "missing_block_time_n",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_evidence_files_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    "incomplete_events": {
+      "columns": [
+        {
+          "cid": 0,
+          "default": null,
+          "name": "signature",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "cid": 1,
+          "default": null,
+          "name": "mint",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "cid": 2,
+          "default": null,
+          "name": "reason",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        }
+      ],
+      "indexes": [
+        [
+          0,
+          "incomplete_events_mint",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_incomplete_events_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    "transaction_evidence": {
+      "columns": [
+        {
+          "cid": 0,
+          "default": null,
+          "name": "signature",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "cid": 1,
+          "default": null,
+          "name": "path",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        }
+      ],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_transaction_evidence_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    "transactions": {
+      "columns": [
+        {
+          "cid": 0,
+          "default": null,
+          "name": "signature",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "cid": 1,
+          "default": null,
+          "name": "block_time_s",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 2,
+          "default": null,
+          "name": "slot",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 3,
+          "default": null,
+          "name": "tx_index",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 4,
+          "default": null,
+          "name": "kinds_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 5,
+          "default": null,
+          "name": "hinted_mints_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "indexes": [
+        [
+          0,
+          "transactions_block_time",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_transactions_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    }
+  }
+}

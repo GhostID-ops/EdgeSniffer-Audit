@@ -1,0 +1,42 @@
+{
+  "deferred_scan": [
+    [
+      4,
+      0,
+      0,
+      "SEARCH current_decisions USING INDEX current_decisions_status_order (status=?)"
+    ]
+  ],
+  "partition_lookup": [
+    [
+      3,
+      0,
+      0,
+      "SEARCH partition_generations USING INDEX sqlite_autoindex_partition_generations_1 (partition_hour=?)"
+    ]
+  ],
+  "signature_lookup": [
+    [
+      3,
+      0,
+      0,
+      "SEARCH current_decisions USING INDEX sqlite_autoindex_current_decisions_1 (signature=?)"
+    ]
+  ],
+  "status_order": [
+    [
+      4,
+      0,
+      0,
+      "SEARCH current_decisions USING COVERING INDEX current_decisions_status_order (status=?)"
+    ]
+  ],
+  "versions_by_signature": [
+    [
+      4,
+      0,
+      0,
+      "SEARCH decision_versions USING INDEX decision_versions_signature (signature=?)"
+    ]
+  ]
+}

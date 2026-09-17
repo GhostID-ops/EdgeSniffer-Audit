@@ -1,0 +1,20 @@
+# /etc/systemd/system/edgesniffer-2cq-symmetric-choice-materializer-v3.timer
+[Unit]
+Description=Run 2CQ V3 exact-multisource materializer every 30 minutes
+
+[Timer]
+OnCalendar=*:0/30
+Persistent=true
+RandomizedDelaySec=30
+Unit=edgesniffer-2cq-symmetric-choice-materializer-v3.service
+
+[Install]
+WantedBy=timers.target
+
+# /etc/systemd/system/edgesniffer-2cq-symmetric-choice-materializer-v3.timer.d/40-performance.conf
+[Timer]
+OnCalendar=
+OnUnitInactiveSec=10min
+RandomizedDelaySec=0
+AccuracySec=5s
+Persistent=false

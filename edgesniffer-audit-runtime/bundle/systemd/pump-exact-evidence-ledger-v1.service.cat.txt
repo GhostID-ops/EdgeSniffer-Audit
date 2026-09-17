@@ -1,0 +1,48 @@
+# /etc/systemd/system/pump-exact-evidence-ledger-v1.service
+[Unit]
+Description=Pump Exact Evidence Ledger V1 (observation only)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer/rust-exact-ledger
+EnvironmentFile=/root/bot/EdgeSniffer/.env
+Environment=PUMP_EXACT_LEDGER_ROOT=/var/lib/pump-exact-evidence-ledger-v1
+Environment=PUMP_EXACT_LEDGER_STORAGE_PATH=/var/lib/pump-exact-evidence-ledger-v1
+Environment=PUMP_EXACT_LEDGER_GRPC_URL=https://rabbitstream.va.shyft.to/
+Environment=PUMP_EXACT_LEDGER_QUEUE_CAPACITY=8192
+Environment=PUMP_EXACT_LEDGER_RECONNECT_MS=1000
+ExecStart=/usr/local/bin/pump-exact-evidence-ledger-v1 run
+Restart=on-failure
+RestartSec=2
+Nice=-5
+IOSchedulingClass=best-effort
+IOSchedulingPriority=0
+CPUWeight=800
+IOWeight=800
+MemoryMin=1G
+MemoryHigh=6G
+MemoryMax=8G
+OOMScoreAdjust=-500
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/pump-exact-evidence-ledger-v1
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictRealtime=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+UMask=0027
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+
+# /etc/systemd/system/pump-exact-evidence-ledger-v1.service.d/20-two-cq-direct.conf
+[Service]
+Environment=PUMP_EXACT_LEDGER_2CQ_DETECTOR_PATH=/var/lib/pump-exact-evidence-ledger-v1/2cq-direct-detected-swaps-v1.jsonl

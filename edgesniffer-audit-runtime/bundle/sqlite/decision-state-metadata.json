@@ -1,0 +1,366 @@
+{
+  "path": "/mnt/HC_Volume_106775198/edgesniffer-research/2cq-prospective-symmetric-choice-census-v3/causal-state-v2.sqlite3",
+  "pragmas": {
+    "cache_size": -2000,
+    "freelist_count": 0,
+    "journal_mode": "wal",
+    "page_count": 14920,
+    "page_size": 4096,
+    "synchronous": 2
+  },
+  "schema": [
+    {
+      "name": "current_decisions_status_order",
+      "sql": "CREATE INDEX current_decisions_status_order\n          ON current_decisions(status, block_time_ms, slot, transaction_index, signature)",
+      "table": "current_decisions",
+      "type": "index"
+    },
+    {
+      "name": "decision_versions_signature",
+      "sql": "CREATE INDEX decision_versions_signature\n          ON decision_versions(signature)",
+      "table": "decision_versions",
+      "type": "index"
+    },
+    {
+      "name": "sqlite_autoindex_current_decisions_1",
+      "sql": null,
+      "table": "current_decisions",
+      "type": "index"
+    },
+    {
+      "name": "sqlite_autoindex_decision_versions_1",
+      "sql": null,
+      "table": "decision_versions",
+      "type": "index"
+    },
+    {
+      "name": "sqlite_autoindex_metadata_1",
+      "sql": null,
+      "table": "metadata",
+      "type": "index"
+    },
+    {
+      "name": "sqlite_autoindex_partition_generations_1",
+      "sql": null,
+      "table": "partition_generations",
+      "type": "index"
+    },
+    {
+      "name": "current_decisions",
+      "sql": "CREATE TABLE current_decisions (\n          signature TEXT PRIMARY KEY,\n          mint TEXT NOT NULL,\n          route TEXT NOT NULL,\n          economic_family TEXT NOT NULL,\n          block_time_ms INTEGER NOT NULL,\n          slot INTEGER NOT NULL,\n          transaction_index INTEGER NOT NULL,\n          generation_sha TEXT NOT NULL,\n          status TEXT NOT NULL,\n          reasons_json TEXT NOT NULL,\n          detail_json TEXT NOT NULL,\n          choice_json TEXT,\n          forensic_json TEXT,\n          version_sha TEXT NOT NULL,\n          updated_utc TEXT NOT NULL\n        )",
+      "table": "current_decisions",
+      "type": "table"
+    },
+    {
+      "name": "decision_versions",
+      "sql": "CREATE TABLE decision_versions (\n          version_sha TEXT PRIMARY KEY,\n          signature TEXT NOT NULL,\n          generation_sha TEXT NOT NULL,\n          status TEXT NOT NULL,\n          payload_json TEXT NOT NULL,\n          created_utc TEXT NOT NULL\n        )",
+      "table": "decision_versions",
+      "type": "table"
+    },
+    {
+      "name": "metadata",
+      "sql": "CREATE TABLE metadata (\n          key TEXT PRIMARY KEY,\n          value TEXT NOT NULL\n        )",
+      "table": "metadata",
+      "type": "table"
+    },
+    {
+      "name": "partition_generations",
+      "sql": "CREATE TABLE partition_generations (\n          partition_hour TEXT PRIMARY KEY,\n          generation_sha TEXT NOT NULL,\n          exact_complete INTEGER NOT NULL,\n          status_json TEXT NOT NULL,\n          observed_utc TEXT NOT NULL\n        )",
+      "table": "partition_generations",
+      "type": "table"
+    }
+  ],
+  "sizeBytes": 61112320,
+  "tables": {
+    "current_decisions": {
+      "columns": [
+        {
+          "cid": 0,
+          "default": null,
+          "name": "signature",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "cid": 1,
+          "default": null,
+          "name": "mint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 2,
+          "default": null,
+          "name": "route",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 3,
+          "default": null,
+          "name": "economic_family",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 4,
+          "default": null,
+          "name": "block_time_ms",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 5,
+          "default": null,
+          "name": "slot",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 6,
+          "default": null,
+          "name": "transaction_index",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 7,
+          "default": null,
+          "name": "generation_sha",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 8,
+          "default": null,
+          "name": "status",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 9,
+          "default": null,
+          "name": "reasons_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 10,
+          "default": null,
+          "name": "detail_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 11,
+          "default": null,
+          "name": "choice_json",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 12,
+          "default": null,
+          "name": "forensic_json",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 13,
+          "default": null,
+          "name": "version_sha",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 14,
+          "default": null,
+          "name": "updated_utc",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "indexes": [
+        [
+          0,
+          "current_decisions_status_order",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_current_decisions_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    "decision_versions": {
+      "columns": [
+        {
+          "cid": 0,
+          "default": null,
+          "name": "version_sha",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "cid": 1,
+          "default": null,
+          "name": "signature",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 2,
+          "default": null,
+          "name": "generation_sha",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 3,
+          "default": null,
+          "name": "status",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 4,
+          "default": null,
+          "name": "payload_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 5,
+          "default": null,
+          "name": "created_utc",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "indexes": [
+        [
+          0,
+          "decision_versions_signature",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_decision_versions_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    "metadata": {
+      "columns": [
+        {
+          "cid": 0,
+          "default": null,
+          "name": "key",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "cid": 1,
+          "default": null,
+          "name": "value",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_metadata_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    "partition_generations": {
+      "columns": [
+        {
+          "cid": 0,
+          "default": null,
+          "name": "partition_hour",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "cid": 1,
+          "default": null,
+          "name": "generation_sha",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 2,
+          "default": null,
+          "name": "exact_complete",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "cid": 3,
+          "default": null,
+          "name": "status_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "cid": 4,
+          "default": null,
+          "name": "observed_utc",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_partition_generations_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    }
+  }
+}

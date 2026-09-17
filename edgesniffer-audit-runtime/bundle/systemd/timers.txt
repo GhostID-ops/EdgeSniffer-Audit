@@ -1,0 +1,42 @@
+NEXT                            LEFT LAST                                   PASSED UNIT                                                     ACTIVATES
+Thu 2026-09-17 00:19:13 UTC      51s Thu 2026-09-17 00:18:13 UTC            8s ago pump-exact-evidence-ledger-watchdog-v1.timer             pump-exact-evidence-ledger-watchdog-v1.service
+Thu 2026-09-17 00:19:40 UTC 1min 18s Thu 2026-09-17 00:17:40 UTC           41s ago edgesniffer-2cq-capture-first-gate-v1.timer              edgesniffer-2cq-capture-first-gate-v1.service
+Thu 2026-09-17 00:20:00 UTC 1min 37s Thu 2026-09-17 00:10:02 UTC          8min ago sysstat-collect.timer                                    sysstat-collect.service
+Thu 2026-09-17 00:20:19 UTC 1min 57s Thu 2026-09-17 00:15:19 UTC       3min 2s ago edgesniffer-2cq-prospective-tier-a-entry-census-v2.timer edgesniffer-2cq-prospective-tier-a-entry-census-v2.service
+Thu 2026-09-17 00:23:00 UTC 4min 38s Wed 2026-09-16 00:24:18 UTC           23h ago bot-vps-doctor.timer                                     bot-vps-doctor.service
+Thu 2026-09-17 00:23:03 UTC 4min 41s Thu 2026-09-17 00:18:03 UTC           18s ago edgesniffer-2cq-prospective-tier-a-entry-census-v1.timer edgesniffer-2cq-prospective-tier-a-entry-census-v1.service
+Thu 2026-09-17 00:24:53 UTC     6min Thu 2026-09-17 00:09:53 UTC          8min ago docker-container-logrotate.timer                         docker-container-logrotate.service
+Thu 2026-09-17 00:59:57 UTC    41min Wed 2026-09-16 10:34:01 UTC           13h ago apt-daily.timer                                          apt-daily.service
+Thu 2026-09-17 01:08:09 UTC    49min Thu 2026-09-17 00:08:13 UTC         10min ago pump-exact-evidence-readiness-v1.timer                   pump-exact-evidence-readiness-v1.service
+Thu 2026-09-17 01:15:00 UTC    56min Wed 2026-09-16 19:15:00 UTC       5h 3min ago edgesniffer-pumpswap-evidence-reconciler-v1.timer        edgesniffer-pumpswap-evidence-reconciler-v1.service
+Thu 2026-09-17 02:15:00 UTC 1h 56min Wed 2026-09-16 20:15:00 UTC       4h 3min ago edgesniffer-pumpswap-choice-window-v1.timer              edgesniffer-pumpswap-choice-window-v1.service
+Thu 2026-09-17 03:15:00 UTC 2h 56min Wed 2026-09-16 21:15:00 UTC       3h 3min ago edgesniffer-raydium-clmm-choice-window-v1.timer          edgesniffer-raydium-clmm-choice-window-v1.service
+Thu 2026-09-17 03:21:34 UTC  3h 3min Wed 2026-09-16 15:51:06 UTC            8h ago certbot.timer                                            certbot.service
+Thu 2026-09-17 04:04:50 UTC 3h 46min Wed 2026-09-16 15:51:06 UTC            8h ago motd-news.timer                                          motd-news.service
+Thu 2026-09-17 04:15:00 UTC 3h 56min Wed 2026-09-16 22:15:02 UTC       2h 3min ago edgesniffer-meteora-dbc-choice-window-v1.timer           edgesniffer-meteora-dbc-choice-window-v1.service
+Thu 2026-09-17 04:59:25 UTC 4h 41min Wed 2026-09-16 02:27:01 UTC           21h ago man-db.timer                                             man-db.service
+Thu 2026-09-17 05:15:00 UTC 4h 56min Wed 2026-09-16 23:15:00 UTC       1h 3min ago edgesniffer-2cq-route-symmetric-choice-v1.timer          edgesniffer-2cq-route-symmetric-choice-v1.service
+Thu 2026-09-17 05:45:00 UTC 5h 26min Wed 2026-09-16 23:45:00 UTC         33min ago edgesniffer-2cq-extended-route-materializer-v1.timer     edgesniffer-2cq-extended-route-materializer-v1.service
+Thu 2026-09-17 06:31:44 UTC       6h Wed 2026-09-16 06:29:31 UTC           17h ago apt-daily-upgrade.timer                                  apt-daily-upgrade.service
+Thu 2026-09-17 15:55:25 UTC      15h Wed 2026-09-16 15:55:25 UTC            8h ago update-notifier-download.timer                           update-notifier-download.service
+Thu 2026-09-17 16:06:30 UTC      15h Wed 2026-09-16 16:06:30 UTC            8h ago systemd-tmpfiles-clean.timer                             systemd-tmpfiles-clean.service
+Fri 2026-09-18 00:00:00 UTC      23h Thu 2026-09-17 00:00:00 UTC         18min ago dpkg-db-backup.timer                                     dpkg-db-backup.service
+Fri 2026-09-18 00:00:00 UTC      23h Thu 2026-09-17 00:00:00 UTC         18min ago logrotate.timer                                          logrotate.service
+Fri 2026-09-18 00:07:00 UTC      23h Thu 2026-09-17 00:07:01 UTC         11min ago sysstat-summary.timer                                    sysstat-summary.service
+Sun 2026-09-20 01:02:29 UTC   3 days Sun 2026-09-13 00:51:25 UTC        3 days ago bot-vps-safe-clean.timer                                 bot-vps-safe-clean.service
+Sun 2026-09-20 03:10:00 UTC   3 days Sun 2026-09-13 03:10:52 UTC        3 days ago e2scrub_all.timer                                        e2scrub_all.service
+Mon 2026-09-21 00:33:33 UTC   4 days Mon 2026-09-14 00:33:49 UTC        2 days ago fstrim.timer                                             fstrim.service
+Tue 2026-09-22 19:52:41 UTC   5 days Tue 2026-09-15 17:00:32 UTC      1 day 7h ago update-notifier-motd.timer                               update-notifier-motd.service
+-                                  - -                                           - apport-autoreport.timer                                  apport-autoreport.service
+-                                  - Tue 2026-09-15 15:04:10 UTC      1 day 9h ago edgesniffer-2cq-multi-archetype-research-v1.timer        edgesniffer-2cq-multi-archetype-research-v1.service
+-                                  - Wed 2026-09-09 19:36:47 UTC 1 week 0 days ago edgesniffer-2cq-post-fix-end-to-end-diagnostic-v1.timer  edgesniffer-2cq-post-fix-end-to-end-diagnostic-v1.service
+-                                  - Fri 2026-09-11 17:40:12 UTC        5 days ago edgesniffer-2cq-prospective-tier-a-entry-census-v3.timer edgesniffer-2cq-prospective-tier-a-entry-census-v3.service
+-                                  - Thu 2026-09-17 00:13:51 UTC      4min 30s ago edgesniffer-2cq-symmetric-choice-materializer-v3.timer   edgesniffer-2cq-symmetric-choice-materializer-v3.service
+-                                  - Thu 2026-09-17 00:15:00 UTC      3min 21s ago edgesniffer-launchlab-evidence-reconciler-v1.timer       edgesniffer-launchlab-evidence-reconciler-v1.service
+-                                  - Thu 2026-09-17 00:15:45 UTC      2min 36s ago edgesniffer-pump-quote-native-state-v1.timer             edgesniffer-pump-quote-native-state-v1.service
+-                                  - Mon 2026-09-07 00:24:04 UTC 1 week 2 days ago pump-exact-alpha-scan-v1.timer                           pump-exact-alpha-scan-v1.service
+-                                  - Thu 2026-09-17 00:13:08 UTC          5min ago pump-exact-evidence-ledger-v1-reconcile.timer            pump-exact-evidence-ledger-v1-reconcile.service
+-                                  - -                                           - snapd.snap-repair.timer                                  snapd.snap-repair.service
+-                                  - -                                           - ua-timer.timer                                           ua-timer.service
+
+39 timers listed.

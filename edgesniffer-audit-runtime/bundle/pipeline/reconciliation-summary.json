@@ -1,0 +1,20 @@
+{
+  "closeToReconciledSeconds": {
+    "max": 334723.184701,
+    "mean": 13099.717750098765,
+    "min": 112.138626,
+    "n": 162,
+    "p50": 3720.8832195,
+    "p75": 10920.35400775,
+    "p90": 20567.946413300004,
+    "p95": 35845.78086214998,
+    "p99": 201604.8425794071
+  },
+  "complete": 141,
+  "incomplete": 21,
+  "partitionsInSevenDays": 162,
+  "snapshotUtc": "2026-09-17T00:18:14.969635Z",
+  "totalInputEvidenceBytes": 195525104637,
+  "totalRelevantTransactionsObserved": 45443610,
+  "totalUnresolved": 22511
+}

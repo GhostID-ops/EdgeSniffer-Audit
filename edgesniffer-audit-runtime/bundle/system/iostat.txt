@@ -1,0 +1,25 @@
+Linux 6.8.0-136-generic (CTbot) 	09/17/2026 	_x86_64_	(4 CPU)
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+          36.00    3.58   27.60    2.51    0.00   30.30
+
+Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
+loop0            0.00      0.00     0.00   0.00    0.00     1.27    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
+sda            321.19   7857.88   426.38  57.04    0.30    24.46 1042.34  13228.32  1331.27  56.09    0.31    12.69    0.04     28.32     0.00   0.01    0.42   807.87  178.26    0.10    0.44  11.25
+sdb            152.25   4428.86     1.80   1.17    0.87    29.09  144.67   2422.96   364.96  71.61    2.20    16.75   24.99   2415.08     0.00   0.00    0.16    96.64   55.79    0.40    0.48  16.21
+
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+          19.40   25.94   41.81   11.34    0.00    1.51
+
+Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
+sda              7.00     44.00     4.00  36.36    0.29     6.29   57.00    336.00     3.00   5.00    0.19     5.89    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.01   1.10
+sdb              3.00     12.00     0.00   0.00    0.67     4.00 1045.00  16012.00  2940.00  73.78    1.47    15.32  238.00   5200.00     0.00   0.00    0.19    21.85  397.00    0.17    1.66  95.00
+
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+          19.44   21.97   35.61   16.67    0.00    6.31
+
+Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
+sda              2.00      8.00     0.00   0.00    0.50     4.00   54.00    388.00    11.00  16.92    0.26     7.19    0.00      0.00     0.00   0.00    0.00     0.00    1.00    0.00    0.02   1.10
+sdb              4.00     16.00     0.00   0.00    0.75     4.00  631.00 286880.00   501.00  44.26   74.57   454.64   50.00 290848.00     0.00   0.00    1.32  5816.96   46.00    5.02   47.35  99.40
