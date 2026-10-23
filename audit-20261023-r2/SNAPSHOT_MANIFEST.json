@@ -97,20 +97,20 @@
     {
       "path": "RESEARCH_DECISIONS.md",
       "source_path": "RESEARCH_DECISIONS.md",
-      "bytes": 48812,
-      "source_sha256": "ffcead99517215fa24f059a837cdddbe0c28cb623349a3fef1d916771c0e5931",
+      "bytes": 51957,
+      "source_sha256": "d578ec4f6b5c1bb870db31042638e14d4b73b799ed200d5dc737608f07cc9de4",
       "documentation_links_relocated": true,
-      "export_sha256": "41f779487064163b94a35e378454b1066bf93815551a44270a98147f80676f0b",
-      "export_bytes": 48809
+      "export_sha256": "6ec33a86991d700d7f88f486be66ae6868a4fdf25aea42bad16f032ac3f0f631",
+      "export_bytes": 51954
     },
     {
       "path": "RESEARCH_TASKS.md",
       "source_path": "RESEARCH_TASKS.md",
-      "bytes": 65254,
-      "source_sha256": "5c84114c9648b0086ffb2fd7004f7ce8cc673c9cf51e51b9f5843cd87d250c44",
+      "bytes": 65935,
+      "source_sha256": "a37e2348626aa7eacd38e89912a23679b44164cf9160065bd138ff6783c8183b",
       "documentation_links_relocated": true,
-      "export_sha256": "5cee201482b6c9fccaaa84734a82c037843a2c8db01e76e5c11122fcff099415",
-      "export_bytes": 65253
+      "export_sha256": "1b8277d01d439b322066e65744114d2fa4a688ea66c0a6bfebbe91ecebd599cd",
+      "export_bytes": 65934
     },
     {
       "path": "RUST_SIDECAR.md",
@@ -20315,5 +20315,6 @@
     "skipped": 0,
     "sdk": "Existing local @solana/web3.js via TEST_WEB3_MODULE; not a clean dependency-install verification",
     "scope": "Current canonical research suite only, not every historical experiment or whole app build."
-  }
+  },
+  "continuity_records_commit": "58a0b0e3e7efa8da6581d4463cacdc39b39300e8"
 }

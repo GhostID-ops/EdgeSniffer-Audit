@@ -1,5 +1,46 @@
 # EdgeSniffer research decision log
 
+## RD-022 — 2026-10-23 — Expand public research context without exposing private runtime
+
+- At the user's explicit request, published a broader public audit snapshot to
+  [GhostID-ops/EdgeSniffer-Audit](https://github.com/GhostID-ops/EdgeSniffer-Audit),
+  directory `audit-20261023-r2`, commit `463eb9487565af0cdc873d621a6ca1ffce81c8d4`.
+  Default branch remains `audit/edgesniffer-throughput-20260916`; old snapshot and
+  destination history are preserved. Original repository remotes unchanged.
+- Source research HEAD `0b9bfa0`, plus explicitly labelled pre-existing uncommitted
+  application files. Expanded retained history includes workspace research/report
+  artifacts, contracts, scripts, tools and small transaction fixtures, canonical
+  evidence through RD-021, app/Rust source and the supplied independent audit.
+  Reviewer guide distinguishes teacher-selected evidence, independent exploratory
+  studies, engineering canaries and still-uncollected confirmation evidence.
+- Verification:2440 inventoried files (~144.4MB), all staged export SHA256 hashes
+  equal;123 current research tests pass/0skips from exported source with existing
+  local SDK. Not a clean dependency-install, full app build or rerun of all historic
+  studies. Entry-point links resolve. Remote HEAD matches publication commit and
+  unauthenticated repository API reports public visibility.
+- Gitleaks8.30.1 publisher archive checksum reverified.2162 initial findings:
+  2158 public account/authentication address matches,3 feature-column lists,
+  1 operational arming value redacted only in the export. Every flagged JSON
+  key/accountKey field was checked as a32-byte public address; final scan has2161
+  reviewed nonsecret matches. Additional private-key/credential URL patterns and
+  known-local-env matching found none. This bounded new-snapshot review is not
+  a guarantee against every secret format or a rescan of old destination history.
+- Exclusions are explicit: environment/credentials/private keys, source Git history,
+  dependencies/builds/active workflows, hidden staging/cache directories, nonallowed
+  formats, files over8MiB and complete VPS raw captures. Full private conversations
+  were not exported. Selected small transaction fixtures are included; the public
+  snapshot is not a self-contained reproduction of every historic experiment.
+  Manifest records190 scoped file/directory exclusions, source/export hashes and
+  documentation relocation. DATA_AVAILABILITY.md describes missing raw inputs.
+- Decision: use the latest README as external-review entry point; persisted logs
+  and specific evidence, not an indiscriminate private-runtime dump, provide the
+  research context. Publication is a dated snapshot, not automatic synchronization.
+  No collector changed, no research result promoted, and no trading enabled.
+- Next: A3h4c remains the dependency-ready research task: independently reconstruct
+  holder-reward fees/supply semantics and qualify instruction-attributed writable
+  touches on retained evidence, then verify full causal own-state/cost outcomes
+  before requesting a larger prospective cohort. AUD-PUB02 verified.
+
 ## RD-021 — 2026-10-23 — Remove observer RPC blocking; narrow the remaining semantic gap
 
 - After verifying A3h4a, continued directly with bounded nonblocking requests:

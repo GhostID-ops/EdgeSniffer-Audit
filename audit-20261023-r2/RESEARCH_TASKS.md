@@ -81,15 +81,23 @@ still has separate blockers. See RD-009/RD-010 and tracked evidence reports.
 
 ## Status summary
 
-User-directed publication task AUD-PUB02 is the sole active implementation task;
-A3h4c research work is awaiting completion of this publication, not abandoned.
-Scope: refresh the existing public audit repository with current app/research
-source, retained experiment history, canonical records and small evidence.
-Acceptance: explicit omissions/provenance, secret review, exported test run,
-staged-byte verification and remote commit/visibility verification. No trading,
-collector changes, source-history publication or credential upload.
-Exact action: expand the sanitized snapshot and reviewer navigation, then verify
-before pushing to the existing public repository without rewriting its history.
+AUD-PUB02 is VERIFIED: expanded public snapshot `audit-20261023-r2`, publication
+commit `463eb9487565af0cdc873d621a6ca1ffce81c8d4` in GhostID-ops/EdgeSniffer-Audit.
+2440 inventoried source/evidence/guide files (~144.4 MB);123 exported Python tests
+passed with0skips using the existing local SDK; all2440 staged hashes match.
+Remote default-branch commit and public visibility independently checked.
+Bounded secret review:2162 initial Gitleaks findings;2158 public-account address
+matches,3 feature lists,1 operational arming value removed only from the export.
+Final2161 findings are those reviewed nonsecrets; additional credential/private-key
+patterns and known-local-env matching found none. Not a universal secrecy guarantee.
+Old snapshot/history retained. No source Git history, keys, env files, dependencies,
+builds or complete VPS raw datasets published. Per-file exclusions and data limits
+are explicit; this is not a complete raw-data replay archive or automatic sync.
+See RD-022. Publication did not change research code, services or strategy results.
+Next implementation remains A3h4c, not begun during this publication request:
+qualify holder-reward/supply semantics and instruction-attributed writable touches
+against retained transactions; require independent fixtures, causal guards and
+verified replay before advancing to complete own-state/cost outcome modeling.
 
 | AUD-PUB01 | public GitHub audit snapshot | User request | VERIFIED |2026-10-23 uploaded source/research snapshot to GhostID-ops/EdgeSniffer-Audit, existing default branch audit/edgesniffer-throughput-20260916, commit a08aeeb32e614bf40a3f211a55b26f9e59e20192. Start at audit-20261023/README.md.1351 source/evidence files, staged byte hashes verified;76 exported Python tests passed/0skips using existing SDK. Gitleaks8.30.1 scanned;5 reviewed false positives (public keys/column names), no known-env secret matches. No source Git history/env/keys/build outputs/raw VPS captures uploaded. Old destination audit preserved. This is a dated working-tree snapshot, not automatic synchronization or deployed-source equivalence. |
 
