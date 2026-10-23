@@ -1,0 +1,31 @@
+{
+  "python_version": "3.12.14",
+  "all_four_probe_outputs_match_references": true,
+  "result_groups": 38,
+  "result_groups_not_independent_defect_count": true,
+  "checks": [
+    {
+      "group": "governance",
+      "original_probe_unchanged": true,
+      "assertions_preserved": 5
+    },
+    {
+      "group": "scorer",
+      "original_probe_unchanged": true,
+      "assertions_preserved": 0
+    },
+    {
+      "group": "native",
+      "original_probe_unchanged": true,
+      "assertions_preserved": 12
+    },
+    {
+      "group": "economics",
+      "original_probe_unchanged": true,
+      "assertions_preserved": 18
+    }
+  ],
+  "historical_reference_reproduced_by_economics_group": true,
+  "source_hash_inventory_still_matches_after_run": true,
+  "note": "Executed against supplied audit source; actual logs and complete SHA256 inventory are in the separate portable_probe_verification output directory."
+}

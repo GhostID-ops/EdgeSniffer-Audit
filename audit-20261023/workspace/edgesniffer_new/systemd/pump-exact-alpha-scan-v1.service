@@ -1,0 +1,24 @@
+[Unit]
+Description=Run eligible Pump exact-alpha exploratory checkpoints V1
+After=pump-exact-alpha-table-v1.service
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer/scripts
+ExecStart=/usr/bin/flock -n -E 75 /run/pump-exact-offline-v1.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/scanPumpExactAlphaFingerprintsV1.py /var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1
+SuccessExitStatus=75
+Nice=19
+IOSchedulingClass=idle
+CPUWeight=5
+IOWeight=5
+IOSchedulingPriority=7
+MemoryHigh=1G
+MemoryMax=1536M
+OOMScoreAdjust=500
+OOMPolicy=stop
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1 /run

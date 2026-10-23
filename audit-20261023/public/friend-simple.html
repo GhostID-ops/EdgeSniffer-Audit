@@ -1,0 +1,1425 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Obsidian Labs | Copy Trading Console</title>
+  <meta name="description" content="Obsidian Labs is a private Solana copy trading console for testing wallet-following strategies, live/shadow trading, risk controls, and plain-English trade activity." />
+  <meta name="application-name" content="Obsidian Labs" />
+  <meta name="theme-color" content="#030405" />
+  <meta property="og:title" content="Obsidian Labs" />
+  <meta property="og:description" content="Private Solana copy trading console with beginner-safe controls, strategy presets, and live/shadow execution." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/obsidian-labs.svg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Obsidian Labs" />
+  <meta name="twitter:description" content="A private Solana copy trading console with simplified strategy controls." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="mask-icon" href="/obsidian-labs.svg" color="#69e6be" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #030405;
+      --card: rgba(14,17,22,.72);
+      --card2: rgba(20,24,31,.68);
+      --glass: rgba(15,18,24,.58);
+      --glass-strong: rgba(18,22,29,.82);
+      --line: rgba(148,163,184,.16);
+      --line-strong: rgba(148,163,184,.28);
+      --text: #f6f8fb;
+      --muted: #8b95a5;
+      --soft: #d9e0ea;
+      --green: #69e6be;
+      --blue: #9cc7ff;
+      --amber: #f2cc6b;
+      --red: #ff7474;
+      --shadow: 0 28px 90px rgba(0,0,0,.58);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); }
+    body {
+      margin: 0; min-height: 100vh; color: var(--text);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.035) 0 1px, transparent 1px 58px),
+        radial-gradient(900px 420px at 50% -18%, rgba(105,230,190,.12), transparent 62%),
+        radial-gradient(700px 420px at 98% 8%, rgba(156,199,255,.08), transparent 56%),
+        linear-gradient(180deg, #070809, #020303 42%, #000);
+      background-size: 58px 58px, auto, auto, auto;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+      background: radial-gradient(circle at 50% 0%, rgba(255,255,255,.05), transparent 32%);
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    .app { width: min(1040px, calc(100% - 32px)); margin: 0 auto; padding: 30px 0 46px; }
+    .top { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 0 2px 18px; }
+    .brand { display: flex; gap: 11px; align-items: center; min-width: 0; }
+    .logo {
+      width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center;
+      background: rgba(255,255,255,.035); border: 1px solid var(--line);
+      box-shadow: 0 16px 45px rgba(105,230,190,.12); overflow: hidden;
+    }
+    .logo img { width: 100%; height: 100%; display: block; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 2px; font-size: 22px; letter-spacing: -.2px; }
+    .sub { color: var(--muted); font-size: 13px; }
+    .link-btn {
+      border: 1px solid var(--line); border-radius: 12px; background: rgba(10,13,18,.58); color: var(--soft);
+      min-height: 40px; padding: 9px 12px; font-weight: 850; backdrop-filter: blur(16px);
+    }
+    .hero {
+      border: 1px solid var(--line); border-radius: 22px;
+      background: linear-gradient(180deg, rgba(23,27,35,.76), rgba(7,9,12,.72));
+      padding: 20px; display: grid; gap: 16px; box-shadow: var(--shadow);
+      backdrop-filter: blur(22px) saturate(130%);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(135deg, rgba(255,255,255,.09), transparent 38%, rgba(105,230,190,.06));
+      opacity: .8;
+    }
+    .hero > * { position: relative; }
+    .wallet-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .tile {
+      border: 1px solid var(--line); border-radius: 16px;
+      background: linear-gradient(180deg, rgba(6,8,12,.74), rgba(3,5,8,.62));
+      padding: 16px; min-height: 94px; box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+    }
+    .tile span { display: block; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .45px; font-weight: 950; }
+    .tile strong { display: block; margin-top: 8px; font-size: 22px; overflow-wrap: anywhere; }
+    .tile small { display: block; color: var(--muted); margin-top: 5px; line-height: 1.35; }
+    .main-grid { display: grid; grid-template-columns: 1fr .86fr; gap: 16px; margin-top: 16px; align-items: start; }
+    .card {
+      border: 1px solid var(--line); border-radius: 20px; background: var(--card); overflow: hidden;
+      backdrop-filter: blur(20px) saturate(125%); box-shadow: 0 22px 70px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.035);
+    }
+    .card-head { padding: 17px 18px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 12px; background: rgba(255,255,255,.018); }
+    .card-title { font-weight: 950; }
+    .body { padding: 17px; display: grid; gap: 16px; }
+    .field { display: grid; gap: 9px; }
+    label { color: var(--soft); font-size: 12px; font-weight: 900; }
+    input, select, textarea {
+      width: 100%; border: 1px solid var(--line); border-radius: 13px; background: rgba(4,6,9,.72); color: var(--text);
+      padding: 12px; outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: rgba(139,216,255,.75); box-shadow: 0 0 0 3px rgba(139,216,255,.12); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .strategies { display: grid; gap: 9px; }
+    .strategy {
+      width: 100%; border: 1px solid var(--line); border-radius: 15px;
+      background: linear-gradient(180deg, rgba(9,12,17,.72), rgba(4,6,9,.62)); color: inherit;
+      padding: 14px; text-align: left; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center;
+    }
+    .strategy.active { border-color: rgba(105,230,190,.78); box-shadow: 0 0 0 2px rgba(105,230,190,.12) inset, 0 14px 42px rgba(105,230,190,.08); }
+    .strategy b { display: block; font-size: 15px; }
+    .strategy p { margin: 5px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.35; }
+    .strategy .fee-line { display: block; margin-top: 7px; color: var(--blue); font-size: 11.5px; font-weight: 850; }
+    .wallet-mini { display: block; margin-top: 6px; color: var(--soft); font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; opacity: .86; }
+    .badge { display: inline-flex; align-items: center; border-radius: 999px; background: rgba(93,242,174,.13); color: var(--green); padding: 5px 8px; font-size: 11px; font-weight: 950; white-space: nowrap; }
+    .research-panel {
+      border: 1px solid rgba(156,199,255,.2); border-radius: 16px;
+      background: linear-gradient(180deg, rgba(13,17,24,.72), rgba(5,8,12,.66));
+      padding: 14px; display: grid; gap: 12px; box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+    }
+    .research-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .research-head b { display: block; font-size: 15px; }
+    .research-head p { margin: 5px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+    .address-box {
+      border: 1px solid var(--line); border-radius: 13px; padding: 10px;
+      background: rgba(255,255,255,.025); display: grid; gap: 7px;
+    }
+    .address-box span { color: var(--muted); font-size: 10.5px; font-weight: 950; text-transform: uppercase; letter-spacing: .45px; }
+    .address-box code { color: var(--soft); font-size: 11px; overflow-wrap: anywhere; }
+    .mini-copy { min-height: 36px; padding: 7px 10px; border-radius: 11px; border: 1px solid var(--line); background: rgba(4,6,9,.72); color: var(--soft); font-weight: 950; white-space: nowrap; }
+    .research-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .research-stat { border: 1px solid var(--line); border-radius: 13px; padding: 10px; background: rgba(4,6,9,.54); min-width: 0; }
+    .research-stat span { display: block; color: var(--muted); font-size: 10px; font-weight: 950; text-transform: uppercase; letter-spacing: .45px; margin-bottom: 5px; }
+    .research-stat b { display: block; color: var(--text); font-size: 14px; line-height: 1.25; overflow-wrap: anywhere; }
+    .bucket-list, .takeaway-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+    .bucket-list li, .takeaway-list li {
+      border: 1px solid rgba(148,163,184,.13); border-radius: 12px;
+      background: rgba(255,255,255,.023); padding: 9px 10px; color: var(--soft); font-size: 12px; line-height: 1.42;
+    }
+    .research-source { color: var(--muted); font-size: 11px; line-height: 1.4; }
+    .amount-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .amount { border: 1px solid var(--line); border-radius: 13px; background: rgba(4,6,9,.68); color: var(--soft); min-height: 46px; font-weight: 950; }
+    .amount.active { border-color: transparent; background: linear-gradient(135deg, var(--green), var(--blue)); color: #02100a; }
+    .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+    .preset-card {
+      border: 1px solid var(--line); border-radius: 15px; background: linear-gradient(180deg, rgba(12,16,22,.72), rgba(4,6,9,.62));
+      color: var(--soft); padding: 13px; text-align: left; display: grid; gap: 6px; min-height: 118px;
+    }
+    .preset-card.active { border-color: rgba(105,230,190,.78); box-shadow: 0 0 0 2px rgba(105,230,190,.12) inset, 0 14px 42px rgba(105,230,190,.08); }
+    .preset-card b { display: block; font-size: 15px; }
+    .preset-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .preset-card small { color: var(--blue); font-weight: 900; }
+    .hint { color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+    .setting-help {
+      margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.45;
+      border: 1px solid rgba(148,163,184,.12); border-radius: 12px;
+      background: rgba(255,255,255,.025); padding: 9px 10px;
+    }
+    .plain-word { color: var(--green); font-weight: 950; }
+    .notice { border: 1px solid rgba(156,199,255,.22); border-radius: 15px; background: rgba(156,199,255,.055); padding: 13px 14px; color: var(--soft); font-size: 13px; line-height: 1.45; }
+    .sniper-badge { display: flex; gap: 8px; align-items: baseline; border: 1px solid rgba(105,230,190,.38); border-radius: 15px; background: rgba(105,230,190,.09); padding: 12px 14px; color: var(--soft); font-size: 12.5px; line-height: 1.45; }
+    .sniper-badge b { color: var(--green); }
+    .sniper-badge.off { border-color: rgba(242,204,107,.4); background: rgba(242,204,107,.08); }
+    .sniper-badge.off b { color: var(--amber); }
+    .speed-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .speed-row .speed-label { color: var(--muted); font-size: 11px; font-weight: 950; text-transform: uppercase; letter-spacing: .4px; }
+    .speed-btn { border: 1px solid var(--line); border-radius: 12px; background: rgba(4,6,9,.68); color: var(--soft); min-height: 46px; padding: 6px 13px; font-weight: 950; display: grid; gap: 1px; line-height: 1.15; text-align: center; }
+    .speed-btn small { color: var(--muted); font-size: 10.5px; font-weight: 800; }
+    .speed-btn.active { border-color: transparent; background: linear-gradient(135deg, var(--green), var(--blue)); color: #02100a; }
+    .speed-btn.active small { color: #02100a; opacity: .85; }
+    .warning { border-color: rgba(255,116,116,.42); background: rgba(255,116,116,.08); color: #ffd9d9; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .primary, .danger, .secondary {
+      min-height: 56px; border-radius: 15px; border: 1px solid var(--line); font-weight: 950;
+    }
+    .primary { border: 0; color: #03100b; background: linear-gradient(135deg, var(--green), var(--blue)); box-shadow: 0 16px 42px rgba(105,230,190,.16); }
+    .danger { color: #fff; background: rgba(255,116,116,.12); border-color: rgba(255,116,116,.45); }
+    .secondary { color: var(--soft); background: rgba(5,7,10,.68); }
+    details { border: 1px solid var(--line); border-radius: 15px; background: rgba(4,6,9,.62); }
+    summary { padding: 14px; cursor: pointer; font-weight: 950; color: var(--soft); }
+    .details-body { padding: 0 13px 13px; display: grid; gap: 10px; }
+    .toggle-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 13px; padding: 12px; background: rgba(255,255,255,.025); box-shadow: inset 0 1px 0 rgba(255,255,255,.025); }
+    .toggle-row p { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .switch { width: 54px; height: 32px; border: 1px solid var(--line); border-radius: 999px; background: #141922; position: relative; flex: 0 0 auto; }
+    .switch::after { content: ""; position: absolute; width: 24px; height: 24px; left: 3px; top: 3px; border-radius: 50%; background: var(--muted); transition: .16s; }
+    .switch.on { background: rgba(93,242,174,.2); border-color: rgba(93,242,174,.55); }
+    .switch.on::after { left: 25px; background: var(--green); }
+    #activityCard {
+      height: min(760px, calc(100vh - 96px));
+      max-height: calc(100vh - 32px);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 16px;
+    }
+    #activityCard .body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(105,230,190,.55) rgba(255,255,255,.06);
+      padding-bottom: 18px;
+    }
+    #activityCard .body::-webkit-scrollbar { width: 10px; }
+    #activityCard .body::-webkit-scrollbar-track { background: rgba(255,255,255,.04); border-radius: 999px; }
+    #activityCard .body::-webkit-scrollbar-thumb { background: rgba(105,230,190,.42); border-radius: 999px; border: 2px solid rgba(4,6,9,.9); }
+    .activity-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      padding: 12px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.018);
+    }
+    .stat-box { border: 1px solid var(--line); border-radius: 13px; padding: 10px; background: rgba(4,6,9,.58); min-width: 0; }
+    .stat-box b { display: block; color: var(--text); font-size: 16px; line-height: 1.1; overflow-wrap: anywhere; }
+    .stat-box span { display: block; color: var(--muted); font-size: 10px; font-weight: 950; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .stat-box.good b { color: var(--green); }
+    .stat-box.bad b { color: var(--red); }
+    .bot-status {
+      margin: 0; padding: 12px 14px; border-bottom: 1px solid var(--line);
+      background: rgba(4,6,9,.5); color: var(--soft); font-size: 13px; line-height: 1.45;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .status-dot { width: 9px; height: 9px; border-radius: 99px; margin-top: 5px; flex: 0 0 auto; background: var(--muted); }
+    .status-dot.on { background: var(--green); box-shadow: 0 0 14px rgba(93,242,174,.7); }
+    .status-dot.warn { background: var(--amber); box-shadow: 0 0 14px rgba(242,204,107,.55); }
+    .bot-status b { color: var(--text); }
+    .activity-feed-note {
+      padding: 9px 14px; border-bottom: 1px solid var(--line); color: var(--muted);
+      font-size: 11.5px; background: rgba(255,255,255,.012);
+    }
+    .feed, .positions { display: grid; gap: 8px; }
+    .log, .position { border: 1px solid var(--line); border-radius: 14px; background: rgba(4,6,9,.66); padding: 12px; color: var(--soft); font-size: 12.5px; line-height: 1.45; }
+    .log-time { display: block; color: var(--muted); font-size: 10.5px; font-weight: 900; letter-spacing: .35px; text-transform: uppercase; margin-bottom: 5px; }
+    .log.good { border-color: rgba(93,242,174,.42); }
+    .log.bad { border-color: rgba(255,116,116,.44); }
+    .log.warn { border-color: rgba(242,204,107,.44); }
+    .position-top { display: flex; justify-content: space-between; gap: 10px; }
+    .sell-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 10px; }
+    .sell-grid button { min-height: 36px; border: 1px solid var(--line); border-radius: 10px; background: #080c11; color: var(--soft); font-weight: 950; font-size: 12px; }
+    .toast { position: fixed; right: 16px; bottom: 16px; z-index: 30; border: 1px solid var(--line); border-radius: 14px; background: rgba(17,23,34,.86); color: var(--text); padding: 12px; display: none; max-width: min(420px, calc(100% - 32px)); font-size: 13px; backdrop-filter: blur(18px); }
+    .toast.show { display: block; }
+    .tour {
+      position: fixed; inset: 0; z-index: 1000; display: none;
+      background: radial-gradient(circle at var(--tour-x, 50%) var(--tour-y, 28%), transparent 0 150px, rgba(0,0,0,.58) 310px, rgba(0,0,0,.82) 100%);
+      padding: 22px; pointer-events: none;
+    }
+    .tour.open { display: block; }
+    .tour-card {
+      position: fixed; left: var(--tour-left, 50%); top: var(--tour-top, 50%);
+      transform: translate(var(--tour-shift-x, -50%), var(--tour-shift-y, -50%));
+      width: min(460px, calc(100vw - 36px)); border: 1px solid rgba(148,163,184,.24);
+      border-radius: 20px; background: linear-gradient(180deg, rgba(18,22,29,.9), rgba(7,10,14,.88));
+      padding: 24px; box-shadow: 0 26px 90px rgba(0,0,0,.68), inset 0 1px 0 rgba(255,255,255,.06);
+      backdrop-filter: blur(22px) saturate(135%); pointer-events: auto;
+      max-height: calc(100vh - 44px); overflow-y: auto; z-index: 1001;
+    }
+    .tour-kicker { color: var(--green); font-size: 11px; font-weight: 950; letter-spacing: .7px; text-transform: uppercase; margin-bottom: 9px; }
+    .tour-card h2 { margin-bottom: 10px; font-size: 23px; letter-spacing: -.2px; }
+    .tour-card p { color: var(--soft); line-height: 1.58; margin-bottom: 0; }
+    .tour-note {
+      margin-top: 14px; padding: 12px 13px; border: 1px solid rgba(105,230,190,.2);
+      border-radius: 14px; background: rgba(105,230,190,.07); color: var(--text); font-size: 13px; line-height: 1.45;
+    }
+    .tour-progress { display: flex; gap: 6px; margin-top: 18px; }
+    .tour-dot { height: 5px; flex: 1; border-radius: 999px; background: rgba(255,255,255,.12); }
+    .tour-dot.active { background: linear-gradient(135deg, var(--green), var(--blue)); }
+    .tour-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 18px; }
+    .tour-actions .primary, .tour-actions .secondary { min-height: 46px; min-width: 96px; }
+    .tour-actions button:disabled { opacity: .38; cursor: not-allowed; }
+    .focus-ring {
+      outline: 2px solid rgba(105,230,190,.98); outline-offset: 9px; position: relative; z-index: 35;
+      box-shadow: 0 0 0 1px rgba(105,230,190,.35), 0 0 60px rgba(105,230,190,.16) !important;
+    }
+    @media (max-width: 820px) {
+      .main-grid, .wallet-row, .row, .research-grid { grid-template-columns: 1fr; }
+      .amount-grid { grid-template-columns: 1fr 1fr; }
+      .research-head { display: grid; }
+      .top { align-items: stretch; flex-direction: column; }
+      #activityCard { position: static; height: min(680px, 78vh); max-height: none; }
+      #activityCard .body { min-height: 0; }
+      .activity-stats { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div class="brand">
+        <div class="logo"><img src="/obsidian-labs.svg" alt="Obsidian Labs" /></div>
+        <div>
+          <h1>Obsidian Labs</h1>
+          <div class="sub">Simple Solana copy trading console</div>
+        </div>
+      </div>
+      <div>
+        <button class="link-btn" id="tourBtn" type="button">Show me around</button>
+        <a class="link-btn" href="/friend" style="display:inline-flex;align-items:center;text-decoration:none;margin-left:6px">Advanced</a>
+      </div>
+    </header>
+
+    <section class="hero" id="homeCard">
+      <div class="wallet-row">
+        <div class="tile">
+          <span>Wallet balance</span>
+          <strong id="balanceText">--</strong>
+          <small id="walletText">Save a wallet to start.</small>
+        </div>
+        <div class="tile">
+          <span>Bot mode</span>
+          <strong id="modeText">--</strong>
+          <small id="modeHelp">Shadow is practice. Live can spend SOL.</small>
+        </div>
+        <div class="tile">
+          <span>Status</span>
+          <strong id="runText">Loading</strong>
+          <small id="statusHelp">Streams and executor start with the bot.</small>
+        </div>
+      </div>
+      <div class="sniper-badge" id="sniperBadge">⚡ <span><b>Same-Slot Sniper active.</b> Your copy is submitted through Jito ShredStream to land in the <b>same slot</b> as the tracked wallet — not seconds behind. Bigger buys make the fixed speed fee a smaller %.</span></div>
+      <div class="speed-row" id="speedRow">
+        <span class="speed-label">⚡ Speed</span>
+        <button class="speed-btn" data-tier="auto" type="button">Auto <small>Max when needed · capped</small></button>
+        <button class="speed-btn" data-tier="max" type="button">Max <small>~0.037 SOL/snipe</small></button>
+        <button class="speed-btn" data-tier="balanced" type="button">Balanced <small>~0.006 SOL/snipe</small></button>
+        <button class="speed-btn" data-tier="eco" type="button">Eco <small>~0.004 SOL/snipe</small></button>
+        <button class="speed-btn" data-tier="off" type="button">Off <small>gRPC mirror · no snipe fee</small></button>
+      </div>
+      <div class="notice" id="summaryText">Choose a strategy, pick the SOL amount, then start in Shadow mode first.</div>
+      <div class="actions" id="startArea">
+        <button class="primary" id="startBtn" type="button">Start Bot</button>
+        <button class="danger" id="stopBtn" type="button">Stop Bot</button>
+      </div>
+      <div class="setting-help" id="startHelp">Save a wallet first, then Start Bot unlocks.</div>
+    </section>
+
+    <section class="main-grid">
+      <div class="card" id="setupCard">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Setup</div>
+            <div class="hint">Three choices. The rest is optional.</div>
+          </div>
+          <button class="secondary" id="refreshBtn" type="button">Refresh</button>
+        </div>
+        <div class="body">
+          <div class="field" id="walletStep">
+            <label for="privateKey">1. Bot wallet private key</label>
+            <input id="privateKey" type="password" autocomplete="off" placeholder="Paste once, save, then it disappears" />
+            <button class="secondary" id="saveKeyBtn" type="button">Save Wallet</button>
+            <div class="setting-help"><span class="plain-word">Beginner version:</span> this is the wallet Obsidian trades from. Use a fresh wallet with only test money first.</div>
+          </div>
+
+          <div class="field" id="strategyStep">
+            <label>2. Strategy</label>
+            <div class="strategies" id="strategyGrid"></div>
+            <div class="research-panel" id="strategyResearch"></div>
+            <details>
+              <summary>Use my own wallet to copy</summary>
+              <div class="details-body">
+                <textarea id="customWallets" placeholder="Paste one tracked wallet address"></textarea>
+                <button class="secondary" id="useCustomBtn" type="button">Use Custom Wallet</button>
+              </div>
+            </details>
+          </div>
+
+          <div class="field" id="amountStep">
+            <label>3. SOL per buy</label>
+            <div class="amount-grid" id="amountGrid"></div>
+            <div class="row">
+              <div>
+                <label for="customAmount">Custom amount</label>
+                <input id="customAmount" type="number" min="0.001" step="0.001" placeholder="0.01" />
+                <div class="setting-help">The normal buy size. If you choose 0.01 SOL, the bot tries to spend 0.01 SOL when a copied wallet buys.</div>
+              </div>
+              <div>
+                <label for="reserveSol">Keep this SOL safe</label>
+                <input id="reserveSol" type="number" min="0" step="0.001" value="0.03" />
+                <div class="setting-help">A wallet cushion. The bot leaves this much SOL untouched for rent, transaction fees, and safety.</div>
+              </div>
+            </div>
+            <div class="hint">Recommended: 0.005-0.01 SOL for a first live test, or any size in Shadow mode.</div>
+          </div>
+
+          <div class="field" id="automationStep">
+            <label>4. Choose an automated setup</label>
+            <div class="preset-grid" id="presetGrid"></div>
+            <div class="hint" id="presetHelp">Shadow Practice is safest for the first run. The preset fills the advanced fields for you.</div>
+            <button class="secondary" id="applyPresetBtn" type="button">Apply Setup</button>
+          </div>
+
+          <details id="advancedBox">
+            <summary>Optional advanced controls (safe to ignore)</summary>
+            <div class="details-body">
+              <div class="toggle-row">
+                <div><b>Live Money mode</b><p>Off means practice only. On can spend real SOL from the saved wallet.</p></div>
+                <button class="switch" id="liveToggle" type="button" aria-label="Toggle live mode"></button>
+              </div>
+              <div class="toggle-row">
+                <div><b>Auto-follow sells</b><p>Recommended on. If the copied wallet exits, Obsidian exits too.</p></div>
+                <button class="switch on" id="mirrorToggle" type="button" aria-label="Toggle mirror sells"></button>
+              </div>
+              <div class="toggle-row">
+                <div><b>Extra fallback tip + priority fee</b><p>Optional extra boost for the slower fallback path. The Speed buttons above control the main same-slot sniper. Leave this off for 0 regular tip/priority fees.</p></div>
+                <button class="switch" id="feeToggle" type="button" aria-label="Toggle fees"></button>
+              </div>
+              <div class="setting-help" id="feeRecommendation">Extra regular fees are off. Use the Speed buttons above for Max/Balanced/Eco/Off same-slot fees.</div>
+              <div class="row">
+                <div>
+                  <label for="slippage">Max price change allowed (%)</label>
+                  <input id="slippage" type="number" min="0.1" max="100" step="0.1" value="50" />
+                  <div class="setting-help">Why this exists: pump.fun tokens move fast between quoting and landing a trade. This is the most price movement Obsidian allows before the chain rejects it. Copy-trading needs room: too low and buys/sells fail (errors 6042/6003) and have to retry, which is slower and worse on exits. Default: 50%. Tighter (20-30%) protects your entry price but misses more; higher (50-60%) reliably lands buys and always gets you out on sells.</div>
+                </div>
+                <div>
+                  <label for="maxBuy">Max per buy</label>
+                  <input id="maxBuy" type="number" min="0.001" step="0.001" value="0.25" />
+                  <div class="setting-help">Hard limit per signal. Even if a copied wallet buys huge, Obsidian will not spend more than this.</div>
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <label for="maxOpenPositions">Max active trades</label>
+                  <input id="maxOpenPositions" type="number" min="1" step="1" value="2" />
+                  <div class="setting-help">Default: 1. How many tokens can be open at the same time. Higher lets the bot copy more signals but spreads the wallet across more risk.</div>
+                </div>
+                <div>
+                  <label for="maxSolPerToken">Max SOL in one token</label>
+                  <input id="maxSolPerToken" type="number" min="0" step="0.001" value="0.25" />
+                  <div class="setting-help">Default: 0.03 SOL. Total exposure limit for one token, including repeat buys. Blank or 0 disables this cap.</div>
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <label for="maxSessionDeployed">Max SOL this session</label>
+                  <input id="maxSessionDeployed" type="number" min="0" step="0.001" value="1" />
+                  <div class="setting-help">Default: 0.06 SOL. Total gross buy budget before the bot stops opening new buys for this run. Blank or 0 disables this cap.</div>
+                </div>
+                <div>
+                  <label for="maxOpenDeployed">Max SOL currently open</label>
+                  <input id="maxOpenDeployed" type="number" min="0" step="0.001" placeholder="Optional" />
+                  <div class="setting-help">Optional. Limits how much SOL can be sitting in open trades at once. Useful for bigger wallets or multiple active trades.</div>
+                </div>
+              </div>
+              <div class="field">
+                <label for="maxFeeSol">Max speed fee budget per buy</label>
+                <input id="maxFeeSol" type="number" min="0" step="0.001" value="0.02" />
+                <div class="setting-help">Safety cap for buy execution fees. If fee math tries to spend more than this on tip + priority for one buy, Obsidian scales it down. Use 0.006 for Balanced, 0.004 for Eco, 0.02 for roomier demos, or 0 with Speed Off.</div>
+              </div>
+              <div class="field">
+                <label for="maxFeePct">Max speed fee % of buy</label>
+                <input id="maxFeePct" type="number" min="0" step="0.1" value="8" />
+                <div class="setting-help">Second safety cap for small buys. Example: 8% on a 0.015 SOL buy caps speed fees around 0.0012 SOL even if the absolute budget is higher. Obsidian uses whichever cap is lower. Use 5 for cheap tests, 8 balanced, 12 max-speed.</div>
+              </div>
+              <div class="row" id="feeFields" style="display:none">
+                <div>
+                  <label for="tipLamports">Speed tip</label>
+                  <input id="tipLamports" type="number" min="0" step="1000" value="0" />
+                  <div class="setting-help">Paid as an extra speed tip. Beginner default: use the strategy recommendation, or 0 for cheap testing. This can be spent even if the chain later rejects the trade.</div>
+                </div>
+                <div>
+                  <label for="priorityFee">Priority fee</label>
+                  <input id="priorityFee" type="number" min="0" step="1000" value="0" />
+                  <div class="setting-help">Paid to prioritize compute. Beginner default: leave blank to use the strategy recommendation (auto-applied in Live). Higher lands faster but costs more per attempt.</div>
+                </div>
+              </div>
+              <button class="secondary" id="saveSettingsBtn" type="button">Save Settings</button>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="card" id="activityCard">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Activity</div>
+            <div class="hint">Plain-English updates only.</div>
+          </div>
+          <button class="secondary" id="sellAllBtn" type="button">Sell All</button>
+        </div>
+        <div class="activity-stats" id="activityStats"></div>
+        <div class="bot-status" id="botStatus"><span class="status-dot warn"></span><div><b>Checking bot status...</b></div></div>
+        <div class="activity-feed-note">Latest updates appear at the bottom. Older activity auto-clears to keep this simple.</div>
+        <div class="body">
+          <div class="positions" id="positions"></div>
+          <div class="feed" id="feed"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="tour" id="tour">
+    <div class="tour-card">
+      <div class="tour-kicker" id="tourKicker">Step 1 of 6</div>
+      <h2 id="tourTitle">Welcome to Obsidian Labs</h2>
+      <p id="tourText">This page is the simple wallet-style view. We will walk through the pieces once.</p>
+      <div class="tour-note" id="tourNote">You can always restart this with Show me around.</div>
+      <div class="tour-progress" id="tourProgress"></div>
+      <div class="tour-actions">
+        <button class="secondary" id="tourBack" type="button">Back</button>
+        <button class="secondary" id="tourSkip" type="button">Skip</button>
+        <button class="primary" id="tourNext" type="button">Next</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STRATEGIES = [
+      {
+        id: "cya",
+        name: "Cented Strategy",
+        short: "Fast runner wallet",
+        wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
+        risk: "Medium/High",
+        amount: 0.01,
+        maxBuy: 0.015,
+        slippage: 50,
+        tipLamports: 1500000,
+        priorityFee: 1000000,
+        feeHelp: "Competitive boost (~0.003 SOL total) so buys land near Cented without overpaying.",
+        research: {
+          title: "Why this wallet?",
+          headline: "Cented is the fast-runner wallet. The audit says his best edge is early, low-market-cap entries with source sells plus a 50% profit lock at +30%.",
+          stats: [
+            ["Audit PnL", "+539.281 SOL"],
+            ["Win rate", "55.5%"],
+            ["Median ROI", "+4.43%"],
+            ["Profit factor", "2.14"]
+          ],
+          buckets: [
+            "$0-5k entry MC: 758 trades, 57.4% win, avg +19.4%, profit factor 4.16.",
+            "Pump route $0-5k: 616 trades, 58.9% win, median +5.6%, profit factor 4.23.",
+            "$100k+ entries were weak in the 7d bucket, but hybrid +30 profit lock improved that lane."
+          ],
+          takeaways: [
+            "Best use: copy early buys, avoid chasing very late high-MC entries.",
+            "Default exit: sell 50% at +30%, then follow the copied wallet.",
+            "Needs speed. Auto speed is best for demos: it can compete on huge source buys but caps fee spend by your buy size."
+          ],
+          source: "Sources: data/cya-quant.json, data/cya-ledger-buckets-latest.md, data/cya-100k-last7d.md"
+        }
+      },
+      {
+        id: "4bdk",
+        name: "Anchor Strategy",
+        short: "Higher win-rate source exits",
+        wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk",
+        risk: "Medium",
+        amount: 0.01,
+        maxBuy: 0.015,
+        slippage: 40,
+        tipLamports: 1000000,
+        priorityFee: 700000,
+        feeHelp: "Lighter boost (~0.002 SOL total). This strategy does not need max aggression.",
+        research: {
+          title: "Why this wallet?",
+          headline: "Anchor is the steadier source-exit wallet. The audit showed stronger win rate than Cented, larger median buys, and source exits that mattered more than aggressive manual exits.",
+          stats: [
+            ["Audit PnL", "+858.936 SOL"],
+            ["Win rate", "70.7%"],
+            ["Median ROI", "+30.19%"],
+            ["Profit factor", "5.94"]
+          ],
+          buckets: [
+            "Measured sample: 51 entries from 5,000 fetched transactions.",
+            "Source exit strategy: 70.6% win, avg +159.6%, median +30.6%, profit factor 25.11.",
+            "Hybrid +30 profit lock: 82.4% win, median +30.3%, profit factor 53.14 in the measured sample."
+          ],
+          takeaways: [
+            "Best use: let the wallet exit guide the trade instead of trying to over-manage.",
+            "Default exit: hybrid +30 lock, then source exit.",
+            "Risk is still real because drawdowns can be large before winners resolve."
+          ],
+          source: "Sources: data/4bdk-quant.json, data/path-wallet-audit-4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk.md"
+        }
+      },
+      {
+        id: "2cq",
+        name: "Scout Strategy",
+        short: "Early launch hunter",
+        wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+        risk: "High",
+        amount: 0.005,
+        maxBuy: 0.01,
+        slippage: 55,
+        tipLamports: 2000000,
+        priorityFee: 1200000,
+        feeHelp: "Most aggressive preset (~0.004 SOL total) because early-launch signals move fast.",
+        research: {
+          title: "Why this wallet?",
+          headline: "Scout is an early-launch hunter with many short campaigns. The audit says source exit is the cleanest model; many trades are tiny and fast, so this is not the beginner-safe lane.",
+          stats: [
+            ["Ledger PnL", "+364.685 SOL"],
+            ["Ledger win rate", "52.5%"],
+            ["Profit factor", "2.28"],
+            ["Median hold", "0.1 min"]
+          ],
+          buckets: [
+            "Wallet ledger: 6,254 realized trades, avg ROI +8.8%, median ROI +0.9%.",
+            "Path audit: source exit win 59.6%, avg +28.0%, median +2.8%, profit factor 3.44.",
+            "Hit rates in path sample: +30 on 14/50, +50 on 12/50, +100 on 9/50."
+          ],
+          takeaways: [
+            "Best use: small size, high speed, strict max-per-token cap.",
+            "Default exit: follow copied wallet sells; trailing/TP-only variants were weaker in the audit.",
+            "Expect more noise and more skipped/rejected trades than the steadier wallets."
+          ],
+          source: "Sources: data/wallet-ledger-audit-2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG.md, data/path-wallet-audit-2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG.md"
+        }
+      },
+      {
+        id: "bwam",
+        name: "Whale Tape",
+        short: "Research whale-flow pool",
+        wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa",
+        risk: "High",
+        amount: 0.01,
+        maxBuy: 0.02,
+        slippage: 50,
+        tipLamports: 1500000,
+        priorityFee: 1000000,
+        feeHelp: "Normal competitive boost (~0.003 SOL total) for whale-flow copies.",
+        research: {
+          title: "Why this wallet?",
+          headline: "Whale Tape is the large-flow research wallet. The audit is very strong, but open marks can be unstable, so this belongs in advanced testing rather than a first retail demo.",
+          stats: [
+            ["Realized PnL", "+2201.003 SOL"],
+            ["Win rate", "79.9%"],
+            ["Median ROI", "+47.6%"],
+            ["Profit factor", "13.58"]
+          ],
+          buckets: [
+            "$0-5k entry MC: 979 trades, avg +19.9%, profit factor 14.71, but median -2.2%.",
+            "$5k-10k entry MC: 8 trades, 87.5% win, median +542.9%, small sample.",
+            "7d window: +2186.0339 SOL net PnL, 79.6% win, profit factor 13.16."
+          ],
+          takeaways: [
+            "Best use: research/advanced pool, not the first beginner wallet.",
+            "Use hard exposure caps because the wallet flow can be large and fast.",
+            "Open-position marks may exaggerate results; prefer realized PnL and closed buckets."
+          ],
+          source: "Sources: data/wallet-ledger-audit-bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa.md, data/wallet-ledger-buckets-bwam-5000.md, data/wallet-pnl-windows-bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa.md"
+        }
+      },
+      {
+        id: "custom",
+        name: "Custom Wallet",
+        short: "Paste your own WalletTracker result",
+        wallet: "",
+        risk: "Custom",
+        amount: 0.01,
+        maxBuy: 0.01,
+        slippage: 40,
+        tipLamports: 1000000,
+        priorityFee: 700000,
+        feeHelp: "Starter boost (~0.002 SOL total) for unknown wallets. Raise only after testing.",
+        research: {
+          title: "Custom Wallet",
+          headline: "Use this after WalletTracker finds a wallet you want to test. Start in Shadow first because Obsidian has no saved audit summary for custom addresses yet.",
+          stats: [
+            ["Audit status", "Not preloaded"],
+            ["Best first mode", "Shadow"],
+            ["Suggested size", "0.005-0.01 SOL"],
+            ["Exit model", "Source sells"]
+          ],
+          buckets: [
+            "No bucket report is attached to custom wallets in this UI yet.",
+            "Use WalletTracker or a bucket audit before increasing live size.",
+            "Keep Max SOL in one token and Max SOL this session low for the first run."
+          ],
+          takeaways: [
+            "Paste one wallet address, save settings, then run Shadow.",
+            "Only move to Live after you see clean buy/sell behavior.",
+            "If the wallet buys huge or late, cap your bot size with the advanced limits."
+          ],
+          source: "Source: user-provided wallet. No built-in audit."
+        }
+      }
+    ];
+    const AMOUNTS = [0.01, 0.05, 0.1, 0.25];
+    const AUTO_PRESETS = {
+      safe: {
+        name: "Shadow Practice",
+        short: "No real buys. Best first click.",
+        speed: "off",
+        live: false,
+        amountMax: 0.01,
+        reserve: 0.03,
+        maxOpenPositions: 1,
+        maxSolPerToken: 0.03,
+        maxSession: 0.06,
+        maxOpen: 0.03,
+        maxFeeSol: 0,
+        maxFeePct: 0,
+        slippageBoost: 0,
+        feeMode: false,
+        note: "Practice mode, no same-slot snipe fees, auto-sells on. Good for teaching and UI demos."
+      },
+      tiny: {
+        name: "Tiny Live Test",
+        short: "Real SOL, tiny size, cheap speed.",
+        speed: "eco",
+        live: true,
+        amountMax: 0.01,
+        reserve: 0.05,
+        maxOpenPositions: 1,
+        maxSolPerToken: 0.03,
+        maxSession: 0.06,
+        maxOpen: 0.03,
+        maxFeeSol: 0.005,
+        maxFeePct: 5,
+        slippageBoost: 0,
+        feeMode: false,
+        note: "Small real-money smoke test. Uses Eco same-slot speed and strict exposure limits."
+      },
+      balanced: {
+        name: "Balanced Live",
+        short: "Recommended acquisition demo.",
+        speed: "auto",
+        live: true,
+        amountMax: null,
+        reserve: 0.05,
+        maxOpenPositions: 2,
+        maxSolPerToken: 0.15,
+        maxSession: 0.5,
+        maxOpen: 0.3,
+        maxFeeSol: 0.05,
+        maxFeePct: 8,
+        slippageBoost: 0,
+        feeMode: false,
+        note: "Default retail preset: same-slot sniper on, Auto speed with capped fees, auto-sells, and moderate exposure."
+      },
+      max: {
+        name: "Max Speed",
+        short: "Most competitive, higher cost.",
+        speed: "max",
+        live: true,
+        amountMax: null,
+        reserve: 0.05,
+        maxOpenPositions: 3,
+        maxSolPerToken: 0.3,
+        maxSession: 1,
+        maxOpen: 0.6,
+        maxFeeSol: 0.05,
+        maxFeePct: 12,
+        slippageBoost: 10,
+        feeMode: false,
+        note: "For competitive wallets like Cented when the tester accepts higher speed-fee spend."
+      }
+    };
+    const $ = (id) => document.getElementById(id);
+    let selected = STRATEGIES[0];
+    let amount = selected.amount;
+    let state = null;
+    let settings = null;
+    let logsSince = 0;
+    let tradesSince = 0;
+    let liveMode = false;
+    let mirrorSells = true;
+    let feeMode = false;
+    let selectedPreset = "balanced";
+    let desiredSpeed = "balanced";
+    let tourIndex = 0;
+    const renderedStatusMessages = new Set();
+    const renderedTradeReceipts = new Set();
+    let lastFeedText = '';
+
+    const TOUR_STORAGE_KEY = "obsidianFriendSimpleTourSeenV2";
+    const tourSteps = [
+      {
+        id: "homeCard",
+        title: "Start here",
+        text: "This is the whole bot in one screen. Wallet Balance shows the money in the trading wallet. Bot Mode says Shadow when it is only practicing, and Live when it can spend real SOL. Status tells you if trading is running.",
+        note: "For a first test, use Shadow or a tiny Live amount. You do not need to understand every setting to begin."
+      },
+      {
+        id: "walletStep",
+        title: "Connect a small test wallet",
+        text: "This is the wallet the bot trades from. Paste the private key once, press Save Wallet, and the field clears so the key is not left on screen.",
+        note: "Use a fresh wallet with only test funds. Do not use a main wallet or a wallet with large balances for demos."
+      },
+      {
+        id: "strategyStep",
+        title: "Pick who to copy",
+        text: "A strategy is a prebuilt wallet-following setup. The research card shows the full wallet address, audit stats, bucket highlights, and the simple reason this wallet is in the menu.",
+        note: "Beginners should pick one strategy, read the takeaways, and leave the defaults alone for the first run."
+      },
+      {
+        id: "amountStep",
+        title: "Choose SOL per buy",
+        text: "This is the normal amount the bot tries to spend when the tracked wallet buys. If you choose 0.01 SOL, each copied buy is tiny and easier to test.",
+        note: "Recommended first Live test: 0.005 to 0.01 SOL. Bigger numbers mean bigger wins and bigger losses."
+      },
+      {
+        id: "automationStep",
+        title: "Pick an automated setup",
+        text: "These presets fill the advanced controls for you: Shadow or Live mode, same-slot speed, fee caps, auto-sells, and wallet exposure limits.",
+        note: "Use Balanced Live for the acquisition demo, Tiny Live Test for a cautious real-money test, or Shadow Practice when teaching without spending."
+      },
+      {
+        id: "advancedBox",
+        title: "Safety limits protect the wallet",
+        text: "These controls are optional. Max active trades, max SOL per token, and max SOL this session stop the bot from using too much money at once.",
+        note: "Price movement room means how much worse the token price may move before the bot refuses the buy. Default is usually 40-55% for fast copy-trading. Lower is safer but misses more; higher lands more but accepts worse fills."
+      },
+      {
+        id: "startArea",
+        title: "Start only when the checks look right",
+        text: "Start Bot begins watching the selected wallet. Stop Bot pauses trading. If Live Money mode is on, the confirmation popup means real SOL can be spent.",
+        note: "Simple rule: save wallet, choose strategy, choose SOL amount, then start in Shadow first or tiny Live mode."
+      },
+      {
+        id: "activityCard",
+        title: "Read the activity feed like a receipt",
+        text: "This panel explains what the bot saw and what it did. Open positions appear here, and sell buttons let you sell 25%, 50%, or all when a buy lands.",
+        note: "If a buy fails, the UI translates scary chain errors into plain English, such as slippage too low or price moved too fast."
+      }
+    ];
+    function esc(v) {
+      return String(v ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+    }
+    function fmtSol(n) {
+      return typeof n === "number" && Number.isFinite(n) ? `${n.toFixed(4)} SOL` : "--";
+    }
+    function fmtTip(lamports) {
+      const n = Number(lamports || 0) / 1e9;
+      return n > 0 ? `${n.toFixed(4)} SOL tip` : "0 SOL tip";
+    }
+    // Priority fee is charged per compute unit (COMPUTE_UNIT_LIMIT defaults to 1.4M),
+    // so show the real SOL cost instead of a raw micro-lamport number that hides it.
+    const COMPUTE_UNITS = 1400000;
+    function fmtPriority(microLamports) {
+      const n = Number(microLamports || 0);
+      if (n <= 0) return "0 priority";
+      const sol = (n * COMPUTE_UNITS) / 1e6 / 1e9;
+      return `~${sol.toFixed(4)} SOL priority`;
+    }
+    function shortWallet(wallet) {
+      return wallet ? `${wallet.slice(0, 6)}...${wallet.slice(-6)}` : "Custom wallet";
+    }
+    function setFeeDefaults(strategy = selected, force = false) {
+      if (!strategy) return;
+      if (force || Number($("tipLamports").value || 0) <= 0) $("tipLamports").value = strategy.tipLamports || 0;
+      if (force || Number($("priorityFee").value || 0) <= 0) $("priorityFee").value = strategy.priorityFee || 0;
+    }
+    function toast(msg) {
+      $("toast").textContent = msg;
+      $("toast").classList.add("show");
+      setTimeout(() => $("toast").classList.remove("show"), 3800);
+    }
+    let currentSpeed = "balanced";
+    function renderSpeed() {
+      document.querySelectorAll("[data-tier]").forEach((b) => b.classList.toggle("active", b.dataset.tier === currentSpeed));
+      const badge = $("sniperBadge");
+      if (!badge) return;
+      if (currentSpeed === "off") {
+        badge.classList.add("off");
+        badge.innerHTML = '⚡ <span><b>Same-Slot Sniper is OFF.</b> Buys use the slower gRPC mirror path — cheaper (no snipe fee), but they land about a slot behind the tracked wallet. Pick Max, Balanced, or Eco to switch same-slot back on.</span>';
+      } else {
+        badge.classList.remove("off");
+        badge.innerHTML = '⚡ <span><b>Same-Slot Sniper active.</b> Your copy is submitted through Jito ShredStream to land in the <b>same slot</b> as the tracked wallet — not seconds behind. Bigger buys make the fixed speed fee a smaller %.</span>';
+      }
+    }
+    async function loadSpeed() {
+      try { const d = await api("/api/speed"); currentSpeed = d.tier || "balanced"; renderSpeed(); } catch {}
+    }
+    async function setSpeed(tier) {
+      if (tier === currentSpeed) return;
+      const msg = tier === "off"
+        ? "Turn the Same-Slot Sniper OFF?\n\nBuys will use the slower gRPC mirror (no snipe fee, but you land about a slot behind). This restarts the bot (~10s). If it was running, press Start again after."
+        : tier === "auto"
+          ? "Switch speed to AUTO?\n\nAuto uses Max-grade sniper fees when needed, but caps fee spend by buy size so tiny buys do not pay full Max cost. This restarts the bot (~10s). If it was running, press Start again after."
+        : "Switch speed to " + tier.toUpperCase() + "?\n\nThe sniper stays ON — only the fee level changes. This restarts the bot (~10s). If it was running, press Start again after.";
+      if (!confirm(msg)) return;
+      try {
+        toast("Applying " + tier + " speed — restarting sniper, back in ~10s...");
+        await api("/api/speed", { method: "POST", body: JSON.stringify({ tier }) });
+      } catch (e) { /* server exits mid-restart; expected */ }
+      setTimeout(() => location.reload(), 10000);
+    }
+    async function api(path, opts = {}) {
+      const res = await fetch(path, { ...opts, headers: { "content-type": "application/json", ...(opts.headers || {}) } });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok === false) throw new Error(data.error || data.message || `Request failed: ${res.status}`);
+      return data;
+    }
+    function fmtPnlLamports(lamports) {
+      const n = Number(lamports || 0) / 1e9;
+      const sign = n >= 0 ? "+" : "-";
+      return `${sign}${Math.abs(n).toFixed(4)} SOL`;
+    }
+    function fmtPnlPct(pct) {
+      const n = Number(pct);
+      if (!Number.isFinite(n)) return "";
+      return ` (${n >= 0 ? "+" : ""}${n.toFixed(1)}%)`;
+    }
+    function feedTime(ts = Date.now()) {
+      try { return new Date(ts).toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" }); } catch { return "now"; }
+    }
+    function appendFeed(text, type = "", ts = Date.now()) {
+      if (!text || text === lastFeedText) return;
+      lastFeedText = text;
+      const div = document.createElement("div");
+      div.className = `log ${type || ""}`;
+      div.innerHTML = `<span class="log-time">${esc(feedTime(ts))}</span>${esc(text)}`;
+      $("feed").appendChild(div);
+      while ($("feed").children.length > 24) $("feed").removeChild($("feed").firstChild);
+      const body = $("activityCard").querySelector(".body");
+      if (body) body.scrollTop = body.scrollHeight;
+    }
+    function customErrorCode(raw) {
+      const text = String(raw || "");
+      const hex = text.match(/custom program error:\s*0x([0-9a-f]+)/i)?.[1];
+      return text.match(/Custom["):\s]*(\d+)/i)?.[1] || text.match(/Error Number:\s*(\d+)/i)?.[1] || (hex ? String(parseInt(hex, 16)) : "");
+    }
+    function compactLog(line) {
+      const raw = String(line || "").replace(/\s+/g, " ").trim();
+      const lower = raw.toLowerCase();
+      const code = customErrorCode(raw);
+      const shortMint = raw.match(/(?:for|mint=|CA:)\s*([1-9A-HJ-NP-Za-km-z]{8})[1-9A-HJ-NP-Za-km-z]*/i)?.[1];
+      const mintText = shortMint ? ` Token: ${shortMint}...` : "";
+
+      if (!raw) return null;
+      if (/rust-sidecar: hot sniper fees|rust-sidecar: starting|rust-sidecar: subscribed$|subscribed to jito shredstream entries|execution plan:|available:|required incl\.|source trade:|balance:/i.test(raw)) return null;
+      if (/jito shredstream: connected/i.test(raw)) return { type: "good", text: "Streams connected: ShredStream is live." };
+      if (/grpc: subscribed/i.test(raw)) return { type: "good", text: "Streams connected: gRPC wallet watcher is live." };
+      if (/rabbitstream: subscribed/i.test(raw)) return { type: "good", text: "Streams connected: fast wallet stream is live." };
+      if (/rust executor command channel ready/i.test(raw)) return { type: "good", text: "Executor ready: Rust trading engine is connected." };
+      if (/wallet activity detected|grpc detected swap|rust sidecar detected buy|detected buy by/i.test(raw)) {
+        return { type: "", text: `Wallet activity seen${mintText}. Waiting for a copyable buy.` };
+      }
+      if (/processing buy/i.test(raw)) {
+        return { type: "", text: `Buy signal received${mintText}. Checking safety rules now.` };
+      }
+      if (/processing sell/i.test(raw)) return null;
+      if (/rust-only buy mode:|passed filters; rust executor will broadcast/i.test(raw)) {
+        return { type: "good", text: `Buy approved${mintText}. Sending with the fast Rust engine.` };
+      }
+      if (/broadcast accepted|direct path complete|mirror path completed/i.test(raw)) return null;
+      const buyMatch = raw.match(/Buy.*?:\s*([0-9.]+)\s*SOL/i) || raw.match(/Trade went through.*?([0-9.]+)\s*SOL/i);
+      if (buyMatch) return { type: "good", text: `Trade went through: ${buyMatch[1]} SOL purchased.${mintText}` };
+      const sellMatch = raw.match(/Sell(?: LIVE)?(?: .*?)?:\s*([0-9,.]+)\s*/i);
+      if (/sell .*complete|sell live|sell \(/i.test(lower)) return null;
+      if (/skipping sell:.*no position|skipped sell:.*no position|confirmed wallet inventory is 0/i.test(lower)) return null;
+      if (/skipping buy:.*below configured minimum|below configured minimum/i.test(lower)) return { type: "warn", text: "Buy skipped: the copied trade was below the minimum buy size." };
+      if (/skipping buy:.*buy-once|already bought/i.test(lower)) return { type: "warn", text: `Buy skipped: this token was already bought in this session.${mintText}` };
+      if (/shadow reserve check failed/i.test(raw)) return { type: "warn", text: "Shadow test did not open: simulated test balance was too low. Restarting the updated demo fixes this." };
+      if (/skipping buy:.*(?:not enough|insufficient)|buy not sent:.*(?:not enough|insufficient)|insufficient funds/i.test(lower)) return { type: "bad", text: liveMode ? "Buy not sent: not enough available SOL after reserve and fees." : "Shadow test did not open: simulated test balance was too low." };
+      if (/failed|instructionerror|preflight|custom|error|expired|blockhash|rate limited|429|timed out|timeout|rejected/i.test(lower)) {
+        if (code === "6042" || code === "6002") return { type: "bad", text: "Buy did not go through: the bonding curve moved too fast before confirmation." };
+        if (code === "6023" || lower.includes("overflow")) return { type: "bad", text: "Buy did not go through: the pool moved too fast and rejected the quote." };
+        if (lower.includes("slippage")) return { type: "bad", text: "Buy did not go through: price moved past the allowed price movement room." };
+        if (lower.includes("429") || lower.includes("rate limited")) return { type: "warn", text: "Provider slowed a status check. Streams can still be connected." };
+        if (lower.includes("blockhash") || lower.includes("expired") || lower.includes("timeout")) return { type: "bad", text: "Transaction did not land: the cluster dropped or expired it before confirmation." };
+        return { type: "bad", text: "Trade did not go through: the chain rejected it or the market moved before confirmation." };
+      }
+      if (/telegram|shortcut|price sampler|web ui:|dex ui:|license checks|fresh start|helius transactionsubscribe disabled|websocket_url|watcher poll fallback/i.test(raw)) return null;
+      return null;
+    }
+    function payload(extra = {}) {
+      const custom = Number($("customAmount").value);
+      const buy = Number.isFinite(custom) && custom > 0 ? custom : amount;
+      amount = buy;
+      return {
+        trackedWallets: selected.id === "custom" ? $("customWallets").value.split(/[\n,]+/).map((x) => x.trim()).filter(Boolean) : [selected.wallet],
+        minBuySol: buy,
+        maxBuySol: Math.max(buy, Number($("maxBuy").value || buy)),
+        copyBuyPercentage: 0,
+        solReserveSol: Number($("reserveSol").value || 0.03),
+        maxOpenPositions: $("maxOpenPositions").value.trim() ? Number($("maxOpenPositions").value) : null,
+        maxSolPerTokenSol: $("maxSolPerToken").value.trim() ? Number($("maxSolPerToken").value) : null,
+        maxSessionDeployedSol: $("maxSessionDeployed").value.trim() ? Number($("maxSessionDeployed").value) : null,
+        maxOpenDeployedSol: $("maxOpenDeployed").value.trim() ? Number($("maxOpenDeployed").value) : null,
+        mirrorSlippageBps: Math.round(Number($("slippage").value || selected.slippage) * 100),
+        mirrorSells,
+        simulationMode: !liveMode,
+        maxBuyExecutionFeeSol: $("maxFeeSol").value.trim() ? Number($("maxFeeSol").value) : null,
+        maxBuyExecutionFeePctOfBuy: $("maxFeePct").value.trim() ? Number($("maxFeePct").value) : null,
+        // These are only the regular fallback fees. The same-slot sniper's real fees are
+        // controlled by the Speed row. Keeping this toggle off must mean 0 regular tip/priority.
+        tipLamports: feeMode ? (Number($("tipLamports").value || 0) || selected.tipLamports || 0) : 0,
+        priorityFeeMicroLamports: feeMode ? (Number($("priorityFee").value || 0) || selected.priorityFee || 0) : 0,
+        stopLossPct: "35",
+        takeProfitPct: "",
+        minHoldBeforeStopLossMs: "15000",
+        hybridExitEnabled: true,
+        hybridExitTpPct: "30",
+        hybridExitTpSellPct: "50",
+        hybridExitSourceExitRemaining: true,
+        ...extra
+      };
+    }
+    function renderStrategies() {
+      $("strategyGrid").innerHTML = STRATEGIES.map((s) => `
+        <button class="strategy ${s.id === selected.id ? "active" : ""}" data-strategy="${esc(s.id)}" type="button">
+          <span><b>${esc(s.name)}</b><p>${esc(s.short)}<span class="wallet-mini">${esc(shortWallet(s.wallet))}</span><span class="fee-line">Fee boost: ${esc(fmtTip(s.tipLamports))} + ${esc(fmtPriority(s.priorityFee))}</span></p></span>
+          <span class="badge">${esc(s.risk)}</span>
+        </button>
+      `).join("");
+      document.querySelectorAll("[data-strategy]").forEach((btn) => btn.addEventListener("click", () => {
+        selected = STRATEGIES.find((s) => s.id === btn.dataset.strategy) || selected;
+        if (selected.wallet) $("customWallets").value = selected.wallet;
+        applyPreset(selectedPreset, false);
+        setFeeDefaults(selected, feeMode);
+        toast(`${selected.name} selected.`);
+      }));
+    }
+    function renderStrategyResearch() {
+      const research = selected.research || {};
+      const stats = Array.isArray(research.stats) ? research.stats : [];
+      const buckets = Array.isArray(research.buckets) ? research.buckets : [];
+      const takeaways = Array.isArray(research.takeaways) ? research.takeaways : [];
+      const address = selected.id === "custom" ? ($("customWallets").value.trim() || "Paste a wallet below to show it here.") : selected.wallet;
+      $("strategyResearch").innerHTML = `
+        <div class="research-head">
+          <div>
+            <b>${esc(research.title || "Why this strategy?")}</b>
+            <p>${esc(research.headline || "Historical research appears here for prebuilt wallets.")}</p>
+          </div>
+          <button class="mini-copy" id="copyStrategyWallet" type="button" ${selected.id === "custom" && !address.startsWith("Paste") ? "" : selected.wallet ? "" : "disabled"}>Copy address</button>
+        </div>
+        <div class="address-box">
+          <span>Full wallet address</span>
+          <code>${esc(address)}</code>
+        </div>
+        <div class="research-grid">
+          ${stats.map(([label, value]) => `<div class="research-stat"><span>${esc(label)}</span><b>${esc(value)}</b></div>`).join("")}
+        </div>
+        <div>
+          <label>Bucket highlights</label>
+          <ul class="bucket-list">${buckets.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+        </div>
+        <div>
+          <label>Plain-English takeaways</label>
+          <ul class="takeaway-list">${takeaways.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+        </div>
+        <div class="research-source">${esc(research.source || "")}</div>
+      `;
+      const copyBtn = $("copyStrategyWallet");
+      if (copyBtn) copyBtn.addEventListener("click", async () => {
+        const wallet = selected.id === "custom" ? $("customWallets").value.trim() : selected.wallet;
+        if (!wallet) return toast("Paste a custom wallet first.");
+        try {
+          await navigator.clipboard.writeText(wallet);
+          toast("Wallet address copied.");
+        } catch {
+          toast(wallet);
+        }
+      });
+    }
+    function renderAmounts() {
+      $("amountGrid").innerHTML = AMOUNTS.map((a) => `<button class="amount ${a === amount ? "active" : ""}" data-amount="${a}" type="button">${a} SOL</button>`).join("");
+      document.querySelectorAll("[data-amount]").forEach((btn) => btn.addEventListener("click", () => {
+        amount = Number(btn.dataset.amount);
+        $("customAmount").value = "";
+        $("maxBuy").value = Math.max(amount, selected.maxBuy);
+        render();
+      }));
+    }
+    function presetAmount(preset) {
+      const strategyAmount = Number(selected.amount || 0.01);
+      return preset.amountMax ? Math.min(strategyAmount, preset.amountMax) : strategyAmount;
+    }
+    function renderAutomationPresets() {
+      $("presetGrid").innerHTML = Object.entries(AUTO_PRESETS).map(([id, p]) => `
+        <button class="preset-card ${id === selectedPreset ? "active" : ""}" data-preset="${esc(id)}" type="button">
+          <b>${esc(p.name)}</b>
+          <p>${esc(p.short)}</p>
+          <small>${p.live ? "Live" : "Shadow"} · ${esc(p.speed.toUpperCase())} speed · ${presetAmount(p).toFixed(3)} SOL/buy</small>
+        </button>
+      `).join("");
+      document.querySelectorAll("[data-preset]").forEach((btn) => btn.addEventListener("click", () => {
+        applyPreset(btn.dataset.preset || "safe", false);
+      }));
+    }
+    function applyPreset(id = selectedPreset, shouldToast = true) {
+      const preset = AUTO_PRESETS[id] || AUTO_PRESETS.safe;
+      selectedPreset = id;
+      desiredSpeed = preset.speed;
+      liveMode = preset.live;
+      feeMode = preset.feeMode;
+      mirrorSells = true;
+      amount = presetAmount(preset);
+      $("customAmount").value = amount.toString();
+      $("reserveSol").value = preset.reserve;
+      $("maxBuy").value = Math.max(amount, selected.maxBuy);
+      $("maxOpenPositions").value = preset.maxOpenPositions;
+      $("maxSolPerToken").value = preset.maxSolPerToken;
+      $("maxSessionDeployed").value = preset.maxSession;
+      $("maxOpenDeployed").value = preset.maxOpen;
+      $("maxFeeSol").value = preset.maxFeeSol;
+      $("maxFeePct").value = preset.maxFeePct;
+      $("slippage").value = Math.min(100, Math.max(selected.slippage, selected.slippage + preset.slippageBoost));
+      setFeeDefaults(selected, false);
+      $("presetHelp").textContent = `${preset.name}: ${preset.note} ${preset.speed !== currentSpeed ? "Apply Setup will update the speed engine and may restart for about 10 seconds." : "Already using this speed tier."}`;
+      render();
+      if (shouldToast) toast(`${preset.name} loaded.`);
+    }
+    async function applyPresetAndSave() {
+      const preset = AUTO_PRESETS[selectedPreset] || AUTO_PRESETS.safe;
+      const speedChanged = desiredSpeed !== currentSpeed;
+      if (speedChanged && !confirm(`${preset.name} uses ${desiredSpeed.toUpperCase()} speed. Applying it may restart the bot for about 10 seconds. Continue?`)) return;
+      await saveSettings({ quiet: true });
+      if (speedChanged) {
+        toast(`Applying ${desiredSpeed} speed. The page will reload in ~10s.`);
+        try {
+          await api("/api/speed", { method: "POST", body: JSON.stringify({ tier: desiredSpeed }) });
+        } catch {}
+        setTimeout(() => location.reload(), 10000);
+        return;
+      }
+      toast(`${preset.name} applied and saved.`);
+    }
+    function render() {
+      renderStrategies();
+      renderStrategyResearch();
+      renderAmounts();
+      renderAutomationPresets();
+      renderActivityStats();
+      renderBotStatus();
+      $("modeText").textContent = liveMode ? "Live" : "Shadow";
+      $("runText").textContent = state?.running ? "Running" : "Stopped";
+      $("balanceText").textContent = fmtSol(state?.lastBalanceSol);
+      $("walletText").textContent = state?.ourWallet ? `${state.ourWallet.slice(0, 4)}...${state.ourWallet.slice(-4)}` : "Save a wallet to start.";
+      $("modeHelp").textContent = liveMode ? "Real SOL can be spent." : "Practice only. No real buys.";
+      $("statusHelp").textContent = state?.running ? "Watching selected wallet now." : "Stopped. Nothing is being copied.";
+      $("liveToggle").classList.toggle("on", liveMode);
+      $("mirrorToggle").classList.toggle("on", mirrorSells);
+      $("feeToggle").classList.toggle("on", feeMode);
+      $("feeFields").style.display = feeMode ? "grid" : "none";
+      const feeTip = Number($("tipLamports").value || selected.tipLamports || 0);
+      const feePriority = Number($("priorityFee").value || selected.priorityFee || 0);
+      $("feeRecommendation").innerHTML = feeMode
+        ? `<span class="plain-word">Extra fallback fees ON:</span> ${esc(fmtTip(feeTip))} + ${esc(fmtPriority(feePriority))}. ${esc(selected.feeHelp || "Use small values first.")}`
+        : liveMode
+          ? `<span class="plain-word">Extra fallback fees OFF:</span> regular tip/priority is 0. Same-slot cost comes only from the Speed choice above (${esc(currentSpeed)}), capped by Max speed fee budget and % of buy size.`
+          : `<span class="plain-word">Extra fallback fees OFF:</span> Shadow mode needs no fees. Use Speed Off for 0 same-slot fees, or Balanced/Eco/Max for competitive same-slot attempts.`;
+      $("summaryText").className = `notice ${liveMode ? "warning" : ""}`;
+      $("summaryText").textContent = `Selected: ${selected.name}. Normal buy: ${amount.toFixed(3)} SOL. Hard max: ${Number($("maxBuy").value || amount).toFixed(3)} SOL. Sells: ${mirrorSells ? "follow copied wallet" : "manual only"}. Profit lock: sell 50% at +30%, then follow the copied wallet.`;
+      const customMissing = selected.id === "custom" && !$("customWallets").value.trim();
+      const liveNeedsBalance = liveMode && !(state?.lastBalanceSol > 0);
+      const missingWallet = !state?.ourWallet;
+      const blockedReason = missingWallet ? "Start locked: save a bot wallet private key first." : customMissing ? "Start locked: paste the wallet you want to copy, or choose a prebuilt strategy." : liveNeedsBalance ? "Start locked: Live mode needs a funded wallet. Switch to Shadow or add SOL." : "Ready. Start Bot will begin watching the selected wallet.";
+      $("startHelp").textContent = blockedReason;
+      $("startHelp").className = `setting-help ${missingWallet || customMissing || liveNeedsBalance ? "warning" : ""}`;
+      $("startBtn").disabled = Boolean(missingWallet || customMissing || liveNeedsBalance);
+    }
+    function renderActivityStats() {
+      const totals = state?.totals || {};
+      const pnl = Number(totals.realizedPnlLamports || 0);
+      const roi = totals.realizedCostBasisLamports > 0 ? (pnl / totals.realizedCostBasisLamports) * 100 : null;
+      const pnlText = `${fmtPnlLamports(pnl)}${roi == null ? "" : fmtPnlPct(roi)}`;
+      const openCost = Number(totals.openCostBasisLamports || 0) / 1e9;
+      $("activityStats").innerHTML = `
+        <div class="stat-box ${pnl > 0 ? "good" : pnl < 0 ? "bad" : ""}"><span>Total PnL</span><b>${esc(pnlText)}</b></div>
+        <div class="stat-box"><span>Trades</span><b>${Number(totals.tradesCount || 0)}</b></div>
+        <div class="stat-box"><span>Buys / Sells</span><b>${Number(totals.buysCount || 0)} / ${Number(totals.sellsCount || 0)}</b></div>
+        <div class="stat-box"><span>Open Trades</span><b>${Number(totals.openPositions || 0)}</b></div>
+        <div class="stat-box"><span>Open Cost</span><b>${openCost.toFixed(4)} SOL</b></div>
+        <div class="stat-box"><span>Mode</span><b>${liveMode ? "Live" : "Shadow"}</b></div>
+      `;
+    }
+    function renderBotStatus() {
+      const running = !!state?.running;
+      const walletReady = !!state?.ourWallet;
+      const strategy = selected?.name || "Selected strategy";
+      const mode = liveMode ? "Live" : "Shadow";
+      const buySize = `${amount.toFixed(3)} SOL`;
+      const dotClass = running ? "on" : walletReady ? "warn" : "";
+      const title = running ? "Bot is running" : walletReady ? "Bot is stopped" : "Wallet not connected";
+      const detail = running
+        ? `Watching ${strategy} in ${mode} mode. Normal buy ${buySize}. Auto-sells ${mirrorSells ? "ON" : "OFF"}.`
+        : walletReady
+          ? `Ready but not trading. Press Start Bot to watch ${strategy}.`
+          : "Save a bot wallet private key first, then choose a strategy.";
+      $("botStatus").innerHTML = `<span class="status-dot ${dotClass}"></span><div><b>${esc(title)}</b><br>${esc(detail)}</div>`;
+    }
+    function renderPositions() {
+      const positions = state?.positions || [];
+      $("positions").innerHTML = positions.length ? positions.map((p, i) => `
+        <div class="position">
+          <div class="position-top"><b>${esc(p.symbol || (p.mint || "Token").slice(0, 6))}</b><span>${fmtSol((p.costBasisLamports || 0) / 1e9)}</span></div>
+          <div class="sell-grid">
+            <button data-sell="${i + 1}:0.25" type="button">Sell 25%</button>
+            <button data-sell="${i + 1}:0.5" type="button">Sell 50%</button>
+            <button data-sell="${i + 1}:1" type="button">Sell All</button>
+          </div>
+        </div>`).join("") : `<div class="log">No open positions yet.</div>`;
+      document.querySelectorAll("[data-sell]").forEach((btn) => btn.addEventListener("click", async () => {
+        const [index, fraction] = btn.dataset.sell.split(":");
+        await api(`/api/actions/sell-position-percent/${index}?fraction=${fraction}`, { method: "POST", body: "{}" });
+        toast("Sell requested.");
+        await refresh();
+      }));
+    }
+    async function refreshLogs() {
+      const data = await api(`/api/logs?since=${logsSince}`).catch(() => null);
+      if (!data) return;
+      const lines = data.logs || [];
+      for (const row of lines) if (typeof row.ts === "number" && row.ts > logsSince) logsSince = row.ts;
+      if (!$("feed").children.length && !lines.length) appendFeed("Waiting for wallet activity...", "", Date.now());
+      if (lines.length && $("feed").textContent.includes("Waiting for wallet activity")) $("feed").innerHTML = "";
+      for (const row of lines.slice(-80)) {
+        const compact = compactLog(row.message || row.line || row);
+        if (!compact) continue;
+        const isStatus = /^(Streams connected|Executor ready)/.test(compact.text);
+        if (isStatus && renderedStatusMessages.has(compact.text)) continue;
+        if (!isStatus && compact.text === lastFeedText) continue;
+        if (isStatus) renderedStatusMessages.add(compact.text);
+        appendFeed(compact.text, compact.type || "", row.ts || Date.now());
+      }
+    }
+    async function refreshTradeReceipts() {
+      const data = await api(`/api/trades?since=${tradesSince}&limit=80`).catch(() => null);
+      if (!data) return;
+      const trades = data.trades || [];
+      if (tradesSince === 0) {
+        for (const trade of trades) if (typeof trade.ts === "number" && trade.ts > tradesSince) tradesSince = trade.ts;
+        return;
+      }
+      for (const trade of trades) {
+        if (typeof trade.ts === "number" && trade.ts > tradesSince) tradesSince = trade.ts;
+        const key = `${trade.ts}:${trade.mirrorSignature || trade.sourceSignature || ""}:${trade.side}`;
+        if (renderedTradeReceipts.has(key)) continue;
+        renderedTradeReceipts.add(key);
+        const token = trade.side === "buy" ? trade.outputSymbol : trade.inputSymbol;
+        const tokenText = token ? ` ${token}` : "";
+        if (trade.side === "sell") {
+          const pnl = Number(trade.realizedPnlLamports || 0);
+          const type = pnl >= 0 ? "good" : "bad";
+          const session = state?.totals ? ` Session PnL: ${fmtPnlLamports(state.totals.realizedPnlLamports)}.` : "";
+          appendFeed(`Sell went through:${tokenText} PnL ${fmtPnlLamports(pnl)}${fmtPnlPct(trade.realizedPnlPct)}.${session}`, type, trade.ts || Date.now());
+        }
+      }
+    }
+    async function refresh() {
+      const ready = await api("/api/readiness");
+      state = ready.state;
+      settings = ready.settings;
+      if (settings) {
+        liveMode = settings.simulationMode === false;
+        mirrorSells = settings.mirrorSells !== false;
+        amount = Number(settings.minBuySol || amount);
+        $("reserveSol").value = settings.solReserveSol ?? 0.03;
+        $("maxBuy").value = settings.maxBuySol ?? selected.maxBuy;
+        $("maxOpenPositions").value = settings.maxOpenPositions ?? 1;
+        $("maxSolPerToken").value = settings.maxSolPerTokenSol ?? "";
+        $("maxSessionDeployed").value = settings.maxSessionDeployedSol ?? "";
+        $("maxOpenDeployed").value = settings.maxOpenDeployedSol ?? "";
+        $("maxFeeSol").value = settings.maxBuyExecutionFeeSol ?? 0.02;
+        $("maxFeePct").value = settings.maxBuyExecutionFeePctOfBuy ?? 8;
+        $("slippage").value = ((settings.mirrorSlippageBps ?? selected.slippage * 100) / 100).toString();
+        $("tipLamports").value = settings.tipLamports ?? 0;
+        $("priorityFee").value = settings.priorityFeeMicroLamports ?? 0;
+        feeMode = Number(settings.tipLamports || 0) > 0 || Number(settings.priorityFeeMicroLamports || 0) > 0;
+        if (Array.isArray(settings.trackedWallets) && settings.trackedWallets.length) {
+          $("customWallets").value = settings.trackedWallets.join("\n");
+          selected = STRATEGIES.find((s) => s.wallet && settings.trackedWallets.includes(s.wallet)) || selected;
+        }
+      }
+      render();
+      renderPositions();
+      await refreshLogs();
+      await refreshTradeReceipts();
+    }
+    async function saveSettings(extra = {}) {
+      const quiet = extra.quiet === true;
+      const cleanExtra = { ...extra };
+      delete cleanExtra.quiet;
+      const saved = await api("/api/settings", { method: "POST", body: JSON.stringify(payload(cleanExtra)) });
+      settings = saved.settings || settings;
+      if (!quiet) toast("Settings saved.");
+      await refresh();
+    }
+    function clamp(n, min, max) {
+      return Math.max(min, Math.min(n, max));
+    }
+    function placeTourCard(target) {
+      const tour = $("tour");
+      const card = tour.querySelector(".tour-card");
+      const margin = 18;
+      const gap = 18;
+      const viewportW = window.innerWidth;
+      const viewportH = window.innerHeight;
+      const cardW = Math.min(card?.offsetWidth || 460, viewportW - margin * 2);
+      const cardH = Math.min(card?.offsetHeight || 260, viewportH - margin * 2);
+
+      if (!target) {
+        tour.style.setProperty("--tour-left", `${Math.round((viewportW - cardW) / 2)}px`);
+        tour.style.setProperty("--tour-top", `${Math.round((viewportH - cardH) / 2)}px`);
+        tour.style.setProperty("--tour-shift-x", "0");
+        tour.style.setProperty("--tour-shift-y", "0");
+        return;
+      }
+
+      const rect = target.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      let left;
+      let top;
+
+      if (rect.right + gap + cardW <= viewportW - margin) {
+        left = rect.right + gap;
+        top = clamp(rect.top, margin, viewportH - cardH - margin);
+      } else if (rect.left - gap - cardW >= margin) {
+        left = rect.left - gap - cardW;
+        top = clamp(rect.top, margin, viewportH - cardH - margin);
+      } else {
+        left = clamp(centerX - cardW / 2, margin, viewportW - cardW - margin);
+        const below = rect.bottom + gap;
+        const above = rect.top - gap - cardH;
+        top = below + cardH <= viewportH - margin ? below : above >= margin ? above : margin;
+      }
+
+      if (viewportW < 760) {
+        left = margin;
+        const below = rect.bottom + gap;
+        top = below + cardH <= viewportH - margin ? below : margin;
+      }
+
+      top = clamp(top, margin, viewportH - cardH - margin);
+      left = clamp(left, margin, viewportW - cardW - margin);
+      tour.style.setProperty("--tour-left", `${Math.round(left)}px`);
+      tour.style.setProperty("--tour-top", `${Math.round(top)}px`);
+      tour.style.setProperty("--tour-shift-x", "0");
+      tour.style.setProperty("--tour-shift-y", "0");
+      tour.style.setProperty("--tour-x", `${Math.round(centerX)}px`);
+      tour.style.setProperty("--tour-y", `${Math.round(centerY)}px`);
+    }
+    function startTour() { tourIndex = 0; showTour(); }
+    function showTour() {
+      document.querySelectorAll(".focus-ring").forEach((el) => el.classList.remove("focus-ring"));
+      const step = tourSteps[tourIndex];
+      if (!step) { closeTour(); return; }
+      if (step.id === "advancedBox") $("advancedBox").open = true;
+      const target = $(step.id);
+      target?.classList.add("focus-ring");
+      $("tourTitle").textContent = step.title;
+      $("tourText").textContent = step.text;
+      $("tourNote").textContent = step.note;
+      $("tourKicker").textContent = `Step ${tourIndex + 1} of ${tourSteps.length}`;
+      $("tourProgress").innerHTML = tourSteps.map((_, i) => `<span class="tour-dot ${i <= tourIndex ? "active" : ""}"></span>`).join("");
+      $("tour").classList.add("open");
+      $("tourBack").disabled = tourIndex === 0;
+      $("tourNext").textContent = tourIndex === tourSteps.length - 1 ? "Finish" : "Next";
+      try { target?.scrollIntoView({ behavior: "smooth", block: "center" }); } catch {}
+      setTimeout(() => placeTourCard(target), 180);
+    }
+    function closeTour() {
+      $("tour").classList.remove("open");
+      document.querySelectorAll(".focus-ring").forEach((el) => el.classList.remove("focus-ring"));
+      localStorage.setItem(TOUR_STORAGE_KEY, "1");
+    }
+    $("saveKeyBtn").addEventListener("click", async () => {
+      const key = $("privateKey").value.trim();
+      if (!key) return toast("Paste a private key first.");
+      const saved = await api("/api/settings", { method: "POST", body: JSON.stringify({ privateKeyBase58: key }) });
+      if (saved.state) state = saved.state;
+      $("privateKey").value = "";
+      toast(saved.state?.ourWallet ? "Wallet saved and loaded." : "Wallet saved. Refreshing wallet state...");
+      await refresh();
+    });
+    $("applyPresetBtn").addEventListener("click", () => applyPresetAndSave().catch((e) => toast(e.message)));
+    $("useCustomBtn").addEventListener("click", () => {
+      selected = STRATEGIES.find((s) => s.id === "custom");
+      applyPreset(selectedPreset, false);
+      render();
+    });
+    $("customAmount").addEventListener("input", () => { const n = Number($("customAmount").value); if (Number.isFinite(n) && n > 0) amount = n; render(); });
+    $("customWallets").addEventListener("input", () => { if (selected.id === "custom") renderStrategyResearch(); });
+    $("liveToggle").addEventListener("click", () => {
+      if (!liveMode && !confirm("Live Money mode can spend real SOL. Use a tiny amount first. Switch to Live?")) return;
+      liveMode = !liveMode; render();
+    });
+    $("mirrorToggle").addEventListener("click", () => { mirrorSells = !mirrorSells; render(); });
+    $("feeToggle").addEventListener("click", () => {
+      if (!feeMode && !confirm("Speed tip and priority fee can spend extra SOL to improve landing. Turn them on with this strategy's recommended defaults?")) return;
+      feeMode = !feeMode;
+      if (feeMode) setFeeDefaults(selected, true);
+      render();
+    });
+    $("saveSettingsBtn").addEventListener("click", () => saveSettings().catch((e) => toast(e.message)));
+    $("startBtn").addEventListener("click", async () => {
+      if (desiredSpeed !== currentSpeed) {
+        await applyPresetAndSave();
+        return;
+      }
+      if (liveMode) {
+        const maxBuy = Number($("maxBuy").value || amount);
+        if (!confirm(`Live Money warning: this can spend real SOL. Max per buy is ${maxBuy.toFixed(3)} SOL. Start bot?`)) return;
+      }
+      await saveSettings({ quiet: true });
+      await api("/api/start", { method: "POST", body: JSON.stringify(payload()) });
+      toast("Bot started.");
+      await refresh();
+    });
+    $("stopBtn").addEventListener("click", async () => { await api("/api/stop", { method: "POST", body: "{}" }); toast("Bot stopped."); await refresh(); });
+    $("sellAllBtn").addEventListener("click", async () => { await api("/api/actions/sell-all", { method: "POST", body: "{}" }); toast("Sell all requested."); await refresh(); });
+    $("refreshBtn").addEventListener("click", () => refresh().catch((e) => toast(e.message)));
+    $("tourBtn").addEventListener("click", startTour);
+    $("tourSkip").addEventListener("click", closeTour);
+    $("tourBack").addEventListener("click", () => { tourIndex = Math.max(0, tourIndex - 1); showTour(); });
+    $("tourNext").addEventListener("click", () => { tourIndex += 1; showTour(); });
+    window.addEventListener("resize", () => {
+      if (!$("tour").classList.contains("open")) return;
+      const step = tourSteps[tourIndex];
+      if (step) placeTourCard($(step.id));
+    });
+    $("maxBuy").addEventListener("input", render);
+    document.querySelectorAll("[data-tier]").forEach((b) => b.addEventListener("click", () => setSpeed(b.dataset.tier)));
+    applyPreset("balanced", false);
+    loadSpeed();
+    render();
+    refresh().catch((e) => toast(e.message));
+    setInterval(() => { api("/api/state").then((s) => { state = s; render(); renderPositions(); }).catch(() => {}); refreshLogs().catch(() => {}); refreshTradeReceipts().catch(() => {}); }, 2500);
+    if (!localStorage.getItem(TOUR_STORAGE_KEY)) setTimeout(startTour, 600);
+  </script>
+</body>
+</html>

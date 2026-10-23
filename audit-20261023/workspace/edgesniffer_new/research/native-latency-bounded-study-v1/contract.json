@@ -1,0 +1,22 @@
+{
+  "schema": "EDGESNIFFER_NATIVE_LATENCY_BOUNDED_STUDY_V1",
+  "study_id": "native-latency-bounded-study-v1",
+  "purpose": "Measure how native checkpoint timing changes executable paper economics without changing the frozen or exploratory strategy artifacts.",
+  "input_mark_field": "native_checkpoint_marks",
+  "entry_delay_ms": 1000,
+  "exit_horizons_seconds": [15, 30, 60],
+  "checkpoint_rule": "Use only the native checkpoint whose horizon_seconds equals the tested exit horizon.",
+  "maximum_checkpoint_delay_ms": [1000, 5000, 15000, 30000, 60000, 120000, null],
+  "sizes_sol": [0.1, 0.5, 1.0],
+  "stress_bps": [0, 25, 50],
+  "candidate_filters": [
+    "FLOW_005_AND_PRICE_10BPS",
+    "FLOW_AND_PRICE_CONTINUATION",
+    "RESERVE_GE_2_SOL"
+  ],
+  "selection_performed": false,
+  "policy_frozen": false,
+  "prospective_validation_required": true,
+  "trading_enabled": false,
+  "read_only": true
+}

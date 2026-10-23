@@ -1,0 +1,7048 @@
+import { Keypair, PublicKey, LAMPORTS_PER_SOL, type VersionedTransactionResponse } from "@solana/web3.js";
+import { closeSync, mkdirSync, openSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import bs58 from "bs58";
+import {
+  getPrivateKeyBase58,
+  setSimulationMode,
+  trackedWallets,
+  exitSignalSellsEnabled,
+  exitSignalWallets,
+  simulationMode,
+  simulationSolBalance,
+  minBuyLamports,
+  maxBuyLamports,
+  solReserveLamports,
+  computeUnitLimit,
+  useJitoDirect,
+  useJitoFallback,
+  HELIUS_TIP_MIN_LAMPORTS,
+  minBuyUsdcRaw,
+  maxBuyUsdcRaw,
+  tipLamports,
+  priorityFeeMicroLamports,
+  mirrorSlippageBps,
+  mirrorQuoteAsset,
+  mirrorUsdcQuoteBuysEnabled,
+  pollIntervalMs,
+  blockPumpfunMayhem,
+  riskCheckIntervalMs,
+  riskFastIntervalMs,
+  riskFastWindowMs,
+  riskNearTriggerIntervalMs,
+  riskNormalIntervalMs,
+  riskNearTriggerPct,
+  riskDriftPctPerSec,
+  riskControlsEnabled,
+  pumpfunMayhemStrict,
+  maxRiskQuotesPerCheck,
+  readConnection,
+  mirrorSells,
+  mirrorSellMode,
+  mirrorSellProportionalMinPct,
+  mirrorSellProportionalMaxPct,
+  mirrorSellProportionalFallback,
+  buyOncePerToken,
+  buyOnceAllowRebuyAfterFlat,
+  skipSourcePreexistingMints,
+  sourcePreexistingScanTxLimit,
+  failedBuyRecovery,
+  maxOpenPositions,
+  maxBuysPerToken,
+  maxSolPerTokenLamports,
+  maxSessionDeployedLamports,
+  maxOpenDeployedLamports,
+  showMarketCap,
+  stopLossPct,
+  takeProfitPct,
+  hybridExitEnabled,
+  hybridExitTpPct,
+  hybridExitTpSellPct,
+  hybridExitSourceExitRemaining,
+  profitLadderEnabled,
+  profitLadderSteps,
+  sourceHoldExitEnabled,
+  sourceHoldExitIntervalMs,
+  sourceHoldExitConsecutiveMisses,
+  sourceHoldExitMinPositionAgeMs,
+  minHoldBeforeStopLossMs,
+  trailingSteps,
+  trailingEnabled,
+  type TrailingStep,
+  type ProfitLadderStep,
+  clusterTriggerEnabled,
+  clusterWallets,
+  clusterConfirmWallet,
+  clusterMinSourceBuyLamports,
+  clusterConfirmWindowMs,
+  clusterNoConfirmTrailingSteps,
+  pumpfunDirectEnabled,
+  pumpSwapDirectBuyEnabled,
+  pumpSwapDirectPreflight,
+  pumpSwapPrewarmEnabled,
+  prewarmWallets,
+  jupiterFallbackEnabled,
+  shyftGrpcEnabled,
+  shyftRabbitStreamEnabled,
+  watcherPollFallbackEnabled,
+  rustSidecarEnabled,
+  rustExecutorEnabled,
+  rustOnlyBuys,
+  rustOnlySells,
+  rustHotSniperEnabled,
+  rustHotSniperPrimary,
+  rustHotSniperPrimaryFallbackEnabled,
+  rustHotSniperPrimaryFallbackDelayMs,
+  rustExitWatcherEnabled,
+  rustExitWatcherShadow,
+  rustExitStopLossPct,
+  rustExitStopLossGraceMs,
+  rustExitTakeProfitPct,
+  rustExitTakeProfitSellPct,
+  heliusTxSubscribeEnabled,
+  confirmationTimeoutMs,
+  confirmationNullStatusTimeoutMs,
+  prebuyMoralisFilterEnabled,
+  prebuyInferredMcFilterEnabled,
+  copyBuyPercentage,
+  minBuyBehavior,
+  minSourceBuyLamports,
+  executionRescueRetries,
+  executionRescueDelayMs,
+  pnlAccountingBasis,
+  useWalletPnlAccounting,
+  shadowExecutionMode,
+} from "./config.js";
+import { assertLiveExecutionSafe } from "./liveExecutionGuard.js";
+import { preparePumpFunExitWatch, valueOnCurve, tryPumpFunDirectSell } from "./pumpfun/route.js";
+import { estimatePumpSwapSellQuote, warmPumpSwapStaticAccounts } from "./pumpswap/route.js";
+import { handlePumpSwapPrewarmSignal } from "./pumpswapPrewarm.js";
+import {
+  getNewSwaps,
+  getRecentWalletBuyMints,
+  subscribeWalletSwaps,
+  type Unsubscribe,
+} from "./watcher.js";
+import { subscribeGrpcWalletSwaps, type GrpcUnsubscribe } from "./grpcWatcher.js";
+import { subscribeRabbitWalletSwaps, type RabbitUnsubscribe } from "./rabbitWatcher.js";
+import { subscribeHeliusTransactionSwaps, type HeliusTxUnsubscribe } from "./heliusTxWatcher.js";
+import {
+  startRustPumpFunSidecar,
+  activateRustPumpFunExitWatch,
+  ackRustPumpFunExitSell,
+  cancelRustPumpFunExitWatch,
+  markRustPumpFunExitSourceFlat,
+  signalRustPumpFunExitSourceSell,
+  releaseRustBoughtMint,
+  startRustPumpFunExitWatch,
+  updateRustPumpFunExitWatch,
+  type RustExitEvent,
+  type RustHotBuyFallback,
+  type RustSidecarUnsubscribe,
+} from "./rustSidecar.js";
+import {
+  mirrorSwap,
+  NoPositionError,
+  AlreadyBoughtError,
+  ImpactTooHighError,
+  SourceDriftError,
+  BuyAmountBelowMinimumError,
+  type Side,
+  type MirrorResult,
+} from "./mirror.js";
+import { getQuote, getSwap, isJupiterRateLimitError } from "./jupiter.js";
+import type { DetectedSwap, RustHotBuy } from "./types.js";
+import {
+  applyConfirmedTransactionState,
+  applyContextualInventorySnapshot,
+  authoritativeBalanceRaw,
+  cappedQueuedSellRaw,
+  emptyConfirmedInventoryLedger,
+  shouldExpandQueuedSellAfterFailure,
+  type ConfirmedInventoryLedger,
+} from "./confirmedInventory.js";
+import {
+  confirmedPostSellRemainderRaw,
+  shouldCancelPostSellRemainder,
+  type PostSellRemainderIntent,
+  type SourceSignalState,
+} from "./postSellLifecycle.js";
+import {
+  observeSourceHoldZero,
+  type SourceHoldZeroState,
+} from "./sourceHoldExit.js";
+import { warmConnection, createSenderTransactionFromSwapResponse, broadcastTransactionWithSender } from "./sender.js";
+import {
+  confirmSignature,
+  isConfirmationTimeoutError,
+  isConfirmationTimeoutMessage,
+} from "./confirm.js";
+import {
+  getSolBalance,
+  formatSol,
+  getTokenBalance,
+  getTokenBalanceFast,
+  getTokenBalanceAtOrAfterSlot,
+  getWalletTokenBalances,
+  getWalletTokenBalanceSnapshot,
+  type WalletTokenBalanceSnapshot,
+} from "./balance.js";
+import { telegram, type TradeNotification, type PnlNotification, formatPnlForTelegram } from "./telegram.js";
+import "./telegramBot.js"; // Initialize Telegram bot handler
+import {
+  getCachedBalance,
+  getCachedBalanceAgeMs,
+  getBalanceInfo,
+  hasEnoughSOLForTrade,
+  isBalanceCriticallyLow,
+  noteLocalSolCredit,
+  noteLocalSolDebit,
+  setBalanceCache,
+  updateBalanceCache,
+} from "./solReserve.js";
+import {
+  formatSolAmount,
+  formatTokenAmount,
+  formatMarketCap,
+  getTokenMarketCap,
+  getTokenMeta,
+  shortMint,
+  WRAPPED_SOL_MINT,
+  USDC_MINT,
+} from "./tokenRegistry.js";
+import {
+  recordBuy,
+  adjustBuyTokenAmount,
+  adjustBuySolCost,
+  adjustSellExecution,
+  recordSell,
+  unrecordBuy,
+  unrecordSell,
+  unrecordZeroSell,
+  getPositions,
+  getPosition,
+  forgetPosition,
+  getTotals,
+  resetPositions,
+  type PositionSnapshot,
+  type PnlTotals,
+} from "./pnl.js";
+import {
+  runPanicLiquidate,
+  formatPanicLiquidateReport,
+  type PanicLiquidateReport,
+} from "./panicLiquidate.js";
+import { logTradeAsync, markTradeConfirmation } from "./tradeLog.js";
+import {
+  shouldBlockNewBuys,
+  recordTradeOutcome,
+  resetCircuitBreaker,
+} from "./circuitBreaker.js";
+import { startFeeOracle, stopFeeOracle } from "./feeOracle.js";
+import { startJitoTipOracle, stopJitoTipOracle } from "./jitoTipOracle.js";
+import { startJitoConnectionWarmup, stopJitoConnectionWarmup } from "./jitoWarmup.js";
+import { classifyExecutionError } from "./errorClassifier.js";
+import { decideRetryAction } from "./executionRetry.js";
+import { isPostBroadcastBuyUncertainty, shouldBlockBuyOnceReentry, shouldHoldBuyOnceAfterFailure } from "./buyOncePolicy.js";
+import { planExecution } from "./executionPlanner.js";
+import { shouldUseBagsDirectLane } from "./bagsRoute.js";
+import { recordExecutionTelemetrySync } from "./executionTelemetry.js";
+import { warmWalletAccounts } from "./walletWarmup.js";
+import { warmExecutionAltAccounts } from "./transactionSize.js";
+import { startBlockhashCache, stopBlockhashCache } from "./blockhashCache.js";
+import { validateLicense } from "./licenseClient.js";
+import { checkPrebuyMoralisFilter } from "./prebuyMoralisFilter.js";
+import { checkPrebuyInferredMarketCap } from "./prebuyInferredMarketCap.js";
+import { applyShadowSellLamports, getShadowSolLamports, shadowCanSpend } from "./shadowExecution.js";
+import {
+  needsHybridPriceCheck,
+  planHybridPartialSellRaw,
+  planProfitLadderPartialSellRaw,
+  shouldCloseHybridRemainderOnSourceSell,
+  waitsForSourceExit,
+} from "./hybridExit.js";
+import {
+  calculateProportionalSellRaw,
+  getSourceHeldRaw,
+  recordSourceBuyRaw,
+  recordSourceSellRaw,
+} from "./sourcePositions.js";
+
+const WARM_INTERVAL_MS = 30_000;
+const BALANCE_LOG_INTERVAL_MS = 60_000;
+const MAX_RECENT_SWAPS = 50;
+const TOKEN_PROGRAM_IDS = [
+  new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
+  new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"),
+];
+
+type LegView = {
+  mint: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  amountRaw: number;
+  display: string;
+};
+
+export type MirrorRecord = {
+  ts: number;
+  sourceSignature: string;
+  wallet: string;
+  side: Side;
+  input: LegView;
+  output: LegView;
+  isSimulated: boolean;
+  mirrorSignature?: string;
+  marketCapUsd?: number | null;
+  marketCapCheckedAt?: number | null;
+  error?: string;
+};
+
+export type BotState = {
+  running: boolean;
+  startedAt: number | null;
+  ourWallet: string | null;
+  trackedWallets: string[];
+  exitSignalSellsEnabled: boolean;
+  exitSignalWallets: string[];
+  simulationMode: boolean;
+  buysPaused: boolean;
+  maxOpenPositions: number | null;
+  maxSolPerTokenSol: number | null;
+  maxSessionDeployedSol: number | null;
+  maxOpenDeployedSol: number | null;
+  minBuySol: number;
+  maxBuySol: number;
+  copyBuyPercentage: number;
+  solReserveSol: number;
+  tipLamports: number;
+  priorityFeeMicroLamports: number;
+  mirrorSlippageBps: number;
+  mirrorSellsEnabled: boolean;
+  feeGuide: {
+    computeUnitLimit: number;
+    useJitoDirect: boolean;
+    useJitoFallback: boolean;
+    heliusTipMinLamports: number;
+  };
+  pollIntervalMs: number;
+  watcherPollFallbackEnabled: boolean;
+  riskControlsEnabled: boolean;
+  riskCheckIntervalMs: number;
+  minHoldBeforeStopLossMs: number;
+  stopLossPct: number | null;
+  takeProfitPct: number | null;
+  hybridExitEnabled: boolean;
+  hybridExitTpPct: number;
+  hybridExitTpSellPct: number;
+  hybridExitSourceExitRemaining: boolean;
+  lastBalanceLamports: number | null;
+  lastBalanceSol: number | null;
+  lastBalanceAt: number | null;
+  sessionStartBalanceLamports: number | null;
+  sessionWalletDeltaLamports: number | null;
+  recentSwaps: MirrorRecord[];
+  positions: PositionSnapshot[];
+  totals: PnlTotals;
+};
+
+export const recentSwaps: MirrorRecord[] = [];
+
+/**
+ * TTL-bounded signature dedupe — same .has/.add surface as Set, but evicts entries older than
+ * SIGNATURE_TTL_MS so a long-running session doesn't accumulate millions of WS-event signatures.
+ *
+ * Sweep cadence: every SIGNATURE_SWEEP_EVERY_N adds, we drop entries past the TTL. Cheap.
+ */
+const SIGNATURE_TTL_MS = 4 * 60 * 60 * 1000; // 4h — well past any polling fallback's reach.
+const SIGNATURE_SWEEP_EVERY_N = 256;
+class BoundedSignatureSet {
+  private readonly entries = new Map<string, number>();
+  private addsSinceSweep = 0;
+  has(sig: string): boolean {
+    return this.entries.has(sig);
+  }
+  add(sig: string): void {
+    this.entries.set(sig, Date.now());
+    if (++this.addsSinceSweep >= SIGNATURE_SWEEP_EVERY_N) {
+      this.addsSinceSweep = 0;
+      this.sweep();
+    }
+  }
+  clear(): void {
+    this.entries.clear();
+    this.addsSinceSweep = 0;
+  }
+  private sweep(): void {
+    const cutoff = Date.now() - SIGNATURE_TTL_MS;
+    for (const [sig, ts] of this.entries) {
+      if (ts < cutoff) this.entries.delete(sig);
+    }
+  }
+  get size(): number {
+    return this.entries.size;
+  }
+}
+const processedSignatures = new BoundedSignatureSet();
+const buyMintsInFlight = new Set<string>();
+const pendingBuyRetryByMint = new Map<string, DetectedSwap>();
+const rustHotSniperPrimaryPendingMints = new Set<string>();
+const rustHotSniperPrimaryFallbackSources = new Set<string>();
+const rustHotBuyRecordedByMint = new Set<string>();
+// Source signatures already booked from a Rust hot buy this session. Belt-and-suspenders
+// against the Rust sidecar emitting the same hotBuy event twice (the primary guard is the
+// per-source-signature gate in the sidecar, which stops the duplicate broadcast itself).
+const rustHotBuyRecordedSourceSignatures = new Set<string>();
+const fastBuyConfirmRetryScheduledByMint = new Set<string>();
+const fastSellConfirmRetryScheduledByMint = new Set<string>();
+const failedBuyRecoveryInFlightMints = new Set<string>();
+const boughtMintsThisSession = new Set<string>();
+const liveBuyAttemptedMintsThisSession = new Set<string>();
+const persistentBuyLockDir = process.env.BUY_LOCK_DIR || join(tmpdir(), "finalbot-buy-locks");
+const persistentBuyLockStaleMs = Math.max(
+  10_000,
+  Number.parseInt(process.env.BUY_LOCK_STALE_MS ?? "86400000", 10) || 86_400_000
+);
+const sourcePreexistingBuyMints = new Set<string>();
+const sourceBuySignatureByMint = new Map<string, string>();
+const latestSourceBuyByMint = new Map<
+  string,
+  { wallet: string; signature: string; sourceTokensRaw?: number }
+>();
+const rustExitWatchRegisteredMints = new Set<string>();
+const rustExitWatchOwnedMints = new Set<string>();
+const rustExitWatchRegistrationPendingMints = new Set<string>();
+const rustExitWatchGenerationByMint = new Map<string, number>();
+const rustExitConfirmedBuyMints = new Set<string>();
+const mirrorBuySignatureByMint = new Map<string, string>();
+const confirmedFastBuyTokensByMint = new Map<string, number>();
+const pendingFastBuyConfirmSignaturesByMint = new Map<string, Set<string>>();
+const fastBuyLocalCloseGuardUntilByMint = new Map<string, number>();
+const loggedFastBuyDebitBySignature = new Set<string>();
+const fastSellConfirmPendingByMint = new Set<string>();
+const quarantinedBuyMints = new Map<string, string>();
+const openPositionBuyMintsInFlight = new Set<string>();
+const riskSellsInFlight = new Set<string>();
+const exitSignalSellsInFlight = new Set<string>();
+const riskSellRetryAfterByMint = new Map<string, number>();
+const pendingFastBuyRiskSkipLogAtByMint = new Map<string, number>();
+const sourceHoldMissingByMint = new Map<string, SourceHoldZeroState>();
+const sourceSignalStateByMint = new Map<string, SourceSignalState>();
+const confirmedInventoryByMint = new Map<string, ConfirmedInventoryLedger>();
+const queuedSourceSellByMint = new Map<
+  string,
+  {
+    swap: DetectedSwap;
+    sourceVersion: number;
+    targetRaw: number;
+    retryAfter: number;
+    attempts: number;
+  }
+>();
+const queuedSellCapBySignature = new Map<string, number>();
+const confirmedPostSellStateByMint = new Map<
+  string,
+  { signature: string; postTokenBalanceRaw: number; slot: number }
+>();
+const postSellRemainderChecksInFlight = new Set<string>();
+const queuedPostSellRemainderByMint = new Map<
+  string,
+  { intent: PostSellRemainderIntent; attempt: number }
+>();
+const trackedSourceWalletSet = new Set(trackedWallets);
+const RISK_SELL_FAILURE_COOLDOWN_MS = 15_000;
+const ZERO_TOKEN_BALANCE_RECHECK_MS = 250;
+const FAST_BUY_LOCAL_CLOSE_GUARD_MS = Math.max(90_000, confirmationNullStatusTimeoutMs * 3);
+const POST_SELL_REMAINDER_SETTLE_MS = 750;
+const POST_SELL_REMAINDER_MAX_ATTEMPTS = 4;
+const SOURCE_SOLD_WHILE_BUY_PENDING_REASON = "source sold while buy was pending";
+const GRADUATION_TRANSIENT_FLOOR_MS = 2 * 60_000;
+const lastCurveRiskValueByMint = new Map<string, { outSolLamports: number; quotedAt: number }>();
+type RiskTracePoint = {
+  ts: number;
+  valueLamports: number;
+  costBasisLamports: number;
+  drawdownPct: number;
+  stopLossTrue: boolean;
+};
+const riskTraceByMint = new Map<string, RiskTracePoint[]>();
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isSourceSoldWhileBuyPendingQuarantine(reason: string | undefined): boolean {
+  return reason === SOURCE_SOLD_WHILE_BUY_PENDING_REASON;
+}
+
+function markFastBuyConfirmationPending(mint: string, signature: string): void {
+  let signatures = pendingFastBuyConfirmSignaturesByMint.get(mint);
+  if (!signatures) {
+    signatures = new Set<string>();
+    pendingFastBuyConfirmSignaturesByMint.set(mint, signatures);
+  }
+  signatures.add(signature);
+  extendFastBuyLocalCloseGuard(mint);
+}
+
+function clearFastBuyConfirmationPending(mint: string, signature?: string): void {
+  if (!signature) {
+    pendingFastBuyConfirmSignaturesByMint.delete(mint);
+    drainQueuedSourceSell(mint);
+    return;
+  }
+  const signatures = pendingFastBuyConfirmSignaturesByMint.get(mint);
+  if (!signatures) return;
+  signatures.delete(signature);
+  if (signatures.size === 0) {
+    pendingFastBuyConfirmSignaturesByMint.delete(mint);
+    drainQueuedSourceSell(mint);
+  }
+}
+
+function clearFastBuyConfirmationPendingSoon(mint: string, signature: string): void {
+  const timer = setTimeout(() => {
+    clearFastBuyConfirmationPending(mint, signature);
+  }, 100);
+  timer.unref?.();
+}
+
+function hasFastBuyConfirmationPending(mint: string): boolean {
+  return (pendingFastBuyConfirmSignaturesByMint.get(mint)?.size ?? 0) > 0;
+}
+
+function extendFastBuyLocalCloseGuard(mint: string): void {
+  const until = Date.now() + FAST_BUY_LOCAL_CLOSE_GUARD_MS;
+  fastBuyLocalCloseGuardUntilByMint.set(
+    mint,
+    Math.max(fastBuyLocalCloseGuardUntilByMint.get(mint) ?? 0, until)
+  );
+}
+
+function hasFastBuyLocalCloseGuard(mint: string): boolean {
+  const until = fastBuyLocalCloseGuardUntilByMint.get(mint) ?? 0;
+  if (until <= Date.now()) {
+    fastBuyLocalCloseGuardUntilByMint.delete(mint);
+    return false;
+  }
+  return true;
+}
+
+function shouldLogFastBuyDebit(signature: string): boolean {
+  if (loggedFastBuyDebitBySignature.has(signature)) return false;
+  loggedFastBuyDebitBySignature.add(signature);
+  return true;
+}
+
+function clearFastSellConfirmationPendingSoon(mint: string): void {
+  const timer = setTimeout(() => {
+    releaseFastSellLifecycle(mint);
+  }, 100);
+  timer.unref?.();
+}
+
+function releaseFastSellLifecycle(mint: string): void {
+  fastSellConfirmPendingByMint.delete(mint);
+  drainQueuedSourceSell(mint);
+}
+
+function inventoryLedger(mint: string): ConfirmedInventoryLedger {
+  return confirmedInventoryByMint.get(mint) ?? emptyConfirmedInventoryLedger();
+}
+
+function noteConfirmedInventory(
+  mint: string,
+  state: { slot: number; balanceRaw: number; signature: string }
+): void {
+  confirmedInventoryByMint.set(
+    mint,
+    applyConfirmedTransactionState(inventoryLedger(mint), state)
+  );
+}
+
+async function refreshConfirmedInventory(mint: string): Promise<number> {
+  if (!keypair) throw new Error("Wallet is not loaded.");
+  const ledger = inventoryLedger(mint);
+  const snapshot = await getTokenBalanceAtOrAfterSlot(
+    keypair.publicKey,
+    mint,
+    ledger.refreshFloorSlot
+  );
+  const next = applyContextualInventorySnapshot(ledger, {
+    slot: snapshot.contextSlot,
+    balanceRaw: snapshot.amountRaw,
+    signature: `account-snapshot-${snapshot.contextSlot}`,
+  });
+  confirmedInventoryByMint.set(mint, next);
+  const amount = authoritativeBalanceRaw(next);
+  if (amount == null) {
+    throw new Error(`Could not establish confirmed inventory for ${mint}`);
+  }
+  return amount;
+}
+
+/**
+ * Confirmed-inventory read with short backoff retries on rate-limit (429) errors only.
+ * Non-rate-limit errors throw immediately. Used by the exit path so a transient 429 can
+ * self-heal before we fall back to the tracked balance.
+ */
+async function refreshConfirmedInventoryWithRetry(mint: string, attempts = 3): Promise<number> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await refreshConfirmedInventory(mint);
+    } catch (err) {
+      lastErr = err;
+      const msg = err instanceof Error ? err.message : String(err);
+      const isRateLimit = /429|too many requests|ratelimit/i.test(msg);
+      if (i < attempts - 1 && isRateLimit) {
+        await new Promise((r) => setTimeout(r, 250 * (i + 1)));
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
+}
+
+function queueSourceSell(swap: DetectedSwap, retryDelayMs = 0): void {
+  const previous = queuedSourceSellByMint.get(swap.inputMint);
+  const replayCap = queuedSellCapBySignature.get(swap.signature);
+  queuedSellCapBySignature.delete(swap.signature);
+  const targetRaw = Math.max(
+    0,
+    Math.floor(
+      replayCap ??
+        (previous?.swap.signature === swap.signature ? previous.targetRaw : undefined) ??
+        getPosition(swap.inputMint)?.heldRaw ??
+        0
+    )
+  );
+  const attempts = retryDelayMs > 0 ? (previous?.attempts ?? 0) + 1 : previous?.attempts ?? 0;
+  const backoff =
+    retryDelayMs > 0
+      ? Math.min(4_000, retryDelayMs * 2 ** Math.max(0, attempts - 1))
+      : 0;
+  queuedSourceSellByMint.set(swap.inputMint, {
+    swap,
+    sourceVersion: sourceSignalStateByMint.get(swap.inputMint)?.version ?? 0,
+    targetRaw,
+    retryAfter: Date.now() + backoff,
+    attempts,
+  });
+}
+
+function drainQueuedSourceSell(mint: string): void {
+  if (stopRequested || !keypair || fastSellConfirmPendingByMint.has(mint)) return;
+  const queued = queuedSourceSellByMint.get(mint);
+  if (!queued) return;
+  const waitMs = queued.retryAfter - Date.now();
+  if (waitMs > 0) {
+    const timer = setTimeout(() => drainQueuedSourceSell(mint), waitMs);
+    timer.unref?.();
+    return;
+  }
+  queuedSourceSellByMint.delete(mint);
+  queuedSellCapBySignature.set(queued.swap.signature, queued.targetRaw);
+  const timer = setTimeout(() => {
+    if (!keypair || stopRequested) return;
+    void processSwap(queued.swap, keypair).catch((err) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Queued source sell failed for ${mint.slice(0, 8)}...: ${msg}`);
+    });
+  }, 0);
+  timer.unref?.();
+}
+
+function expandQueuedSellAfterFailure(mint: string): void {
+  const queued = queuedSourceSellByMint.get(mint);
+  if (!queued) return;
+  if (
+    shouldExpandQueuedSellAfterFailure(
+      queued.sourceVersion,
+      sourceSignalStateByMint.get(mint)
+    )
+  ) {
+    queued.targetRaw = Math.max(queued.targetRaw, getPosition(mint)?.heldRaw ?? 0);
+  }
+}
+
+function noteTrackedSourceMintSignal(
+  wallet: string,
+  mint: string,
+  side: "buy" | "sell",
+  signature: string
+): void {
+  if (!trackedSourceWalletSet.has(wallet)) return;
+  const previous = sourceSignalStateByMint.get(mint);
+  if (previous?.signature === signature) return;
+  sourceSignalStateByMint.set(mint, {
+    side,
+    signature,
+    version: (previous?.version ?? 0) + 1,
+    observedAt: Date.now(),
+  });
+}
+
+function noteTrackedSourceSignal(swap: DetectedSwap): void {
+  const side = isBuySignal(swap) ? "buy" : isSellSignal(swap) ? "sell" : null;
+  if (!side) return;
+  noteTrackedSourceMintSignal(
+    swap.wallet,
+    side === "buy" ? swap.outputMint : swap.inputMint,
+    side,
+    swap.signature
+  );
+}
+
+function sourceReenteredAfterFullSell(
+  mint: string,
+  intent: PostSellRemainderIntent
+): boolean {
+  return shouldCancelPostSellRemainder(sourceSignalStateByMint.get(mint), intent);
+}
+
+function schedulePostSellRemainderCheck(
+  mint: string,
+  intent: PostSellRemainderIntent,
+  attempt = 1
+): void {
+  if (stopRequested || attempt > POST_SELL_REMAINDER_MAX_ATTEMPTS) {
+    fastSellConfirmPendingByMint.delete(mint);
+    return;
+  }
+  if (postSellRemainderChecksInFlight.has(mint)) {
+    queuedPostSellRemainderByMint.set(mint, { intent, attempt: 1 });
+    return;
+  }
+  postSellRemainderChecksInFlight.add(mint);
+
+  const finish = (retry: boolean): void => {
+    postSellRemainderChecksInFlight.delete(mint);
+    const queued = queuedPostSellRemainderByMint.get(mint);
+    if (queued) {
+      queuedPostSellRemainderByMint.delete(mint);
+      schedulePostSellRemainderCheck(mint, queued.intent, queued.attempt);
+      return;
+    }
+    if (retry) schedulePostSellRemainderCheck(mint, intent, attempt + 1);
+  };
+
+  const timer = setTimeout(() => {
+    void reconcilePostSellRemainder(mint, intent, attempt)
+      .then(finish)
+      .catch((err) => {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`Post-sell remainder check failed for ${mint.slice(0, 8)}...: ${msg}`);
+        finish(true);
+      });
+  }, POST_SELL_REMAINDER_SETTLE_MS * attempt);
+  timer.unref?.();
+}
+
+async function reconcilePostSellRemainder(
+  mint: string,
+  intent: PostSellRemainderIntent,
+  attempt: number
+): Promise<boolean> {
+  if (!keypair || stopRequested) {
+    releaseFastSellLifecycle(mint);
+    return false;
+  }
+  if (sourceReenteredAfterFullSell(mint, intent)) {
+    releaseFastSellLifecycle(mint);
+    console.log(
+      `Post-sell remainder drain canceled for ${mint.slice(0, 8)}...: ` +
+        `fresh tracked-source buy arrived after the full-sell signal.`
+    );
+    return false;
+  }
+
+  const position = getPosition(mint);
+  if (hasFastBuyConfirmationPending(mint)) {
+    console.log(
+      `Post-sell remainder check waiting for pending buy confirmation on ${mint.slice(0, 8)}... ` +
+        `(${attempt}/${POST_SELL_REMAINDER_MAX_ATTEMPTS}).`
+    );
+    if (attempt >= POST_SELL_REMAINDER_MAX_ATTEMPTS) {
+      releaseFastSellLifecycle(mint);
+      return false;
+    }
+    return true;
+  }
+
+  const confirmedState = confirmedPostSellStateByMint.get(mint);
+  const provenRemainderRaw = confirmedPostSellRemainderRaw(
+    confirmedState?.postTokenBalanceRaw
+  );
+  if (provenRemainderRaw <= 0) {
+    confirmedPostSellStateByMint.delete(mint);
+    releaseFastSellLifecycle(mint);
+    return false;
+  }
+
+  let liveRaw: number;
+  try {
+    liveRaw = await getVerifiedTokenBalance(keypair.publicKey, mint, {
+      symbol: position?.symbol,
+      expectedRaw: position?.heldRaw ?? 0,
+      decimals: position?.decimals,
+      ownerLabel: "our wallet",
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`Post-sell wallet balance read failed for ${mint.slice(0, 8)}...: ${msg}`);
+    return attempt < POST_SELL_REMAINDER_MAX_ATTEMPTS;
+  }
+
+  if (liveRaw <= 0) {
+    confirmedPostSellStateByMint.delete(mint);
+    releaseFastSellLifecycle(mint);
+    return false;
+  }
+  if (sourceReenteredAfterFullSell(mint, intent)) {
+    confirmedPostSellStateByMint.delete(mint);
+    releaseFastSellLifecycle(mint);
+    return false;
+  }
+
+  const drainRaw = Math.min(liveRaw, provenRemainderRaw);
+  confirmedPostSellStateByMint.delete(mint);
+  fastSellConfirmPendingByMint.delete(mint);
+  console.warn(
+    `Confirmed post-sell remainder for ${mint.slice(0, 8)}...: ` +
+      `${position ? formatTokenAmount(drainRaw, position.decimals) : drainRaw.toString()} remained in the confirmed sell transaction; draining proven amount.`
+  );
+
+  if (position && position.heldRaw > 0) {
+    await sellLivePosition(
+      position,
+      "Post-sell remainder drain after confirmed full exit",
+      drainRaw,
+      false
+    );
+  } else {
+    await sellLiveWalletTokenBalance(mint, drainRaw);
+  }
+  return false;
+}
+
+function buyLockPath(mint: string): string {
+  return join(persistentBuyLockDir, `${mint.replace(/[^1-9A-HJ-NP-Za-km-z]/g, "_")}.lock`);
+}
+
+function createBuyLockOwner(): string {
+  return `${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function isPidAlive(pid: number): boolean {
+  if (!Number.isInteger(pid) || pid <= 0) return false;
+  try {
+    // Signal 0 performs existence/permission checks without actually signalling.
+    process.kill(pid, 0);
+    return true;
+  } catch (err) {
+    // EPERM means the process exists but is owned by another user — still alive.
+    return (err as NodeJS.ErrnoException).code === "EPERM";
+  }
+}
+
+function acquirePersistentBuyLock(
+  mint: string,
+  sourceSignature: string
+): { ok: true; owner?: string } | { ok: false; reason: string } {
+  if (simulationMode || !buyOncePerTokenEnabled) return { ok: true };
+  const path = buyLockPath(mint);
+  try {
+    mkdirSync(persistentBuyLockDir, { recursive: true });
+    const fd = openSync(path, "wx");
+    const owner = createBuyLockOwner();
+    try {
+      writeFileSync(
+        fd,
+        JSON.stringify({
+          mint,
+          sourceSignature,
+          owner,
+          pid: process.pid,
+          createdAt: new Date().toISOString(),
+        }) + "\n"
+      );
+    } finally {
+      closeSync(fd);
+    }
+    return { ok: true, owner };
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "EEXIST") {
+      if (releaseStalePersistentBuyLock(path, mint)) {
+        return acquirePersistentBuyLock(mint, sourceSignature);
+      }
+      return { ok: false, reason: `persistent buy lock exists at ${path}` };
+    }
+    return { ok: false, reason: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+function releaseStalePersistentBuyLock(path: string, mint: string): boolean {
+  try {
+    const raw = readFileSync(path, "utf8");
+    const parsed = JSON.parse(raw) as { createdAtMs?: number; createdAt?: string; pid?: number };
+    // Reap locks whose owning process is gone. A dead owner can never release its lock, so it
+    // would otherwise block this mint until the (24h) stale TTL elapses — e.g. an orphan left
+    // by the previous process after a restart/crash, which 705123a deliberately preserves.
+    // Acquisition is only reached after the quarantine / source-preexisting / held-inventory
+    // (buy-once reentry) gates, so an orphaned lock at this point is safe to clear.
+    if (typeof parsed.pid === "number" && parsed.pid !== process.pid && !isPidAlive(parsed.pid)) {
+      unlinkSync(path);
+      console.warn(
+        `Cleared orphaned persistent buy lock for ${mint.slice(0, 8)}... ` +
+          `(owner pid ${parsed.pid} is no longer running).`
+      );
+      return true;
+    }
+    const createdAtMs =
+      typeof parsed.createdAtMs === "number"
+        ? parsed.createdAtMs
+        : typeof parsed.createdAt === "string"
+          ? Date.parse(parsed.createdAt)
+          : 0;
+    const ageMs = createdAtMs > 0 ? Date.now() - createdAtMs : Number.POSITIVE_INFINITY;
+    if (ageMs < persistentBuyLockStaleMs) return false;
+    unlinkSync(path);
+    console.warn(
+      `Cleared stale persistent buy lock for ${mint.slice(0, 8)}... ` +
+        `(age ${Math.round(ageMs)}ms >= ${persistentBuyLockStaleMs}ms).`
+    );
+    return true;
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") return true;
+    console.warn(`Could not inspect stale persistent buy lock for ${mint.slice(0, 8)}...: ${err}`);
+    return false;
+  }
+}
+
+function releasePersistentBuyLock(mint: string): void {
+  if (simulationMode || !buyOncePerTokenEnabled) return;
+  try {
+    unlinkSync(buyLockPath(mint));
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code !== "ENOENT") {
+      console.warn(`Could not remove persistent buy lock for ${mint.slice(0, 8)}...: ${err}`);
+    }
+  }
+}
+
+type RiskQuoteState = {
+  /** Last Jupiter quote PnL %. */
+  lastPnlPct: number;
+  /** Wall-clock timestamp of that quote. */
+  lastQuotedAt: number;
+  /** Wall-clock timestamp of the last loop tick that visited this position (quote or skip). */
+  lastTickedAt: number;
+  /** Highest PnL% observed for this position. Drives trailing-stop stair-steps. */
+  peakPnlPct: number;
+};
+const riskQuoteStateByMint = new Map<string, RiskQuoteState>();
+const hybridExitTpDoneByMint = new Set<string>();
+const hybridExitTpInFlightByMint = new Set<string>();
+const profitLadderDoneByMint = new Map<string, Set<number>>();
+const profitLadderInFlightByMint = new Map<string, Set<number>>();
+let running = false;
+let startedAt: number | null = null;
+let stopRequested = false;
+let sleepResolve: (() => void) | null = null;
+let keypair: Keypair | null = null;
+let lastBalanceLamports: number | null = null;
+let lastBalanceAt: number | null = null;
+let sessionStartBalanceLamports: number | null = null;
+let sessionStartBalanceAt: number | null = null;
+let unsubscribeWs: Unsubscribe | null = null;
+let unsubscribeGrpc: GrpcUnsubscribe | null = null;
+let unsubscribePrewarmGrpc: GrpcUnsubscribe | null = null;
+let unsubscribeRabbit: RabbitUnsubscribe | null = null;
+let unsubscribeRustSidecar: RustSidecarUnsubscribe | null = null;
+let unsubscribeHeliusTx: HeliusTxUnsubscribe | null = null;
+let riskPositionCursor = 0;
+let riskCheckInFlight = false;
+
+function trackedSourcePublicKeys(): PublicKey[] {
+  return trackedWallets
+    .map((wallet) => {
+      try {
+        return new PublicKey(wallet);
+      } catch {
+        console.warn(`Source-hold exit skipped invalid tracked wallet: ${wallet}`);
+        return null;
+      }
+    })
+    .filter((value): value is PublicKey => value != null);
+}
+
+async function quoteRiskExitLamports(mint: string, amountRaw: number): Promise<number> {
+  if (!Number.isFinite(amountRaw) || amountRaw <= 0) return 0;
+  if (pumpfunDirectEnabled) {
+    const onCurve = await valueOnCurve(mint, amountRaw);
+    if (onCurve != null) {
+      lastCurveRiskValueByMint.set(mint, {
+        outSolLamports: onCurve.solOut,
+        quotedAt: Date.now(),
+      });
+      return onCurve.solOut;
+    }
+
+    const pumpSwapQuote = await estimatePumpSwapSellQuote(mint, amountRaw);
+    if (pumpSwapQuote != null) return pumpSwapQuote;
+  }
+
+  try {
+    const quote = await getQuote(mint, WRAPPED_SOL_MINT, amountRaw, 80);
+    return parseInt(quote.outAmount ?? "0", 10);
+  } catch (err) {
+    const lastCurve = lastCurveRiskValueByMint.get(mint);
+    if (
+      isJupiterNoRoutesError(err) &&
+      lastCurve &&
+      Date.now() - lastCurve.quotedAt <= GRADUATION_TRANSIENT_FLOOR_MS
+    ) {
+      return lastCurve.outSolLamports;
+    }
+    throw err;
+  }
+}
+
+function resolveTxAccountKeys(tx: VersionedTransactionResponse): string[] {
+  const message = tx.transaction.message;
+  const staticKeys = (
+    "staticAccountKeys" in message
+      ? message.staticAccountKeys
+      : (message as unknown as { accountKeys: PublicKey[] }).accountKeys ?? []
+  ) as PublicKey[];
+  const loaded = tx.meta?.loadedAddresses;
+  const writable = loaded?.writable ?? [];
+  const readonly = loaded?.readonly ?? [];
+  return [...staticKeys, ...writable, ...readonly].map((k) =>
+    typeof k === "string" ? k : k.toBase58()
+  );
+}
+
+type ConfirmedBuyExecution = {
+  tokenAmountRaw: number;
+  solSpentLamports: number | null;
+  postTokenBalanceRaw: number;
+  slot: number;
+};
+
+async function actualBuyExecutionFromTx(
+  signature: string,
+  mint: string
+): Promise<ConfirmedBuyExecution | null> {
+  if (!keypair) return null;
+  try {
+    const tx = await readConnection.getTransaction(signature, {
+      commitment: "confirmed",
+      maxSupportedTransactionVersion: 0,
+    });
+    if (!tx || tx.meta?.err) return null;
+    const owner = keypair.publicKey.toBase58();
+    const preByIndex = new Map<number, number>();
+    for (const balance of tx.meta?.preTokenBalances ?? []) {
+      if (balance.mint !== mint || balance.owner !== owner) continue;
+      const raw = parseInt(balance.uiTokenAmount.amount ?? "0", 10);
+      if (Number.isFinite(raw)) preByIndex.set(balance.accountIndex, raw);
+    }
+
+    let best = 0;
+    let postTokenBalanceRaw = 0;
+    for (const balance of tx.meta?.postTokenBalances ?? []) {
+      if (balance.mint !== mint || balance.owner !== owner) continue;
+      const raw = parseInt(balance.uiTokenAmount.amount ?? "0", 10);
+      if (Number.isFinite(raw) && raw >= 0) postTokenBalanceRaw += raw;
+      const pre = preByIndex.get(balance.accountIndex) ?? 0;
+      const delta = raw - pre;
+      if (Number.isFinite(delta) && delta > best) best = delta;
+    }
+    if (best <= 0) return null;
+    const accountKeys = resolveTxAccountKeys(tx);
+    const ownerIndex = accountKeys.indexOf(owner);
+    const pre = ownerIndex >= 0 ? tx.meta?.preBalances?.[ownerIndex] : undefined;
+    const post = ownerIndex >= 0 ? tx.meta?.postBalances?.[ownerIndex] : undefined;
+    const solSpentLamports =
+      typeof pre === "number" && typeof post === "number" && pre > post ? pre - post : null;
+    return {
+      tokenAmountRaw: best,
+      solSpentLamports,
+      postTokenBalanceRaw,
+      slot: tx.slot,
+    };
+  } catch {
+    return null;
+  }
+}
+
+type ConfirmedSellExecution = {
+  tokenAmountRaw: number;
+  solReceivedLamports: number | null;
+  postTokenBalanceRaw: number;
+  slot: number;
+};
+
+async function actualSellExecutionFromTx(
+  signature: string,
+  mint: string
+): Promise<ConfirmedSellExecution | null> {
+  if (!keypair) return null;
+  try {
+    const tx = await readConnection.getTransaction(signature, {
+      commitment: "confirmed",
+      maxSupportedTransactionVersion: 0,
+    });
+    if (!tx || tx.meta?.err) return null;
+    const owner = keypair.publicKey.toBase58();
+
+    const preByIndex = new Map<number, number>();
+    for (const balance of tx.meta?.preTokenBalances ?? []) {
+      if (balance.mint !== mint || balance.owner !== owner) continue;
+      const raw = parseInt(balance.uiTokenAmount.amount ?? "0", 10);
+      if (Number.isFinite(raw)) preByIndex.set(balance.accountIndex, raw);
+    }
+
+    const seen = new Set<number>();
+    let soldRaw = 0;
+    let postTokenBalanceRaw = 0;
+    for (const balance of tx.meta?.postTokenBalances ?? []) {
+      if (balance.mint !== mint || balance.owner !== owner) continue;
+      seen.add(balance.accountIndex);
+      const pre = preByIndex.get(balance.accountIndex) ?? 0;
+      const post = parseInt(balance.uiTokenAmount.amount ?? "0", 10);
+      if (!Number.isFinite(post)) continue;
+      postTokenBalanceRaw += post;
+      if (pre > post) soldRaw += pre - post;
+    }
+    for (const [idx, pre] of preByIndex) {
+      if (!seen.has(idx)) soldRaw += pre;
+    }
+
+    const accountKeys = resolveTxAccountKeys(tx);
+    const ownerIndex = accountKeys.indexOf(owner);
+    const pre = ownerIndex >= 0 ? tx.meta?.preBalances?.[ownerIndex] : undefined;
+    const post = ownerIndex >= 0 ? tx.meta?.postBalances?.[ownerIndex] : undefined;
+    const solReceivedLamports =
+      typeof pre === "number" && typeof post === "number" && post > pre ? post - pre : null;
+
+    if (soldRaw <= 0 && (solReceivedLamports == null || solReceivedLamports <= 0)) return null;
+    return {
+      tokenAmountRaw: soldRaw,
+      solReceivedLamports,
+      postTokenBalanceRaw,
+      slot: tx.slot,
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function actualTokensReceivedFromTx(signature: string, mint: string): Promise<number | null> {
+  const execution = await actualBuyExecutionFromTx(signature, mint);
+  return execution?.tokenAmountRaw ?? null;
+}
+
+async function reconcileFastBuyTokens(args: {
+  mint: string;
+  expectedTokenAmountRaw: number;
+  expectedSolLamports: number;
+  quoteMint?: string;
+  signature: string;
+}): Promise<void> {
+  const execution = await actualBuyExecutionFromTx(args.signature, args.mint);
+  if (execution == null || execution.tokenAmountRaw <= 0) return;
+  noteConfirmedInventory(args.mint, {
+    slot: execution.slot,
+    balanceRaw: execution.postTokenBalanceRaw,
+    signature: args.signature,
+  });
+  extendFastBuyLocalCloseGuard(args.mint);
+  const actualTokens = execution.tokenAmountRaw;
+  confirmedFastBuyTokensByMint.set(args.mint, actualTokens);
+  if (actualTokens !== args.expectedTokenAmountRaw && adjustBuyTokenAmount(args.mint, args.expectedTokenAmountRaw, actualTokens)) {
+    console.warn(
+      `🧮 Fast buy token amount corrected for ${args.mint.slice(0, 8)}…: ` +
+        `${formatTokenAmount(args.expectedTokenAmountRaw, 6)} quoted → ${formatTokenAmount(actualTokens, 6)} actual.`
+    );
+  }
+  if (
+    args.quoteMint !== USDC_MINT &&
+    useWalletPnlAccounting &&
+    execution.solSpentLamports != null &&
+    execution.solSpentLamports > 0 &&
+    execution.solSpentLamports !== args.expectedSolLamports &&
+    adjustBuySolCost(args.mint, args.expectedSolLamports, execution.solSpentLamports)
+  ) {
+    console.warn(
+      `🧾 Fast buy cost basis corrected for ${args.mint.slice(0, 8)}…: ` +
+        `${formatSolAmount(args.expectedSolLamports)} SOL trade → ${formatSolAmount(execution.solSpentLamports)} SOL wallet debit.`
+    );
+  } else if (
+    args.quoteMint !== USDC_MINT &&
+    !useWalletPnlAccounting &&
+    execution.solSpentLamports != null &&
+    execution.solSpentLamports > 0 &&
+    execution.solSpentLamports !== args.expectedSolLamports
+  ) {
+    if (!shouldLogFastBuyDebit(args.signature)) return;
+    console.warn(
+      `🧾 Fast buy wallet debit observed for ${args.mint.slice(0, 8)}…: ` +
+        `${formatSolAmount(execution.solSpentLamports)} SOL all-in vs ${formatSolAmount(args.expectedSolLamports)} SOL trade basis ` +
+        `(PnL basis=${pnlAccountingBasis}).`
+      );
+  }
+  queueImmediateRiskCheck(args.mint, "confirmed fast buy");
+}
+
+async function reconcileOpenPositionWithConfirmedBuy(
+  position: PositionSnapshot
+): Promise<PositionSnapshot> {
+  const signature = mirrorBuySignatureByMint.get(position.mint);
+  if (!signature || position.buysCount <= 0) return position;
+  // mirrorBuySignatureByMint only holds the most recent buy's signature, so the
+  // single-tx execution lookup below represents ONE buy. For a multi-buy (DCA)
+  // position, comparing that one buy's tokens/cost against the position TOTAL would
+  // wrongly shrink it to a single buy's size — and a later "sell all" sells
+  // min(live, tracked), stranding the rest on-chain (observed on $$SLY: live
+  // 736,939 vs clobbered tracked 366,909). Each buy is already reconciled
+  // individually via reconcileFastBuyTokens at its own confirmation, so skip the
+  // position-level reconcile once more than one buy is recorded.
+  if (position.buysCount > 1) return position;
+
+  const execution = await actualBuyExecutionFromTx(signature, position.mint);
+  if (execution == null || execution.tokenAmountRaw <= 0) return position;
+  noteConfirmedInventory(position.mint, {
+    slot: execution.slot,
+    balanceRaw: execution.postTokenBalanceRaw,
+    signature,
+  });
+
+  let changed = false;
+  if (
+    execution.tokenAmountRaw !== position.totalBoughtRaw &&
+    adjustBuyTokenAmount(position.mint, position.totalBoughtRaw, execution.tokenAmountRaw)
+  ) {
+    confirmedFastBuyTokensByMint.set(position.mint, execution.tokenAmountRaw);
+    changed = true;
+    console.warn(
+      `Fast buy reconciled before risk/sell for ${position.mint.slice(0, 8)}...: ` +
+        `${formatTokenAmount(position.totalBoughtRaw, position.decimals)} tracked -> ` +
+        `${formatTokenAmount(execution.tokenAmountRaw, position.decimals)} actual.`
+    );
+  }
+
+  if (
+    execution.solSpentLamports != null &&
+    execution.solSpentLamports > 0 &&
+    useWalletPnlAccounting &&
+    execution.solSpentLamports !== position.totalSolSpentLamports &&
+    adjustBuySolCost(position.mint, position.totalSolSpentLamports, execution.solSpentLamports)
+  ) {
+    changed = true;
+    console.warn(
+      `Fast buy cost reconciled before risk/sell for ${position.mint.slice(0, 8)}...: ` +
+        `${formatSolAmount(position.totalSolSpentLamports)} SOL tracked -> ` +
+        `${formatSolAmount(execution.solSpentLamports)} SOL wallet debit.`
+    );
+  } else if (
+    execution.solSpentLamports != null &&
+    execution.solSpentLamports > 0 &&
+    !useWalletPnlAccounting &&
+    execution.solSpentLamports !== position.totalSolSpentLamports
+  ) {
+    if (!shouldLogFastBuyDebit(signature)) return changed ? getPosition(position.mint) ?? position : position;
+    console.warn(
+      `Fast buy wallet debit observed for ${position.mint.slice(0, 8)}...: ` +
+        `${formatSolAmount(execution.solSpentLamports)} SOL all-in vs ` +
+        `${formatSolAmount(position.totalSolSpentLamports)} SOL trade basis (PnL basis=${pnlAccountingBasis}).`
+    );
+  }
+
+  return changed ? getPosition(position.mint) ?? position : position;
+}
+
+async function shouldSkipRiskExitForPendingFastBuy(position: PositionSnapshot): Promise<boolean> {
+  if (simulationMode) return false;
+  if (!keypair) return false;
+  if (position.buysCount <= 0 || position.sellsCount > 0) return false;
+  if (!mirrorBuySignatureByMint.has(position.mint)) return false;
+  if (confirmedFastBuyTokensByMint.has(position.mint)) return false;
+  if (!hasFastBuyConfirmationPending(position.mint)) return false;
+  if (Date.now() - position.lastTradeAt >= confirmationNullStatusTimeoutMs) return false;
+
+  let liveHeldRaw: number | null = null;
+  try {
+    liveHeldRaw =
+      (await getTokenBalanceFast(keypair.publicKey, position.mint)) ??
+      (await getTokenBalance(keypair.publicKey, position.mint));
+  } catch {
+    liveHeldRaw = null;
+  }
+
+  if (liveHeldRaw != null && liveHeldRaw > 0) {
+    confirmedFastBuyTokensByMint.set(position.mint, liveHeldRaw);
+    return false;
+  }
+
+  const now = Date.now();
+  const lastLogAt = pendingFastBuyRiskSkipLogAtByMint.get(position.mint) ?? 0;
+  if (now - lastLogAt > 5_000) {
+    pendingFastBuyRiskSkipLogAtByMint.set(position.mint, now);
+    console.warn(
+      `Risk exit skipped for $${position.symbol}: fast buy is still pending confirmation ` +
+        "and wallet inventory is not visible yet."
+    );
+  }
+  return true;
+}
+
+async function registerRustExitWatchForMint(mint: string, buyConfirmed = false): Promise<void> {
+  if (!rustExitWatcherEnabled || simulationMode || !keypair) return;
+  if (buyConfirmed) rustExitConfirmedBuyMints.add(mint);
+  if (rustExitWatchRegisteredMints.has(mint)) {
+    if (buyConfirmed) {
+      const position = getPosition(mint);
+      if (position && position.heldRaw > 0 && position.costBasisRemainingLamports > 0) {
+        const updated = await updateRustPumpFunExitWatch(
+          mint,
+          Math.floor(position.heldRaw),
+          Math.max(1, Math.floor(position.costBasisRemainingLamports))
+        );
+        if (!updated.ok) {
+          console.warn(`Rust exit watcher inventory update failed for ${mint.slice(0, 8)}...: ${updated.error}`);
+        }
+      }
+      const activated = await activateRustPumpFunExitWatch(mint);
+      if (!activated.ok) {
+        console.warn(`Rust exit watcher activation failed for ${mint.slice(0, 8)}...: ${activated.error}`);
+      }
+    }
+    return;
+  }
+  if (rustExitWatchRegistrationPendingMints.has(mint)) return;
+  const position = getPosition(mint);
+  const source = latestSourceBuyByMint.get(mint);
+  if (!position || position.heldRaw <= 0 || position.costBasisRemainingLamports <= 0 || !source) return;
+
+  const generation = (rustExitWatchGenerationByMint.get(mint) ?? 0) + 1;
+  rustExitWatchGenerationByMint.set(mint, generation);
+  rustExitWatchRegistrationPendingMints.add(mint);
+  try {
+    const prepared = await preparePumpFunExitWatch({
+      user: keypair,
+      mint,
+      tokensInRaw: BigInt(Math.floor(position.heldRaw)),
+      sourceSignature: source.signature,
+    });
+    if (!prepared) {
+      console.log(
+        `Rust exit watcher not registered for ${mint.slice(0, 8)}...: ` +
+          "token is not on an active Pump.fun bonding curve; existing Rust-only route remains responsible."
+      );
+      return;
+    }
+    const currentPosition = getPosition(mint);
+    if (
+      rustExitWatchGenerationByMint.get(mint) !== generation ||
+      !currentPosition ||
+      currentPosition.heldRaw <= 0 ||
+      currentPosition.costBasisRemainingLamports <= 0
+    ) {
+      return;
+    }
+    const result = await startRustPumpFunExitWatch({
+      mint,
+      sourceWallet: source.wallet,
+      bondingCurve: prepared.bondingCurve,
+      entryTsMs: currentPosition.firstSeenAt,
+      tokensHeldRaw: Math.floor(currentPosition.heldRaw),
+      costBasisLamports: Math.max(1, Math.floor(currentPosition.costBasisRemainingLamports)),
+      buyConfirmed: rustExitConfirmedBuyMints.has(mint),
+      sellV2: prepared.sellV2,
+      accounts: prepared.accounts,
+    });
+    if (!result.ok) {
+      console.warn(`Rust exit watcher registration failed for ${mint.slice(0, 8)}...: ${result.error}`);
+      return;
+    }
+    if (rustExitWatchGenerationByMint.get(mint) !== generation || (getPosition(mint)?.heldRaw ?? 0) <= 0) {
+      await cancelRustPumpFunExitWatch(mint, "position changed while Rust exit watcher was registering");
+      return;
+    }
+    rustExitWatchRegisteredMints.add(mint);
+    if (!rustExitWatcherShadow) rustExitWatchOwnedMints.add(mint);
+    console.log(
+      `Rust exit watcher armed for ${mint.slice(0, 8)}... ` +
+        `(${rustExitWatcherShadow ? "SHADOW" : "LIVE"}; fixed TP ${rustExitTakeProfitPct}% ` +
+          `sells ${rustExitTakeProfitSellPct}%, SL ${rustExitStopLossPct}% after ${rustExitStopLossGraceMs}ms, ` +
+          "local curve marks and source-sell emergency)."
+    );
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn(`Rust exit watcher setup failed for ${mint.slice(0, 8)}...: ${message}`);
+  } finally {
+    rustExitWatchRegistrationPendingMints.delete(mint);
+  }
+}
+
+function cancelRustExitWatchAfterFailedBuy(mint: string, reason: string): void {
+  rustExitWatchGenerationByMint.set(mint, (rustExitWatchGenerationByMint.get(mint) ?? 0) + 1);
+  rustExitConfirmedBuyMints.delete(mint);
+  rustExitWatchOwnedMints.delete(mint);
+  if (!rustExitWatchRegisteredMints.delete(mint)) return;
+  void cancelRustPumpFunExitWatch(mint, reason).then((result) => {
+    if (!result.ok) {
+      console.warn(`Rust exit watcher failed-buy cleanup did not ack for ${mint.slice(0, 8)}...: ${result.error}`);
+    }
+  });
+}
+
+function recordTrackedSourceSell(wallet: string, mint: string, sourceSellRaw: number): boolean {
+  const sourcePosition = recordSourceSellRaw(wallet, mint, sourceSellRaw);
+  return Boolean(sourcePosition && getSourceHeldRaw(wallet, mint) <= 0);
+}
+
+async function handleRustExitEvent(event: RustExitEvent): Promise<void> {
+  if (event.kind === "rustExitMark") {
+    recordExecutionTelemetrySync({
+      kind: "rust-exit-mark",
+      route: "rust-exit-watcher",
+      side: "sell",
+      mint: event.mint,
+      success: true,
+      details: {
+        pnlPct: event.pnlPct,
+        executableSolOutLamports: event.executableSolOutLamports,
+        netSolOutLamports: event.netSolOutLamports,
+        remainingCostLamports: event.remainingCostLamports,
+        peakNetSolOutLamports: event.peakNetSolOutLamports,
+        slot: event.slot,
+        observedAtMs: event.observedAtMs,
+      },
+    });
+    return;
+  }
+  if (event.kind === "rustExitDecision") {
+    recordExecutionTelemetrySync({
+      kind: "rust-exit-decision",
+      route: "rust-exit-watcher",
+      side: "sell",
+      mint: event.mint,
+      success: true,
+      details: {
+        reason: event.reason,
+        sequence: event.sequence,
+        pnlPct: event.pnlPct,
+        tokensInRaw: event.tokensInRaw,
+        expectedSolOutLamports: event.expectedSolOutLamports,
+        minSolOutLamports: event.minSolOutLamports,
+        phaseBefore: event.phaseBefore,
+        phaseAfterSuccess: event.phaseAfterSuccess,
+        shadow: event.shadow,
+      },
+    });
+    console.log(
+      `Rust exit decision ${event.mint.slice(0, 8)}...: ${event.reason ?? "unknown"}` +
+        (event.pnlPct != null ? ` at ${event.pnlPct >= 0 ? "+" : ""}${event.pnlPct.toFixed(1)}%` : "") +
+        (event.shadow ? " (shadow; no transaction sent)" : "")
+    );
+    return;
+  }
+  if (event.kind === "rustExitRouteFallback") {
+    rustExitWatchRegisteredMints.delete(event.mint);
+    rustExitWatchOwnedMints.delete(event.mint);
+    console.warn(
+      `Rust Pump.fun exit watcher released ${event.mint.slice(0, 8)}... after curve completion; ` +
+        "the existing canonical PumpSwap Rust-only exit path now owns this position."
+    );
+    return;
+  }
+  if (event.kind === "rustExitSellFailed") {
+    recordExecutionTelemetrySync({
+      kind: "rust-exit-sell-failed",
+      route: "rust-exit-watcher",
+      side: "sell",
+      mint: event.mint,
+      success: false,
+      error: event.error ?? "Rust exit sell failed",
+      details: { reason: event.reason, sequence: event.sequence },
+    });
+    console.warn(
+      `Rust exit broadcast failed for ${event.mint.slice(0, 8)}... ` +
+        `(${event.reason ?? "unknown"}): ${event.error ?? "unknown error"}`
+    );
+    return;
+  }
+  if (
+    event.kind !== "rustExitSellBroadcast" ||
+    event.sequence == null ||
+    !event.signature ||
+    event.tokensInRaw == null ||
+    event.expectedSolOutLamports == null
+  ) {
+    return;
+  }
+
+  recordExecutionTelemetrySync({
+    kind: "rust-exit-sell-broadcast",
+    route: "rust-exit-watcher",
+    side: "sell",
+    mint: event.mint,
+    signature: event.signature,
+    success: true,
+    elapsedMs: event.elapsedMs,
+    buildMs: event.buildMs,
+    broadcastMs: event.broadcastMs,
+    details: {
+      reason: event.reason,
+      sequence: event.sequence,
+      tokensInRaw: event.tokensInRaw,
+      expectedSolOutLamports: event.expectedSolOutLamports,
+      minSolOutLamports: event.minSolOutLamports,
+      pnlPct: event.pnlPct,
+      senderPath: event.senderPath,
+    },
+  });
+
+  const position = getPosition(event.mint);
+  if (!position || position.heldRaw <= 0) {
+    await ackRustPumpFunExitSell({
+      mint: event.mint,
+      sequence: event.sequence,
+      ok: false,
+      error: "Node ledger has no open position for broadcast Rust exit",
+    });
+    return;
+  }
+  const soldRaw = Math.min(position.heldRaw, Math.max(1, Math.floor(event.tokensInRaw)));
+  const expectedSol = Math.max(0, Math.floor(event.expectedSolOutLamports));
+  const meta = {
+    mint: position.mint,
+    symbol: position.symbol,
+    name: position.symbol,
+    decimals: position.decimals,
+    isSol: false,
+  };
+  const fill = sellFillAccounting(position, soldRaw, expectedSol);
+  fastSellConfirmPendingByMint.add(event.mint);
+  const optimistic = recordSell(meta, soldRaw, expectedSol);
+  cleanupHybridExitStateIfClosed(optimistic);
+  noteLocalSolCredit(expectedSol);
+  pushSwap(
+    {
+      ts: Date.now(),
+      sourceSignature: sourceBuySignatureByMint.get(event.mint) ?? `rust-exit-${event.mint}`,
+      wallet: "rust-exit-watcher",
+      side: "sell",
+      input: {
+        mint: event.mint,
+        symbol: position.symbol,
+        name: position.symbol,
+        decimals: position.decimals,
+        amountRaw: soldRaw,
+        display: formatTokenAmount(soldRaw, position.decimals),
+      },
+      output: {
+        mint: WRAPPED_SOL_MINT,
+        symbol: "SOL",
+        name: "Solana",
+        decimals: 9,
+        amountRaw: expectedSol,
+        display: formatSolAmount(expectedSol),
+      },
+      isSimulated: false,
+      mirrorSignature: event.signature,
+    },
+    {
+      realizedPnlLamports: fill.pnlLamports,
+      realizedPnlPct: fill.pnlPct,
+      positionRealizedPnlLamports: optimistic.realizedPnlLamports,
+      exitReason: `rust:${event.reason ?? "exit"}`,
+    }
+  );
+  console.log(
+    `Rust exit sell broadcast for $${position.symbol}: ${formatTokenAmount(soldRaw, position.decimals)} ` +
+      `for ~${formatSolAmount(expectedSol)} SOL (${event.reason ?? "exit"}) via ${event.senderPath ?? "unknown sender"}.`
+  );
+  console.log(`Tx: ${event.signature}`);
+
+  try {
+    await confirmSignature(event.signature);
+    const execution = await reconcileFastSellExecution({
+      mint: event.mint,
+      expectedTokenAmountRaw: soldRaw,
+      expectedSolLamports: expectedSol,
+      signature: event.signature,
+    });
+    const actualSol = execution?.solReceivedLamports ?? expectedSol;
+    await ackRustPumpFunExitSell({
+      mint: event.mint,
+      sequence: event.sequence,
+      ok: true,
+      actualSolOutLamports: Math.max(0, actualSol),
+    });
+    const latest = getPosition(event.mint);
+    if (!latest || latest.heldRaw <= 0) {
+      rustExitWatchRegisteredMints.delete(event.mint);
+      rustExitWatchOwnedMints.delete(event.mint);
+      recordTradeOutcome(latest?.realizedPnlLamports ?? fill.pnlLamports);
+    }
+    releaseFastSellLifecycle(event.mint);
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    const landed = await timedOutSellAppearsLanded({
+      mint: event.mint,
+      tokenAmountRaw: soldRaw,
+      preSellHeldRaw: position.heldRaw,
+      reason,
+      label: "Rust exit sell confirmation",
+    });
+    if (landed) {
+      await ackRustPumpFunExitSell({
+        mint: event.mint,
+        sequence: event.sequence,
+        ok: true,
+        actualSolOutLamports: expectedSol,
+      });
+      if ((getPosition(event.mint)?.heldRaw ?? 0) <= 0) {
+        rustExitWatchRegisteredMints.delete(event.mint);
+        rustExitWatchOwnedMints.delete(event.mint);
+      }
+      releaseFastSellLifecycle(event.mint);
+      return;
+    }
+    unrecordSell(event.mint, soldRaw, expectedSol);
+    noteLocalSolDebit(expectedSol);
+    await ackRustPumpFunExitSell({
+      mint: event.mint,
+      sequence: event.sequence,
+      ok: false,
+      error: reason,
+    });
+    releaseFastSellLifecycle(event.mint);
+    console.warn(`Rust exit sell rolled back for ${event.mint.slice(0, 8)}...: ${reason}`);
+  }
+}
+
+async function reconcileFastSellExecution(args: {
+  mint: string;
+  expectedTokenAmountRaw: number;
+  expectedSolLamports: number;
+  signature: string;
+}): Promise<ConfirmedSellExecution | null> {
+  const execution = await actualSellExecutionFromTx(args.signature, args.mint);
+  if (execution == null) return null;
+  const actualTokens =
+    execution.tokenAmountRaw > 0 ? execution.tokenAmountRaw : args.expectedTokenAmountRaw;
+  const actualSol =
+    execution.solReceivedLamports != null && execution.solReceivedLamports >= 0
+      ? execution.solReceivedLamports
+      : args.expectedSolLamports;
+  const ledgerSol = useWalletPnlAccounting ? actualSol : args.expectedSolLamports;
+  if (
+    actualTokens !== args.expectedTokenAmountRaw ||
+    actualSol !== args.expectedSolLamports
+  ) {
+    const adjusted = adjustSellExecution(
+      args.mint,
+      args.expectedTokenAmountRaw,
+      actualTokens,
+      args.expectedSolLamports,
+      ledgerSol
+    );
+    if (adjusted) {
+      console.warn(
+        `🧾 Fast sell corrected for ${args.mint.slice(0, 8)}…: ` +
+          `${formatTokenAmount(args.expectedTokenAmountRaw, 6)} / ${formatSolAmount(args.expectedSolLamports)} SOL quoted → ` +
+          `${formatTokenAmount(actualTokens, 6)} / ${formatSolAmount(actualSol)} SOL actual wallet delta` +
+          (!useWalletPnlAccounting ? ` (kept ${formatSolAmount(args.expectedSolLamports)} SOL DEX/trade PnL basis).` : ".")
+      );
+      const pos = getPosition(args.mint);
+      const avgEntry = pos && pos.totalBoughtRaw > 0 ? pos.totalSolSpentLamports / pos.totalBoughtRaw : 0;
+      const fillPnl =
+        avgEntry > 0 ? ledgerSol - avgEntry * actualTokens : ledgerSol - args.expectedSolLamports;
+      void telegram.notifyInfo(
+        `Sell accounting corrected for $${pos?.symbol ?? shortMint(args.mint)}`,
+        [
+          `Tx: ${args.signature}`,
+          `Quoted: ${formatSolAmount(args.expectedSolLamports)} SOL`,
+          `Confirmed wallet delta: ${formatSolAmount(actualSol)} SOL`,
+          !useWalletPnlAccounting ? `PnL basis kept as DEX/trade quote: ${formatSolAmount(args.expectedSolLamports)} SOL` : undefined,
+          `Fill PnL now: ${formatPnl(fillPnl)}`,
+          pos ? `Position PnL now: ${formatPnl(pos.realizedPnlLamports)}` : undefined,
+        ]
+          .filter(Boolean)
+          .join("\n")
+      );
+    } else if (!useWalletPnlAccounting && actualSol !== args.expectedSolLamports) {
+      console.warn(
+        `🧾 Fast sell wallet delta observed for ${args.mint.slice(0, 8)}…: ` +
+          `${formatSolAmount(actualSol)} SOL all-in vs ${formatSolAmount(args.expectedSolLamports)} SOL DEX/trade basis ` +
+          `(PnL basis=${pnlAccountingBasis}).`
+      );
+    }
+  }
+  confirmedPostSellStateByMint.set(args.mint, {
+    signature: args.signature,
+    postTokenBalanceRaw: execution.postTokenBalanceRaw,
+    slot: execution.slot,
+  });
+  noteConfirmedInventory(args.mint, {
+    slot: execution.slot,
+    balanceRaw: execution.postTokenBalanceRaw,
+    signature: args.signature,
+  });
+  return execution;
+}
+let mirrorSellsEnabled = mirrorSells; // initialized from MIRROR_SELLS env, runtime-toggleable
+let buyOncePerTokenEnabled = buyOncePerToken; // initialized from BUY_ONCE_PER_TOKEN env
+let showMarketCapEnabled = showMarketCap; // initialized from SHOW_MARKET_CAP env
+
+async function maybeGetMarketCap(mint: string): Promise<number | null> {
+  if (!showMarketCapEnabled) return null;
+  return getTokenMarketCap(mint);
+}
+
+export function isMirrorSellsEnabled(): boolean {
+  return mirrorSellsEnabled;
+}
+
+export function setMirrorSellsEnabled(enabled: boolean): void {
+  mirrorSellsEnabled = enabled;
+  console.log(`🔁 Mirror sells: ${enabled ? "ON — bot will copy source sells" : "OFF — exit manually with 'e' or 'a'"}`);
+}
+
+export function toggleMirrorSells(): void {
+  setMirrorSellsEnabled(!mirrorSellsEnabled);
+}
+
+export function isBuyOncePerTokenEnabled(): boolean {
+  return buyOncePerTokenEnabled;
+}
+
+export function setBuyOncePerTokenEnabled(enabled: boolean): void {
+  buyOncePerTokenEnabled = enabled;
+  console.log(`🔁 Buy-once-per-token: ${enabled ? "ON — duplicate buys of the same mint are skipped" : "OFF — bot will buy the same token multiple times (pyramiding)"}`);
+}
+
+export function toggleBuyOncePerToken(): void {
+  setBuyOncePerTokenEnabled(!buyOncePerTokenEnabled);
+}
+
+export function isShowMarketCapEnabled(): boolean {
+  return showMarketCapEnabled;
+}
+
+export function setShowMarketCapEnabled(enabled: boolean): void {
+  showMarketCapEnabled = enabled;
+  console.log(`🔁 Show market cap: ${enabled ? "ON — DexScreener MC shown in logs (may be inaccurate for fresh pump.fun tokens)" : "OFF — MC line skipped, no API call"}`);
+}
+
+let buysPaused = false;
+
+export function areBuysPaused(): boolean {
+  return buysPaused;
+}
+
+export function setBuysPaused(paused: boolean): void {
+  if (buysPaused === paused) return;
+  buysPaused = paused;
+  console.log(
+    paused
+      ? "⏸️ Buys PAUSED — no new entries; open positions are still managed and sold."
+      : "▶️ Buys RESUMED — new entries re-enabled."
+  );
+}
+
+export function toggleShowMarketCap(): void {
+  setShowMarketCapEnabled(!showMarketCapEnabled);
+}
+
+export type ModeChangeResult = {
+  ok: boolean;
+  changed: boolean;
+  simulationMode: boolean;
+  message: string;
+};
+
+export function setBotSimulationMode(enabled: boolean): ModeChangeResult {
+  if (simulationMode === enabled) {
+    return {
+      ok: true,
+      changed: false,
+      simulationMode,
+      message: `Already in ${enabled ? "SIMULATION" : "LIVE"} mode.`,
+    };
+  }
+
+  const openPositions = getPositions().filter((p) => p.heldRaw > 0);
+  if (openPositions.length > 0) {
+    return {
+      ok: false,
+      changed: false,
+      simulationMode,
+      message:
+        `Cannot switch to ${enabled ? "SIMULATION" : "LIVE"} mode while ` +
+        `${openPositions.length} position(s) are open. Close positions first.`,
+    };
+  }
+
+  setSimulationMode(enabled);
+  console.log(`Mode changed to ${enabled ? "SIMULATION" : "LIVE"} from runtime controls.`);
+  return {
+    ok: true,
+    changed: true,
+    simulationMode,
+    message: `Mode changed to ${enabled ? "SIMULATION" : "LIVE"}.`,
+  };
+}
+
+type TradeLogExtras = {
+  realizedPnlLamports?: number;
+  realizedPnlPct?: number;
+  positionRealizedPnlLamports?: number;
+  exitReason?: string;
+  priceImpactPct?: number | null;
+  confirmationStatus?: "pending" | "confirmed" | "failed";
+};
+
+function pushSwap(rec: MirrorRecord, extras?: TradeLogExtras): void {
+  recentSwaps.unshift(rec);
+  if (recentSwaps.length > MAX_RECENT_SWAPS) recentSwaps.pop();
+
+  // Fire-and-forget JSONL persistence so we have a paper trail across sessions.
+  logTradeAsync({
+    ts: rec.ts,
+    side: rec.side,
+    mirrorSignature: rec.mirrorSignature,
+    sourceSignature: rec.sourceSignature,
+    sourceWallet: rec.wallet,
+    inputMint: rec.input.mint,
+    outputMint: rec.output.mint,
+    inputAmountRaw: rec.input.amountRaw,
+    outputAmountRaw: rec.output.amountRaw,
+    inputSymbol: rec.input.symbol,
+    outputSymbol: rec.output.symbol,
+    priceImpactPct: extras?.priceImpactPct ?? null,
+    marketCapUsd: rec.marketCapUsd ?? null,
+    realizedPnlLamports: extras?.realizedPnlLamports ?? null,
+    realizedPnlPct: extras?.realizedPnlPct ?? null,
+    positionRealizedPnlLamports: extras?.positionRealizedPnlLamports ?? null,
+    exitReason: extras?.exitReason ?? null,
+    error: rec.error,
+    confirmationStatus: extras?.confirmationStatus,
+  });
+}
+
+function pushRiskTrace(
+  position: PositionSnapshot,
+  valueLamports: number,
+  drawdownPct: number
+): void {
+  const points = riskTraceByMint.get(position.mint) ?? [];
+  points.push({
+    ts: Date.now(),
+    valueLamports,
+    costBasisLamports: position.costBasisRemainingLamports,
+    drawdownPct,
+    stopLossTrue: stopLossPct != null && drawdownPct <= -stopLossPct,
+  });
+  if (points.length > 200) points.shift();
+  riskTraceByMint.set(position.mint, points);
+}
+
+function printRiskTrace(
+  position: PositionSnapshot,
+  sellValueLamports: number,
+  finalPnlPct: number,
+  reason: string
+): void {
+  const points = riskTraceByMint.get(position.mint) ?? [];
+  const entryValue = position.costBasisRemainingLamports;
+  const entryPrice =
+    position.heldRaw > 0 ? entryValue / position.heldRaw : 0;
+  const sellPrice =
+    position.heldRaw > 0 ? sellValueLamports / position.heldRaw : 0;
+
+  console.log("");
+  console.log(`STOP-LOSS / TAKE-PROFIT TRACE $${position.symbol}`);
+  console.log(`Reason: ${reason}`);
+  console.log(`Entry value: ${formatSolAmount(entryValue)} SOL`);
+  console.log(`Entry price/raw: ${entryPrice.toFixed(12)} lamports`);
+  for (const point of points) {
+    const price =
+      position.heldRaw > 0 ? point.valueLamports / position.heldRaw : 0;
+    console.log(
+      `${new Date(point.ts).toISOString()} observed=${formatSolAmount(point.valueLamports)} SOL price/raw=${price.toFixed(12)} drawdown=${point.drawdownPct.toFixed(1)}% stopLoss=${point.stopLossTrue ? "true" : "false"}`
+    );
+  }
+  console.log(`Simulated sell value: ${formatSolAmount(sellValueLamports)} SOL`);
+  console.log(`Simulated sell price/raw: ${sellPrice.toFixed(12)} lamports`);
+  console.log(`Final PnL: ${finalPnlPct >= 0 ? "+" : ""}${finalPnlPct.toFixed(1)}%`);
+  console.log("");
+}
+
+function interruptibleSleep(ms: number): Promise<void> {
+  return new Promise<void>((resolve) => {
+    const t = setTimeout(() => {
+      sleepResolve = null;
+      resolve();
+    }, ms);
+    sleepResolve = () => {
+      clearTimeout(t);
+      sleepResolve = null;
+      resolve();
+    };
+  });
+}
+
+async function updateBalance(pubkey: PublicKey, options: { log?: boolean } = {}): Promise<void> {
+  const shouldLog = options.log ?? true;
+  try {
+    const shadowLamports = getShadowSolLamports();
+    if (simulationMode && shadowLamports != null) {
+      lastBalanceLamports = shadowLamports;
+      lastBalanceAt = Date.now();
+      if (shouldLog) console.log("Balance:", formatSol(shadowLamports), "(shadow simulated)");
+      return;
+    }
+    if (simulationMode && simulationSolBalance != null) {
+      const lamports = Math.round(simulationSolBalance * LAMPORTS_PER_SOL);
+      lastBalanceLamports = lamports;
+      lastBalanceAt = Date.now();
+      if (shouldLog) console.log("Balance:", formatSol(lamports), "(simulated)");
+      return;
+    }
+    const { lamports } = await getSolBalance(pubkey);
+    lastBalanceLamports = lamports;
+    lastBalanceAt = Date.now();
+    setBalanceCache(lamports);
+    if (shouldLog) console.log("Balance:", formatSol(lamports));
+  } catch (err) {
+    console.warn("Failed to fetch balance:", err);
+  }
+}
+
+function captureSessionStartBalance(): void {
+  sessionStartBalanceLamports = lastBalanceLamports;
+  sessionStartBalanceAt = lastBalanceLamports != null ? Date.now() : null;
+}
+
+export type SessionWalletPnlSnapshot = {
+  startBalanceLamports: number | null;
+  currentBalanceLamports: number | null;
+  deltaLamports: number | null;
+  startBalanceAt: number | null;
+  currentBalanceAt: number | null;
+};
+
+export function getSessionWalletPnlSnapshot(): SessionWalletPnlSnapshot {
+  const deltaLamports =
+    sessionStartBalanceLamports != null && lastBalanceLamports != null
+      ? lastBalanceLamports - sessionStartBalanceLamports
+      : null;
+  return {
+    startBalanceLamports: sessionStartBalanceLamports,
+    currentBalanceLamports: lastBalanceLamports,
+    deltaLamports,
+    startBalanceAt: sessionStartBalanceAt,
+    currentBalanceAt: lastBalanceAt,
+  };
+}
+
+function legDisplay(leg: {
+  meta: { mint: string; symbol: string; decimals: number };
+  amountRaw: number;
+}): string {
+  if (leg.meta.mint === WRAPPED_SOL_MINT) {
+    return `${formatSolAmount(leg.amountRaw)} SOL`;
+  }
+  if (leg.meta.mint === USDC_MINT) {
+    return `${(leg.amountRaw / 1_000_000).toFixed(2)} USDC`;
+  }
+  return `${formatTokenAmount(leg.amountRaw, leg.meta.decimals)} $${leg.meta.symbol}`;
+}
+
+function toLegView(leg: MirrorResult["input"]): LegView {
+  return {
+    mint: leg.meta.mint,
+    symbol: leg.meta.symbol,
+    name: leg.meta.name,
+    decimals: leg.meta.decimals,
+    amountRaw: leg.amountRaw,
+    display: legDisplay(leg),
+  };
+}
+
+function tokenSideMint(result: MirrorResult): string | null {
+  if (result.side === "buy") return result.output.meta.mint;
+  if (result.side === "sell") return result.input.meta.mint;
+  return null;
+}
+
+function pnlArrow(lamports: number): string {
+  if (lamports > 0) return "+";
+  if (lamports < 0) return "-";
+  return "";
+}
+
+export function formatPnl(lamports: number): string {
+  const abs = Math.abs(lamports);
+  return `${pnlArrow(lamports)}${formatSolAmount(abs)} SOL`;
+}
+
+type SellFillAccounting = {
+  costedRaw: number;
+  uncostedRaw: number;
+  attributedProceedsLamports: number;
+  costBasisLamports: number;
+  pnlLamports: number;
+  pnlPct: number | undefined;
+};
+
+function sellFillAccounting(
+  position: PositionSnapshot | null,
+  soldRaw: number,
+  proceedsLamports: number
+): SellFillAccounting {
+  const heldRaw = Math.max(0, position?.heldRaw ?? 0);
+  const costedRaw = Math.min(Math.max(0, soldRaw), heldRaw);
+  const uncostedRaw = Math.max(0, soldRaw - costedRaw);
+  const avgEntryLamportsPerRaw =
+    position && position.totalBoughtRaw > 0 ? position.totalSolSpentLamports / position.totalBoughtRaw : 0;
+  const attributedProceedsLamports =
+    soldRaw > 0 && costedRaw < soldRaw
+      ? Math.floor((proceedsLamports * costedRaw) / soldRaw)
+      : proceedsLamports;
+  const costBasisLamports = avgEntryLamportsPerRaw * costedRaw;
+  const pnlLamports = attributedProceedsLamports - costBasisLamports;
+  return {
+    costedRaw,
+    uncostedRaw,
+    attributedProceedsLamports,
+    costBasisLamports,
+    pnlLamports,
+    pnlPct: costBasisLamports > 0 ? (pnlLamports / costBasisLamports) * 100 : undefined,
+  };
+}
+
+function shouldQuarantineFailedBuy(reason: string): boolean {
+  return decideRetryAction(reason).shouldQuarantine;
+}
+
+function holdBuyOnceMintAfterBroadcastUncertainty(mint: string, reason: string): void {
+  if (!buyOncePerTokenEnabled) return;
+  liveBuyAttemptedMintsThisSession.add(mint);
+  boughtMintsThisSession.add(mint);
+  pendingBuyRetryByMint.delete(mint);
+  fastBuyConfirmRetryScheduledByMint.delete(mint);
+  failedBuyRecoveryInFlightMints.delete(mint);
+  quarantinedBuyMints.set(mint, `broadcast status uncertain: ${reason}`);
+  console.warn(
+    `Buy lock preserved for ${mint.slice(0, 8)}... after broadcast/confirmation uncertainty. ` +
+      "No automatic retry for this mint this session."
+  );
+}
+
+async function releaseDroppedBuyAfterZeroInventory(args: {
+  mint: string;
+  tokenAmountRaw: number;
+  solLamports: number;
+  reason: string;
+  signature?: string;
+  sourceSignature?: string;
+  sourceSwap?: DetectedSwap;
+  kp?: Keypair;
+  retryOnce?: boolean;
+  label: string;
+}): Promise<boolean> {
+  if (!keypair || simulationMode) return false;
+  const liveRaw = await getVerifiedTokenBalance(keypair.publicKey, args.mint, {
+    expectedRaw: args.tokenAmountRaw,
+    ownerLabel: "wallet",
+  });
+  if (liveRaw > 0) {
+    console.warn(
+      `${args.label} for ${args.mint.slice(0, 8)}... timed out, but wallet now holds ` +
+        `${liveRaw} raw token(s); keeping optimistic buy locked.`
+    );
+    return false;
+  }
+
+  const removed = unrecordBuy(args.mint, args.tokenAmountRaw, args.solLamports);
+  if (removed) noteLocalSolCredit(args.solLamports);
+  mirrorBuySignatureByMint.delete(args.mint);
+  clearFastBuyConfirmationPending(args.mint, args.signature);
+  confirmedFastBuyTokensByMint.delete(args.mint);
+  rustHotBuyRecordedByMint.delete(args.mint);
+  rustHotSniperPrimaryPendingMints.delete(args.mint);
+  pendingBuyRetryByMint.delete(args.mint);
+  fastBuyConfirmRetryScheduledByMint.delete(args.mint);
+  failedBuyRecoveryInFlightMints.delete(args.mint);
+  quarantinedBuyMints.delete(args.mint);
+  boughtMintsThisSession.delete(args.mint);
+  liveBuyAttemptedMintsThisSession.delete(args.mint);
+  releasePersistentBuyLock(args.mint);
+  releaseRustBoughtMint(
+    args.mint,
+    `zero wallet inventory after dropped buy: ${args.reason}`,
+    args.sourceSignature ?? args.sourceSwap?.signature
+  );
+
+  console.warn(
+    `${args.label} for ${args.mint.slice(0, 8)}... timed out and wallet inventory is still 0; ` +
+      "cleared optimistic buy/quarantine so this mint can be retried."
+  );
+
+  if (
+    args.retryOnce &&
+    args.sourceSwap &&
+    args.kp &&
+    (args.sourceSwap.buyRecoveryAttempt ?? 0) < 1 &&
+    !stopRequested
+  ) {
+    const retrySwap = {
+      ...args.sourceSwap,
+      buyRecoveryAttempt: (args.sourceSwap.buyRecoveryAttempt ?? 0) + 1,
+    };
+    setTimeout(() => {
+      if (stopRequested || quarantinedBuyMints.has(args.mint)) return;
+      processSwap(retrySwap, args.kp!).catch((err) => {
+        console.error("Zero-inventory buy retry failed:", err);
+      });
+    }, 0);
+  }
+
+  return true;
+}
+
+async function settlePendingFastBuysForReport(options: {
+  waitMs?: number;
+  reason?: string;
+} = {}): Promise<void> {
+  if (!keypair || simulationMode || pendingFastBuyConfirmSignaturesByMint.size === 0) return;
+
+  const waitMs = Math.max(0, options.waitMs ?? 0);
+  const deadline = Date.now() + waitMs;
+  const label = options.reason ?? "PnL/report settlement";
+  let loggedWait = false;
+
+  while (pendingFastBuyConfirmSignaturesByMint.size > 0) {
+    let madeProgress = false;
+    const pending = Array.from(pendingFastBuyConfirmSignaturesByMint.entries());
+
+    for (const [mint, signatures] of pending) {
+      const position = getPosition(mint);
+      if (!position || position.heldRaw <= 0) {
+        clearFastBuyConfirmationPending(mint);
+        madeProgress = true;
+        continue;
+      }
+
+      for (const signature of Array.from(signatures)) {
+        const execution = await actualBuyExecutionFromTx(signature, mint);
+        if (execution && execution.tokenAmountRaw > 0) {
+          await reconcileFastBuyTokens({
+            mint,
+            expectedTokenAmountRaw: position.totalBoughtRaw,
+            expectedSolLamports: position.totalSolSpentLamports,
+            signature,
+          });
+          clearFastBuyConfirmationPending(mint, signature);
+          console.warn(
+            `${label}: confirmed pending fast buy ${signature.slice(0, 8)}... for ${mint.slice(0, 8)}... before report.`
+          );
+          madeProgress = true;
+          continue;
+        }
+
+        let statusErr: unknown = null;
+        let hasTerminalStatus = false;
+        try {
+          const status = (await readConnection.getSignatureStatuses([signature])).value[0];
+          if (status?.err) {
+            statusErr = status.err;
+            hasTerminalStatus = true;
+          } else if (status?.confirmationStatus === "confirmed" || status?.confirmationStatus === "finalized") {
+            hasTerminalStatus = true;
+          }
+        } catch {
+          // A transient status RPC issue should not decide the position during reporting.
+        }
+
+        if (statusErr != null) {
+          const released = await releaseDroppedBuyAfterZeroInventory({
+            mint,
+            tokenAmountRaw: position.totalBoughtRaw,
+            solLamports: position.totalSolSpentLamports,
+            reason: `Transaction failed: ${JSON.stringify(statusErr)}`,
+            signature,
+            sourceSignature: sourceBuySignatureByMint.get(mint),
+            label,
+          });
+          madeProgress = madeProgress || released;
+          continue;
+        }
+
+        const oldEnoughToCallDropped =
+          Date.now() - position.lastTradeAt >= confirmationTimeoutMs &&
+          !hasTerminalStatus;
+        if (oldEnoughToCallDropped) {
+          const released = await releaseDroppedBuyAfterZeroInventory({
+            mint,
+            tokenAmountRaw: position.totalBoughtRaw,
+            solLamports: position.totalSolSpentLamports,
+            reason: `not found in status polling after ${confirmationTimeoutMs}ms; suspected dropped transaction`,
+            signature,
+            sourceSignature: sourceBuySignatureByMint.get(mint),
+            label,
+          });
+          madeProgress = madeProgress || released;
+        }
+      }
+    }
+
+    if (pendingFastBuyConfirmSignaturesByMint.size === 0 || Date.now() >= deadline) break;
+    if (!loggedWait && waitMs > 0) {
+      loggedWait = true;
+      console.warn(
+        `${label}: waiting for ${pendingFastBuyConfirmSignaturesByMint.size} pending fast buy confirmation(s) before report...`
+      );
+    }
+    if (!madeProgress) await sleep(1_000);
+  }
+}
+
+async function timedOutSellAppearsLanded(args: {
+  mint: string;
+  tokenAmountRaw: number;
+  preSellHeldRaw: number;
+  reason: string;
+  label: string;
+}): Promise<boolean> {
+  if (!keypair || simulationMode || !isConfirmationTimeoutMessage(args.reason)) return false;
+  const expectedPostSellRaw = Math.max(0, Math.floor(args.preSellHeldRaw - args.tokenAmountRaw));
+  const liveRaw = await getVerifiedTokenBalance(keypair.publicKey, args.mint, {
+    expectedRaw: args.preSellHeldRaw,
+    ownerLabel: "wallet",
+  });
+  if (liveRaw <= expectedPostSellRaw) {
+    console.warn(
+      `${args.label} for ${args.mint.slice(0, 8)}... timed out in status polling, ` +
+        `but wallet balance is ${liveRaw} raw <= expected post-sell ${expectedPostSellRaw}; ` +
+        "keeping optimistic sell accounting."
+    );
+    return true;
+  }
+  console.warn(
+    `${args.label} for ${args.mint.slice(0, 8)}... timed out and wallet still holds ` +
+      `${liveRaw} raw > expected post-sell ${expectedPostSellRaw}; rolling back optimistic sell.`
+  );
+  return false;
+}
+
+async function handleFastMirroredSellConfirmFailure(args: {
+  mint: string;
+  tokenAmountRaw: number;
+  solLamports: number;
+  reason: string;
+  preSellHeldRaw: number;
+}): Promise<void> {
+  const landed = await timedOutSellAppearsLanded({
+    mint: args.mint,
+    tokenAmountRaw: args.tokenAmountRaw,
+    preSellHeldRaw: args.preSellHeldRaw,
+    reason: args.reason,
+    label: "Fast mirrored sell confirmation",
+  });
+  if (landed) {
+    releaseFastSellLifecycle(args.mint);
+    return;
+  }
+
+  fastSellConfirmPendingByMint.delete(args.mint);
+  const rolledBack = unrecordSell(args.mint, args.tokenAmountRaw, args.solLamports);
+  if (rolledBack) {
+    console.warn(
+      `Phantom mirrored sell cleaned up: ${args.mint.slice(0, 8)}... ` +
+        `(reason: ${args.reason}). Sell removed from tracking.`
+    );
+  }
+  if (queuedSourceSellByMint.has(args.mint)) {
+    expandQueuedSellAfterFailure(args.mint);
+    drainQueuedSourceSell(args.mint);
+    return;
+  }
+  const retryPosition = getPosition(args.mint);
+  if (
+    retryPosition &&
+    retryPosition.heldRaw > 0 &&
+    keypair &&
+    !stopRequested &&
+    !fastSellConfirmRetryScheduledByMint.has(args.mint)
+  ) {
+    fastSellConfirmRetryScheduledByMint.add(args.mint);
+    setTimeout(() => {
+      const position = getPosition(args.mint);
+      if (!position || position.heldRaw <= 0 || !keypair || stopRequested) {
+        fastSellConfirmRetryScheduledByMint.delete(args.mint);
+        return;
+      }
+      sellLivePosition(position, "retry after failed mirror sell", undefined, false)
+        .catch((err) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.warn(`Fast mirrored sell retry failed for ${args.mint.slice(0, 8)}...: ${msg}`);
+        })
+        .finally(() => {
+          fastSellConfirmRetryScheduledByMint.delete(args.mint);
+        });
+    }, 50);
+  }
+}
+
+function isPumpFunAccountLayoutFailure(reason: string): boolean {
+  const category = classifyExecutionError(reason).category;
+  return (
+    category === "account-layout" ||
+    category === "account-constraint-seeds" ||
+    category === "account-constraint-mut" ||
+    category === "account-invalid-program" ||
+    category === "account-privilege" ||
+    category === "account-stale-source"
+  );
+}
+
+function isBuySignal(swap: DetectedSwap): boolean {
+  return (
+    (swap.inputMint === WRAPPED_SOL_MINT || swap.inputMint === USDC_MINT) &&
+    swap.outputMint !== WRAPPED_SOL_MINT &&
+    swap.outputMint !== USDC_MINT
+  );
+}
+
+function isSellSignal(swap: DetectedSwap): boolean {
+  return swap.outputMint === WRAPPED_SOL_MINT || swap.outputMint === USDC_MINT;
+}
+
+function recordMirrorSkip(
+  swap: DetectedSwap,
+  reason: string,
+  details: Record<string, unknown> = {}
+): void {
+  const isSell = isSellSignal(swap);
+  recordExecutionTelemetrySync({
+    kind: "mirror-skip",
+    route: "skip",
+    side: isSell ? "sell" : isBuySignal(swap) ? "buy" : "swap",
+    mint: isSell ? swap.inputMint : isBuySignal(swap) ? swap.outputMint : swap.outputMint,
+    sourceSignature: swap.signature,
+    wallet: swap.wallet,
+    detector: swap.detector,
+    success: false,
+    errorSummary: reason,
+    details: {
+      ...details,
+      sourceProgramIds: swap.sourceProgramIds,
+    },
+  });
+}
+
+function sourceBuyTokenAmountRaw(swap: DetectedSwap): number {
+  if (!isBuySignal(swap)) return 0;
+  const raw = swap.counterpartyAmountRaw ?? 0;
+  return Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 0;
+}
+
+function sourceSellTokenAmountRaw(swap: DetectedSwap): number {
+  if (!isSellSignal(swap) || swap.inputMint === WRAPPED_SOL_MINT || swap.inputMint === USDC_MINT) return 0;
+  const raw = swap.amountRaw;
+  return Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 0;
+}
+
+function quoteAmountDisplay(raw: number, mint: string): string {
+  if (mint === USDC_MINT) return `${(raw / 1_000_000).toFixed(2)} USDC`;
+  return `${(raw / LAMPORTS_PER_SOL).toFixed(4)} SOL`;
+}
+
+function mirrorQuoteMintForBuy(swap: DetectedSwap): string {
+  if (mirrorQuoteAsset === "SOL") return WRAPPED_SOL_MINT;
+  if (mirrorQuoteAsset === "USDC") return USDC_MINT;
+  return swap.inputMint === USDC_MINT ? USDC_MINT : WRAPPED_SOL_MINT;
+}
+
+function mirroredBuyAmountRaw(swap: DetectedSwap): number | null {
+  const quoteMint = mirrorQuoteMintForBuy(swap);
+  const minRaw = quoteMint === USDC_MINT
+    ? (Number.isFinite(minBuyUsdcRaw) ? minBuyUsdcRaw : 0)
+    : (Number.isFinite(minBuyLamports) ? minBuyLamports : 0);
+  const maxRaw = quoteMint === USDC_MINT
+    ? (Number.isFinite(maxBuyUsdcRaw) ? maxBuyUsdcRaw : minRaw)
+    : (Number.isFinite(maxBuyLamports) ? maxBuyLamports : minRaw);
+  const calculatedRaw = Math.floor(swap.amountRaw * (copyBuyPercentage / 100));
+  if (!Number.isFinite(calculatedRaw) || calculatedRaw <= 0) {
+    return minRaw > 0 ? Math.min(maxRaw, minRaw) : null;
+  }
+  // Friend/demo mode can leave Copy % blank/0. In that case, use MIN_BUY as a
+  // fixed-size buy and still respect MAX_BUY as the cap.
+  if (quoteMint === USDC_MINT) {
+    if (calculatedRaw < minRaw) {
+      if (minBuyBehavior === "skip") return null;
+      if (minBuyBehavior === "floor") return Math.min(maxRaw, minRaw);
+    }
+    return Math.min(maxRaw, calculatedRaw);
+  }
+  if (calculatedRaw < minRaw) {
+    if (minBuyBehavior === "skip") return null;
+    if (minBuyBehavior === "floor") return Math.min(maxRaw, minRaw);
+  }
+  return Math.min(maxRaw, calculatedRaw);
+}
+
+function shouldDeferToRustHotSniperPrimary(
+  swap: DetectedSwap,
+  executionPlan: ReturnType<typeof planExecution>
+): boolean {
+  if (!rustHotSniperPrimary || !rustHotSniperEnabled || !rustSidecarEnabled) return false;
+  if (simulationMode || shadowExecutionMode) return false;
+  if (rustHotSniperPrimaryFallbackSources.has(swap.signature)) return false;
+  if (!isBuySignal(swap) || executionPlan.side !== "buy") return false;
+  if (swap.inputMint !== WRAPPED_SOL_MINT) return false;
+  if (swap.skipDirectBuyRoutes || swap.forceDerivedPumpFunBuy) return false;
+  return executionPlan.route === "pumpfun-bonding-curve" || executionPlan.route === "pumpfun-v2-token2022";
+}
+
+async function handleRustHotBuy(hotBuy: RustHotBuy, kp: Keypair): Promise<void> {
+  if (stopRequested) return;
+  noteTrackedSourceMintSignal(hotBuy.wallet, hotBuy.mint, "buy", hotBuy.sourceSignature);
+  if (rustHotBuyRecordedSourceSignatures.has(hotBuy.sourceSignature)) {
+    console.log(
+      `Skipping duplicate Rust hot buy bookkeeping for ${hotBuy.mint.slice(0, 8)}...; ` +
+        `source tx ${hotBuy.sourceSignature.slice(0, 8)}... already recorded this session.`
+    );
+    return;
+  }
+  rustHotBuyRecordedSourceSignatures.add(hotBuy.sourceSignature);
+  const quarantineReason = quarantinedBuyMints.get(hotBuy.mint);
+  if (isSourceSoldWhileBuyPendingQuarantine(quarantineReason)) {
+    quarantinedBuyMints.delete(hotBuy.mint);
+    console.log(
+      `Rust hot buy superseded stale source-sold quarantine for ${hotBuy.mint.slice(0, 8)}...; recording broadcast.`
+    );
+  }
+  const ts = Date.now();
+  const route = hotBuy.route ?? "pumpfun-hot-source-replay-buy";
+  const rustElapsedMs =
+    typeof hotBuy.elapsedMs === "number" && Number.isFinite(hotBuy.elapsedMs) ? Math.max(0, hotBuy.elapsedMs) : null;
+  const rustBroadcastMs =
+    typeof hotBuy.broadcastMs === "number" && Number.isFinite(hotBuy.broadcastMs) ? Math.max(0, hotBuy.broadcastMs) : null;
+  const rustBuildMs =
+    typeof hotBuy.buildMs === "number" && Number.isFinite(hotBuy.buildMs) ? Math.max(0, hotBuy.buildMs) : null;
+  const sourceSwap: DetectedSwap = {
+    signature: hotBuy.sourceSignature,
+    wallet: hotBuy.wallet,
+    detector: "rust-hot-sniper",
+    receivedAtMs: hotBuy.receivedAtMs,
+    detectedAtMs: hotBuy.detectedAtMs,
+    sourceSlot: hotBuy.sourceSlot,
+    sourceTransactionIndex: hotBuy.sourceTransactionIndex,
+    inputMint: WRAPPED_SOL_MINT,
+    outputMint: hotBuy.mint,
+    amountRaw: hotBuy.sourceAmountRaw,
+    isNativeInput: true,
+  };
+  latestSourceBuyByMint.set(hotBuy.mint, {
+    wallet: hotBuy.wallet,
+    signature: hotBuy.sourceSignature,
+  });
+
+  recordExecutionTelemetrySync({
+    kind: "source-detected",
+    route,
+    side: "buy",
+    mint: hotBuy.mint,
+    sourceSignature: hotBuy.sourceSignature,
+    wallet: hotBuy.wallet,
+    detector: "rust-hot-sniper",
+    elapsedMs:
+      hotBuy.detectedAtMs != null && hotBuy.receivedAtMs != null
+        ? hotBuy.receivedAtMs - hotBuy.detectedAtMs
+        : hotBuy.elapsedMs,
+    success: true,
+    details: {
+      sourceSlot: hotBuy.sourceSlot,
+      sourceTransactionIndex: hotBuy.sourceTransactionIndex,
+      providerCreatedAtMs: rustElapsedMs != null ? ts - rustElapsedMs : hotBuy.detectedAtMs,
+      processStartedAtMs: rustBroadcastMs != null ? ts - rustBroadcastMs : ts,
+      detectedAtMs: hotBuy.detectedAtMs,
+      receivedAtMs: hotBuy.receivedAtMs,
+      rustElapsedMs,
+      rustBuildMs,
+      rustBroadcastMs,
+      senderPath: hotBuy.senderPath,
+    },
+  });
+  recordExecutionTelemetrySync({
+    kind: "execution-plan",
+    route,
+    side: "buy",
+    mint: hotBuy.mint,
+    sourceSignature: hotBuy.sourceSignature,
+    wallet: hotBuy.wallet,
+    detector: "rust-hot-sniper",
+    elapsedMs: 0,
+    success: true,
+    details: { reason: "rust-hot-sniper pre-node broadcast" },
+  });
+  if (hotBuy.buildMs != null) {
+    recordExecutionTelemetrySync({
+      kind: "stage:build",
+      route,
+      side: "buy",
+      mint: hotBuy.mint,
+      sourceSignature: hotBuy.sourceSignature,
+      wallet: hotBuy.wallet,
+      detector: "rust-hot-sniper",
+      elapsedMs: hotBuy.buildMs,
+      success: true,
+      details: { txBytes: hotBuy.txBytes, rustElapsedMs, rustBuildMs, rustBroadcastMs },
+    });
+  }
+  recordExecutionTelemetrySync({
+    kind: "broadcast",
+    route,
+    side: "buy",
+    mint: hotBuy.mint,
+    sourceSignature: hotBuy.sourceSignature,
+    signature: hotBuy.signature,
+    wallet: hotBuy.wallet,
+    detector: "rust-hot-sniper",
+    elapsedMs: hotBuy.broadcastMs ?? hotBuy.elapsedMs,
+    success: true,
+    details: {
+      sourceSlot: hotBuy.sourceSlot,
+      sourceTransactionIndex: hotBuy.sourceTransactionIndex,
+      senderPath: hotBuy.senderPath,
+      txBytes: hotBuy.txBytes,
+      rustElapsedMs,
+      rustBuildMs,
+      rustBroadcastMs,
+    },
+  });
+
+  const inputMeta = await getTokenMeta(WRAPPED_SOL_MINT);
+  const outputMeta = await getTokenMeta(hotBuy.mint);
+  const result: MirrorResult = {
+    signature: hotBuy.signature,
+    isSimulated: false,
+    side: "buy",
+    input: { meta: inputMeta, amountRaw: hotBuy.solInLamports },
+    output: { meta: outputMeta, amountRaw: hotBuy.tokensOutRaw },
+    costBasisLamports: hotBuy.solInLamports,
+    priceImpactPct: "0",
+    confirmationPending: true,
+  };
+
+  console.log(
+    `Rust hot sniper recorded buy for ${hotBuy.mint.slice(0, 8)}... ` +
+      `(${formatSolAmount(hotBuy.solInLamports)} SOL, ${hotBuy.elapsedMs ?? "?"}ms, ${hotBuy.senderPath ?? "unknown sender"}).`
+  );
+  liveBuyAttemptedMintsThisSession.add(hotBuy.mint);
+  rustHotBuyRecordedByMint.add(hotBuy.mint);
+  rustHotSniperPrimaryPendingMints.delete(hotBuy.mint);
+  const marketCapUsd = await maybeGetMarketCap(hotBuy.mint);
+  const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
+  logTrade(result, sourceSwap, marketCapUsd, marketCapCheckedAt);
+  void registerRustExitWatchForMint(hotBuy.mint, false);
+  noteLocalSolDebit(hotBuy.solInLamports);
+
+  pushSwap(
+    {
+      ts,
+      sourceSignature: hotBuy.sourceSignature,
+      wallet: hotBuy.wallet,
+      side: "buy",
+      input: toLegView(result.input),
+      output: toLegView(result.output),
+      isSimulated: false,
+      mirrorSignature: hotBuy.signature,
+      marketCapUsd,
+      marketCapCheckedAt,
+    },
+    { priceImpactPct: 0 }
+  );
+
+  const confirmStartedAt = Date.now();
+  confirmSignature(hotBuy.signature)
+    .then(async () => {
+      recordExecutionTelemetrySync({
+        kind: "stage:confirm",
+        route,
+        side: "buy",
+        mint: hotBuy.mint,
+        sourceSignature: hotBuy.sourceSignature,
+        signature: hotBuy.signature,
+        wallet: hotBuy.wallet,
+        detector: "rust-hot-sniper",
+        elapsedMs: Date.now() - confirmStartedAt,
+        success: true,
+        details: { mode: "background", senderPath: hotBuy.senderPath },
+      });
+      pendingBuyRetryByMint.delete(hotBuy.mint);
+      confirmedFastBuyTokensByMint.set(hotBuy.mint, hotBuy.tokensOutRaw);
+      try {
+        await reconcileFastBuyTokens({
+          mint: hotBuy.mint,
+          expectedTokenAmountRaw: hotBuy.tokensOutRaw,
+          expectedSolLamports: hotBuy.solInLamports,
+          quoteMint: WRAPPED_SOL_MINT,
+          signature: hotBuy.signature,
+        });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`Fast Rust hot buy reconciliation failed for ${hotBuy.mint.slice(0, 8)}…: ${msg}`);
+      }
+      await registerRustExitWatchForMint(hotBuy.mint, true);
+      clearFastBuyConfirmationPendingSoon(hotBuy.mint, hotBuy.signature);
+    })
+    .catch(async (err) => {
+      const reason = err instanceof Error ? err.message : String(err);
+      recordExecutionTelemetrySync({
+        kind: "stage:confirm",
+        route,
+        side: "buy",
+        mint: hotBuy.mint,
+        sourceSignature: hotBuy.sourceSignature,
+        signature: hotBuy.signature,
+        wallet: hotBuy.wallet,
+        detector: "rust-hot-sniper",
+        elapsedMs: Date.now() - confirmStartedAt,
+        success: false,
+        error: reason,
+        errorClass: classifyExecutionError(reason).category,
+        errorCode: classifyExecutionError(reason).code,
+        details: { mode: "background", senderPath: hotBuy.senderPath },
+      });
+      if (isConfirmationTimeoutError(err)) {
+        // Status absence is not proof of failure. A Sender/Jito transaction may
+        // land after this read RPC's status window. Keep its costed lot until
+        // wallet/transaction reconciliation proves otherwise.
+        const released = await releaseDroppedBuyAfterZeroInventory({
+          mint: hotBuy.mint,
+          tokenAmountRaw: hotBuy.tokensOutRaw,
+          solLamports: hotBuy.solInLamports,
+          reason,
+          signature: hotBuy.signature,
+          sourceSignature: hotBuy.sourceSignature,
+          sourceSwap,
+          kp,
+          retryOnce: true,
+          label: "Rust hot buy confirmation",
+        });
+        if (released) return;
+        clearFastBuyConfirmationPending(hotBuy.mint, hotBuy.signature);
+        rustHotSniperPrimaryPendingMints.delete(hotBuy.mint);
+        console.warn(
+          `Rust hot buy confirmation uncertain for ${hotBuy.mint.slice(0, 8)}... ` +
+            `(${reason}). Retaining optimistic position pending wallet reconciliation.`
+        );
+        return;
+      }
+      cancelRustExitWatchAfterFailedBuy(hotBuy.mint, `definitive Rust hot buy failure: ${reason}`);
+      const removed = unrecordBuy(hotBuy.mint, hotBuy.tokensOutRaw, hotBuy.solInLamports);
+      mirrorBuySignatureByMint.delete(hotBuy.mint);
+      clearFastBuyConfirmationPending(hotBuy.mint, hotBuy.signature);
+      confirmedFastBuyTokensByMint.delete(hotBuy.mint);
+      rustHotBuyRecordedByMint.delete(hotBuy.mint);
+      noteLocalSolCredit(hotBuy.solInLamports);
+      rustHotSniperPrimaryPendingMints.delete(hotBuy.mint);
+      if (removed) {
+        console.warn(
+          `Phantom Rust hot buy cleaned up: ${hotBuy.mint.slice(0, 8)}... ` +
+            `(reason: ${reason}). Position removed from tracking.`
+        );
+      }
+      const decision = decideRetryAction(reason);
+      if (shouldHoldBuyOnceAfterFailure({ buyOncePerTokenEnabled, reason })) {
+        holdBuyOnceMintAfterBroadcastUncertainty(hotBuy.mint, reason);
+        return;
+      }
+      if (decision.shouldQuarantine) {
+        pendingBuyRetryByMint.delete(hotBuy.mint);
+        quarantinedBuyMints.set(hotBuy.mint, `rust hot buy ${decision.action}: ${reason}`);
+        console.warn(
+          `Buy quarantine set for ${hotBuy.mint.slice(0, 8)}... after Rust hot buy failed ` +
+            `(${reason}). No more retries for this mint this session.`
+        );
+      } else {
+        const fallback = pendingBuyRetryByMint.get(hotBuy.mint);
+        pendingBuyRetryByMint.delete(hotBuy.mint);
+        failedBuyRecoveryInFlightMints.delete(hotBuy.mint);
+        boughtMintsThisSession.delete(hotBuy.mint);
+        liveBuyAttemptedMintsThisSession.delete(hotBuy.mint);
+        quarantinedBuyMints.delete(hotBuy.mint);
+        releasePersistentBuyLock(hotBuy.mint);
+        const released = await releaseRustBoughtMint(
+          hotBuy.mint,
+          `recoverable Rust hot buy failure: ${reason}`,
+          hotBuy.sourceSignature
+        );
+        if (!released.ok) {
+          console.warn(
+            `Rust hot buy lock release did not ack for ${hotBuy.mint.slice(0, 8)}...: ${released.error}`
+          );
+        }
+        if (shouldAttemptFailedBuyRecovery(fallback, reason)) {
+          console.warn(
+            `Rust hot buy failed for ${hotBuy.mint.slice(0, 8)}... with recoverable ` +
+              `${decision.category} failure; retrying queued TypeScript fallback now.`
+          );
+          scheduleFailedBuyRecovery(fallback, kp, reason);
+        } else {
+          console.warn(
+            `Rust hot buy failed for ${hotBuy.mint.slice(0, 8)}... with recoverable ` +
+              `${decision.category} failure; a later source signal can retry.`
+          );
+        }
+      }
+    });
+}
+
+function isTerminalRustHotFallback(reason: string): boolean {
+  const normalized = reason.toLowerCase();
+  return (
+    normalized.includes("rust hot sniper mc ") ||
+    normalized.includes("rust hot sniper mc unavailable") ||
+    normalized.includes("rust hot sniper mc needs") ||
+    normalized.includes("source instruction accounts unavailable") ||
+    normalized.includes("source instruction data unavailable") ||
+    normalized.includes("rust executor returned no signature") ||
+    normalized.includes("blockhash fetch failed") ||
+    normalized.includes("copy-sized amount below minimum") ||
+    normalized.includes("copy-sized amount is zero") ||
+    normalized.includes("session deployed sol cap would be exceeded")
+  );
+}
+
+function handleRustHotBuyFallback(fallback: RustHotBuyFallback): void {
+  rustHotSniperPrimaryPendingMints.delete(fallback.mint);
+  failedBuyRecoveryInFlightMints.delete(fallback.mint);
+  const terminal = isTerminalRustHotFallback(fallback.reason);
+  if (terminal || rustOnlyBuys) {
+    pendingBuyRetryByMint.delete(fallback.mint);
+    console.log(
+      `Rust hot sniper ${terminal ? "terminal skip" : "fallback"} for ${fallback.mint.slice(0, 8)}...; ` +
+        `cleared primary pending state (${fallback.reason}).`
+    );
+  }
+}
+
+async function getCurrentSourceHeldMints(wallet: string): Promise<Set<string>> {
+  const owner = new PublicKey(wallet);
+  const mints = new Set<string>();
+
+  for (const programId of TOKEN_PROGRAM_IDS) {
+    const resp = await readConnection.getParsedTokenAccountsByOwner(owner, { programId });
+    for (const item of resp.value) {
+      const info = item.account.data.parsed?.info as
+        | { mint?: string; tokenAmount?: { amount?: string } }
+        | undefined;
+      const mint = info?.mint;
+      const amount = info?.tokenAmount?.amount;
+      if (!mint || mint === WRAPPED_SOL_MINT || mint === USDC_MINT) continue;
+      if (amount && BigInt(amount) > 0n) mints.add(mint);
+    }
+  }
+
+  return mints;
+}
+
+async function warmSourcePreexistingBuyMints(startupCutoffSec: number): Promise<void> {
+  sourcePreexistingBuyMints.clear();
+  if (!skipSourcePreexistingMints) return;
+
+  const started = Date.now();
+  console.log(
+    `Preloading source preexisting mints: current holdings + ${sourcePreexistingScanTxLimit} recent tx(s)/wallet...`
+  );
+
+  for (const wallet of trackedWallets) {
+    try {
+      const [heldMints, recentBuyMints] = await Promise.all([
+        getCurrentSourceHeldMints(wallet),
+        getRecentWalletBuyMints(wallet, sourcePreexistingScanTxLimit, startupCutoffSec),
+      ]);
+
+      for (const mint of heldMints) sourcePreexistingBuyMints.add(mint);
+      for (const mint of recentBuyMints) sourcePreexistingBuyMints.add(mint);
+
+      console.log(
+        `  ${wallet.slice(0, 4)}...${wallet.slice(-4)}: ` +
+          `${heldMints.size} held, ${recentBuyMints.size} recent buy mint(s).`
+      );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Source preexisting preload skipped for ${wallet.slice(0, 6)}...: ${msg}`);
+    }
+  }
+
+  console.log(
+    `Source preexisting skip loaded ${sourcePreexistingBuyMints.size} mint(s) in ${Date.now() - started}ms.`
+  );
+}
+
+function shouldAttemptFailedBuyRecovery(
+  sourceSwap: DetectedSwap | undefined,
+  reason: string
+): sourceSwap is DetectedSwap {
+  const decision = decideRetryAction(reason);
+  const canRescue =
+    decision.action === "rebuild-derived-accounts" ||
+    decision.action === "rebuild-pool-state" ||
+    decision.action === "fresh-quote" ||
+    decision.action === "compact-transaction" ||
+    decision.action === "fresh-blockhash-rebroadcast";
+  const mint = sourceSwap?.outputMint;
+  if (
+    canRescue &&
+    Boolean(sourceSwap) &&
+    Boolean(mint) &&
+    !failedBuyRecoveryInFlightMints.has(mint!) &&
+    !sourceSwap?.skipDirectBuyRoutes &&
+    !sourceSwap?.forceDerivedPumpFunBuy &&
+    (sourceSwap?.buyRecoveryAttempt ?? 0) < executionRescueRetries
+  ) {
+    return true;
+  }
+  return (
+    failedBuyRecovery === "JUPITER_ONCE" &&
+    Boolean(sourceSwap) &&
+    Boolean(mint) &&
+    !failedBuyRecoveryInFlightMints.has(mint!) &&
+    !sourceSwap?.skipDirectBuyRoutes &&
+    (sourceSwap?.buyRecoveryAttempt ?? 0) < executionRescueRetries
+  );
+}
+
+function isTerminalBuyFailure(message: string): boolean {
+  return classifyExecutionError(message).recoverable === false;
+}
+
+function scheduleFailedBuyRecovery(
+  sourceSwap: DetectedSwap,
+  kp: Keypair,
+  reason: string
+): void {
+  if (stopRequested) {
+    failedBuyRecoveryInFlightMints.delete(sourceSwap.outputMint);
+    console.warn(
+      `Skipping direct rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... because shutdown is in progress.`
+    );
+    return;
+  }
+
+  failedBuyRecoveryInFlightMints.add(sourceSwap.outputMint);
+  const decision = decideRetryAction(reason);
+  const useDerivedPumpFunRescue =
+    decision.program !== "pump_amm" &&
+    decision.action === "rebuild-derived-accounts" &&
+    !sourceSwap.forceDerivedPumpFunBuy;
+  const recoverySwap: DetectedSwap = {
+    ...sourceSwap,
+    skipDirectBuyRoutes: false,
+    forceDerivedPumpFunBuy: useDerivedPumpFunRescue,
+    buyRecoveryAttempt: (sourceSwap.buyRecoveryAttempt ?? 0) + 1,
+    buyRecoveryReason: reason,
+  };
+
+  console.warn(
+    useDerivedPumpFunRescue
+      ? `Scheduling derived-account pump.fun rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after pump.fun account-layout failure.`
+      : `Scheduling direct ${decision.action} rescue buy for ${sourceSwap.outputMint.slice(0, 8)}... after direct buy failed.`
+  );
+  setTimeout(() => {
+    if (stopRequested || !failedBuyRecoveryInFlightMints.has(sourceSwap.outputMint)) return;
+    rustHotSniperPrimaryFallbackSources.add(recoverySwap.signature);
+    processSwap(recoverySwap, kp).catch((err) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      const decision = decideRetryAction(msg);
+      console.error(`Direct rescue buy failed for ${sourceSwap.outputMint.slice(0, 8)}...: ${msg}`);
+      if (decision.shouldQuarantine) {
+        quarantinedBuyMints.set(sourceSwap.outputMint, `direct rescue ${decision.action}: ${msg}`);
+      } else if (isPumpFunAccountLayoutFailure(msg)) {
+        boughtMintsThisSession.delete(sourceSwap.outputMint);
+        pendingBuyRetryByMint.delete(sourceSwap.outputMint);
+        liveBuyAttemptedMintsThisSession.delete(sourceSwap.outputMint);
+        quarantinedBuyMints.delete(sourceSwap.outputMint);
+        releasePersistentBuyLock(sourceSwap.outputMint);
+        releaseRustBoughtMint(sourceSwap.outputMint, `recoverable direct rescue ${decision.action}: ${msg}`);
+        console.warn(
+          `Direct rescue failure for ${sourceSwap.outputMint.slice(0, 8)}... is pump.fun account-layout recoverable; ` +
+            "clearing buy locks so later source buys can retry this mint."
+        );
+      } else {
+        boughtMintsThisSession.delete(sourceSwap.outputMint);
+        pendingBuyRetryByMint.delete(sourceSwap.outputMint);
+        liveBuyAttemptedMintsThisSession.delete(sourceSwap.outputMint);
+        quarantinedBuyMints.delete(sourceSwap.outputMint);
+        releasePersistentBuyLock(sourceSwap.outputMint);
+        releaseRustBoughtMint(sourceSwap.outputMint, `recoverable direct rescue ${decision.action}: ${msg}`);
+        console.warn(
+          `Direct rescue failure for ${sourceSwap.outputMint.slice(0, 8)}... is recoverable ` +
+            `(${decision.action}); clearing buy locks so later source buys can retry this mint.`
+        );
+      }
+    }).finally(() => {
+      rustHotSniperPrimaryFallbackSources.delete(recoverySwap.signature);
+      failedBuyRecoveryInFlightMints.delete(sourceSwap.outputMint);
+    });
+  }, executionRescueDelayMs);
+}
+
+/** SOL per token - simple price display */
+function tokenPriceInSol(solLamports: number, tokensRaw: number, decimals: number): number {
+  if (tokensRaw <= 0) return 0;
+  const sol = solLamports / 1_000_000_000;
+  const tokens = tokensRaw / Math.pow(10, decimals);
+  if (tokens <= 0) return 0;
+  return sol / tokens;
+}
+
+function formatPrice(sol: number): string {
+  if (sol >= 1) return sol.toFixed(4);
+  if (sol >= 0.01) return sol.toFixed(6);
+  return sol.toFixed(9);
+}
+
+function logTrade(
+  result: MirrorResult,
+  swap: DetectedSwap,
+  marketCapUsd: number | null,
+  marketCapCheckedAt: number | null
+): void {
+  const simTag = result.isSimulated ? " Simulated" : "";
+  const inputDisplay = legDisplay(result.input);
+  const outputDisplay = legDisplay(result.output);
+  const mcLine = marketCapUsd != null ? `📈 MC: ${formatMarketCap(marketCapUsd)}` : `📊 MC: Not available yet`;
+  const mcDisplay = marketCapUsd != null ? formatMarketCap(marketCapUsd) : undefined;
+  const walletTag = `${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)}`;
+
+  if (result.side === "buy") {
+    const costBasisLamports = result.costBasisLamports ?? result.input.amountRaw;
+    const pos = recordBuy(result.output.meta, result.output.amountRaw, costBasisLamports);
+    const tokenMint = result.output.meta.mint;
+    if (result.confirmationPending && !result.isSimulated) {
+      markFastBuyConfirmationPending(tokenMint, result.signature);
+    }
+    boughtMintsThisSession.add(tokenMint);
+    sourceBuySignatureByMint.set(tokenMint, swap.signature);
+    if (!result.isSimulated) mirrorBuySignatureByMint.set(tokenMint, result.signature);
+    const sourceQuote = quoteAmountDisplay(swap.amountRaw, swap.inputMint);
+    const mirroredQuote = quoteAmountDisplay(result.input.amountRaw, result.input.meta.mint);
+    const sourceTokenDisplay =
+      swap.counterpartyAmountRaw != null
+        ? `${formatTokenAmount(swap.counterpartyAmountRaw, result.output.meta.decimals)} $${result.output.meta.symbol}`
+        : undefined;
+    const percentageSizedRaw = Math.floor(swap.amountRaw * (copyBuyPercentage / 100));
+    const fixedSizeMode = copyBuyPercentage <= 0;
+    const clamped = !fixedSizeMode && result.input.amountRaw !== percentageSizedRaw;
+    const sizingNote = clamped
+      ? ` (adjusted from ${quoteAmountDisplay(percentageSizedRaw, result.input.meta.mint)}; source ${sourceQuote})`
+      : fixedSizeMode
+        ? ` (fixed-size mode; source ${sourceQuote})`
+        : copyBuyPercentage !== 100
+        ? ` (${copyBuyPercentage}% of ${sourceQuote})`
+        : "";
+    const entryPrice = tokenPriceInSol(
+      costBasisLamports,
+      result.output.amountRaw,
+      result.output.meta.decimals
+    );
+    const impactStr = result.priceImpactPct
+      ? ` · impact ${(parseFloat(result.priceImpactPct) * 100).toFixed(2)}%`
+      : "";
+    console.log(`✅ Buy${simTag} (${walletTag}): ${mirroredQuote}${sizingNote}`);
+    console.log(`🪙 Tokens: ${outputDisplay}`);
+    console.log(`💹 Entry: ${formatPrice(entryPrice)} SOL per $${pos.symbol}${impactStr}`);
+    console.log(`🔗 CA: ${tokenMint}`);
+    if (mcLine) console.log(mcLine);
+    if (result.confirmationPending) {
+      console.log("Status: broadcast accepted, awaiting on-chain confirmation (fast mode optimistic record)");
+    }
+    if (!result.isSimulated) console.log(`📝 Tx: ${result.signature}`);
+    console.log(
+      `📦 Position $${pos.symbol}: ${formatTokenAmount(pos.heldRaw, pos.decimals)} held, spent ${formatSolAmount(pos.totalSolSpentLamports)} SOL`
+    );
+    console.log("");
+
+    // Send Telegram notification
+    const notification: TradeNotification = {
+      type: "buy",
+      symbol: pos.symbol,
+      amount: outputDisplay,
+      solAmount: result.input.meta.mint === USDC_MINT ? `${mirroredQuote} (~${formatSolAmount(costBasisLamports)} SOL)` : mirroredQuote,
+      sourceAmount: sourceTokenDisplay,
+      sourceSolAmount: sourceQuote,
+      marketCap: mcDisplay,
+      marketCapCheckedAt: marketCapCheckedAt ?? undefined,
+      isSimulated: result.isSimulated,
+      wallet: walletTag,
+      tokenAddress: tokenMint,
+      txSignature: result.isSimulated ? undefined : result.signature,
+    };
+    void telegram.notifyTrade(notification);
+
+    return;
+  }
+
+  if (result.side === "sell") {
+    const before = getPosition(result.input.meta.mint);
+    const fill = sellFillAccounting(before, result.input.amountRaw, result.output.amountRaw);
+    const pos = recordSell(result.input.meta, result.input.amountRaw, result.output.amountRaw);
+    cleanupHybridExitStateIfClosed(pos);
+    const tokenMint = result.input.meta.mint;
+    const exitPrice = tokenPriceInSol(
+      result.output.amountRaw,
+      result.input.amountRaw,
+      result.input.meta.decimals
+    );
+    const avgEntryLamportsPerRaw =
+      pos.totalBoughtRaw > 0 ? pos.totalSolSpentLamports / pos.totalBoughtRaw : 0;
+    const exitLamportsPerRaw =
+      result.input.amountRaw > 0 ? result.output.amountRaw / result.input.amountRaw : 0;
+    const pctChange =
+      avgEntryLamportsPerRaw > 0
+        ? (exitLamportsPerRaw / avgEntryLamportsPerRaw - 1) * 100
+        : 0;
+    const pctStr = `${pctChange >= 0 ? "+" : ""}${pctChange.toFixed(1)}%`;
+
+    const sellImpactStr = result.priceImpactPct
+      ? ` · impact ${(parseFloat(result.priceImpactPct) * 100).toFixed(2)}%`
+      : "";
+    console.log(`✅ Sell${simTag} (${walletTag}): ${inputDisplay}`);
+    console.log(`💰 Received: ${outputDisplay}`);
+    console.log(`💹 Exit: ${formatPrice(exitPrice)} SOL / 1M $${pos.symbol}  (${pctStr} vs avg entry)${sellImpactStr}`);
+    console.log(`🔗 CA: ${tokenMint}`);
+    if (mcLine) console.log(mcLine);
+    if (!result.isSimulated) console.log(`📝 Tx: ${result.signature}`);
+    console.log(`Fill PnL on $${pos.symbol}: ${formatPnl(fill.pnlLamports)}`);
+    console.log(
+      `Position PnL on $${pos.symbol}: ${formatPnl(pos.realizedPnlLamports)} (held: ${formatTokenAmount(Math.max(pos.heldRaw, 0), pos.decimals)})`
+    );
+    if (fill.uncostedRaw > 0) {
+      console.warn(
+        `PnL warning: sell included ${formatTokenAmount(fill.uncostedRaw, pos.decimals)} uncosted $${pos.symbol}; ` +
+          "fill PnL only attributes tracked inventory."
+      );
+    }
+    console.log("");
+
+    // Send Telegram notification
+    const notification: TradeNotification = {
+      type: "sell",
+      symbol: pos.symbol,
+      amount: inputDisplay,
+      solAmount: outputDisplay,
+      marketCap: mcDisplay,
+      marketCapCheckedAt: marketCapCheckedAt ?? undefined,
+      isSimulated: result.isSimulated,
+      wallet: walletTag,
+      tokenAddress: tokenMint,
+      pnl: formatPnl(fill.pnlLamports),
+      positionPnl: formatPnl(pos.realizedPnlLamports),
+      txSignature: result.isSimulated ? undefined : result.signature,
+    };
+    void telegram.notifyTrade(notification);
+
+    return;
+  }
+
+  console.log(`🔄 Swap${simTag} (${walletTag}): ${inputDisplay} → ${outputDisplay}`);
+  if (!result.isSimulated) console.log(`📝 Tx: ${result.signature}`);
+  console.log("");
+}
+
+function shortWallet(wallet: string): string {
+  return `${wallet.slice(0, 4)}...${wallet.slice(-4)}`;
+}
+
+function uniqueWallets(wallets: string[]): string[] {
+  return Array.from(new Set(wallets.map((wallet) => wallet.trim()).filter(Boolean)));
+}
+
+function getWatchedWallets(): string[] {
+  const base = exitSignalSellsEnabled
+    ? [...trackedWallets, ...exitSignalWallets]
+    : [...trackedWallets];
+  if (clusterTriggerEnabled && clusterConfirmWallet) base.push(clusterConfirmWallet);
+  return uniqueWallets(base);
+}
+
+function getPrewarmOnlyWallets(watchedWallets: string[]): string[] {
+  const watched = new Set(watchedWallets);
+  return uniqueWallets(prewarmWallets).filter((wallet) => !watched.has(wallet));
+}
+
+function isExitSignalWallet(wallet: string): boolean {
+  return exitSignalSellsEnabled && exitSignalWallets.includes(wallet);
+}
+
+// --- Cluster trigger strategy state ---
+const clusterWalletSet = new Set(clusterWallets);
+
+/** Per-mint confirmation state for cluster-entry positions. */
+type ClusterState = { gugConfirmed: boolean; gugDeadlineAt: number };
+const clusterPositionState = new Map<string, ClusterState>();
+
+function isClusterWallet(wallet: string): boolean {
+  return clusterTriggerEnabled && clusterWalletSet.has(wallet);
+}
+
+function isClusterConfirmWallet(wallet: string): boolean {
+  return clusterTriggerEnabled && clusterConfirmWallet !== "" && wallet === clusterConfirmWallet;
+}
+
+/** Record that a cluster front-runner buy passed the size gate, opening the GUg confirmation window. */
+function markClusterEntry(mint: string): void {
+  if (clusterPositionState.has(mint)) return;
+  clusterPositionState.set(mint, {
+    gugConfirmed: false,
+    gugDeadlineAt: Date.now() + clusterConfirmWindowMs,
+  });
+}
+
+/** Handle a buy from the confirmation-only wallet: mark the matching position as confirmed. */
+function handleClusterConfirm(swap: DetectedSwap): void {
+  if (!isBuySignal(swap)) return; // only buys confirm a runner
+  const mint = swap.outputMint;
+  const state = clusterPositionState.get(mint);
+  if (!state) return; // confirmation for a mint we didn't enter via the cluster — ignore
+  if (!state.gugConfirmed) {
+    state.gugConfirmed = true;
+    console.log(
+      `✅ Cluster confirm: ${shortWallet(swap.wallet)} bought ${mint.slice(0, 8)}... — keeping normal trailing.`
+    );
+  }
+}
+
+/**
+ * Trailing steps to use for a mint right now. Normally the global TRAILING_STEPS. For a cluster-entry
+ * position whose confirmation window has elapsed without GUg appearing, switch to the tighter steps.
+ */
+function activeTrailingSteps(mint: string): TrailingStep[] {
+  const base = trailingEnabled ? trailingSteps : [];
+  if (!clusterTriggerEnabled) return base;
+  const state = clusterPositionState.get(mint);
+  if (!state || state.gugConfirmed) return base;
+  if (Date.now() >= state.gugDeadlineAt && clusterNoConfirmTrailingSteps.length > 0) {
+    return clusterNoConfirmTrailingSteps;
+  }
+  return base;
+}
+
+/** Drop cluster state for mints with no open position once their window has long expired. */
+function pruneClusterState(): void {
+  if (clusterPositionState.size === 0) return;
+  const now = Date.now();
+  for (const [mint, state] of clusterPositionState) {
+    if (now < state.gugDeadlineAt + 60_000) continue;
+    const pos = getPosition(mint);
+    if (!pos || pos.heldRaw <= 0) clusterPositionState.delete(mint);
+  }
+}
+
+async function closePositionFromExitSignal(swap: DetectedSwap): Promise<void> {
+  const mint = swap.inputMint;
+  const position = getPosition(mint);
+  const walletTag = shortWallet(swap.wallet);
+  if (!position || position.heldRaw <= 0) {
+    console.log(
+      `Exit signal from ${walletTag} for ${mint.slice(0, 8)}... ignored: no matching open position.`
+    );
+    recordMirrorSkip(swap, "exit signal no open position");
+    return;
+  }
+
+  if (exitSignalSellsInFlight.has(mint) || riskSellsInFlight.has(mint) || fastSellConfirmPendingByMint.has(mint)) {
+    console.log(`Exit signal for $${position.symbol} skipped: sell already in flight.`);
+    return;
+  }
+
+  exitSignalSellsInFlight.add(mint);
+  const note = `exit signal from ${walletTag}`;
+  try {
+    console.log(
+      `Exit signal sell detected from ${walletTag}: closing ${formatTokenAmount(position.heldRaw, position.decimals)} $${position.symbol}.`
+    );
+    if (simulationMode) {
+      await sellSimulatedPosition(position, note);
+      return;
+    }
+
+    await sellLivePosition(position, note, undefined, false);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`Exit signal sell failed for $${position.symbol}: ${msg}`);
+    void telegram.notifyError(`Exit signal sell failed for $${position.symbol}`, msg);
+  } finally {
+    exitSignalSellsInFlight.delete(mint);
+  }
+}
+
+async function processSwap(swap: DetectedSwap, kp: Keypair): Promise<void> {
+  if (stopRequested) return;
+  noteTrackedSourceSignal(swap);
+  const ts = Date.now();
+  const processStartedAt = Date.now();
+  const elapsed = () => `${Date.now() - processStartedAt}ms`;
+  const sourceLatencyDetails = {
+    detector: swap.detector ?? "unknown",
+    providerCreatedAtMs: swap.providerCreatedAtMs,
+    receivedAtMs: swap.receivedAtMs,
+    detectedAtMs: swap.detectedAtMs,
+    processStartedAtMs: processStartedAt,
+    providerToReceivedMs:
+      swap.providerCreatedAtMs != null && swap.receivedAtMs != null
+        ? swap.receivedAtMs - swap.providerCreatedAtMs
+        : undefined,
+    receivedToDetectedMs:
+      swap.receivedAtMs != null && swap.detectedAtMs != null
+        ? swap.detectedAtMs - swap.receivedAtMs
+        : undefined,
+    detectedToProcessMs:
+      swap.detectedAtMs != null ? processStartedAt - swap.detectedAtMs : undefined,
+    providerToProcessMs:
+      swap.providerCreatedAtMs != null ? processStartedAt - swap.providerCreatedAtMs : undefined,
+    sourceSlot: swap.sourceSlot,
+    sourceTransactionIndex: swap.sourceTransactionIndex,
+  };
+  const isTrackedSourceWallet = trackedWallets.includes(swap.wallet);
+  const isConfirmOnlyWallet = !isTrackedSourceWallet && isClusterConfirmWallet(swap.wallet);
+  const isExitOnlyWallet =
+    !isTrackedSourceWallet && !isConfirmOnlyWallet && isExitSignalWallet(swap.wallet);
+  if (!isTrackedSourceWallet && !isConfirmOnlyWallet && !isExitOnlyWallet) {
+    console.warn(
+      `Ignoring swap from untracked wallet ${swap.wallet.slice(0, 4)}...${swap.wallet.slice(-4)} ` +
+        `(tracked: ${trackedWallets.map(shortWallet).join(", ")}).`
+    );
+    recordMirrorSkip(swap, "untracked wallet");
+    return;
+  }
+  if (isConfirmOnlyWallet) {
+    handleClusterConfirm(swap);
+    return;
+  }
+  if (isExitOnlyWallet) {
+    if (!isSellSignal(swap)) {
+      console.log(`Exit signal wallet ${shortWallet(swap.wallet)} buy ignored; exit wallets only trigger sells.`);
+      return;
+    }
+    await closePositionFromExitSignal(swap);
+    return;
+  }
+  let lockedBuyMint: string | null = null;
+  let lockedOpenPositionMint: string | null = null;
+  let lockedFastSellMint: string | null = null;
+  let fastSellLockShouldPersist = false;
+  let retryPendingMint: string | null = null;
+  let persistentBuyLockMint: string | null = null;
+  let persistentBuyLockOwner: string | undefined;
+  let persistentBuyLockCommitted = false;
+  let rustExitFallbackSourceSell = false;
+  const releaseBuyLocks = () => {
+    if (lockedBuyMint) {
+      buyMintsInFlight.delete(lockedBuyMint);
+      lockedBuyMint = null;
+    }
+    if (lockedOpenPositionMint) {
+      openPositionBuyMintsInFlight.delete(lockedOpenPositionMint);
+      lockedOpenPositionMint = null;
+    }
+  };
+  console.log(
+    `⚡ Processing ${isBuySignal(swap) ? "buy" : "sell"} from ${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)} (${swap.signature.slice(0, 8)}…)`
+  );
+
+  recordExecutionTelemetrySync({
+    kind: "source-detected",
+    side: isBuySignal(swap) ? "buy" : isSellSignal(swap) ? "sell" : "swap",
+    mint: isBuySignal(swap) ? swap.outputMint : swap.inputMint,
+    sourceSignature: swap.signature,
+    wallet: swap.wallet,
+    detector: swap.detector,
+    elapsedMs: sourceLatencyDetails.providerToProcessMs,
+    success: true,
+    details: {
+      ...sourceLatencyDetails,
+      sourceProgramIds: swap.sourceProgramIds,
+    },
+  });
+
+  const executionPlan = planExecution(swap);
+  const useBagsDirectLane = shouldUseBagsDirectLane(executionPlan);
+  const decisionAtMs = Date.now();
+  console.log(
+    `Execution plan: ${executionPlan.route} (${executionPlan.reason}) for ${executionPlan.mint.slice(0, 8)}...`
+  );
+  recordExecutionTelemetrySync({
+    kind: "execution-plan",
+    route: executionPlan.route,
+    side: executionPlan.side,
+    mint: executionPlan.mint,
+    sourceSignature: swap.signature,
+    wallet: swap.wallet,
+    detector: swap.detector,
+    elapsedMs: decisionAtMs - processStartedAt,
+    success: true,
+    details: {
+      reason: executionPlan.reason,
+      processToDecisionMs: decisionAtMs - processStartedAt,
+      sourceProgramIds: swap.sourceProgramIds,
+      ...sourceLatencyDetails,
+    },
+  });
+
+  if (isBuySignal(swap)) {
+    const sourceTokenRaw = sourceBuyTokenAmountRaw(swap);
+    const sourcePosition =
+      sourceTokenRaw > 0 ? recordSourceBuyRaw(swap.wallet, swap.outputMint, sourceTokenRaw) : null;
+    latestSourceBuyByMint.set(swap.outputMint, {
+      wallet: swap.wallet,
+      signature: swap.signature,
+      sourceTokensRaw: sourcePosition?.totalBoughtRaw,
+    });
+  }
+
+  if (isBuySignal(swap) && buysPaused) {
+    console.log(
+      `⏸️ Buys paused: skipping buy of ${swap.outputMint.slice(0, 8)}... ` +
+        "(open positions still managed; use Resume to re-enable entries)."
+    );
+    recordMirrorSkip(swap, "buys paused");
+    return;
+  }
+
+  if (isBuySignal(swap) && !mirrorUsdcQuoteBuysEnabled && swap.inputMint === USDC_MINT) {
+    console.log(
+      `Skipping USDC-quote buy of ${swap.outputMint.slice(0, 8)}...: ` +
+        "MIRROR_USDC_QUOTE_BUYS=false (USDC-paired tokens have no reliable sell route)."
+    );
+    recordMirrorSkip(swap, "usdc-quote buys disabled");
+    return;
+  }
+
+  let proportionalSellAmountRaw: number | undefined;
+  let confirmedSellAmountRaw: number | undefined;
+  let confirmedPreSellBalanceRaw: number | undefined;
+  let sourceFlat = false;
+  let sourceLedgerRecorded = false;
+  const queuedSellCapRaw = isSellSignal(swap)
+    ? queuedSellCapBySignature.get(swap.signature)
+    : undefined;
+  if (isSellSignal(swap)) {
+    const mint = swap.inputMint;
+    if (!simulationMode && hasFastBuyConfirmationPending(mint)) {
+      queueSourceSell(swap);
+      console.log(
+        `Queued sell: ${mint.slice(0, 8)}... waiting for pending buy confirmation.`
+      );
+      recordMirrorSkip(swap, "sell queued behind pending buy confirmation");
+      return;
+    }
+    if (
+      buyMintsInFlight.has(mint) ||
+      pendingBuyRetryByMint.has(mint) ||
+      failedBuyRecoveryInFlightMints.has(mint)
+    ) {
+      pendingBuyRetryByMint.delete(mint);
+      failedBuyRecoveryInFlightMints.delete(mint);
+      fastBuyConfirmRetryScheduledByMint.delete(mint);
+      quarantinedBuyMints.set(mint, SOURCE_SOLD_WHILE_BUY_PENDING_REASON);
+      console.warn(
+        `Canceled pending buy for ${mint.slice(0, 8)}... because the source wallet already sold it.`
+      );
+    }
+
+    const sourceSellRaw = sourceSellTokenAmountRaw(swap);
+    if (shouldCloseHybridRemainderOnSourceSell({
+      enabled: hybridExitEnabled,
+      sourceExitRemaining: hybridExitSourceExitRemaining,
+      sourceSellRaw,
+      botHeldRaw: getPosition(mint)?.heldRaw ?? 0,
+    })) {
+      console.log(
+        `Hybrid source exit: source sold ${mint.slice(0, 8)}...; closing remaining bot position.`
+      );
+    } else if (mirrorSellMode === "proportional" && sourceSellRaw > 0) {
+      const position = getPosition(mint);
+      if (position && position.heldRaw > 0) {
+        const proportional = calculateProportionalSellRaw({
+          wallet: swap.wallet,
+          mint,
+          sourceSellAmountRaw: sourceSellRaw,
+          ourHeldRaw: position.heldRaw,
+          minPct: mirrorSellProportionalMinPct,
+          maxPct: mirrorSellProportionalMaxPct,
+        });
+        if (!proportional.fallback && proportional.amountRaw > 0) {
+          proportionalSellAmountRaw = proportional.amountRaw;
+          console.log(
+            `Proportional mirror sell: source sold ${proportional.fractionPct.toFixed(1)}% ` +
+              `(${sourceSellRaw}/${proportional.sourceHeldRaw} raw); selling ` +
+              `${formatTokenAmount(proportionalSellAmountRaw, position.decimals)} $${position.symbol}.`
+          );
+        } else if (mirrorSellProportionalFallback === "skip") {
+          console.log(
+            `Proportional mirror sell skipped for ${mint.slice(0, 8)}...: source position history unavailable.`
+          );
+          sourceFlat = recordTrackedSourceSell(swap.wallet, mint, sourceSellRaw);
+          sourceLedgerRecorded = true;
+          if (!rustExitWatchOwnedMints.has(mint)) {
+            recordMirrorSkip(swap, "proportional mirror sell unavailable");
+            return;
+          }
+        } else {
+          console.log(
+            `Proportional mirror sell fallback for ${mint.slice(0, 8)}...: source position history unavailable; closing full bot position.`
+          );
+        }
+      }
+    }
+    if (sourceSellRaw > 0 && !sourceLedgerRecorded) {
+      sourceFlat = recordTrackedSourceSell(swap.wallet, mint, sourceSellRaw);
+    }
+    if (executionPlan.route === "pumpswap-graduated" && rustExitWatchRegisteredMints.has(mint)) {
+      rustExitWatchRegisteredMints.delete(mint);
+      rustExitWatchOwnedMints.delete(mint);
+      void cancelRustPumpFunExitWatch(mint, "source sell arrived on graduated PumpSwap route");
+      console.log(
+        `Rust Pump.fun watcher released ${mint.slice(0, 8)}... because the source sell is on PumpSwap; ` +
+          "the canonical Rust-only PumpSwap path remains responsible."
+      );
+    }
+    if (rustExitWatchRegisteredMints.has(mint)) {
+      const forwarded = await signalRustPumpFunExitSourceSell({
+        mint,
+        sourceWallet: swap.wallet,
+        sourceSignature: swap.signature,
+        soldTokensRaw: sourceSellRaw > 0 ? sourceSellRaw : undefined,
+        sourceFlat,
+      });
+      if (!forwarded.ok) {
+        const unavailable = /not found|unavailable|disabled/i.test(forwarded.error);
+        console.warn(
+          `Rust exit watcher source-sell handoff failed for ${mint.slice(0, 8)}...: ${forwarded.error}` +
+            (unavailable && rustExitWatchOwnedMints.has(mint)
+              ? "; falling back to Node source-sell handling."
+              : ".")
+        );
+        if (rustExitWatchOwnedMints.has(mint) && !unavailable) {
+          recordMirrorSkip(swap, "Rust exit watcher source-sell handoff uncertain");
+          return;
+        }
+        if (rustExitWatchOwnedMints.has(mint)) {
+          rustExitWatchOwnedMints.delete(mint);
+          rustExitWatchRegisteredMints.delete(mint);
+          rustExitFallbackSourceSell = true;
+        }
+      } else {
+        if (rustExitWatchOwnedMints.has(mint)) {
+          if (forwarded.actionPending) {
+            recordMirrorSkip(swap, "Rust exit watcher owns source sell");
+            return;
+          }
+          // `ok` only means the sidecar accepted the command.  If it did not
+          // create a pending sell, Rust has no current executable mark (or the
+          // watcher is otherwise unavailable).  Release ownership and let the
+          // existing Node source-sell path handle this signal instead of
+          // silently dropping the exit.
+          rustExitWatchOwnedMints.delete(mint);
+          rustExitWatchRegisteredMints.delete(mint);
+          void cancelRustPumpFunExitWatch(mint, "source sell accepted without pending Rust exit");
+          rustExitFallbackSourceSell = true;
+          console.warn(
+            `Rust exit watcher accepted source sell for ${mint.slice(0, 8)}... without a pending exit; ` +
+              "falling back to Node source-sell handling."
+          );
+        }
+        if (!rustExitWatchOwnedMints.has(mint)) console.log(
+          `Rust exit watcher shadow received source sell for ${mint.slice(0, 8)}...; ` +
+            "existing Node source-sell handling remains responsible."
+        );
+      }
+    }
+  }
+
+  if (rustExitFallbackSourceSell && isSellSignal(swap)) {
+    await closePositionFromExitSignal(swap);
+    return;
+  }
+
+  const mirrorRemainderIntent: PostSellRemainderIntent | null =
+    isSellSignal(swap) && proportionalSellAmountRaw == null
+      ? {
+          kind: "source-full",
+          sourceSellVersion: sourceSignalStateByMint.get(swap.inputMint)?.version ?? 0,
+        }
+      : null;
+
+  // Skip mirroring source sells if mirror-sells is OFF. We still log it so user has a paper trail.
+  if (!mirrorSellsEnabled && isSellSignal(swap)) {
+    console.log(
+      `ℹ️  Source ${swap.wallet.slice(0, 4)}…${swap.wallet.slice(-4)} sold ${swap.inputMint.slice(0, 6)}… — not mirroring (mirror-sells OFF). Press 'm' to enable, or 'e'/'a' to exit manually.`
+    );
+    return;
+  }
+
+  // Circuit breaker gate: only blocks BUYS, never sells. Existing positions can always exit.
+  if (isBuySignal(swap)) {
+    const blocked = shouldBlockNewBuys();
+    if (blocked) {
+      console.log(`⛔ Skipping buy: ${blocked}.`);
+      return;
+    }
+  }
+
+  if (isBuySignal(swap) && minSourceBuyLamports != null) {
+    const quoteMint = mirrorQuoteMintForBuy(swap);
+    const sourceSpendLamports = quoteMint === WRAPPED_SOL_MINT && swap.isNativeInput ? swap.amountRaw : null;
+    if (sourceSpendLamports != null && sourceSpendLamports < minSourceBuyLamports) {
+      console.log(
+        `Skipping buy: source SOL spend ${formatSolAmount(sourceSpendLamports)} SOL ` +
+          `< ${formatSolAmount(minSourceBuyLamports)} SOL minimum source buy.`
+      );
+      recordMirrorSkip(swap, "source SOL spend below minimum", {
+        sourceSpendLamports,
+        minSourceBuyLamports,
+      });
+      return;
+    }
+  }
+
+  // Cluster size gate: only mirror a front-runner wallet when its single source buy is
+  // large enough. In-memory check, no execution-path latency. On pass, open the GUg confirmation window.
+  if (isBuySignal(swap) && isClusterWallet(swap.wallet)) {
+    const sourceLamports = swap.isNativeInput ? swap.amountRaw : 0;
+    if (sourceLamports < clusterMinSourceBuyLamports) {
+      console.log(
+        `Skipping buy: ${shortWallet(swap.wallet)} source buy ${formatSolAmount(sourceLamports)} SOL ` +
+          `< ${formatSolAmount(clusterMinSourceBuyLamports)} SOL cluster minimum.`
+      );
+      return;
+    }
+    markClusterEntry(swap.outputMint);
+  }
+
+  if (skipSourcePreexistingMints && isBuySignal(swap)) {
+    const mint = swap.outputMint;
+    if (sourcePreexistingBuyMints.has(mint)) {
+      console.log(
+        `Skipping buy: ${mint.slice(0, 8)}... was already held/bought by source before startup.`
+      );
+      return;
+    }
+  }
+
+  // Skip duplicate buys of the same token if buy-once is ON. Position lookup is in-memory (no API cost).
+  if (isBuySignal(swap)) {
+    const mint = swap.outputMint;
+    const quarantineReason = quarantinedBuyMints.get(mint);
+    if (quarantineReason) {
+      if (isSourceSoldWhileBuyPendingQuarantine(quarantineReason)) {
+        quarantinedBuyMints.delete(mint);
+        console.log(
+          `Clearing stale source-sold quarantine for ${mint.slice(0, 8)}... after fresh source buy signal.`
+        );
+      } else {
+        console.log(
+          `Skipping buy: ${mint.slice(0, 8)}... quarantined this session after failed on-chain buy (${quarantineReason}).`
+        );
+        return;
+      }
+    }
+    if (
+      !swap.skipDirectBuyRoutes &&
+      failedBuyRecoveryInFlightMints.has(mint) &&
+      (swap.buyRecoveryAttempt ?? 0) === 0
+    ) {
+      console.log(
+        `Skipping buy: ${mint.slice(0, 8)}... failed direct buy is already waiting on one direct rescue.`
+      );
+      return;
+    }
+    const existing = getPosition(mint);
+    if (
+      shouldBlockBuyOnceReentry({
+        buyOncePerTokenEnabled,
+        allowRebuyAfterFlat: buyOnceAllowRebuyAfterFlat,
+        attemptedThisSession: liveBuyAttemptedMintsThisSession.has(mint),
+        boughtThisSession: boughtMintsThisSession.has(mint) || Boolean(existing && existing.buysCount > 0),
+        heldRaw: existing?.heldRaw ?? 0,
+      })
+    ) {
+      console.log(
+        `Skipping buy: already bought ${mint.slice(0, 8)}... this session (buy-once ON).`
+      );
+      recordMirrorSkip(swap, "buy-once already bought");
+      return;
+    }
+    if (!buyOncePerTokenEnabled && maxBuysPerToken != null && existing && existing.buysCount >= maxBuysPerToken) {
+      console.log(
+        `Skipping buy: ${mint.slice(0, 8)}... max buys per token reached ` +
+          `(${existing.buysCount}/${maxBuysPerToken}).`
+      );
+      recordMirrorSkip(swap, "max buys per token reached", {
+        buysCount: existing.buysCount,
+        maxBuysPerToken,
+      });
+      return;
+    }
+    if (maxSolPerTokenLamports != null) {
+      const nextBuyLamports =
+        mirrorQuoteMintForBuy(swap) === WRAPPED_SOL_MINT ? mirroredBuyAmountRaw(swap) : null;
+      const currentOpenCostLamports =
+        existing != null && existing.heldRaw > 0
+          ? Math.max(0, Math.round(existing.costBasisRemainingLamports))
+          : 0;
+      const projectedLamports = currentOpenCostLamports + (nextBuyLamports ?? 0);
+      if (nextBuyLamports != null && projectedLamports > maxSolPerTokenLamports) {
+        console.log(
+          `Skipping buy: ${mint.slice(0, 8)}... max SOL per token exposure would be exceeded ` +
+            `(${formatSolAmount(currentOpenCostLamports)} open + ${formatSolAmount(nextBuyLamports)} > ` +
+            `${formatSolAmount(maxSolPerTokenLamports)} SOL).`
+        );
+        recordMirrorSkip(swap, "max SOL per token exceeded", {
+          currentLamports: currentOpenCostLamports,
+          nextBuyLamports,
+          maxSolPerTokenLamports,
+        });
+        return;
+      }
+    }
+    if (maxSessionDeployedLamports != null) {
+      const nextBuyLamports =
+        mirrorQuoteMintForBuy(swap) === WRAPPED_SOL_MINT ? mirroredBuyAmountRaw(swap) : null;
+      const deployedLamports = getTotals().totalSolSpentLamports;
+      const projectedLamports = deployedLamports + (nextBuyLamports ?? 0);
+      if (nextBuyLamports != null && projectedLamports > maxSessionDeployedLamports) {
+        console.log(
+          `Skipping buy: session deployed SOL cap would be exceeded ` +
+            `(${formatSolAmount(deployedLamports)} + ${formatSolAmount(nextBuyLamports)} > ` +
+            `${formatSolAmount(maxSessionDeployedLamports)} SOL).`
+        );
+        recordMirrorSkip(swap, "max session deployed SOL exceeded", {
+          deployedLamports,
+          nextBuyLamports,
+          maxSessionDeployedLamports,
+        });
+        return;
+      }
+    }
+    if (maxOpenDeployedLamports != null) {
+      const nextBuyLamports =
+        mirrorQuoteMintForBuy(swap) === WRAPPED_SOL_MINT ? mirroredBuyAmountRaw(swap) : null;
+      const openDeployedLamports = getTotals().openCostBasisLamports;
+      const projectedOpenLamports = openDeployedLamports + (nextBuyLamports ?? 0);
+      if (nextBuyLamports != null && projectedOpenLamports > maxOpenDeployedLamports) {
+        console.log(
+          `Skipping buy: open deployed SOL cap would be exceeded ` +
+            `(${formatSolAmount(openDeployedLamports)} + ${formatSolAmount(nextBuyLamports)} > ` +
+            `${formatSolAmount(maxOpenDeployedLamports)} SOL).`
+        );
+        recordMirrorSkip(swap, "max open deployed SOL exceeded", {
+          openDeployedLamports,
+          nextBuyLamports,
+          maxOpenDeployedLamports,
+        });
+        return;
+      }
+    }
+    if (shouldDeferToRustHotSniperPrimary(swap, executionPlan)) {
+      if (
+        shouldBlockBuyOnceReentry({
+          buyOncePerTokenEnabled,
+          allowRebuyAfterFlat: buyOnceAllowRebuyAfterFlat,
+          attemptedThisSession: rustHotBuyRecordedByMint.has(mint) || liveBuyAttemptedMintsThisSession.has(mint),
+          boughtThisSession: boughtMintsThisSession.has(mint) || Boolean(existing && existing.buysCount > 0),
+          heldRaw: existing?.heldRaw ?? 0,
+        })
+      ) {
+        pendingBuyRetryByMint.delete(mint);
+        console.log(
+          `Skipping TypeScript buy: Rust hot sniper already bought ${mint.slice(0, 8)}... this session.`
+        );
+        return;
+      }
+      if (rustHotSniperPrimaryPendingMints.has(mint)) {
+        pendingBuyRetryByMint.set(mint, swap);
+        console.log(
+          `Skipping TypeScript buy: Rust hot sniper primary already pending for ${mint.slice(0, 8)}... ` +
+            "(queued latest fallback signal)."
+        );
+        return;
+      }
+      rustHotSniperPrimaryPendingMints.add(mint);
+      pendingBuyRetryByMint.set(mint, swap);
+      console.log(
+        `Rust hot sniper primary: deferring TypeScript fallback for ${mint.slice(0, 8)}... ` +
+          (rustHotSniperPrimaryFallbackEnabled
+            ? `${rustHotSniperPrimaryFallbackDelayMs}ms.`
+            : "disabled; Rust is exclusive for this mint.")
+      );
+      if (!rustHotSniperPrimaryFallbackEnabled) {
+        return;
+      }
+      // The Rust hot sniper (ShredStream) gets a short head-start to land a
+      // source-replay buy. ShredStream is best-effort: if its shred for the
+      // source tx never arrives, the hot sniper simply never fires — that is a
+      // MISS, not a failure event, so we must not wait for a "confirmed failure"
+      // that will never come. After the head-start window we always back the buy
+      // up through the normal pipeline, which under RUST_ONLY_BUYS still
+      // broadcasts via the Rust executor command bridge (no TypeScript tx is
+      // built). The shared buy-once gate in the Rust sidecar reserves the mint
+      // before broadcasting on both paths, so even if the hot sniper fires late
+      // only one broadcast can ever land — racing the two paths is safe.
+      setTimeout(() => {
+        if (!rustHotSniperPrimaryPendingMints.has(mint)) return;
+        rustHotSniperPrimaryPendingMints.delete(mint);
+        const fallback = pendingBuyRetryByMint.get(mint) ?? swap;
+        pendingBuyRetryByMint.delete(mint);
+        const latestPosition = getPosition(mint);
+        if (
+          stopRequested ||
+          quarantinedBuyMints.has(mint) ||
+          shouldBlockBuyOnceReentry({
+            buyOncePerTokenEnabled,
+            allowRebuyAfterFlat: buyOnceAllowRebuyAfterFlat,
+            attemptedThisSession: rustHotBuyRecordedByMint.has(mint) || liveBuyAttemptedMintsThisSession.has(mint),
+            boughtThisSession: boughtMintsThisSession.has(mint) || Boolean((latestPosition?.buysCount ?? 0) > 0),
+            heldRaw: latestPosition?.heldRaw ?? 0,
+          })
+        ) {
+          // Hot sniper already handled this mint (or it is otherwise resolved).
+          return;
+        }
+        rustHotSniperPrimaryFallbackSources.add(fallback.signature);
+        console.log(
+          `Rust hot sniper head-start elapsed for ${mint.slice(0, 8)}...; ` +
+            "driving Rust executor backstop buy (shared buy-once gate prevents duplicates)."
+        );
+        processSwap(fallback, kp)
+          .catch((err) => {
+            console.error("Rust hot sniper backstop buy failed:", err);
+          })
+          .finally(() => {
+            rustHotSniperPrimaryFallbackSources.delete(fallback.signature);
+          });
+      }, rustHotSniperPrimaryFallbackDelayMs);
+      return;
+    }
+    const rustExecutorCanHandleBuy =
+      rustExecutorEnabled &&
+      (executionPlan.route === "pumpfun-bonding-curve" ||
+        executionPlan.route === "pumpfun-v2-token2022" ||
+        executionPlan.route === "pumpswap-graduated" ||
+        executionPlan.route === "raydium-cpmm");
+    if (useBagsDirectLane) {
+      console.log(
+        `BAGS direct lane: allowing ${mint.slice(0, 8)}... through Jupiter/Sender ` +
+          "because BAGS_DIRECT_ENABLED=true; global Jupiter fallback remains unchanged."
+      );
+    }
+    if (rustOnlyBuys && !rustExecutorCanHandleBuy && !useBagsDirectLane) {
+      console.log(
+        `Skipping buy: RUST_ONLY_BUYS=true and no Rust buy path accepted ` +
+          `${mint.slice(0, 8)}... (${executionPlan.route}).`
+      );
+      recordMirrorSkip(swap, "rust-only no accepted buy path", { route: executionPlan.route });
+      pendingBuyRetryByMint.delete(mint);
+      releaseBuyLocks();
+      return;
+    } else if (rustOnlyBuys) {
+      console.log(
+        `Rust-only buy mode: ${mint.slice(0, 8)}... passed filters; Rust executor will broadcast ${executionPlan.route}.`
+      );
+    }
+    if (buyMintsInFlight.has(mint)) {
+      // Keep only the latest duplicate source buy so a dropped first broadcast can retry promptly.
+      if (!failedBuyRecoveryInFlightMints.has(mint)) {
+        pendingBuyRetryByMint.set(mint, swap);
+      }
+      console.log(
+        failedBuyRecoveryInFlightMints.has(mint)
+          ? `Skipping buy: ${mint.slice(0, 8)}... buy already in flight and rescue pending.`
+          : `Skipping buy: ${mint.slice(0, 8)}... buy already in flight (queued one retry signal).`
+      );
+      recordMirrorSkip(swap, "buy already in flight", {
+        rescuePending: failedBuyRecoveryInFlightMints.has(mint),
+      });
+      return;
+    }
+    buyMintsInFlight.add(mint);
+    lockedBuyMint = mint;
+    retryPendingMint = mint;
+  }
+
+  if (maxOpenPositions != null && isBuySignal(swap)) {
+    const mint = swap.outputMint;
+    const existing = getPosition(mint);
+    const isNewOpenPosition = !(existing && existing.heldRaw > 0);
+
+    if (isNewOpenPosition) {
+      const openCount = getPositions().filter((p) => p.heldRaw > 0).length;
+      const pendingCount = openPositionBuyMintsInFlight.size;
+      if (openCount + pendingCount >= maxOpenPositions) {
+        console.log(
+          `Skipping buy: max open positions reached (${openCount}/${maxOpenPositions}, ${pendingCount} pending).`
+        );
+        recordMirrorSkip(swap, "max open positions reached", {
+          openCount,
+          pendingCount,
+          maxOpenPositions,
+        });
+        releaseBuyLocks();
+        return;
+      }
+
+      openPositionBuyMintsInFlight.add(mint);
+      lockedOpenPositionMint = mint;
+    }
+  }
+
+  if (prebuyInferredMcFilterEnabled && isBuySignal(swap)) {
+    const filter = checkPrebuyInferredMarketCap(swap);
+    if (!filter.allowed) {
+      console.log(`Skipping buy: ${filter.reason}.`);
+      recordMirrorSkip(swap, "prebuy inferred market-cap filter", { reason: filter.reason });
+      releaseBuyLocks();
+      return;
+    }
+    console.log(filter.reason);
+  }
+
+  if (prebuyMoralisFilterEnabled && isBuySignal(swap)) {
+    const filter = await checkPrebuyMoralisFilter(swap.outputMint);
+    if (!filter.allowed) {
+      console.log(`Skipping buy: ${filter.reason}.`);
+      recordMirrorSkip(swap, "prebuy Moralis filter", { reason: filter.reason });
+      releaseBuyLocks();
+      return;
+    }
+    console.log(filter.reason);
+  }
+
+  if (blockPumpfunMayhem && isBuySignal(swap)) {
+    const { isPumpfunMayhemToken } = await import("./pumpfunMayhem.js");
+    const mayhem = await isPumpfunMayhemToken(swap.outputMint);
+    if (mayhem === true) {
+      console.log(`Skipping buy: ${swap.outputMint.slice(0, 8)}... is a pump.fun Mayhem Mode token.`);
+      releaseBuyLocks();
+      return;
+    }
+    if (mayhem == null && pumpfunMayhemStrict) {
+      console.log(`Skipping buy: could not verify Mayhem Mode status for ${swap.outputMint.slice(0, 8)}... (strict mode ON).`);
+      releaseBuyLocks();
+      return;
+    }
+  }
+
+  if (isBuySignal(swap) && rustHotSniperPrimaryFallbackSources.has(swap.signature)) {
+    const mint = swap.outputMint;
+    const existingAfterFilters = getPosition(mint);
+    if (
+      shouldBlockBuyOnceReentry({
+        buyOncePerTokenEnabled,
+        allowRebuyAfterFlat: buyOnceAllowRebuyAfterFlat,
+        attemptedThisSession: rustHotBuyRecordedByMint.has(mint) || liveBuyAttemptedMintsThisSession.has(mint),
+        boughtThisSession: boughtMintsThisSession.has(mint) || (existingAfterFilters?.buysCount ?? 0) > 0,
+        heldRaw: existingAfterFilters?.heldRaw ?? 0,
+      })
+    ) {
+      pendingBuyRetryByMint.delete(mint);
+      console.log(
+        `Skipping Rust executor backstop buy: Rust hot sniper already resolved ${mint.slice(0, 8)}... this session.`
+      );
+      recordMirrorSkip(swap, "rust hot sniper already resolved backstop");
+      releaseBuyLocks();
+      return;
+    }
+  }
+
+  if (isBuySignal(swap) && simulationMode) {
+    const quoteMint = mirrorQuoteMintForBuy(swap);
+    const mirroredAmount = mirroredBuyAmountRaw(swap);
+    if (mirroredAmount == null) {
+      console.log(
+        `Skipping buy: copy-sized amount for ${swap.outputMint.slice(0, 8)}... is below configured minimum ` +
+          `(${copyBuyPercentage}% of ${quoteAmountDisplay(swap.amountRaw, quoteMint)}).`
+      );
+      releaseBuyLocks();
+      return;
+    }
+    const spendLamports = quoteMint === WRAPPED_SOL_MINT ? mirroredAmount : 0;
+    const shadow = shadowCanSpend(spendLamports);
+    if (!shadow.ok) {
+      console.log(`Shadow reserve check failed:`);
+      console.log(`   Available: ${formatSolAmount(shadow.available)} SOL`);
+      console.log(`   Required incl. shadow fee: ${formatSolAmount(shadow.required)} SOL`);
+      console.log(`   Source trade: ${quoteAmountDisplay(swap.amountRaw, swap.inputMint)}`);
+      releaseBuyLocks();
+      return;
+    }
+    console.log(
+      `Shadow reserve check OK: available ${formatSolAmount(shadow.available)} SOL, ` +
+        `required ${formatSolAmount(shadow.required)} SOL incl. estimated fees.`
+    );
+  }
+
+  // Fast SOL reserve check - only for buys and only in LIVE mode (sells don't spend SOL)
+  if (isBuySignal(swap) && !simulationMode) {
+    const quoteMint = mirrorQuoteMintForBuy(swap);
+    const mirroredAmount = mirroredBuyAmountRaw(swap);
+    if (mirroredAmount == null) {
+      console.log(
+        `Skipping buy: copy-sized amount for ${swap.outputMint.slice(0, 8)}... is below configured minimum ` +
+          `(${copyBuyPercentage}% of ${quoteAmountDisplay(swap.amountRaw, quoteMint)}).`
+      );
+      releaseBuyLocks();
+      return;
+    }
+    // Guard against a malformed source amount (e.g. a re-fed backstop swap with a
+    // missing amountRaw) producing NaN downstream in the gas-reserve math.
+    if (!Number.isFinite(mirroredAmount) || mirroredAmount <= 0) {
+      console.log(
+        `Skipping buy: invalid copy-sized amount for ${swap.outputMint.slice(0, 8)}... ` +
+          `(source amountRaw=${swap.amountRaw}).`
+      );
+      recordMirrorSkip(swap, "invalid copy-sized amount");
+      releaseBuyLocks();
+      return;
+    }
+    let currentBalance = getCachedBalance() ?? lastBalanceLamports ?? 0;
+    if (currentBalance <= 0) {
+      currentBalance = await updateBalanceCache(readConnection, kp.publicKey);
+    } else if ((getCachedBalanceAgeMs() ?? 0) > 30_000) {
+      void updateBalanceCache(readConnection, kp.publicKey, true);
+    }
+    
+    // Check if we have enough SOL after reserving gas fees
+    if (quoteMint === WRAPPED_SOL_MINT && !hasEnoughSOLForTrade(mirroredAmount, currentBalance)) {
+      const balanceInfo = getBalanceInfo(currentBalance);
+      console.log(`⛽ Insufficient SOL (reserve check):`);
+      console.log(`   Total: ${balanceInfo.total} SOL`);
+      console.log(`   Available: ${balanceInfo.available} SOL`);
+      console.log(`   Reserved: ${balanceInfo.reserved} SOL`);
+      console.log(`   Required: ${(mirroredAmount / LAMPORTS_PER_SOL).toFixed(4)} SOL`);
+      if (mirroredAmount !== swap.amountRaw) {
+        console.log(`   Source trade: ${quoteAmountDisplay(swap.amountRaw, swap.inputMint)}`);
+      }
+      console.log(`   ⚠️ Skipping trade to preserve gas fees`);
+      
+      // Send Telegram notification for reserve protection
+      void telegram.notifyError(
+        `⛽ Trade skipped: Insufficient SOL for gas fees`,
+        `Available: ${balanceInfo.available} SOL | Required: ${(mirroredAmount / LAMPORTS_PER_SOL).toFixed(4)} SOL`
+      );
+      releaseBuyLocks();
+      return;
+    }
+
+    if (quoteMint === USDC_MINT) {
+      const usdcBalance = (await getTokenBalanceFast(kp.publicKey, USDC_MINT)) ?? (await getTokenBalance(kp.publicKey, USDC_MINT));
+      if (usdcBalance < mirroredAmount) {
+        console.log(`Insufficient USDC:`);
+        console.log(`   Available: ${quoteAmountDisplay(usdcBalance, USDC_MINT)}`);
+        console.log(`   Required: ${quoteAmountDisplay(mirroredAmount, USDC_MINT)}`);
+        console.log(`   Source trade: ${quoteAmountDisplay(swap.amountRaw, swap.inputMint)}`);
+        void telegram.notifyError(
+          `Trade skipped: Insufficient USDC`,
+          `Available: ${quoteAmountDisplay(usdcBalance, USDC_MINT)} | Required: ${quoteAmountDisplay(mirroredAmount, USDC_MINT)}`
+        );
+        releaseBuyLocks();
+        return;
+      }
+      if (!hasEnoughSOLForTrade(0, currentBalance)) {
+        const balanceInfo = getBalanceInfo(currentBalance);
+        console.log(`Insufficient SOL reserve for USDC trade fees: available ${balanceInfo.available} SOL, reserve ${balanceInfo.reserved} SOL`);
+        releaseBuyLocks();
+        return;
+      }
+    }
+    
+    // Warn if balance is getting low
+    if (isBalanceCriticallyLow(currentBalance)) {
+      const balanceInfo = getBalanceInfo(currentBalance);
+      console.log(`⚠️ SOL balance critically low: ${balanceInfo.total} SOL (reserve: ${balanceInfo.reserved} SOL)`);
+      void telegram.notifyError(
+        `⚠️ SOL balance critically low`,
+        `Total: ${balanceInfo.total} SOL | Available: ${balanceInfo.available} SOL`
+      );
+    }
+  }
+  
+  // Log simulation mode notice for clarity
+  if (false && simulationMode && isBuySignal(swap)) {
+    console.log(`🎭 Simulation Mode: SOL reserve check disabled (no real gas fees)`);
+  }
+  
+  try {
+    if (isSellSignal(swap) && !simulationMode) {
+      const sellMint = swap.inputMint;
+      const currentPosition = getPosition(sellMint);
+      if (
+        currentPosition &&
+        mirrorBuySignatureByMint.has(sellMint) &&
+        currentPosition.sellsCount === 0 &&
+        Date.now() - currentPosition.firstSeenAt < 120_000
+      ) {
+        await reconcileOpenPositionWithConfirmedBuy(currentPosition);
+      }
+      if (fastSellConfirmPendingByMint.has(sellMint)) {
+        queueSourceSell(swap);
+        console.log(
+          `Queued sell: ${sellMint.slice(0, 8)}... another sell is awaiting confirmation.`
+        );
+        recordMirrorSkip(swap, "sell queued behind pending confirmation");
+        return;
+      }
+      fastSellConfirmPendingByMint.add(sellMint);
+      lockedFastSellMint = sellMint;
+      let confirmedBalance: number;
+      try {
+        confirmedBalance = await refreshConfirmedInventory(sellMint);
+      } catch (err) {
+        queueSourceSell(swap, 500);
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(
+          `Confirmed sell inventory unavailable for ${sellMint.slice(0, 8)}...; ` +
+            `sell retained for retry (${msg}).`
+        );
+        return;
+      }
+      if (confirmedBalance <= 0) {
+        console.log(
+          `Skipping sell: confirmed wallet inventory is 0 for ${sellMint.slice(0, 8)}...`
+        );
+        recordMirrorSkip(swap, "confirmed wallet inventory is zero");
+        return;
+      }
+      confirmedPreSellBalanceRaw = confirmedBalance;
+      confirmedSellAmountRaw =
+        proportionalSellAmountRaw == null
+          ? cappedQueuedSellRaw(confirmedBalance, queuedSellCapRaw ?? confirmedBalance)
+          : Math.min(proportionalSellAmountRaw, confirmedBalance);
+      if (confirmedSellAmountRaw <= 0) {
+        console.log(
+          `Skipping queued sell: no pre-reentry inventory remains for ${sellMint.slice(0, 8)}...`
+        );
+        return;
+      }
+    }
+
+    if (isBuySignal(swap) && buyOncePerTokenEnabled && !simulationMode) {
+      const lock = acquirePersistentBuyLock(swap.outputMint, swap.signature);
+      if (!lock.ok) {
+        console.log(
+          `Skipping buy: ${swap.outputMint.slice(0, 8)}... already locked by another live buy attempt (${lock.reason}).`
+        );
+        return;
+      }
+      persistentBuyLockOwner = lock.owner;
+      persistentBuyLockMint = swap.outputMint;
+      liveBuyAttemptedMintsThisSession.add(swap.outputMint);
+    }
+
+    const result = await mirrorSwap(useBagsDirectLane ? { ...swap, skipDirectBuyRoutes: true } : swap, kp, {
+      persistentBuyLockOwner,
+      exactAmountRaw: confirmedSellAmountRaw,
+      allowBagsDirectJupiter: useBagsDirectLane,
+      onFastBuyConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason, sourceSwap }) => {
+        const failedSignature = mirrorBuySignatureByMint.get(mint);
+        if (failedSignature) void markTradeConfirmation(failedSignature, "failed", reason);
+        if (rustHotBuyRecordedByMint.has(mint)) {
+          console.warn(
+            `Ignoring TypeScript buy confirmation failure for ${mint.slice(0, 8)}... ` +
+              "because Rust hot sniper already recorded this mint."
+          );
+          return;
+        }
+        unrecordZeroSell(mint, tokenAmountRaw);
+        mirrorBuySignatureByMint.delete(mint);
+        clearFastBuyConfirmationPending(mint);
+        confirmedFastBuyTokensByMint.delete(mint);
+        if (isConfirmationTimeoutMessage(reason)) {
+          // A confirmation null-status timeout is NOT proof of failure: a Sender/Jito
+          // transaction can land after this read RPC's status window. Roll-back +
+          // rescue here strands the (successfully landed) buy as an untracked lot that
+          // later gets dust-sold, and the rescue can double-buy. Retain the optimistic
+          // lot instead and let wallet reconciliation correct it if it truly failed.
+          // This mirrors the Rust hot-sniper background-confirm handler.
+          void releaseDroppedBuyAfterZeroInventory({
+            mint,
+            tokenAmountRaw,
+            solLamports,
+            reason,
+            sourceSwap,
+            kp,
+            retryOnce: true,
+            label: "Fast buy confirmation",
+          }).catch((err) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.warn(`Zero-inventory buy release failed for ${mint.slice(0, 8)}...: ${msg}`);
+          });
+          pendingBuyRetryByMint.delete(mint);
+          fastBuyConfirmRetryScheduledByMint.delete(mint);
+          if (buyOncePerTokenEnabled) {
+            holdBuyOnceMintAfterBroadcastUncertainty(mint, reason);
+          } else {
+            console.warn(
+              `Buy confirmation uncertain for ${mint.slice(0, 8)}... (${reason}). ` +
+                "Retaining optimistic position pending wallet reconciliation."
+            );
+          }
+          return;
+        }
+        if (shouldHoldBuyOnceAfterFailure({ buyOncePerTokenEnabled, reason })) {
+          holdBuyOnceMintAfterBroadcastUncertainty(mint, reason);
+          return;
+        }
+        cancelRustExitWatchAfterFailedBuy(mint, `definitive fast buy failure: ${reason}`);
+        if (shouldAttemptFailedBuyRecovery(sourceSwap, reason)) {
+          const removed = unrecordBuy(mint, tokenAmountRaw, solLamports);
+          boughtMintsThisSession.delete(mint);
+          liveBuyAttemptedMintsThisSession.delete(mint);
+          pendingBuyRetryByMint.delete(mint);
+          fastBuyConfirmRetryScheduledByMint.delete(mint);
+          quarantinedBuyMints.delete(mint);
+          releasePersistentBuyLock(mint);
+          releaseRustBoughtMint(mint, `recoverable buy confirmation failure before direct rescue: ${reason}`);
+          persistentBuyLockCommitted = false;
+          if (persistentBuyLockMint === mint) {
+            persistentBuyLockMint = null;
+          }
+          if (removed) {
+            console.warn(
+              `Rolled back optimistic buy for ${mint.slice(0, 8)}... before scheduling direct rescue.`
+            );
+          }
+          scheduleFailedBuyRecovery(sourceSwap, kp, reason);
+          return;
+        }
+        if (isPumpFunAccountLayoutFailure(reason)) {
+          boughtMintsThisSession.delete(mint);
+          liveBuyAttemptedMintsThisSession.delete(mint);
+          pendingBuyRetryByMint.delete(mint);
+          fastBuyConfirmRetryScheduledByMint.delete(mint);
+          failedBuyRecoveryInFlightMints.delete(mint);
+          quarantinedBuyMints.delete(mint);
+          releaseRustBoughtMint(mint, `recoverable pump.fun account-layout failure: ${reason}`);
+          console.warn(
+            `Buy failed for ${mint.slice(0, 8)}... with pump.fun account-layout error after rescue; ` +
+              "clearing buy locks so later source buys can retry this mint."
+          );
+          return;
+        }
+        const decision = decideRetryAction(reason);
+        pendingBuyRetryByMint.delete(mint);
+        fastBuyConfirmRetryScheduledByMint.delete(mint);
+        if (decision.shouldQuarantine) {
+          quarantinedBuyMints.set(mint, reason);
+          console.warn(
+            `Buy quarantine set for ${mint.slice(0, 8)}... after terminal ${decision.category} failure (${reason}). ` +
+              "No more retries for this mint this session."
+          );
+        } else {
+          boughtMintsThisSession.delete(mint);
+          liveBuyAttemptedMintsThisSession.delete(mint);
+          failedBuyRecoveryInFlightMints.delete(mint);
+          console.warn(
+            `Buy failed for ${mint.slice(0, 8)}... with recoverable ${decision.category} failure; ` +
+              `retry action=${decision.action}. Not quarantining this mint.`
+          );
+        }
+        return;
+        if (boughtMintsThisSession.delete(mint)) {
+          console.warn(
+            `🧹 Buy-once marker cleared for ${mint.slice(0, 8)}… after failed fast-mode buy.`
+          );
+        }
+        if (shouldQuarantineFailedBuy(reason)) {
+          quarantinedBuyMints.set(mint, reason);
+          pendingBuyRetryByMint.delete(mint);
+          console.warn(
+            `🚧 Buy quarantine set for ${mint.slice(0, 8)}… after failed on-chain buy (${reason}). ` +
+              "No more retries for this mint this session."
+          );
+          return;
+        }
+        if (sourceSwap) {
+          pendingBuyRetryByMint.set(mint, sourceSwap!);
+          if (!fastBuyConfirmRetryScheduledByMint.has(mint)) {
+            fastBuyConfirmRetryScheduledByMint.add(mint);
+            setTimeout(() => {
+              if (stopRequested) {
+                fastBuyConfirmRetryScheduledByMint.delete(mint);
+                return;
+              }
+              const pending = pendingBuyRetryByMint.get(mint);
+              const existing = getPosition(mint);
+              if (
+                !pending ||
+                boughtMintsThisSession.has(mint) ||
+                (existing && existing.buysCount > 0) ||
+                quarantinedBuyMints.has(mint)
+              ) {
+                fastBuyConfirmRetryScheduledByMint.delete(mint);
+                return;
+              }
+              pendingBuyRetryByMint.delete(mint);
+              processSwap(pending!, kp)
+                .catch((err) => {
+                  console.error("Fast-confirm buy retry failed:", err);
+                })
+                .finally(() => {
+                  fastBuyConfirmRetryScheduledByMint.delete(mint);
+                });
+            }, 0);
+          }
+        }
+      },
+      onFastBuyConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature, sourceSwap }) => {
+        void markTradeConfirmation(signature, "confirmed");
+        if (rustHotBuyRecordedByMint.has(mint) && mirrorBuySignatureByMint.get(mint) !== signature) {
+          console.warn(
+            `Ignoring late TypeScript buy confirmation ${signature.slice(0, 8)}... for ${mint.slice(0, 8)}... ` +
+              "because Rust hot sniper already recorded this mint."
+          );
+          return;
+        }
+        fastBuyConfirmRetryScheduledByMint.delete(mint);
+        failedBuyRecoveryInFlightMints.delete(mint);
+        pendingBuyRetryByMint.delete(mint);
+        mirrorBuySignatureByMint.set(mint, signature);
+        reconcileFastBuyTokens({
+          mint,
+          expectedTokenAmountRaw: tokenAmountRaw,
+          expectedSolLamports: solLamports,
+          quoteMint: sourceSwap?.inputMint,
+          signature,
+        })
+          .then(() => registerRustExitWatchForMint(mint, true))
+          .catch((err) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.warn(`Fast mirrored buy reconciliation failed for ${mint.slice(0, 8)}…: ${msg}`);
+          })
+          .finally(() => {
+            clearFastBuyConfirmationPendingSoon(mint, signature);
+          });
+      },
+      onFastSellConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature }) => {
+        reconcileFastSellExecution({
+          mint,
+          expectedTokenAmountRaw: tokenAmountRaw,
+          expectedSolLamports: solLamports,
+          signature,
+        }).catch((err) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.warn(`Fast mirrored sell reconciliation failed for ${mint.slice(0, 8)}…: ${msg}`);
+        }).finally(() => {
+          if (mirrorRemainderIntent) {
+            schedulePostSellRemainderCheck(mint, mirrorRemainderIntent);
+          } else {
+            clearFastSellConfirmationPendingSoon(mint);
+          }
+        });
+      },
+      onFastSellConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason }) => {
+        void handleFastMirroredSellConfirmFailure({
+          mint,
+          tokenAmountRaw,
+          solLamports,
+          reason,
+          preSellHeldRaw: confirmedPreSellBalanceRaw ?? tokenAmountRaw,
+        });
+        return;
+        fastSellConfirmPendingByMint.delete(mint);
+        const rolledBack = unrecordSell(mint, tokenAmountRaw, solLamports);
+        if (rolledBack) {
+          console.warn(
+            `🧹 Phantom mirrored sell cleaned up: ${mint.slice(0, 8)}… ` +
+              `(reason: ${reason}). Sell removed from tracking.`
+          );
+        }
+        if (queuedSourceSellByMint.has(mint)) {
+          expandQueuedSellAfterFailure(mint);
+          drainQueuedSourceSell(mint);
+          return;
+        }
+        const retryPosition = getPosition(mint);
+        if (
+          (retryPosition?.heldRaw ?? 0) > 0 &&
+          keypair &&
+          !stopRequested &&
+          !fastSellConfirmRetryScheduledByMint.has(mint)
+        ) {
+          fastSellConfirmRetryScheduledByMint.add(mint);
+          setTimeout(() => {
+            const position = getPosition(mint);
+            if (!position || position.heldRaw <= 0 || !keypair || stopRequested) {
+              fastSellConfirmRetryScheduledByMint.delete(mint);
+              return;
+            }
+            sellLivePosition(position, "retry after failed mirror sell", undefined, false)
+              .catch((err) => {
+                const msg = err instanceof Error ? err.message : String(err);
+                console.warn(`Fast mirrored sell retry failed for ${mint.slice(0, 8)}…: ${msg}`);
+              })
+              .finally(() => {
+                fastSellConfirmRetryScheduledByMint.delete(mint);
+              });
+          }, 50);
+        }
+      },
+    });
+    console.log(`⚡ Mirror path completed in ${elapsed()}`);
+    const tokenMint = tokenSideMint(result);
+    if (result.side === "buy" && tokenMint) {
+      persistentBuyLockCommitted = true;
+      failedBuyRecoveryInFlightMints.delete(tokenMint);
+      pendingBuyRetryByMint.delete(tokenMint);
+    }
+    const marketCapUsd = tokenMint ? await maybeGetMarketCap(tokenMint) : null;
+    const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
+    if (
+      result.side === "buy" &&
+      tokenMint &&
+      rustHotBuyRecordedByMint.has(tokenMint) &&
+      mirrorBuySignatureByMint.get(tokenMint) !== result.signature
+    ) {
+      console.warn(
+        `TypeScript buy ${result.signature.slice(0, 8)}... for ${tokenMint.slice(0, 8)}... ` +
+          "was broadcast after Rust hot sniper already recorded this mint; skipping duplicate optimistic accounting."
+      );
+      return;
+    }
+    const preSellPosition = result.side === "sell" ? getPosition(result.input.meta.mint) : null;
+    logTrade(result, swap, marketCapUsd, marketCapCheckedAt);
+    if (result.side === "buy" && tokenMint && !result.isSimulated) {
+      void registerRustExitWatchForMint(tokenMint, !result.confirmationPending);
+    }
+    const postSellPosition = result.side === "sell" ? getPosition(result.input.meta.mint) : null;
+    if (!simulationMode) {
+      if (result.side === "buy" && result.input.meta.mint === WRAPPED_SOL_MINT) {
+        noteLocalSolDebit(result.input.amountRaw);
+      } else if (result.side === "sell" && result.output.meta.mint === WRAPPED_SOL_MINT) {
+        noteLocalSolCredit(result.output.amountRaw);
+      }
+    }
+    if (result.side === "sell" && lockedFastSellMint) {
+      if (result.confirmationPending) {
+        fastSellLockShouldPersist = true;
+      } else {
+        fastSellConfirmPendingByMint.delete(lockedFastSellMint);
+        lockedFastSellMint = null;
+      }
+    }
+    const impactPct = result.priceImpactPct ? parseFloat(result.priceImpactPct) * 100 : null;
+    // For mirrored sells we have realized PnL on the position now that recordSell ran inside logTrade.
+    let realizedPnlLamports: number | undefined;
+    let realizedPnlPct: number | undefined;
+    if (result.side === "sell") {
+      if (preSellPosition) {
+        const fill = sellFillAccounting(preSellPosition, result.input.amountRaw, result.output.amountRaw);
+        realizedPnlLamports = fill.pnlLamports;
+        realizedPnlPct = fill.pnlPct;
+      }
+    }
+    pushSwap(
+      {
+        ts,
+        sourceSignature: swap.signature,
+        wallet: swap.wallet,
+        side: result.side,
+        input: toLegView(result.input),
+        output: toLegView(result.output),
+        isSimulated: result.isSimulated,
+        mirrorSignature: result.signature,
+        marketCapUsd,
+        marketCapCheckedAt,
+      },
+      {
+        priceImpactPct: impactPct,
+        realizedPnlLamports,
+        realizedPnlPct,
+        positionRealizedPnlLamports: postSellPosition?.realizedPnlLamports,
+        confirmationStatus: result.confirmationPending ? "pending" : "confirmed",
+      }
+    );
+    if (result.side === "sell" && realizedPnlLamports != null) {
+      // Feed the breaker only on actual closes — opens (buys) aren't outcomes yet.
+      recordTradeOutcome(realizedPnlLamports);
+    }
+  } catch (err) {
+    if (err instanceof NoPositionError) {
+      console.log(
+        `ℹ️ Skipping sell: no position held for ${err.mint.slice(0, 8)}…`
+      );
+      // Send Telegram notification for skipped sell
+      void telegram.notifyError(
+        `⚠️ Skipped sell: No position held for token ${err.mint.slice(0, 8)}…`,
+        `Wallet: ${swap.wallet}`
+      );
+      return;
+    }
+    if (err instanceof AlreadyBoughtError) {
+      console.log(
+        `ℹ️ Skipping buy: already bought ${err.mint.slice(0, 8)}… this session`
+      );
+      return;
+    }
+    if (err instanceof ImpactTooHighError) {
+      console.log(
+        `🚫 Skipping buy: ${err.mint.slice(0, 8)}… impact ${err.impactPct.toFixed(1)}% > cap ${err.capPct.toFixed(1)}% even at MIN_BUY_SOL.`
+      );
+      if (isBuySignal(swap) && swap.skipDirectBuyRoutes) {
+        quarantinedBuyMints.set(err.mint, `Jupiter rescue impact too high: ${err.impactPct.toFixed(1)}%`);
+        pendingBuyRetryByMint.delete(err.mint);
+        failedBuyRecoveryInFlightMints.delete(err.mint);
+      }
+      void telegram.notifyError(
+        `🚫 Buy skipped: impact too high`,
+        `Token: ${err.mint.slice(0, 8)}… · impact ${err.impactPct.toFixed(1)}% > cap ${err.capPct.toFixed(1)}%`
+      );
+      return;
+    }
+    if (err instanceof SourceDriftError) {
+      console.log(
+        `🚫 Skipping buy: ${err.mint.slice(0, 8)}… source drift ${err.driftPct.toFixed(1)}% > cap ${err.capPct.toFixed(1)}% — chasing.`
+      );
+      void telegram.notifyError(
+        `🚫 Buy skipped: chasing source`,
+        `Token: ${err.mint.slice(0, 8)}… · drift ${err.driftPct.toFixed(1)}% > cap ${err.capPct.toFixed(1)}%`
+      );
+      return;
+    }
+    if (err instanceof BuyAmountBelowMinimumError) {
+      console.log(
+        `Skipping buy: ${err.mint.slice(0, 8)}... copy-sized amount ` +
+          `${quoteAmountDisplay(err.calculatedRaw, err.quoteMint)} is below configured minimum ` +
+          `${quoteAmountDisplay(err.minRaw, err.quoteMint)}.`
+      );
+      return;
+    }
+    const msg = err instanceof Error ? err.message : String(err);
+
+    // Check if this is a sell failure that shouldn't count as PnL
+    const isSellFailure = isSellSignal(swap) &&
+      (msg.includes("NOT_TRADABLE") || msg.includes("TOKEN_NOT_TRADABLE") || 
+       msg.includes("No liquidity") || msg.includes("Insufficient liquidity"));
+    
+    if (isSellFailure) {
+      console.log(`?? Sell failed for ${swap.inputMint.slice(0, 8)}...: ${msg}`);
+      console.log(`?? This token appears untradable - PnL will not be affected`);
+      
+      // Send Telegram notification for failed sell
+      void telegram.notifyError(
+        `❌ Sell failed: Token ${swap.inputMint.slice(0, 8)}… is untradable`,
+        `Error: ${msg}\nWallet: ${swap.wallet}`
+      );
+      
+      // Record as a failed trade without affecting PnL
+      pushSwap({
+        ts,
+        sourceSignature: swap.signature,
+        wallet: swap.wallet,
+        side: "sell",
+        input: {
+          mint: swap.inputMint,
+          symbol: shortMint(swap.inputMint),
+          name: shortMint(swap.inputMint),
+          decimals: 0,
+          amountRaw: swap.amountRaw,
+          display: `${swap.amountRaw} raw`,
+        },
+        output: {
+          mint: WRAPPED_SOL_MINT,
+          symbol: "SOL",
+          name: "Solana",
+          decimals: 9,
+          amountRaw: 0,
+          display: "FAILED (untradable)",
+        },
+        isSimulated: simulationMode,
+        error: `SELL FAILED: ${msg}`,
+      });
+      return;
+    }
+    
+    const failureClass = classifyExecutionError(msg);
+    const retryDecision = decideRetryAction(msg);
+    const isSellForTelemetry = isSellSignal(swap);
+    recordExecutionTelemetrySync({
+      kind: "mirror-failure",
+      route: isSellForTelemetry ? "sell" : "buy",
+      side: isSellForTelemetry ? "sell" : "buy",
+      mint: isSellForTelemetry ? swap.inputMint : swap.outputMint,
+      sourceSignature: swap.signature,
+      wallet: swap.wallet,
+      elapsedMs: Date.now() - ts,
+      success: false,
+      error: msg,
+      errorClass: failureClass.category,
+      errorCode: failureClass.code,
+      recoverable: failureClass.recoverable,
+      details: { retryAction: retryDecision.action, shouldQuarantine: retryDecision.shouldQuarantine },
+    });
+    console.error(`?? Mirror failed for ${swap.signature}: ${msg}`);
+    if (
+      isBuySignal(swap) &&
+      buyOncePerTokenEnabled &&
+      shouldHoldBuyOnceAfterFailure({ buyOncePerTokenEnabled, reason: msg })
+    ) {
+      const failedMint = swap.outputMint;
+      holdBuyOnceMintAfterBroadcastUncertainty(failedMint, msg);
+      persistentBuyLockCommitted = true;
+    } else if (isBuySignal(swap) && buyOncePerTokenEnabled && isPostBroadcastBuyUncertainty(msg)) {
+      const failedMint = swap.outputMint;
+      boughtMintsThisSession.delete(failedMint);
+      liveBuyAttemptedMintsThisSession.delete(failedMint);
+      quarantinedBuyMints.delete(failedMint);
+      releasePersistentBuyLock(failedMint);
+      releaseRustBoughtMint(failedMint, `recoverable post-broadcast buy failure: ${msg}`);
+      persistentBuyLockCommitted = false;
+      if (persistentBuyLockMint === failedMint) {
+        persistentBuyLockMint = null;
+      }
+      console.warn(
+        `Buy failed for ${failedMint.slice(0, 8)}... with recoverable post-broadcast ` +
+          `${retryDecision.category} failure; clearing buy locks so a later source signal can retry.`
+      );
+    } else if (isBuySignal(swap) && (swap.skipDirectBuyRoutes || retryDecision.shouldQuarantine || isTerminalBuyFailure(msg))) {
+      const failedMint = swap.outputMint;
+      quarantinedBuyMints.set(
+        failedMint,
+        `${swap.skipDirectBuyRoutes ? "Jupiter rescue failed" : retryDecision.action}: ${msg}`
+      );
+      pendingBuyRetryByMint.delete(failedMint);
+      fastBuyConfirmRetryScheduledByMint.delete(failedMint);
+      failedBuyRecoveryInFlightMints.delete(failedMint);
+      console.warn(
+        `Buy quarantine set for ${failedMint.slice(0, 8)}... after terminal buy failure. ` +
+          "No more retries for this mint this session."
+      );
+    } else if (isBuySignal(swap) && !retryDecision.shouldQuarantine) {
+      const failedMint = swap.outputMint;
+      boughtMintsThisSession.delete(failedMint);
+      liveBuyAttemptedMintsThisSession.delete(failedMint);
+      pendingBuyRetryByMint.delete(failedMint);
+      failedBuyRecoveryInFlightMints.delete(failedMint);
+      console.warn(
+        `Buy failure for ${failedMint.slice(0, 8)}... is recoverable (${retryDecision.action}); ` +
+          "not quarantining so a later source signal can retry."
+      );
+    }
+    
+    // Send Telegram notification for general mirror errors
+    const isSell = isSellSignal(swap);
+    const action = isSell ? "sell" : "buy";
+    const tokenMint = isSell ? swap.inputMint : swap.outputMint;
+    void telegram.notifyError(
+      `❌ ${action.charAt(0).toUpperCase() + action.slice(1)} failed: ${msg}`,
+      `Token: ${tokenMint.slice(0, 8)}…\nWallet: ${swap.wallet}\nTx: ${swap.signature}`
+    );
+    
+    pushSwap({
+      ts,
+      sourceSignature: swap.signature,
+      wallet: swap.wallet,
+      side:
+        isBuySignal(swap) ? "buy" : isSellSignal(swap) ? "sell" : "swap",
+      input: {
+        mint: swap.inputMint,
+        symbol: swap.inputMint === WRAPPED_SOL_MINT ? "SOL" : swap.inputMint === USDC_MINT ? "USDC" : shortMint(swap.inputMint),
+        name: swap.inputMint === WRAPPED_SOL_MINT ? "Solana" : swap.inputMint === USDC_MINT ? "USD Coin" : shortMint(swap.inputMint),
+        decimals: swap.inputMint === WRAPPED_SOL_MINT ? 9 : swap.inputMint === USDC_MINT ? 6 : 0,
+        amountRaw: swap.amountRaw,
+        display: swap.inputMint === WRAPPED_SOL_MINT || swap.inputMint === USDC_MINT
+          ? quoteAmountDisplay(swap.amountRaw, swap.inputMint)
+          : `${swap.amountRaw} raw`,
+      },
+      output: {
+        mint: swap.outputMint,
+        symbol: swap.outputMint === WRAPPED_SOL_MINT ? "SOL" : swap.outputMint === USDC_MINT ? "USDC" : shortMint(swap.outputMint),
+        name: swap.outputMint === WRAPPED_SOL_MINT ? "Solana" : swap.outputMint === USDC_MINT ? "USD Coin" : shortMint(swap.outputMint),
+        decimals: swap.outputMint === WRAPPED_SOL_MINT ? 9 : swap.outputMint === USDC_MINT ? 6 : 0,
+        amountRaw: 0,
+        display: "—",
+      },
+      isSimulated: simulationMode,
+      error: msg,
+    });
+  } finally {
+    const pendingMint = retryPendingMint;
+    releaseBuyLocks();
+    if (persistentBuyLockMint && !persistentBuyLockCommitted) {
+      releasePersistentBuyLock(persistentBuyLockMint);
+      persistentBuyLockMint = null;
+    }
+    if (lockedFastSellMint && !fastSellLockShouldPersist) {
+      fastSellConfirmPendingByMint.delete(lockedFastSellMint);
+      drainQueuedSourceSell(lockedFastSellMint);
+      lockedFastSellMint = null;
+    }
+    queuedSellCapBySignature.delete(swap.signature);
+    if (pendingMint) {
+      const pending = pendingBuyRetryByMint.get(pendingMint);
+      const existing = getPosition(pendingMint);
+      if (
+        pending &&
+        !failedBuyRecoveryInFlightMints.has(pendingMint) &&
+        !quarantinedBuyMints.has(pendingMint) &&
+        !boughtMintsThisSession.has(pendingMint) &&
+        !(existing && existing.buysCount > 0)
+      ) {
+        pendingBuyRetryByMint.delete(pendingMint);
+        // Replay one follow-on source signal after a dead/dropped attempt releases the mint lock.
+        setTimeout(() => {
+          if (stopRequested || quarantinedBuyMints.has(pendingMint)) return;
+          processSwap(pending, kp).catch((err) => {
+            console.error("Queued buy retry failed:", err);
+          });
+        }, 0);
+      } else if (pending) {
+        pendingBuyRetryByMint.delete(pendingMint);
+      }
+    }
+  }
+}
+
+async function loop(): Promise<void> {
+  const kp = keypair!;
+  const bootTimeSec = Math.floor((startedAt ?? Date.now()) / 1000);
+  const watchedWallets = getWatchedWallets();
+  let lastWarm = 0;
+  let lastBalanceLog = 0;
+  let lastRiskCheck = 0;
+  let lastSourceHoldCheck = 0;
+  let lastPoll = 0;
+
+  while (!stopRequested) {
+    try {
+      // Poll is a safety net — WebSocket does the fast path. Run serially so polls catch anything the WS missed.
+      const loopStartedAt = Date.now();
+      if (watcherPollFallbackEnabled && loopStartedAt - lastPoll >= pollIntervalMs) {
+        const swaps = await getNewSwaps(watchedWallets, processedSignatures, bootTimeSec);
+        for (const swap of swaps) {
+          await processSwap(swap, kp);
+        }
+        lastPoll = Date.now();
+      }
+
+      const now = Date.now();
+      if (now - lastWarm >= WARM_INTERVAL_MS) {
+        await warmConnection();
+        lastWarm = now;
+      }
+      if (now - lastBalanceLog >= BALANCE_LOG_INTERVAL_MS) {
+        await updateBalance(kp.publicKey);
+        lastBalanceLog = now;
+      }
+      // checkRiskExits now decides per-position cadence (fast / near-trigger / normal),
+      // so we just call it on every loop tick and let it skip positions that aren't due.
+      const minRiskInterval = Math.min(
+        riskFastIntervalMs,
+        riskNearTriggerIntervalMs,
+        riskNormalIntervalMs
+      );
+      if (riskControlsEnabled && now - lastRiskCheck >= minRiskInterval) {
+        await runRiskCheck("scheduled");
+        lastRiskCheck = now;
+      }
+      if (sourceHoldExitEnabled && now - lastSourceHoldCheck >= sourceHoldExitIntervalMs) {
+        await checkSourceHoldExits();
+        lastSourceHoldCheck = Date.now();
+      }
+    } catch (err) {
+      console.error("Watcher error:", err);
+    }
+
+    if (stopRequested) break;
+    // Loop floor must be small enough to honor the fastest tier; fall back to pollIntervalMs when risk is off.
+    const sleepMs = Math.min(
+      pollIntervalMs,
+      riskControlsEnabled
+        ? Math.min(riskFastIntervalMs, riskNearTriggerIntervalMs, riskNormalIntervalMs)
+        : pollIntervalMs,
+      sourceHoldExitEnabled ? sourceHoldExitIntervalMs : pollIntervalMs
+    );
+    await interruptibleSleep(Math.max(100, sleepMs));
+  }
+
+  if (unsubscribeWs) {
+    try {
+      await unsubscribeWs();
+    } catch {
+      // best-effort
+    }
+    unsubscribeWs = null;
+  }
+  if (unsubscribeGrpc) {
+    try {
+      await unsubscribeGrpc();
+    } catch {
+      // best-effort
+    }
+    unsubscribeGrpc = null;
+  }
+  if (unsubscribePrewarmGrpc) {
+    try {
+      await unsubscribePrewarmGrpc();
+    } catch {
+      // best-effort
+    }
+    unsubscribePrewarmGrpc = null;
+  }
+  if (unsubscribeRabbit) {
+    try {
+      await unsubscribeRabbit();
+    } catch {
+      // best-effort
+    }
+    unsubscribeRabbit = null;
+  }
+  if (unsubscribeRustSidecar) {
+    try {
+      await unsubscribeRustSidecar();
+    } catch {
+      // best-effort
+    }
+    unsubscribeRustSidecar = null;
+  }
+  if (unsubscribeHeliusTx) {
+    try {
+      await unsubscribeHeliusTx();
+    } catch {
+      // best-effort
+    }
+    unsubscribeHeliusTx = null;
+  }
+
+  running = false;
+  startedAt = null;
+  stopFeeOracle();
+  stopJitoTipOracle();
+  stopJitoConnectionWarmup();
+  stopBlockhashCache();
+  console.log("Bot stopped.");
+}
+
+export async function reloadWalletFromEnv(): Promise<Keypair> {
+  const loaded = Keypair.fromSecretKey(bs58.decode(getPrivateKeyBase58()));
+  keypair = loaded;
+  await updateBalance(loaded.publicKey, { log: false });
+  return loaded;
+}
+
+export async function startBot(): Promise<void> {
+  if (running) return;
+  // Hard live-execution safety guard: prints the loaded env path + resolved sizing and
+  // refuses to start live copytrading without explicit confirmation and a sane size cap.
+  // Runs before any wallet load or trading so every launch path (copytrade.ts, dashboard
+  // /api/start, demoInstance.ts) is covered by this single chokepoint.
+  assertLiveExecutionSafe();
+  await validateLicense();
+  if (trackedWallets.length === 0) {
+    throw new Error("No TRACKED_WALLETS set in .env.");
+  }
+  const kp = await reloadWalletFromEnv();
+  running = true;
+  startedAt = null;
+  stopRequested = false;
+  resetCircuitBreaker();
+  startFeeOracle();
+  startJitoTipOracle();
+  startJitoConnectionWarmup();
+  startBlockhashCache();
+  console.log(
+    "Copytrading bot started. Our wallet:",
+    kp.publicKey.toBase58()
+  );
+  const watchedWallets = getWatchedWallets();
+  console.log("Tracked wallets:", trackedWallets.length);
+  console.log("Tracked wallet list:", trackedWallets.map(shortWallet).join(", "));
+  if (exitSignalSellsEnabled && exitSignalWallets.length > 0) {
+    console.log("Exit signal sells: ON");
+    console.log("Exit signal wallet list:", exitSignalWallets.map(shortWallet).join(", "));
+    console.log("Total watched wallets:", watchedWallets.length);
+  } else {
+    console.log("Exit signal sells: OFF");
+  }
+  if (clusterTriggerEnabled) {
+    console.log(
+      `Cluster trigger: ON — wallets ${clusterWallets.map(shortWallet).join(", ") || "(none)"}, ` +
+        `min source buy ${formatSolAmount(clusterMinSourceBuyLamports)} SOL.`
+    );
+    console.log(
+      clusterConfirmWallet
+        ? `Cluster confirm wallet: ${shortWallet(clusterConfirmWallet)} ` +
+            `(window ${clusterConfirmWindowMs}ms, ` +
+            `no-confirm trailing ${clusterNoConfirmTrailingSteps.length > 0 ? clusterNoConfirmTrailingSteps.map((s) => `${s.peakPct}%→${s.floorPct >= 0 ? "+" : ""}${s.floorPct}%`).join(",") : "unchanged"}).`
+        : "Cluster confirm wallet: (none)."
+    );
+  }
+
+  // Send Telegram notification
+  void telegram.notifyBotStatus("started");
+  await updateBalance(kp.publicKey);
+  captureSessionStartBalance();
+  if (simulationMode) {
+    console.log(
+      "Running in SIMULATION mode –",
+      trackedWallets.length,
+      "wallet(s); no transactions will be sent."
+    );
+  }
+
+  if (!simulationMode) {
+    const hotPathWarnings: string[] = [];
+    if (shadowExecutionMode) hotPathWarnings.push("SHADOW_EXECUTION_MODE is ON");
+    if (pumpSwapDirectPreflight) hotPathWarnings.push("PUMPSWAP_DIRECT_PREFLIGHT is ON");
+    if (!pumpSwapDirectBuyEnabled) hotPathWarnings.push("PUMPSWAP_DIRECT_BUY_ENABLED is OFF");
+    if (jupiterFallbackEnabled) hotPathWarnings.push("JUPITER_FALLBACK_ENABLED is ON");
+    if (!rustOnlyBuys) hotPathWarnings.push("RUST_ONLY_BUYS is OFF");
+    if (!rustOnlySells) hotPathWarnings.push("RUST_ONLY_SELLS is OFF");
+    if (hotPathWarnings.length > 0) {
+      console.warn(
+        "Live hot-path warning: " +
+          hotPathWarnings.join("; ") +
+          ". Expected CyA live-test posture is Rust-only buys/sells, PumpSwap preflight off, Jupiter fallback off."
+      );
+    }
+  }
+
+  if (rustExitWatcherEnabled && !simulationMode) {
+    const yellowstoneRaw = (process.env.RUST_SIDECAR_YELLOWSTONE_ENABLED ?? "true").trim().toLowerCase();
+    const yellowstoneEnabled = !["false", "0", "no", "off"].includes(yellowstoneRaw);
+    if (!rustSidecarEnabled || !rustExecutorEnabled || !yellowstoneEnabled) {
+      throw new Error(
+        "RUST_EXIT_WATCHER_ENABLED=true requires RUST_SIDECAR_ENABLED=true, " +
+          "RUST_EXECUTOR_ENABLED=true, and RUST_SIDECAR_YELLOWSTONE_ENABLED=true."
+      );
+    }
+  }
+
+  if (riskControlsEnabled) {
+    const trailDesc = trailingEnabled
+      ? ` trailing=${trailingSteps.map((s) => `${s.peakPct}%→${s.floorPct >= 0 ? "+" : ""}${s.floorPct}%`).join(",")},`
+      : "";
+    const hybridDesc = hybridExitEnabled
+      ? ` hybrid=${hybridExitTpSellPct}%@+${hybridExitTpPct}% then ${hybridExitSourceExitRemaining ? "source exit" : "normal exits"},`
+      : "";
+    const ladderDesc = profitLadderEnabled
+      ? ` ladder=${profitLadderSteps.map((s) => `${s.triggerPct}% sells ${s.sellPct}%`).join(",")},`
+      : "";
+    const normalRiskDesc = waitsForSourceExit(hybridExitEnabled, hybridExitSourceExitRemaining)
+      ? "SL/TP/trailing suppressed while hybrid source-exit mode is active"
+      : `SL ${stopLossPct ?? "off"}%, TP ${takeProfitPct ?? "off"}%,${trailDesc}`;
+    console.log(
+      `Risk exits enabled: ${normalRiskDesc},${hybridDesc}${ladderDesc} ` +
+        `tiers fast=${riskFastIntervalMs}ms (first ${riskFastWindowMs}ms) / near=${riskNearTriggerIntervalMs}ms (within ${riskNearTriggerPct}pp of trigger) / normal=${riskNormalIntervalMs}ms, ` +
+        `drift=${riskDriftPctPerSec}pp/s, SL min hold ${minHoldBeforeStopLossMs}ms, max ${maxRiskQuotesPerCheck} quote(s)/tick.`
+    );
+  }
+  if (rustExitWatcherEnabled) {
+    console.log(
+      `Rust exit watcher: ${rustExitWatcherShadow ? "SHADOW" : "LIVE"}; ` +
+        "authoritative Yellowstone curve marks, ShredStream source exits, no Jupiter or HTTP quote/account lookup before broadcast. " +
+        `thresholds SL=${rustExitStopLossPct}% after ${rustExitStopLossGraceMs}ms, ` +
+        `TP=${rustExitTakeProfitPct}% sells ${rustExitTakeProfitSellPct}%; ` +
+        (rustExitWatcherShadow
+          ? "Existing Node exits remain authoritative."
+          : "Rust watcher owns active Pump.fun exits.")
+    );
+  }
+  if (sourceHoldExitEnabled) {
+    console.log(
+      `Source-hold exits enabled: check every ${sourceHoldExitIntervalMs}ms, ` +
+        `${sourceHoldExitConsecutiveMisses} consecutive zero-balance checks, ` +
+        `min position age ${sourceHoldExitMinPositionAgeMs}ms.`
+    );
+  }
+  if (maxOpenPositions != null) {
+    console.log(`Max open positions enabled: ${maxOpenPositions}.`);
+  }
+  if (maxSolPerTokenLamports != null) {
+    console.log(`Max per-token deployed SOL enabled: ${formatSolAmount(maxSolPerTokenLamports)} SOL.`);
+  }
+  if (maxSessionDeployedLamports != null) {
+    console.log(`Max session deployed SOL enabled: ${formatSolAmount(maxSessionDeployedLamports)} SOL.`);
+  }
+  if (maxOpenDeployedLamports != null) {
+    console.log(`Max open deployed SOL enabled: ${formatSolAmount(maxOpenDeployedLamports)} SOL.`);
+  }
+  if (blockPumpfunMayhem) {
+    console.log(`Pump.fun Mayhem Mode filter enabled${pumpfunMayhemStrict ? " (strict)" : ""}.`);
+  }
+
+  const startupCutoffSec = Math.floor(Date.now() / 1000);
+  await warmSourcePreexistingBuyMints(startupCutoffSec);
+  await Promise.allSettled([
+    warmConnection(),
+    warmPumpSwapStaticAccounts(),
+    warmWalletAccounts(kp.publicKey),
+    warmExecutionAltAccounts(console.log),
+  ]);
+  startedAt = Date.now();
+  console.log("Fresh start - only trades from this moment onward will be mirrored.");
+
+  if (rustSidecarEnabled) {
+    unsubscribeRustSidecar = await startRustPumpFunSidecar(
+      processedSignatures,
+      (swap) => {
+        processSwap(swap, kp).catch((err) => {
+          console.error("Rust sidecar processSwap error:", err);
+        });
+      },
+      (hotBuy) => {
+        handleRustHotBuy(hotBuy, kp).catch((err) => {
+          console.error("Rust hot sniper bookkeeping error:", err);
+        });
+      },
+      (fallback) => {
+        handleRustHotBuyFallback(fallback);
+      },
+      (event) => {
+        handleRustExitEvent(event).catch((err) => {
+          const message = err instanceof Error ? err.message : String(err);
+          console.error(`Rust exit watcher bookkeeping error for ${event.mint.slice(0, 8)}...: ${message}`);
+        });
+      },
+      (reason) => {
+        if (rustExitWatchOwnedMints.size > 0) {
+          console.warn(
+            `${reason}; releasing ${rustExitWatchOwnedMints.size} Rust-owned watcher position(s) ` +
+              "back to the existing Node risk loop."
+          );
+        }
+        for (const mint of rustExitWatchRegistrationPendingMints) {
+          rustExitWatchGenerationByMint.set(mint, (rustExitWatchGenerationByMint.get(mint) ?? 0) + 1);
+        }
+        rustExitWatchRegisteredMints.clear();
+        rustExitWatchOwnedMints.clear();
+        rustExitWatchRegistrationPendingMints.clear();
+      }
+    );
+  } else {
+    console.log("Rust sidecar disabled (set RUST_SIDECAR_ENABLED=true to enable).");
+  }
+
+  if (shyftGrpcEnabled) {
+    unsubscribeGrpc = await subscribeGrpcWalletSwaps(
+      watchedWallets,
+      processedSignatures,
+      (swap) => {
+        processSwap(swap, kp).catch((err) => {
+          console.error("gRPC processSwap error:", err);
+        });
+      }
+    );
+    const prewarmOnlyWallets = getPrewarmOnlyWallets(watchedWallets);
+    if (pumpSwapPrewarmEnabled && prewarmOnlyWallets.length > 0) {
+      const filteredCount = uniqueWallets(prewarmWallets).length - prewarmOnlyWallets.length;
+      const prewarmProcessedSignatures = new Set<string>();
+      unsubscribePrewarmGrpc = await subscribeGrpcWalletSwaps(
+        prewarmOnlyWallets,
+        prewarmProcessedSignatures,
+        (swap) => {
+          handlePumpSwapPrewarmSignal(swap, kp.publicKey).catch((err) => {
+            console.error("gRPC PumpSwap prewarm error:", err);
+          });
+        }
+      );
+      console.log(
+        `PumpSwap prewarm: ON via gRPC for ${prewarmOnlyWallets.length} wallet(s): ` +
+          prewarmOnlyWallets.map(shortWallet).join(", ") +
+          (filteredCount > 0 ? ` (${filteredCount} overlapping watched wallet(s) ignored)` : "")
+      );
+    } else {
+      console.log(
+        pumpSwapPrewarmEnabled && prewarmWallets.length > 0
+          ? "PumpSwap prewarm: OFF (all configured prewarm wallets overlap watched wallets)"
+          : "PumpSwap prewarm: OFF"
+      );
+    }
+  } else {
+    console.log("gRPC watcher disabled (set SHYFT_GRPC_ENABLED=true to enable).");
+    if (pumpSwapPrewarmEnabled && prewarmWallets.length > 0) {
+      console.log("PumpSwap prewarm requested but gRPC watcher is disabled.");
+    }
+  }
+  if (shyftRabbitStreamEnabled) {
+    unsubscribeRabbit = await subscribeRabbitWalletSwaps(
+      watchedWallets,
+      processedSignatures,
+      (swap) => {
+        processSwap(swap, kp).catch((err) => {
+          console.error("RabbitStream processSwap error:", err);
+        });
+      }
+    );
+  }
+
+  if (heliusTxSubscribeEnabled) {
+    unsubscribeHeliusTx = await subscribeHeliusTransactionSwaps(
+      watchedWallets,
+      processedSignatures,
+      (swap) => {
+        processSwap(swap, kp).catch((err) => {
+          console.error("Helius transactionSubscribe processSwap error:", err);
+        });
+      }
+    );
+  } else {
+    console.log("Helius transactionSubscribe disabled (set HELIUS_TX_SUBSCRIBE_ENABLED=true to enable).");
+  }
+
+  unsubscribeWs = await subscribeWalletSwaps(
+    watchedWallets,
+    processedSignatures,
+    (swap) => {
+      processSwap(swap, kp).catch((err) => {
+        console.error("WS processSwap error:", err);
+      });
+    }
+  );
+  console.log(
+    watcherPollFallbackEnabled
+      ? `Watcher poll fallback enabled: Helius address-history safety polling every ${pollIntervalMs}ms.`
+      : "Watcher poll fallback disabled: stream detectors are active; no Helius address-history polling."
+  );
+
+  loop().catch((err) => {
+    console.error("Loop crashed:", err);
+    running = false;
+    startedAt = null;
+  });
+}
+
+export function stopBot(): void {
+  if (!running) return;
+  stopRequested = true;
+  if (sleepResolve) sleepResolve();
+  console.log("Stop requested...");
+  
+  // Send Telegram notification
+  void telegram.notifyBotStatus("stopped");
+}
+
+/** Clear all positions, trade history, and processed-signature cache. */
+export function resetTradingState(): void {
+  resetPositions();
+  recentSwaps.length = 0;
+  processedSignatures.clear();
+  buyMintsInFlight.clear();
+  pendingBuyRetryByMint.clear();
+  rustHotSniperPrimaryPendingMints.clear();
+  rustHotSniperPrimaryFallbackSources.clear();
+  rustHotBuyRecordedByMint.clear();
+  rustHotBuyRecordedSourceSignatures.clear();
+  fastBuyConfirmRetryScheduledByMint.clear();
+  failedBuyRecoveryInFlightMints.clear();
+  boughtMintsThisSession.clear();
+  liveBuyAttemptedMintsThisSession.clear();
+  quarantinedBuyMints.clear();
+  sourceBuySignatureByMint.clear();
+  latestSourceBuyByMint.clear();
+  rustExitWatchRegisteredMints.clear();
+  rustExitWatchOwnedMints.clear();
+  rustExitWatchRegistrationPendingMints.clear();
+  rustExitWatchGenerationByMint.clear();
+  rustExitConfirmedBuyMints.clear();
+  pendingFastBuyConfirmSignaturesByMint.clear();
+  fastBuyLocalCloseGuardUntilByMint.clear();
+  pendingFastBuyRiskSkipLogAtByMint.clear();
+  loggedFastBuyDebitBySignature.clear();
+  openPositionBuyMintsInFlight.clear();
+  riskSellsInFlight.clear();
+  exitSignalSellsInFlight.clear();
+  riskSellRetryAfterByMint.clear();
+  sourceHoldMissingByMint.clear();
+  sourceSignalStateByMint.clear();
+  confirmedInventoryByMint.clear();
+  queuedSourceSellByMint.clear();
+  queuedSellCapBySignature.clear();
+  confirmedPostSellStateByMint.clear();
+  postSellRemainderChecksInFlight.clear();
+  queuedPostSellRemainderByMint.clear();
+  fastSellConfirmPendingByMint.clear();
+  riskTraceByMint.clear();
+  riskQuoteStateByMint.clear();
+  hybridExitTpDoneByMint.clear();
+  hybridExitTpInFlightByMint.clear();
+  profitLadderDoneByMint.clear();
+  profitLadderInFlightByMint.clear();
+  lastCurveRiskValueByMint.clear();
+  captureSessionStartBalance();
+  resetCircuitBreaker();
+  console.log("?? Cleared all positions, trade history, and signature cache.");
+}
+
+async function sellSimulatedPosition(
+  position: PositionSnapshot,
+  note?: string,
+  quotedOutSolLamports?: number,
+  amountRawOverride?: number
+): Promise<void> {
+  const sellRaw = Math.max(
+    1,
+    Math.min(position.heldRaw, Math.floor(amountRawOverride ?? position.heldRaw))
+  );
+  let outSolLamports =
+    quotedOutSolLamports ??
+    (await quoteRiskExitLamports(position.mint, sellRaw));
+  outSolLamports = applyShadowSellLamports(outSolLamports, `sim-sell:${position.mint}:${Date.now()}`);
+  if (!Number.isFinite(outSolLamports) || outSolLamports <= 0) {
+    throw new Error(`No sell liquidity for $${position.symbol}`);
+  }
+
+  const meta = {
+    mint: position.mint,
+    symbol: position.symbol,
+    name: position.symbol,
+    decimals: position.decimals,
+    isSol: false,
+  };
+  const snap = recordSell(meta, sellRaw, outSolLamports);
+  cleanupHybridExitStateIfClosed(snap);
+  const avgEntry = position.totalBoughtRaw > 0 ? position.totalSolSpentLamports / position.totalBoughtRaw : 0;
+  const sellCostBasisLamports = avgEntry * sellRaw;
+  const fillPnlLamports = outSolLamports - sellCostBasisLamports;
+  const finalPnlPct =
+    sellCostBasisLamports > 0
+      ? ((outSolLamports - sellCostBasisLamports) /
+          sellCostBasisLamports) *
+        100
+      : 0;
+  const marketCapUsd = await maybeGetMarketCap(position.mint);
+  const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
+
+  console.log(`Sold (simulated): ${formatTokenAmount(sellRaw, position.decimals)} $${position.symbol}`);
+  console.log(`Received: ${formatSolAmount(outSolLamports)} SOL`);
+  console.log(`Fill PnL: ${formatPnl(fillPnlLamports)}`);
+  console.log(`Position PnL: ${formatPnl(snap.realizedPnlLamports)}`);
+  if (note) console.log(`Reason: ${note}`);
+  if (note) printRiskTrace(position, outSolLamports, finalPnlPct, note);
+
+  pushSwap(
+    {
+      ts: Date.now(),
+      sourceSignature: `manual-sell-${position.mint}`,
+      wallet: note ? "risk-sell" : "manual-sell",
+      side: "sell",
+      input: {
+        mint: position.mint,
+        symbol: position.symbol,
+        name: position.symbol,
+        decimals: position.decimals,
+        amountRaw: sellRaw,
+        display: `${formatTokenAmount(sellRaw, position.decimals)} $${position.symbol}`,
+      },
+      output: {
+        mint: WRAPPED_SOL_MINT,
+        symbol: "SOL",
+        name: "Solana",
+        decimals: 9,
+        amountRaw: outSolLamports,
+        display: `${formatSolAmount(outSolLamports)} SOL`,
+      },
+      isSimulated: true,
+      marketCapUsd,
+      marketCapCheckedAt,
+    },
+    {
+      realizedPnlLamports: fillPnlLamports,
+      realizedPnlPct: finalPnlPct,
+      positionRealizedPnlLamports: snap.realizedPnlLamports,
+      exitReason: note,
+    }
+  );
+  recordTradeOutcome(fillPnlLamports);
+
+  void telegram.notifyTrade({
+    type: "sell",
+    symbol: position.symbol,
+    amount: formatTokenAmount(sellRaw, position.decimals),
+    solAmount: formatSolAmount(outSolLamports),
+    marketCap: marketCapUsd != null ? formatMarketCap(marketCapUsd) : undefined,
+    marketCapCheckedAt: marketCapCheckedAt ?? undefined,
+    isSimulated: true,
+    wallet: note ? "risk" : "manual",
+    tokenAddress: position.mint,
+    pnl: formatPnl(fillPnlLamports),
+    positionPnl: formatPnl(snap.realizedPnlLamports),
+    note,
+    quotedPnlPct: note ? `${finalPnlPct >= 0 ? "+" : ""}${finalPnlPct.toFixed(1)}%` : undefined,
+  });
+}
+
+/**
+ * Sell specific position by index (#1, #2, etc)
+ */
+export async function sellPositionByIndex(index: number): Promise<void> {
+  await sellPositionPercentByIndex(index, 1);
+}
+
+export async function sellPositionPercentByIndex(index: number, fraction: number): Promise<void> {
+  const open = getPositions().filter((p) => p.heldRaw > 0);
+  const clampedFraction = Math.min(1, Math.max(0.000001, fraction));
+  
+  if (open.length === 0) {
+    console.log("?? No open positions to sell.");
+    return;
+  }
+  
+  if (index < 1 || index > open.length) {
+    console.log(`?? Invalid position #${index}. Available positions: 1-${open.length}`);
+    console.log("?? Use 'a' to sell all positions");
+    return;
+  }
+  
+  const position = open[index - 1]; // Convert to 0-based index
+  const targetRaw =
+    clampedFraction >= 0.999999
+      ? position.heldRaw
+      : Math.floor(position.totalBoughtRaw * clampedFraction);
+  const sellRaw = Math.min(position.heldRaw, Math.max(1, targetRaw));
+  const pctLabel = clampedFraction >= 0.999999 ? "100%" : `${Math.round(clampedFraction * 100)}%`;
+  if (simulationMode) {
+    await sellSimulatedPosition(position, clampedFraction >= 0.999999 ? undefined : `manual ${pctLabel} trim`, undefined, sellRaw);
+    return;
+  }
+
+  if (!keypair) {
+    throw new Error("Wallet is not loaded yet. Start the bot before selling positions.");
+  }
+
+  try {
+    await sellLivePosition(position, undefined, sellRaw);
+  } catch (error) {
+    void telegram.notifyError(
+      `Failed to sell ${pctLabel} of position #${index} ($${position.symbol})`,
+      error instanceof Error ? (error as Error).message : String(error)
+    );
+    throw error;
+  }
+
+  return;
+}
+
+async function getVerifiedTokenBalance(
+  owner: PublicKey,
+  mint: string,
+  opts: {
+    symbol?: string;
+    expectedRaw?: number;
+    decimals?: number;
+    ownerLabel?: string;
+  } = {}
+): Promise<number> {
+  const fast = await getTokenBalanceFast(owner, mint);
+  if (fast == null) return getTokenBalance(owner, mint);
+  if (fast > 0) return fast;
+
+  const scanned = await getTokenBalance(owner, mint);
+  if (scanned > 0) {
+    const label = opts.symbol ? `$${opts.symbol}` : mint.slice(0, 8);
+    console.warn(
+      `${label}: fast ${opts.ownerLabel ?? "wallet"} token balance read 0, ` +
+        `but full account scan found ${
+          opts.decimals == null ? scanned.toString() : formatTokenAmount(scanned, opts.decimals)
+        }. Using scanned balance.`
+    );
+    return scanned;
+  }
+
+  if ((opts.expectedRaw ?? 0) > 0) {
+    await sleep(ZERO_TOKEN_BALANCE_RECHECK_MS);
+    const retryFast = await getTokenBalanceFast(owner, mint);
+    if (retryFast != null && retryFast > 0) return retryFast;
+    const retryScanned = await getTokenBalance(owner, mint);
+    if (retryScanned > 0) {
+      const label = opts.symbol ? `$${opts.symbol}` : mint.slice(0, 8);
+      console.warn(
+        `${label}: zero-balance recheck recovered ${
+          opts.decimals == null ? retryScanned.toString() : formatTokenAmount(retryScanned, opts.decimals)
+        } on ${opts.ownerLabel ?? "wallet"}.`
+      );
+      return retryScanned;
+    }
+  }
+
+  return 0;
+}
+
+/**
+ * Sell all open positions (simulated or live based on mode)
+ */
+async function sellLivePosition(
+  p: PositionSnapshot,
+  note?: string,
+  amountRawOverride?: number,
+  requireFreshRiskReason = true
+): Promise<void> {
+  if (
+    rustExitWatchRegisteredMints.has(p.mint) ||
+    rustExitWatchRegistrationPendingMints.has(p.mint)
+  ) {
+    rustExitWatchGenerationByMint.set(p.mint, (rustExitWatchGenerationByMint.get(p.mint) ?? 0) + 1);
+  }
+  if (rustExitWatchRegisteredMints.has(p.mint)) {
+    const cancelled = await cancelRustPumpFunExitWatch(p.mint, note ?? "external Node sell");
+    rustExitWatchRegisteredMints.delete(p.mint);
+    rustExitWatchOwnedMints.delete(p.mint);
+    if (!cancelled.ok) {
+      console.warn(
+        `Rust exit watcher cancellation did not ack for ${p.mint.slice(0, 8)}...: ${cancelled.error}. ` +
+          "Proceeding with requested sell because the Node-side exit takes precedence."
+      );
+    }
+  }
+  p = await reconcileOpenPositionWithConfirmedBuy(p);
+  if (amountRawOverride == null) {
+    const latest = getPosition(p.mint);
+    if (latest && latest.heldRaw > p.heldRaw) {
+      console.warn(
+        `$${p.symbol}: position grew while sell was pending; refreshing full-sell amount ` +
+          `${formatTokenAmount(p.heldRaw, p.decimals)} -> ${formatTokenAmount(latest.heldRaw, latest.decimals)}.`
+      );
+      p = latest;
+    }
+  }
+  let effectiveNote = note;
+  let liveHeldRaw: number;
+  let inventoryReadFailed = false;
+  try {
+    liveHeldRaw = await refreshConfirmedInventoryWithRetry(p.mint);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    // A rate-limited/unavailable inventory read must NOT trap us in a position Omego has
+    // already exited. When we have a tracked balance, fall back to it and broadcast the sell
+    // anyway. The read FAILED (unknown balance) — distinct from a successful read of 0, so we
+    // skip the ghost-cleanup branch below and actually attempt the exit.
+    if (p.heldRaw > 0) {
+      inventoryReadFailed = true;
+      liveHeldRaw = p.heldRaw;
+      console.warn(
+        `$${p.symbol}: confirmed inventory read failed (${msg}); ` +
+          `falling back to tracked balance ${formatTokenAmount(p.heldRaw, p.decimals)} and selling anyway (429-resilient exit).`
+      );
+    } else {
+      throw new Error(
+        `Confirmed inventory lookup failed for $${p.symbol}; sell not broadcast: ${msg}`
+      );
+    }
+  }
+  if (!inventoryReadFailed && liveHeldRaw === 0) {
+    console.warn(
+      `$${p.symbol}: verified wallet balance is 0; historical buy transactions will not be used as sell inventory.`
+    );
+  }
+  const isSourceHoldExit = effectiveNote?.startsWith("Source-hold exit:") ?? false;
+  // Chain authoritatively says we hold 0 (read succeeded, value was 0). Typical causes: transfer-fee /
+  // honeypot mechanics drained the ATA, or an earlier sell landed but timed out before we recorded it.
+  // Falling back to the tracked amount here is what was burning gas on every 15s risk-exit retry —
+  // we'd broadcast a doomed swap that fails on-chain with Custom(6024) at the destination AMM.
+  // Close the ghost position locally instead so the risk loop drops it from the candidate pool.
+  if (!inventoryReadFailed && liveHeldRaw === 0 && p.heldRaw > 0) {
+    if (hasFastBuyConfirmationPending(p.mint)) {
+      console.warn(
+        `$${p.symbol}: wallet holds 0 on-chain while fast-mode buy confirmation is still pending; ` +
+          "leaving optimistic position open for background confirmation cleanup."
+      );
+      return;
+    }
+    if (Date.now() - p.lastTradeAt < confirmationNullStatusTimeoutMs) {
+      console.warn(
+        `$${p.symbol}: wallet holds 0 on-chain during fast-mode confirmation grace window; ` +
+          "leaving optimistic position open for background confirmation cleanup."
+      );
+      return;
+    }
+    if (!isSourceHoldExit && hasFastBuyLocalCloseGuard(p.mint)) {
+      console.warn(
+        `$${p.symbol}: wallet holds 0 on-chain during recent fast-buy settle guard; ` +
+          "leaving optimistic position open instead of closing locally."
+      );
+      return;
+    }
+    console.warn(
+      `$${p.symbol}: wallet holds 0 on-chain but tracker shows ${formatTokenAmount(p.heldRaw, p.decimals)}. ` +
+        `Forgetting the stale local position — no broadcast and no synthetic zero-proceeds sell.`
+    );
+    cleanupHybridExitStateIfClosed({ ...p, heldRaw: 0 });
+    forgetPosition(p.mint);
+    mirrorBuySignatureByMint.delete(p.mint);
+    confirmedFastBuyTokensByMint.delete(p.mint);
+    clearFastBuyConfirmationPending(p.mint);
+    fastBuyLocalCloseGuardUntilByMint.delete(p.mint);
+    return;
+  }
+  const isFullExitIntent = amountRawOverride == null;
+  const fullExitRemainderIntent: PostSellRemainderIntent | null = isFullExitIntent
+    ? {
+        kind: "source-full",
+        sourceSellVersion: sourceSignalStateByMint.get(p.mint)?.version ?? 0,
+      }
+    : null;
+  if (isFullExitIntent && liveHeldRaw > p.heldRaw) {
+    if (adjustBuyTokenAmount(p.mint, p.heldRaw, liveHeldRaw)) {
+      const latest = getPosition(p.mint);
+      if (latest) p = latest;
+    }
+    console.warn(
+      `Full exit will sell full live $${p.symbol} balance. ` +
+        `live=${formatTokenAmount(liveHeldRaw, p.decimals)}, tracked=${formatTokenAmount(p.heldRaw, p.decimals)}.`
+    );
+  }
+  const sellRaw =
+    amountRawOverride != null
+      ? Math.min(Math.max(1, Math.floor(amountRawOverride)), liveHeldRaw, p.heldRaw)
+      : isFullExitIntent && liveHeldRaw > 0
+      ? liveHeldRaw
+      : liveHeldRaw > 0
+      ? Math.min(liveHeldRaw, p.heldRaw)
+      : p.heldRaw;
+  if (liveHeldRaw > p.heldRaw) {
+    console.warn(
+      `Live balance for $${p.symbol} exceeds tracked position; selling tracked amount only. ` +
+        `live=${formatTokenAmount(liveHeldRaw, p.decimals)}, tracked=${formatTokenAmount(p.heldRaw, p.decimals)}`
+    );
+  }
+  if (sellRaw <= 0) {
+    throw new Error(`No token balance available for $${p.symbol}.`);
+  }
+  if (fastSellConfirmPendingByMint.has(p.mint)) {
+    console.log(`Risk/manual sell skipped for $${p.symbol}: previous fast sell is still awaiting confirmation.`);
+    return;
+  }
+
+  const avgEntry = p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
+  const sellCostBasisLamports = avgEntry * sellRaw;
+
+  if (effectiveNote && requireFreshRiskReason) {
+    const freshOutLamports = await quoteRiskExitLamports(p.mint, sellRaw);
+    const tickAt = Date.now();
+    const freshPnlPct =
+      sellCostBasisLamports > 0
+        ? ((freshOutLamports - sellCostBasisLamports) / sellCostBasisLamports) * 100
+        : 0;
+    const prevPeak = riskQuoteStateByMint.get(p.mint)?.peakPnlPct ?? -Infinity;
+    const peakPnlPct = Math.max(prevPeak, freshPnlPct);
+    riskQuoteStateByMint.set(p.mint, {
+      lastPnlPct: freshPnlPct,
+      lastQuotedAt: tickAt,
+      lastTickedAt: tickAt,
+      peakPnlPct,
+    });
+
+    const freshReason = riskExitReason(
+      freshPnlPct,
+      tickAt - p.firstSeenAt,
+      peakPnlPct,
+      activeTrailingSteps(p.mint)
+    );
+    if (!freshReason) {
+      console.log(
+        `Risk exit stale for $${p.symbol}; fresh quote is ${freshPnlPct >= 0 ? "+" : ""}${freshPnlPct.toFixed(1)}% ` +
+          "vs avg entry, so no sell was broadcast."
+      );
+      return;
+    }
+    effectiveNote = freshReason;
+  }
+
+  const isHybridPartialSell = (effectiveNote ?? "").startsWith("Hybrid TP hit");
+  const isProfitLadderPartialSell = (effectiveNote ?? "").startsWith("Profit ladder hit");
+  let result: MirrorResult;
+  try {
+    fastSellConfirmPendingByMint.add(p.mint);
+    result = await mirrorSwap(
+      {
+        signature: sourceBuySignatureByMint.get(p.mint) ?? `manual-sell-${p.mint}`,
+        wallet: "manual-sell",
+        inputMint: p.mint,
+        outputMint: WRAPPED_SOL_MINT,
+        amountRaw: sellRaw,
+        isNativeInput: false,
+      },
+      keypair!,
+      {
+        exactAmountRaw: sellRaw,
+        onFastSellConfirmSuccess: ({ mint, tokenAmountRaw, solLamports, signature }) => {
+          reconcileFastSellExecution({
+            mint,
+            expectedTokenAmountRaw: tokenAmountRaw,
+            expectedSolLamports: solLamports,
+            signature,
+          }).catch((err) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.warn(`Fast sell reconciliation failed for ${mint.slice(0, 8)}…: ${msg}`);
+          }).finally(() => {
+            if (fullExitRemainderIntent) {
+              schedulePostSellRemainderCheck(mint, fullExitRemainderIntent);
+            } else {
+              clearFastSellConfirmationPendingSoon(mint);
+            }
+          });
+        },
+        onFastSellConfirmFailure: ({ mint, tokenAmountRaw, solLamports, reason }) => {
+          void (async () => {
+            const landed = await timedOutSellAppearsLanded({
+              mint,
+              tokenAmountRaw,
+              preSellHeldRaw: liveHeldRaw,
+              reason,
+              label: "Fast sell confirmation",
+            });
+            if (landed) {
+              if (fullExitRemainderIntent) {
+                schedulePostSellRemainderCheck(mint, fullExitRemainderIntent);
+              } else {
+                releaseFastSellLifecycle(mint);
+              }
+              return;
+            }
+            const rolledBack = unrecordSell(mint, tokenAmountRaw, solLamports);
+            if (isHybridPartialSell) {
+              hybridExitTpDoneByMint.delete(mint);
+              hybridExitTpInFlightByMint.delete(mint);
+            }
+            if (isProfitLadderPartialSell) {
+              profitLadderDoneByMint.delete(mint);
+              profitLadderInFlightByMint.delete(mint);
+            }
+            if (rolledBack) {
+              console.warn(
+                `Phantom sell cleaned up: ${mint.slice(0, 8)}... ` +
+                  `(reason: ${reason}). Sell removed from tracking.`
+              );
+            }
+            expandQueuedSellAfterFailure(mint);
+            releaseFastSellLifecycle(mint);
+          })().catch((err) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.warn(`Fast sell failure handling failed for ${mint.slice(0, 8)}...: ${msg}`);
+            releaseFastSellLifecycle(mint);
+          });
+          return;
+          const rolledBack = unrecordSell(mint, tokenAmountRaw, solLamports);
+          if (isHybridPartialSell) {
+            hybridExitTpDoneByMint.delete(mint);
+            hybridExitTpInFlightByMint.delete(mint);
+          }
+          if (isProfitLadderPartialSell) {
+            profitLadderDoneByMint.delete(mint);
+            profitLadderInFlightByMint.delete(mint);
+          }
+          if (rolledBack) {
+            console.warn(
+              `🧹 Phantom sell cleaned up: ${mint.slice(0, 8)}… ` +
+              `(reason: ${reason}). Sell removed from tracking.`
+            );
+          }
+          expandQueuedSellAfterFailure(mint);
+          releaseFastSellLifecycle(mint);
+        },
+      }
+    );
+    if (!result.confirmationPending) {
+      fastSellConfirmPendingByMint.delete(p.mint);
+    }
+  } catch (err) {
+    fastSellConfirmPendingByMint.delete(p.mint);
+    throw err;
+  }
+  const soldRaw = result.input.amountRaw;
+  const receivedLamports = result.output.amountRaw;
+  const snap = recordSell(result.input.meta, soldRaw, receivedLamports);
+  cleanupHybridExitStateIfClosed(snap);
+  const marketCapUsd = await maybeGetMarketCap(p.mint);
+  const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
+  const exitPrice = tokenPriceInSol(receivedLamports, soldRaw, p.decimals);
+  const exitPerRaw = soldRaw > 0 ? receivedLamports / soldRaw : 0;
+  const pct = avgEntry > 0 ? (exitPerRaw / avgEntry - 1) * 100 : 0;
+  const filledCostBasisLamports = avgEntry * soldRaw;
+  const filledPnlPct =
+    filledCostBasisLamports > 0
+      ? ((receivedLamports - filledCostBasisLamports) / filledCostBasisLamports) * 100
+      : pct;
+  const filledPnlLamports = receivedLamports - filledCostBasisLamports;
+  const quotedPnlPct =
+    filledCostBasisLamports > 0
+      ? `${filledPnlPct >= 0 ? "+" : ""}${filledPnlPct.toFixed(1)}%`
+      : undefined;
+
+  console.log(`Sell LIVE (manual): ${formatTokenAmount(soldRaw, p.decimals)} $${p.symbol}`);
+  console.log(`Received: ${formatSolAmount(receivedLamports)} SOL`);
+  console.log(`Exit: ${formatPrice(exitPrice)} SOL per $${p.symbol} (${pct >= 0 ? "+" : ""}${pct.toFixed(1)}% vs avg entry)`);
+  console.log(`CA: ${p.mint}`);
+  if (marketCapUsd != null) console.log(`MC: ${formatMarketCap(marketCapUsd)}`);
+  console.log(`Tx: ${result.signature}`);
+  console.log(`Fill PnL on $${p.symbol}: ${formatPnl(filledPnlLamports)}`);
+  console.log(`Position PnL on $${p.symbol}: ${formatPnl(snap.realizedPnlLamports)}`);
+  if (effectiveNote) console.log(`Reason: ${effectiveNote}`);
+  console.log("");
+
+  void telegram.notifyTrade({
+    type: "sell",
+    symbol: p.symbol,
+    amount: formatTokenAmount(soldRaw, p.decimals),
+    solAmount: formatSolAmount(receivedLamports),
+    marketCap: marketCapUsd != null ? formatMarketCap(marketCapUsd) : undefined,
+    marketCapCheckedAt: marketCapCheckedAt ?? undefined,
+    isSimulated: false,
+    wallet: "manual",
+    tokenAddress: p.mint,
+    pnl: formatPnl(filledPnlLamports),
+    positionPnl: formatPnl(snap.realizedPnlLamports),
+    note: effectiveNote,
+    quotedPnlPct: effectiveNote ? quotedPnlPct : undefined,
+    txSignature: result.signature,
+  });
+
+  pushSwap(
+    {
+      ts: Date.now(),
+      sourceSignature: `manual-sell-${p.mint}`,
+      wallet: effectiveNote ? "risk-sell" : "manual-sell",
+      side: "sell",
+      input: toLegView(result.input),
+      output: toLegView(result.output),
+      isSimulated: false,
+      marketCapUsd,
+      marketCapCheckedAt,
+      mirrorSignature: result.signature,
+    },
+    {
+      realizedPnlLamports: filledPnlLamports,
+      realizedPnlPct: filledPnlPct,
+      positionRealizedPnlLamports: snap.realizedPnlLamports,
+      exitReason: effectiveNote,
+      priceImpactPct: result.priceImpactPct ? parseFloat(result.priceImpactPct) * 100 : null,
+    }
+  );
+  recordTradeOutcome(filledPnlLamports);
+}
+
+async function sellLiveWalletTokenBalance(mint: string, amountRaw: number): Promise<void> {
+  if (!keypair) {
+    throw new Error("Wallet is not loaded yet. Start the bot before selling wallet dust.");
+  }
+  const meta = await getTokenMeta(mint);
+  const tracked = getPosition(mint);
+  if (fastSellConfirmPendingByMint.has(mint)) {
+    console.log(
+      `Wallet-balance sell skipped for ${mint.slice(0, 8)}...: another sell is awaiting confirmation.`
+    );
+    return;
+  }
+  fastSellConfirmPendingByMint.add(mint);
+  let confirmedBalance: number;
+  try {
+    confirmedBalance = await refreshConfirmedInventory(mint);
+  } catch (err) {
+    releaseFastSellLifecycle(mint);
+    throw err;
+  }
+  const exactRaw = Math.min(Math.max(0, Math.floor(amountRaw)), confirmedBalance);
+  if (exactRaw <= 0) {
+    releaseFastSellLifecycle(mint);
+    return;
+  }
+  const optimisticTrackedRaw = tracked
+    ? Math.min(exactRaw, Math.max(0, tracked.heldRaw))
+    : 0;
+  console.log(`Dust sell: ${formatTokenAmount(exactRaw, meta.decimals)} $${meta.symbol} (${mint})`);
+
+  let result: MirrorResult;
+  try {
+    result = await mirrorSwap(
+      {
+        signature: `manual-dust-sell-${mint}`,
+        wallet: "manual-dust-sell",
+        inputMint: mint,
+        outputMint: WRAPPED_SOL_MINT,
+        amountRaw: exactRaw,
+        isNativeInput: false,
+      },
+      keypair,
+      {
+        exactAmountRaw: exactRaw,
+        onFastSellConfirmSuccess: ({ mint: confirmedMint, tokenAmountRaw, solLamports, signature }) => {
+          void reconcileFastSellExecution({
+            mint: confirmedMint,
+            expectedTokenAmountRaw: tokenAmountRaw,
+            expectedSolLamports: solLamports,
+            signature,
+          }).finally(() => clearFastSellConfirmationPendingSoon(confirmedMint));
+        },
+        onFastSellConfirmFailure: ({ mint: failedMint, tokenAmountRaw, solLamports, reason }) => {
+          void (async () => {
+            const landed = await timedOutSellAppearsLanded({
+              mint: failedMint,
+              tokenAmountRaw,
+              preSellHeldRaw: exactRaw,
+              reason,
+              label: "Wallet-balance sell confirmation",
+            });
+            if (landed) {
+              releaseFastSellLifecycle(failedMint);
+              return;
+            }
+            const trackedSol =
+              tokenAmountRaw > 0
+                ? Math.floor((solLamports * optimisticTrackedRaw) / tokenAmountRaw)
+                : 0;
+            if (
+              optimisticTrackedRaw > 0 &&
+              unrecordSell(failedMint, optimisticTrackedRaw, trackedSol)
+            ) {
+              console.warn(
+                `Phantom wallet-balance sell cleaned up: ${failedMint.slice(0, 8)}... (${reason}).`
+              );
+            }
+            expandQueuedSellAfterFailure(failedMint);
+            releaseFastSellLifecycle(failedMint);
+          })().catch((err) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.warn(`Wallet-balance sell failure handling failed for ${failedMint.slice(0, 8)}...: ${msg}`);
+            releaseFastSellLifecycle(failedMint);
+          });
+          return;
+          const trackedSol =
+            tokenAmountRaw > 0
+              ? Math.floor((solLamports * optimisticTrackedRaw) / tokenAmountRaw)
+              : 0;
+          if (
+            optimisticTrackedRaw > 0 &&
+            unrecordSell(failedMint, optimisticTrackedRaw, trackedSol)
+          ) {
+            console.warn(
+              `Phantom wallet-balance sell cleaned up: ${failedMint.slice(0, 8)}... (${reason}).`
+            );
+          }
+          expandQueuedSellAfterFailure(failedMint);
+          releaseFastSellLifecycle(failedMint);
+        },
+      }
+    );
+    if (!result.confirmationPending) releaseFastSellLifecycle(mint);
+  } catch (err) {
+    releaseFastSellLifecycle(mint);
+    throw err;
+  }
+
+  const soldRaw = result.input.amountRaw;
+  const receivedLamports = result.output.amountRaw;
+  const trackedSellRaw = tracked ? Math.min(soldRaw, Math.max(0, tracked.heldRaw)) : 0;
+  let realizedPnlLamports: number | undefined;
+  let realizedPnlPct: number | undefined;
+
+  if (tracked && trackedSellRaw > 0) {
+    const avgEntry = tracked.totalBoughtRaw > 0 ? tracked.totalSolSpentLamports / tracked.totalBoughtRaw : 0;
+    const allocatedSol = soldRaw > 0 ? Math.floor((receivedLamports * trackedSellRaw) / soldRaw) : 0;
+    const snap = recordSell(result.input.meta, trackedSellRaw, allocatedSol);
+    const costBasis = avgEntry * trackedSellRaw;
+    realizedPnlLamports = allocatedSol - costBasis;
+    realizedPnlPct = costBasis > 0 ? (realizedPnlLamports / costBasis) * 100 : undefined;
+    console.log(
+      `Tracked close: ${formatTokenAmount(trackedSellRaw, meta.decimals)} $${meta.symbol}; ` +
+        `Position PnL ${formatPnl(snap.realizedPnlLamports)}`
+    );
+  } else {
+    console.log("Dust was not an open tracked position; PnL tracker left unchanged.");
+  }
+
+  console.log(`Dust sell received: ${formatSolAmount(receivedLamports)} SOL`);
+  console.log(`Tx: ${result.signature}`);
+  console.log("");
+
+  pushSwap(
+    {
+      ts: Date.now(),
+      sourceSignature: `manual-dust-sell-${mint}`,
+      wallet: "manual-dust-sell",
+      side: "sell",
+      input: toLegView(result.input),
+      output: toLegView(result.output),
+      isSimulated: result.isSimulated,
+      mirrorSignature: result.signature,
+    },
+    {
+      realizedPnlLamports,
+      realizedPnlPct,
+      positionRealizedPnlLamports: getPosition(mint)?.realizedPnlLamports,
+      exitReason: "manual wallet dust cleanup",
+      priceImpactPct: result.priceImpactPct ? parseFloat(result.priceImpactPct) * 100 : null,
+    }
+  );
+}
+
+export async function sellAllWalletDust(): Promise<void> {
+  if (simulationMode) {
+    console.log("Wallet dust cleanup is live-wallet only. Use 'a' or 'e' for simulation exits.");
+    return;
+  }
+  if (!keypair) {
+    throw new Error("Wallet is not loaded yet. Start the bot before selling wallet dust.");
+  }
+
+  const balances = (await getWalletTokenBalances(keypair.publicKey)).filter((b) => {
+    if (b.mint === WRAPPED_SOL_MINT || b.mint === USDC_MINT || b.amountRaw <= 0) return false;
+    if (hasFastBuyConfirmationPending(b.mint)) {
+      console.log(
+        `Dust cleanup skipping ${b.mint.slice(0, 8)}... because a fast buy confirmation is still pending.`
+      );
+      return false;
+    }
+    const tracked = getPosition(b.mint);
+    if (tracked && tracked.heldRaw > 0) {
+      console.log(
+        `Dust cleanup skipping active tracked position $${tracked.symbol} ` +
+          `(${formatTokenAmount(tracked.heldRaw, tracked.decimals)} held). Use 'a' or position hotkeys to sell it.`
+      );
+      return false;
+    }
+    return true;
+  });
+  if (balances.length === 0) {
+    console.log("No nonzero wallet token balances/dust found.");
+    return;
+  }
+
+  console.log(`Selling ${balances.length} untracked wallet dust/token balance(s) (LIVE)...`);
+  console.log("");
+  for (const balance of balances) {
+    try {
+      await sellLiveWalletTokenBalance(balance.mint, balance.amountRaw);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`Dust sell failed for ${balance.mint.slice(0, 8)}...: ${msg}`);
+    }
+  }
+  await printPnlReport();
+}
+
+/**
+ * Emergency full liquidation. Unlike sellAllPositions() (tracked positions only) this ALSO rescans
+ * the live wallet and drains untracked SPL/Token-2022 balances/dust, so stopping the bot can never
+ * again leave hidden leftover tokens behind.
+ *
+ * Flow: pause buys → stop bot → sell tracked positions → rescan wallet → sell untracked balances →
+ * bounded retries → final report of sold/failed/remaining mints. Never uses Jupiter; leftover tokens
+ * that have no local Pump.fun/PumpSwap route are surfaced explicitly in the report.
+ */
+export async function panicLiquidateAll(): Promise<PanicLiquidateReport> {
+  if (!simulationMode && !keypair) {
+    throw new Error("Wallet is not loaded yet. Start the bot before panic-liquidating.");
+  }
+
+  const report = await runPanicLiquidate({
+    pauseBuys: () => setBuysPaused(true),
+    stopBot: () => stopBot(),
+    isSimulationMode: () => simulationMode,
+    jupiterFallbackEnabled,
+    getTrackedPositions: () =>
+      getPositions()
+        .filter((p) => p.heldRaw > 0)
+        .map((p) => ({ mint: p.mint, symbol: p.symbol, heldRaw: p.heldRaw })),
+    sellTrackedPosition: async (ref) => {
+      // Re-read the live snapshot: it may have grown/shrunk since we took the list.
+      const position = getPosition(ref.mint);
+      if (!position || position.heldRaw <= 0) return;
+      if (simulationMode) {
+        await sellSimulatedPosition(position, "Panic liquidate");
+      } else {
+        // note + requireFreshRiskReason=false: unconditional full exit, NOT gated on a fresh TP/SL
+        // threshold (a panic must liquidate every position regardless of current PnL).
+        await sellLivePosition(position, "Panic liquidate", undefined, false);
+      }
+    },
+    listWalletBalances: async () => {
+      if (!keypair) return [];
+      return (await getWalletTokenBalances(keypair.publicKey)).map((b) => ({
+        mint: b.mint,
+        amountRaw: b.amountRaw,
+      }));
+    },
+    sellWalletBalance: (mint, amountRaw) => sellLiveWalletTokenBalance(mint, amountRaw),
+    isSkippableMint: (mint) => mint === WRAPPED_SOL_MINT || mint === USDC_MINT,
+    isFastBuyPending: (mint) => hasFastBuyConfirmationPending(mint),
+    log: (m) => console.log(m),
+    sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+  });
+
+  const summary = formatPanicLiquidateReport(report);
+  console.log("");
+  console.log(summary);
+  console.log("");
+  await printPnlReport();
+  void telegram.notifyInfo("🛑 Panic liquidate", summary);
+  return report;
+}
+
+/**
+ * Compute the effective stop threshold for a position given its peak PnL.
+ * Starts at -stopLossPct (the base SL), then walks the trailing steps in ascending order;
+ * each step the peak has cleared raises the threshold to its `floorPct`.
+ * Returns the threshold as a signed % (e.g. -25 means "exit if pnl <= -25%", +5 means "+5% lock").
+ */
+function effectiveStopPct(peakPnlPct: number, steps: TrailingStep[] = trailingSteps): number | null {
+  if (stopLossPct == null) return null;
+  let threshold = -stopLossPct;
+  for (const step of steps) {
+    if (peakPnlPct >= step.peakPct) {
+      threshold = Math.max(threshold, step.floorPct);
+    } else {
+      break; // steps are sorted asc; no later step can have triggered
+    }
+  }
+  return threshold;
+}
+
+function riskExitReason(
+  pnlPct: number,
+  positionAgeMs: number,
+  peakPnlPct: number,
+  steps: TrailingStep[] = trailingSteps
+): string | null {
+  if (takeProfitPct != null && pnlPct >= takeProfitPct) {
+    return `Take profit hit (${pnlPct.toFixed(1)}% >= ${takeProfitPct}%)`;
+  }
+  const threshold = effectiveStopPct(peakPnlPct, steps);
+  if (
+    threshold != null &&
+    pnlPct <= threshold &&
+    positionAgeMs >= minHoldBeforeStopLossMs
+  ) {
+    if (steps.length > 0 && threshold > -(stopLossPct ?? 0)) {
+      return `Trailing stop hit (${pnlPct.toFixed(1)}% <= ${threshold >= 0 ? "+" : ""}${threshold.toFixed(1)}%, peak ${peakPnlPct.toFixed(1)}%)`;
+    }
+    return `Stop loss hit (${pnlPct.toFixed(1)}% <= ${threshold.toFixed(1)}%)`;
+  }
+  return null;
+}
+
+function hybridExitSellRaw(position: PositionSnapshot, pnlPct: number): number | null {
+  return planHybridPartialSellRaw({
+    enabled: hybridExitEnabled,
+    tpDone: hybridExitTpDoneByMint.has(position.mint),
+    tpInFlight: hybridExitTpInFlightByMint.has(position.mint),
+    tpPct: hybridExitTpPct,
+    tpSellPct: hybridExitTpSellPct,
+    heldRaw: position.heldRaw,
+    pnlPct,
+  });
+}
+
+function ladderSet(map: Map<string, Set<number>>, mint: string): Set<number> {
+  let set = map.get(mint);
+  if (!set) {
+    set = new Set<number>();
+    map.set(mint, set);
+  }
+  return set;
+}
+
+function profitLadderStepKey(step: ProfitLadderStep): number {
+  return step.triggerPct;
+}
+
+function nextProfitLadderSell(
+  position: PositionSnapshot,
+  pnlPct: number
+): { step: ProfitLadderStep; sellRaw: number } | null {
+  if (!profitLadderEnabled || profitLadderSteps.length === 0) return null;
+  if (hybridExitEnabled && !hybridExitTpDoneByMint.has(position.mint)) return null;
+
+  const done = profitLadderDoneByMint.get(position.mint);
+  const inFlight = profitLadderInFlightByMint.get(position.mint);
+  for (const step of profitLadderSteps) {
+    const key = profitLadderStepKey(step);
+    const sellRaw = planProfitLadderPartialSellRaw({
+      enabled: true,
+      stepDone: done?.has(key) ?? false,
+      stepInFlight: inFlight?.has(key) ?? false,
+      triggerPct: step.triggerPct,
+      sellPct: step.sellPct,
+      totalBoughtRaw: position.totalBoughtRaw,
+      heldRaw: position.heldRaw,
+      pnlPct,
+    });
+    if (sellRaw != null) return { step, sellRaw };
+  }
+  return null;
+}
+
+function cleanupHybridExitStateIfClosed(position: PositionSnapshot): void {
+  if (position.heldRaw <= 0) {
+    hybridExitTpDoneByMint.delete(position.mint);
+    hybridExitTpInFlightByMint.delete(position.mint);
+    profitLadderDoneByMint.delete(position.mint);
+    profitLadderInFlightByMint.delete(position.mint);
+    if (buyOnceAllowRebuyAfterFlat) {
+      boughtMintsThisSession.delete(position.mint);
+      liveBuyAttemptedMintsThisSession.delete(position.mint);
+      rustHotBuyRecordedByMint.delete(position.mint);
+      releaseRustBoughtMint(position.mint, "position flat; rebuy-after-flat enabled");
+    }
+  }
+}
+
+function isJupiterNoRoutesError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /NO_ROUTES_FOUND|Could not find any route|no routes/i.test(msg);
+}
+
+type RiskBucket = "fast" | "near" | "normal";
+
+function bucketIntervalMs(bucket: RiskBucket): number {
+  if (bucket === "fast") return riskFastIntervalMs;
+  if (bucket === "near") return riskNearTriggerIntervalMs;
+  return riskNormalIntervalMs;
+}
+
+/**
+ * Decide whether we still need a Jupiter quote for this position right now, and which cadence bucket it belongs to.
+ *
+ * We can skip the quote when (lastPnl ± riskDriftPctPerSec × elapsed) cannot have crossed any trigger. This is the
+ * "cheap price tracking" — no extra HTTP, just a worst-case projection from the last known quote.
+ */
+function planRiskTick(
+  p: PositionSnapshot,
+  state: RiskQuoteState | undefined,
+  now: number
+): { bucket: RiskBucket; shouldQuote: boolean; projectedPnlPct: number | null } {
+  const ageMs = now - p.firstSeenAt;
+  const inFastWindow = ageMs < riskFastWindowMs;
+
+  // No prior quote → must quote.
+  if (!state) {
+    return {
+      bucket: inFastWindow ? "fast" : "normal",
+      shouldQuote: true,
+      projectedPnlPct: null,
+    };
+  }
+
+  const elapsedSec = Math.max(0, (now - state.lastQuotedAt) / 1000);
+  const drift = riskDriftPctPerSec * elapsedSec;
+  const lowerProjection = state.lastPnlPct - drift;
+  const upperProjection = state.lastPnlPct + drift;
+
+  const sourceOnlyHybrid = waitsForSourceExit(hybridExitEnabled, hybridExitSourceExitRemaining);
+  const hybridTpPending =
+    hybridExitEnabled &&
+    !hybridExitTpDoneByMint.has(p.mint) &&
+    !hybridExitTpInFlightByMint.has(p.mint) &&
+    hybridExitTpPct > 0 &&
+    hybridExitTpSellPct > 0;
+  const ladderPending =
+    profitLadderEnabled &&
+    !sourceOnlyHybrid &&
+    (!hybridExitEnabled || hybridExitTpDoneByMint.has(p.mint)) &&
+    profitLadderSteps.some((step) => {
+      const key = profitLadderStepKey(step);
+      return !(profitLadderDoneByMint.get(p.mint)?.has(key) ?? false) &&
+        !(profitLadderInFlightByMint.get(p.mint)?.has(key) ?? false);
+    });
+
+  // Exact source-remainder mode deliberately ignores ordinary SL/trailing exits.
+  const effSL = sourceOnlyHybrid
+    ? null
+    : effectiveStopPct(state.peakPnlPct, activeTrailingSteps(p.mint));
+
+  // Could a trigger have plausibly fired since the last quote?
+  const couldHitSL =
+    effSL != null && ageMs >= minHoldBeforeStopLossMs && lowerProjection <= effSL;
+  const normalTp = sourceOnlyHybrid ? null : takeProfitPct;
+  const couldHitLadder =
+    ladderPending && profitLadderSteps.some((step) => {
+      const key = profitLadderStepKey(step);
+      return !(profitLadderDoneByMint.get(p.mint)?.has(key) ?? false) &&
+        !(profitLadderInFlightByMint.get(p.mint)?.has(key) ?? false) &&
+        upperProjection >= step.triggerPct;
+    });
+  const couldHitTP =
+    (normalTp != null && upperProjection >= normalTp) ||
+    (hybridTpPending && upperProjection >= hybridExitTpPct) ||
+    couldHitLadder;
+  const triggerInRange = couldHitSL || couldHitTP;
+
+  // Distance to nearest trigger using last known PnL.
+  const distances: number[] = [];
+  if (effSL != null) distances.push(Math.abs(state.lastPnlPct - effSL));
+  if (normalTp != null) distances.push(Math.abs(state.lastPnlPct - normalTp));
+  if (hybridTpPending) distances.push(Math.abs(state.lastPnlPct - hybridExitTpPct));
+  if (ladderPending) {
+    for (const step of profitLadderSteps) {
+      const key = profitLadderStepKey(step);
+      if (profitLadderDoneByMint.get(p.mint)?.has(key) || profitLadderInFlightByMint.get(p.mint)?.has(key)) {
+        continue;
+      }
+      distances.push(Math.abs(state.lastPnlPct - step.triggerPct));
+    }
+  }
+  const nearestTriggerDist = distances.length ? Math.min(...distances) : Infinity;
+  const nearTrigger = nearestTriggerDist <= riskNearTriggerPct;
+
+  let bucket: RiskBucket;
+  if (inFastWindow) bucket = "fast";
+  else if (nearTrigger) bucket = "near";
+  else bucket = "normal";
+
+  const interval = bucketIntervalMs(bucket);
+  const tickDue = now - state.lastTickedAt >= interval;
+
+  // Always quote when projection says a trigger could already have fired, even if the bucket cadence hasn't hit.
+  // Otherwise honor the cadence: quote only when the bucket interval has elapsed since the last tick.
+  const shouldQuote = triggerInRange || tickDue;
+
+  return { bucket, shouldQuote, projectedPnlPct: state.lastPnlPct };
+}
+
+async function checkRiskExits(): Promise<void> {
+  if (!riskControlsEnabled) return;
+
+  pruneClusterState();
+  const open = getPositions().filter((p) => p.heldRaw > 0);
+  if (open.length === 0) return;
+
+  // First pass: pick the positions that are due to quote this tick.
+  const now = Date.now();
+  const candidates: { p: PositionSnapshot; bucket: RiskBucket }[] = [];
+  for (let i = 0; i < open.length; i++) {
+    const p = open[(riskPositionCursor + i) % open.length]!;
+    if (rustExitWatchOwnedMints.has(p.mint)) continue;
+    if (
+      !needsHybridPriceCheck(
+        hybridExitEnabled,
+        hybridExitSourceExitRemaining,
+        hybridExitTpDoneByMint.has(p.mint)
+      )
+    ) {
+      continue;
+    }
+    if (riskSellsInFlight.has(p.mint)) continue;
+    if (fastSellConfirmPendingByMint.has(p.mint)) continue;
+    if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > now) continue;
+    if (p.costBasisRemainingLamports <= 0) continue;
+    const state = riskQuoteStateByMint.get(p.mint);
+    const plan = planRiskTick(p, state, now);
+    if (plan.shouldQuote) candidates.push({ p, bucket: plan.bucket });
+  }
+  if (candidates.length === 0) return;
+
+  // Cap quotes per tick so risk checks can't starve buy quotes. Prioritize near-trigger > fast > normal.
+  const priority: Record<RiskBucket, number> = { near: 0, fast: 1, normal: 2 };
+  candidates.sort((a, b) => priority[a.bucket] - priority[b.bucket]);
+  const positionsToCheck = candidates
+    .slice(0, Math.min(maxRiskQuotesPerCheck, candidates.length))
+    .map((c) => c.p);
+  riskPositionCursor = (riskPositionCursor + 1) % open.length;
+
+  for (let p of positionsToCheck) {
+    if (rustExitWatchOwnedMints.has(p.mint)) continue;
+    if (riskSellsInFlight.has(p.mint)) continue;
+    if (fastSellConfirmPendingByMint.has(p.mint)) continue;
+    if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > Date.now()) continue;
+    p = await reconcileOpenPositionWithConfirmedBuy(p);
+    if (await shouldSkipRiskExitForPendingFastBuy(p)) continue;
+    if (p.costBasisRemainingLamports <= 0) continue;
+
+    try {
+      let outSolLamports = await quoteRiskExitLamports(p.mint, p.heldRaw);
+      const tickAt = Date.now();
+      if (!Number.isFinite(outSolLamports) || outSolLamports <= 0) {
+        const prev = riskQuoteStateByMint.get(p.mint);
+        riskQuoteStateByMint.set(p.mint, {
+          lastPnlPct: prev?.lastPnlPct ?? 0,
+          lastQuotedAt: prev?.lastQuotedAt ?? tickAt,
+          lastTickedAt: tickAt,
+          peakPnlPct: prev?.peakPnlPct ?? -Infinity,
+        });
+        continue;
+      }
+
+      const pnlPct =
+        ((outSolLamports - p.costBasisRemainingLamports) /
+          p.costBasisRemainingLamports) *
+        100;
+      const prevPeak = riskQuoteStateByMint.get(p.mint)?.peakPnlPct ?? -Infinity;
+      const peakPnlPct = Math.max(prevPeak, pnlPct);
+      riskQuoteStateByMint.set(p.mint, {
+        lastPnlPct: pnlPct,
+        lastQuotedAt: tickAt,
+        lastTickedAt: tickAt,
+        peakPnlPct,
+      });
+      pushRiskTrace(p, outSolLamports, pnlPct);
+      const hybridSellRaw = hybridExitSellRaw(p, pnlPct);
+      if (hybridSellRaw != null) {
+        const reason =
+          `Hybrid TP hit (${pnlPct.toFixed(1)}% >= ${hybridExitTpPct}%), ` +
+          `selling ${hybridExitTpSellPct.toFixed(1)}%; remaining position follows source exit`;
+        riskSellsInFlight.add(p.mint);
+        hybridExitTpInFlightByMint.add(p.mint);
+        console.log(`Hybrid exit triggered for $${p.symbol}: ${reason}`);
+        console.log(
+          `Selling ${formatTokenAmount(hybridSellRaw, p.decimals)} of ` +
+            `${formatTokenAmount(p.heldRaw, p.decimals)} $${p.symbol}.`
+        );
+        try {
+          if (simulationMode) {
+            await sellSimulatedPosition(p, reason, undefined, hybridSellRaw);
+          } else {
+            await sellLivePosition(p, reason, hybridSellRaw, false);
+          }
+          hybridExitTpDoneByMint.add(p.mint);
+          riskSellRetryAfterByMint.delete(p.mint);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          riskSellRetryAfterByMint.set(p.mint, Date.now() + RISK_SELL_FAILURE_COOLDOWN_MS);
+          void telegram.notifyRiskExit({
+            status: "failed",
+            symbol: p.symbol,
+            reason,
+            quotedSol: "partial",
+            costBasisSol: formatSolAmount(p.costBasisRemainingLamports),
+            pnlPct: `${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(1)}%`,
+            error: msg,
+            tokenAddress: p.mint,
+            isSimulated: simulationMode,
+          });
+          throw err;
+        } finally {
+          hybridExitTpInFlightByMint.delete(p.mint);
+          riskSellsInFlight.delete(p.mint);
+        }
+        continue;
+      }
+      const ladderSell = nextProfitLadderSell(p, pnlPct);
+      if (ladderSell) {
+        const key = profitLadderStepKey(ladderSell.step);
+        const reason =
+          `Profit ladder hit (${pnlPct.toFixed(1)}% >= ${ladderSell.step.triggerPct}%), ` +
+          `selling ${ladderSell.step.sellPct.toFixed(1)}% of original position`;
+        riskSellsInFlight.add(p.mint);
+        ladderSet(profitLadderInFlightByMint, p.mint).add(key);
+        console.log(`Profit ladder exit triggered for $${p.symbol}: ${reason}`);
+        console.log(
+          `Selling ${formatTokenAmount(ladderSell.sellRaw, p.decimals)} of ` +
+            `${formatTokenAmount(p.heldRaw, p.decimals)} $${p.symbol}.`
+        );
+        try {
+          if (simulationMode) {
+            await sellSimulatedPosition(p, reason, undefined, ladderSell.sellRaw);
+          } else {
+            await sellLivePosition(p, reason, ladderSell.sellRaw, false);
+          }
+          ladderSet(profitLadderDoneByMint, p.mint).add(key);
+          riskSellRetryAfterByMint.delete(p.mint);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          profitLadderInFlightByMint.get(p.mint)?.delete(key);
+          riskSellRetryAfterByMint.set(p.mint, Date.now() + RISK_SELL_FAILURE_COOLDOWN_MS);
+          void telegram.notifyRiskExit({
+            status: "failed",
+            symbol: p.symbol,
+            reason,
+            quotedSol: "partial",
+            costBasisSol: formatSolAmount(p.costBasisRemainingLamports),
+            pnlPct: `${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(1)}%`,
+            error: msg,
+            tokenAddress: p.mint,
+            isSimulated: simulationMode,
+          });
+          throw err;
+        } finally {
+          profitLadderInFlightByMint.get(p.mint)?.delete(key);
+          riskSellsInFlight.delete(p.mint);
+        }
+        continue;
+      }
+      if (waitsForSourceExit(hybridExitEnabled, hybridExitSourceExitRemaining)) {
+        continue;
+      }
+      const reason = riskExitReason(
+        pnlPct,
+        tickAt - p.firstSeenAt,
+        peakPnlPct,
+        activeTrailingSteps(p.mint)
+      );
+      if (!reason) continue;
+
+      riskSellsInFlight.add(p.mint);
+      console.log(`Risk exit triggered for $${p.symbol}: ${reason}`);
+      console.log(
+        `Quoted exit: ${formatSolAmount(outSolLamports)} SOL vs cost basis ${formatSolAmount(p.costBasisRemainingLamports)} SOL`
+      );
+      try {
+        if (simulationMode) {
+          await sellSimulatedPosition(p, reason, outSolLamports);
+        } else {
+          await sellLivePosition(p, reason);
+        }
+        riskSellRetryAfterByMint.delete(p.mint);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        riskSellRetryAfterByMint.set(p.mint, Date.now() + RISK_SELL_FAILURE_COOLDOWN_MS);
+        void telegram.notifyRiskExit({
+          status: "failed",
+          symbol: p.symbol,
+          reason,
+          quotedSol: formatSolAmount(outSolLamports),
+          costBasisSol: formatSolAmount(p.costBasisRemainingLamports),
+          pnlPct: `${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(1)}%`,
+          error: msg,
+          tokenAddress: p.mint,
+          isSimulated: simulationMode,
+        });
+        throw err;
+      } finally {
+        riskSellsInFlight.delete(p.mint);
+      }
+    } catch (err) {
+      riskSellsInFlight.delete(p.mint);
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(
+        `Risk check skipped $${p.symbol}: ${msg}. Retrying after ${Math.round(RISK_SELL_FAILURE_COOLDOWN_MS / 1000)}s.`
+      );
+      if (isJupiterRateLimitError(err)) break;
+    }
+  }
+}
+
+function queueImmediateRiskCheck(mint: string, reason: string): void {
+  if (!riskControlsEnabled) return;
+  const timer = setTimeout(() => {
+    runRiskCheck(`immediate:${reason}:${mint.slice(0, 8)}`).catch((err) => {
+      console.warn(
+        `Immediate risk check failed for ${mint.slice(0, 8)}...: ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+    });
+  }, 0);
+  timer.unref?.();
+}
+
+async function runRiskCheck(reason = "scheduled"): Promise<void> {
+  void reason;
+  if (!riskControlsEnabled || riskCheckInFlight) return;
+  riskCheckInFlight = true;
+  try {
+    await checkRiskExits();
+  } finally {
+    riskCheckInFlight = false;
+  }
+}
+
+async function sourceWalletTokenBalanceSnapshots(
+  sourceWallets: PublicKey[]
+): Promise<Map<string, WalletTokenBalanceSnapshot>> {
+  const snapshots = new Map<string, WalletTokenBalanceSnapshot>();
+  for (const source of sourceWallets) {
+    const wallet = source.toBase58();
+    const snapshot = await getWalletTokenBalanceSnapshot(source);
+    snapshots.set(wallet, snapshot);
+    if (snapshot.failedPrograms > 0) {
+      console.warn(
+        `Source-hold wallet snapshot incomplete for ${shortWallet(wallet)}: ` +
+          `${snapshot.successfulPrograms}/2 token programs read successfully.`
+      );
+    }
+  }
+  return snapshots;
+}
+
+function sourceWalletTotalTokenBalance(
+  sourceWallets: PublicKey[],
+  snapshots: Map<string, WalletTokenBalanceSnapshot>,
+  mint: string
+): number {
+  let totalRaw = 0;
+  for (const source of sourceWallets) {
+    const snapshot = snapshots.get(source.toBase58());
+    totalRaw += snapshot?.balancesByMint.get(mint) ?? 0;
+  }
+  return totalRaw;
+}
+
+async function verifySourceWalletTokenBalance(
+  sourceWallets: PublicKey[],
+  mint: string
+): Promise<{
+  totalRaw: number;
+  checked: number;
+  errors: number;
+  confirmedSlot: number | null;
+}> {
+  let totalRaw = 0;
+  let checked = 0;
+  let errors = 0;
+  let confirmedSlot = Number.MAX_SAFE_INTEGER;
+
+  for (const source of sourceWallets) {
+    try {
+      const balance = await getTokenBalanceAtOrAfterSlot(source, mint, 0);
+      totalRaw += balance.amountRaw;
+      checked++;
+      confirmedSlot = Math.min(confirmedSlot, balance.contextSlot);
+    } catch (err) {
+      errors++;
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(
+        `Source-hold confirmed balance check failed for ${shortWallet(source.toBase58())} ` +
+          `${mint.slice(0, 8)}...: ${msg}`
+      );
+    }
+  }
+
+  return {
+    totalRaw,
+    checked,
+    errors,
+    confirmedSlot: checked > 0 ? confirmedSlot : null,
+  };
+}
+
+async function checkSourceHoldExits(): Promise<void> {
+  if (!sourceHoldExitEnabled) return;
+  if (!keypair) return;
+
+  const sourceWallets = trackedSourcePublicKeys();
+  if (sourceWallets.length === 0) return;
+
+  const now = Date.now();
+  const open = getPositions().filter((p) => p.heldRaw > 0);
+  if (open.length === 0) {
+    sourceHoldMissingByMint.clear();
+    return;
+  }
+
+  const openMints = new Set(open.map((p) => p.mint));
+  for (const mint of [...sourceHoldMissingByMint.keys()]) {
+    if (!openMints.has(mint)) sourceHoldMissingByMint.delete(mint);
+  }
+
+  const eligible: PositionSnapshot[] = [];
+  for (const p of open) {
+    if (now - p.firstSeenAt < sourceHoldExitMinPositionAgeMs) continue;
+    if (riskSellsInFlight.has(p.mint)) continue;
+    if (exitSignalSellsInFlight.has(p.mint)) continue;
+    if (fastSellConfirmPendingByMint.has(p.mint)) continue;
+    if ((riskSellRetryAfterByMint.get(p.mint) ?? 0) > now) continue;
+    eligible.push(p);
+  }
+
+  if (eligible.length === 0) return;
+
+  const snapshots = await sourceWalletTokenBalanceSnapshots(sourceWallets);
+
+  for (const p of eligible) {
+    const snapshotBalanceRaw = sourceWalletTotalTokenBalance(sourceWallets, snapshots, p.mint);
+    if (snapshotBalanceRaw > 0) {
+      sourceHoldMissingByMint.delete(p.mint);
+      continue;
+    }
+
+    // A whole-wallet parsed scan is only a positive-presence optimization. A
+    // missing mint is not authoritative zero: parsing/index lag can omit a
+    // Token-2022 account even when the RPC call itself succeeds.
+    const verified = await verifySourceWalletTokenBalance(sourceWallets, p.mint);
+    if (verified.totalRaw > 0) {
+      sourceHoldMissingByMint.delete(p.mint);
+      console.warn(
+        `Source-hold snapshot false zero recovered for ${p.mint.slice(0, 8)}...: ` +
+          `confirmed raw account read found ${verified.totalRaw} token units.`
+      );
+      continue;
+    }
+
+    if (
+      verified.checked !== sourceWallets.length ||
+      verified.errors > 0 ||
+      verified.confirmedSlot == null
+    ) {
+      console.warn(
+        `Source-hold exit: confirmed source balance verification incomplete for ` +
+          `${p.mint.slice(0, 8)}...; not counting as a miss.`
+      );
+      continue;
+    }
+
+    const zeroObservation = observeSourceHoldZero(
+      sourceHoldMissingByMint.get(p.mint),
+      verified.confirmedSlot
+    );
+    if (!zeroObservation.counted) {
+      console.warn(
+        `Source-hold exit: RPC repeated stale confirmed slot ${verified.confirmedSlot} for ` +
+          `${p.mint.slice(0, 8)}...; not counting as another miss.`
+      );
+      continue;
+    }
+
+    sourceHoldMissingByMint.set(p.mint, zeroObservation.state);
+    const misses = zeroObservation.state.misses;
+    console.log(
+      `Source-hold exit check: tracked source holds 0 $${p.symbol} ` +
+        `(${misses}/${sourceHoldExitConsecutiveMisses} consecutive misses).`
+    );
+
+    if (misses < sourceHoldExitConsecutiveMisses) continue;
+
+    const reason =
+      `Source-hold exit: tracked source wallet no longer holds token ` +
+      `(${misses}/${sourceHoldExitConsecutiveMisses} checks)`;
+    if (rustExitWatchRegisteredMints.has(p.mint)) {
+      const signaled = await markRustPumpFunExitSourceFlat(p.mint);
+      if (signaled.ok) {
+        if (rustExitWatchOwnedMints.has(p.mint)) {
+          console.log(`Source-hold flat state handed to Rust exit watcher for $${p.symbol}.`);
+          sourceHoldMissingByMint.delete(p.mint);
+          continue;
+        }
+        console.log(
+          `Source-hold flat state observed by shadow Rust watcher for $${p.symbol}; ` +
+            "the existing live sell path remains responsible."
+        );
+      }
+      if (!signaled.ok) {
+        console.warn(
+          `Rust source-flat handoff failed for ${p.mint.slice(0, 8)}...: ${signaled.error}; ` +
+            "falling back to the existing Rust-only sell route."
+        );
+        rustExitWatchRegisteredMints.delete(p.mint);
+        rustExitWatchOwnedMints.delete(p.mint);
+      }
+    }
+    riskSellsInFlight.add(p.mint);
+    console.log(`Source-hold exit triggered for $${p.symbol}: ${reason}`);
+    try {
+      if (simulationMode) {
+        await sellSimulatedPosition(p, reason);
+      } else {
+        await sellLivePosition(p, reason, undefined, false);
+      }
+      sourceHoldMissingByMint.delete(p.mint);
+      riskSellRetryAfterByMint.delete(p.mint);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      riskSellRetryAfterByMint.set(p.mint, Date.now() + RISK_SELL_FAILURE_COOLDOWN_MS);
+      void telegram.notifyRiskExit({
+        status: "failed",
+        symbol: p.symbol,
+        reason,
+        costBasisSol: formatSolAmount(p.costBasisRemainingLamports),
+        error: msg,
+        tokenAddress: p.mint,
+        isSimulated: simulationMode,
+      });
+      throw err;
+    } finally {
+      riskSellsInFlight.delete(p.mint);
+    }
+  }
+}
+
+export async function sellAllPositions(): Promise<void> {
+  const open = getPositions().filter((p) => p.heldRaw > 0);
+  if (open.length === 0) {
+    console.log("?? No open positions to sell.");
+    return;
+  }
+
+  if (simulationMode) {
+    console.log(`?? Selling ${open.length} open position(s) at current market prices (SIMULATION)...`);
+  } else {
+    console.log(`?? Selling ${open.length} open position(s) at current market prices (LIVE)...`);
+  }
+  console.log("");
+
+  if (!simulationMode) {
+    for (const p of open) {
+      try {
+        await sellLivePosition(p);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`Failed to sell $${p.symbol}: ${msg}`);
+      }
+    }
+    await printPnlReport();
+    return;
+  }
+
+  for (const p of open) {
+    try {
+      let outSolLamports = await quoteRiskExitLamports(p.mint, p.heldRaw);
+      const sellImpactStr = "";
+      if (!Number.isFinite(outSolLamports) || outSolLamports <= 0) {
+        console.warn(`?? Skipped $${p.symbol}: no liquidity for quote.`);
+        continue;
+      }
+
+      if (simulationMode) {
+        outSolLamports = applyShadowSellLamports(outSolLamports, `sim-sell-all:${p.mint}:${Date.now()}`);
+        // Simulate the sell
+        const meta = {
+          mint: p.mint,
+          symbol: p.symbol,
+          name: p.symbol,
+          decimals: p.decimals,
+          isSol: false,
+        };
+        const snap = recordSell(meta, p.heldRaw, outSolLamports);
+
+        const marketCapUsd = await maybeGetMarketCap(p.mint);
+        const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
+        const mcLine = marketCapUsd != null ? `?? MC: ${formatMarketCap(marketCapUsd)}` : `📊 MC: Not available yet`;
+
+        const entryPriceA = tokenPriceInSol(p.totalSolSpentLamports, p.totalBoughtRaw, p.decimals);
+        const exitPriceA = tokenPriceInSol(outSolLamports, p.heldRaw, p.decimals);
+        const avgEntryA = p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
+        const exitPerRawA = p.heldRaw > 0 ? outSolLamports / p.heldRaw : 0;
+        const pctA = avgEntryA > 0 ? (exitPerRawA / avgEntryA - 1) * 100 : 0;
+        console.log(`?? Sell Simulated (manual): ${formatTokenAmount(p.heldRaw, p.decimals)} $${p.symbol}`);
+        console.log(`?? Received: ${formatSolAmount(outSolLamports)} SOL`);
+        console.log(`💹 Entry: ${formatPrice(entryPriceA)} SOL per $${p.symbol} → Exit: ${formatPrice(exitPriceA)} SOL per $${p.symbol} (${pctA >= 0 ? "+" : ""}${pctA.toFixed(1)}%)${sellImpactStr}`);
+        console.log(`?? CA: ${p.mint}`);
+        if (mcLine) console.log(mcLine);
+        console.log(
+          `?? Realized PnL on $${p.symbol}: ${formatPnl(snap.realizedPnlLamports)}`
+        );
+        console.log("");
+
+        pushSwap({
+          ts: Date.now(),
+          sourceSignature: `manual-sell-${p.mint}`,
+          wallet: "manual-sell",
+          side: "sell",
+          input: {
+            mint: p.mint,
+            symbol: p.symbol,
+            name: p.symbol,
+            decimals: p.decimals,
+            amountRaw: p.heldRaw,
+            display: `${formatTokenAmount(p.heldRaw, p.decimals)} $${p.symbol}`,
+          },
+          output: {
+            mint: WRAPPED_SOL_MINT,
+            symbol: "SOL",
+            name: "Solana",
+            decimals: 9,
+            amountRaw: outSolLamports,
+            display: `${formatSolAmount(outSolLamports)} SOL`,
+          },
+          isSimulated: true,
+          marketCapUsd,
+          marketCapCheckedAt,
+        });
+      } else {
+        // Live sell - create and execute the transaction
+        const quote = await getQuote(p.mint, WRAPPED_SOL_MINT, p.heldRaw, 80);
+        const swapResponse = await getSwap(quote, keypair!.publicKey.toBase58());
+        const transaction = await createSenderTransactionFromSwapResponse(
+          swapResponse as { swapTransaction: string; [key: string]: unknown },
+          keypair!,
+          { route: "jupiter-sell" }
+        );
+        
+        const signature = await broadcastTransactionWithSender(transaction, {
+          route: "jupiter-sell",
+          side: "sell",
+          mint: p.mint,
+        });
+        await confirmSignature(signature);
+
+        // Record the actual sell
+        const meta = {
+          mint: p.mint,
+          symbol: p.symbol,
+          name: p.symbol,
+          decimals: p.decimals,
+          isSol: false,
+        };
+        const snap = recordSell(meta, p.heldRaw, outSolLamports);
+
+        const marketCapUsd = await maybeGetMarketCap(p.mint);
+        const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
+        const mcLine = marketCapUsd != null ? `?? MC: ${formatMarketCap(marketCapUsd)}` : `📊 MC: Not available yet`;
+
+        const exitPrice = tokenPriceInSol(
+          outSolLamports,
+          p.heldRaw,
+          p.decimals
+        );
+        const avgEntry = p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
+        const exitPerRaw = p.heldRaw > 0 ? outSolLamports / p.heldRaw : 0;
+        const pct = avgEntry > 0 ? (exitPerRaw / avgEntry - 1) * 100 : 0;
+        console.log(`?? Sell LIVE (manual): ${formatTokenAmount(p.heldRaw, p.decimals)} $${p.symbol}`);
+        console.log(`?? Received: ${formatSolAmount(outSolLamports)} SOL`);
+        console.log(`💹 Exit: ${formatPrice(exitPrice)} SOL per $${p.symbol} (${pct >= 0 ? "+" : ""}${pct.toFixed(1)}% vs avg entry)${sellImpactStr}`);
+        console.log(`?? CA: ${p.mint}`);
+        if (mcLine) console.log(mcLine);
+        console.log(`?? Tx: ${signature}`);
+        console.log(
+          `?? Realized PnL on $${p.symbol}: ${formatPnl(snap.realizedPnlLamports)}`
+        );
+        console.log("");
+
+        pushSwap({
+          ts: Date.now(),
+          sourceSignature: `manual-sell-${p.mint}`,
+          wallet: "manual-sell",
+          side: "sell",
+          input: {
+            mint: p.mint,
+            symbol: p.symbol,
+            name: p.symbol,
+            decimals: p.decimals,
+            amountRaw: p.heldRaw,
+            display: `${formatTokenAmount(p.heldRaw, p.decimals)} $${p.symbol}`,
+          },
+          output: {
+            mint: WRAPPED_SOL_MINT,
+            symbol: "SOL",
+            name: "Solana",
+            decimals: 9,
+            amountRaw: outSolLamports,
+            display: `${formatSolAmount(outSolLamports)} SOL`,
+          },
+          isSimulated: false,
+          marketCapUsd,
+          marketCapCheckedAt,
+          mirrorSignature: signature,
+        });
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      
+      // Check if this is an untradable token issue
+      if (msg.includes("NOT_TRADABLE") || msg.includes("TOKEN_NOT_TRADABLE") || 
+          msg.includes("No liquidity") || msg.includes("Insufficient liquidity")) {
+        console.warn(`?? Token $${p.symbol} is untradable: ${msg}`);
+        console.warn(`?? This position will remain held - PnL not affected`);
+        
+        // Don't record as a failed sell - just skip it
+        continue;
+      }
+      
+      console.warn(`?? Failed to sell $${p.symbol}: ${msg}`);
+    }
+  }
+
+  await printPnlReport();
+}
+
+/**
+ * Simulated mark-to-market exit: quote each open position at current Jupiter prices,
+ * record the sells into PnL, log them as simulated closes, then print the final report.
+ * Only runs in simulation mode — live mode would need real on-chain sends.
+ */
+export async function closeAllOpenPositionsSimulated(): Promise<void> {
+  if (!simulationMode) {
+    console.log("?? Close-all only available in SIMULATION mode. Sell manually via the tracked wallet in live mode.");
+    return;
+  }
+
+  const open = getPositions().filter((p) => p.heldRaw > 0);
+  if (open.length === 0) {
+    console.log("?? No open positions to close.");
+    await printPnlReport();
+    return;
+  }
+
+  console.log(`🏁 Closing ${open.length} open position(s) at current market prices...`);
+  console.log("");
+
+  for (const p of open) {
+    try {
+      let outSolLamports = await quoteRiskExitLamports(p.mint, p.heldRaw);
+      const sellImpactStr = "";
+      if (!Number.isFinite(outSolLamports) || outSolLamports <= 0) {
+        console.warn(`⚠️  Skipped $${p.symbol}: no liquidity for quote.`);
+        continue;
+      }
+
+      const meta = {
+        mint: p.mint,
+        symbol: p.symbol,
+        name: p.symbol,
+        decimals: p.decimals,
+        isSol: false,
+      };
+
+      const entryPrice = tokenPriceInSol(
+        p.totalSolSpentLamports,
+        p.totalBoughtRaw,
+        p.decimals
+      );
+      const exitPrice = tokenPriceInSol(outSolLamports, p.heldRaw, p.decimals);
+      const avgEntryLamportsPerRaw =
+        p.totalBoughtRaw > 0 ? p.totalSolSpentLamports / p.totalBoughtRaw : 0;
+      const exitLamportsPerRaw = p.heldRaw > 0 ? outSolLamports / p.heldRaw : 0;
+      const pctChange =
+        avgEntryLamportsPerRaw > 0
+          ? (exitLamportsPerRaw / avgEntryLamportsPerRaw - 1) * 100
+          : 0;
+      const pctStr = `${pctChange >= 0 ? "+" : ""}${pctChange.toFixed(1)}%`;
+
+      const snap = recordSell(meta, p.heldRaw, outSolLamports);
+
+      const marketCapUsd = await maybeGetMarketCap(p.mint);
+      const marketCapCheckedAt = marketCapUsd != null ? Date.now() : null;
+      const mcLine = marketCapUsd != null ? `📈 MC: ${formatMarketCap(marketCapUsd)}` : `📊 MC: Not available yet`;
+
+      console.log(`✅ Sell Simulated (manual close): ${formatTokenAmount(p.heldRaw, p.decimals)} $${p.symbol}`);
+      console.log(`💰 Received: ${formatSolAmount(outSolLamports)} SOL`);
+      console.log(`💹 Entry: ${formatPrice(entryPrice)} SOL / 1M  →  Exit: ${formatPrice(exitPrice)} SOL / 1M  (${pctStr})${sellImpactStr}`);
+      console.log(`🔗 CA: ${p.mint}`);
+      if (mcLine) console.log(mcLine);
+      console.log(
+        `📊 Realized PnL on $${p.symbol}: ${formatPnl(snap.realizedPnlLamports)}`
+      );
+      console.log("");
+
+      pushSwap({
+        ts: Date.now(),
+        sourceSignature: `manual-close-${p.mint}`,
+        wallet: "manual-close",
+        side: "sell",
+        input: {
+          mint: p.mint,
+          symbol: p.symbol,
+          name: p.symbol,
+          decimals: p.decimals,
+          amountRaw: p.heldRaw,
+          display: `${formatTokenAmount(p.heldRaw, p.decimals)} $${p.symbol}`,
+        },
+        output: {
+          mint: WRAPPED_SOL_MINT,
+          symbol: "SOL",
+          name: "Solana",
+          decimals: 9,
+          amountRaw: outSolLamports,
+          display: `${formatSolAmount(outSolLamports)} SOL`,
+        },
+        isSimulated: true,
+        marketCapUsd,
+        marketCapCheckedAt,
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  Failed to close $${p.symbol}: ${msg}`);
+    }
+  }
+
+  await printPnlReport();
+}
+
+export function isRunning(): boolean {
+  return running;
+}
+
+export async function printPnlReport(options: {
+  settlePendingFastBuysMs?: number;
+  settlementReason?: string;
+} = {}): Promise<void> {
+  await settlePendingFastBuysForReport({
+    waitMs: options.settlePendingFastBuysMs ?? 0,
+    reason: options.settlementReason ?? "PnL report",
+  });
+
+  if (keypair) {
+    await updateBalance(keypair.publicKey, { log: false });
+  }
+
+  const totals = getTotals();
+  const positions = getPositions();
+  const walletPnl = getSessionWalletPnlSnapshot();
+  const divider = "─".repeat(60);
+
+  console.log("");
+  console.log(divider);
+  console.log("📊 SESSION PnL REPORT");
+  console.log(divider);
+
+  if (startedAt) {
+    const elapsedMs = Date.now() - startedAt;
+    const mins = Math.floor(elapsedMs / 60_000);
+    const secs = Math.floor((elapsedMs % 60_000) / 1000);
+    console.log(`⏱️  Session: ${mins}m ${secs}s`);
+  }
+  console.log(
+    `📈 Trades: ${totals.tradesCount} (${totals.buysCount} buys, ${totals.sellsCount} sells)`
+  );
+  console.log(`🪙 Tokens tracked: ${totals.trackedTokens} (${totals.openPositions} open)`);
+  const pnlBasisLabel =
+    pnlAccountingBasis === "dex" ? "DEX/trade basis" : "wallet cashflow basis";
+  console.log(`PnL basis: ${pnlBasisLabel}`);
+  console.log(`💸 SOL spent: ${formatSolAmount(totals.totalSolSpentLamports)} SOL`);
+  console.log(`💰 SOL received: ${formatSolAmount(totals.totalSolReceivedLamports)} SOL`);
+  console.log(`Realized proceeds: ${formatSolAmount(totals.realizedProceedsLamports)} SOL (costed sells only)`);
+  const realizedRoiPct =
+    totals.realizedCostBasisLamports > 0
+      ? (totals.realizedPnlLamports / totals.realizedCostBasisLamports) * 100
+      : null;
+  console.log(
+    `📊 Realized PnL: ${formatPnl(totals.realizedPnlLamports)} ` +
+      `(sold cost ${formatSolAmount(totals.realizedCostBasisLamports)} SOL` +
+      `${realizedRoiPct == null ? "" : `, ${realizedRoiPct >= 0 ? "+" : ""}${realizedRoiPct.toFixed(1)}%`}; ${pnlBasisLabel})`
+  );
+  console.log(`Open cost basis: ${formatSolAmount(totals.openCostBasisLamports)} SOL (open positions not counted in realized PnL)`);
+  if (totals.uncostedProceedsLamports > 0) {
+    console.log(
+      `Uncosted sell proceeds: ${formatSolAmount(totals.uncostedProceedsLamports)} SOL ` +
+        `(excluded from realized PnL; sell exceeded recorded inventory)`
+    );
+  }
+
+  if (walletPnl.deltaLamports != null) {
+    console.log(`Wallet SOL delta: ${formatPnl(walletPnl.deltaLamports)} (all-in fees/tips/rent included)`);
+    console.log(
+      `Balance: ${formatSolAmount(walletPnl.startBalanceLamports ?? 0)} -> ` +
+        `${formatSolAmount(walletPnl.currentBalanceLamports ?? 0)} SOL`
+    );
+  } else if (!simulationMode) {
+    console.log("Wallet SOL delta: unavailable until start/current balances are known");
+  }
+
+  if (positions.length > 0) {
+    const subdivider = "·".repeat(60);
+    console.log("");
+    console.log("🏷️  PER-TOKEN BREAKDOWN");
+    console.log(subdivider);
+
+    // Sort: open positions first, then by absolute PnL (biggest winners/losers surface).
+    const sorted = [...positions].sort((a, b) => {
+      const openDiff = (b.heldRaw > 0 ? 1 : 0) - (a.heldRaw > 0 ? 1 : 0);
+      if (openDiff !== 0) return openDiff;
+      return Math.abs(b.realizedPnlLamports) - Math.abs(a.realizedPnlLamports);
+    });
+
+    for (let i = 0; i < sorted.length; i++) {
+      const p = sorted[i]!;
+      const isOpen = p.heldRaw > 0;
+      const pnlLamports = p.realizedPnlLamports;
+      const pnlIcon = pnlLamports > 0 ? "🟢" : pnlLamports < 0 ? "🔴" : "⚪";
+      const statusTag = isOpen
+        ? `🟡 OPEN · ${formatTokenAmount(p.heldRaw, p.decimals)} held`
+        : "⚫ CLOSED";
+
+      const pctNum =
+        p.realizedCostBasisLamports > 0
+          ? (pnlLamports / p.realizedCostBasisLamports) * 100
+          : 0;
+      const pctStr =
+        p.realizedCostBasisLamports > 0
+          ? ` (${pctNum >= 0 ? "+" : ""}${pctNum.toFixed(1)}%)`
+          : "";
+
+      console.log(`${pnlIcon} $${p.symbol}`);
+      console.log(`   Status:    ${statusTag}`);
+      console.log(`   PnL:       ${formatPnl(pnlLamports)}${pctStr} (${pnlBasisLabel})`);
+      console.log(`   Spent:     ${formatSolAmount(p.totalSolSpentLamports)} SOL  (${p.buysCount} buy${p.buysCount === 1 ? "" : "s"})`);
+      console.log(`   Received:  ${formatSolAmount(p.totalSolReceivedLamports)} SOL  (${p.sellsCount} sell${p.sellsCount === 1 ? "" : "s"})`);
+      console.log(`   Sold cost: ${formatSolAmount(p.realizedCostBasisLamports)} SOL`);
+      if (p.uncostedProceedsLamports > 0) {
+        console.log(`   Uncosted:  ${formatSolAmount(p.uncostedProceedsLamports)} SOL proceeds excluded from PnL`);
+      }
+      if (isOpen) console.log(`   Open cost: ${formatSolAmount(p.costBasisRemainingLamports)} SOL`);
+      console.log(`   CA:        ${p.mint}`);
+      if (i < sorted.length - 1) console.log("");
+    }
+  }
+  console.log(divider);
+  console.log("");
+
+  // Send Telegram PnL report
+  const pnlNotification: PnlNotification = {
+    totalTrades: totals.tradesCount,
+    totalBuys: totals.buysCount,
+    totalSells: totals.sellsCount,
+    realizedPnl: formatPnl(totals.realizedPnlLamports),
+    walletPnl: walletPnl.deltaLamports != null ? formatPnl(walletPnl.deltaLamports) : undefined,
+    unrealizedPnl: "not marked",
+    totalPnl: formatPnl(totals.realizedPnlLamports),
+    winRate: "N/A",
+    avgWin: "N/A",
+    avgLoss: "N/A",
+    openPositions: totals.openPositions,
+  };
+  void telegram.notifyPnlReport(pnlNotification);
+}
+
+export function getBotState(): BotState {
+  return {
+    running,
+    startedAt,
+    ourWallet: keypair?.publicKey.toBase58() ?? null,
+    trackedWallets,
+    exitSignalSellsEnabled,
+    exitSignalWallets,
+    simulationMode,
+    buysPaused,
+    maxOpenPositions: maxOpenPositions ?? null,
+    maxSolPerTokenSol: maxSolPerTokenLamports != null ? maxSolPerTokenLamports / LAMPORTS_PER_SOL : null,
+    maxSessionDeployedSol:
+      maxSessionDeployedLamports != null ? maxSessionDeployedLamports / LAMPORTS_PER_SOL : null,
+    maxOpenDeployedSol:
+      maxOpenDeployedLamports != null ? maxOpenDeployedLamports / LAMPORTS_PER_SOL : null,
+    minBuySol: minBuyLamports / LAMPORTS_PER_SOL,
+    maxBuySol: maxBuyLamports / LAMPORTS_PER_SOL,
+    copyBuyPercentage,
+    solReserveSol: solReserveLamports / LAMPORTS_PER_SOL,
+    tipLamports,
+    priorityFeeMicroLamports,
+    mirrorSlippageBps,
+    mirrorSellsEnabled,
+    feeGuide: {
+      computeUnitLimit,
+      useJitoDirect,
+      useJitoFallback,
+      heliusTipMinLamports: HELIUS_TIP_MIN_LAMPORTS,
+    },
+    pollIntervalMs,
+    watcherPollFallbackEnabled,
+    riskControlsEnabled,
+    riskCheckIntervalMs,
+    minHoldBeforeStopLossMs,
+    stopLossPct,
+    takeProfitPct,
+    hybridExitEnabled,
+    hybridExitTpPct,
+    hybridExitTpSellPct,
+    hybridExitSourceExitRemaining,
+    lastBalanceLamports,
+    lastBalanceSol:
+      lastBalanceLamports != null
+        ? lastBalanceLamports / LAMPORTS_PER_SOL
+        : null,
+    lastBalanceAt,
+    sessionStartBalanceLamports,
+    sessionWalletDeltaLamports: getSessionWalletPnlSnapshot().deltaLamports,
+    recentSwaps: recentSwaps.slice(),
+    positions: getPositions().filter((p) => p.heldRaw > 0),
+    totals: getTotals(),
+  };
+}

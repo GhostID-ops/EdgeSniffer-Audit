@@ -1,5 +1,11 @@
 # AGENTS.md
 
+## Current audit entry point
+
+Use [audit-20261023/README.md](audit-20261023/README.md) for the current research
+snapshot and its task/decision records. This repository is for audit and research;
+do not enable trading or treat historical deployment instructions as authorization.
+
 ## Trading Bot Rules
 
 - Never add or rely on Jupiter fallback unless the user explicitly asks for it.

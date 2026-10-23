@@ -1,0 +1,24 @@
+[Unit]
+Description=Build Pump exact-alpha discovery-only research table V1
+After=pump-exact-evidence-readiness-v1.service
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer/scripts
+ExecStart=/usr/bin/flock -n -E 75 /run/pump-exact-offline-v1.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/buildPumpExactAlphaResearchV1.py /var/lib/pump-exact-evidence-ledger-v1 /var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1
+SuccessExitStatus=75
+Nice=19
+IOSchedulingClass=idle
+CPUWeight=5
+IOWeight=5
+IOSchedulingPriority=7
+MemoryHigh=768M
+MemoryMax=1G
+OOMScoreAdjust=500
+OOMPolicy=stop
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1 /run

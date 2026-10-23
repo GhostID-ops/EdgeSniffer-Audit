@@ -1,5 +1,10 @@
 # FinalBot Copytrading Bot
 
+> **Latest audit snapshot (2026-10-23): [EdgeSniffer current research](audit-20261023/README.md).**
+> Start there for current code, task register, decision log, tests and independent
+> audit findings. The older instructions below are historical; this audit is
+> research-only and does not authorize running live trading.
+
 Solana copytrading bot that watches tracked wallets, detects SOL/token swaps, and mirrors buys or exits with your wallet. The live bot entrypoint is `src/copytrade.ts`.
 
 ## Run

@@ -1,0 +1,47 @@
+{
+  "schema": "PUMP_INDEPENDENT_EVIDENCE_CAPTURE_CONTRACT_V1",
+  "purpose": "Minimum native transaction evidence for burst/persistence hypothesis tests, not live trading",
+  "scope": {
+    "program": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+    "provider_filter": "transaction account_include Pump program; static and ALT-loaded keys",
+    "commitment": "processed",
+    "vote": false,
+    "failed": null,
+    "wallet_filter": null,
+    "mint_filter": null,
+    "other_venues": false,
+    "rationale": "Capture the eligible Pump universe including non-signals for same-period controls; prefiltering teacher wallets or eventual burst tokens would bias it. Direct and CPI invocation identity is decoded after capture."
+  },
+  "retention": [
+    "Full SubscribeUpdate protobuf, hash, session/connection/sequence and subscription hash",
+    "Static and loaded ALT accounts, lookup references, outer instructions, inner parent index and stack height",
+    "Execution error bytes, pre/post SOL and token balances, fees, logs, return data and compute/cost units",
+    "TradeEvent raw bytes, decoded known quote layout and actual event amounts; unknown layout/extensions remain explicit",
+    "Slot lifecycle and connection transitions"
+  ],
+  "timing": {
+    "received_at": "Application dequeue after gRPC transport decode, not NIC arrival",
+    "normalized_at": "Completion of deterministic Rust metadata view",
+    "monotonic": "Relative to this capture process; compare only within session",
+    "provider_created_at": "Provider envelope timestamp, not chain execution time",
+    "chain_time": "Block/event timestamps stored separately; no invented precise execution timestamp",
+    "historical_recovery": "Metadata becomes known at recovery response; never usable at original decision by relabeling",
+    "finalized_reference": "Later completeness and execution audit only, never a retroactive signal input"
+  },
+  "coverage": {
+    "missing_transactions": "Expected minus observed signature sets in hash-selected interior finalized blocks",
+    "unresolved_blocks": "Unknown, not zero missing",
+    "slot_discontinuities": "Reported separately from proven data loss; chain slots may be skipped",
+    "reconnects": "Explicit connection intervals; no silent backfill into native receipt history",
+    "decoder": "All transaction frames remain denominator; instruction resolution, event/quote decoding and unknown status counted",
+    "joins": "Signature + slot + account identity, availability by one-second boundary; not proof of current executable state",
+    "global_completeness": "Unknown unless a complete reference interval is reconciled; no extrapolation from sampled slots"
+  },
+  "operating_mode": "Bounded receive-only capture, default 120s, maximum 3600s; unique output path; no existing collector restart",
+  "experiment_readiness": {
+    "data_now_supports": "Independent native burst incidence and one-/two-second continuation/persistence diagnostic against same-period non-signal risk-set controls; ledger/control integration is next, not yet implemented",
+    "not_yet_enabled": "Trustworthy net-PnL ranking: current-state continuity at delayed entry/exit, full fee schedule, own-state impact, attempted-trade accounting and controls integration still required",
+    "historical_receipts": "Teacher-conditioned diagnostic material, not independent control population or reconstructed native execution availability",
+    "prospective_validation": "Fresh data after selecting and freezing a policy; this canary is development/engineering evidence"
+  }
+}

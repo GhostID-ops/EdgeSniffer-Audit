@@ -1,0 +1,17 @@
+[Unit]
+Description=EdgeSniffer confirmed 2CQ wallet native Raydium CLMM causal windows v1 (receive-only)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/EdgeSniffer
+EnvironmentFile=-/root/bot/EdgeSniffer/.env
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/captureWalletRaydiumClmmWindowsV1.py --source /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v1/raw-transactions.jsonl --output /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v6/raydium-clmm-windows-v1.jsonl --state /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v6/raydium-clmm-windows-v1-state.json --cohort-id 2cq-new-wallet-raydium-clmm-windows-20261020T000000Z --boundary-utc 2026-10-19T00:00:00Z --interval-seconds 30 --limit 1000 --horizon-seconds 300 --slot-span 900 --max-anchors-per-cycle 5 --workers 12
+Restart=always
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

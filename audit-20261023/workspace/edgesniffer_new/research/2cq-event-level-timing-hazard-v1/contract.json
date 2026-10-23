@@ -1,0 +1,22 @@
+{
+  "assessmentPromotionGate": {
+    "minimumExactFirstImprovementPct": 5.0,
+    "minimumTeacherStateRecallPct": 60.0,
+    "p75LeadMustNotWorsen": true
+  },
+  "developmentOrdinals": [
+    1,
+    350
+  ],
+  "featureFamily": "FULL_CAUSAL_PLUS_TRANSITION_FIXED",
+  "negativeWeighting": "per episode: positive=0.5; negatives share 0.5 proportional to 1/distance-from-teacher-state",
+  "outcomesPermitted": false,
+  "schema": "2CQ_EVENT_LEVEL_TIMING_HAZARD_V1_CONTRACT",
+  "sealedValidationOrdinals": [
+    351,
+    500
+  ],
+  "submissionsPermitted": false,
+  "thresholdSelection": "training-only maximize exact first trigger with >=75% teacher-state recall",
+  "validationPermitted": false
+}

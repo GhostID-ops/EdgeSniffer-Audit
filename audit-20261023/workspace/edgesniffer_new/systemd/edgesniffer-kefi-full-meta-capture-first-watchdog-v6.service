@@ -1,0 +1,15 @@
+[Unit]
+Description=EdgeSniffer kEFi fresh economic-replication source freshness watchdog
+After=edgesniffer-kefi-full-meta-capture-first-v6.service
+Wants=edgesniffer-kefi-full-meta-capture-first-v6.service
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/kefi_full_meta_watchdog_v1.py --root /mnt/edgesniffer-kefi-hot/kefi-capture-first-live-v6 --collector-unit edgesniffer-kefi-full-meta-capture-first-v6.service --systemd-scope system --interval-seconds 15 --stale-seconds 90 --startup-grace-seconds 90 --confirmations 2
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

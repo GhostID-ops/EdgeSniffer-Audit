@@ -1,0 +1,10 @@
+import test from "node:test";import assert from "node:assert/strict";
+import{evaluateShadowExit as e,settleShadowExit as s}from"./shadowExitEvaluatorV2.mjs";
+const c={stopLossPct:-20,takeProfitPct:90,trailingStartPct:25,trailingGivebackPct:18,maxHoldMs:120000,noUpdateExitMs:120000,maxExitMarkAgeMs:15000,paperBetSol:.5,entryCostBps:200,exitCostBps:200,fixedRoundTripCostSol:.00002};
+const p=(x={})=>({openedAtMs:0,lastMarkAtMs:0,lastRoiPct:20,lastMarketCapUsd:3600,bestRoiPct:20,...x});
+test("equal hold/no-update unpriced",()=>assert.equal(e(p(),120000,c).reason,"unpriced_no_update"));
+test("fresh max-hold priced",()=>assert.equal(e(p({lastMarkAtMs:119000}),120000,c).reason,"time_exit"));
+test("stale TP blocked",()=>assert.equal(e(p({lastRoiPct:100}),30000,c),undefined));
+test("fresh TP allowed",()=>assert.equal(e(p({lastRoiPct:100,lastMarkAtMs:29000}),30000,c).reason,"take_profit"));
+test("unpriced pnl null",()=>{const d=e(p(),120000,c);assert.equal(s(p(),d,c).netPnlSol,null)});
+test("costs deducted",()=>{const x=s(p(),{priced:true},c);assert.ok(x.netPnlSol<x.grossPnlSol)});

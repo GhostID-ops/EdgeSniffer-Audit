@@ -1,0 +1,21 @@
+[Unit]
+Description=EdgeSniffer Pump top-level prospective controls and policy evaluation v1 (read-only)
+After=edgesniffer-2cq-new-wallet-pump-curve-prospective-v1.service
+Wants=edgesniffer-2cq-new-wallet-pump-curve-prospective-v1.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+EnvironmentFile=/root/bot/EdgeSniffer/.env
+ExecStart=/bin/bash -lc 'set -e; while true; do /usr/bin/python3 /root/bot/EdgeSniffer/scripts/refreshPumpCurveProspectiveControlsV1.py --windows /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v8/pump-curve-prospective-windows-v1.jsonl --out /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v8/pump-curve-prospective-controls-v1.json --control-seconds 5; /usr/bin/python3 /root/bot/EdgeSniffer/scripts/evaluatePumpCurveProspectivePolicyV1.py --windows /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v8/pump-curve-prospective-windows-v1.jsonl --controls /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v8/pump-curve-prospective-controls-v1.json --policy /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v8/pump-curve-prospective-policy-v1.json --comparison-protocol /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v8/pump-curve-prospective-comparison-protocol-v1.json --output /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v8/pump-curve-prospective-evaluation-v1.json; sleep 300; done'
+Restart=always
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v8
+
+[Install]
+WantedBy=multi-user.target

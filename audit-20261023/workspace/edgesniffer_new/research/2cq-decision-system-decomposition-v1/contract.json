@@ -1,0 +1,113 @@
+{
+  "causalBoundary": "last external event state strictly before teacher AllenHark receipt; teacher transaction contributes zero features",
+  "censusContractSha256": "c6f73ac6579f94aa445d3b929bd6a563f207d883789aea5b44a57d0cd102aa99",
+  "censusFreezeSha256": "384dc1caa711f32549daba6d1e7ca192f238c1f0d3b58d9124873258ad8bbdff",
+  "choiceSetSemantics": {
+    "maximumMintAgeMs": 120000,
+    "mustHaveCanonicalCreateAndAllenHarkArrival": true,
+    "mustHavePriorSuccessfulExternalPumpEvent": true,
+    "mustRemainOnCurve": true,
+    "supportedRoute": "Pump bonding-curve exact SOL reserve state",
+    "universes": [
+      "LAUNCHED_120S",
+      "ACTIVE_250MS",
+      "ACTIVE_1000MS",
+      "ACTIVE_5000MS"
+    ]
+  },
+  "correctedFromSupersededTapeSha256": "8698c1652b29e03938365b834214f0711b523fc16bd4a9217845dea90a18af5b",
+  "createdAtUtc": "2026-09-11T00:58:55.286564Z",
+  "crossBoundaryRepeatMintsExcludedFromAssessment": true,
+  "deferredReason": "V3 freezes independent entries; later action-state reconstruction requires a separately frozen action tape",
+  "designRevision": "CAUSAL_TRIGGER_EVENT_STATE_V2",
+  "developmentEligibleSha256": "b3a843cb545eccb3303148f37eb8037fb8c0f618b5c6fa97916130e2813e0155",
+  "developmentN": 350,
+  "featureFamilies": {
+    "flow": [
+      "gross_buy_sol_250ms",
+      "gross_sell_sol_250ms",
+      "net_flow_sol_250ms",
+      "buy_count_250ms",
+      "sell_count_250ms",
+      "gross_buy_sol_1000ms",
+      "gross_sell_sol_1000ms",
+      "net_flow_sol_1000ms",
+      "buy_count_1000ms",
+      "sell_count_1000ms",
+      "gross_buy_sol_2000ms",
+      "gross_sell_sol_2000ms",
+      "net_flow_sol_2000ms",
+      "gross_buy_sol_5000ms",
+      "gross_sell_sol_5000ms",
+      "net_flow_sol_5000ms",
+      "total_external_buy_sol",
+      "total_external_sell_sol",
+      "total_external_net_sol",
+      "buy_sell_imbalance_1000ms",
+      "largest_buy_sol_1000ms",
+      "mean_buy_sol_1000ms",
+      "net_acceleration_1s",
+      "buy_count_acceleration_1s"
+    ],
+    "participants": [
+      "unique_buyers_1000ms",
+      "unique_sellers_1000ms",
+      "repeat_buyer_share_1000ms",
+      "buyer_hhi_1000ms",
+      "top_buyer_share_1000ms",
+      "creator_buy_sol_5000ms",
+      "creator_participated",
+      "unique_buyers_total",
+      "unique_sellers_total"
+    ],
+    "progression": [
+      "log_age_ms",
+      "log_event_index",
+      "curve_progress",
+      "log_market_cap_sol",
+      "distance_from_launch_log_price"
+    ],
+    "sequence": [
+      "last_external_side",
+      "last_external_trade_sol",
+      "consecutive_buys",
+      "consecutive_sells",
+      "log_ms_since_last_external",
+      "log_median_interarrival_ms_5s",
+      "log_price_change_250ms",
+      "log_price_change_1000ms",
+      "log_price_change_2000ms",
+      "log_price_change_5000ms"
+    ]
+  },
+  "fitControlSampling": "deterministic chronology-spread; all controls retained for assessment and forensic tape",
+  "internalAssessmentOrdinals": [
+    246,
+    350
+  ],
+  "internalChronologicalTrainOrdinals": [
+    1,
+    245
+  ],
+  "maximumFitControlsPerDecision": 32,
+  "ordinalRange": [
+    1,
+    350
+  ],
+  "outcomesPermitted": false,
+  "schema": "2CQ_DECISION_SYSTEM_DECOMPOSITION_V1_CONTRACT",
+  "submissionsPermitted": false,
+  "teacherActionsDeferred": [
+    "ADD_WHILE_EXPOSED",
+    "PARTIAL_EXIT",
+    "FINAL_FLATTEN"
+  ],
+  "teacherActionsModeled": [
+    "WHAT_MINT",
+    "WHEN_ENTER",
+    "HOW_MUCH"
+  ],
+  "temporalControlSemantics": "chosen state is immediately AFTER the final external event before the teacher buy; controls are states after earlier external events",
+  "validationArtifactAcceptedAsInput": false,
+  "validationRowsRead": 0
+}

@@ -1,0 +1,983 @@
+{
+  "account_snapshot_sha256": "277bc75a73da8e393f3755c69694978117266509d231b84d6cfa509c33c292ac",
+  "actual_submissions": 0,
+  "attempt_rows_two_arms": 468,
+  "attempts_sha256": "9faf512e1b1744689a91879b246d47201594cec9eb801898670b068d52e5e3dc",
+  "auxiliary_evidence": {
+    "fee": {
+      "rows": 1,
+      "sealed_bytes": 5880,
+      "sha256": "48b54f857eee2b16c91d2d4f1d2098c542a497e5621310a60426622de33a84ce",
+      "source": "../independent-strategy-lab-v1/native-pump-fee-config-snapshots-v1.jsonl"
+    },
+    "mint": {
+      "rows": 157985,
+      "sealed_bytes": 326759063,
+      "sha256": "9dd82f288953e5f0b755c576e84da0af38d5c9951457505f434d817539c35ad7",
+      "source": "../independent-strategy-lab-v1/token2022-transfer-fee-state.jsonl"
+    }
+  },
+  "boundary-context_sha256": "cc169e2ff4cef183955b0a794407342024b7142af4b66a5aa09c0916e78f76bf",
+  "boundary_context_counts": {
+    "native_event_fee_observations": 456,
+    "prior_retained_mint_rows": 8,
+    "target_and_existing_control_boundaries": 456,
+    "verified_applicable_fee_schedules": 0
+  },
+  "boundary_sha256": "04d8c750331c0698b9971c6b2e7977da9e985f713b8833fd8729f39030885e23",
+  "burst_exit_state": {
+    "independently_certified_unchanged": 0,
+    "observed": 78,
+    "older_than_1s": 45,
+    "stale_interval_crosses_transaction_session_boundary": 6,
+    "stale_next_observed_write_equal": 4,
+    "stale_with_observed_different_event_state": 0
+  },
+  "canonical_report_sha256": "855a11030065dc2e26b46c954c16132b8b8f68aa6beada51a05f22d0c412f6c9",
+  "contract": {
+    "concentration_diagnostic": "Original complete flow pairs only. Report all liquidity buckets; leave each mint out in either role; leave each control group out; equal-control weighting; largest one/three positive contributions. No threshold selection.",
+    "control_diagnostic": "Replay original eligibility at signal receipt; mutually exclusive first-failure reasons; preserve per-candidate identities and original hash-selected control. No outcome-dependent rematching.",
+    "economic_experiment": {
+      "accounting": "Integer route quotes, fees and token transfer effects, own reserve intervention, execution cost and failure scenarios, unresolved inventories retained. Quotes remain conditional counterfactuals, not observed fills.",
+      "admission": "Do not execute net economics until required context and own-state propagation are verified; no trading",
+      "entry": "Original independent burst at receipt+1s; unchanged persistence confirmation at receipt+2s then +1s entry",
+      "exit": "Hold 15s from delayed entry, plus 1s exit delivery; original controls at identical arm clocks",
+      "sizes_sol": [
+        0.1,
+        0.5,
+        1.0
+      ],
+      "validation": "Discovery only on this cohort. Freeze selected candidate before separate prospective validation."
+    },
+    "fee_and_mint_availability": "Use actual native metadata availability or maximum retained capture/fetch/repair clock. Historical/current RPC cannot supply earlier decision knowledge. Observed fees on somebody else's transaction are not a certified fee schedule for our trade.",
+    "freshness_diagnostic": "Age alone does not prove invalidity or continuity. Separate no observed transition, observed contradiction, capture boundary crossing, and independently certified complete write coverage. Equal bracketing states do not certify absence of intermediate writes.",
+    "population": "Exactly the original first-mint opportunities, original controls, burst and persistence arms, all three sizes",
+    "possible_separate_future_control_design": "If current diagnostics show activity-age selection is the bottleneck, pre-register a risk-set control population from independently continuity-certified states at the same clock, not a mandatory recent trade. Keep same liquidity bucket and hash selection, report full risk set and state age, use new cohort only. Not activated here.",
+    "possible_separate_state_specification": "Continuity-certified unchanged marks may be tested separately only with complete canonical write/transition coverage and fork/session/gap evidence across the entire interval. Historical validation retains later verification time and cannot backdate other missing inputs. No implementation may silently relax the original 1s mark rule.",
+    "purpose": "A3h retained-evidence diagnosis, not a new strategy or replacement primary result",
+    "quote_admission": "Requires canonical raw state identity, continuity through the boundary, applicable verified fee/global state, mint owner/extensions/epoch, supported instruction/rounding and integer quote fixtures. Unknown is unresolved, not failed or filled.",
+    "schema": "QUOTE_CONTEXT_DIAGNOSTIC_V1"
+  },
+  "contract_sha256": "256f19032c565a7d902912ba0dd99059b6336735d4726fd75b2623938be5f4b7",
+  "control-diagnostics_sha256": "91721e9ce834e5f43c5e1fdac48765bb8e20bd2139fcbf11931ea77129af8f83",
+  "control_distribution_by_20s_block": {
+    "89636555": {
+      "seeds": 4,
+      "unmatched": 0
+    },
+    "89636558": {
+      "seeds": 3,
+      "unmatched": 1
+    },
+    "89636559": {
+      "seeds": 4,
+      "unmatched": 2
+    },
+    "89636560": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636562": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636563": {
+      "seeds": 3,
+      "unmatched": 2
+    },
+    "89636564": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636565": {
+      "seeds": 2,
+      "unmatched": 1
+    },
+    "89636566": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636567": {
+      "seeds": 3,
+      "unmatched": 1
+    },
+    "89636568": {
+      "seeds": 2,
+      "unmatched": 1
+    },
+    "89636570": {
+      "seeds": 2,
+      "unmatched": 2
+    },
+    "89636571": {
+      "seeds": 5,
+      "unmatched": 1
+    },
+    "89636573": {
+      "seeds": 4,
+      "unmatched": 0
+    },
+    "89636576": {
+      "seeds": 1,
+      "unmatched": 0
+    },
+    "89636577": {
+      "seeds": 3,
+      "unmatched": 1
+    },
+    "89636579": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636580": {
+      "seeds": 2,
+      "unmatched": 1
+    },
+    "89636581": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636582": {
+      "seeds": 1,
+      "unmatched": 0
+    },
+    "89636583": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636584": {
+      "seeds": 2,
+      "unmatched": 2
+    },
+    "89636585": {
+      "seeds": 4,
+      "unmatched": 3
+    },
+    "89636587": {
+      "seeds": 1,
+      "unmatched": 0
+    },
+    "89636588": {
+      "seeds": 2,
+      "unmatched": 1
+    },
+    "89636589": {
+      "seeds": 3,
+      "unmatched": 2
+    },
+    "89636592": {
+      "seeds": 4,
+      "unmatched": 1
+    },
+    "89636593": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636594": {
+      "seeds": 3,
+      "unmatched": 2
+    },
+    "89636598": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636599": {
+      "seeds": 2,
+      "unmatched": 2
+    },
+    "89636600": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636601": {
+      "seeds": 3,
+      "unmatched": 2
+    },
+    "89636602": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636605": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636607": {
+      "seeds": 1,
+      "unmatched": 0
+    },
+    "89636609": {
+      "seeds": 1,
+      "unmatched": 1
+    },
+    "89636610": {
+      "seeds": 1,
+      "unmatched": 1
+    }
+  },
+  "control_distribution_by_session": {
+    "session-01": {
+      "seeds": 12,
+      "unmatched": 4
+    },
+    "session-02": {
+      "seeds": 13,
+      "unmatched": 8
+    },
+    "session-03": {
+      "seeds": 11,
+      "unmatched": 3
+    },
+    "session-04": {
+      "seeds": 9,
+      "unmatched": 4
+    },
+    "session-05": {
+      "seeds": 13,
+      "unmatched": 9
+    },
+    "session-06": {
+      "seeds": 8,
+      "unmatched": 4
+    },
+    "session-07": {
+      "seeds": 8,
+      "unmatched": 7
+    },
+    "session-08": {
+      "seeds": 4,
+      "unmatched": 3
+    }
+  },
+  "flow_concentration": {
+    "burst": {
+      "equal_control_weight_mean": 0.8975091495555555,
+      "interpretation": "Retrospective sensitivity only, correlated controls and one market period; not net profit or validation",
+      "largest_positive_contributions": {
+        "1": {
+          "mean_after_removal": 0.8235704718823529,
+          "share_of_all_positive": 0.11159105473340827,
+          "sum": 4.77738097
+        },
+        "3": {
+          "mean_after_removal": 0.5937882256875,
+          "share_of_all_positive": 0.3218189566522154,
+          "sum": 13.777553792
+        }
+      },
+      "leave_control_group_out": {
+        "27wVVkZEtxhLGzb8sUYRjkRoKFqNWkLS9voeKcQQpump": 0.9566777982941176,
+        "283wmFkVaJRpKgKWV1bY78nth4SUraJ45tUZzjNTpump": 1.0769453628709678,
+        "28DX1vhwdFHvKRibWH3WwBYDroMDFyLFCyhBkgkrpump": 0.9437482501764706,
+        "28MjNE7539C6Wnt9MXozsLNdsdDANhHLm9frdfh5pump": 1.154851985064516,
+        "2WE8f12JBvs66tKitcah1bdtGtnxYucxt9Dv8jY1pump": 0.9569832971764706,
+        "2k3vNTeMyCQVewwdPWDDzxakCy4oiT4gA9RC5UrZpump": 0.9536816997058823,
+        "3Sdnb3NUTjuZk6QrprY49sbFcvdFjr49tFaF9PHhpump": 0.8197654036969697,
+        "4wkoDBpNZVj1Qqao9FVSQhPRRYFkviWHYEzHouJepump": 0.9926451958823529,
+        "5yGau2tq3appKeGumo8v6YXJgfzx1ok4nnrEAXJBpump": 0.9759904032058824,
+        "6NQ6R8ndUED8s1MN6zawrhwoekF6Ep78656W9cwTpump": 0.8655136608529411,
+        "7zJWKXhdNHBuLqg348eEDFLesqhrPCYCu26rEgMupump": 0.8485330787272727,
+        "9n8qTfvc3396MLqJuUQHsjhPrc93zoon2GFD87Sbpump": 0.923354743,
+        "9wQ1XekVv2u3RqJj8wZLgVEKbkFMjrQmHQchfgc9pump": 0.9262400006764706,
+        "BCxF3P29Z5yKVjikj1P2fSZbku9QRqHDMGSwKUCepump": 0.9640816768823529,
+        "BdSag4fY5BKabYKgPnoMHx2XvafhSDhfQMUwWtnfnhm9": 0.9385517053030303,
+        "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump": 0.6959411273103449,
+        "DRG4dM1hza9nijruVnubyhKNBmYRKN5yPNoivzt1pump": 0.9577599742352941,
+        "ESenFfGjh9E78mv9zDemPL5VvywcBmwDsT7HXfiopump": 0.9533448920882353,
+        "HtPb3FWujvB1LtQKf2Np5p1iUcHGHojVYqiK2hPmpump": 0.8934337002647059,
+        "nwMYbsAbKfUqYzrVwUXLmxr7rc9fyqRFxUYrtb3pump": 0.9177182437352941,
+        "qUA7FEFWUsfDkL3DRx1fn7pBVynrr6xW51F3vYdpump": 0.9418109816764706
+      },
+      "leave_mint_out_either_role": {
+        "12xmMB1tfFCfcxrPFWJBW1a3g2pDH1vk4fG7KmoWpump": {
+          "mean": 0.8934337002647059,
+          "remaining_pairs": 34
+        },
+        "27wVVkZEtxhLGzb8sUYRjkRoKFqNWkLS9voeKcQQpump": {
+          "mean": 0.9566777982941176,
+          "remaining_pairs": 34
+        },
+        "283wmFkVaJRpKgKWV1bY78nth4SUraJ45tUZzjNTpump": {
+          "mean": 1.0769453628709678,
+          "remaining_pairs": 31
+        },
+        "286L7rjU2n7JDxHwrUjvCQEmX1Ju5rL2ibSzfdjjpump": {
+          "mean": 0.8903651029705882,
+          "remaining_pairs": 34
+        },
+        "28C9eWcA7U6TooXpNyQWa1kqhJmZrw8QzQcdr6Anpump": {
+          "mean": 0.9759904032058824,
+          "remaining_pairs": 34
+        },
+        "28DX1vhwdFHvKRibWH3WwBYDroMDFyLFCyhBkgkrpump": {
+          "mean": 0.9437482501764706,
+          "remaining_pairs": 34
+        },
+        "28MjNE7539C6Wnt9MXozsLNdsdDANhHLm9frdfh5pump": {
+          "mean": 1.0561943441000001,
+          "remaining_pairs": 30
+        },
+        "2WE8f12JBvs66tKitcah1bdtGtnxYucxt9Dv8jY1pump": {
+          "mean": 0.9569832971764706,
+          "remaining_pairs": 34
+        },
+        "2Xx4zkBgTrAcogMbX3uJBYeKqRQ2csTyuPWLjuDDpump": {
+          "mean": 1.0089550173529411,
+          "remaining_pairs": 34
+        },
+        "2k3vNTeMyCQVewwdPWDDzxakCy4oiT4gA9RC5UrZpump": {
+          "mean": 0.9536816997058823,
+          "remaining_pairs": 34
+        },
+        "2uRmnJ4kNSv7rU8UP2W4vD7mc6ygXTFSTnp2PBfgpump": {
+          "mean": 0.9177182437352941,
+          "remaining_pairs": 34
+        },
+        "3Sdnb3NUTjuZk6QrprY49sbFcvdFjr49tFaF9PHhpump": {
+          "mean": 0.8197654036969697,
+          "remaining_pairs": 33
+        },
+        "42tmhwWkPobgohMdKfTVp9WfVvLTioibHGpzK9ygpump": {
+          "mean": 0.9262400006764706,
+          "remaining_pairs": 34
+        },
+        "4fnVcjSP4NV1vW4dPa7gnAZMkgvGTQ4G9Y73e1qhpump": {
+          "mean": 0.8655136608529411,
+          "remaining_pairs": 34
+        },
+        "4wkoDBpNZVj1Qqao9FVSQhPRRYFkviWHYEzHouJepump": {
+          "mean": 1.0377270018484848,
+          "remaining_pairs": 33
+        },
+        "5EdajXG624C7uVLArueGjFxEAdbJnSs12orQJ8RZpump": {
+          "mean": 0.8318714374705882,
+          "remaining_pairs": 34
+        },
+        "5XpHkedJegGdNKAvQex6VfRnnpVZggvYorZVsdhtpump": {
+          "mean": 0.9569832971764706,
+          "remaining_pairs": 34
+        },
+        "5yGau2tq3appKeGumo8v6YXJgfzx1ok4nnrEAXJBpump": {
+          "mean": 0.994503728060606,
+          "remaining_pairs": 33
+        },
+        "6NQ6R8ndUED8s1MN6zawrhwoekF6Ep78656W9cwTpump": {
+          "mean": 0.8655136608529411,
+          "remaining_pairs": 34
+        },
+        "6yTm1FA4UDpXvZNhNncN2xcEwLwiyamBesDn6MyUpump": {
+          "mean": 0.8520448761470588,
+          "remaining_pairs": 34
+        },
+        "7zJWKXhdNHBuLqg348eEDFLesqhrPCYCu26rEgMupump": {
+          "mean": 0.905398476375,
+          "remaining_pairs": 32
+        },
+        "9HX5nqUhND5vBX2rm6BSK4iDUkv8mzTP2gqdaTJkpump": {
+          "mean": 0.9254917258529411,
+          "remaining_pairs": 34
+        },
+        "9Yub94kkNZF8ZQ2KMM9rSMXT1roYRD8dCdVTLnpHya4n": {
+          "mean": 0.9495371944117647,
+          "remaining_pairs": 34
+        },
+        "9iaXwjVAtRQmDKuYuxMmT5GBKiVJ3dQ4ji1vWkEXY1Jz": {
+          "mean": 0.9640816768823529,
+          "remaining_pairs": 34
+        },
+        "9n8qTfvc3396MLqJuUQHsjhPrc93zoon2GFD87Sbpump": {
+          "mean": 0.923354743,
+          "remaining_pairs": 34
+        },
+        "9wQ1XekVv2u3RqJj8wZLgVEKbkFMjrQmHQchfgc9pump": {
+          "mean": 0.9262400006764706,
+          "remaining_pairs": 34
+        },
+        "An7bLx2woBbJY9ReSKCL1nuWKkkbWu7hfkoCz23spump": {
+          "mean": 0.9536816997058823,
+          "remaining_pairs": 34
+        },
+        "BCxF3P29Z5yKVjikj1P2fSZbku9QRqHDMGSwKUCepump": {
+          "mean": 0.9640816768823529,
+          "remaining_pairs": 34
+        },
+        "BdSag4fY5BKabYKgPnoMHx2XvafhSDhfQMUwWtnfnhm9": {
+          "mean": 0.9385517053030303,
+          "remaining_pairs": 33
+        },
+        "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump": {
+          "mean": 0.5501754186428571,
+          "remaining_pairs": 28
+        },
+        "DRG4dM1hza9nijruVnubyhKNBmYRKN5yPNoivzt1pump": {
+          "mean": 0.963837439,
+          "remaining_pairs": 33
+        },
+        "DxjAjnmDdssx6yHXu8gE7HueBf8uQR5v5ZT6Uv5Kpump": {
+          "mean": 0.9566777982941176,
+          "remaining_pairs": 34
+        },
+        "EKV7DH5WaxAwER3eUXokdSKjPn1L783ZrisGHwN6pump": {
+          "mean": 0.9437482501764706,
+          "remaining_pairs": 34
+        },
+        "ESenFfGjh9E78mv9zDemPL5VvywcBmwDsT7HXfiopump": {
+          "mean": 0.9286796257272727,
+          "remaining_pairs": 33
+        },
+        "EaA2dxrHsNnYu3sV7W949P2u6gR6mwEmMTgz1eovpump": {
+          "mean": 0.9166717510588235,
+          "remaining_pairs": 34
+        },
+        "EqNjHCyjzFh53yHtbEzn6BLH7HwUyf6g4p4Pyk7hpump": {
+          "mean": 0.9577599742352941,
+          "remaining_pairs": 34
+        },
+        "F1FHqdxAxoEg4vJDZHWSBDngb7zjB9W1R6JoffN9pump": {
+          "mean": 1.019191578852941,
+          "remaining_pairs": 34
+        },
+        "FZ8LbKTSwnHFCGirvtNCZ5iQfY8gmKpuS7bbzG9dpump": {
+          "mean": 0.923354743,
+          "remaining_pairs": 34
+        },
+        "HhKg87nYdhc8aVToT8sKTd6xcHCCW6fYr4Kntfb4pump": {
+          "mean": 0.9481490249705883,
+          "remaining_pairs": 34
+        },
+        "HtPb3FWujvB1LtQKf2Np5p1iUcHGHojVYqiK2hPmpump": {
+          "mean": 0.8934337002647059,
+          "remaining_pairs": 34
+        },
+        "PairUottr9sWf6REag62Y8xeFfrWSpL1F9zikNyqWLV": {
+          "mean": 0.9667306135588235,
+          "remaining_pairs": 34
+        },
+        "TnUQ5TXY3yQezcmCKvMTg4W8SuCKrUReUXjG9Vqpump": {
+          "mean": 0.8315809509411765,
+          "remaining_pairs": 34
+        },
+        "nwMYbsAbKfUqYzrVwUXLmxr7rc9fyqRFxUYrtb3pump": {
+          "mean": 0.985145141060606,
+          "remaining_pairs": 33
+        },
+        "qUA7FEFWUsfDkL3DRx1fn7pBVynrr6xW51F3vYdpump": {
+          "mean": 0.9703566342727272,
+          "remaining_pairs": 33
+        },
+        "tdapujTHbeVCcNt41QavkgFPEq3LwDvkFdSaexTpump": {
+          "mean": 0.9694433325882353,
+          "remaining_pairs": 34
+        },
+        "ween2khNidoDMVRKMxiECFjv81MRpT3EyrPyNATNcSd": {
+          "mean": 1.036198734117647,
+          "remaining_pairs": 34
+        },
+        "znExVj4hrNnLt7nEo2uWAFHvWXXSW7LehS3q2dtpump": {
+          "mean": 0.9855605517058823,
+          "remaining_pairs": 34
+        }
+      },
+      "liquidity_buckets": {
+        "34": {
+          "mean": 0.24134491,
+          "pairs": 1,
+          "virtual_sol_range": [
+            17.179869184,
+            34.359738368
+          ]
+        },
+        "35": {
+          "mean": 0.85683815240625,
+          "pairs": 32,
+          "virtual_sol_range": [
+            34.359738368,
+            68.719476736
+          ]
+        },
+        "36": {
+          "mean": 2.5593056135,
+          "pairs": 2,
+          "virtual_sol_range": [
+            68.719476736,
+            137.438953472
+          ]
+        }
+      },
+      "max_control_reuse": 6,
+      "mean_excess_sol_flow": 0.9365364861142857,
+      "pairs": 35,
+      "pairs_detail": [
+        {
+          "bucket": 35,
+          "control": "4wkoDBpNZVj1Qqao9FVSQhPRRYFkviWHYEzHouJepump",
+          "excess_sol_flow": -0.971159646,
+          "mint": "7zJWKXhdNHBuLqg348eEDFLesqhrPCYCu26rEgMupump"
+        },
+        {
+          "bucket": 35,
+          "control": "7zJWKXhdNHBuLqg348eEDFLesqhrPCYCu26rEgMupump",
+          "excess_sol_flow": 4.77738097,
+          "mint": "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump"
+        },
+        {
+          "bucket": 35,
+          "control": "7zJWKXhdNHBuLqg348eEDFLesqhrPCYCu26rEgMupump",
+          "excess_sol_flow": -0.000195554,
+          "mint": "qUA7FEFWUsfDkL3DRx1fn7pBVynrr6xW51F3vYdpump"
+        },
+        {
+          "bucket": 35,
+          "control": "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump",
+          "excess_sol_flow": -0.49505440100000003,
+          "mint": "4wkoDBpNZVj1Qqao9FVSQhPRRYFkviWHYEzHouJepump"
+        },
+        {
+          "bucket": 35,
+          "control": "qUA7FEFWUsfDkL3DRx1fn7pBVynrr6xW51F3vYdpump",
+          "excess_sol_flow": 0.7572036369999999,
+          "mint": "DRG4dM1hza9nijruVnubyhKNBmYRKN5yPNoivzt1pump"
+        },
+        {
+          "bucket": 36,
+          "control": "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump",
+          "excess_sol_flow": 1.7672986819999998,
+          "mint": "ESenFfGjh9E78mv9zDemPL5VvywcBmwDsT7HXfiopump"
+        },
+        {
+          "bucket": 35,
+          "control": "DRG4dM1hza9nijruVnubyhKNBmYRKN5yPNoivzt1pump",
+          "excess_sol_flow": 0.21493789,
+          "mint": "EqNjHCyjzFh53yHtbEzn6BLH7HwUyf6g4p4Pyk7hpump"
+        },
+        {
+          "bucket": 35,
+          "control": "9n8qTfvc3396MLqJuUQHsjhPrc93zoon2GFD87Sbpump",
+          "excess_sol_flow": 1.384715752,
+          "mint": "FZ8LbKTSwnHFCGirvtNCZ5iQfY8gmKpuS7bbzG9dpump"
+        },
+        {
+          "bucket": 35,
+          "control": "BdSag4fY5BKabYKgPnoMHx2XvafhSDhfQMUwWtnfnhm9",
+          "excess_sol_flow": 0.494512404,
+          "mint": "9Yub94kkNZF8ZQ2KMM9rSMXT1roYRD8dCdVTLnpHya4n"
+        },
+        {
+          "bucket": 35,
+          "control": "2k3vNTeMyCQVewwdPWDDzxakCy4oiT4gA9RC5UrZpump",
+          "excess_sol_flow": 0.353599224,
+          "mint": "An7bLx2woBbJY9ReSKCL1nuWKkkbWu7hfkoCz23spump"
+        },
+        {
+          "bucket": 35,
+          "control": "27wVVkZEtxhLGzb8sUYRjkRoKFqNWkLS9voeKcQQpump",
+          "excess_sol_flow": 0.251731872,
+          "mint": "DxjAjnmDdssx6yHXu8gE7HueBf8uQR5v5ZT6Uv5Kpump"
+        },
+        {
+          "bucket": 35,
+          "control": "BdSag4fY5BKabYKgPnoMHx2XvafhSDhfQMUwWtnfnhm9",
+          "excess_sol_flow": 1.3120583350000001,
+          "mint": "9HX5nqUhND5vBX2rm6BSK4iDUkv8mzTP2gqdaTJkpump"
+        },
+        {
+          "bucket": 35,
+          "control": "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump",
+          "excess_sol_flow": -0.182296294,
+          "mint": "tdapujTHbeVCcNt41QavkgFPEq3LwDvkFdSaexTpump"
+        },
+        {
+          "bucket": 35,
+          "control": "283wmFkVaJRpKgKWV1bY78nth4SUraJ45tUZzjNTpump",
+          "excess_sol_flow": -2.451979946,
+          "mint": "ween2khNidoDMVRKMxiECFjv81MRpT3EyrPyNATNcSd"
+        },
+        {
+          "bucket": 35,
+          "control": "283wmFkVaJRpKgKWV1bY78nth4SUraJ45tUZzjNTpump",
+          "excess_sol_flow": -1.873736667,
+          "mint": "F1FHqdxAxoEg4vJDZHWSBDngb7zjB9W1R6JoffN9pump"
+        },
+        {
+          "bucket": 35,
+          "control": "283wmFkVaJRpKgKWV1bY78nth4SUraJ45tUZzjNTpump",
+          "excess_sol_flow": 3.809251225,
+          "mint": "6yTm1FA4UDpXvZNhNncN2xcEwLwiyamBesDn6MyUpump"
+        },
+        {
+          "bucket": 35,
+          "control": "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump",
+          "excess_sol_flow": 2.506363513,
+          "mint": "286L7rjU2n7JDxHwrUjvCQEmX1Ju5rL2ibSzfdjjpump"
+        },
+        {
+          "bucket": 35,
+          "control": "283wmFkVaJRpKgKWV1bY78nth4SUraJ45tUZzjNTpump",
+          "excess_sol_flow": -0.090063847,
+          "mint": "PairUottr9sWf6REag62Y8xeFfrWSpL1F9zikNyqWLV"
+        },
+        {
+          "bucket": 35,
+          "control": "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump",
+          "excess_sol_flow": 4.505024682,
+          "mint": "TnUQ5TXY3yQezcmCKvMTg4W8SuCKrUReUXjG9Vqpump"
+        },
+        {
+          "bucket": 35,
+          "control": "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump",
+          "excess_sol_flow": 4.49514814,
+          "mint": "5EdajXG624C7uVLArueGjFxEAdbJnSs12orQJ8RZpump"
+        },
+        {
+          "bucket": 35,
+          "control": "ESenFfGjh9E78mv9zDemPL5VvywcBmwDsT7HXfiopump",
+          "excess_sol_flow": 0.365050683,
+          "mint": "5yGau2tq3appKeGumo8v6YXJgfzx1ok4nnrEAXJBpump"
+        },
+        {
+          "bucket": 34,
+          "control": "2WE8f12JBvs66tKitcah1bdtGtnxYucxt9Dv8jY1pump",
+          "excess_sol_flow": 0.24134491,
+          "mint": "5XpHkedJegGdNKAvQex6VfRnnpVZggvYorZVsdhtpump"
+        },
+        {
+          "bucket": 35,
+          "control": "5yGau2tq3appKeGumo8v6YXJgfzx1ok4nnrEAXJBpump",
+          "excess_sol_flow": -0.4048966949999999,
+          "mint": "28C9eWcA7U6TooXpNyQWa1kqhJmZrw8QzQcdr6Anpump"
+        },
+        {
+          "bucket": 35,
+          "control": "3Sdnb3NUTjuZk6QrprY49sbFcvdFjr49tFaF9PHhpump",
+          "excess_sol_flow": 1.6119374779999998,
+          "mint": "EaA2dxrHsNnYu3sV7W949P2u6gR6mwEmMTgz1eovpump"
+        },
+        {
+          "bucket": 35,
+          "control": "28DX1vhwdFHvKRibWH3WwBYDroMDFyLFCyhBkgkrpump",
+          "excess_sol_flow": 0.691336508,
+          "mint": "EKV7DH5WaxAwER3eUXokdSKjPn1L783ZrisGHwN6pump"
+        },
+        {
+          "bucket": 35,
+          "control": "HtPb3FWujvB1LtQKf2Np5p1iUcHGHojVYqiK2hPmpump",
+          "excess_sol_flow": 2.402031205,
+          "mint": "12xmMB1tfFCfcxrPFWJBW1a3g2pDH1vk4fG7KmoWpump"
+        },
+        {
+          "bucket": 35,
+          "control": "3Sdnb3NUTjuZk6QrprY49sbFcvdFjr49tFaF9PHhpump",
+          "excess_sol_flow": 4.114581213999999,
+          "mint": "28MjNE7539C6Wnt9MXozsLNdsdDANhHLm9frdfh5pump"
+        },
+        {
+          "bucket": 35,
+          "control": "28MjNE7539C6Wnt9MXozsLNdsdDANhHLm9frdfh5pump",
+          "excess_sol_flow": -0.730281744,
+          "mint": "znExVj4hrNnLt7nEo2uWAFHvWXXSW7LehS3q2dtpump"
+        },
+        {
+          "bucket": 35,
+          "control": "9wQ1XekVv2u3RqJj8wZLgVEKbkFMjrQmHQchfgc9pump",
+          "excess_sol_flow": 1.2866169909999998,
+          "mint": "42tmhwWkPobgohMdKfTVp9WfVvLTioibHGpzK9ygpump"
+        },
+        {
+          "bucket": 35,
+          "control": "28MjNE7539C6Wnt9MXozsLNdsdDANhHLm9frdfh5pump",
+          "excess_sol_flow": -1.307369368,
+          "mint": "nwMYbsAbKfUqYzrVwUXLmxr7rc9fyqRFxUYrtb3pump"
+        },
+        {
+          "bucket": 35,
+          "control": "nwMYbsAbKfUqYzrVwUXLmxr7rc9fyqRFxUYrtb3pump",
+          "excess_sol_flow": 1.5763567269999998,
+          "mint": "2uRmnJ4kNSv7rU8UP2W4vD7mc6ygXTFSTnp2PBfgpump"
+        },
+        {
+          "bucket": 35,
+          "control": "28MjNE7539C6Wnt9MXozsLNdsdDANhHLm9frdfh5pump",
+          "excess_sol_flow": 0.541710165,
+          "mint": "HhKg87nYdhc8aVToT8sKTd6xcHCCW6fYr4Kntfb4pump"
+        },
+        {
+          "bucket": 35,
+          "control": "BCxF3P29Z5yKVjikj1P2fSZbku9QRqHDMGSwKUCepump",
+          "excess_sol_flow": 0.0,
+          "mint": "9iaXwjVAtRQmDKuYuxMmT5GBKiVJ3dQ4ji1vWkEXY1Jz"
+        },
+        {
+          "bucket": 35,
+          "control": "28MjNE7539C6Wnt9MXozsLNdsdDANhHLm9frdfh5pump",
+          "excess_sol_flow": -1.525693576,
+          "mint": "2Xx4zkBgTrAcogMbX3uJBYeKqRQ2csTyuPWLjuDDpump"
+        },
+        {
+          "bucket": 36,
+          "control": "6NQ6R8ndUED8s1MN6zawrhwoekF6Ep78656W9cwTpump",
+          "excess_sol_flow": 3.351312545,
+          "mint": "4fnVcjSP4NV1vW4dPa7gnAZMkgvGTQ4G9Y73e1qhpump"
+        }
+      ],
+      "unique_controls": 21
+    },
+    "persistence": {
+      "equal_control_weight_mean": -0.39184364010000006,
+      "interpretation": "Retrospective sensitivity only, correlated controls and one market period; not net profit or validation",
+      "largest_positive_contributions": {
+        "1": {
+          "mean_after_removal": -0.8544690184,
+          "share_of_all_positive": 0.4227072118820745,
+          "sum": 3.2549855819999998
+        },
+        "3": {
+          "mean_after_removal": -1.549300542125,
+          "share_of_all_positive": 0.922648577262166,
+          "sum": 7.104699734999999
+        }
+      },
+      "leave_control_group_out": {
+        "283wmFkVaJRpKgKWV1bY78nth4SUraJ45tUZzjNTpump": -0.7863390009,
+        "28MjNE7539C6Wnt9MXozsLNdsdDANhHLm9frdfh5pump": -0.11530868200000004,
+        "3Sdnb3NUTjuZk6QrprY49sbFcvdFjr49tFaF9PHhpump": -0.038996906700000084,
+        "6NQ6R8ndUED8s1MN6zawrhwoekF6Ep78656W9cwTpump": -0.6565733348,
+        "7zJWKXhdNHBuLqg348eEDFLesqhrPCYCu26rEgMupump": -0.5778006275,
+        "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump": -0.2830186888888889,
+        "ESenFfGjh9E78mv9zDemPL5VvywcBmwDsT7HXfiopump": -0.4368279091,
+        "HtPb3FWujvB1LtQKf2Np5p1iUcHGHojVYqiK2hPmpump": -0.8544690184,
+        "nwMYbsAbKfUqYzrVwUXLmxr7rc9fyqRFxUYrtb3pump": -0.5013477338000001,
+        "qUA7FEFWUsfDkL3DRx1fn7pBVynrr6xW51F3vYdpump": -0.5383541086
+      },
+      "leave_mint_out_either_role": {
+        "12xmMB1tfFCfcxrPFWJBW1a3g2pDH1vk4fG7KmoWpump": {
+          "mean": -0.8544690184,
+          "remaining_pairs": 10
+        },
+        "283wmFkVaJRpKgKWV1bY78nth4SUraJ45tUZzjNTpump": {
+          "mean": -0.7863390009,
+          "remaining_pairs": 10
+        },
+        "286L7rjU2n7JDxHwrUjvCQEmX1Ju5rL2ibSzfdjjpump": {
+          "mean": -0.25336747740000004,
+          "remaining_pairs": 10
+        },
+        "28MjNE7539C6Wnt9MXozsLNdsdDANhHLm9frdfh5pump": {
+          "mean": -0.11530868200000004,
+          "remaining_pairs": 10
+        },
+        "2uRmnJ4kNSv7rU8UP2W4vD7mc6ygXTFSTnp2PBfgpump": {
+          "mean": -0.5013477338000001,
+          "remaining_pairs": 10
+        },
+        "3Sdnb3NUTjuZk6QrprY49sbFcvdFjr49tFaF9PHhpump": {
+          "mean": -0.038996906700000084,
+          "remaining_pairs": 10
+        },
+        "4fnVcjSP4NV1vW4dPa7gnAZMkgvGTQ4G9Y73e1qhpump": {
+          "mean": -0.6565733348,
+          "remaining_pairs": 10
+        },
+        "5yGau2tq3appKeGumo8v6YXJgfzx1ok4nnrEAXJBpump": {
+          "mean": -0.4368279091,
+          "remaining_pairs": 10
+        },
+        "6NQ6R8ndUED8s1MN6zawrhwoekF6Ep78656W9cwTpump": {
+          "mean": -0.6565733348,
+          "remaining_pairs": 10
+        },
+        "6yTm1FA4UDpXvZNhNncN2xcEwLwiyamBesDn6MyUpump": {
+          "mean": -0.7863390009,
+          "remaining_pairs": 10
+        },
+        "7zJWKXhdNHBuLqg348eEDFLesqhrPCYCu26rEgMupump": {
+          "mean": -0.5778006275,
+          "remaining_pairs": 10
+        },
+        "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump": {
+          "mean": -0.37943373412500003,
+          "remaining_pairs": 8
+        },
+        "DRG4dM1hza9nijruVnubyhKNBmYRKN5yPNoivzt1pump": {
+          "mean": -0.5383541086,
+          "remaining_pairs": 10
+        },
+        "ESenFfGjh9E78mv9zDemPL5VvywcBmwDsT7HXfiopump": {
+          "mean": -0.4368279091,
+          "remaining_pairs": 10
+        },
+        "EaA2dxrHsNnYu3sV7W949P2u6gR6mwEmMTgz1eovpump": {
+          "mean": -0.038996906700000084,
+          "remaining_pairs": 10
+        },
+        "HhKg87nYdhc8aVToT8sKTd6xcHCCW6fYr4Kntfb4pump": {
+          "mean": -0.11530868200000004,
+          "remaining_pairs": 10
+        },
+        "HtPb3FWujvB1LtQKf2Np5p1iUcHGHojVYqiK2hPmpump": {
+          "mean": -0.8544690184,
+          "remaining_pairs": 10
+        },
+        "TnUQ5TXY3yQezcmCKvMTg4W8SuCKrUReUXjG9Vqpump": {
+          "mean": -0.5303198028,
+          "remaining_pairs": 10
+        },
+        "nwMYbsAbKfUqYzrVwUXLmxr7rc9fyqRFxUYrtb3pump": {
+          "mean": -0.5013477338000001,
+          "remaining_pairs": 10
+        },
+        "qUA7FEFWUsfDkL3DRx1fn7pBVynrr6xW51F3vYdpump": {
+          "mean": -0.5383541086,
+          "remaining_pairs": 10
+        }
+      },
+      "liquidity_buckets": {
+        "35": {
+          "mean": -0.6565733348,
+          "pairs": 10,
+          "virtual_sol_range": [
+            34.359738368,
+            68.719476736
+          ]
+        },
+        "36": {
+          "mean": 1.2760287460000002,
+          "pairs": 1,
+          "virtual_sol_range": [
+            68.719476736,
+            137.438953472
+          ]
+        }
+      },
+      "max_control_reuse": 2,
+      "mean_excess_sol_flow": -0.4808822365454546,
+      "pairs": 11,
+      "pairs_detail": [
+        {
+          "bucket": 35,
+          "control": "7zJWKXhdNHBuLqg348eEDFLesqhrPCYCu26rEgMupump",
+          "excess_sol_flow": 0.48830167300000005,
+          "mint": "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump"
+        },
+        {
+          "bucket": 35,
+          "control": "qUA7FEFWUsfDkL3DRx1fn7pBVynrr6xW51F3vYdpump",
+          "excess_sol_flow": 0.093836484,
+          "mint": "DRG4dM1hza9nijruVnubyhKNBmYRKN5yPNoivzt1pump"
+        },
+        {
+          "bucket": 35,
+          "control": "283wmFkVaJRpKgKWV1bY78nth4SUraJ45tUZzjNTpump",
+          "excess_sol_flow": 2.5736854069999993,
+          "mint": "6yTm1FA4UDpXvZNhNncN2xcEwLwiyamBesDn6MyUpump"
+        },
+        {
+          "bucket": 35,
+          "control": "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump",
+          "excess_sol_flow": -2.756029828,
+          "mint": "286L7rjU2n7JDxHwrUjvCQEmX1Ju5rL2ibSzfdjjpump"
+        },
+        {
+          "bucket": 35,
+          "control": "DNJnsGhuWVQdDXHwYQPjoK2KmnM2H7K8ExAAXWLBpump",
+          "excess_sol_flow": 0.013493426,
+          "mint": "TnUQ5TXY3yQezcmCKvMTg4W8SuCKrUReUXjG9Vqpump"
+        },
+        {
+          "bucket": 35,
+          "control": "ESenFfGjh9E78mv9zDemPL5VvywcBmwDsT7HXfiopump",
+          "excess_sol_flow": -0.921425511,
+          "mint": "5yGau2tq3appKeGumo8v6YXJgfzx1ok4nnrEAXJBpump"
+        },
+        {
+          "bucket": 35,
+          "control": "3Sdnb3NUTjuZk6QrprY49sbFcvdFjr49tFaF9PHhpump",
+          "excess_sol_flow": -4.899735535,
+          "mint": "EaA2dxrHsNnYu3sV7W949P2u6gR6mwEmMTgz1eovpump"
+        },
+        {
+          "bucket": 35,
+          "control": "HtPb3FWujvB1LtQKf2Np5p1iUcHGHojVYqiK2hPmpump",
+          "excess_sol_flow": 3.2549855819999998,
+          "mint": "12xmMB1tfFCfcxrPFWJBW1a3g2pDH1vk4fG7KmoWpump"
+        },
+        {
+          "bucket": 35,
+          "control": "nwMYbsAbKfUqYzrVwUXLmxr7rc9fyqRFxUYrtb3pump",
+          "excess_sol_flow": -0.276227264,
+          "mint": "2uRmnJ4kNSv7rU8UP2W4vD7mc6ygXTFSTnp2PBfgpump"
+        },
+        {
+          "bucket": 35,
+          "control": "28MjNE7539C6Wnt9MXozsLNdsdDANhHLm9frdfh5pump",
+          "excess_sol_flow": -4.136617782,
+          "mint": "HhKg87nYdhc8aVToT8sKTd6xcHCCW6fYr4Kntfb4pump"
+        },
+        {
+          "bucket": 36,
+          "control": "6NQ6R8ndUED8s1MN6zawrhwoekF6Ep78656W9cwTpump",
+          "excess_sol_flow": 1.2760287460000002,
+          "mint": "4fnVcjSP4NV1vW4dPa7gnAZMkgvGTQ4G9Y73e1qhpump"
+        }
+      ],
+      "unique_controls": 10
+    }
+  },
+  "flow_outcomes_sha256": "153168a361fb44dbcc3ada8a6340effcb10d497d1f2f066a2fd29890f6cef66f",
+  "implementation_sha256": "49330793ef95d6a2cdb067b5dc88b81ddcd67a36f38c5ced1f8eb8c2781cc31b",
+  "inputs": [
+    {
+      "opportunities_sha256": "ccc8c5d17cc6773ed162bddd797aca2f0047ff96d791cbe4c15941f78c3160af",
+      "session": "session-01",
+      "sha256": "5674283ee295f2f92d32e4cb4ff19069141d0f1c151b9bade2decc5a11ebd1e1"
+    },
+    {
+      "opportunities_sha256": "ff9d6924954022344ff8402eb850ec24f597d3a56a84edfe65bcef7660eb8578",
+      "session": "session-02",
+      "sha256": "5ce5aca56d1d5d98c90784be1291ece73b77f6354e9b61dd60353a0bd4824943"
+    },
+    {
+      "opportunities_sha256": "a90e205e7fcb5ad722390570e341f6efc9e525f1f046133a1068bc1623b007cf",
+      "session": "session-03",
+      "sha256": "bce94a7c5f670e679ef5c46c6119a314202af5a65e42e144fa34130889a8f3c7"
+    },
+    {
+      "opportunities_sha256": "48bfb117901c4abceedfed4ab1385d108af8540e1be1aac2f6010b5104f6b096",
+      "session": "session-04",
+      "sha256": "a5d492d0c362258dc20ec42fd6970510f5be1f91823936f888a14885f7d69320"
+    },
+    {
+      "opportunities_sha256": "0c12f675817c204548b1bbcfa2d094ae08507df4f36a13d990ad0f49f11c6aaa",
+      "session": "session-05",
+      "sha256": "467645820965faa1e2e7aa6d090a675b0082bbd9512a498a94feeca3adcf8dc8"
+    },
+    {
+      "opportunities_sha256": "48b51e0c4193ac7ab041cd311fc43e487e520819c49489c02b1c4d42562be37a",
+      "session": "session-06",
+      "sha256": "e05aedc49897d3b7b70660c4459ec2ddb352512f2c7b47393634ed7d428455b9"
+    },
+    {
+      "opportunities_sha256": "69f9fbb3c7bf04fc1454d9ba506553bb6349d472dae660caeb76797e14940ea4",
+      "session": "session-07",
+      "sha256": "f6c377dbc4616ffc1d9ac3ff9f226a10ef95be7567d81d014c079ff2d0500f6a"
+    },
+    {
+      "opportunities_sha256": "75a1db73cd7ea2c7d1d4053db14eefd7e6283962138a87185e5a879c96fae456",
+      "session": "session-08",
+      "sha256": "173969d30dc2c8fae0b8ae8aacd1249a76e7ef132141c7e82fb34b4138ffdf9a"
+    }
+  ],
+  "missing_controls": 42,
+  "non_executable_quotes_proven": 0,
+  "schema": "QUOTE_CONTEXT_DIAGNOSTIC_V1",
+  "seeds": 78,
+  "size_scenarios_per_arm": 234,
+  "unmatched_candidate_exclusions": {
+    "ALSO_BURST": 8,
+    "BASELINE_OLDER_THAN_1S": 42,
+    "DIFFERENT_LIQUIDITY_BUCKET": 26,
+    "LATEST_EVENT_INVALID": 2874,
+    "NO_EVENT_IN_LAST_250MS": 3995,
+    "WARMUP_UNDER_1S": 93
+  },
+  "unresolved_attempts": 468,
+  "valid_quotes": 0
+}

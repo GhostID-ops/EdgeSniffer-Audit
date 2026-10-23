@@ -1,0 +1,14 @@
+{
+  "schema": "NATIVE_EVENT_CONTINUATION_SECONDARY_V1",
+  "status": "Declared after primary price results, before computing this endpoint; retrospective exploratory, not validation",
+  "population": "Unchanged first-mint burst seeds and original same-clock controls from the fixed study; do not reselect controls",
+  "intervals": {"burst": "(seed+1s, seed+3s]", "persistence": "(seed+3s, seed+5s]"},
+  "endpoint": "Known executed Pump SOL event count and signed SOL flow; paired target-minus-control differences",
+  "persistence": "Report all original seeds and confirmation status; admitted-only comparison separately, never erase rejected/unknown seeds",
+  "zero": "No new eligible decoded Pump SOL event in a complete observed interval, not zero price return or proof of no activity on other venues",
+  "unknown": "Right-censored intervals, invalid/ambiguous state points, unknown executions mentioning the mint, successful Pump instructions without interpretable event context",
+  "failed": "Count native-known mint account mentions diagnostically; zero contribution to executed flow",
+  "uncertainty": "Descriptive paired20s seed-time block bootstrap; reused controls and one short market period limit inference",
+  "strategy_change": false,
+  "net_profitability": "Not evaluated"
+}

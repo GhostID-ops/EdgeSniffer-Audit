@@ -1,0 +1,7 @@
+[Unit]
+Description=EdgeSniffer kEFi fresh replication V7 capacity guard
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/mkdir -p /mnt/edgesniffer-kefi-hot/kefi-capture-first-live-v7
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/kefi_full_meta_capacity_guard_v1.py --hot-root /root/kefi-capture-first-promotions-v7 --host-mount / --state /mnt/edgesniffer-kefi-hot/kefi-capture-first-live-v7/operations/capacity-guard.json --collector-unit edgesniffer-kefi-full-meta-capture-first-v7.service --systemd-scope system --warning-free-gib 100 --emergency-free-gib 70

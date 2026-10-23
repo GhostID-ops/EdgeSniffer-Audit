@@ -1,0 +1,13 @@
+[Unit]
+Description=EdgeSniffer teacher impulse parity epoch report
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/bot/EdgeSniffer/rust-sidecar
+Environment=RUST_LOG=info
+ExecStart=/bin/bash -lc 'source /root/.cargo/env && mkdir -p /var/lib/edgesniffer-teacher-impulse-parity-v1/reports && target/release/teacher_impulse_epoch_report --candidate-source /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-source.jsonl --decision-inputs /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --decision-receipts /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-receipts.jsonl --config-epoch teacher-impulse-parity-v1 --allow-missing --output-markdown /var/lib/edgesniffer-teacher-impulse-parity-v1/reports/epoch-$(date +%%Y%%m%%d-%%H%%M%%S).md --output-json /var/lib/edgesniffer-teacher-impulse-parity-v1/reports/epoch-$(date +%%Y%%m%%d-%%H%%M%%S).json'
+
+[Install]
+WantedBy=multi-user.target

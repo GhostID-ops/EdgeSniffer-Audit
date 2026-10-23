@@ -1,0 +1,12 @@
+[Unit]
+Description=Update Pump exact-alpha discovery table hourly
+
+[Timer]
+OnCalendar=*-*-* *:18:00 UTC
+Persistent=true
+RandomizedDelaySec=15
+Unit=pump-exact-alpha-table-v1.service
+
+[Install]
+WantedBy=timers.target
+

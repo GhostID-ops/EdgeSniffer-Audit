@@ -1,0 +1,15 @@
+[Unit]
+Description=EdgeSniffer teacher impulse parity source emitter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/EdgeSniffer/rust-sidecar
+Environment=RUST_LOG=info
+ExecStart=/bin/bash -lc 'source /root/.cargo/env && target/release/teacher_impulse_source_emitter --input /var/lib/edgesniffer-teacher-impulse-parity-v1/upstream-selected-events.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-source.jsonl --follow --start-at-end --poll-ms 25 --create-output-dir --required-lane teacher-impulse-parity-v1 --required-policy no-submit --slippage-bps 500'
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

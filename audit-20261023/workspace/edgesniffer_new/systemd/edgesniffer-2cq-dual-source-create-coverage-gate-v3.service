@@ -1,0 +1,8 @@
+[Unit]
+Description=EdgeSniffer 2CQ dual-source CREATE coverage gate V3
+After=pump-exact-evidence-ledger-v1.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/bin/flock -n /run/edgesniffer-2cq-dual-source-create-coverage-gate-v3.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/twoCqDualSourceCreateCoverageGateV2.py --burnin-version V3 --gate-root /mnt/HC_Volume_106775198/edgesniffer-research/2cq-dual-source-create-coverage-gate-v3 --registry-db /mnt/HC_Volume_106775198/edgesniffer-research/2cq-sol-pump-create-provenance-registry-v1/registry.sqlite3 --registry-status /mnt/HC_Volume_106775198/edgesniffer-research/2cq-sol-pump-create-provenance-registry-v1/status.json --exact-root /var/lib/pump-exact-evidence-ledger-v1 --allenhark-health /var/lib/pump-exact-evidence-ledger-v1/allenhark-arrivals-v1/health.json --all-transaction-root /var/lib/pump-exact-evidence-ledger-v1/allenhark-arrivals-v1/all-transactions --new-cohort-root /mnt/HC_Volume_106775198/edgesniffer-research/2cq-dual-source-create-symmetric-v1 --new-cohort-timer edgesniffer-2cq-dual-source-create-symmetric-v1.timer

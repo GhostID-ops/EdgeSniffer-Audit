@@ -1,0 +1,20 @@
+[Unit]
+Description=EdgeSniffer fresh prospective latency cohort market windows (read-only)
+After=edgesniffer-independent-native-boundary-replay-v1.service
+Wants=edgesniffer-independent-native-boundary-replay-v1.service
+
+[Service]
+Type=simple
+Slice=edgesniffer-active-cohort.slice
+WorkingDirectory=/root/bot/EdgeSniffer/scripts
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/refresh2CQFingerprintMarketWindowsV1.py --input /mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/native-boundary-replay-v1.jsonl --fingerprint /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v1/2cq-fingerprint-independent-v1.json --output /mnt/HC_Volume_106775198/edgesniffer-research/2cq-independent-fingerprint-v1/prospective-market-windows-20261022T211514Z.jsonl --start-at-receive-ms 1792703669063 --poll-sec 60
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-research/2cq-independent-fingerprint-v1
+
+[Install]
+WantedBy=multi-user.target

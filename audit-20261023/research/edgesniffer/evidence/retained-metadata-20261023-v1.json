@@ -1,0 +1,14 @@
+{
+  "schema": "RETAINED_METADATA_CAPABILITY_V1",
+  "formats": {
+    "yellowstone_subscribe_update_protobuf": 213
+  },
+  "protobuf_inputs": 213,
+  "normalizer_exit": 0,
+  "results": {
+    "MISSING_TRANSACTION_META": 208,
+    "decoded": 5
+  },
+  "native_availability_certified": false,
+  "scope": "Existing decoder capability only; original raw frames preserved. No backdating."
+}

@@ -1,0 +1,19 @@
+[Unit]
+Description=EdgeSniffer kEFi fresh replication low-impact materializer
+After=edgesniffer-kefi-full-meta-capture-first-v6.service
+
+[Service]
+Type=oneshot
+User=root
+Environment=KEFI_SOURCE_ROOT=/mnt/edgesniffer-kefi-hot/kefi-capture-first-live-v6
+Environment=KEFI_PROMOTION_ROOT=/mnt/edgesniffer-expansion/kefi-capture-first-promotions-v6
+Environment=KEFI_CONTROL_OUT=/mnt/edgesniffer-kefi-hot/kefi-capture-first-control-v6
+Environment=KEFI_COLLECTOR_UNIT=edgesniffer-kefi-full-meta-capture-first-v6.service
+Environment=KEFI_MAX_WINDOWS_PER_CYCLE=4
+ExecStart=/usr/local/sbin/edgesniffer-kefi-capture-first-control-v2-runner
+Nice=10
+IOSchedulingClass=idle
+IOSchedulingPriority=7
+CPUQuota=100%
+IOWeight=10
+NoNewPrivileges=true

@@ -1,0 +1,11 @@
+[Unit]
+Description=Update Pump exact-evidence N checkpoints hourly
+
+[Timer]
+OnCalendar=*-*-* *:08:00 UTC
+Persistent=true
+RandomizedDelaySec=15
+Unit=pump-exact-evidence-readiness-v1.service
+
+[Install]
+WantedBy=timers.target

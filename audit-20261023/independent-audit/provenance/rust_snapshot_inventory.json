@@ -1,0 +1,32 @@
+{
+  "main.rs": {
+    "sha256": "7f78e608a395cb4931f28065836ffa6061a6a398912a4aa29116df788da02105",
+    "lines": 24442,
+    "exact_quote_v3_constant": true,
+    "buy_v3_constant": false,
+    "sell_v3_constant": false,
+    "fee_config_emitter": false,
+    "real_sol_emitter": false,
+    "feed_stale_watchdog": false
+  },
+  "main.remote.current.rs": {
+    "sha256": "939e6aa9def0f38381766469ae3f6950e5d8cab1e8ec815e6eb68674739a18d8",
+    "lines": 23692,
+    "exact_quote_v3_constant": false,
+    "buy_v3_constant": false,
+    "sell_v3_constant": false,
+    "fee_config_emitter": true,
+    "real_sol_emitter": true,
+    "feed_stale_watchdog": true
+  },
+  "main_remote.rs": {
+    "sha256": "8b5defc9e642afdf391ff709c96e9744a087da38b91e9326ac462fc03e21f2ca",
+    "lines": 23612,
+    "exact_quote_v3_constant": false,
+    "buy_v3_constant": false,
+    "sell_v3_constant": false,
+    "fee_config_emitter": true,
+    "real_sol_emitter": true,
+    "feed_stale_watchdog": true
+  }
+}

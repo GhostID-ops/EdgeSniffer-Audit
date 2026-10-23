@@ -1,0 +1,1248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Obsidian Labs - Copy Trading</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #020304;
+      --panel: #07090d;
+      --panel-2: #0b0e14;
+      --line: #1a202c;
+      --text: #f6f8fc;
+      --muted: #7f8796;
+      --soft: #d5dbe7;
+      --blue: #8bd8ff;
+      --green: #5df2ae;
+      --amber: #f3c969;
+      --red: #ff7373;
+      --shadow: 0 24px 90px rgba(0,0,0,.62);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--text);
+      background:
+        radial-gradient(900px 500px at 82% -12%, rgba(93,242,174,.07), transparent 58%),
+        radial-gradient(700px 440px at -10% 14%, rgba(139,216,255,.06), transparent 60%),
+        var(--bg);
+    }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
+    .shell { width: min(1180px, calc(100% - 28px)); margin: 0 auto; padding: 20px 0 32px; }
+    .top {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 16px 0 18px; position: sticky; top: 0; z-index: 5;
+      background: rgba(2,3,4,.88); backdrop-filter: blur(14px);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .mark { width: 38px; height: 38px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(135deg, var(--blue), var(--green)); color: #020304; font-weight: 950; box-shadow: 0 0 28px rgba(93,242,174,.18); }
+    h1 { margin: 0; font-size: 22px; letter-spacing: -.3px; }
+    .subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .status-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 7px; min-height: 32px; padding: 6px 10px;
+      border: 1px solid var(--line); border-radius: 999px; color: var(--soft); font-size: 12px; font-weight: 800;
+      background: rgba(255,255,255,.025);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #667085; }
+    .dot.on { background: var(--green); box-shadow: 0 0 14px rgba(71,229,164,.7); }
+    .dot.warn { background: var(--amber); box-shadow: 0 0 14px rgba(243,201,105,.55); }
+    .grid { display: grid; grid-template-columns: 1.03fr .97fr; gap: 16px; align-items: start; }
+    .card {
+      border: 1px solid var(--line); border-radius: 8px; background: linear-gradient(180deg, rgba(12,15,22,.96), rgba(7,9,13,.98));
+      box-shadow: var(--shadow); overflow: hidden;
+    }
+    .card-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 15px 16px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.018);
+    }
+    .card-title { font-size: 15px; font-weight: 900; letter-spacing: -.1px; }
+    .card-body { padding: 16px; }
+    .steps { display: grid; gap: 12px; }
+    .step {
+      display: grid; grid-template-columns: 34px 1fr; gap: 12px; padding: 14px;
+      border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2);
+    }
+    .num { width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; background: rgba(125,211,252,.12); color: var(--blue); font-weight: 950; }
+    .step h2 { margin: 0 0 8px; font-size: 17px; letter-spacing: -.2px; }
+    .hint { color: var(--muted); font-size: 12.5px; line-height: 1.45; margin-top: 7px; }
+    label { display: block; color: var(--soft); font-size: 12px; font-weight: 850; margin: 0 0 7px; }
+    input, textarea, select {
+      width: 100%; border: 1px solid var(--line); background: #05070a; color: var(--text);
+      border-radius: 8px; padding: 11px 12px; outline: none;
+    }
+    textarea { min-height: 76px; resize: vertical; line-height: 1.4; }
+    input:focus, textarea:focus, select:focus { border-color: rgba(125,211,252,.75); box-shadow: 0 0 0 3px rgba(125,211,252,.12); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .amounts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .amount {
+      min-height: 42px; border: 1px solid var(--line); border-radius: 8px;
+      background: #05070a; color: var(--soft); font-weight: 900;
+    }
+    .amount.active { border-color: var(--green); color: #07130f; background: var(--green); }
+    .strategies { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .strategy {
+      border: 1px solid var(--line); border-radius: 8px; padding: 13px;
+      background: linear-gradient(180deg, #080b10, #05070a); color: inherit; text-align: left; min-height: 138px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
+    }
+    .strategy:hover { border-color: rgba(125,211,252,.55); }
+    .strategy.active { border-color: var(--green); box-shadow: 0 0 0 2px rgba(71,229,164,.13) inset; }
+    .strategy strong { display: block; font-size: 15px; line-height: 1.2; }
+    .strategy p { margin: 7px 0 0; color: var(--muted); font-size: 12.3px; line-height: 1.38; }
+    .strategy-pick {
+      appearance: none; border: 0; padding: 0; margin: 0; background: transparent;
+      color: inherit; text-align: left; width: 100%;
+    }
+    .strategy-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .why-strategy {
+      min-height: 31px; border: 1px solid rgba(139,216,255,.28); border-radius: 8px;
+      color: var(--blue); background: rgba(139,216,255,.06); padding: 6px 9px; font-size: 11px; font-weight: 950;
+    }
+    .why-strategy:hover { border-color: rgba(139,216,255,.65); }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { display: inline-flex; padding: 4px 7px; border-radius: 999px; background: rgba(255,255,255,.05); color: var(--soft); font-size: 10.5px; font-weight: 900; }
+    .tag.green { color: #07130f; background: var(--green); }
+    .tag.amber { color: #1e1500; background: var(--amber); }
+    .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .btn {
+      min-height: 48px; border: 1px solid var(--line); border-radius: 8px; padding: 11px 14px;
+      background: rgba(255,255,255,.035); color: var(--text); font-weight: 950;
+    }
+    .btn.primary { border-color: transparent; color: #061018; background: linear-gradient(135deg, var(--green), var(--blue)); }
+    .btn.danger { border-color: rgba(255,115,115,.55); color: #fff; background: rgba(255,115,115,.12); }
+    .btn.ghost { color: var(--soft); background: #05070a; }
+    .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+    .metric { border: 1px solid var(--line); border-radius: 8px; background: linear-gradient(180deg, #0b0e14, #06080c); padding: 13px; min-height: 80px; }
+    .metric span { display: block; color: var(--muted); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .45px; }
+    .metric strong { display: block; margin-top: 8px; font-size: 21px; letter-spacing: -.4px; overflow-wrap: anywhere; }
+    .mini { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .status-panel { display: grid; gap: 8px; }
+    .check-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      border: 1px solid var(--line); border-radius: 8px; background: #05070a; padding: 10px 11px;
+    }
+    .check-row span:first-child { color: var(--soft); font-size: 12.5px; font-weight: 850; }
+    .check-state { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; font-weight: 950; text-align: right; }
+    .check-state::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #667085; }
+    .check-state.ok { color: var(--green); }
+    .check-state.ok::before { background: var(--green); box-shadow: 0 0 12px rgba(93,242,174,.58); }
+    .check-state.warn { color: var(--amber); }
+    .check-state.warn::before { background: var(--amber); box-shadow: 0 0 12px rgba(243,201,105,.45); }
+    .check-state.bad { color: var(--red); }
+    .check-state.bad::before { background: var(--red); box-shadow: 0 0 12px rgba(255,115,115,.45); }
+    .strategy-summary {
+      border: 1px solid rgba(93,242,174,.24); border-radius: 8px; background: rgba(93,242,174,.06);
+      padding: 12px; color: var(--soft); font-size: 13px; line-height: 1.45; margin-top: 10px;
+    }
+    .strategy-summary b { color: var(--text); }
+    .live-warning {
+      display: none; border: 1px solid rgba(255,115,115,.45); border-radius: 8px;
+      background: rgba(255,115,115,.09); color: #ffd7d7; padding: 11px 12px; font-size: 12.5px; line-height: 1.42;
+    }
+    .live-warning.show { display: block; }
+    .feed { height: 292px; overflow: auto; display: grid; align-content: start; gap: 8px; padding-right: 2px; }
+    .log {
+      border: 1px solid var(--line); border-radius: 8px; background: #05070a; padding: 10px 11px;
+      color: var(--soft); font-size: 12.5px; line-height: 1.4;
+    }
+    .log.good { border-color: rgba(71,229,164,.4); }
+    .log.bad { border-color: rgba(255,115,115,.42); }
+    .log.warn { border-color: rgba(243,201,105,.42); }
+    .positions { display: grid; gap: 8px; }
+    .position {
+      display: grid; gap: 10px;
+      border: 1px solid var(--line); border-radius: 8px; background: #05070a; padding: 11px;
+    }
+    .position b { display: block; font-size: 13px; }
+    .position span { color: var(--muted); font-size: 12px; }
+    .position-top { display: flex; justify-content: space-between; gap: 10px; align-items: start; }
+    .sell-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .sell-action {
+      min-height: 36px; border: 1px solid var(--line); border-radius: 8px;
+      color: var(--soft); background: #080b10; font-size: 12px; font-weight: 950;
+    }
+    .sell-action:hover { border-color: rgba(93,242,174,.55); color: var(--green); }
+    .sell-action.full { border-color: rgba(255,115,115,.45); color: #ffd5d5; background: rgba(255,115,115,.08); }
+    .details { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #05070a; }
+    .details summary { padding: 12px 13px; font-weight: 950; cursor: pointer; color: var(--soft); }
+    .details-body { padding: 0 13px 13px; display: grid; gap: 10px; }
+    .preset-note {
+      border: 1px solid rgba(125,211,252,.28); border-radius: 8px; background: rgba(125,211,252,.07);
+      color: var(--soft); padding: 11px 12px; font-size: 12.5px; line-height: 1.45;
+    }
+    .setting-card { border: 1px solid var(--line); border-radius: 8px; background: rgba(255,255,255,.025); padding: 11px; }
+    .setting-card label { margin-bottom: 6px; }
+    .explain { color: var(--muted); font-size: 12px; line-height: 1.4; margin-top: 7px; }
+    .toast {
+      position: fixed; right: 18px; bottom: 18px; z-index: 20; max-width: min(430px, calc(100% - 36px));
+      border: 1px solid var(--line); border-radius: 8px; background: #111722; color: var(--text);
+      padding: 12px 13px; box-shadow: var(--shadow); display: none; font-size: 13px; line-height: 1.4;
+    }
+    .toast.show { display: block; }
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 30; display: none; place-items: center;
+      padding: 18px; background: rgba(0,0,0,.72); backdrop-filter: blur(10px);
+    }
+    .modal-backdrop.open { display: grid; }
+    .modal {
+      width: min(760px, 100%); max-height: min(84vh, 780px); overflow: auto;
+      border: 1px solid var(--line); border-radius: 8px;
+      background: linear-gradient(180deg, #0b0e14, #040507); box-shadow: var(--shadow);
+    }
+    .modal-head {
+      position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; gap: 12px; align-items: start;
+      padding: 16px; border-bottom: 1px solid var(--line); background: rgba(7,9,13,.96);
+    }
+    .modal-title { margin: 0; font-size: 20px; letter-spacing: -.2px; }
+    .modal-subtitle { margin-top: 4px; color: var(--muted); font-size: 12.5px; }
+    .icon-btn {
+      width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 8px;
+      background: #05070a; color: var(--soft); font-size: 20px; line-height: 1;
+    }
+    .modal-body { padding: 16px; display: grid; gap: 14px; }
+    .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .insight-metric {
+      border: 1px solid var(--line); border-radius: 8px; background: #05070a; padding: 12px;
+    }
+    .insight-metric span { display: block; color: var(--muted); font-size: 10.5px; font-weight: 950; text-transform: uppercase; letter-spacing: .4px; }
+    .insight-metric strong { display: block; margin-top: 7px; font-size: 18px; overflow-wrap: anywhere; }
+    .bucket-table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 8px; border: 1px solid var(--line); }
+    .bucket-table th, .bucket-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); text-align: left; font-size: 12px; }
+    .bucket-table th { color: var(--muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: .45px; background: rgba(255,255,255,.025); }
+    .bucket-table tr:last-child td { border-bottom: 0; }
+    .insight-list { margin: 0; padding-left: 18px; color: var(--soft); font-size: 13px; line-height: 1.5; }
+    .insight-list li + li { margin-top: 6px; }
+    .muted { color: var(--muted); }
+    .green { color: var(--green); }
+    .red { color: var(--red); }
+    .amber { color: var(--amber); }
+    @media (max-width: 960px) {
+      .grid { grid-template-columns: 1fr; }
+      .top { position: static; align-items: flex-start; }
+      .summary { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 680px) {
+      .top, .status-row { align-items: stretch; flex-direction: column; }
+      .strategies, .row, .amounts, .btns, .summary { grid-template-columns: 1fr; }
+      .step { grid-template-columns: 1fr; }
+      .insight-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <div class="brand">
+        <div class="mark">OL</div>
+        <div>
+          <h1>Copy Trading Console</h1>
+          <div class="subtitle">Choose a strategy pool, fund your own wallet, and start the bot.</div>
+        </div>
+      </div>
+      <div class="status-row">
+        <span class="pill" id="runPill"><i class="dot" id="runDot"></i><span id="runText">Loading</span></span>
+        <span class="pill" id="modePill">Mode: <b id="modeText">--</b></span>
+        <span class="pill">Balance: <b id="balanceText">--</b></span>
+      </div>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Start In 3 Steps</div>
+            <div class="hint">No trading jargon required. Advanced controls are still here when you need them.</div>
+          </div>
+          <button class="btn ghost" id="refreshBtn" type="button">Refresh</button>
+        </div>
+        <div class="card-body">
+          <div class="steps">
+            <div class="step">
+              <div class="num">1</div>
+              <div>
+                <h2>Connect bot wallet</h2>
+                <label for="privateKey">Private key</label>
+                <input id="privateKey" type="password" autocomplete="off" placeholder="Paste private key once, then save" />
+                <div class="row" style="margin-top:10px">
+                  <button class="btn ghost" id="saveKeyBtn" type="button">Save Wallet</button>
+                  <button class="btn ghost" id="toggleModeBtn" type="button">Switch Mode</button>
+                </div>
+                <div class="hint">The key writes only to this isolated demo instance on the VPS.</div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="num">2</div>
+              <div>
+                <h2>Choose strategy pool</h2>
+                <div class="strategies" id="strategyGrid"></div>
+                <details class="details">
+                  <summary>Custom wallet</summary>
+                  <div class="details-body">
+                    <label for="customWallets">Tracked wallet address(es)</label>
+                    <textarea id="customWallets" placeholder="One wallet per line"></textarea>
+                    <button class="btn ghost" id="useCustomBtn" type="button">Use Custom Wallet</button>
+                  </div>
+                </details>
+                <div class="strategy-summary" id="strategySummary">Choose a strategy to see exactly what the bot will buy and how it exits.</div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="num">3</div>
+              <div>
+                <h2>Choose bot buy size</h2>
+                <div class="amounts" id="amountGrid"></div>
+                <div class="row" style="margin-top:10px">
+                  <div>
+                    <label for="customAmount">Custom SOL per buy</label>
+                    <input id="customAmount" type="number" min="0.001" step="0.001" placeholder="0.01" />
+                  </div>
+                  <div>
+                    <label for="reserveSol">Gas money to keep safe</label>
+                    <input id="reserveSol" type="number" min="0" step="0.001" value="0.03" />
+                    <div class="hint">The bot will leave this much SOL unused so the wallet can still pay network fees.</div>
+                  </div>
+                </div>
+                <div class="live-warning" id="liveWarning">
+                  Live Money mode can spend real SOL from this wallet. Start in Shadow mode or tiny live size until the first test trade looks right.
+                </div>
+                <details class="details" style="margin-top:12px" open>
+                  <summary>Pre-flight checklist before Start</summary>
+                  <div class="details-body status-panel" id="preflightList">
+                    <div class="check-row"><span>Private key</span><span class="check-state warn">Checking</span></div>
+                    <div class="check-row"><span>Balance</span><span class="check-state warn">Checking</span></div>
+                    <div class="check-row"><span>Tracked wallet</span><span class="check-state warn">Checking</span></div>
+                    <div class="check-row"><span>Live / Shadow mode</span><span class="check-state warn">Checking</span></div>
+                    <div class="check-row"><span>ShredStream / gRPC</span><span class="check-state warn">Checking</span></div>
+                    <div class="check-row"><span>Rust executor</span><span class="check-state warn">Checking</span></div>
+                  </div>
+                </details>
+                <div class="btns">
+                  <button class="btn primary" id="startBtn" type="button">Start Copy Trading</button>
+                  <button class="btn danger" id="stopBtn" type="button">Stop Bot</button>
+                </div>
+                <details class="details">
+                  <summary>Advanced safety settings</summary>
+                  <div class="details-body">
+                    <div class="preset-note" id="presetNote">Recommended defaults are loaded from the selected strategy.</div>
+                    <div class="row">
+                      <div class="setting-card">
+                        <label for="copyPct">Buy sizing style</label>
+                        <input id="copyPct" type="number" min="0" max="100" step="1" value="0" />
+                        <div class="explain">Use 0 for beginner mode: every buy uses the SOL amount above. Use 10-100 only if you want to size buys as a percent of the source wallet's buy.</div>
+                      </div>
+                      <div class="setting-card">
+                        <label for="maxBuy">Largest buy allowed</label>
+                        <input id="maxBuy" type="number" min="0.001" step="0.001" value="0.01" />
+                        <div class="explain">Hard cap per trade. Even if the copied wallet buys huge, the bot will not spend more than this.</div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="setting-card">
+                        <label for="slippage">Price movement room</label>
+                        <input id="slippage" type="number" min="0.1" max="100" step="0.1" value="10" />
+                        <div class="explain">Higher means the bot is more likely to land a fast buy, but may accept a worse fill. 10-15% is the simple live-test zone.</div>
+                      </div>
+                      <div class="setting-card">
+                        <label for="mirrorSells">Auto-follow sells</label>
+                        <select id="mirrorSells">
+                          <option value="true">On - sell when the wallet sells</option>
+                          <option value="false">Off - manual/risk exits only</option>
+                        </select>
+                        <div class="explain">Recommended on. The bot exits when the strategy wallet exits, unless profit lock or stop loss sells first.</div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="setting-card">
+                        <label for="hybridLock">Profit lock</label>
+                        <select id="hybridLock">
+                          <option value="on">On - sell 50% at +30%, ride the rest</option>
+                          <option value="off">Off - only follow wallet/risk exits</option>
+                        </select>
+                        <div class="explain">Default: on. If a trade jumps +30%, the bot banks half, then lets the rest follow the source wallet's exit.</div>
+                      </div>
+                      <div class="setting-card">
+                        <label for="stopLoss">Emergency stop</label>
+                        <input id="stopLoss" type="number" min="0" max="100" step="1" placeholder="35" />
+                        <div class="explain">If price drops this much after the minimum hold time, the bot exits to avoid a full bag.</div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="setting-card">
+                        <label for="minHold">Stop-loss wait time</label>
+                        <select id="minHold">
+                          <option value="15000">15 seconds - faster protection</option>
+                          <option value="25000">25 seconds - gives launches room</option>
+                          <option value="45000">45 seconds - more patient</option>
+                        </select>
+                        <div class="explain">Prevents the bot from instantly panic-selling normal launch volatility.</div>
+                      </div>
+                      <div class="setting-card">
+                        <label for="takeProfit">Full take-profit</label>
+                        <input id="takeProfit" type="number" min="0" step="1" placeholder="Optional" />
+                        <div class="explain">Usually leave blank when profit lock is on. This would sell the remaining position at a fixed gain.</div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="setting-card">
+                        <label for="tipLamports">Speed tip</label>
+                        <input id="tipLamports" type="number" min="0" step="1000" value="0" />
+                        <div class="explain">Extra network incentive. Keep 0 for demos unless you are intentionally competing for first-slot buys.</div>
+                      </div>
+                      <div class="setting-card">
+                        <label for="priorityFee">Priority fee</label>
+                        <input id="priorityFee" type="number" min="0" step="1000" value="0" />
+                        <div class="explain">Extra compute priority. Keep 0 for controlled demos; raise only for aggressive live sniping.</div>
+                      </div>
+                    </div>
+                    <button class="btn ghost" id="saveSettingsBtn" type="button">Save Settings</button>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="summary">
+          <div class="metric">
+            <span>Strategy</span>
+            <strong id="selectedName">--</strong>
+            <div class="mini" id="selectedRisk">--</div>
+          </div>
+          <div class="metric">
+            <span>Per Buy</span>
+            <strong id="selectedAmount">--</strong>
+            <div class="mini" id="selectedExit">Fixed size by default</div>
+          </div>
+          <div class="metric">
+            <span>Open</span>
+            <strong id="openCount">0</strong>
+            <div class="mini">Active positions</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head">
+            <div class="card-title">Connection Status</div>
+            <button class="btn ghost" id="refreshBalanceBtn" type="button">Refresh Balance</button>
+          </div>
+          <div class="card-body">
+            <div class="status-panel" id="connectionPanel">
+              <div class="check-row"><span>Streams</span><span class="check-state warn">Waiting</span></div>
+              <div class="check-row"><span>Executor</span><span class="check-state warn">Waiting</span></div>
+              <div class="check-row"><span>Trading</span><span class="check-state warn">Stopped</span></div>
+              <div class="check-row"><span>Wallet</span><span class="check-state warn">Checking</span></div>
+            </div>
+            <div class="hint" id="balanceHelp">Use Refresh Balance after saving a wallet. If it stays 0, the wallet may be new, the RPC may be lagging, or the key may not be the funded wallet.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Activity Feed</div>
+            <button class="btn ghost" id="sellAllBtn" type="button">Sell All</button>
+          </div>
+          <div class="card-body">
+            <div class="feed" id="feed"></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="card-head">
+            <div class="card-title">Open Positions</div>
+            <button class="btn ghost" id="resetBtn" type="button">Reset Session</button>
+          </div>
+          <div class="card-body">
+            <div class="positions" id="positions"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <div class="modal-backdrop" id="strategyModal" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="strategyModalTitle">
+      <div class="modal-head">
+        <div>
+          <h2 class="modal-title" id="strategyModalTitle">Strategy Research</h2>
+          <div class="modal-subtitle" id="strategyModalSubtitle"></div>
+        </div>
+        <button class="icon-btn" id="closeStrategyModal" type="button" aria-label="Close strategy research">×</button>
+      </div>
+      <div class="modal-body" id="strategyModalBody"></div>
+    </section>
+  </div>
+
+  <script>
+    const STRATEGIES = [
+      {
+        id: "cya",
+        name: "Cented (CyA)",
+        subtitle: "Wallet known for runners",
+        wallet: "CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o",
+        risk: "Medium/High",
+        tags: ["Recommended", "+329 SOL audit", "Fast exits"],
+        note: "High-scoring follow wallet. Research showed strong realized PnL, fast median holds, and runner-style entries. Best used with source sells on.",
+        research: {
+          source: "CYA_DEEP_WALLET_RESEARCH.md + data/cya-ledger-buckets-latest-48h.md",
+          metrics: [
+            ["Expanded PnL", "+911.9 SOL", "10k transaction sample"],
+            ["Best behavior", "50% at +30%", "then source exit"],
+            ["Median hold", "0.62 min", "fast runner exits"]
+          ],
+          buckets: [
+            ["$0-5k MC", "123", "65.0%", "+22.9%", "+170.69 SOL", "Best low-cap lane"],
+            ["$5k-10k MC", "60", "51.7%", "+17.2%", "+77.71 SOL", "Still positive"],
+            ["$10k-20k MC", "28", "60.7%", "+40.2%", "+102.03 SOL", "Higher upside"],
+            ["$50k+", "4", "25.0%", "-19.3%", "-1.40 SOL", "Avoid late entries"]
+          ],
+          takeaways: [
+            "CyA is an exit-led strategy: source sells matter more than a fixed timer.",
+            "The best tested mode is profit lock ON: sell 50% at +30%, then follow the source exit for the rest.",
+            "The strongest historical buckets were early market caps under about $20k."
+          ],
+          recommended: "Use fixed small sizing, mirror sells ON, hybrid profit lock ON, and avoid late/high-MC entries."
+        },
+        defaults: { amount: 0.01, maxBuy: 0.015, reserve: 0.03, copyPct: 0, slippage: 12, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 15000, hybrid: true, tip: 0, priority: 0 }
+      },
+      {
+        id: "4bdk",
+        name: "Anchor (4bdk)",
+        subtitle: "High win-rate source-exit wallet",
+        wallet: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk",
+        risk: "Medium",
+        tags: ["75% win audit", "Source exit", "Early"],
+        note: "Cleaner source-exit profile in research. Strong wallet PnL and a high realized win rate, but still volatile on tiny launch tokens.",
+        research: {
+          source: "4BDK_DEEP_WALLET_RESEARCH.md",
+          metrics: [
+            ["Wallet PnL", "+858.9 SOL", "5k transaction audit"],
+            ["Closed win", "70.7%", "source-exit campaigns"],
+            ["Profit factor", "5.94", "strong source exits"]
+          ],
+          buckets: [
+            ["$20k-50k MC", "22", "81.8%", "+205.5%", "+58.0%", "Best MC bucket"],
+            ["$50k-100k MC", "10", "70.0%", "+110.8%", "+135.6%", "High but volatile"],
+            ["6-12 SOL source buy", "20", "65.0%", "+135.6%", "+36.2%", "Best source-size lane"],
+            ["50% at +30%", "51", "82.4%", "+100.9%", "+30.3%", "Reduced drawdown"]
+          ],
+          takeaways: [
+            "4BdK has strong upside but can tolerate ugly drawdowns before winners resolve.",
+            "Tight stop losses are historically bad here; source exit plus hybrid profit lock tested better.",
+            "The cleanest bucket was around $20k-50k market cap with meaningful source buy size."
+          ],
+          recommended: "Use mirror sells ON, hybrid profit lock ON, and avoid making the stop too tight."
+        },
+        defaults: { amount: 0.01, maxBuy: 0.015, reserve: 0.03, copyPct: 0, slippage: 10, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 25000, hybrid: true, tip: 0, priority: 0 }
+      },
+      {
+        id: "2cq",
+        name: "Scout (2CQ)",
+        subtitle: "Early launch hunter",
+        wallet: "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+        risk: "High",
+        tags: ["Early", "Many trades", "Runners"],
+        note: "Often appears extremely early. Research found multiple 50-100% runner paths, but it needs strict sizing because trade count is high.",
+        research: {
+          source: "data/path-wallet-audit-2CQ*.md + data/wallet-ledger-audit-2CQ*.md",
+          metrics: [
+            ["Ledger PnL", "+364.7 SOL", "10k transaction ledger"],
+            ["Source exit PF", "3.44", "path audit"],
+            ["Median order", "#2", "usually very early"]
+          ],
+          buckets: [
+            ["Mirror source exit", "47", "59.6%", "+28.0%", "+2.8%", "Most natural exit"],
+            ["Hit +30 path", "50", "28.0%", "14 hits", "13 min to 2x", "Runner optionality"],
+            ["Ledger campaigns", "928", "46.0%", "+28.0%", "+2.8%", "Many quick trades"],
+            ["Median entry MC", "50", "-", "$2.9k", "0 earlier buys", "Early launch lane"]
+          ],
+          takeaways: [
+            "2CQ is useful when you want very early launch exposure, but it fires often.",
+            "Sizing should stay strict because high trade count can create noise and fee drag.",
+            "Best story is early detection plus source exit, not a set-and-forget large sizing strategy."
+          ],
+          recommended: "Use smaller fixed buys, mirror sells ON, hybrid profit lock ON, and keep max buy conservative."
+        },
+        defaults: { amount: 0.005, maxBuy: 0.01, reserve: 0.035, copyPct: 0, slippage: 15, mirrorSells: true, stopLoss: 30, takeProfit: "", minHold: 15000, hybrid: true, tip: 0, priority: 0 }
+      },
+      {
+        id: "bwam",
+        name: "Whale Tape (BWAM)",
+        subtitle: "Large source-exit flow",
+        wallet: "bwamJzztZsepfkteWRChggmXuiiCQvpLqPietdNfSXa",
+        risk: "High",
+        tags: ["Large PnL", "Whale flow", "Source exit"],
+        note: "Very large realized wallet PnL in the audit. Best presented as a high-risk whale-flow strategy with conservative bot sizing.",
+        research: {
+          source: "BWAM_DEEP_WALLET_RESEARCH.md + data/wallet-ledger-buckets-bwam-5000.md",
+          metrics: [
+            ["Ledger PnL", "+2201.0 SOL", "5k transaction ledger"],
+            ["Win rate", "79.9%", "closed ledger positions"],
+            ["Median hold", "0.1 min", "ultra-fast flow"]
+          ],
+          buckets: [
+            ["$0-5k MC", "979", "44.9%", "+19.9%", "-2.2%", "+1552.90 SOL"],
+            ["$5k-10k MC", "8", "87.5%", "+529.7%", "+542.9%", "Tiny sample"],
+            ["BAGS $20k-50k", "4", "75.0%", "+25.1%", "+4.8%", "Route-specific"],
+            ["Median order", "1000", "#1", "0s delay", "0.1m hold", "Extremely early"]
+          ],
+          takeaways: [
+            "BWAM looks extremely profitable historically, but the behavior is closer to creator/launch-side scalping.",
+            "Our local telemetry did not fully capture this wallet in older runs, so treat it as shadow-first.",
+            "It should impress as a research strategy, not as the safest live-copy pool yet."
+          ],
+          recommended: "Run shadow/small-size first. Keep fixed buy low, mirror sells ON, and do not market this as fully validated."
+        },
+        defaults: { amount: 0.01, maxBuy: 0.02, reserve: 0.04, copyPct: 0, slippage: 12, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 25000, hybrid: true, tip: 0, priority: 0 }
+      },
+      {
+        id: "omego",
+        name: "Momentum Lab (Omego)",
+        subtitle: "Runner research pool",
+        wallet: "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq",
+        risk: "Research",
+        tags: ["Many runners", "Experimental"],
+        note: "Saw many tokens with strong MFE, but mirror-source exit was weak in the audit. Keep this as research or shadow mode.",
+        research: {
+          source: "OMEGO_DEEP_WALLET_RESEARCH.md",
+          metrics: [
+            ["Ledger PnL", "+72.8 SOL", "10k transaction ledger"],
+            ["Fresh source exit", "+0.2%", "avg, weak median"],
+            ["Hit +30", "38/74", "runner optionality"]
+          ],
+          buckets: [
+            ["$20k-50k MC", "28", "89.3%", "+6.1%", "+6.2%", "Best source-exit bucket"],
+            ["$0-5k MC", "120", "27.5%", "-8.3%", "-4.8%", "Avoid blind low-cap copy"],
+            ["20% trailing", "214", "66.7%", "+9.4%", "-2.2%", "Better than source exit"],
+            ["Mirror source exit", "214", "-", "-4.4%", "-", "Weak in large sample"]
+          ],
+          takeaways: [
+            "Omego sees runners, but source exits are not strong enough for simple blind mirroring.",
+            "This strategy should be positioned as experimental or bot-managed exit research.",
+            "Best historical lane was not the earliest tiny caps; $20k-50k performed better."
+          ],
+          recommended: "Use shadow mode or tiny sizing. Consider bot-managed exits; do not pitch as the safest beginner pool."
+        },
+        defaults: { amount: 0.005, maxBuy: 0.01, reserve: 0.04, copyPct: 0, slippage: 15, mirrorSells: true, stopLoss: 30, takeProfit: "", minHold: 15000, hybrid: true, tip: 0, priority: 0 }
+      },
+      {
+        id: "custom",
+        name: "Custom Wallet",
+        subtitle: "Paste your own WalletTracker result",
+        wallet: "",
+        risk: "Custom",
+        tags: ["Manual", "WalletTracker"],
+        note: "Use this for wallets discovered in WalletTracker or new strategy pools that are not packaged yet.",
+        research: {
+          source: "User-provided WalletTracker research",
+          metrics: [
+            ["Research", "Not packaged", "paste a wallet"],
+            ["Defaults", "Conservative", "small fixed buys"],
+            ["Exit", "Hybrid", "50% at +30%"]
+          ],
+          buckets: [
+            ["WalletTracker", "-", "-", "-", "-", "Run audit before scaling"],
+            ["Shadow test", "-", "-", "-", "-", "Recommended first"],
+            ["Live test", "-", "-", "-", "-", "Small fixed size only"]
+          ],
+          takeaways: [
+            "Use this when a new wallet has not been turned into a packaged strategy yet.",
+            "Best next step is to run WalletTracker and bucket analysis before increasing size.",
+            "For friend demos, custom wallets should start in shadow or tiny live mode."
+          ],
+          recommended: "Paste one wallet, use small fixed buys, keep max buy capped, and review the session before scaling."
+        },
+        defaults: { amount: 0.01, maxBuy: 0.01, reserve: 0.03, copyPct: 0, slippage: 10, mirrorSells: true, stopLoss: 35, takeProfit: "", minHold: 25000, hybrid: true, tip: 0, priority: 0 }
+      }
+    ];
+    const AMOUNTS = [0.005, 0.01, 0.02, 0.03];
+
+    const $ = (id) => document.getElementById(id);
+    let state = null;
+    let settings = null;
+    let selectedStrategy = STRATEGIES[0];
+    let selectedAmount = 0.01;
+    let lastLogIndex = 0;
+    let recentLogLines = [];
+
+    function fmtSol(n) {
+      return typeof n === "number" && Number.isFinite(n) ? `${n.toFixed(4)} SOL` : "--";
+    }
+
+    function isPositive(n) {
+      return typeof n === "number" && Number.isFinite(n) && n > 0;
+    }
+
+    function toast(msg) {
+      const el = $("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 4200);
+    }
+
+    function esc(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[ch]));
+    }
+
+    async function api(path, opts = {}) {
+      const res = await fetch(path, {
+        ...opts,
+        headers: { "content-type": "application/json", ...(opts.headers || {}) }
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok === false) throw new Error(data.error || data.message || `Request failed: ${res.status}`);
+      return data;
+    }
+
+    function renderStrategies() {
+      $("strategyGrid").innerHTML = STRATEGIES.map((s) => `
+        <div class="strategy ${s.id === selectedStrategy.id ? "active" : ""}">
+          <button class="strategy-pick" type="button" data-strategy="${esc(s.id)}">
+            <strong>${esc(s.name)}</strong>
+            <p>${esc(s.subtitle)}</p>
+            <p>${esc(s.note)}</p>
+          </button>
+          <div class="strategy-actions">
+            <span class="tags">${s.tags.map((t, i) => `<span class="tag ${i === 0 ? "green" : ""}">${esc(t)}</span>`).join("")}</span>
+            <button class="why-strategy" type="button" data-research="${esc(s.id)}">Why this strategy?</button>
+          </div>
+        </div>
+      `).join("");
+      document.querySelectorAll("[data-strategy]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const next = STRATEGIES.find((s) => s.id === btn.dataset.strategy);
+          if (!next) return;
+          selectedStrategy = next;
+          if (next.wallet) $("customWallets").value = next.wallet;
+          applyStrategyDefaults(next);
+          renderStrategies();
+          renderSelected();
+          toast(`${next.name} defaults loaded.`);
+        });
+      });
+      document.querySelectorAll("[data-research]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const next = STRATEGIES.find((s) => s.id === btn.dataset.research);
+          if (next) openStrategyResearch(next);
+        });
+      });
+    }
+
+    function renderResearchMetrics(metrics = []) {
+      return metrics.map(([label, value, note]) => `
+        <div class="insight-metric">
+          <span>${esc(label)}</span>
+          <strong>${esc(value)}</strong>
+          <p>${esc(note)}</p>
+        </div>
+      `).join("");
+    }
+
+    function renderResearchBuckets(buckets = []) {
+      return `
+        <table class="bucket-table">
+          <thead>
+            <tr>
+              <th>Bucket</th>
+              <th>N</th>
+              <th>Win</th>
+              <th>Avg</th>
+              <th>Median / PnL</th>
+              <th>Why it matters</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${buckets.map((row) => `
+              <tr>${row.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function openStrategyResearch(strategy) {
+      const research = strategy.research || {};
+      $("strategyModalTitle").textContent = strategy.name;
+      $("strategyModalSubtitle").textContent = `${strategy.subtitle} · ${strategy.risk} risk`;
+      $("strategyModalBody").innerHTML = `
+        <div class="insight-grid">${renderResearchMetrics(research.metrics)}</div>
+        <div class="preset-note">
+          <b>Recommended setup</b><br>
+          ${esc(research.recommended || strategy.note)}
+        </div>
+        <section>
+          <h3>Best Buckets</h3>
+          ${renderResearchBuckets(research.buckets)}
+        </section>
+        <section>
+          <h3>Plain-English Takeaways</h3>
+          <ul class="insight-list">${(research.takeaways || []).map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+        </section>
+        <div class="hint">Research source: ${esc(research.source || "Packaged strategy research")}</div>
+      `;
+      $("strategyModal").classList.add("open");
+      $("strategyModal").setAttribute("aria-hidden", "false");
+    }
+
+    function closeStrategyResearch() {
+      $("strategyModal").classList.remove("open");
+      $("strategyModal").setAttribute("aria-hidden", "true");
+    }
+
+    function applyStrategyDefaults(strategy) {
+      const d = strategy.defaults || {};
+      if (typeof d.amount === "number") {
+        selectedAmount = d.amount;
+        $("customAmount").value = "";
+      }
+      $("reserveSol").value = d.reserve ?? 0.03;
+      $("copyPct").value = d.copyPct ?? 0;
+      $("maxBuy").value = d.maxBuy ?? selectedAmount;
+      $("slippage").value = d.slippage ?? 10;
+      $("mirrorSells").value = d.mirrorSells === false ? "false" : "true";
+      $("hybridLock").value = d.hybrid === false ? "off" : "on";
+      $("stopLoss").value = d.stopLoss ?? 35;
+      $("takeProfit").value = d.takeProfit ?? "";
+      $("minHold").value = String(d.minHold ?? 25000);
+      $("tipLamports").value = d.tip ?? 0;
+      $("priorityFee").value = d.priority ?? 0;
+      $("presetNote").textContent = `${strategy.name} defaults: fixed ${selectedAmount.toFixed(3)} SOL buys, ${d.slippage ?? 10}% price room, ${d.mirrorSells === false ? "manual exits" : "auto-follow sells"}, profit lock ${d.hybrid === false ? "off" : "50% at +30%"}.`;
+      renderAmounts();
+    }
+
+    function renderAmounts() {
+      $("amountGrid").innerHTML = AMOUNTS.map((a) => `
+        <button class="amount ${a === selectedAmount ? "active" : ""}" type="button" data-amount="${a}">${a} SOL</button>
+      `).join("");
+      document.querySelectorAll("[data-amount]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectedAmount = Number(btn.dataset.amount);
+          $("customAmount").value = "";
+          $("maxBuy").value = selectedAmount;
+          renderAmounts();
+          renderSelected();
+        });
+      });
+    }
+
+    function renderSelected() {
+      $("selectedName").textContent = selectedStrategy.name;
+      $("selectedRisk").textContent = `${selectedStrategy.risk} risk`;
+      $("selectedAmount").textContent = `${selectedAmount.toFixed(3)} SOL`;
+      const d = selectedStrategy.defaults || {};
+      $("selectedExit").textContent = d.hybrid === false ? "Source/risk exits" : "50% at +30%, then source sell";
+      $("strategySummary").innerHTML = `
+        <b>${esc(selectedStrategy.name)}</b> buys the selected wallet with a default ${selectedAmount.toFixed(3)} SOL size,
+        caps each buy at ${Number(d.maxBuy ?? selectedAmount).toFixed(3)} SOL, keeps ${Number(d.reserve ?? 0.03).toFixed(3)} SOL reserved,
+        and exits with ${d.hybrid === false ? "source sells plus risk controls" : "profit lock at +30% plus source sells"}.
+      `;
+      updateSafetyPanels();
+    }
+
+    function getWalletsForSave() {
+      if (selectedStrategy.id === "custom") {
+        return $("customWallets").value.split(/[\n,]+/).map((x) => x.trim()).filter(Boolean);
+      }
+      return [selectedStrategy.wallet];
+    }
+
+    function settingsPayload(extra = {}) {
+      const customAmount = Number($("customAmount").value);
+      const amount = Number.isFinite(customAmount) && customAmount > 0 ? customAmount : selectedAmount;
+      selectedAmount = amount;
+      const copyPct = Number($("copyPct").value || 0);
+      const maxBuy = Number($("maxBuy").value || amount);
+      return {
+        trackedWallets: getWalletsForSave(),
+        minBuySol: amount,
+        maxBuySol: Math.max(amount, maxBuy),
+        copyBuyPercentage: Number.isFinite(copyPct) ? copyPct : 0,
+        solReserveSol: Number($("reserveSol").value || 0.03),
+        mirrorSlippageBps: Math.round(Number($("slippage").value || 10) * 100),
+        mirrorSells: $("mirrorSells").value === "true",
+        tipLamports: Number($("tipLamports").value || 0),
+        priorityFeeMicroLamports: Number($("priorityFee").value || 0),
+        stopLossPct: $("stopLoss").value,
+        takeProfitPct: $("takeProfit").value,
+        minHoldBeforeStopLossMs: $("minHold").value,
+        hybridExitEnabled: $("hybridLock").value === "on",
+        hybridExitTpPct: "30",
+        hybridExitTpSellPct: "50",
+        hybridExitSourceExitRemaining: true,
+        ...extra
+      };
+    }
+
+    function applySettingsToInputs(s) {
+      if (!s) return;
+      $("reserveSol").value = s.solReserveSol ?? 0.03;
+      $("copyPct").value = s.copyBuyPercentage ?? 0;
+      $("maxBuy").value = s.maxBuySol ?? selectedAmount;
+      $("slippage").value = ((s.mirrorSlippageBps ?? 1000) / 100).toString();
+      $("mirrorSells").value = s.mirrorSells ? "true" : "false";
+      $("tipLamports").value = s.tipLamports ?? 0;
+      $("priorityFee").value = s.priorityFeeMicroLamports ?? 0;
+      if (Array.isArray(s.trackedWallets) && s.trackedWallets.length > 0) {
+        $("customWallets").value = s.trackedWallets.join("\n");
+        const match = STRATEGIES.find((x) => x.wallet && s.trackedWallets.includes(x.wallet));
+        selectedStrategy = match || STRATEGIES.find((x) => x.id === "custom") || selectedStrategy;
+      }
+      selectedAmount = Number(s.minBuySol || selectedAmount);
+      renderStrategies();
+      renderAmounts();
+      renderSelected();
+    }
+
+    function customErrorCode(raw) {
+      const text = String(raw || "");
+      const hex = text.match(/custom program error:\s*0x([0-9a-f]+)/i)?.[1];
+      return (
+        text.match(/Custom["):\s]*(\d+)/i)?.[1] ||
+        text.match(/Error Number:\s*(\d+)/i)?.[1] ||
+        (hex ? String(parseInt(hex, 16)) : "")
+      );
+    }
+
+    function routeLabel(lower) {
+      if (/pumpswap|pump-amm|pamm/.test(lower)) return "PumpSwap";
+      if (/pump\.fun|pump fun|bonding-curve|bonding curve/.test(lower)) return "Pump.fun";
+      if (/raydium/.test(lower)) return "Raydium";
+      return "Solana";
+    }
+
+    function explainFailure(line) {
+      const raw = String(line || "");
+      const lower = raw.toLowerCase();
+      if (!/failed|instructionerror|preflight|custom|error|expired|blockhash|rate limited|429|timed out|timeout|not found in status polling/.test(lower)) return null;
+
+      const code = customErrorCode(raw);
+      const route = routeLabel(lower);
+      const side = lower.includes("sell") ? "Sell" : "Buy";
+      const sent = !lower.includes("preflight failed") && !lower.includes("preflight simulation failed");
+      const prefix = sent
+        ? `${side} attempted on-chain. The ${route} program rejected it or it did not land cleanly.`
+        : `${side} blocked before sending. The bot protected the wallet before placing the trade.`;
+
+      let reason = "Market state changed before the transaction could safely land.";
+      let next = "Usually the right move is to wait for the next wallet signal instead of chasing the same stale quote.";
+
+      if (code === "6042" || code === "6002" || lower.includes("too much sol required")) {
+        reason = "The bonding curve pumped between quote time and landing time, so the bot would have received fewer tokens than its safety limit allowed.";
+        next = "This is chain speed/price movement. Higher slippage or priority can land more attempts, but it also accepts worse fills.";
+      } else if (code === "6003" || lower.includes("too little sol received")) {
+        reason = "The sell quote moved before landing, so the bot would have received less SOL than its safety limit allowed.";
+        next = "This protects against bad exits. Wider sell slippage can help only if the strategy accepts worse exits.";
+      } else if (code === "6023" || code === "6024" || code === "6025" || lower.includes("overflow")) {
+        reason = route === "PumpSwap"
+          ? "The PumpSwap pool math overflowed or changed too much while the trade was being built. The pool was moving too fast/unsafe for that quote."
+          : "The Pump.fun liquidity/token balance was not enough for the requested action at landing time.";
+        next = "This is pool state, not a UI mistake. The bot should skip or retry with fresh canonical state, not reuse the stale transaction.";
+      } else if (lower.includes("slippage")) {
+        reason = "Price moved beyond the configured slippage guard.";
+        next = "Slippage protected the wallet from a worse-than-allowed fill. Increase it only if you accept worse entries/exits.";
+      } else if (lower.includes("insufficient funds") || lower.includes("insufficient lamports")) {
+        reason = "The wallet did not have enough available SOL after reserve, rent, and network fees.";
+        next = "Top up SOL, reduce buy size, or lower the SOL reserve.";
+      } else if (lower.includes("blockhash") || lower.includes("expired") || lower.includes("not found in status polling")) {
+        reason = "The transaction was broadcast but likely dropped or expired before the cluster confirmed it.";
+        next = "This is a landing problem. Fresh blockhash, alternate sender path, or priority/tip can improve odds.";
+      } else if (lower.includes("429") || lower.includes("rate limited") || lower.includes("max usage reached")) {
+        reason = "A supporting RPC/API provider rate-limited a balance/status/metadata check.";
+        next = "This does not always mean the stream failed. It means one helper provider said slow down or switch endpoint.";
+      } else if (lower.includes("no routes found") || lower.includes("not tradable")) {
+        reason = "The token was too new or the route was not tradable through that path yet.";
+        next = "Direct Pump.fun/PumpSwap routes may work before public aggregators index the token.";
+      } else if (lower.includes("timeout") || lower.includes("timed out") || lower.includes("fetch failed") || lower.includes("network")) {
+        reason = "A network/RPC request timed out while confirming or supporting the trade.";
+        next = "The bot should use another sender/RPC path or wait for the next fresh signal.";
+      }
+
+      const codeText = code ? ` Code ${code}.` : "";
+      const outcome = sent
+        ? "Tokens may be zero if the program rejected it; a small network fee can still be spent."
+        : "No buy/sell transaction was sent from this preflight block.";
+      return `${prefix}${codeText} Reason: ${reason} ${outcome} What to do: ${next}`;
+    }
+
+    function friendlyLog(line) {
+      const explained = explainFailure(line);
+      if (explained) return explained;
+      return String(line || "")
+        .replace(/gRPC detected swap/i, "Wallet activity detected")
+        .replace(/Processing buy/i, "Processing buy")
+        .replace(/Processing sell/i, "Processing sell")
+        .replace(/PumpSwap preflight failed:.*?logs=/i, "Skipped unsafe PumpSwap trade before spending. Details: ")
+        .replace(/Skipping buy:/i, "Skipped buy:")
+        .replace(/Skipping sell:/i, "Skipped sell:")
+        .replace(/\| logs=.*/i, "");
+    }
+
+    function setRows(containerId, rows) {
+      $(containerId).innerHTML = rows.map((row) => `
+        <div class="check-row">
+          <span>${esc(row.label)}</span>
+          <span class="check-state ${row.kind}">${esc(row.value)}</span>
+        </div>
+      `).join("");
+    }
+
+    function inferInfra() {
+      const text = recentLogLines.join("\n").toLowerCase();
+      const grpc = /grpc: subscribed|grpc detected/.test(text);
+      const shred = /shredstream: connected|subscribed to jito shredstream|jito shredstream/.test(text);
+      const rabbit = /rabbitstream: subscribed/.test(text);
+      const executor = /rust executor.*ready|command bridge ready|rust executor command channel ready/.test(text);
+      return { grpc, shred, rabbit, executor };
+    }
+
+    function updateSafetyPanels() {
+      if (!$("preflightList") || !$("connectionPanel")) return;
+      const trackedWallets = getWalletsForSave();
+      const hasWallet = !!state?.ourWallet;
+      const hasTracked = trackedWallets.length > 0 && trackedWallets.every(Boolean);
+      const balance = state?.lastBalanceSol;
+      const funded = isPositive(balance);
+      const live = state?.simulationMode === false;
+      const infra = inferInfra();
+      const streamsReady = infra.grpc || infra.shred || infra.rabbit;
+      const liveSize = Math.max(Number($("maxBuy").value || selectedAmount), selectedAmount);
+      const tinyLive = liveSize <= 0.01;
+
+      setRows("preflightList", [
+        { label: "Private key", value: hasWallet ? "Saved" : "Missing", kind: hasWallet ? "ok" : "bad" },
+        {
+          label: "Balance",
+          value: funded ? fmtSol(balance) : live ? "0 or unknown" : "Not required in Shadow",
+          kind: funded ? "ok" : live ? "bad" : "warn"
+        },
+        { label: "Tracked wallet", value: hasTracked ? "Selected" : "Missing", kind: hasTracked ? "ok" : "bad" },
+        {
+          label: "Live / Shadow mode",
+          value: live ? (tinyLive ? "Live tiny size" : "Live larger size") : "Shadow safe",
+          kind: live ? (tinyLive ? "warn" : "bad") : "ok"
+        },
+        {
+          label: "ShredStream / gRPC",
+          value: streamsReady ? "Connected" : state?.running ? "Waiting" : "Starts with bot",
+          kind: streamsReady ? "ok" : "warn"
+        },
+        {
+          label: "Rust executor",
+          value: infra.executor ? "Ready" : state?.running ? "Waiting" : "Starts with bot",
+          kind: infra.executor ? "ok" : "warn"
+        }
+      ]);
+
+      setRows("connectionPanel", [
+        { label: "Streams", value: streamsReady ? "Connected" : state?.running ? "Connecting" : "Stopped", kind: streamsReady ? "ok" : "warn" },
+        { label: "Executor", value: infra.executor ? "Ready" : state?.running ? "Waiting" : "Stopped", kind: infra.executor ? "ok" : "warn" },
+        { label: "Trading", value: state?.running ? "Running" : "Stopped", kind: state?.running ? "ok" : "warn" },
+        { label: "Wallet", value: funded ? "Funded" : hasWallet ? "0 or unknown" : "No key", kind: funded ? "ok" : hasWallet ? "warn" : "bad" }
+      ]);
+
+      $("liveWarning").classList.toggle("show", live);
+      $("balanceHelp").textContent = funded
+        ? `Wallet balance refreshed: ${fmtSol(balance)}.`
+        : hasWallet
+          ? "Balance is 0 or unknown. This can mean the wallet is new, RPC lagged, the key is not the funded wallet, or Shadow mode has not started its simulated balance yet."
+          : "Save a wallet first, then use Refresh Balance/Status.";
+      $("startBtn").disabled = !hasWallet || !hasTracked || (live && !funded);
+    }
+
+    function renderState(next) {
+      state = next || state;
+      const running = !!state?.running;
+      $("runDot").className = `dot ${running ? "on" : ""}`;
+      $("runText").textContent = running ? "Running" : "Stopped";
+      $("modeText").textContent = state?.simulationMode ? "Shadow" : "Live";
+      $("balanceText").textContent = fmtSol(state?.lastBalanceSol);
+      $("openCount").textContent = String(state?.positions?.length || 0);
+      updateSafetyPanels();
+      $("positions").innerHTML = (state?.positions || []).length
+        ? state.positions.map((p, i) => `
+          <div class="position">
+            <div class="position-top">
+              <div>
+                <b>${p.symbol || p.mint?.slice(0, 6) || "Token"}</b>
+                <span>${fmtSol((p.costBasisLamports || 0) / 1e9)} deployed</span>
+              </div>
+              <span>${p.mint ? p.mint.slice(0, 4) + "..." + p.mint.slice(-4) : ""}</span>
+            </div>
+            <div class="sell-actions">
+              <button class="sell-action" type="button" data-sell-pct="${i + 1}:0.25">Sell 25%</button>
+              <button class="sell-action" type="button" data-sell-pct="${i + 1}:0.5">Sell 50%</button>
+              <button class="sell-action full" type="button" data-sell-pct="${i + 1}:1">Sell 100%</button>
+            </div>
+          </div>
+        `).join("")
+        : `<div class="log">No open positions yet.</div>`;
+      document.querySelectorAll("[data-sell-pct]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const [index, fraction] = String(btn.dataset.sellPct).split(":");
+          const pct = Math.round(Number(fraction) * 100);
+          await api(`/api/actions/sell-position-percent/${index}?fraction=${fraction}`, { method: "POST", body: "{}" });
+          toast(`Sell ${pct}% requested.`);
+          await refresh();
+        });
+      });
+    }
+
+    async function refreshLogs() {
+      const data = await api(`/api/logs?since=${lastLogIndex}`).catch(() => null);
+      if (!data) return;
+      const feed = $("feed");
+      const lines = data.logs || [];
+      for (const row of lines) {
+        if (typeof row.ts === "number" && row.ts > lastLogIndex) lastLogIndex = row.ts;
+        const raw = row.message || row.line || row;
+        recentLogLines.push(String(raw || ""));
+      }
+      recentLogLines = recentLogLines.slice(-220);
+      if (!feed.children.length && !lines.length) {
+        updateSafetyPanels();
+        feed.innerHTML = `<div class="log">Waiting for wallet activity...</div>`;
+        return;
+      }
+      if (lines.length && feed.children.length === 1 && feed.textContent.includes("Waiting for wallet activity")) {
+        feed.innerHTML = "";
+      }
+      for (const row of lines.slice(-60)) {
+        const raw = row.message || row.line || row;
+        const text = friendlyLog(raw);
+        const div = document.createElement("div");
+        div.className = `log ${/✅|complete|Buy \(|Sell LIVE/i.test(raw) ? "good" : /failed|error|❌/i.test(raw) ? "bad" : /skip|warn|⚠/i.test(raw) ? "warn" : ""}`;
+        div.textContent = text;
+        feed.appendChild(div);
+      }
+      while (feed.children.length > 80) feed.removeChild(feed.firstChild);
+      feed.scrollTop = feed.scrollHeight;
+      updateSafetyPanels();
+    }
+
+    async function refresh() {
+      const ready = await api("/api/readiness");
+      settings = ready.settings;
+      renderState(ready.state);
+      applySettingsToInputs(settings);
+      await refreshLogs();
+    }
+
+    async function saveSettings(extra = {}) {
+      const payload = settingsPayload(extra);
+      const saved = await api("/api/settings", { method: "POST", body: JSON.stringify(payload) });
+      settings = saved.settings || settings;
+      toast("Settings saved.");
+      await refresh();
+    }
+
+    $("saveKeyBtn").addEventListener("click", async () => {
+      const key = $("privateKey").value.trim();
+      if (!key) return toast("Paste a private key first.");
+      await api("/api/settings", { method: "POST", body: JSON.stringify({ privateKeyBase58: key }) });
+      $("privateKey").value = "";
+      toast("Wallet saved.");
+      await refresh();
+    });
+    $("toggleModeBtn").addEventListener("click", async () => {
+      const nextSimulationMode = state?.simulationMode === false;
+      if (!nextSimulationMode) {
+        const ok = window.confirm("LIVE MONEY WARNING\n\nThis can spend real SOL from the saved wallet. Start with tiny size, confirm the tracked wallet, and keep only test funds in this wallet.\n\nSwitch to Live mode?");
+        if (!ok) return;
+      }
+      await saveSettings({ simulationMode: nextSimulationMode });
+      toast(nextSimulationMode ? "Switched to Shadow mode." : "Switched to Live mode.");
+    });
+    $("useCustomBtn").addEventListener("click", () => {
+      selectedStrategy = STRATEGIES.find((s) => s.id === "custom");
+      renderStrategies();
+      renderSelected();
+      toast("Custom wallet selected.");
+    });
+    $("customAmount").addEventListener("input", () => {
+      const n = Number($("customAmount").value);
+      if (Number.isFinite(n) && n > 0) selectedAmount = n;
+      $("maxBuy").value = selectedAmount;
+      renderAmounts();
+      renderSelected();
+    });
+    $("saveSettingsBtn").addEventListener("click", () => saveSettings().catch((e) => toast(e.message)));
+    $("startBtn").addEventListener("click", async () => {
+      const payload = settingsPayload();
+      if (state?.simulationMode === false) {
+        const maxLive = Math.max(Number(payload.maxBuySol || 0), Number(payload.minBuySol || 0));
+        if (maxLive > 0.01) {
+          const ok = window.confirm(`LIVE MONEY WARNING\n\nThis can spend real SOL. Your max buy is ${maxLive.toFixed(3)} SOL, which is above the beginner test size of 0.010 SOL.\n\nPress OK only if you intentionally want to override tiny live mode.`);
+          if (!ok) {
+            selectedAmount = 0.01;
+            $("customAmount").value = "";
+            $("maxBuy").value = 0.01;
+            renderAmounts();
+            renderSelected();
+            toast("Changed to tiny live size: 0.010 SOL. Press Start again when ready.");
+            return;
+          }
+        } else {
+          const ok = window.confirm("LIVE MONEY WARNING\n\nThis can spend real SOL. Confirm you want to start live copy trading with tiny test sizing.");
+          if (!ok) return;
+        }
+      }
+      await api("/api/start", { method: "POST", body: JSON.stringify(payload) });
+      toast("Bot started.");
+      await refresh();
+    });
+    $("stopBtn").addEventListener("click", async () => {
+      await api("/api/stop", { method: "POST", body: "{}" });
+      toast("Bot stopped.");
+      await refresh();
+    });
+    $("sellAllBtn").addEventListener("click", async () => {
+      await api("/api/actions/sell-all", { method: "POST", body: "{}" });
+      toast("Sell all requested.");
+      await refresh();
+    });
+    $("resetBtn").addEventListener("click", async () => {
+      await api("/api/actions/reset-session", { method: "POST", body: "{}" });
+      lastLogIndex = 0;
+      $("feed").innerHTML = "";
+      toast("Session reset.");
+      await refresh();
+    });
+    $("refreshBtn").addEventListener("click", () => refresh().catch((e) => toast(e.message)));
+    $("refreshBalanceBtn").addEventListener("click", () => {
+      toast("Refreshing wallet balance and connection status...");
+      refresh().catch((e) => toast(e.message));
+    });
+    $("closeStrategyModal").addEventListener("click", closeStrategyResearch);
+    $("strategyModal").addEventListener("click", (event) => {
+      if (event.target === $("strategyModal")) closeStrategyResearch();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeStrategyResearch();
+    });
+
+    renderStrategies();
+    renderAmounts();
+    renderSelected();
+    refresh().catch((e) => toast(e.message));
+    setInterval(() => {
+      api("/api/state").then(renderState).catch(() => {});
+      refreshLogs().catch(() => {});
+    }, 2500);
+  </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "schema": "PUMP_CAPTURE_IMPLEMENTATION_VERIFICATION_V1",
+  "python_tests_local": 33,
+  "python_tests_vps": 33,
+  "rust_tests_vps": 5,
+  "rust_release_build": "passed, offline locked dependencies",
+  "rustc": "1.99.1 (58cf8f9c3 2026-10-13)",
+  "binary_sha256": "5be69002c0d76722ec2d7c267b3d6230654321cf7cd16cf53c3ec8ed21d2d88f",
+  "source_sha256": {
+    "transaction_evidence_v1.py": "2e3cb96409f467d3dc0e23c4cbf2805917e7847f0267890c2351ae248ef69148",
+    "capture_quality_v1.py": "4a0d760246e111ac429c38460aac7491ca98e025941335d6b5de957a09b86e9a",
+    "pump_capture/src/main.rs": "389be62f184c046aaae2aa2cc3b30791a4a6b9269c8b46ec6bf8ee2c72fe3a47",
+    "pump_capture/Cargo.lock": "6abd64e8c9e5f0cabdb1386fc9f85772b71705124a8a5504a0ae1ddeb7b24e9e"
+  },
+  "frozen_input_replay": {
+    "transactions_sha256": "9b725daf06ba54c371bef928614701c0da494ddb694099b7a7ecdd23d55f66b5",
+    "account_joins_sha256": "565343ad17862338ad2170d1d1d63287b3cb7bcf131424a3962844731dfc4a08",
+    "matching_runs": ["quality2", "quality3-offline-replay"]
+  },
+  "artifact_root": "/mnt/HC_Volume_106775198/edgesniffer-research/transaction-evidence-v1-qvxRqmv3",
+  "initial_startup_failure": "canary1: Rustls CryptoProvider not selected; evidence preserved; fixed by explicit ring provider",
+  "verified_native_capture": "canary2: 120 seconds, exit 0; receive-only",
+  "current_new_capture_state": "finished bounded canary; no permanent new service installed",
+  "existing_collectors_modified": false,
+  "live_trading_enabled": false,
+  "global_completeness_proven": false,
+  "profitable_strategy_proven": false
+}

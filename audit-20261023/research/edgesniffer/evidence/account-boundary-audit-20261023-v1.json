@@ -1,0 +1,90 @@
+{
+  "schema": "NATIVE_ACCOUNT_BOUNDARY_AUDIT_V1",
+  "seeds": 78,
+  "selected_mints_including_controls": 80,
+  "snapshot": {
+    "source": "/mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/native-pump-account-state-events.jsonl",
+    "source_prefix_bytes": 11292378333,
+    "source_device": 64785,
+    "source_inode": 14024725,
+    "start_byte": 11023942970,
+    "end_byte": 11292378333,
+    "unsealed_tail_bytes_excluded": 0,
+    "snapshot_bytes": 268435363,
+    "sha256": "277bc75a73da8e393f3755c69694978117266509d231b84d6cfa509c33c292ac"
+  },
+  "native_clock_min_ns": 1792729827816866669,
+  "native_clock_max_ns": 1792733273250113138,
+  "counts": {
+    "account_rows": 321911,
+    "real_exceeds_virtual": 154615,
+    "reserve_inequalities_pass": 164396,
+    "zero_virtual_reserve": 2900,
+    "identity_matched_account_rows": 43927
+  },
+  "event_account_comparisons": {
+    "all_four_equal": 15503,
+    "virtualSolReserves_equal": 15503,
+    "virtualTokenReserves_equal": 15503,
+    "realSolReserves_equal": 15503,
+    "realTokenReserves_equal": 15503,
+    "reserve_mismatch": 28424,
+    "virtualSolReserves_mismatch": 28424,
+    "virtualTokenReserves_mismatch": 28424,
+    "realSolReserves_mismatch": 28424,
+    "realTokenReserves_mismatch": 28424
+  },
+  "account_field_inventory": {
+    "accountTxnSignature": 321911,
+    "atMs": 321911,
+    "bondingCurve": 321911,
+    "complete": 321911,
+    "decodeCompleteUnixNs": 321911,
+    "kind": 321911,
+    "nativeReceiveMonotonicNs": 321911,
+    "nativeReceiveSource": 321911,
+    "nativeReceiveUnixNs": 321911,
+    "observedAtMs": 321911,
+    "realSolReserves": 321911,
+    "realTokenReserves": 321911,
+    "schema": 321911,
+    "serverCreatedAt": 321911,
+    "slot": 321911,
+    "source": 321911,
+    "tokenTotalSupply": 321911,
+    "virtualSolReserves": 321911,
+    "virtualTokenReserves": 321911,
+    "writeVersion": 321911
+  },
+  "boundary_statuses": {
+    "burst:entry_at_ns:target:NO_CAUSAL_UNIQUE_CURVE_MAPPING": 78,
+    "burst:entry_at_ns:control:NO_CAUSAL_UNIQUE_CURVE_MAPPING": 78,
+    "burst:exit_at_ns:target:NO_CAUSAL_UNIQUE_CURVE_MAPPING": 78,
+    "burst:exit_at_ns:control:NO_CAUSAL_UNIQUE_CURVE_MAPPING": 78,
+    "persistence:entry_at_ns:target:NO_CAUSAL_UNIQUE_CURVE_MAPPING": 78,
+    "persistence:entry_at_ns:control:NO_CAUSAL_UNIQUE_CURVE_MAPPING": 78,
+    "persistence:exit_at_ns:target:NO_CAUSAL_UNIQUE_CURVE_MAPPING": 78,
+    "persistence:exit_at_ns:control:NO_CAUSAL_UNIQUE_CURVE_MAPPING": 78
+  },
+  "input_transaction_hashes": {
+    "session-01": "5674283ee295f2f92d32e4cb4ff19069141d0f1c151b9bade2decc5a11ebd1e1",
+    "session-02": "5ce5aca56d1d5d98c90784be1291ece73b77f6354e9b61dd60353a0bd4824943",
+    "session-03": "bce94a7c5f670e679ef5c46c6119a314202af5a65e42e144fa34130889a8f3c7",
+    "session-04": "a5d492d0c362258dc20ec42fd6970510f5be1f91823936f888a14885f7d69320",
+    "session-05": "467645820965faa1e2e7aa6d090a675b0082bbd9512a498a94feeca3adcf8dc8",
+    "session-06": "e05aedc49897d3b7b70660c4459ec2ddb352512f2c7b47393634ed7d428455b9",
+    "session-07": "f6c377dbc4616ffc1d9ac3ff9f226a10ef95be7567d81d014c079ff2d0500f6a",
+    "session-08": "173969d30dc2c8fae0b8ae8aacd1249a76e7ef132141c7e82fb34b4138ffdf9a"
+  },
+  "implementation_sha256": "dbefe031199e2d53960bdac7d5dc0e105a81b2976eff00e8a28a2f9bbbcfbba6",
+  "artifacts": {
+    "boundaries.jsonl": "d1fb6c0f958fefa64388aaa702af7a08e650ba9c540e8965e17b574a66b1d194",
+    "comparisons.jsonl": "3cd9491d9919bbb11921a42911f749fd2f3892cd7268879aeac712c5f441b70b"
+  },
+  "limits": [
+    "Bounded tail snapshot, not complete account-stream coverage or gap audit.",
+    "Signature/slot/key joins establish identity, not correctness of a named reserve field.",
+    "Current native source lacks certified full fee/mint-extension schedule; no price or PnL recovered here.",
+    "Observed state is not certified unchanged/current/executable; no new quotes or trading enabled."
+  ]
+}

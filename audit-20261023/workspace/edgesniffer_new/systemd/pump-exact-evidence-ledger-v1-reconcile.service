@@ -1,0 +1,30 @@
+[Unit]
+Description=Pump Exact Evidence Ledger V1 hourly reconciliation
+After=pump-exact-evidence-ledger-v1.service
+OnSuccess=edgesniffer-pump-quote-native-state-v1.service edgesniffer-2cq-symmetric-choice-materializer-v2.service
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+ExecStart=/usr/bin/flock -n -E 75 /run/pump-exact-offline-v1.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/reconcilePumpExactEvidenceLedgerV1.py /var/lib/pump-exact-evidence-ledger-v1 --grace-seconds 90
+SuccessExitStatus=75
+Nice=19
+IOSchedulingClass=idle
+IOSchedulingPriority=7
+CPUWeight=5
+IOWeight=5
+MemoryHigh=768M
+MemoryMax=1G
+OOMScoreAdjust=500
+OOMPolicy=stop
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/pump-exact-evidence-ledger-v1
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictRealtime=true
+LockPersonality=true

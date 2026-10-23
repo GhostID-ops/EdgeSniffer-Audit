@@ -1,0 +1,20 @@
+[Unit]
+Description=EdgeSniffer independent Pump curve exact state bridge (receive-only research)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/EdgeSniffer
+EnvironmentFile=/root/bot/EdgeSniffer/.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/enrichNativePumpCurveStateV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --output /mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/native-pump-state-enriched.jsonl --state /mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/native-pump-state-enriched.state.json --token2022-state-output /mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/token2022-transfer-fee-state.jsonl --start-at-end --poll-ms 250 --workers 8 --batch-size 64
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1
+
+[Install]
+WantedBy=multi-user.target

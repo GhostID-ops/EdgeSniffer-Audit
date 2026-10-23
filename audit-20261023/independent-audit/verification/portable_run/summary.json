@@ -1,0 +1,56 @@
+{
+  "all_reproduced": true,
+  "output_dir": "/workspace/scratch/05ecb141c4d5/edgesniffer_audit/work/portable_probe_verification",
+  "probes": [
+    {
+      "matches_reference": true,
+      "name": "governance",
+      "probe": "probes/probe_governance.py",
+      "reference": "reference_outputs/governance.json",
+      "result": "governance/probe_results.json",
+      "result_groups": 5,
+      "return_code": 0,
+      "stderr": "governance/stderr.txt",
+      "stdout": "governance/stdout.txt"
+    },
+    {
+      "matches_reference": true,
+      "name": "scorer",
+      "probe": "probes/adversarial_scorer_probes.py",
+      "reference": "reference_outputs/scorer.json",
+      "result": "scorer/probe_results.json",
+      "result_groups": 9,
+      "return_code": 0,
+      "stderr": "scorer/stderr.txt",
+      "stdout": "scorer/stdout.txt"
+    },
+    {
+      "matches_reference": true,
+      "name": "native",
+      "probe": "probes/probe_native.py",
+      "reference": "reference_outputs/native.json",
+      "result": "native/probe_results.json",
+      "result_groups": 11,
+      "return_code": 0,
+      "stderr": "native/stderr.txt",
+      "stdout": "native/stdout.txt"
+    },
+    {
+      "matches_reference": true,
+      "name": "economics",
+      "probe": "probes/probe_economics.py",
+      "reference": "reference_outputs/economics.json",
+      "result": "economics/probe_results.json",
+      "result_groups": 13,
+      "return_code": 0,
+      "stderr": "economics/stderr.txt",
+      "stdout": "economics/stdout.txt"
+    }
+  ],
+  "purpose": "Synthetic counterexamples and preserved-report recalculations; not market PnL validation.",
+  "python_version": "3.12.14",
+  "source_inventory": "source_file_sha256.json",
+  "source_root": "/workspace/scratch/05ecb141c4d5/edgesniffer_audit/source",
+  "success_means": "The audited implementation behavior reproduced and all four JSON outputs matched the audit references.",
+  "total_result_groups": 38
+}

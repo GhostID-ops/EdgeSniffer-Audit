@@ -1,0 +1,37 @@
+{
+  "schema": "RECEIPT_RECOVERY_REPORT_V1",
+  "receipt_rows": 10364,
+  "unique_signatures": 9988,
+  "input_sha256": "60911546ec6770e9cb968437ae812817dc58bd9b54867ca1b6971a51fbf784ae",
+  "archives": [
+    {
+      "path": "/mnt/HC_Volume_106775198/pump-exact-evidence-ledger-v1/partitions/2026/10/22/22/evidence.frames.zst",
+      "bytes": 422136445,
+      "frames": 1005393,
+      "matched_frames": 213,
+      "formats": {
+        "yellowstone_subscribe_update_protobuf": 991521,
+        "solana_json_rpc_response": 13872
+      },
+      "error": null
+    }
+  ],
+  "retained_unique_matches": 213,
+  "rpc_sample_size": 32,
+  "rpc_counts": {
+    "RECOVERED": 32,
+    "execution_SUCCESS": 30,
+    "complete_instruction_identity": 32,
+    "pump_trade_event_prefixes": 29,
+    "execution_FAILED": 2
+  },
+  "rpc_unqueried_signatures": 9956,
+  "sampling": "lowest SHA256(signature), outcome-blind capability sample",
+  "native_decision_metadata_recovered": 0,
+  "economics_computed": false,
+  "limitations": [
+    "Historical execution knowledge is not native decision-time knowledge.",
+    "Archived matching raw records require format-specific decoding and availability validation.",
+    "Unqueried or null RPC results are not proof of failed execution."
+  ]
+}

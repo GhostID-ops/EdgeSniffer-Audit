@@ -1,0 +1,20 @@
+[Unit]
+Description=EdgeSniffer teacher impulse parity v1 candidate capsule producer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/EdgeSniffer/rust-sidecar
+Environment=RUST_BACKTRACE=1
+Environment=RUST_TEACHER_IMPULSE_PARITY_NO_SUBMIT=true
+Environment=RUST_SELECTED_CANDIDATE_SUBMIT_ENABLED=false
+Environment=RUST_ONLY_BUYS=true
+Environment=RUST_ONLY_SELLS=true
+Environment=JUPITER_FALLBACK_ENABLED=false
+ExecStart=/root/bot/EdgeSniffer/rust-sidecar/target/release/teacher_impulse_candidate_producer --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-source.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --follow --start-at-end --poll-ms 25 --create-output-dir
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

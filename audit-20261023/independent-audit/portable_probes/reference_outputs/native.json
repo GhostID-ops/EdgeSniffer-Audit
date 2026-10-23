@@ -1,0 +1,119 @@
+{
+  "upstream_create_vocabulary_mismatch": {
+    "duplicates": 0,
+    "emitted": 0,
+    "read": 2,
+    "rejected": 0,
+    "seeds": 0,
+    "skipped_no_seed": 1
+  },
+  "failed_intent_applied_as_state": {
+    "stats": {
+      "duplicates": 0,
+      "emitted": 1,
+      "read": 1,
+      "rejected": 0,
+      "seeds": 0,
+      "skipped_no_seed": 0
+    },
+    "pre": {
+      "real_sol": 10000000000,
+      "real_token": 793100000000000,
+      "virtual_sol": 30000000000,
+      "virtual_token": 1073000000000000
+    },
+    "post": {
+      "real_sol": 10987500000,
+      "real_token": 758905970149253,
+      "virtual_sol": 30987500000,
+      "virtual_token": 1038805970149253
+    },
+    "declared_complete": true
+  },
+  "distinct_signatures_same_slot_local_index_dropped": {
+    "duplicates": 1,
+    "emitted": 1,
+    "read": 2,
+    "rejected": 0,
+    "seeds": 0,
+    "skipped_no_seed": 0
+  },
+  "out_of_order_chain_transaction_dropped": {
+    "duplicates": 1,
+    "emitted": 1,
+    "read": 2,
+    "rejected": 0,
+    "seeds": 0,
+    "skipped_no_seed": 0
+  },
+  "late_older_slot_seed_erases_intervening_trade": {
+    "actual_virtual_sol": 30987500000,
+    "expected_under_same_replay_math": 31975000000,
+    "lost_lamports": 987500000,
+    "stats": {
+      "duplicates": 0,
+      "emitted": 2,
+      "read": 2,
+      "rejected": 0,
+      "seeds": 0,
+      "skipped_no_seed": 0
+    }
+  },
+  "one_day_old_seed_stamped_zero_age": {
+    "actual_seed_age_ms": 86400000,
+    "declared_state_age_ms": 0,
+    "stats": {
+      "duplicates": 0,
+      "emitted": 1,
+      "read": 1,
+      "rejected": 0,
+      "seeds": 0,
+      "skipped_no_seed": 0
+    }
+  },
+  "native_sell_sol_flow_lost": {
+    "declared_net_flow_sol": 0.2,
+    "declared_sell_sol": 0.0,
+    "replay_gross_sell_sol": 0.277008311,
+    "signed_buy_gross_minus_sell_gross_sol": -0.077008311,
+    "core_gate_passes": true
+  },
+  "completed_raw_curve_accepted_for_trade_replay": {
+    "normalizer_complete": true,
+    "replay_output_rows": 1,
+    "economics_complete": true
+  },
+  "native_boundary_accepts_future_finalized_state": {
+    "signal_ms": 1000,
+    "nominal_entry_ms": 2000,
+    "state_available_ms": 900000,
+    "accepted": true
+  },
+  "launch_metadata_without_evidence_or_provenance_accepted": {
+    "reasons": [],
+    "has_signature": false,
+    "has_provenance": false
+  },
+  "training_post_event_vs_adapter_pre_event": {
+    "curve_progress": {
+      "adapter": 0.0,
+      "frozen_training": 0.03333333333333333
+    },
+    "gross_buy_sol_250ms": {
+      "adapter": 0.0,
+      "frozen_training": 1.0
+    },
+    "buy_count_250ms": {
+      "adapter": 0.0,
+      "frozen_training": 1.0
+    },
+    "log_event_index": {
+      "adapter": 0.0,
+      "frozen_training": 0.6931471805599453
+    },
+    "distance_from_launch_log_price": {
+      "adapter": 0.0,
+      "frozen_training": 0.06402757331827104
+    }
+  }
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "virtual_quote_SOL": 30,
+    "size_SOL": 0.1,
+    "average_entry_curve_impact_pct": 0.32921810001933505,
+    "post_buy_spot_move_pct": 0.6595200489179165,
+    "entry_fees_SOL": 0.001234569
+  },
+  {
+    "virtual_quote_SOL": 30,
+    "size_SOL": 0.5,
+    "average_entry_curve_impact_pct": 1.6460905266709736,
+    "post_buy_spot_move_pct": 3.3192771969412727,
+    "entry_fees_SOL": 0.006172841
+  },
+  {
+    "virtual_quote_SOL": 30,
+    "size_SOL": 1,
+    "average_entry_curve_impact_pct": 3.292181063334443,
+    "post_buy_spot_move_pct": 6.692746691647411,
+    "entry_fees_SOL": 0.01234568
+  },
+  {
+    "virtual_quote_SOL": 46.171004438,
+    "size_SOL": 0.1,
+    "average_entry_curve_impact_pct": 0.2139122403985061,
+    "post_buy_spot_move_pct": 0.42828206739946584,
+    "entry_fees_SOL": 0.001234569
+  },
+  {
+    "virtual_quote_SOL": 46.171004438,
+    "size_SOL": 0.5,
+    "average_entry_curve_impact_pct": 1.0695612192376025,
+    "post_buy_spot_move_pct": 2.1505620526753866,
+    "entry_fees_SOL": 0.006172841
+  },
+  {
+    "virtual_quote_SOL": 46.171004438,
+    "size_SOL": 1,
+    "average_entry_curve_impact_pct": 2.139122444971675,
+    "post_buy_spot_move_pct": 4.324003340491855,
+    "entry_fees_SOL": 0.01234568
+  }
+]

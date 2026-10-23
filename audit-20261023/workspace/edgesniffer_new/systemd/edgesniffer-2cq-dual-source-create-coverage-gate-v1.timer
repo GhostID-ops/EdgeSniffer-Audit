@@ -1,0 +1,12 @@
+[Unit]
+Description=Check EdgeSniffer 2CQ dual-source CREATE coverage gate V1
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=5min
+Persistent=true
+Unit=edgesniffer-2cq-dual-source-create-coverage-gate-v1.service
+
+[Install]
+WantedBy=timers.target
+

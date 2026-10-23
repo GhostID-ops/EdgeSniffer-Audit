@@ -1,0 +1,20 @@
+{
+  "schema": "QUOTE_CONTEXT_DIAGNOSTIC_V1",
+  "purpose": "A3h retained-evidence diagnosis, not a new strategy or replacement primary result",
+  "population": "Exactly the original first-mint opportunities, original controls, burst and persistence arms, all three sizes",
+  "control_diagnostic": "Replay original eligibility at signal receipt; mutually exclusive first-failure reasons; preserve per-candidate identities and original hash-selected control. No outcome-dependent rematching.",
+  "freshness_diagnostic": "Age alone does not prove invalidity or continuity. Separate no observed transition, observed contradiction, capture boundary crossing, and independently certified complete write coverage. Equal bracketing states do not certify absence of intermediate writes.",
+  "concentration_diagnostic": "Original complete flow pairs only. Report all liquidity buckets; leave each mint out in either role; leave each control group out; equal-control weighting; largest one/three positive contributions. No threshold selection.",
+  "fee_and_mint_availability": "Use actual native metadata availability or maximum retained capture/fetch/repair clock. Historical/current RPC cannot supply earlier decision knowledge. Observed fees on somebody else's transaction are not a certified fee schedule for our trade.",
+  "quote_admission": "Requires canonical raw state identity, continuity through the boundary, applicable verified fee/global state, mint owner/extensions/epoch, supported instruction/rounding and integer quote fixtures. Unknown is unresolved, not failed or filled.",
+  "economic_experiment": {
+    "entry": "Original independent burst at receipt+1s; unchanged persistence confirmation at receipt+2s then +1s entry",
+    "exit": "Hold 15s from delayed entry, plus 1s exit delivery; original controls at identical arm clocks",
+    "sizes_sol": [0.1, 0.5, 1.0],
+    "accounting": "Integer route quotes, fees and token transfer effects, own reserve intervention, execution cost and failure scenarios, unresolved inventories retained. Quotes remain conditional counterfactuals, not observed fills.",
+    "admission": "Do not execute net economics until required context and own-state propagation are verified; no trading",
+    "validation": "Discovery only on this cohort. Freeze selected candidate before separate prospective validation."
+  },
+  "possible_separate_future_control_design": "If current diagnostics show activity-age selection is the bottleneck, pre-register a risk-set control population from independently continuity-certified states at the same clock, not a mandatory recent trade. Keep same liquidity bucket and hash selection, report full risk set and state age, use new cohort only. Not activated here.",
+  "possible_separate_state_specification": "Continuity-certified unchanged marks may be tested separately only with complete canonical write/transition coverage and fork/session/gap evidence across the entire interval. Historical validation retains later verification time and cannot backdate other missing inputs. No implementation may silently relax the original 1s mark rule."
+}

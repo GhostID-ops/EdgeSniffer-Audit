@@ -1,0 +1,46 @@
+{
+  "schema": "OPPORTUNITY_ATTEMPT_CENSUS_V1",
+  "population_id": "native-replay-coverage-a1-20261022-v1",
+  "policy": {
+    "version": "OPPORTUNITY_ATTEMPT_CENSUS_V1",
+    "seed": "FIRST_OBSERVED_BUY_PER_MINT",
+    "entry_delay_ms": 1000,
+    "sizes_lamports": [
+      100000000,
+      500000000,
+      1000000000
+    ],
+    "scope": "coverage_diagnostic_only",
+    "teacher_used_for_selection": false
+  },
+  "policy_sha256": "86db8bd38273c9ee88c907805439159897fed412257f9d32cdf18f85a887a01b",
+  "input_sha256": "1aff5db680f6b809f9ef3eb7af925fa8ef74709f2b1b099ebf049c292d3fce27",
+  "input_prefix_bytes": 38612374,
+  "ledger_sha256": "a1666de2b9a0b64c55ab7dfa07f4610d613b5db38de9d857963d77ac682a1fad",
+  "counts": {
+    "physical_lines": 9571,
+    "input_rows": 9571,
+    "opportunities": 1065,
+    "attempt_rows": 3195,
+    "non_buy_rows": 4781,
+    "repeat_mint_buy_rows": 3725
+  },
+  "evidence_reasons": {
+    "successful_execution_unproven": 1065,
+    "conditional_replay_state": 1065,
+    "processed_state_adapter_not_validated": 1065,
+    "missing_state_available_at_ms": 1065,
+    "missing_fee_available_at_ms": 1065,
+    "missing_coverage_evidence_id": 1065,
+    "incomplete_reserves": 2,
+    "nonmonotonic_receipt_order": 254
+  },
+  "economics_computed": false,
+  "trading_enabled": false,
+  "sampling": "first observed buy per mint in supplied file",
+  "limitations": [
+    "Not a burst strategy or opportunity-rate estimate.",
+    "No validated processed-state adapter or modeled fills.",
+    "No economic or profitability conclusion from blocked seeds."
+  ]
+}

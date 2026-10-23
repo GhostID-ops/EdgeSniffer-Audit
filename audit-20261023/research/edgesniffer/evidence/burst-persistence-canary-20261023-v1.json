@@ -1,0 +1,186 @@
+{
+  "opportunities": 18,
+  "unique_signal_mints": 18,
+  "unique_control_mints": 9,
+  "control_max_reuse": 3,
+  "without_control": 5,
+  "confirmation": {
+    "CONFIRMED": 3,
+    "REJECTED": 12,
+    "UNKNOWN": 3
+  },
+  "counts": {
+    "input_transactions": 45825,
+    "FAILED": 38775,
+    "SUCCESS": 7050,
+    "eligible_events": 3146,
+    "unknown_identity_or_non_sol_flow": 598,
+    "mayhem_or_unknown": 1908,
+    "ambiguous_multi_event_same_mint": 84
+  },
+  "duration_seconds": 119.510608197,
+  "arms": {
+    "burst": {
+      "admitted": 18,
+      "target_all_seed_abstention_proxy": {
+        "observations": 7,
+        "missing": 11,
+        "mean_bps": 137.07124973381508,
+        "median_bps": 239.22741260996847,
+        "positive_fraction": 0.7142857142857143
+      },
+      "control_all_seed_abstention_proxy": {
+        "observations": 5,
+        "missing": 13,
+        "mean_bps": -227.0641134971529,
+        "median_bps": -430.36650458409645,
+        "positive_fraction": 0.4
+      },
+      "paired_excess": {
+        "observations": 3,
+        "missing": 15,
+        "mean_bps": 2257.818383203004,
+        "median_bps": 2202.7737573443374,
+        "positive_fraction": 1.0
+      },
+      "admitted_target_only": {
+        "observations": 7,
+        "missing": 11,
+        "mean_bps": 137.07124973381508,
+        "median_bps": 239.22741260996847,
+        "positive_fraction": 0.7142857142857143
+      },
+      "admitted_paired_excess_only": {
+        "observations": 3,
+        "missing": 15,
+        "mean_bps": 2257.818383203004,
+        "median_bps": 2202.7737573443374,
+        "positive_fraction": 1.0
+      },
+      "known_abstentions": 0,
+      "missing_target_marks": {
+        "exit_mark:stale_state": 9,
+        "exit_mark:right_censored": 2
+      },
+      "uncertainty": {
+        "nonempty_20s_blocks": 3,
+        "descriptive_only": true,
+        "warning": "Few periods and reused control mints limit inference; not a validation interval",
+        "bootstrap_95_percent_bps": [
+          270.55598092911015,
+          4300.125411335564
+        ]
+      }
+    },
+    "persistence": {
+      "admitted": 3,
+      "target_all_seed_abstention_proxy": {
+        "observations": 14,
+        "missing": 4,
+        "mean_bps": -4.266944323665525,
+        "median_bps": 0.0,
+        "positive_fraction": 0.07142857142857142
+      },
+      "control_all_seed_abstention_proxy": {
+        "observations": 10,
+        "missing": 8,
+        "mean_bps": 0.0,
+        "median_bps": 0.0,
+        "positive_fraction": 0.0
+      },
+      "paired_excess": {
+        "observations": 10,
+        "missing": 8,
+        "mean_bps": 0.0,
+        "median_bps": 0.0,
+        "positive_fraction": 0.0
+      },
+      "admitted_target_only": {
+        "observations": 2,
+        "missing": 1,
+        "mean_bps": -29.868610265658674,
+        "median_bps": -29.868610265658674,
+        "positive_fraction": 0.5
+      },
+      "admitted_paired_excess_only": {
+        "observations": 0,
+        "missing": 3,
+        "mean_bps": null,
+        "median_bps": null,
+        "positive_fraction": null
+      },
+      "known_abstentions": 12,
+      "missing_target_marks": {
+        "exit_mark:stale_state": 7,
+        "entry_mark:stale_state": 7,
+        "exit_mark:right_censored": 2
+      },
+      "uncertainty": {
+        "nonempty_20s_blocks": 5,
+        "descriptive_only": true,
+        "warning": "No admitted matched outcomes; abstention zeros do not estimate a trading effect",
+        "bootstrap_95_percent_bps": null
+      }
+    }
+  },
+  "net_profitability": "NOT_ESTIMATED: reserve-price marks are not fills; fees/impact/inclusion not certified",
+  "persistence_minus_burst_same_seed_proxy": {
+    "observations": 6,
+    "missing": 12,
+    "mean_bps": -4.499467076019172,
+    "median_bps": -194.37857936180313,
+    "positive_fraction": 0.3333333333333333
+  },
+  "continuation": {
+    "1": {
+      "observations": 18,
+      "missing": 0,
+      "mean_bps": 1000.4150169042042,
+      "median_bps": 0.0,
+      "positive_fraction": 0.3888888888888889
+    },
+    "2": {
+      "observations": 15,
+      "missing": 3,
+      "mean_bps": 1070.6505289255629,
+      "median_bps": -314.03129552998683,
+      "positive_fraction": 0.26666666666666666
+    }
+  },
+  "interpretation": "Means use observed subsets only; missingness can be informative. No whole-population edge estimate, no net PnL, no reliable small-sample validation.",
+  "population": "native-canary2-20261023",
+  "input_sha256": "9b725daf06ba54c371bef928614701c0da494ddb694099b7a7ecdd23d55f66b5",
+  "contract": {
+    "schema": "INDEPENDENT_BURST_PERSISTENCE_DIAGNOSTIC_V1",
+    "status": "Fixed before this diagnostic's outcome computation; existing canary is development evidence, not prospective validation",
+    "scope": "Pump SOL successful whole transactions, known non-Mayhem events, no teacher inputs",
+    "clock": "metadata_available_at_ns; file order, never chain-time sorted; no RPC enrichment",
+    "warmup_ms": 1000,
+    "burst_window_ms": 250,
+    "burst": "last two swaps buys, >=2 buyers in window, positive net executed SOL, last post-event price > first pre-event baseline observed before window; first qualifying seed per mint per capture",
+    "baseline": "last native state before the 250ms window, at most 1000ms old at seed",
+    "persistence": "at seed+2000ms retain >=50% initial move, positive executed flow since seed, >=2 buyers not present in seed window, largest buyer <=60% of confirmation buy SOL",
+    "entry_delay_ms": 1000,
+    "hold_ms": 15000,
+    "exit_delivery_ms": 1000,
+    "control": "at seed clock: non-burst other mint with successful SOL event in last250ms, same floor(log2(virtual quote lamports)) bucket, valid baseline/warmup; deterministic minimum hash(seed_id,mint); never exclude a future signal; allow and report reuse",
+    "marks": "latest causally observed event post-state at or before boundary; maximum age1000ms; missing/stale/right-censored retained; NOT executable price or proof of unchanged reserves",
+    "multi_event_and_order": "ambiguous multiple same-mint events in one transaction invalidate state/history; late canonical slot/index likewise invalidates until fresh warmup; do not reorder using future evidence",
+    "sizes_sol": [
+      0.1,
+      0.5,
+      1.0
+    ],
+    "sizes_interpretation": "intent ledger only; price returns are size-free and not rescaled to PnL",
+    "outcomes": "seed-to+1s/+2s diagnostics; entry+1s to hold15s+exit1s primary, persistence entry+3s to+19s; same selected control and respective arm clocks",
+    "uncertainty": "paired 20-second seed-time block bootstrap,2000 draws, fixed RNG; descriptive only with few blocks and cross-block mint/control dependence; report medians and missingness",
+    "promotion": "none; no thresholds/exits selected from canary",
+    "minimum_additional_capture": "engineering floor: 100 independent seed mints with >=20s warmup/tail per bounded session, >=30 nonoverlapping20s blocks; first try fixed15min observation in bounded120s sessions if existing data insufficient. Coverage and sample targets are not validation or power guarantees."
+  },
+  "contract_sha256": "9dd698b13ccf5eff7b88755e83e753ea779f8c20c623510788191eb7882391c6",
+  "implementation_sha256": "78ded4d63da1fe028803f2e7138e7ff36099e3850680ed0fac19d328ab9b4dbd",
+  "artifacts": {
+    "attempts.jsonl": "467cedfd33483243f38ddcd82fc9b6eb71e7291d0e2cc9cbe5941ddb671e587d",
+    "opportunities.jsonl": "ef7d44802f2d11d81890903eb5e0e346621173c88b47337a60c78b2938674039"
+  }
+}

@@ -1,0 +1,12 @@
+[Unit]
+Description=Run bounded full-meta 2CQ N production after each safe completed batch
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=30s
+Persistent=true
+RandomizedDelaySec=20
+Unit=edgesniffer-2cq-full-meta-n-worker-v1.service
+
+[Install]
+WantedBy=timers.target

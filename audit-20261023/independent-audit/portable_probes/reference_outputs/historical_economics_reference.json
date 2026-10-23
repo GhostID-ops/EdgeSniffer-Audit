@@ -1,0 +1,41 @@
+{
+  "status": "EXACT",
+  "entryMs": 2000,
+  "horizonMs": 122000,
+  "counterfactualAttemptedTransactions": 0,
+  "policies": {
+    "TP20_SL20_MAX120": {
+      "status": "EXACT",
+      "outcome": "MAX_HOLD",
+      "triggerAtMs": 122000,
+      "triggerRoiPct": -2.4790150492475376,
+      "landingAtMs": 123000,
+      "landingStateAtMs": 123000,
+      "returnPct": -2.4790150492475376,
+      "pnlSol": -0.002479139,
+      "sellProceedsLamports": 97525861
+    },
+    "FIXED_5S_SL20": {
+      "status": "EXACT",
+      "outcome": "FIXED_EXIT",
+      "triggerAtMs": 7000,
+      "triggerRoiPct": -2.4790150492475376,
+      "landingAtMs": 8000,
+      "landingStateAtMs": 2000,
+      "returnPct": -2.4790150492475376,
+      "pnlSol": -0.002479139,
+      "sellProceedsLamports": 97525861
+    },
+    "TRAIL20_12_SL20_120S": {
+      "status": "EXACT",
+      "outcome": "MAX_HOLD",
+      "triggerAtMs": 122000,
+      "triggerRoiPct": -2.4790150492475376,
+      "landingAtMs": 123000,
+      "landingStateAtMs": 123000,
+      "returnPct": -2.4790150492475376,
+      "pnlSol": -0.002479139,
+      "sellProceedsLamports": 97525861
+    }
+  }
+}

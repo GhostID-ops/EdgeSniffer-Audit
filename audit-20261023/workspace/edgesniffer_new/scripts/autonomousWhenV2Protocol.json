@@ -1,0 +1,42 @@
+{
+  "schema": "AUTONOMOUS_WHEN_V2_PRE_REGISTERED_DEVELOPMENT_PROTOCOL_V1",
+  "status": "FROZEN_PRE_COLLECTION",
+  "purpose": "Decoupled WHEN/WHICH exploratory development only",
+  "v1Status": "FAILED_PRESERVED_UNCHANGED",
+  "frozenWhich": {
+    "artifact": "fingerprint-v2-development-v1/frozen-fingerprint.json",
+    "sha256": "7606a3a138591516f503e7f7b56501f1828b92947a2b38707bff166fbb233b64",
+    "modifiable": false
+  },
+  "whenTarget": {
+    "definition": "A finalized independent canonical 2CQ teacher acquisition occurs in (tick, tick+horizon]. Teacher mint identity is not an input and need not be frozen-WHICH Top-1.",
+    "developmentHorizonsSeconds": [5, 10, 20],
+    "sameSegmentRequired": true,
+    "clusteredEvents": "Each teacher acquisition remains an event; a FIRE can match at most one earliest eligible future event; no target, label, state, or window crosses a certified continuity gap.",
+    "gapHandling": "Fail closed; gap time contributes zero ticks, labels, or valid development time."
+  },
+  "tickAndRankCapture": {
+    "teacherIndependentTickTrigger": "Only non-teacher causal market events create ticks; teacher activity cannot create ticks.",
+    "candidateSnapshot": "Every emitted autonomous tick stores a deterministic lossless ranked eligible universe, every candidate's frozen WHICH score, rank, margin to leader, persistence, create/event provenance, and causal feature vector.",
+    "rankMilestones": [1, 3, 5, 10, 20],
+    "emptyUniverseTicksRetained": true
+  },
+  "whenFeatureGroups": ["market_event_interarrival", "unique_buyers", "buyer_concentration", "buy_sell_flow", "net_gross_flow", "momentum", "market_universe_activity", "which_score_distribution", "score_margin", "candidate_turnover", "candidate_rank_persistence"],
+  "architecture": {
+    "stage1": "WHEN detects a forthcoming teacher-like acquisition event.",
+    "stage2": "After a WHEN fire, frozen WHICH ranking remains observationally available until a separately frozen causal handoff rule is selected using development only.",
+    "teacherIdentityAsFeature": false
+  },
+  "developmentReporting": ["event_recall", "event_precision", "false_fires_per_hour", "fires_per_hour", "lead_time_distribution", "pr_curve", "chronological_stability", "conditional_teacher_rank_availability_at_fire_and_plus_1_2_3_5_seconds_and_pre_acquisition"],
+  "developmentStoppingRule": {
+    "cleanUninterruptedHoursAtLeast": 36,
+    "finalizedIndependentTeacherAcquisitionsAtLeast": 1500,
+    "reason": "Provides material temporal coverage beyond a short 24-hour probe while avoiding a new arbitrary performance gate."
+  },
+  "validation": "After development-only fitting and a separate immutable model/handoff freeze, collect a fresh untouched prospective validation cohort. No validation threshold is declared here.",
+  "oldQuarantineEligible": false,
+  "old72HourCorpusUsedForConfirmation": false,
+  "outcomesRead": 0,
+  "pnlRead": 0,
+  "v2FitPerformed": false
+}

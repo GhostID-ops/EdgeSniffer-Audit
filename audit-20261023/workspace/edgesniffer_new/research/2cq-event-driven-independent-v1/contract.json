@@ -1,0 +1,30 @@
+{
+  "schema": "EDGESNIFFER_2CQ_EVENT_DRIVEN_INDEPENDENT_WINDOWS_V1",
+  "purpose": "Test the preserved 2CQ event-driven burst fingerprint independently of the teacher wallet.",
+  "admission": {
+    "route": "PUMP_BONDING_CURVE_TOP_LEVEL",
+    "early_curve_threshold_source": "preserved_2cq_fingerprint_p75_virtual_sol",
+    "buy_count_250ms_min": 2,
+    "net_flow_250ms_min_sol": 0.0,
+    "log_price_change_250ms_min": 0.0,
+    "consecutive_buys_min": 2
+  },
+  "causal_boundary": {
+    "signal_clock": "native_local_receive_ts_ms",
+    "entry_delay_ms": 1000,
+    "entry_state": "latest complete native state at or before signal plus one second",
+    "post_entry_window_ms": 300000
+  },
+  "teacher_wallet_use": "never used for admission; teacher match is forced false in emitted independent windows",
+  "economics": {
+    "sizes_sol": [0.1, 0.5, 1.0],
+    "exits_seconds": [5, 10, 15, 30, 60, 120, 300],
+    "stress_bps": [0, 25, 50],
+    "missing_marks": "failed or missed, never imputed"
+  },
+  "selection_performed": false,
+  "policy_frozen": false,
+  "prospective_validation_required": true,
+  "read_only": true,
+  "trading_enabled": false
+}

@@ -1,0 +1,391 @@
+{
+  "opportunities": 78,
+  "unique_signal_mints": 78,
+  "unique_control_mints": 22,
+  "control_max_reuse": 6,
+  "without_control": 42,
+  "confirmation": {
+    "REJECTED": 18,
+    "CONFIRMED": 23,
+    "UNKNOWN": 37
+  },
+  "counts": {
+    "input_transactions": 157657,
+    "SUCCESS": 46589,
+    "eligible_events": 18723,
+    "mayhem_or_unknown": 13861,
+    "FAILED": 111068,
+    "unknown_identity_or_non_sol_flow": 4691,
+    "ambiguous_multi_event_same_mint": 62
+  },
+  "duration_seconds": 1111.903608771,
+  "arms": {
+    "burst": {
+      "admitted": 78,
+      "target_all_seed_abstention_proxy": {
+        "observations": 28,
+        "missing": 50,
+        "mean_bps": 634.8507851153756,
+        "median_bps": -98.24298518347898,
+        "positive_fraction": 0.5
+      },
+      "control_all_seed_abstention_proxy": {
+        "observations": 18,
+        "missing": 60,
+        "mean_bps": 674.8438847712825,
+        "median_bps": 323.28466568120444,
+        "positive_fraction": 0.6111111111111112
+      },
+      "paired_excess": {
+        "observations": 7,
+        "missing": 71,
+        "mean_bps": 572.9433403355393,
+        "median_bps": -494.32291877847194,
+        "positive_fraction": 0.2857142857142857
+      },
+      "admitted_target_only": {
+        "observations": 28,
+        "missing": 50,
+        "mean_bps": 634.8507851153756,
+        "median_bps": -98.24298518347898,
+        "positive_fraction": 0.5
+      },
+      "admitted_paired_excess_only": {
+        "observations": 7,
+        "missing": 71,
+        "mean_bps": 572.9433403355393,
+        "median_bps": -494.32291877847194,
+        "positive_fraction": 0.2857142857142857
+      },
+      "known_abstentions": 0,
+      "missing_target_marks": {
+        "exit_mark:stale_state": 39,
+        "exit_mark:right_censored": 11,
+        "entry_mark:right_censored": 1
+      },
+      "uncertainty": {
+        "nonempty_20s_blocks": 7,
+        "descriptive_only": true,
+        "warning": "Few periods and reused control mints limit inference; not a validation interval",
+        "bootstrap_95_percent_bps": [
+          -3129.2329194748972,
+          5697.438593910861
+        ]
+      }
+    },
+    "persistence": {
+      "admitted": 23,
+      "target_all_seed_abstention_proxy": {
+        "observations": 36,
+        "missing": 42,
+        "mean_bps": -261.4705513083358,
+        "median_bps": 0.0,
+        "positive_fraction": 0.16666666666666666
+      },
+      "control_all_seed_abstention_proxy": {
+        "observations": 14,
+        "missing": 64,
+        "mean_bps": 387.11202486549473,
+        "median_bps": 0.0,
+        "positive_fraction": 0.07142857142857142
+      },
+      "paired_excess": {
+        "observations": 13,
+        "missing": 65,
+        "mean_bps": -772.6118006615319,
+        "median_bps": 0.0,
+        "positive_fraction": 0.15384615384615385
+      },
+      "admitted_target_only": {
+        "observations": 18,
+        "missing": 5,
+        "mean_bps": -522.9411026166716,
+        "median_bps": -693.9962374489214,
+        "positive_fraction": 0.3333333333333333
+      },
+      "admitted_paired_excess_only": {
+        "observations": 4,
+        "missing": 19,
+        "mean_bps": -2510.9883521499787,
+        "median_bps": 13.821884418797481,
+        "positive_fraction": 0.5
+      },
+      "known_abstentions": 18,
+      "missing_target_marks": {
+        "entry_mark:stale_state": 37,
+        "exit_mark:stale_state": 39,
+        "exit_mark:right_censored": 11,
+        "entry_mark:right_censored": 2
+      },
+      "uncertainty": {
+        "nonempty_20s_blocks": 10,
+        "descriptive_only": true,
+        "warning": "Few periods and reused control mints limit inference; not a validation interval",
+        "bootstrap_95_percent_bps": [
+          -2715.2382011194154,
+          567.6668493777275
+        ]
+      }
+    }
+  },
+  "net_profitability": "NOT_ESTIMATED: reserve-price marks are not fills; fees/impact/inclusion not certified",
+  "persistence_minus_burst_same_seed_proxy": {
+    "observations": 21,
+    "missing": 57,
+    "mean_bps": -1408.4410625898286,
+    "median_bps": -547.6510970470085,
+    "positive_fraction": 0.42857142857142855
+  },
+  "continuation": {
+    "1": {
+      "observations": 77,
+      "missing": 1,
+      "mean_bps": 425.6444532562456,
+      "median_bps": 145.1928489954925,
+      "positive_fraction": 0.6753246753246753
+    },
+    "2": {
+      "observations": 41,
+      "missing": 37,
+      "mean_bps": 860.7243313712984,
+      "median_bps": 270.6018150425326,
+      "positive_fraction": 0.7073170731707317
+    }
+  },
+  "interpretation": "Means use observed subsets only; missingness can be informative. No whole-population edge estimate, no net PnL, no reliable small-sample validation.",
+  "prior_cohort_mint_overlap": {
+    "prior_unique_mints": 18,
+    "overlapping_mints": 1,
+    "new_mints": 77,
+    "interpretation": "Temporal observations kept separate; overlapping assets are not new independent assets"
+  },
+  "batch": "/mnt/HC_Volume_106775198/edgesniffer-research/burst-persistence-v1-WmlstZu7/fresh-batch1",
+  "batch_status": "COMPLETE",
+  "expected_sessions": 8,
+  "verified_sessions": [
+    {
+      "session": "session-01",
+      "replay_artifacts_equal": true,
+      "source_sha256": "5674283ee295f2f92d32e4cb4ff19069141d0f1c151b9bade2decc5a11ebd1e1",
+      "raw_capture_sha256": "d156a1d63362fe6ba9e95a86860b25232d232090eb9e04fa1306739a1964c727",
+      "input_transactions": 20640,
+      "opportunities": 12,
+      "raw_capture_bytes": 298354760,
+      "recorded_reconnect_gaps": 0,
+      "decoder_gaps": {},
+      "finalized_comparison": {
+        "resolved_blocks": 4,
+        "expected_pump_signatures": 162,
+        "observed_expected": 162,
+        "missing_transactions": 0,
+        "observed_not_finalized": 0
+      },
+      "native_vs_finalized_metadata": {
+        "compared_transactions": 162,
+        "execution_status_equal_matches": 162,
+        "resolved_accounts_equal_matches": 162,
+        "lamport_balances_equal_matches": 162,
+        "fee_equal_matches": 162,
+        "event_payloads_equal_matches": 162
+      },
+      "slot_numeric_discontinuities": 0
+    },
+    {
+      "session": "session-02",
+      "replay_artifacts_equal": true,
+      "source_sha256": "5ce5aca56d1d5d98c90784be1291ece73b77f6354e9b61dd60353a0bd4824943",
+      "raw_capture_sha256": "130eeca8336c0f34e5035bfb684250a19f2d8132451aa4a85034024fe00a4c00",
+      "input_transactions": 20585,
+      "opportunities": 20,
+      "raw_capture_bytes": 309648862,
+      "recorded_reconnect_gaps": 0,
+      "decoder_gaps": {},
+      "finalized_comparison": {
+        "resolved_blocks": 4,
+        "expected_pump_signatures": 157,
+        "observed_expected": 157,
+        "missing_transactions": 0,
+        "observed_not_finalized": 0
+      },
+      "native_vs_finalized_metadata": {
+        "compared_transactions": 157,
+        "execution_status_equal_matches": 157,
+        "resolved_accounts_equal_matches": 157,
+        "lamport_balances_equal_matches": 157,
+        "fee_equal_matches": 157,
+        "event_payloads_equal_matches": 157
+      },
+      "slot_numeric_discontinuities": 0
+    },
+    {
+      "session": "session-03",
+      "replay_artifacts_equal": true,
+      "source_sha256": "bce94a7c5f670e679ef5c46c6119a314202af5a65e42e144fa34130889a8f3c7",
+      "raw_capture_sha256": "59e0592bada6ec35e90bcf9be29bb87bbbfd387278d5362dbc1fad3ff38ef074",
+      "input_transactions": 12947,
+      "opportunities": 18,
+      "raw_capture_bytes": 210770526,
+      "recorded_reconnect_gaps": 0,
+      "decoder_gaps": {},
+      "finalized_comparison": {
+        "resolved_blocks": 4,
+        "expected_pump_signatures": 117,
+        "observed_expected": 117,
+        "missing_transactions": 0,
+        "observed_not_finalized": 0
+      },
+      "native_vs_finalized_metadata": {
+        "compared_transactions": 117,
+        "execution_status_equal_matches": 117,
+        "resolved_accounts_equal_matches": 117,
+        "lamport_balances_equal_matches": 117,
+        "fee_equal_matches": 117,
+        "event_payloads_equal_matches": 117
+      },
+      "slot_numeric_discontinuities": 0
+    },
+    {
+      "session": "session-04",
+      "replay_artifacts_equal": true,
+      "source_sha256": "a5d492d0c362258dc20ec42fd6970510f5be1f91823936f888a14885f7d69320",
+      "raw_capture_sha256": "9fa84a8530ffd131d7bc870bc282a435d8c3db2ffa91c55e628dfa8b0fc60d5d",
+      "input_transactions": 19760,
+      "opportunities": 15,
+      "raw_capture_bytes": 309834643,
+      "recorded_reconnect_gaps": 0,
+      "decoder_gaps": {},
+      "finalized_comparison": {
+        "resolved_blocks": 4,
+        "expected_pump_signatures": 92,
+        "observed_expected": 92,
+        "missing_transactions": 0,
+        "observed_not_finalized": 0
+      },
+      "native_vs_finalized_metadata": {
+        "compared_transactions": 92,
+        "execution_status_equal_matches": 92,
+        "resolved_accounts_equal_matches": 92,
+        "lamport_balances_equal_matches": 92,
+        "fee_equal_matches": 92,
+        "event_payloads_equal_matches": 92
+      },
+      "slot_numeric_discontinuities": 0
+    },
+    {
+      "session": "session-05",
+      "replay_artifacts_equal": true,
+      "source_sha256": "467645820965faa1e2e7aa6d090a675b0082bbd9512a498a94feeca3adcf8dc8",
+      "raw_capture_sha256": "884ef5d1b90718deaaf896786c8fb05b63233cede71cf4e8a36b91988182c7ef",
+      "input_transactions": 21653,
+      "opportunities": 23,
+      "raw_capture_bytes": 293682360,
+      "recorded_reconnect_gaps": 0,
+      "decoder_gaps": {},
+      "finalized_comparison": {
+        "resolved_blocks": 4,
+        "expected_pump_signatures": 201,
+        "observed_expected": 201,
+        "missing_transactions": 0,
+        "observed_not_finalized": 0
+      },
+      "native_vs_finalized_metadata": {
+        "compared_transactions": 201,
+        "execution_status_equal_matches": 201,
+        "resolved_accounts_equal_matches": 201,
+        "lamport_balances_equal_matches": 201,
+        "fee_equal_matches": 201,
+        "event_payloads_equal_matches": 201
+      },
+      "slot_numeric_discontinuities": 0
+    },
+    {
+      "session": "session-06",
+      "replay_artifacts_equal": true,
+      "source_sha256": "e05aedc49897d3b7b70660c4459ec2ddb352512f2c7b47393634ed7d428455b9",
+      "raw_capture_sha256": "c65354039c2b74b759d850ba4fc8753a67674006b2796512a4a1902319512365",
+      "input_transactions": 24376,
+      "opportunities": 17,
+      "raw_capture_bytes": 334666982,
+      "recorded_reconnect_gaps": 0,
+      "decoder_gaps": {},
+      "finalized_comparison": {
+        "resolved_blocks": 4,
+        "expected_pump_signatures": 178,
+        "observed_expected": 178,
+        "missing_transactions": 0,
+        "observed_not_finalized": 0
+      },
+      "native_vs_finalized_metadata": {
+        "compared_transactions": 178,
+        "execution_status_equal_matches": 178,
+        "resolved_accounts_equal_matches": 178,
+        "lamport_balances_equal_matches": 178,
+        "fee_equal_matches": 178,
+        "event_payloads_equal_matches": 178
+      },
+      "slot_numeric_discontinuities": 0
+    },
+    {
+      "session": "session-07",
+      "replay_artifacts_equal": true,
+      "source_sha256": "f6c377dbc4616ffc1d9ac3ff9f226a10ef95be7567d81d014c079ff2d0500f6a",
+      "raw_capture_sha256": "5e2b62e05ef33e7da5393bba3290a420aff3bb7cb303ccde3f57385b521dfa4e",
+      "input_transactions": 22027,
+      "opportunities": 14,
+      "raw_capture_bytes": 288048579,
+      "recorded_reconnect_gaps": 0,
+      "decoder_gaps": {},
+      "finalized_comparison": {
+        "resolved_blocks": 4,
+        "expected_pump_signatures": 180,
+        "observed_expected": 180,
+        "missing_transactions": 0,
+        "observed_not_finalized": 0
+      },
+      "native_vs_finalized_metadata": {
+        "compared_transactions": 180,
+        "execution_status_equal_matches": 180,
+        "resolved_accounts_equal_matches": 180,
+        "lamport_balances_equal_matches": 180,
+        "fee_equal_matches": 180,
+        "event_payloads_equal_matches": 180
+      },
+      "slot_numeric_discontinuities": 0
+    },
+    {
+      "session": "session-08",
+      "replay_artifacts_equal": true,
+      "source_sha256": "173969d30dc2c8fae0b8ae8aacd1249a76e7ef132141c7e82fb34b4138ffdf9a",
+      "raw_capture_sha256": "0919ba4fbeb25b173de63d4150e6c1becec48baf98a8f7776a4aceedce5816af",
+      "input_transactions": 15669,
+      "opportunities": 9,
+      "raw_capture_bytes": 227042319,
+      "recorded_reconnect_gaps": 0,
+      "decoder_gaps": {},
+      "finalized_comparison": {
+        "resolved_blocks": 4,
+        "expected_pump_signatures": 91,
+        "observed_expected": 91,
+        "missing_transactions": 0,
+        "observed_not_finalized": 0
+      },
+      "native_vs_finalized_metadata": {
+        "compared_transactions": 91,
+        "execution_status_equal_matches": 91,
+        "resolved_accounts_equal_matches": 91,
+        "lamport_balances_equal_matches": 91,
+        "fee_equal_matches": 91,
+        "event_payloads_equal_matches": 91
+      },
+      "slot_numeric_discontinuities": 0
+    }
+  ],
+  "later_same_mint_seeds": 50,
+  "observed_seconds": 960.020004276,
+  "intersession_unobserved_seconds": 151.883604495,
+  "seed_time_20s_blocks": 38,
+  "verification_implementation_sha256": "63c642c4be9647b7c75589d49705f7ab61cc251fc4d700a6d88c6c6945050363",
+  "analysis_implementation_sha256": "23e40ac090cc590bd0b7c008c23a35b5fcdb00e6751153e9a0a19da9b8b3126c",
+  "provenance": "Current source-provenance guard added after batch start; identical native opportunity/attempt replay proves no selection or outcome changes. Original source/results preserved.",
+  "engineering_floor": "100 unique seed mints and30 seed-time blocks, not a powered validation target"
+}

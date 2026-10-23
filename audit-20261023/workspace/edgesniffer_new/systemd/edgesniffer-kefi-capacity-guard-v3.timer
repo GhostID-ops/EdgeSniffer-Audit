@@ -1,0 +1,11 @@
+[Unit]
+Description=Run kEFi fresh replication V7 capacity guard every five minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Persistent=true
+Unit=edgesniffer-kefi-capacity-guard-v3.service
+
+[Install]
+WantedBy=timers.target

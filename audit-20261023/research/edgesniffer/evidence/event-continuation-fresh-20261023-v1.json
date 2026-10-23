@@ -1,0 +1,152 @@
+{
+  "seeds": 78,
+  "unique_mints": 78,
+  "without_control": 42,
+  "confirmation": {
+    "REJECTED": 18,
+    "CONFIRMED": 23,
+    "UNKNOWN": 37
+  },
+  "arms": {
+    "burst": {
+      "admitted": 78,
+      "complete_pairs": 35,
+      "missing_pairs": 43,
+      "paired_net_SOL_flow_difference": {
+        "n": 35,
+        "mean": 0.9365364861142857,
+        "median": 0.494512404,
+        "positive_fraction": 0.6571428571428571
+      },
+      "paired_event_count_difference": {
+        "n": 35,
+        "mean": -0.9428571428571428,
+        "median": -2,
+        "positive_fraction": 0.2571428571428571
+      },
+      "uncertainty": {
+        "nonempty_20s_blocks": 21,
+        "descriptive_only": true,
+        "warning": "Few periods and reused control mints limit inference; not a validation interval",
+        "bootstrap_95_percent_SOL_flow": [
+          0.4048956815357143,
+          1.570599430736842
+        ]
+      },
+      "all_seed_target_statuses": {
+        "OBSERVED_INTERVAL": 75,
+        "AMBIGUOUS_CONTEXT": 1,
+        "RIGHT_CENSORED": 2
+      },
+      "all_seed_control_statuses": {
+        "OBSERVED_INTERVAL": 36,
+        "NO_CONTROL": 42
+      },
+      "observed_zero_event_target_intervals": 30
+    },
+    "persistence": {
+      "admitted": 23,
+      "complete_pairs": 11,
+      "missing_pairs": 12,
+      "paired_net_SOL_flow_difference": {
+        "n": 11,
+        "mean": -0.4808822365454546,
+        "median": 0.013493426,
+        "positive_fraction": 0.5454545454545454
+      },
+      "paired_event_count_difference": {
+        "n": 11,
+        "mean": 3.8181818181818183,
+        "median": 2,
+        "positive_fraction": 0.6363636363636364
+      },
+      "uncertainty": {
+        "nonempty_20s_blocks": 9,
+        "descriptive_only": true,
+        "warning": "Few periods and reused control mints limit inference; not a validation interval",
+        "bootstrap_95_percent_SOL_flow": [
+          -1.7897945429230768,
+          1.0652526805555556
+        ]
+      },
+      "all_seed_target_statuses": {
+        "OBSERVED_INTERVAL": 74,
+        "RIGHT_CENSORED": 4
+      },
+      "all_seed_control_statuses": {
+        "OBSERVED_INTERVAL": 34,
+        "NO_CONTROL": 42,
+        "RIGHT_CENSORED": 2
+      },
+      "observed_zero_event_target_intervals": 1
+    }
+  },
+  "stale_burst_exit_mechanism": {
+    "some_events_but_no_fresh_exit_mark": 30,
+    "no_new_decoded_Pump_SOL_events": 9
+  },
+  "meaning": "Observable Pump activity continuation only; not price continuation, fills or net PnL",
+  "inputs": [
+    {
+      "session": "session-01",
+      "input_sha256": "5674283ee295f2f92d32e4cb4ff19069141d0f1c151b9bade2decc5a11ebd1e1",
+      "original_seeds": 12
+    },
+    {
+      "session": "session-02",
+      "input_sha256": "5ce5aca56d1d5d98c90784be1291ece73b77f6354e9b61dd60353a0bd4824943",
+      "original_seeds": 20
+    },
+    {
+      "session": "session-03",
+      "input_sha256": "bce94a7c5f670e679ef5c46c6119a314202af5a65e42e144fa34130889a8f3c7",
+      "original_seeds": 18
+    },
+    {
+      "session": "session-04",
+      "input_sha256": "a5d492d0c362258dc20ec42fd6970510f5be1f91823936f888a14885f7d69320",
+      "original_seeds": 15
+    },
+    {
+      "session": "session-05",
+      "input_sha256": "467645820965faa1e2e7aa6d090a675b0082bbd9512a498a94feeca3adcf8dc8",
+      "original_seeds": 23
+    },
+    {
+      "session": "session-06",
+      "input_sha256": "e05aedc49897d3b7b70660c4459ec2ddb352512f2c7b47393634ed7d428455b9",
+      "original_seeds": 17
+    },
+    {
+      "session": "session-07",
+      "input_sha256": "f6c377dbc4616ffc1d9ac3ff9f226a10ef95be7567d81d014c079ff2d0500f6a",
+      "original_seeds": 14
+    },
+    {
+      "session": "session-08",
+      "input_sha256": "173969d30dc2c8fae0b8ae8aacd1249a76e7ef132141c7e82fb34b4138ffdf9a",
+      "original_seeds": 9
+    }
+  ],
+  "repeat_mint_seeds_preserved_in_primary": 50,
+  "contract": {
+    "schema": "NATIVE_EVENT_CONTINUATION_SECONDARY_V1",
+    "status": "Declared after primary price results, before computing this endpoint; retrospective exploratory, not validation",
+    "population": "Unchanged first-mint burst seeds and original same-clock controls from the fixed study; do not reselect controls",
+    "intervals": {
+      "burst": "(seed+1s, seed+3s]",
+      "persistence": "(seed+3s, seed+5s]"
+    },
+    "endpoint": "Known executed Pump SOL event count and signed SOL flow; paired target-minus-control differences",
+    "persistence": "Report all original seeds and confirmation status; admitted-only comparison separately, never erase rejected/unknown seeds",
+    "zero": "No new eligible decoded Pump SOL event in a complete observed interval, not zero price return or proof of no activity on other venues",
+    "unknown": "Right-censored intervals, invalid/ambiguous state points, unknown executions mentioning the mint, successful Pump instructions without interpretable event context",
+    "failed": "Count native-known mint account mentions diagnostically; zero contribution to executed flow",
+    "uncertainty": "Descriptive paired20s seed-time block bootstrap; reused controls and one short market period limit inference",
+    "strategy_change": false,
+    "net_profitability": "Not evaluated"
+  },
+  "contract_sha256": "c1890e606f8d89ec1e668dacbb6e512eceada5d22f317bf4e1c6d8b028b00997",
+  "implementation_sha256": "8c8f20f7b84228916592f380dfa536cfaa748ec407a6fe66070343e1e2456f15",
+  "outcomes_sha256": "153168a361fb44dbcc3ada8a6340effcb10d497d1f2f066a2fd29890f6cef66f"
+}

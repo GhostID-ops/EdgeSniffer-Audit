@@ -1,0 +1,32 @@
+{
+  "scope": "A3h1 retained-evidence diagnostics and A3h2 isolated raw-context capture; A3h overall PARTIAL",
+  "python": {
+    "command": "python -m unittest discover -s research/edgesniffer -p 'test_*.py'",
+    "local_passed": 76,
+    "vps_passed": 76,
+    "skipped": 0,
+    "coverage": ["original control selection replay", "future mint repair timestamps excluded", "equal later write not continuity proof", "full diagnostic integration and denominator", "concentration removes mint in either role", "raw account hash/identity", "RPC missingness and gaps retained"]
+  },
+  "rust": {
+    "command": "CARGO_BUILD_JOBS=2 CARGO_TARGET_DIR=/root/bot/EdgeSniffer/rust-exact-ledger/target /root/.cargo/bin/cargo test --offline --locked --manifest-path context-code/pump_capture/Cargo.toml",
+    "vps_passed": 8,
+    "release_build": "passed --release --offline --locked",
+    "canary_binary_sha256": "2709cf053c77bae19dad44ca605b292e34b766e370c5448a2bd0ca4ce3eeb419"
+  },
+  "deterministic_replays": {
+    "quote_context_two_full_input_runs": "139bc62a2e8a4d8f781b8f55676ea98fdfe9cc63bfc9874d4cd83efe499a11a3",
+    "new_context_capture_quality_two_runs": "cd138b2896b8ff73ccc4c5d9da9220296efd1f8a003ac2c79092317b0b6e8dc3"
+  },
+  "raw_evidence_root": "/mnt/HC_Volume_106775198/edgesniffer-research/burst-persistence-v1-WmlstZu7",
+  "artifact_directories": ["quote-context1", "quote-context2", "quote-context-replay2", "quote-archive-inventory1", "context-code", "context-canary1", "context-quality1", "context-quality-replay1", "context-transactions-quality1"],
+  "original_signals": 78,
+  "scenarios_per_arm": 234,
+  "intentions_both_arms": 468,
+  "original_boundary_hash_unchanged": "04d8c750331c0698b9971c6b2e7977da9e985f713b8833fd8729f39030885e23",
+  "new_canary": {"seconds": 60, "transactions": 7808, "raw_account_writes": 4487, "mint_bootstraps": 236, "sampled_finalized_expected_and_captured": 79, "sampled_blocks": 4},
+  "not_proven": ["global capture completeness", "continuous canonical state through every decision", "fee schedule validity", "mint extension economics", "integer quote parity", "own-trade counterfactual state", "fills or net profitability"],
+  "services_restarted": false,
+  "trading_enabled": false,
+  "new_canary_currently_running": false,
+  "next_task": "AUD-L01A3h3: validated raw-to-causal-quote context adapter and independent integer fixtures on the sealed canary"
+}

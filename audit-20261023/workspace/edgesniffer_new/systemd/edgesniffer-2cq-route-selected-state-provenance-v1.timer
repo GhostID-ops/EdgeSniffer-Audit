@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh EdgeSniffer 2CQ route selected-state provenance V1
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=7min
+Persistent=true
+Unit=edgesniffer-2cq-route-selected-state-provenance-v1.service
+
+[Install]
+WantedBy=timers.target

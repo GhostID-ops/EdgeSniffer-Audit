@@ -1,0 +1,2 @@
+# Preserve source/evidence bytes so manifest hashes survive Git transport.
+* -text

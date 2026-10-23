@@ -1,0 +1,33 @@
+{
+  "scope": "Fixed independent burst/persistence and secondary event-continuation research, not net economics",
+  "python_tests_local": 65,
+  "python_tests_vps": 65,
+  "tests_skipped": 0,
+  "test_command": "python -m unittest discover -s research/edgesniffer -p test_*.py",
+  "canary_report_replay_sha256": "ef27b99bc82a0ffdabca7734d932c601ed98dd06508f974a48e2b0f4decf1b9c",
+  "canary_opportunities_original_and_final_guard_sha256": "ef7d44802f2d11d81890903eb5e0e346621173c88b47337a60c78b2938674039",
+  "canary_attempts_original_and_final_guard_sha256": "467cedfd33483243f38ddcd82fc9b6eb71e7291d0e2cc9cbe5941ddb671e587d",
+  "failure_report_replay_sha256": "4fe5854ef9ca78eb7dadf5aded191b19d53bc370f8e4f65209864e9274650d39",
+  "event_continuation_report_replay_sha256": "06a9eeba9f5bc3bf6d721ff65ab4c17b5c5343d9827917301ba5887d91b04c59",
+  "fresh_sessions": 8,
+  "fresh_session_opportunity_and_attempt_replays_identical": 8,
+  "fresh_finalized_sample_blocks": 32,
+  "fresh_expected_and_captured_reference_transactions": 1178,
+  "fresh_reference_metadata_mismatches": 0,
+  "canonical_selected_event_transactions_expected": 15503,
+  "canonical_selected_event_transactions_matched": 15503,
+  "canonical_four_reserve_row_matches": 15503,
+  "noncanonical_account_rows_excluded": 28424,
+  "canonical_audit_original_replay_report_sha256": "9f9ee944c4a80a90fa5cc9e907df98901c8f61eb79748156133c44b3529a5fab",
+  "canonical_boundary_artifact_sha256": "04d8c750331c0698b9971c6b2e7977da9e985f713b8833fd8729f39030885e23",
+  "canonical_comparison_artifact_sha256": "3b7bf44163b046a3cb51402267b3c9df623a9cd09d97283fcceddc79b38aec5f",
+  "capture_binary_changed": false,
+  "existing_services_restarted": false,
+  "trading_enabled": false,
+  "operational_notes": [
+    "An initial verification-code test command ran before SCP completed and failed with missing imports; no capture or production service was affected. Full59-test run passed after transfer completion.",
+    "Additional source-provenance guard was tested after batch start; original source preserved and every native opportunity/attempt replay stayed identical.",
+    "Bounded capture finished; no permanent new collector. Data gaps between sessions are explicit.",
+    "Completeness checks are sampled, not global; price marks are not executable fills; failure classification is not the strategy's order failure rate."
+  ]
+}

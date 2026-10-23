@@ -1,0 +1,1399 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>EdgeSniffer - Sniffer Presentation</title>
+    <style>
+      :root {
+        --bg: #080808;
+        --panel: #131313;
+        --panel2: #1a1a1a;
+        --line: #303030;
+        --ink: #eee;
+        --muted: #aaa;
+        --soft: #d1d1d1;
+        --good: #a9c5ae;
+        --warn: #c6b78f;
+        --bad: #c99090;
+        --accent: #d0d0d0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at 80% 0, #242424 0, #080808 36rem), var(--bg);
+        color: var(--ink);
+        font:
+          15px/1.6 Inter,
+          system-ui,
+          sans-serif;
+      }
+      a {
+        color: var(--soft);
+        text-decoration: none;
+      }
+      .wrap {
+        max-width: 1160px;
+        margin: auto;
+        padding: 0 26px;
+      }
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: #080808ed;
+        border-bottom: 1px solid #fff1;
+        backdrop-filter: blur(14px);
+      }
+      .nav {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+        font-weight: 800;
+      }
+      .logo {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #e4e4e4, #777);
+        position: relative;
+      }
+      .logo:after {
+        content: "";
+        position: absolute;
+        inset: 7px;
+        border: 2px solid #080808;
+        border-radius: 50%;
+      }
+      .navlinks {
+        display: flex;
+        gap: 20px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .hero {
+        padding: 90px 0 72px;
+      }
+      .eyebrow {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.17em;
+        color: var(--accent);
+        font-weight: 800;
+      }
+      .hero h1 {
+        font-size: clamp(48px, 7vw, 82px);
+        line-height: 1;
+        letter-spacing: -0.07em;
+        margin: 18px 0 24px;
+      }
+      .hero p {
+        font-size: 20px;
+        max-width: 730px;
+        color: #d1d1d1;
+      }
+      .box {
+        border: 1px solid #7778;
+        background: #fff08;
+        border-radius: 13px;
+        padding: 16px 18px;
+        color: #ddd;
+      }
+      .box strong {
+        color: #fff;
+      }
+      .status {
+        display: inline-flex;
+        gap: 9px;
+        align-items: center;
+        margin-top: 25px;
+        padding: 9px 14px;
+        border: 1px solid #a9c5ae55;
+        background: #a9c5ae12;
+        border-radius: 99px;
+        color: var(--good);
+        font-size: 13px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--good);
+      }
+      section {
+        border-top: 1px solid #fff1;
+        padding: 68px 0;
+      }
+      h2 {
+        font-size: 38px;
+        line-height: 1.08;
+        letter-spacing: -0.045em;
+        margin: 9px 0 14px;
+      }
+      h3 {
+        margin: 0 0 7px;
+      }
+      p {
+        color: var(--muted);
+        margin: 0 0 14px;
+      }
+      .intro {
+        max-width: 760px;
+        margin-bottom: 30px;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+      .two {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+      .three {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .four {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .card {
+        background: linear-gradient(145deg, #191919, #101010);
+        border: 1px solid var(--line);
+        border-radius: 17px;
+        padding: 22px;
+      }
+      .metric .num {
+        font-size: 35px;
+        font-weight: 800;
+        letter-spacing: -0.05em;
+      }
+      .metric .label {
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+      }
+      .metric small {
+        display: block;
+        color: var(--soft);
+        margin-top: 7px;
+      }
+      .result .num {
+        font-size: 29px;
+        color: var(--good);
+        font-weight: 850;
+        letter-spacing: -0.04em;
+      }
+      .result .label {
+        font-weight: 700;
+      }
+      .sub,
+      .tech,
+      .note {
+        font-size: 12px;
+        color: #858585;
+      }
+      .timeline {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 25px;
+      }
+      .timeline .card {
+        border-top: 3px solid #777;
+      }
+      .timeline .card:nth-child(2) {
+        border-top-color: #aaa;
+      }
+      .timeline .card:nth-child(3) {
+        border-top-color: #ddd;
+      }
+      .tag {
+        font-size: 11px;
+        color: #ccc;
+        border: 1px solid #7778;
+        border-radius: 99px;
+        padding: 3px 8px;
+        margin: 2px;
+        display: inline-block;
+      }
+      .workflow {
+        grid-template-columns: repeat(5, 1fr);
+      }
+      .step {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 18px;
+        min-height: 205px;
+      }
+      .stepno {
+        font-size: 11px;
+        color: var(--accent);
+        font-weight: 800;
+      }
+      .step strong {
+        display: block;
+        margin: 8px 0 5px;
+      }
+      .arms {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .arm {
+        min-height: 165px;
+        position: relative;
+      }
+      .state {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--warn);
+      }
+      .arm.ready {
+        border-color: #aaa6;
+      }
+      .arm.fail {
+        border-color: #c9909066;
+      }
+      .arm:hover:after {
+        content: attr(data-tip);
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 14px;
+        background: #282828;
+        color: #f0f0f0;
+        border: 1px solid #777;
+        border-radius: 9px;
+        padding: 10px 12px;
+        font-size: 12px;
+        line-height: 1.45;
+        z-index: 2;
+        box-shadow: 0 10px 30px #000;
+        pointer-events: none;
+      }
+      .faq {
+        grid-template-columns: 1fr 1fr;
+      }
+      .faq details {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        padding: 16px 18px;
+      }
+      .faq summary {
+        cursor: pointer;
+        font-weight: 750;
+      }
+      .faq details p {
+        padding-top: 11px;
+        margin: 0;
+        font-size: 14px;
+      }
+      .glossary dt {
+        color: #eee;
+        font-weight: 750;
+        margin-top: 14px;
+      }
+      .glossary dd {
+        margin: 2px 0 0;
+        color: var(--muted);
+      }
+      ul {
+        color: var(--muted);
+        margin: 9px 0 0;
+        padding-left: 20px;
+      }
+      .footer {
+        padding: 40px 0 70px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      @media (max-width: 900px) {
+        .four,
+        .three,
+        .two,
+        .arms,
+        .faq,
+        .workflow {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .four,
+        .three,
+        .two,
+        .arms,
+        .faq,
+        .workflow,
+        .timeline {
+          grid-template-columns: 1fr;
+        }
+        .navlinks {
+          display: none;
+        }
+        .hero {
+          padding-top: 55px;
+        }
+        .hero h1 {
+          font-size: 50px;
+        }
+      }
+    </style>
+    <style>
+      #windows {
+        display: none;
+      }
+      .actual-clues {
+        display: none;
+      }
+      .teacher-fingerprint .clue {
+        border-top: 3px solid #888;
+      }
+      .teacher-fingerprint .clue strong {
+        color: #eee;
+      }
+      .teacher-fingerprint .label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #aaa;
+        font-weight: 800;
+      }
+      .teacher-fingerprint .num {
+        font-size: 28px;
+        font-weight: 800;
+        color: #eee;
+        letter-spacing: -0.04em;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap nav">
+        <div class="brand"><span class="logo"></span>EdgeSniffer</div>
+        <nav class="navlinks">
+          <a href="#overview">Overview</a><a href="#evidence">Evidence</a
+          ><a href="#windows">Windows</a><a href="#fingerprints">Fingerprints</a
+          ><a href="#faq">FAQ</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="hero">
+        <div class="wrap">
+          <div class="eyebrow">Internal briefing document</div>
+          <h1>Sniffer Presentation</h1>
+          <p>
+            A simple walkthrough of what EdgeSniffer is, how we study wallet
+            behavior, what we have learned from 2CQ, and what still needs to be
+            proven.
+          </p>
+          <div class="box">
+            <strong>One-sentence explanation:</strong> EdgeSniffer watches the
+            blockchain for the same kinds of conditions that appear before a
+            skilled wallet trades, then checks whether an independent system
+            could still act on those conditions.
+          </div>
+          <div class="status">
+            <span class="dot"></span>Research-only system - receive-only
+            collection - trading disabled
+          </div>
+        </div>
+      </section>
+
+      <section id="overview">
+        <div class="wrap">
+          <div class="intro">
+            <div class="eyebrow">01 / Project overview</div>
+            <h2>What we are building</h2>
+            <p>
+              2CQ is the wallet we are studying. We examine its historical
+              trades and live activity to discover repeated conditions around
+              its decisions. EdgeSniffer is the independent detector we are
+              building from those clues.
+            </p>
+            <div class="box">
+              <strong>Simple version:</strong> study what happened before a
+              skilled wallet bought, identify the clues that repeat, and see
+              whether those clues still appear when we arrive independently.
+            </div>
+          </div>
+          <div class="grid three">
+            <div class="card">
+              <h3>Study the behavior</h3>
+              <p>
+                Rebuild the market around many past decisions instead of looking
+                at one winning token.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Find the fingerprints</h3>
+              <p>
+                Separate the clues: recent buying, volume, token age, market
+                cap, liquidity, venue, route, and timing.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Test it independently</h3>
+              <p>
+                Do not assume the wallet's price is our price. Model delay,
+                fees, size, impact, and exits.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="evidence">
+        <div class="wrap">
+          <div class="intro">
+            <div class="eyebrow">02 / Current evidence</div>
+            <h2>
+              We have found repeatable clues. Live profitability is still
+              unproven.
+            </h2>
+            <p>
+              The reverse-engineering work has identified repeated 2CQ
+              conditions and route fingerprints. Historical simulations have
+              produced positive paper results. The remaining question is whether
+              the signal survives independent arrival time and realistic
+              execution.
+            </p>
+          </div>
+          <div class="grid four">
+            <div class="card metric">
+              <div class="num">13</div>
+              <div class="label">research lanes</div>
+              <small>12 named lanes plus 1 safety bucket</small>
+            </div>
+            <div class="card metric">
+              <div class="num">1s</div>
+              <div class="label">entry delay</div>
+              <small>tests what remains tradable</small>
+            </div>
+            <div class="card metric">
+              <div class="num">3</div>
+              <div class="label">target sizes</div>
+              <small>0.1, 0.5, and 1.0 SOL</small>
+            </div>
+            <div class="card metric">
+              <div class="num">0</div>
+              <div class="label">confirmed strategy trades</div>
+              <small
+                >one isolated 0.001 SOL calibration attempt did not confirm
+                inclusion</small
+              >
+            </div>
+          </div>
+          <div class="grid three" style="margin-top: 16px">
+            <div class="card result">
+              <div class="num">+22.3594 SOL</div>
+              <div class="label">2CQ v3 paper checkpoint</div>
+              <div class="sub">1,015 simulated closes - PF 1.36</div>
+            </div>
+            <div class="card result">
+              <div class="num">+17.1997 SOL</div>
+              <div class="label">v4 official clean simulation</div>
+              <div class="sub">500 simulated closes - PF 1.59</div>
+            </div>
+            <div class="card result">
+              <div class="num">+19.5353 SOL</div>
+              <div class="label">v4 observed simulation</div>
+              <div class="sub">580 observed closes - PF 1.57</div>
+            </div>
+          </div>
+          <div class="box" style="margin-top: 16px">
+            <strong>How to explain the numbers:</strong> these are separate
+            historical simulation checkpoints, not money earned and not numbers
+            to add together. They show that the reconstructed conditions
+            contained signal under those paper assumptions. They do not prove
+            that live execution will produce the same result.
+          </div>
+          <p class="tech" style="margin-top: 12px">
+            A simulated close means the evaluator completed a modeled entry and
+            exit. It does not mean a real trade occurred.
+          </p>
+          <div class="grid three" style="margin-top: 16px">
+            <div class="card">
+              <h3>Why the lead is promising</h3>
+              <p>
+                A preliminary model separated 2CQ-selected entries from
+                comparable alternatives with
+                <strong>88.62% top-1 accuracy across 123 fair decisions</strong
+                >.
+              </p>
+              <p class="tech">
+                That says the wallet's choices are structurally recognizable. It
+                is not a profitability claim.
+              </p>
+            </div>
+            <div class="card">
+              <h3>A concrete fingerprint</h3>
+              <p>
+                Selected entries typically showed very young tokens, very recent
+                activity, a rapid multi-wallet buy burst, and positive early net
+                flow.
+              </p>
+              <p class="tech">
+                The clue is specific enough to test, rather than just “copy the
+                wallet.”
+              </p>
+            </div>
+            <div class="card">
+              <h3>Built to scale</h3>
+              <p>
+                The research engine separates wallet fingerprints from venue
+                adapters, so new routes can be decoded and tested without
+                blending their evidence.
+              </p>
+              <p class="tech">
+                One process can support many wallets and markets while keeping
+                each result auditable.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="windows">
+        <div class="wrap">
+          <div class="intro">
+            <div class="eyebrow">03 / Historical windows</div>
+            <h2>We reconstruct the moment around each wallet decision.</h2>
+            <p>
+              A historical window is a short, ordered replay of the market
+              around one decision. We use it to discover what information
+              existed before the wallet acted and what happened after.
+            </p>
+          </div>
+          <div class="timeline">
+            <div class="card">
+              <div class="eyebrow">Before the buy</div>
+              <h3>Pre-entry state</h3>
+              <p>What could an independent system have seen?</p>
+              <ul>
+                <li>Did similar tokens show activity?</li>
+                <li>Did volume rise over 5, 10, or 20 seconds?</li>
+                <li>Was buying pressure accelerating or fading?</li>
+                <li>Was liquidity enough for 0.1, 0.5, or 1 SOL?</li>
+                <li>Was the token already too extended?</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="eyebrow">The wallet action</div>
+              <h3>Decision and proof</h3>
+              <p>What exactly happened on-chain?</p>
+              <ul>
+                <li>
+                  Was it a genuine buy rather than a transfer or setup event?
+                </li>
+                <li>Which market and route were used?</li>
+                <li>What were price, size, fees, reserves, and market cap?</li>
+                <li>Was another program involved inside the transaction?</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="eyebrow">After the buy</div>
+              <h3>Outcome window</h3>
+              <p>What would have happened after our arrival?</p>
+              <ul>
+                <li>Did price continue after 1, 5, or 10 seconds?</li>
+                <li>Did other traders follow?</li>
+                <li>How quickly did pressure reverse?</li>
+                <li>Could a realistic exit reach its target or stop?</li>
+              </ul>
+            </div>
+          </div>
+          <div class="box" style="margin-top: 16px">
+            <strong>Why this matters:</strong> the wallet's profitable fill is
+            not automatically our profitable fill. The window lets us separate
+            information available before the decision from information that only
+            became visible afterward.
+          </div>
+        </div>
+      </section>
+
+      <section id="workflow">
+        <div class="wrap">
+          <div class="intro">
+            <div class="eyebrow">04 / Workflow</div>
+            <h2>How an observation becomes a research result.</h2>
+            <p>
+              Every stage answers one simple question before the next stage is
+              allowed to use the data.
+            </p>
+          </div>
+          <div class="grid workflow">
+            <div class="step">
+              <span class="stepno">01 - SEE IT</span
+              ><strong>Capture activity</strong>
+              <p>What is happening on-chain right now?</p>
+              <p class="tech">
+                Record transactions, account changes, arrival time, and raw
+                instruction data.
+              </p>
+            </div>
+            <div class="step">
+              <span class="stepno">02 - UNDERSTAND IT</span
+              ><strong>Identify the setup</strong>
+              <p>What conditions appeared before the wallet acted?</p>
+              <p class="tech">
+                Compare recent flow, volume, liquidity, market cap, route, and
+                timing.
+              </p>
+            </div>
+            <div class="step">
+              <span class="stepno">03 - VERIFY IT</span
+              ><strong>Confirm the market</strong>
+              <p>Do we know exactly where the trade happened?</p>
+              <p class="tech">
+                Decode the correct curve or pool, fees, reserves, and token
+                movement.
+              </p>
+            </div>
+            <div class="step">
+              <span class="stepno">04 - TRY IT ON PAPER</span
+              ><strong>Model our trade</strong>
+              <p>Could we have entered and exited after the signal?</p>
+              <p class="tech">
+                Apply delay, size, impact, slippage, fees, failed trades, and
+                exit rules.
+              </p>
+            </div>
+            <div class="step">
+              <span class="stepno">05 - CHECK NEW DATA</span
+              ><strong>Validate the idea</strong>
+              <p>Does it work on events not used to create it?</p>
+              <p class="tech">
+                Require a fresh prospective sample before promotion.
+              </p>
+            </div>
+          </div>
+          <div class="box">
+            <strong>Simple version:</strong> see it, understand it, verify it,
+            simulate it, then test it on new data. If a stage is uncertain, the
+            result stays research-only.
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div class="intro">
+            <div class="eyebrow">05 / Simulation rules</div>
+            <h2>How entries and exits are tested.</h2>
+            <p>
+              There is not one universal SL/TP setting. We compare several
+              pre-registered exit families to learn whether a setup behaves like
+              a quick scalp, a protected runner, or no executable opportunity.
+            </p>
+          </div>
+          <div class="grid three">
+            <div class="card">
+              <h3>Fixed-time exits</h3>
+              <p>
+                Close after
+                <strong>5, 10, 15, 30, 60, 120, or 300 seconds</strong>.
+              </p>
+              <p class="tech">
+                This shows how results change with holding time.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Take-profit and stop-loss</h3>
+              <p>
+                Test a <strong>5% take-profit</strong> with a
+                <strong>5% stop-loss</strong>, using 15, 30, 60, and 120-second
+                maximum windows.
+              </p>
+              <p class="tech">
+                The level must actually be reached after entry; it is not
+                assumed from a later high or low.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Protection and partial selling</h3>
+              <p>
+                Also test profit protection, trailing exits, and taking
+                <strong>50% off at +5%</strong> while managing the remainder.
+              </p>
+              <p class="tech">
+                These are research hypotheses, not a frozen live policy.
+              </p>
+            </div>
+          </div>
+          <div class="box" style="margin-top: 16px">
+            <strong>Important:</strong> the historical 2CQ lanes contain
+            separate runner and scalper profiles, while the independent lab
+            compares the broader exit surface. No single SL/TP formula has been
+            declared universally proven.
+          </div>
+        </div>
+      </section>
+
+      <section id="fingerprints">
+        <div class="wrap">
+          <div class="intro">
+            <div class="eyebrow">06 / Fingerprint map</div>
+            <h2>12 named clues, kept separate by market.</h2>
+            <p>
+              Hover over any card for the presenter explanation. These are
+              research lanes, not twelve proven strategies. The thirteenth
+              bucket is ambiguous data that we refuse to turn into a trade.
+            </p>
+          </div>
+          <div class="grid arms">
+            <div
+              class="card arm ready"
+              data-tip="A new token still using Pump.fun's built-in launch market before it moves to a normal pool. We study its price, recent buying, volume, and liquidity before and after the 2CQ decision."
+            >
+              <span class="state">Ready for discovery</span>
+              <h3>01 - SOL Pump curve</h3>
+              <p>A new token still using Pump.fun's built-in launch market.</p>
+              <span class="tag">2CQ</span><span class="tag">SOL</span>
+            </div>
+            <div
+              class="card arm ready"
+              data-tip="CPI means one Solana program asks another program to complete part of the transaction. We follow that handoff so we know what the wallet actually bought, where, at what price, and with which fees."
+            >
+              <span class="state">Ready for discovery</span>
+              <h3>02 - SOL Pump CPI</h3>
+              <p>
+                A Pump.fun buy completed through another program in the same
+                transaction.
+              </p>
+              <span class="tag">CPI</span><span class="tag">SOL</span>
+            </div>
+            <div
+              class="card arm ready"
+              data-tip="A short burst of buying from other traders just before the wallet buys. We ask whether that burst usually continues or runs out of energy."
+            >
+              <span class="state">Ready for discovery</span>
+              <h3>03 - Active 5-second impulse</h3>
+              <p>A short burst of buying just before the wallet acts.</p>
+              <span class="tag">timing</span><span class="tag">flow</span>
+            </div>
+            <div
+              class="card arm"
+              data-tip="A Pump market priced in something other than SOL. We need separate accounting so payment currency, price, and fees are not mixed up."
+            >
+              <span class="state">Adapter required</span>
+              <h3>04 - Non-SOL Pump V2</h3>
+              <p>A Pump.fun market priced in another token instead of SOL.</p>
+              <span class="tag">quote-native</span>
+            </div>
+            <div
+              class="card arm"
+              data-tip="A token still going through Raydium's launch process. We need to understand its launch price and changing liquidity before treating it like a normal market."
+            >
+              <span class="state">Adapter required</span>
+              <h3>05 - Raydium LaunchLab</h3>
+              <p>A token still going through Raydium's launch process.</p>
+              <span class="tag">Raydium</span>
+            </div>
+            <div
+              class="card arm"
+              data-tip="A Stonk.fun launch using Raydium's launch system underneath. We identify both layers because the route, fees, and launch rules affect the result."
+            >
+              <span class="state">Adapter required</span>
+              <h3>06 - Stonk.fun LaunchLab</h3>
+              <p>A Stonk.fun launch using Raydium's launch system.</p>
+              <span class="tag">Stonk.fun</span>
+            </div>
+            <div
+              class="card arm ready"
+              data-tip="The simplest PumpSwap case: the wallet trades directly with the pool. We calculate the real price, fees, liquidity, and buy-to-sell result."
+            >
+              <span class="state">Sealed discovery</span>
+              <h3>07 - PumpSwap direct</h3>
+              <p>A direct trade against a PumpSwap liquidity pool.</p>
+              <span class="tag">PumpSwap</span>
+            </div>
+            <div
+              class="card arm"
+              data-tip="The wallet reaches PumpSwap through an extra program handoff. We keep it separate until the wallet action and market price are proven."
+            >
+              <span class="state">CPI attribution required</span>
+              <h3>08 - PumpSwap CPI</h3>
+              <p>A PumpSwap trade completed through another program.</p>
+              <span class="tag">PumpSwap</span><span class="tag">CPI</span>
+            </div>
+            <div
+              class="card arm"
+              data-tip="A routed trade that ends in a Raydium pool with liquidity concentrated around selected price ranges. We identify the exact pool before estimating price impact."
+            >
+              <span class="state">Route resolution required</span>
+              <h3>09 - Raydium CLMM</h3>
+              <p>
+                A routed trade ending in a Raydium concentrated-liquidity pool.
+              </p>
+              <span class="tag">router</span>
+            </div>
+            <div
+              class="card arm"
+              data-tip="A routed trade that ends in an Orca pool. The router label alone is not enough; we identify the actual pool and its fees and liquidity."
+            >
+              <span class="state">Route resolution required</span>
+              <h3>10 - Orca Whirlpool</h3>
+              <p>A routed trade ending in an Orca liquidity pool.</p>
+              <span class="tag">router</span>
+            </div>
+            <div
+              class="card arm"
+              data-tip="A routed trade ending in a Meteora pool where liquidity is arranged in small price ranges. Those active ranges determine how much the trade moves the price."
+            >
+              <span class="state">Route resolution required</span>
+              <h3>11 - Meteora DLMM</h3>
+              <p>A routed trade ending in a Meteora price-range pool.</p>
+              <span class="tag">router</span>
+            </div>
+            <div
+              class="card arm"
+              data-tip="A trade on another exchange that needs its own explanation. We identify the exact exchange and its rules instead of putting every unfamiliar market in one bucket."
+            >
+              <span class="state">Protocol split required</span>
+              <h3>12 - Other DEX native</h3>
+              <p>A trade on another exchange requiring its own adapter.</p>
+              <span class="tag">native</span>
+            </div>
+            <div
+              class="card arm fail"
+              data-tip="Evidence that looks related to Pump.fun but does not prove the exact market. We keep it for future decoder work and exclude it from PnL."
+            >
+              <span class="state">Safety lane - no economics</span>
+              <h3>13 - Ambiguous Pump family</h3>
+              <p>Possible Pump-related evidence with no proven market.</p>
+              <span class="tag">fail closed</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div class="grid two">
+            <div>
+              <div class="eyebrow">07 / Scaling direction</div>
+              <h2>One research engine, many market adapters.</h2>
+              <p>
+                The reusable part is the process: capture activity, understand
+                the setup, decode the real market, model realistic execution,
+                and validate on new data.
+              </p>
+              <div class="box">
+                <strong>Simple version:</strong> a new wallet can become a new
+                teacher and a new market can get its own adapter without mixing
+                its evidence with anything else.
+              </div>
+            </div>
+            <div class="card">
+              <div class="eyebrow">Sizing research</div>
+              <h3>Can the idea survive realistic size?</h3>
+              <p>Each candidate is tested at:</p>
+              <div style="font-size: 35px; font-weight: 850; color: #ddd">
+                0.1 - 0.5 - 1.0 SOL
+              </div>
+              <p>
+                This exposes liquidity limits, price impact, fee drag, and
+                whether a small paper edge disappears at the size we care about.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div class="intro">
+            <div class="eyebrow">08 / Plain-English glossary</div>
+            <h2>Terms that may come up.</h2>
+          </div>
+          <div class="grid two glossary">
+            <div class="card">
+              <dl>
+                <dt>PnL</dt>
+                <dd>
+                  Profit and loss: how much the modeled trade gained or lost
+                  after its assumptions.
+                </dd>
+                <dt>PF</dt>
+                <dd>
+                  Profit factor: total modeled winning profit divided by total
+                  modeled losing loss. Above 1 means wins were larger in total
+                  than losses.
+                </dd>
+                <dt>Liquidity</dt>
+                <dd>
+                  How much buying and selling the market can absorb without
+                  moving the price too much.
+                </dd>
+                <dt>Slippage</dt>
+                <dd>
+                  The difference between the price we expect and the price we
+                  actually receive.
+                </dd>
+                <dt>Price impact</dt>
+                <dd>How much our own order moves the price against us.</dd>
+                <dt>TP / SL</dt>
+                <dd>
+                  Take-profit and stop-loss: planned levels for closing a
+                  position in profit or limiting a loss.
+                </dd>
+              </dl>
+            </div>
+            <div class="card">
+              <dl>
+                <dt>Venue</dt>
+                <dd>
+                  The actual market where the trade happened, such as Pump.fun,
+                  PumpSwap, Raydium, Orca, or Meteora.
+                </dd>
+                <dt>Route</dt>
+                <dd>The path the transaction took to reach that market.</dd>
+                <dt>Pool / curve</dt>
+                <dd>
+                  The on-chain pricing system that determines how much a buy or
+                  sell receives.
+                </dd>
+                <dt>CPI</dt>
+                <dd>
+                  A transaction inside a transaction: one Solana program asks
+                  another program to complete part of the action.
+                </dd>
+                <dt>Control</dt>
+                <dd>
+                  A comparable token or trade used to check whether the selected
+                  setup actually outperformed ordinary alternatives.
+                </dd>
+                <dt>Prospective test</dt>
+                <dd>
+                  A test on new events collected after the rule was fixed, so
+                  the rule cannot be tuned to its own answers.
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq">
+        <div class="wrap">
+          <div class="intro">
+            <div class="eyebrow">09 / Presenter FAQ</div>
+            <h2>Questions that may come up.</h2>
+            <p>
+              Start with the first sentence. Use the detail only if someone
+              wants to go deeper.
+            </p>
+          </div>
+          <div class="grid faq">
+            <details open>
+              <summary>What is EdgeSniffer?</summary>
+              <p>
+                It is an on-chain radar that learns repeated wallet behavior and
+                tests whether the same setup is still tradable for an
+                independent system.
+              </p>
+            </details>
+            <details>
+              <summary>Who is 2CQ?</summary>
+              <p>
+                2CQ is the wallet we are reverse-engineering. Its activity gives
+                us examples to study; the finished sniffer is meant to detect
+                conditions independently, not blindly copy the wallet forever.
+              </p>
+            </details>
+            <details>
+              <summary>What have we actually proven?</summary>
+              <p>
+                We have reconstructed observable 2CQ behavior and identified
+                repeated route, timing, flow, and market-state clues. Positive
+                historical simulations support the hypothesis. Fresh live-parity
+                profitability is still the next proof gate.
+              </p>
+            </details>
+            <details>
+              <summary>Are we live trading?</summary>
+              <p>
+                No. The current system is receive-only and research-only. No
+                live trading result is being claimed.
+              </p>
+            </details>
+            <details>
+              <summary>Was any real transaction attempted?</summary>
+              <p>
+                One isolated 0.001 SOL executor-calibration attempt was
+                authorized to test submission and inclusion telemetry. It was
+                not a strategy trade: the chain did not confirm inclusion, no
+                position was proven, and no exit was sent.
+              </p>
+            </details>
+            <details>
+              <summary>Why are the positive PnLs only simulations?</summary>
+              <p>
+                Because the system has not placed those trades with real money.
+                Simulation is useful evidence, but it can be optimistic if
+                timing or fills are unrealistic.
+              </p>
+            </details>
+            <details>
+              <summary>Why not simply copy 2CQ?</summary>
+              <p>
+                The wallet may get a better price before an independent system
+                can react. The important question is which buys still look
+                favorable one second later.
+              </p>
+            </details>
+            <details>
+              <summary>Why are there 13 arms but 12 fingerprints?</summary>
+              <p>
+                There are 12 named market and route lanes. The thirteenth is an
+                ambiguous-data safety bucket. It is not a strategy and cannot
+                produce economics until the market is proven.
+              </p>
+            </details>
+            <details>
+              <summary>Can it handle 0.5 or 1 SOL?</summary>
+              <p>
+                That is why we test 0.1, 0.5, and 1.0 SOL separately. A strategy
+                that only works at tiny size is not enough.
+              </p>
+            </details>
+            <details>
+              <summary>What happens if a route is unknown?</summary>
+              <p>
+                We keep the raw evidence for later decoder work, but fail closed
+                and exclude it from PnL conclusions. Guessing would create false
+                confidence.
+              </p>
+            </details>
+            <details>
+              <summary>How close are we to live trading?</summary>
+              <p>
+                The infrastructure is moving toward native timing telemetry,
+                quote/live-parity paper evidence, and small controlled execution
+                calibration. That is progress, not a promised launch date or
+                profitability claim.
+              </p>
+            </details>
+            <details>
+              <summary>What would make us reject a strategy?</summary>
+              <p>
+                If it fails to beat controls after realistic costs on fresh
+                data, that route is rejected or returned to research. We do not
+                hide a losing lane by blending it with another market.
+              </p>
+            </details>
+            <details>
+              <summary>What is the biggest risk?</summary>
+              <p>
+                Market conditions can change, liquidity can disappear,
+                transactions can fail, and historical patterns can stop working.
+                That is why the final gates require fresh data and realistic
+                execution assumptions.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+    <section class="teacher-fingerprint">
+      <div class="wrap">
+        <div class="intro">
+          <div class="eyebrow">03 / The actual 2CQ fingerprint</div>
+          <h2>
+            2CQ is not simply buying early. It is detecting an early burst of
+            coordinated demand.
+          </h2>
+          <p>
+            The strongest preliminary SOL-Pump choice analysis found a very
+            specific pattern around the wallet's selected entries. These numbers
+            describe what 2CQ chose, not guaranteed profit from copying it.
+          </p>
+        </div>
+        <div class="grid three">
+          <div class="card clue">
+            <div class="label">How early</div>
+            <div class="num">67 ms</div>
+            <h3>Very young tokens</h3>
+            <p>
+              Selected tokens had a median age of about 67 milliseconds from
+              creation, compared with roughly 49 seconds for comparable
+              controls.
+            </p>
+            <p class="tech">
+              Plain English: 2CQ is looking almost immediately after a token
+              appears.
+            </p>
+          </div>
+          <div class="card clue">
+            <div class="label">How recently</div>
+            <div class="num">46 ms</div>
+            <h3>Fresh activity</h3>
+            <p>
+              The latest outside trade before the selected decision was a median
+              46 milliseconds old, versus about 20 seconds for controls.
+            </p>
+            <p class="tech">
+              Plain English: 2CQ is reacting to activity that just happened, not
+              stale activity.
+            </p>
+          </div>
+          <div class="card clue">
+            <div class="label">First 250 ms</div>
+            <div class="num">3 buys / 4.17 SOL</div>
+            <h3>Fast buy impulse</h3>
+            <p>
+              Selected entries showed a median three buys and 4.17 SOL of gross
+              buying in the first 250 milliseconds.
+            </p>
+            <p class="tech">
+              Plain English: several meaningful buys arrive almost together.
+            </p>
+          </div>
+          <div class="card clue">
+            <div class="label">First second</div>
+            <div class="num">4.94 gross / 4.00 net</div>
+            <h3>Demand holds immediately</h3>
+            <p>
+              Within the first second, selected entries had about 4.94 SOL gross
+              buying and 4.00 SOL net buying at the median.
+            </p>
+            <p class="tech">
+              Plain English: most of the early money is buying rather than
+              selling.
+            </p>
+          </div>
+          <div class="card clue">
+            <div class="label">Participants</div>
+            <div class="num">3 buyers</div>
+            <h3>More than one wallet</h3>
+            <p>
+              The selected entries had a median of three unique buyers, with a
+              mean buy around 1.73 SOL and the largest buy around 2.02 SOL.
+            </p>
+            <p class="tech">
+              Plain English: the signal is a cluster of serious participants,
+              not only one isolated wallet.
+            </p>
+          </div>
+          <div class="card clue">
+            <div class="label">Decision boundary</div>
+            <h3>What the sniffer must do</h3>
+            <p>
+              Detect the burst quickly, verify the exact market, wait through
+              the independent one-second boundary, and reject cases where the
+              demand has already weakened.
+            </p>
+            <p class="tech">
+              This is the bridge from reverse-engineering to an independent
+              strategy.
+            </p>
+          </div>
+        </div>
+        <div class="box" style="margin-top: 16px">
+          <strong>Important distinction:</strong> the 67ms, 46ms, 250ms, and
+          1-second figures describe the teacher-wallet fingerprint. The current
+          executable paper profile adds its own guards, including low market cap
+          and net-buy flow. The teacher fingerprint is the clue; the executable
+          profile is the testable implementation.
+        </div>
+        <div class="grid two" style="margin-top: 16px">
+          <div class="card">
+            <h3>What is already supported</h3>
+            <p>
+              The preliminary SOL-Pump choice model separated 2CQ's selected
+              entries from controls with 88.62% top-1 accuracy on 123 fair
+              decisions. This is evidence that the wallet's choice is
+              structurally identifiable.
+            </p>
+            <p class="tech">
+              It is not alpha proof and it did not read PnL outcomes.
+            </p>
+          </div>
+          <div class="card">
+            <h3>What is still open</h3>
+            <p>
+              Whether an independent system can detect the same burst early
+              enough, enter after the real delay, survive fees and impact, and
+              produce positive out-of-sample economics.
+            </p>
+            <p class="tech">
+              That is why the independent strategy lab and fresh prospective
+              cohort remain necessary.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="wrap">
+        <strong>EdgeSniffer</strong> - internal research briefing - October
+        2026<br /><span class="note"
+          >Historical PnL shown above is simulated paper PnL. Live trading is
+          disabled. No strategy is promoted from discovery data alone.</span
+        >
+      </div>
+    </footer>
+    <section id="number-guide" class="number-guide">
+      <div class="wrap">
+        <div class="intro">
+          <div class="eyebrow">10 / How to read the numbers</div>
+          <h2>What the fingerprint measurements mean</h2>
+          <p>
+            These are summaries across many historical 2CQ decisions, not claims
+            that every token looked exactly the same.
+          </p>
+        </div>
+        <div class="grid two">
+          <div class="card">
+            <h3>“Median 3 unique buyers”</h3>
+            <p>
+              <strong>Median</strong> means the middle result after all
+              observations are sorted. If the median is 3, about half the
+              selected entries had 3 or fewer different buyers and about half
+              had 3 or more. It does not mean every entry had exactly 3.
+            </p>
+            <p>
+              <strong>Unique buyers</strong> means different wallet addresses.
+              If wallets A, B, and C each buy, that is 3 unique buyers. If
+              wallet A buys three times, that is still only 1 unique buyer.
+            </p>
+            <div class="box">
+              <strong>Example:</strong> buyer counts of 1, 2, 3, 3, 3, 4, 5, 6,
+              and 8 have a middle value of 3. The metric describes the typical
+              centre of the sample, not a promise about the next token.
+            </div>
+          </div>
+          <div class="card">
+            <h3>“67 milliseconds” and “250 milliseconds”</h3>
+            <p>
+              1,000 milliseconds equals 1 second. So 67ms is about 0.067
+              seconds. A 250ms window is one quarter of a second.
+            </p>
+            <p>
+              Those short windows help us ask whether buying arrived as a rapid
+              burst immediately after token creation, rather than slowly
+              accumulating over minutes.
+            </p>
+            <div class="box">
+              <strong>Example:</strong> three buys spread across 10 minutes are
+              not the same clue as three buys arriving inside 250ms.
+            </div>
+          </div>
+          <div class="card">
+            <h3>Gross flow versus net flow</h3>
+            <p>
+              <strong>Gross buying</strong> adds every buy.
+              <strong>Net buying</strong> subtracts selling from that activity.
+              Net flow is closer to the question “is demand still winning after
+              sellers are included?”
+            </p>
+            <div class="box">
+              <strong>Example:</strong> 5 SOL of buys and 1 SOL of sells means 5
+              SOL gross buying, but 4 SOL net buying.
+            </div>
+          </div>
+          <div class="card">
+            <h3>Selected entries versus controls</h3>
+            <p>
+              A <strong>selected entry</strong> is a token 2CQ actually chose. A
+              <strong>control</strong> is a comparable token from the same
+              research universe that was not chosen. Comparing them tests
+              whether a clue is distinctive or merely common market activity.
+            </p>
+            <p>
+              For example, 67ms median token age for selected entries versus
+              roughly 49 seconds for controls suggests 2CQ was choosing
+              unusually fresh tokens in this historical sample.
+            </p>
+          </div>
+          <div class="card">
+            <h3>What 88.62% does—and does not—mean</h3>
+            <p>
+              The preliminary choice model correctly separated the selected 2CQ
+              entry from comparable alternatives in 88.62% of 123 fair
+              historical decisions.
+            </p>
+            <p>
+              That means the wallet’s <em>choice pattern</em> was recognizable
+              in that sample. It does not mean 88.62% of trades were profitable,
+              and it does not prove a live strategy.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Why these numbers matter</h3>
+            <p>
+              The measurements turn “2CQ buys good tokens” into testable
+              questions: how young is the token, how recent is the activity, how
+              fast do other wallets arrive, is net demand still positive, and
+              can an independent system act before the burst disappears?
+            </p>
+            <p>
+              The next step is to test those rules with real delay, fees,
+              liquidity, failed trades, and fresh data.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="finish-line" class="finish-line">
+      <div class="wrap">
+        <div class="intro">
+          <div class="eyebrow">11 / The actual finish line</div>
+          <h2>Find an independent rule that still works after 2CQ is gone.</h2>
+          <p>
+            The goal is not to prove that 2CQ made good trades. The goal is to
+            use 2CQ's history to identify conditions that an independent sniffer
+            can recognize, enter after its real delay, and trade at realistic
+            size.
+          </p>
+        </div>
+        <div class="grid three">
+          <div class="card">
+            <h3>What we already have</h3>
+            <p>
+              Historical wallet activity, route and timing clues, a recognizable
+              early-demand fingerprint, venue-specific decoders, and paper
+              research infrastructure.
+            </p>
+          </div>
+          <div class="card">
+            <h3>What must still be proven</h3>
+            <p>
+              After the one-second boundary, the setup must survive real
+              liquidity, fees, slippage, price impact, failed trades, and an
+              executable exit.
+            </p>
+          </div>
+          <div class="card">
+            <h3>What counts as success</h3>
+            <p>
+              A pre-registered rule beats contemporaneous controls on fresh
+              prospective data at 0.1, 0.5, and 1.0 SOL, with realistic drawdown
+              and no hidden look-ahead.
+            </p>
+          </div>
+        </div>
+        <div class="box" style="margin-top: 16px">
+          <strong>Simple version:</strong> 2CQ gives us the clues. The sniffer
+          must independently find the remaining opportunity. Only fresh,
+          realistic, out-of-sample results can promote a strategy.
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,981 @@
+{
+  "schema": "FAILED_TRANSACTION_POPULATION_DIAGNOSTIC_V1",
+  "input_sha256": "9b725daf06ba54c371bef928614701c0da494ddb694099b7a7ecdd23d55f66b5",
+  "implementation_sha256": "e1ac10106fd195959fc248f1196049f8ba4915dc3f25f1e216bbb384bed6a59a",
+  "reference_sha256": "67771dcbc1e425908424a06291121504b1b420821ed6bafd7ac04922985c35c9",
+  "counts": {
+    "frames": 45825,
+    "FAILED": 38775,
+    "failed_without_known_pump_trade_intent": 13167,
+    "failed_with_pump_trade_event": 88,
+    "failed_with_native_known_mint_account_mention": 38762,
+    "failed_with_multiple_known_mint_mentions": 0,
+    "SUCCESS": 7050,
+    "failed_with_later_reference_label": 717
+  },
+  "failure_fraction": 0.8461538461538461,
+  "failure_routes": {
+    "no_pump_instruction_observed": 12923,
+    "direct": 25667,
+    "cpi": 185
+  },
+  "failure_intent": {
+    "unknown": 13167,
+    "buy": 9675,
+    "sell": 15933
+  },
+  "failure_instruction_counts": {
+    "buy_exact_quote_in_v2": 166,
+    "sell_v2": 103,
+    "buy_exact_sol_in": 8286,
+    "buy_exact_quote_in_v3": 1065,
+    "sell": 15830,
+    "buy": 106,
+    "buy_v3": 46,
+    "buy_v2": 6
+  },
+  "error_breakdown": [
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAZAAAAcRcAAA=="
+      },
+      "count": 6701,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAZAAAABwAAAA=="
+      },
+      "count": 6479,
+      "later_reference_labels": {
+        "{\"InstructionError\": [0, {\"Custom\": 7}]}": 169
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAbwAAAA=="
+      },
+      "count": 4200,
+      "later_reference_labels": {
+        "{\"InstructionError\": [1, {\"Custom\": 111}]}": 94
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAcRcAAA=="
+      },
+      "count": 3548,
+      "later_reference_labels": {
+        "{\"InstructionError\": [3, {\"Custom\": 6001}]}": 8
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAAcRcAAA=="
+      },
+      "count": 3107,
+      "later_reference_labels": {
+        "{\"InstructionError\": [2, {\"Custom\": 6001}]}": 62
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAADQAAAA=="
+      },
+      "count": 2802,
+      "later_reference_labels": {
+        "{\"InstructionError\": [1, {\"Custom\": 13}]}": 92
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAAwAAAA=="
+      },
+      "count": 2285,
+      "later_reference_labels": {
+        "{\"InstructionError\": [1, {\"Custom\": 3}]}": 51
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAADAAAAA=="
+      },
+      "count": 2222,
+      "later_reference_labels": {
+        "{\"InstructionError\": [3, {\"Custom\": 12}]}": 42
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAABwAAAA=="
+      },
+      "count": 1283,
+      "later_reference_labels": {
+        "{\"InstructionError\": [3, {\"Custom\": 7}]}": 42
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAXBsAAA=="
+      },
+      "count": 628,
+      "later_reference_labels": {
+        "{\"InstructionError\": [3, {\"Custom\": 7004}]}": 27
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAABQAAAA=="
+      },
+      "count": 585,
+      "later_reference_labels": {
+        "{\"InstructionError\": [4, {\"Custom\": 5}]}": 10
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAYZAAAAmhcAAA=="
+      },
+      "count": 574,
+      "later_reference_labels": {
+        "{\"InstructionError\": [6, {\"Custom\": 6042}]}": 11
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAgRcAAA=="
+      },
+      "count": 563,
+      "later_reference_labels": {
+        "{\"InstructionError\": [3, {\"Custom\": 6017}]}": 23
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAZAAAACwAAAA=="
+      },
+      "count": 544,
+      "later_reference_labels": {
+        "{\"InstructionError\": [0, {\"Custom\": 11}]}": 12
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAAQAAAA=="
+      },
+      "count": 395,
+      "later_reference_labels": {
+        "{\"InstructionError\": [3, {\"Custom\": 1}]}": 8
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAZAAAAAQAAAA=="
+      },
+      "count": 353,
+      "later_reference_labels": {
+        "{\"InstructionError\": [0, {\"Custom\": 1}]}": 12
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAAcRcAAA=="
+      },
+      "count": 339,
+      "later_reference_labels": {
+        "{\"InstructionError\": [4, {\"Custom\": 6001}]}": 8
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAAmhcAAA=="
+      },
+      "count": 324,
+      "later_reference_labels": {
+        "{\"InstructionError\": [4, {\"Custom\": 6042}]}": 11
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAYZAAAAxAsAAA=="
+      },
+      "count": 262,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAghcAAA=="
+      },
+      "count": 207,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAA8wMAAA=="
+      },
+      "count": 198,
+      "later_reference_labels": {
+        "{\"InstructionError\": [2, {\"Custom\": 1011}]}": 2
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAcZAAAAmhcAAA=="
+      },
+      "count": 163,
+      "later_reference_labels": {
+        "{\"InstructionError\": [7, {\"Custom\": 6042}]}": 4
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAZAAAAcBcAAA=="
+      },
+      "count": 139,
+      "later_reference_labels": {
+        "{\"InstructionError\": [0, {\"Custom\": 6000}]}": 8
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAZAAAAA=="
+      },
+      "count": 105,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAgZAAAAmhcAAA=="
+      },
+      "count": 82,
+      "later_reference_labels": {
+        "{\"InstructionError\": [8, {\"Custom\": 6042}]}": 6
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAAhxcAAA=="
+      },
+      "count": 57,
+      "later_reference_labels": {
+        "{\"InstructionError\": [2, {\"Custom\": 6023}]}": 1
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAAxAsAAA=="
+      },
+      "count": 52,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAUZAAAAmhcAAA=="
+      },
+      "count": 50,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAchcAAA=="
+      },
+      "count": 46,
+      "later_reference_labels": {
+        "{\"InstructionError\": [3, {\"Custom\": 6002}]}": 1
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAAiBcAAA=="
+      },
+      "count": 44,
+      "later_reference_labels": {
+        "{\"InstructionError\": [2, {\"Custom\": 6024}]}": 1
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAUZAAAAchcAAA=="
+      },
+      "count": 43,
+      "later_reference_labels": {
+        "{\"InstructionError\": [5, {\"Custom\": 6002}]}": 2
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAgZAAAABQAAAA=="
+      },
+      "count": 36,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAAchcAAA=="
+      },
+      "count": 34,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAABgAAAA=="
+      },
+      "count": 28,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAZAAAAZAAAAA=="
+      },
+      "count": 26,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEDAAAA"
+      },
+      "count": 25,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAmhcAAA=="
+      },
+      "count": 25,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAAAwAAAA=="
+      },
+      "count": 21,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAAcxcAAA=="
+      },
+      "count": 20,
+      "later_reference_labels": {
+        "{\"InstructionError\": [2, {\"Custom\": 6003}]}": 1
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAxAsAAA=="
+      },
+      "count": 15,
+      "later_reference_labels": {
+        "{\"InstructionError\": [3, {\"Custom\": 3012}]}": 1
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAZAAAAZwAAAA=="
+      },
+      "count": 15,
+      "later_reference_labels": {
+        "{\"InstructionError\": [0, {\"Custom\": 103}]}": 1
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAZwAAAA=="
+      },
+      "count": 11,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAhxcAAA=="
+      },
+      "count": 11,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAAAQAAAA=="
+      },
+      "count": 9,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAmhcAAA=="
+      },
+      "count": 7,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAAfBcAAA=="
+      },
+      "count": 6,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAZxsAAA=="
+      },
+      "count": 6,
+      "later_reference_labels": {
+        "{\"InstructionError\": [3, {\"Custom\": 7015}]}": 6
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAUZAAAAcRcAAA=="
+      },
+      "count": 5,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAbgAAAA=="
+      },
+      "count": 5,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAAcxcAAA=="
+      },
+      "count": 5,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAAZAAAAA=="
+      },
+      "count": 5,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAAQAAAA=="
+      },
+      "count": 5,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAZAAAAmhcAAA=="
+      },
+      "count": 5,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAA1gcAAA=="
+      },
+      "count": 4,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAABQAAAA=="
+      },
+      "count": 4,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAchcAAA=="
+      },
+      "count": 4,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIxAAAA"
+      },
+      "count": 4,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAgZAAAAchcAAA=="
+      },
+      "count": 3,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAExAAAA"
+      },
+      "count": 3,
+      "later_reference_labels": {
+        "{\"InstructionError\": [1, \"IllegalOwner\"]}": 1
+      }
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAUZAAAAARkAAA=="
+      },
+      "count": 3,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAAchcAAA=="
+      },
+      "count": 3,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQxAAAA"
+      },
+      "count": 3,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAZAAAAA=="
+      },
+      "count": 3,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAAiBcAAA=="
+      },
+      "count": 3,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAABgAAAA=="
+      },
+      "count": 2,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAqgAAAA=="
+      },
+      "count": 2,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAAhBcAAA=="
+      },
+      "count": 2,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAcxcAAA=="
+      },
+      "count": 2,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAXyQAAA=="
+      },
+      "count": 2,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAA1gcAAA=="
+      },
+      "count": 2,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAUZAAAAAQAAAA=="
+      },
+      "count": 2,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAZAAAAhxcAAA=="
+      },
+      "count": 2,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAZAAAAAAAAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAZAAAAmToAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAYZAAAAcRcAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAoZAAAAmhcAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAAAAAAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAmToAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAcRcAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAAmhcAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAkZAAAAmhcAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAAAAAAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAAcxcAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAYZAAAAchcAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAIZAAAAxAsAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAAxAAAA"
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAQZAAAAcBcAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAMZAAAAZhsAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    },
+    {
+      "native_error": {
+        "protobuf_error_base64": "CAAAAAEZAAAADwAAAA=="
+      },
+      "count": 1,
+      "later_reference_labels": {}
+    }
+  ],
+  "payer_concentration": {
+    "unique": 314,
+    "top1_count": 4200,
+    "top10_count": 25079,
+    "top20": [
+      [
+        "niggerd597QYedtvjQDVHZTCCGyJrwHNm2i49dkm5zS",
+        4200
+      ],
+      [
+        "Do4a8nQ6VJepDXRW6vFtMYr4QU4PGdV3gsvh2xeMA6X2",
+        3629
+      ],
+      [
+        "8MqsLYFUBkkEYqGMA7uLkxRGU4FybJasKz2vRNxeTRmu",
+        3457
+      ],
+      [
+        "4U6pdNLKMjNz68giUMXGmQHoCpsUqYyT32nfvD5dh5vb",
+        3359
+      ],
+      [
+        "7ovu7sqYQGcHwUnLfVfwjCx5VGBCiJmBrsrBv2ab1Ltx",
+        2277
+      ],
+      [
+        "58iikVhaJaJVzeCM6ZNkqHMv7PTLvrZYkhiMDrL9WHg3",
+        2223
+      ],
+      [
+        "CnTeYCBA7Hzj9r2s99SaEXKYpiWixtMUkqZWHwyNbm3g",
+        1884
+      ],
+      [
+        "9LXVVAWBkSjNVChAuWTUvX5p182fgaD1sR1dWCo2qcGD",
+        1547
+      ],
+      [
+        "C1ryM1BvxWW9ma9SzGbptYDySQMjzVyY8iWzxhSmfyiL",
+        1283
+      ],
+      [
+        "3Xtu99JsQ2j7r6DJW5TqMz9hDEBeDC75XdNK5mYxTUjT",
+        1220
+      ],
+      [
+        "2UcS1C7PoEodaZ4hBu3QjSBvTmii73AAPSuMFER4tfEb",
+        1093
+      ],
+      [
+        "BuekUk3YMmm7Agnb4ni1qMCmShVpeBTdQZYNyihyzr7u",
+        847
+      ],
+      [
+        "3zNWpeRBZY7c5eS5fYboheQP5juPqD525qixxbjiVhEQ",
+        838
+      ],
+      [
+        "4A1AVd1mZmRWTGMsznTsMDWgjr8MUGBW68EnPK7dRfdR",
+        770
+      ],
+      [
+        "8szGUCBxWT5xBf2uwT41494TJ81UY6wjQYoZV86yUFip",
+        644
+      ],
+      [
+        "CZ77onJzkSCwZC51Gg7H8oEUUJhqcx8LLKqnsNXWZSBx",
+        635
+      ],
+      [
+        "J137zJ6Dbzt51aGGMRh2AjWT217auxqeiiEHyN2HQa4Z",
+        633
+      ],
+      [
+        "BUpWiWy8Tqed4jy86dr7ZpoaE747DpQsrGnwmtpMwfBr",
+        622
+      ],
+      [
+        "DF4qVoMnNv5r64hfcGM6XiLku98QDLdFQf82UokGDV4T",
+        597
+      ],
+      [
+        "53JGzWmneUivUP7odawk47sXgozLvVKj4Fs27B2wL3k2",
+        565
+      ]
+    ]
+  },
+  "event_identified_failed_mints": {
+    "unique": 16,
+    "top20": [
+      [
+        "ByUAzuZJBbGNnikSxUdRiqHc6K8qnc5up56AQbwDpump",
+        28
+      ],
+      [
+        "9dWiwaXeXgGxeVMSeZLhHAZvCKXuBLvRw7DcfjoRpump",
+        20
+      ],
+      [
+        "AdyS5LCEViQ2qQPva2hHAmtstEmemc6MUV4LvLRpump",
+        13
+      ],
+      [
+        "8rrSb3reBpp95B4Ptq9t7mLNLQ5xD6ejggqYzSZepump",
+        5
+      ],
+      [
+        "3RjRdQC82mDrp549mXHyzEaiXYVrsBZ8Nq42eBdWpump",
+        3
+      ],
+      [
+        "GZ7F8Rr6ChJm593PxHRmxcohtT83QU1uFCxdM5Ztpump",
+        3
+      ],
+      [
+        "5CgPyxr9EhoveVk8V5aWkVwSD9Q4rJyxRKiffdEvpump",
+        3
+      ],
+      [
+        "7oJ3Gt8SWPcidFgThAAkXDn7qWRXcJSC7x7VzaVdpump",
+        3
+      ],
+      [
+        "GnSqVhotUuvhqZYNZdb4CLTJwfbpMQ31TvjEApKbpump",
+        2
+      ],
+      [
+        "Bc19ZjFvjMNcb35tughGtWJjjgT87oSFy3gsMZrJpump",
+        2
+      ],
+      [
+        "Cu7JFCLKQi7PusKodvsCku1Jo9WPQfB78dNtaTCbpump",
+        1
+      ],
+      [
+        "FXfs793bctkLnhGbQnvNAf58nYREfqo3wBTagk6ypump",
+        1
+      ],
+      [
+        "AKxLDCCR8e3eD47bxApizNQoHFSBwfqMZ8Dj5naopump",
+        1
+      ],
+      [
+        "BwkNTgv5VDtnoyYj6e6t9BJK5Ljd7fA7ayPrhvPmpump",
+        1
+      ],
+      [
+        "EgMeJNVwqAE2Bv1JRaJcsD98iVDthGtabTjiDKbhpump",
+        1
+      ],
+      [
+        "2JSj9dzLQwAi3q1dHYjCPF5Gveg81hBTRy8EeM3Fpump",
+        1
+      ]
+    ]
+  },
+  "native_known_mint_mentions_NOT_intent_attribution": {
+    "unique": 80,
+    "top20": [
+      [
+        "D873TZLJgcFymEjGJyTxhC2o8MWJwkBLf2JX5qJVpump",
+        10445
+      ],
+      [
+        "3RjRdQC82mDrp549mXHyzEaiXYVrsBZ8Nq42eBdWpump",
+        5853
+      ],
+      [
+        "5CgPyxr9EhoveVk8V5aWkVwSD9Q4rJyxRKiffdEvpump",
+        2816
+      ],
+      [
+        "FUWaTQtoNBXLd1RFBn1gLAqed5Gdcg35R5UQEsYBpump",
+        2090
+      ],
+      [
+        "DyowgvRWyjiABdenWMESdzXHfEW3t1R3Bekzc7gpump",
+        1681
+      ],
+      [
+        "HX6bN1Gdqg29FQyu91DAx2WQGa7fW7Cv56cLchZcpump",
+        1516
+      ],
+      [
+        "7oJ3Gt8SWPcidFgThAAkXDn7qWRXcJSC7x7VzaVdpump",
+        1505
+      ],
+      [
+        "6shhWo2pdFysWQ9sfRZMmX8ETF7beTMVuchLSiC2pump",
+        1444
+      ],
+      [
+        "EeLRWr9CmNRBCp4eZRNJDF1rAaCCpGHwurDvcqtNpump",
+        1355
+      ],
+      [
+        "GZ7F8Rr6ChJm593PxHRmxcohtT83QU1uFCxdM5Ztpump",
+        1202
+      ],
+      [
+        "B5Z9i2GLHqGGSrWctRxTjtjQNiaGgWPc3nUutQmRpump",
+        1045
+      ],
+      [
+        "GPrSJgrnXJt8B3vamUNqRyFQu3Lhh9dBfEej4KLuAMoe",
+        814
+      ],
+      [
+        "GnSqVhotUuvhqZYNZdb4CLTJwfbpMQ31TvjEApKbpump",
+        738
+      ],
+      [
+        "5jQ7HvirzZS5aZw4Nyq5vWMLsKXFW3KzjJLxR6ECpump",
+        721
+      ],
+      [
+        "9KFEougnkY7FmYSFUCiWfzC1jetN82wfumadVN3RLJXo",
+        606
+      ],
+      [
+        "FMpiqMJMsYhtTRi8EUfhWX9As7dxEhpJLw8DyyaNpump",
+        518
+      ],
+      [
+        "Dcu3PanphrbRLS6xaNGGNW5Lmm56Q8Pgf8rLXDs6pump",
+        487
+      ],
+      [
+        "3iBDvXysExZfdCeWaZgCqNiuf3YeVe7PBLmJDxYTpump",
+        454
+      ],
+      [
+        "8XBWoijK1AJ5qYLNU9fvjLC5iACH7Xr9VjXocofFpump",
+        389
+      ],
+      [
+        "DyF5okZsED5miMJB7G8quBaPQWjkB3YHdzFJZdfpump",
+        265
+      ]
+    ]
+  },
+  "retry_like_groups": {
+    "definition": "same payer and observed Pump instruction payload/accounts (or entire observed instruction list if none); different signatures; not proof of retries or a single actor",
+    "groups_ge2": 466,
+    "transactions_in_groups_ge2": 25317,
+    "largest_group": 3359
+  },
+  "temporal_diagnostic": {
+    "one_second_bins": 120,
+    "failure_vs_same_second_successful_sol_event_count_correlation": 0.29448710140770473,
+    "failure_vs_next_second_successful_sol_event_count_correlation": 0.1203584439748435,
+    "interpretation": "Descriptive market-wide counts, not controlled prediction. No reliable mint price/liquidity attribution for most failures; no volatility or net-return claim."
+  },
+  "causality": {
+    "native_known": "status, raw error bytes, observed instruction identity/intent, account mentions, metadata availability clock",
+    "later_known": "Human-readable labels from retained finalized block references; label mapping is explanatory only, not injected into original decisions",
+    "failed_flow": "ZERO executed swap flow; events in reverted transactions remain attempted context, not fills"
+  },
+  "next": "Prioritize validated native mint/intent attribution only if failure population is diverse enough; preregister a controlled failure-intensity experiment before testing returns. Burst/persistence stays primary."
+}

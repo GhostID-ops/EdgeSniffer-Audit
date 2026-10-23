@@ -1,0 +1,26 @@
+{
+  "schema": "2CQ_MULTI_ARCHETYPE_RESEARCH_V1_CONTRACT",
+  "purpose": "Outcome-blind expansion of the 2CQ decision tape into linked route and lifecycle populations without altering the frozen LAUNCHED_120S cohort.",
+  "populations": {
+    "existing": "2CQ_PROSPECTIVE_SYMMETRIC_CHOICE_CENSUS_V2_LAUNCHED_120S",
+    "newSibling": "2CQ_ACTIVE_SOL_PUMP_5000MS_V1",
+    "newSiblingDefinition": "SOL Pump curve/CPI state with a complete causal pre-action reserve sequence and at least one external event in the preceding 5000ms; mint launch age is not an eligibility condition"
+  },
+  "routePolicy": {
+    "SOL_PUMP_CURVE": "choice-ready",
+    "SOL_PUMP_CPI": "choice-ready",
+    "NON_SOL_PUMP_V2": "quote-native transition-ready; same-quote control universe required",
+    "PUMPSWAP": "canonical pool-state adapter required",
+    "PUMPSWAP_CPI": "canonical pool-state adapter required",
+    "ROUTER": "underlying venue resolution required",
+    "OTHER_DEX": "protocol-specific adapter required",
+    "AMBIGUOUS_PUMP_FAMILY": "fail closed"
+  },
+  "integrity": {
+    "existingCohortModified": false,
+    "validationRowsPermitted": false,
+    "outcomesPermitted": false,
+    "submissionsPermitted": false,
+    "tinyNModelMayBeFrozen": false
+  }
+}

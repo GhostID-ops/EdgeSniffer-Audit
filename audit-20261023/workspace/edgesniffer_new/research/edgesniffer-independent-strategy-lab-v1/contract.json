@@ -1,0 +1,48 @@
+{
+  "schema": "EDGESNIFFER_INDEPENDENT_STRATEGY_LAB_CONTRACT_V1",
+  "status": "DISCOVERY_ONLY",
+  "read_only": true,
+  "trading_enabled": false,
+  "policy_frozen": false,
+  "selection_performed": false,
+  "source_rule": "market-wide normalized observations; no 2CQ/teacher wallet is an admission trigger",
+  "venue_scope": ["PUMP_BONDING_CURVE_TOP_LEVEL", "PUMP_CURVE"],
+  "causal_entry": {
+    "delay_ms": 1000,
+    "entry_state": "last exact venue state available at or before signal_receive_ts_ms + 1000",
+    "missing_state": "failed_entry; no price or market-cap imputation"
+  },
+  "economics": {
+    "notionals_sol": [0.1, 0.5, 1.0],
+    "stress_bps": [0, 25, 50],
+    "network_fee_sol_round_trip": 0.00001,
+    "fees": "venue-native protocol and creator fee fields plus declared LP stress",
+    "impact": "integer exact Pump bonding-curve quote at each notional",
+    "missing_exit_mark": "missed_exit_mark, retained in denominator"
+  },
+  "discovery_grid": {
+    "filters": [
+      "ALL_EXACT_ROUTE", "LOW_MC_LT_10K", "POSITIVE_FLOW",
+      "FLOW_AND_PRICE_CONTINUATION", "FLOW_005_AND_PRICE_10BPS",
+      "RESERVE_GE_2_SOL", "IMPACT_LE_100_BPS"
+    ],
+    "fixed_exits_seconds": [5, 10, 15, 30, 60, 120, 300],
+    "dynamic_exits": ["TP_SL_5_5", "PROTECT_5_0", "TRAIL_5_3", "PARTIAL_5_50"]
+  },
+  "controls": {
+    "required_for_validation": true,
+    "same_period": true,
+    "teacher_wallet_rows_may_be_labels_only": true,
+    "no_controls_means": "exploratory only; no freeze or promotion"
+  },
+  "promotion": {
+    "allowed_from_this_run": false,
+    "required_order": [
+      "independent offline discovery",
+      "pre-register candidate without changing it",
+      "fresh prospective native-receive cohort",
+      "quote/live-parity paper",
+      "explicit dust calibration approval"
+    ]
+  }
+}
