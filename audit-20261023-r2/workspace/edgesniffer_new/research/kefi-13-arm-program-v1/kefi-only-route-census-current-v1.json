@@ -1,0 +1,202 @@
+{
+  "control_input_rows": 46681,
+  "generated_at_utc": "2026-10-19T17:04:34.717829Z",
+  "inputs": {
+    "control_tape_path": "research\\kefi-13-arm-program-v1\\prospective-multivenue-20261019T041500Z\\pumpswap-exact-tape-immutable-20261019T150904Z.jsonl",
+    "control_tape_sha256": "7f8873cfe2135373d726209b726d5fc1a202132103014933cbdcca789e3d26a9",
+    "raw_path": "research\\kefi-13-arm-program-v1\\prospective-multivenue-20261019T041500Z\\raw-transactions-immutable-20261019T150904Z.jsonl",
+    "raw_sha256": "97c0a606a7ae89323330891b008c9092cb16fbf5de514e6c48c61ea69664f989"
+  },
+  "interpretation": {
+    "genuine_event_definition": "finalized successful transaction plus exact wallet-side venue transition",
+    "historical_registry": "legacy mixed-source infrastructure; not used as KEFI route truth",
+    "promotion": "no route is promoted or frozen by this census",
+    "unresolved_definition": "raw venue evidence exists but exact wallet settlement/route transition is not proven by the available adapter"
+  },
+  "legacy_candidate_label_counts": {
+    "ARM01_SOL_PUMP_CURVE_2CQ": 127,
+    "ARM02_SOL_PUMP_CPI_2CQ": 127,
+    "ARM03_ACTIVE_SOL_PUMP_5000MS": 127,
+    "ARM07_PUMPSWAP_DIRECT": 2401,
+    "ARM08_PUMPSWAP_CPI": 2401,
+    "ARM09_ROUTER_RAYDIUM_CLMM": 31,
+    "ARM10_ROUTER_ORCA_WHIRLPOOL": 29,
+    "ARM11_ROUTER_METEORA_DLMM": 29,
+    "ARM12_OTHER_DEX_PROTOCOL_NATIVE": 31
+  },
+  "legacy_candidate_labels_ignored": true,
+  "outcome_blind": true,
+  "raw_transactions": 2548,
+  "read_only": true,
+  "routes": [
+    {
+      "available_pre_entry_state": true,
+      "controls": {
+        "control_route_limitation": "The pool tape proves PumpSwap venue mechanics but does not prove CPI/direct route for non-KEFI control rows.",
+        "route_specific_controls_proven": false,
+        "venue_level_pumpswap_buy_controls": 22691
+      },
+      "eligible_for_strategy_search": true,
+      "failure_reasons": {},
+      "genuine_buys": 938,
+      "genuine_exact_events": 1869,
+      "genuine_sells": 931,
+      "liquidity_and_fee_fields": true,
+      "raw_transactions": 1869,
+      "route": "PUMPSWAP_DIRECT",
+      "route_certainty": "EXACT",
+      "route_rank_by_evidence": 1,
+      "unique_signatures": 1869,
+      "unresolved_or_incomplete_rows": 0
+    },
+    {
+      "available_pre_entry_state": true,
+      "controls": {
+        "control_route_limitation": "The pool tape proves PumpSwap venue mechanics but does not prove CPI/direct route for non-KEFI control rows.",
+        "route_specific_controls_proven": false,
+        "venue_level_pumpswap_buy_controls": 22691
+      },
+      "eligible_for_strategy_search": true,
+      "failure_reasons": {},
+      "genuine_buys": 265,
+      "genuine_exact_events": 521,
+      "genuine_sells": 256,
+      "liquidity_and_fee_fields": true,
+      "raw_transactions": 521,
+      "route": "PUMPSWAP_CPI",
+      "route_certainty": "EXACT",
+      "route_rank_by_evidence": 2,
+      "unique_signatures": 521,
+      "unresolved_or_incomplete_rows": 0
+    },
+    {
+      "available_pre_entry_state": true,
+      "controls": {
+        "control_route_limitation": "The pool tape proves PumpSwap venue mechanics but does not prove CPI/direct route for non-KEFI control rows.",
+        "route_specific_controls_proven": false,
+        "venue_level_pumpswap_buy_controls": 22691
+      },
+      "eligible_for_strategy_search": false,
+      "failure_reasons": {},
+      "genuine_buys": 0,
+      "genuine_exact_events": 9,
+      "genuine_sells": 9,
+      "liquidity_and_fee_fields": true,
+      "raw_transactions": 9,
+      "route": "ROUTER_JUPITER_V6_PUMPSWAP_CPI",
+      "route_certainty": "EXACT",
+      "route_rank_by_evidence": 3,
+      "unique_signatures": 9,
+      "unresolved_or_incomplete_rows": 0
+    },
+    {
+      "available_pre_entry_state": false,
+      "controls": {
+        "route_specific_controls_proven": false,
+        "venue_level_controls": 0
+      },
+      "eligible_for_strategy_search": false,
+      "failure_reasons": {
+        "NO_EXACT_PUMP_TRADE_EVENT": 127
+      },
+      "genuine_buys": 0,
+      "genuine_exact_events": 0,
+      "genuine_sells": 0,
+      "liquidity_and_fee_fields": false,
+      "raw_transactions": 127,
+      "route": "PUMP_BONDING_CURVE",
+      "route_certainty": "EXACT",
+      "route_rank_by_evidence": 4,
+      "unique_signatures": 127,
+      "unresolved_or_incomplete_rows": 127
+    },
+    {
+      "available_pre_entry_state": false,
+      "controls": {
+        "route_specific_controls_proven": false,
+        "venue_level_controls": 0
+      },
+      "eligible_for_strategy_search": false,
+      "failure_reasons": {
+        "EXACT_VENUE_TRANSITION_WITHOUT_PROVEN_WALLET_SETTLEMENT": 1
+      },
+      "genuine_buys": 0,
+      "genuine_exact_events": 0,
+      "genuine_sells": 0,
+      "liquidity_and_fee_fields": false,
+      "raw_transactions": 1,
+      "route": "RAYDIUM_CLMM_CPI",
+      "route_certainty": "EXACT",
+      "route_rank_by_evidence": 5,
+      "unique_signatures": 1,
+      "unresolved_or_incomplete_rows": 1
+    },
+    {
+      "available_pre_entry_state": false,
+      "controls": {
+        "route_specific_controls_proven": false,
+        "venue_level_controls": 0
+      },
+      "eligible_for_strategy_search": false,
+      "failure_reasons": {
+        "NO_SELECTED_EXACT_ADAPTER": 2
+      },
+      "genuine_buys": 0,
+      "genuine_exact_events": 0,
+      "genuine_sells": 0,
+      "liquidity_and_fee_fields": false,
+      "raw_transactions": 2,
+      "route": "ROUTER_JUPITER_V6_METEORA_DLMM_CPI",
+      "route_certainty": "EXACT",
+      "route_rank_by_evidence": 6,
+      "unique_signatures": 2,
+      "unresolved_or_incomplete_rows": 2
+    },
+    {
+      "available_pre_entry_state": false,
+      "controls": {
+        "route_specific_controls_proven": false,
+        "venue_level_controls": 0
+      },
+      "eligible_for_strategy_search": false,
+      "failure_reasons": {
+        "EXACT_VENUE_TRANSITION_WITHOUT_PROVEN_WALLET_SETTLEMENT": 7
+      },
+      "genuine_buys": 0,
+      "genuine_exact_events": 0,
+      "genuine_sells": 0,
+      "liquidity_and_fee_fields": false,
+      "raw_transactions": 7,
+      "route": "ROUTER_JUPITER_V6_RAYDIUM_CLMM_CPI",
+      "route_certainty": "EXACT",
+      "route_rank_by_evidence": 7,
+      "unique_signatures": 7,
+      "unresolved_or_incomplete_rows": 7
+    },
+    {
+      "available_pre_entry_state": false,
+      "controls": {
+        "route_specific_controls_proven": false,
+        "venue_level_controls": 0
+      },
+      "eligible_for_strategy_search": false,
+      "failure_reasons": {
+        "NO_SELECTED_EXACT_ADAPTER": 12
+      },
+      "genuine_buys": 0,
+      "genuine_exact_events": 0,
+      "genuine_sells": 0,
+      "liquidity_and_fee_fields": false,
+      "raw_transactions": 12,
+      "route": "UNRESOLVED_ROUTE",
+      "route_certainty": "PARTIAL_OR_UNRESOLVED",
+      "route_rank_by_evidence": 8,
+      "unique_signatures": 12,
+      "unresolved_or_incomplete_rows": 12
+    }
+  ],
+  "schema": "KEFI_ONLY_ROUTE_CENSUS_V1",
+  "strategy_selection_performed": false,
+  "tracked_wallet": "kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf",
+  "unique_raw_signatures": 2548
+}

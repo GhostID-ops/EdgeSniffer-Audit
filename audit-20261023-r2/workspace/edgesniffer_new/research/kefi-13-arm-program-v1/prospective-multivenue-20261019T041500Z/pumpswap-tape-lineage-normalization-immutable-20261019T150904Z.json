@@ -1,0 +1,14 @@
+{
+  "accepted_rows": 46681,
+  "continuity_epoch": 1,
+  "input_path": "research\\kefi-13-arm-program-v1\\prospective-multivenue-20261019T041500Z\\pumpswap-exact-tape-immutable-20261019T150904Z.jsonl",
+  "input_sha256": "7f8873cfe2135373d726209b726d5fc1a202132103014933cbdcca789e3d26a9",
+  "lineage_is_synthetic": true,
+  "live_parity_claim": false,
+  "output_path": "research\\kefi-13-arm-program-v1\\prospective-multivenue-20261019T041500Z\\pumpswap-exact-tape-normalized-immutable-20261019T150904Z.jsonl",
+  "output_sha256": "3e0ace6aaa99d77548027713b8793fe8b72191efb44451836d2d8bd8499464f9",
+  "read_only_source": true,
+  "rejected_rows": 0,
+  "schema": "KEFI_LEGACY_PUMPSWAP_TAPE_LINEAGE_NORMALIZATION_V1",
+  "source_instance_id": "legacy-tape-7f8873cfe2135373d726209b726d5fc1"
+}

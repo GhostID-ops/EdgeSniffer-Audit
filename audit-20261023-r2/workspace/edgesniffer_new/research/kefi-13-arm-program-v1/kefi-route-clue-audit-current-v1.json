@@ -1,0 +1,228 @@
+{
+  "chronological_route_sequence": {
+    "adjacent_route_transitions": {
+      "PUMPSWAP_CPI->PUMPSWAP_CPI": 264,
+      "PUMPSWAP_DIRECT->PUMPSWAP_CPI": 1,
+      "PUMPSWAP_DIRECT->PUMPSWAP_DIRECT": 937
+    },
+    "chronological_buy_events": 1203,
+    "interpretation": "Descriptive route/regime sequencing only; no transition is a trading rule.",
+    "route_switches": 1
+  },
+  "clue_interpretation": [
+    "Liquidity, fee, size, holding-time, and route-sequencing distributions are descriptive context for later preregistered hypotheses.",
+    "A distribution is not evidence that a threshold or exit rule should be selected.",
+    "Any formula suggested by this report must be preregistered before a separate discovery run and validated on a fresh prospective cohort."
+  ],
+  "exploratory_only": true,
+  "generated_at_utc": "2026-10-19T17:51:00.367273Z",
+  "input_rows": 2399,
+  "outcome_blind": true,
+  "policy_frozen": false,
+  "policy_selection_performed": false,
+  "read_only": true,
+  "route_stats": {
+    "PUMPSWAP_CPI": {
+      "buy_pre_pool_quote_liquidity_sol": {
+        "max": 565.214523174,
+        "median": 69.2557669,
+        "min": 22.408823129,
+        "p25": 50.766410867,
+        "p75": 111.904459134,
+        "p90": 289.845324113
+      },
+      "buy_pre_virtual_quote_liquidity_sol": {
+        "max": 17.584505961,
+        "median": 16.612369479,
+        "min": 3.887097016,
+        "p25": 14.712258056,
+        "p75": 17.453427628,
+        "p90": 17.546158661
+      },
+      "buy_quote_size_sol": {
+        "max": 5.835081323,
+        "median": 0.862768065,
+        "min": 0.376169505,
+        "p25": 0.666875268,
+        "p75": 1.256596702,
+        "p90": 2.937056099
+      },
+      "buy_size_as_percent_of_pre_pool_quote": {
+        "max": 1.685227170260406,
+        "median": 1.2335718486826195,
+        "min": 1.01331843388819,
+        "p25": 1.131744597542612,
+        "p75": 1.3117282249595974,
+        "p90": 1.4299236575390974
+      },
+      "buy_to_first_sell": {
+        "buys_with_later_sell": 255,
+        "completion_rate": 0.9622641509433962,
+        "holding_seconds": {
+          "max": 1800.0,
+          "median": 68.0,
+          "min": 1.0,
+          "p25": 18.0,
+          "p75": 187.0,
+          "p90": 552.0
+        }
+      },
+      "buy_total_fee_bps": {
+        "max": 125.0,
+        "median": 125.0,
+        "min": 95.0,
+        "p25": 120.0,
+        "p75": 125.0,
+        "p90": 125.0
+      },
+      "buys": 265,
+      "events": 521,
+      "hour_utc_counts": {
+        "12": 25,
+        "13": 109,
+        "14": 112,
+        "15": 19
+      },
+      "sells": 256,
+      "unique_mints": 49,
+      "unique_pools": 49
+    },
+    "PUMPSWAP_DIRECT": {
+      "buy_pre_pool_quote_liquidity_sol": {
+        "max": 688.539260593,
+        "median": 92.023730527,
+        "min": 9.084657189,
+        "p25": 58.762830126,
+        "p75": 150.728578633,
+        "p90": 270.511500723
+      },
+      "buy_pre_virtual_quote_liquidity_sol": {
+        "max": 17.584506105,
+        "median": 16.195107336,
+        "min": -26.07909941,
+        "p25": 12.087729595,
+        "p75": 17.40388509,
+        "p90": 17.551715169
+      },
+      "buy_quote_size_sol": {
+        "max": 7.010220045,
+        "median": 1.065590695,
+        "min": 0.088419246,
+        "p25": 0.747916106,
+        "p75": 1.568010499,
+        "p90": 2.858462294
+      },
+      "buy_size_as_percent_of_pre_pool_quote": {
+        "max": 1.6995631498651316,
+        "median": 1.1642968729357195,
+        "min": 0.8161877138734656,
+        "p25": 1.0626162378472759,
+        "p75": 1.2800218435498734,
+        "p90": 1.445636987764736
+      },
+      "buy_to_first_sell": {
+        "buys_with_later_sell": 931,
+        "completion_rate": 0.9925373134328358,
+        "holding_seconds": {
+          "max": 20283.0,
+          "median": 85.0,
+          "min": 1.0,
+          "p25": 17.0,
+          "p75": 301.0,
+          "p90": 1117.0
+        }
+      },
+      "buy_total_fee_bps": {
+        "max": 125.0,
+        "median": 120.0,
+        "min": 85.0,
+        "p25": 120.0,
+        "p75": 125.0,
+        "p90": 125.0
+      },
+      "buys": 938,
+      "events": 1869,
+      "hour_utc_counts": {
+        "2": 6,
+        "3": 156,
+        "4": 91,
+        "5": 68,
+        "6": 63,
+        "7": 70,
+        "8": 128,
+        "9": 92,
+        "10": 76,
+        "11": 122,
+        "12": 66
+      },
+      "sells": 931,
+      "unique_mints": 81,
+      "unique_pools": 81
+    },
+    "ROUTER_JUPITER_V6_PUMPSWAP_CPI": {
+      "buy_pre_pool_quote_liquidity_sol": {
+        "max": null,
+        "median": null,
+        "min": null,
+        "p25": null,
+        "p75": null,
+        "p90": null
+      },
+      "buy_pre_virtual_quote_liquidity_sol": {
+        "max": null,
+        "median": null,
+        "min": null,
+        "p25": null,
+        "p75": null,
+        "p90": null
+      },
+      "buy_quote_size_sol": {
+        "max": null,
+        "median": null,
+        "min": null,
+        "p25": null,
+        "p75": null,
+        "p90": null
+      },
+      "buy_size_as_percent_of_pre_pool_quote": {
+        "max": null,
+        "median": null,
+        "min": null,
+        "p25": null,
+        "p75": null,
+        "p90": null
+      },
+      "buy_to_first_sell": {
+        "buys_with_later_sell": 0,
+        "completion_rate": 0.0,
+        "holding_seconds": {
+          "max": null,
+          "median": null,
+          "min": null,
+          "p25": null,
+          "p75": null,
+          "p90": null
+        }
+      },
+      "buy_total_fee_bps": {
+        "max": null,
+        "median": null,
+        "min": null,
+        "p25": null,
+        "p75": null,
+        "p90": null
+      },
+      "buys": 0,
+      "events": 9,
+      "hour_utc_counts": {},
+      "sells": 9,
+      "unique_mints": 9,
+      "unique_pools": 9
+    }
+  },
+  "schema": "KEFI_ROUTE_CLUE_AUDIT_V1",
+  "source_path": "research\\kefi-13-arm-program-v1\\kefi-only-route-events-current-v1.jsonl",
+  "source_sha256": "7212a4c4d59989a2b8617fcf5e69c15f9a2663076126f47d2bdce6166af6aece",
+  "trading_enabled": false,
+  "validation_read": false
+}

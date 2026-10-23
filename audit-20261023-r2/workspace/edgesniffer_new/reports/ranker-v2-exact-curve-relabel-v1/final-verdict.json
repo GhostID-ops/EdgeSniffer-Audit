@@ -1,0 +1,89 @@
+{
+  "classification": "RANKER_V2_MC_PROXY_ALPHA_NOT_EXECUTABLE",
+  "evaluator_sha256": "badf8d417a155931498422300ffadb5ba1b3e3574bbcad9fd62d52161144ff10",
+  "exact_historical_train_n": 0,
+  "exact_historical_validation_n": 0,
+  "full_prospective": {
+    "0.01": {
+      "expectancy_pct": -6.694997669491525,
+      "n": 236,
+      "pf": 0.08538618337585628,
+      "pnl_sol": -0.158001945
+    },
+    "0.1": {
+      "expectancy_pct": -6.748773586206897,
+      "n": 232,
+      "pf": 0.08521631177215777,
+      "pnl_sol": -1.565715472
+    },
+    "0.5": {
+      "expectancy_pct": -6.932423153363229,
+      "n": 223,
+      "pf": 0.07946068699935506,
+      "pnl_sol": -7.729651816
+    },
+    "1.0": {
+      "expectancy_pct": -7.022142079342723,
+      "n": 213,
+      "pf": 0.07520660297625859,
+      "pnl_sol": -14.957162629
+    }
+  },
+  "full_prospective_exact_coverage_pct_0p01": 22.60536398467433,
+  "full_prospective_exact_n_0p01": 236,
+  "max_open1_full_prospective": {
+    "0.01": {
+      "expectancy_pct": -5.949429224137931,
+      "n": 116,
+      "pf": 0.06225425973347638,
+      "pnl_sol": -0.069013379
+    },
+    "0.1": {
+      "expectancy_pct": -5.931554754385965,
+      "n": 114,
+      "pf": 0.06285016693669683,
+      "pnl_sol": -0.676197242
+    },
+    "0.5": {
+      "expectancy_pct": -6.105855977777778,
+      "n": 108,
+      "pf": 0.052035599205822486,
+      "pnl_sol": -3.297162228
+    },
+    "1.0": {
+      "expectancy_pct": -6.149650338613862,
+      "n": 101,
+      "pf": 0.04823275502542513,
+      "pnl_sol": -6.211146842
+    }
+  },
+  "primary_entry_delay_ms": 25,
+  "primary_first_sellable_delay_ms": 1476,
+  "qualification": "Historical train/validation exact replay is unavailable; the classification is based on exact prospective evidence and same-row old-vs-exact comparisons.",
+  "recent_prospective": {
+    "0.01": {
+      "expectancy_pct": -5.859428686868687,
+      "n": 198,
+      "pf": 0.11211083254789403,
+      "pnl_sol": -0.11601668799999999
+    },
+    "0.1": {
+      "expectancy_pct": -5.952277051282051,
+      "n": 195,
+      "pf": 0.11095163350005016,
+      "pnl_sol": -1.160694025
+    },
+    "0.5": {
+      "expectancy_pct": -6.146272713829787,
+      "n": 188,
+      "pf": 0.10287980701681694,
+      "pnl_sol": -5.777496351
+    },
+    "1.0": {
+      "expectancy_pct": -6.1846983793296095,
+      "n": 179,
+      "pf": 0.09836923306261347,
+      "pnl_sol": -11.070610099
+    }
+  }
+}

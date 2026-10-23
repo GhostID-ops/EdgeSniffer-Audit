@@ -1,0 +1,105 @@
+{
+  "tool": "allenhark-current-codec-replay-v1",
+  "codec": "current-jito-merkle-shred + wincode Entry",
+  "jito_revision": "58704cca75f4139cbab4778a45b6b81eff3cc5db",
+  "input_pcap": "/mnt/HC_Volume_106775198/edgesniffer-research/allenhark-realtime-coverage-final-repair-v1/telemetry/raw-shreds-variant-audit-20261020T213500Z.pcap",
+  "input_sha256": "84e0c32cc499ac84f7d923ba806734f205d36e8aa4b79943c8b557a6e3c755d2",
+  "target": "9qz7cWBqYBP2TnGfzMmxX64G4PQip7HtogjPBBnMhWpw",
+  "linktype": 1,
+  "packets_seen": 5000,
+  "udp20000_packets": 5000,
+  "unique_shred_payloads": 5000,
+  "duplicate_payloads": 0,
+  "malformed_packets": 0,
+  "parsed_shreds": 5000,
+  "shred_parse_errors": 0,
+  "data_shreds": 2503,
+  "coding_shreds": 2497,
+  "slots": [
+    459381004,
+    459381005,
+    459381006,
+    459381007
+  ],
+  "complete_payloads_attempted": 61,
+  "deshred_successes": 61,
+  "deshred_failures": 0,
+  "wincode_entry_decode_successes": 59,
+  "wincode_entry_decode_failures": 2,
+  "decoded_entries": 2730,
+  "decoded_transactions": 3171,
+  "target_transactions": 0,
+  "target_fee_payer_transactions": 0,
+  "slot_summaries": [
+    {
+      "slot": 459381004,
+      "data_shreds": 296,
+      "coding_shreds": 317,
+      "completed_ranges": 8,
+      "deshred_successes": 8,
+      "wincode_successes": 7,
+      "entries": 116,
+      "transactions": 183,
+      "target_transactions": 0,
+      "target_fee_payer_transactions": 0
+    },
+    {
+      "slot": 459381005,
+      "data_shreds": 799,
+      "coding_shreds": 800,
+      "completed_ranges": 18,
+      "deshred_successes": 18,
+      "wincode_successes": 17,
+      "entries": 814,
+      "transactions": 945,
+      "target_transactions": 0,
+      "target_fee_payer_transactions": 0
+    },
+    {
+      "slot": 459381006,
+      "data_shreds": 736,
+      "coding_shreds": 736,
+      "completed_ranges": 18,
+      "deshred_successes": 18,
+      "wincode_successes": 18,
+      "entries": 951,
+      "transactions": 1062,
+      "target_transactions": 0,
+      "target_fee_payer_transactions": 0
+    },
+    {
+      "slot": 459381007,
+      "data_shreds": 672,
+      "coding_shreds": 644,
+      "completed_ranges": 17,
+      "deshred_successes": 17,
+      "wincode_successes": 17,
+      "entries": 849,
+      "transactions": 981,
+      "target_transactions": 0,
+      "target_fee_payer_transactions": 0
+    }
+  ],
+  "failure_samples": [
+    {
+      "slot": 459381004,
+      "start_index": 776,
+      "end_index": 799,
+      "stage": "wincode_entry",
+      "error": "Encoded sequence length exceeded preallocation limit of 4194304 bytes (needed 18446744073709551615 bytes)",
+      "payload_len": 22155,
+      "payload_sha256": "ce3ce8da8416c471065bce7b0b451c87f3e5212bce7191e79c2be2af0e8b6884",
+      "prefix_hex": "1d4e413ea5eb73f3f3a23de427a05c78554b1743405d8c72f3f14b21589296ed"
+    },
+    {
+      "slot": 459381005,
+      "start_index": 107,
+      "end_index": 127,
+      "stage": "wincode_entry",
+      "error": "Encoded sequence length exceeded preallocation limit of 4194304 bytes (needed 18446744073709551615 bytes)",
+      "payload_len": 18698,
+      "payload_sha256": "77631f31898ac3ee2c02b0ef2612e66e46087225821329786e17ffc9f9756612",
+      "prefix_hex": "355e73d11043fc0da3538000000000e520d260d0543ae47f2cc9ae0417bc6a96"
+    }
+  ]
+}

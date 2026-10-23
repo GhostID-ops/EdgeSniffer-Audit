@@ -1,0 +1,270 @@
+{
+  "analysis_definition": "same fields for every arm: venue identity, source population, decoder status, evaluator status, frozen policy, and prospective action",
+  "arms": [
+    {
+      "action": "PAPER_ONLY",
+      "arm_id": "ARM01_SOL_PUMP_CURVE_2CQ",
+      "baseline": {
+        "source": "2cq-multi-archetype-research-v1 REPORT.md",
+        "source_population_n": 204
+      },
+      "decoder_status": "EXACT",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "EXACT",
+      "outcome_blind": true,
+      "policy_id": "ARM01_SOL_PUMP_CURVE_FIXED_CHALLENGE_V1",
+      "policy_status": "FROZEN_RESEARCH_CONTRACT",
+      "readiness": "READY_FOR_DISCOVERY",
+      "source_provenance": "2cq-multi-archetype-research-v1 population SOL Pump curve",
+      "venue": "Pump.fun bonding curve",
+      "venue_class": "SOL_PUMP_CURVE"
+    },
+    {
+      "action": "PAPER_ONLY",
+      "arm_id": "ARM02_SOL_PUMP_CPI_2CQ",
+      "baseline": {
+        "source": "2cq-multi-archetype-research-v1 REPORT.md",
+        "source_population_n": 88
+      },
+      "decoder_status": "EXACT",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "EXACT",
+      "outcome_blind": true,
+      "policy_id": "ARM02_SOL_PUMP_CPI_FIXED_CHALLENGE_V1",
+      "policy_status": "FROZEN_RESEARCH_CONTRACT",
+      "readiness": "READY_FOR_DISCOVERY",
+      "source_provenance": "2cq-multi-archetype-research-v1 population SOL Pump CPI",
+      "venue": "Pump.fun CPI launch path",
+      "venue_class": "SOL_PUMP_CPI"
+    },
+    {
+      "action": "PAPER_ONLY",
+      "arm_id": "ARM03_ACTIVE_SOL_PUMP_5000MS",
+      "baseline": {
+        "source": "2cq-multi-archetype-research-v1 REPORT.md",
+        "source_population_n": 124,
+        "valid_symmetric_n": 23
+      },
+      "decoder_status": "EXACT",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "EXACT",
+      "outcome_blind": true,
+      "policy_id": "ARM03_ACTIVE_SOL_PUMP_5000MS_FIXED_CHALLENGE_V1",
+      "policy_status": "FROZEN_RESEARCH_CONTRACT",
+      "readiness": "READY_FOR_DISCOVERY",
+      "source_provenance": "2cq-multi-archetype-research-v1 new sibling ACTIVE_SOL_PUMP_5000MS_V1",
+      "venue": "Pump.fun SOL curve/CPI launch paths",
+      "venue_class": "SOL_PUMP_CURVE_CPI_SIBLING"
+    },
+    {
+      "action": "NO_TRADE",
+      "arm_id": "ARM04_NON_SOL_PUMP_V2_QUOTE_NATIVE",
+      "baseline": {
+        "quote_mint_family_n": 18,
+        "source": "2cq-multi-archetype-research-v1 REPORT.md",
+        "source_population_n": 121
+      },
+      "decoder_status": "QUOTE_NATIVE_EXACT",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "BLOCKED",
+      "outcome_blind": true,
+      "policy_id": "ARM04_NON_SOL_PUMP_V2_FAIL_CLOSED_UNTIL_SAME_QUOTE_V1",
+      "policy_status": "FROZEN_FAIL_CLOSED",
+      "readiness": "PARTIAL_ADAPTER",
+      "source_provenance": "2cq-multi-archetype-research-v1 population Non-SOL Pump V2",
+      "venue": "Pump.fun V2 non-SOL quote market",
+      "venue_class": "NON_SOL_PUMP_V2"
+    },
+    {
+      "action": "NO_TRADE",
+      "arm_id": "ARM05_RAYDIUM_LAUNCHLAB",
+      "baseline": {
+        "source": "2cq-multi-archetype-research-v1 REPORT.md",
+        "source_population_n": 246
+      },
+      "decoder_status": "TRADE_EVENT_EXACT_LIFECYCLE_PARTIAL",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "PARTIAL",
+      "outcome_blind": true,
+      "policy_id": "ARM05_RAYDIUM_LAUNCHLAB_FAIL_CLOSED_UNTIL_CAUSAL_ADAPTER_V1",
+      "policy_status": "FROZEN_FAIL_CLOSED",
+      "readiness": "PARTIAL_ADAPTER",
+      "source_provenance": "2cq-multi-archetype-research-v1 population Raydium LaunchLab",
+      "venue": "Raydium LaunchLab",
+      "venue_class": "RAYDIUM_LAUNCHLAB"
+    },
+    {
+      "action": "NO_TRADE",
+      "arm_id": "ARM06_STONKFUN_LAUNCHLAB",
+      "baseline": {
+        "parent_population_n": 246,
+        "source": "route-init registry classification; subset not sealed",
+        "source_population_n": null
+      },
+      "decoder_status": "EXACT_ROUTE_INIT_PARTIAL_LIFECYCLE",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "SANDBOX_ONLY",
+      "outcome_blind": true,
+      "policy_id": "ARM06_STONKFUN_LAUNCHLAB_FAIL_CLOSED_UNTIL_NATIVE_ECONOMICS_V1",
+      "policy_status": "FROZEN_FAIL_CLOSED",
+      "readiness": "PARTIAL_ADAPTER",
+      "source_provenance": "route-init registry platform classification STONKFUN; archived sibling cohort name",
+      "venue": "Raydium LaunchLab with Stonk.fun platform configuration",
+      "venue_class": "RAYDIUM_LAUNCHLAB_STONKFUN"
+    },
+    {
+      "action": "PAPER_ONLY",
+      "arm_id": "ARM07_PUMPSWAP_DIRECT",
+      "baseline": {
+        "sealed_actionable_n": 22,
+        "source": "sealed PumpSwap discovery/economics artifacts",
+        "source_population_n": 17
+      },
+      "decoder_status": "EXACT_CANONICAL_POOL_STATE",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "EXACT",
+      "outcome_blind": true,
+      "policy_id": "kefi-pumpswap-fixed-30s-challenge-v1",
+      "policy_status": "FROZEN_RESEARCH_CONTRACT",
+      "readiness": "READY_FOR_DISCOVERY",
+      "source_provenance": "existing sealed PumpSwap target cohort and route-init registry",
+      "venue": "PumpSwap direct pool",
+      "venue_class": "PUMPSWAP"
+    },
+    {
+      "action": "NO_TRADE",
+      "arm_id": "ARM08_PUMPSWAP_CPI",
+      "baseline": {
+        "parent_population_n": 17,
+        "source": "PUMPSWAP_CPI route policy; subset not sealed",
+        "source_population_n": null
+      },
+      "decoder_status": "EXACT_POOL_STATE_PARTIAL_CPI_ATTRIBUTION",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "PARTIAL",
+      "outcome_blind": true,
+      "policy_id": "ARM08_PUMPSWAP_CPI_FAIL_CLOSED_UNTIL_CPI_ATTRIBUTION_V1",
+      "policy_status": "FROZEN_FAIL_CLOSED",
+      "readiness": "PARTIAL_ADAPTER",
+      "source_provenance": "2cq route policy PUMPSWAP_CPI; separate from direct PumpSwap arm",
+      "venue": "PumpSwap pool reached through CPI-linked launch path",
+      "venue_class": "PUMPSWAP_CPI"
+    },
+    {
+      "action": "NO_TRADE",
+      "arm_id": "ARM09_ROUTER_RAYDIUM_CLMM",
+      "baseline": {
+        "parent_population_n": 50,
+        "source": "router underlying-venue inventory",
+        "source_population_n": null
+      },
+      "decoder_status": "ROUTER_RESOLUTION_REQUIRED_WITH_EXACT_UNDERLYING_ADAPTER",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "EXACT_UNDERLYING_ADAPTER",
+      "outcome_blind": true,
+      "policy_id": "ARM09_ROUTER_RAYDIUM_CLMM_FAIL_CLOSED_UNTIL_RESOLUTION_V1",
+      "policy_status": "FROZEN_FAIL_CLOSED",
+      "readiness": "PARTIAL_ADAPTER",
+      "source_provenance": "multi-archetype report router underlying-venue inventory",
+      "venue": "Raydium CLMM underlying a router transaction",
+      "venue_class": "ROUTER_RESOLVED_RAYDIUM_CLMM"
+    },
+    {
+      "action": "NO_TRADE",
+      "arm_id": "ARM10_ROUTER_ORCA_WHIRLPOOL",
+      "baseline": {
+        "parent_population_n": 50,
+        "source": "router underlying-venue inventory",
+        "source_population_n": null
+      },
+      "decoder_status": "ROUTER_RESOLUTION_REQUIRED_WITH_EXACT_UNDERLYING_ADAPTER",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "EXACT_UNDERLYING_ADAPTER",
+      "outcome_blind": true,
+      "policy_id": "ARM10_ROUTER_ORCA_WHIRLPOOL_FAIL_CLOSED_UNTIL_RESOLUTION_V1",
+      "policy_status": "FROZEN_FAIL_CLOSED",
+      "readiness": "PARTIAL_ADAPTER",
+      "source_provenance": "multi-archetype report router underlying-venue inventory",
+      "venue": "Orca Whirlpool underlying a router transaction",
+      "venue_class": "ROUTER_RESOLVED_ORCA_WHIRLPOOL"
+    },
+    {
+      "action": "NO_TRADE",
+      "arm_id": "ARM11_ROUTER_METEORA_DLMM",
+      "baseline": {
+        "parent_population_n": 50,
+        "source": "router underlying-venue inventory",
+        "source_population_n": null
+      },
+      "decoder_status": "ROUTER_RESOLUTION_REQUIRED_WITH_EXACT_UNDERLYING_ADAPTER",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "EXACT_UNDERLYING_ADAPTER",
+      "outcome_blind": true,
+      "policy_id": "ARM11_ROUTER_METEORA_DLMM_FAIL_CLOSED_UNTIL_RESOLUTION_V1",
+      "policy_status": "FROZEN_FAIL_CLOSED",
+      "readiness": "PARTIAL_ADAPTER",
+      "source_provenance": "multi-archetype report router underlying-venue inventory",
+      "venue": "Meteora DLMM underlying a router transaction",
+      "venue_class": "ROUTER_RESOLVED_METEORA_DLMM"
+    },
+    {
+      "action": "NO_TRADE",
+      "arm_id": "ARM12_OTHER_DEX_PROTOCOL_NATIVE",
+      "baseline": {
+        "source": "2cq-multi-archetype-research-v1 REPORT.md",
+        "source_population_n": 32
+      },
+      "decoder_status": "PROTOCOL_SPECIFIC_REQUIRED",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "PROTOCOL_ADAPTERS_AVAILABLE_NOT_SELECTED",
+      "outcome_blind": true,
+      "policy_id": "ARM12_OTHER_DEX_FAIL_CLOSED_UNTIL_PROTOCOL_SPLIT_V1",
+      "policy_status": "FROZEN_FAIL_CLOSED",
+      "readiness": "BLOCKED_EXACT_ADAPTER",
+      "source_provenance": "multi-archetype report OTHER_DEX population; protocol identity must be retained per row",
+      "venue": "Protocol-specific non-router DEX (resolved per program)",
+      "venue_class": "OTHER_DEX"
+    },
+    {
+      "action": "NO_TRADE",
+      "arm_id": "ARM13_AMBIGUOUS_PUMP_FAIL_CLOSED",
+      "baseline": {
+        "source": "2cq-multi-archetype-research-v1 REPORT.md",
+        "source_population_n": 1
+      },
+      "decoder_status": "FAIL_CLOSED",
+      "discovery_result": "COVERAGE_RECORDED_NOT_ECONOMIC_VALIDATION",
+      "evaluator_status": "NOT_APPLICABLE",
+      "outcome_blind": true,
+      "policy_id": "ARM13_AMBIGUOUS_FAIL_CLOSED_V1",
+      "policy_status": "FROZEN_FAIL_CLOSED",
+      "readiness": "FAIL_CLOSED",
+      "source_provenance": "multi-archetype report ambiguous population",
+      "venue": "Unresolved / no real venue admitted",
+      "venue_class": "AMBIGUOUS_PUMP_FAMILY"
+    }
+  ],
+  "generated_at_utc": "2026-10-19T04:06:46.132364+00:00",
+  "outcome_blind": true,
+  "outcome_keys_permitted": [
+    "drawdown",
+    "exit",
+    "mae",
+    "mfe",
+    "outcome",
+    "pnl",
+    "profit_factor",
+    "roi",
+    "win_rate"
+  ],
+  "registry_schema": "KEFI_CANONICAL_13_ARM_REGISTRY_V1",
+  "schema": "KEFI_CANONICAL_13_ARM_DISCOVERY_ANALYSIS_V1",
+  "summary": {
+    "arm_count": 13,
+    "economic_validation_performed": false,
+    "exact_evaluator": 4,
+    "paper_only_or_no_trade": 9,
+    "ready_for_discovery": 4,
+    "status": "PASS_OUTCOME_BLIND_COVERAGE_AUDIT"
+  }
+}

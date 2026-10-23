@@ -1,0 +1,269 @@
+{
+  "schema": "RETAINED_SOURCE_INVENTORY_V1",
+  "sampling": "last <=200 complete lines within final <=4MiB prefix per source; not a coverage estimate",
+  "sources": {
+    "native-yellowstone-pump-transaction-receipts-v1.jsonl": {
+      "present": true,
+      "file_prefix_bytes": 5908205,
+      "sample_start_byte": 1714085,
+      "sample_bytes_sha256": "20f63a7a0c8a139a7ecc343ede30359036235500b1c8f57c024adad51d5899d2",
+      "counts": {
+        "sample_rows": 200
+      },
+      "top_level_keys": {
+        "bonding_curve": 200,
+        "causal_stream_id": 200,
+        "instruction_index": 200,
+        "kind": 200,
+        "mint": 200,
+        "native_receive_monotonic_ns": 200,
+        "native_receive_source": 200,
+        "native_receive_unix_ns": 200,
+        "schema": 200,
+        "side": 200,
+        "signature": 200,
+        "slot": 200,
+        "source": 200,
+        "transaction_index": 200
+      },
+      "nested_keys": {},
+      "clock_ranges": {
+        "native_receive_monotonic_ns": [
+          94867322270574,
+          96628470397880
+        ],
+        "native_receive_unix_ns": [
+          1792724665812977124,
+          1792726426961104449
+        ],
+        "slot": [
+          460283295,
+          460291615
+        ],
+        "transaction_index": [
+          4,
+          585
+        ]
+      }
+    },
+    "native-pump-account-state-events.jsonl": {
+      "present": true,
+      "file_prefix_bytes": 10745243197,
+      "sample_start_byte": 10741049171,
+      "sample_bytes_sha256": "a41b604204420f10fe9f0893e5349b5ba3d2be995f92d3b4d7067ec8db773323",
+      "counts": {
+        "sample_rows": 200
+      },
+      "top_level_keys": {
+        "accountTxnSignature": 200,
+        "atMs": 200,
+        "bondingCurve": 200,
+        "complete": 200,
+        "decodeCompleteUnixNs": 200,
+        "kind": 200,
+        "nativeReceiveMonotonicNs": 200,
+        "nativeReceiveSource": 200,
+        "nativeReceiveUnixNs": 200,
+        "observedAtMs": 200,
+        "realSolReserves": 200,
+        "realTokenReserves": 200,
+        "schema": 200,
+        "serverCreatedAt": 200,
+        "slot": 200,
+        "source": 200,
+        "tokenTotalSupply": 200,
+        "virtualSolReserves": 200,
+        "virtualTokenReserves": 200,
+        "writeVersion": 200
+      },
+      "nested_keys": {
+        "serverCreatedAt": {
+          "nanos": 200,
+          "seconds": 200
+        }
+      },
+      "clock_ranges": {
+        "atMs": [
+          1792726482698,
+          1792726485120
+        ],
+        "decodeCompleteUnixNs": [
+          1792726482698649610,
+          1792726485120053221
+        ],
+        "nativeReceiveMonotonicNs": [
+          96684207940548,
+          96686629342596
+        ],
+        "nativeReceiveUnixNs": [
+          1792726482698647117,
+          1792726485120048994
+        ],
+        "observedAtMs": [
+          1792726482698,
+          1792726485120
+        ],
+        "slot": [
+          460291894,
+          460291907
+        ]
+      }
+    },
+    "native-pump-fee-config-snapshots-v1.jsonl": {
+      "present": true,
+      "file_prefix_bytes": 5880,
+      "sample_start_byte": 0,
+      "sample_bytes_sha256": "48b54f857eee2b16c91d2d4f1d2098c542a497e5621310a60426622de33a84ce",
+      "counts": {
+        "sample_rows": 1
+      },
+      "top_level_keys": {
+        "accountDataBase64": 1,
+        "accountDataSha256": 1,
+        "capturedAtMs": 1,
+        "feeConfig": 1,
+        "owner": 1,
+        "readOnly": 1,
+        "rpcContextSlot": 1,
+        "schema": 1,
+        "source": 1
+      },
+      "nested_keys": {},
+      "clock_ranges": {
+        "capturedAtMs": [
+          1792619025127,
+          1792619025127
+        ],
+        "rpcContextSlot": [
+          459785561,
+          459785561
+        ]
+      }
+    }
+  },
+  "additional_sources": {
+    "/mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/2cq-native-target-transactions-v1.jsonl": {
+      "present": true,
+      "file_prefix_bytes": 38426031,
+      "sample_start_byte": 34232219,
+      "sample_bytes_sha256": "8546f2cff2562ac4e43a400d72630bb0a49f3596c6df32936806fa2ad8311c14",
+      "counts": {
+        "sample_rows": 200
+      },
+      "top_level_keys": {
+        "account_keys": 200,
+        "fee_payer": 200,
+        "instructions": 200,
+        "native_receive_monotonic_ns": 200,
+        "native_receive_slot": 200,
+        "native_receive_source": 200,
+        "native_receive_unix_ns": 200,
+        "schema": 200,
+        "signature": 200,
+        "slot": 200,
+        "wallet": 200
+      },
+      "nested_keys": {},
+      "clock_ranges": {
+        "native_receive_slot": [
+          460289495,
+          460291672
+        ],
+        "native_receive_unix_ns": [
+          1792725976835237371,
+          1792726436516248902
+        ],
+        "slot": [
+          460289495,
+          460291672
+        ]
+      }
+    },
+    "/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl": {
+      "present": true,
+      "file_prefix_bytes": 14383349573,
+      "sample_start_byte": 14379157290,
+      "sample_bytes_sha256": "d9ff6a35708f1800a7717d76a860b72accff56dcb96050830a9bb80eb5853690",
+      "counts": {
+        "sample_rows": 200
+      },
+      "top_level_keys": {
+        "source": 200,
+        "observation_id": 200,
+        "raw_record_identity": 200,
+        "raw_record_hash": 200,
+        "raw_record": 200,
+        "source_slot": 200,
+        "source_transaction_index": 200,
+        "provider_sequence": 200,
+        "local_receive_ts_ms": 200,
+        "decode_complete_ts_ms": 200,
+        "transaction_signature": 200,
+        "mint": 200,
+        "token_program": 200,
+        "source_ix_data_base64": 200,
+        "creation_proven": 200,
+        "creation_ts_ms": 200,
+        "side": 200,
+        "quote_sol": 200,
+        "quote_lamports": 200,
+        "sell_quote_lamports": 200,
+        "sell_token_amount_raw": 200,
+        "wallet": 200,
+        "canonical_state": 200,
+        "mayhem": 200,
+        "execution": 200,
+        "extra": 200
+      },
+      "nested_keys": {
+        "raw_record": {
+          "bondingCurve": 200,
+          "instructionIndex": 200,
+          "kind": 200,
+          "mint": 200,
+          "nativeKind": 200,
+          "quoteLamports": 200,
+          "sellQuoteLamports": 200,
+          "sellTokenAmountRaw": 200,
+          "side": 200,
+          "signature": 200,
+          "slot": 200,
+          "source": 200,
+          "teacherWalletMatched": 200,
+          "tokenProgram": 200,
+          "transactionIndex": 200,
+          "wallet": 200
+        },
+        "mayhem": {
+          "status": 200,
+          "reason": 200,
+          "checked_at_ms": 200
+        },
+        "extra": {
+          "adapter": 200,
+          "bondingCurve": 200,
+          "sourceIxAccounts": 200,
+          "teacherWalletMatched": 200
+        }
+      },
+      "clock_ranges": {
+        "source_slot": [
+          460291385,
+          460291405
+        ],
+        "source_transaction_index": [
+          0,
+          68
+        ],
+        "local_receive_ts_ms": [
+          1792726375705,
+          1792726379950
+        ],
+        "decode_complete_ts_ms": [
+          1792726375705,
+          1792726379950
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "audit_date": "2026-10-22",
+  "scope": "Supplied source and included artifacts; production incidence unmeasured",
+  "findings": [
+    {
+      "id": "F01",
+      "title": "F01 — The native adapter is not the preserved scorer",
+      "paragraphs": [
+        "The adapter returns a raw linear predictor and compares it directly to a probability cutoff. The preserved cutoff is 0.4622968637; its correct logit equivalent is −0.1510993697. The implemented comparison instead implies probability 0.6135589144. Using the actual frozen coefficients, a feature vector yielding probability 0.5 passes the frozen model and fails the native adapter.",
+        "The event boundary also changes. Training includes the triggering external transaction and uses its post-state; native scoring sees its pre-state and excludes its flow until after scoring. A synthetic 1 SOL buy contributes 1 SOL of 250 ms buy flow in training and zero in the adapter. The adapter further omits crossMintModel selection and the <=120 second age gate, scores only buys, and can repeat after 300 seconds despite a first-crossing-per-lifecycle description. Its contract is exploratory, so the precise finding is failure to implement the preserved composite policy, not proof of a deployed freeze violation."
+      ],
+      "source_references": [
+        "Sources: scripts/adapt2CQFrozenScorerNativeV1.py:145–152,183,201–249; twoCqEventDrivenFingerprintFreezeV1.py:184–190,211–215; twoCqDecisionSystemDecompositionV1.py:382–390,410–426. Probes: scorer score_units; native feature-boundary case."
+      ]
+    },
+    {
+      "id": "F02",
+      "title": "F02 — Ranking metrics can make a constant classifier look perfect",
+      "paragraphs": [
+        "Top-1 uses one plus the count of strictly greater scores, granting every tied maximum rank one. Average precision sorts score/label pairs so positives come first on ties. With one positive and nine negatives, all score 0.5, the implementation reports top-1 100% and AP 1.0; randomized top-1 and threshold-grouped AP are 10% and 0.1. AUC correctly remains 0.5. The amount of inflation in the actual assessment is unknown because complete score arrays are absent. Later code rejects ties, making metric-version consistency another requirement."
+      ],
+      "source_references": [
+        "Sources: scripts/twoCqCausalEntryTimingFingerprintV1.py:571–604; twoCqPrimaryPolicySealedValidationV1.py:117–135; twoCqN350FrozenPolicyEconomicsSandboxV1.py:105–112. Probes: scorer ranking_ties and average_precision_ties."
+      ]
+    },
+    {
+      "id": "F03",
+      "title": "F03 — Native signed flow can have the wrong sign",
+      "paragraphs": [
+        "The Rust decoder provides a sell token amount but no sell quote amount. State replay changes reserves without restoring the realized sell quote; downstream features read the missing quote as zero. A 0.277008311 SOL sell followed by two 0.1 SOL buys is reported as +0.2 SOL net flow and passes the burst gate. Signed gross flow is actually −0.077008311 SOL. This directly compromises the mechanism the current burst hypothesis relies on."
+      ],
+      "source_references": [
+        "Sources: rust-sidecar/src/main.rs:21351–21368,733–760; scripts/materializeNativePumpCurveStateV1.py:55–69,259–294; materialize2CQEventDrivenIndependentWindowsV1.py:71–79; adapt2CQFrozenScorerNativeV1.py:119. Probe: native sell-flow reversal."
+      ]
+    },
+    {
+      "id": "F04",
+      "title": "F04 — Instructions, intentions, and executed transitions are conflated",
+      "paragraphs": [
+        "main.rs recognizes buy_exact_quote_in_v3 but omits buy_v3 and sell_v3. Current official Pump documentation lists all three and permits mixed legacy/V2/V3 activity on a coin. Even if entries are restricted to one variant, all state-changing activity must be captured or the subsequent state must be quarantined. Static-account-only extraction and top-level-only instruction coverage also threaten address-table and CPI paths.",
+        "For legacy/V2 exact-token buys, the decoder reads max_sol_cost as quote spent, and replay uses it as a fill. A transaction intention or maximum budget is not an executed amount. The native replay also accepts an explicitly failed synthetic transaction, changes reserves, and labels economics state complete. A separate Yellowstone subscription filtering failed transactions is a useful local safeguard; it does not certify the Jito path or every downstream input.",
+        "Current protocol details make a versioned transition engine necessary. Ordinary V3 trades retain documented price/fee behavior but change fee custody; synthetic migration can split a final buy across curve and future-pool components, after which ordinary curve trading is unavailable until migration. Signed virtual quote-reserve adjustments documented for PumpSwap pools must not be blindly applied as a BondingCurve field reinterpretation."
+      ],
+      "source_references": [
+        "Sources: rust-sidecar/src/main.rs:77–89,21262–21288,21339–21368,21423–21444,21499–21509; scripts/materializeNativePumpCurveStateV1.py. Official references P1–P4 in section 11. Probes: failed intent; selector inventory."
+      ]
+    },
+    {
+      "id": "F05",
+      "title": "F05 — CREATE lineage and active-curve status are not enforced end to end",
+      "paragraphs": [
+        "Rust emits nativeKind=\"creation\"; Python state replay recognizes \"create\". The actual emitted schema followed by a buy yields no creation seed. Fixing the vocabulary alone is insufficient: the creation object omits creator identity, initial reserves, and original instruction evidence. A launch bridge accepts incomplete provenance and can label it exact. Separately, raw account normalization tests complete before decoding it and does not recheck; replay then drops the completion flag. A completed synthetic curve is accepted as an economics-complete buy.",
+        "Exact launch features need genuine available-at CREATE lineage. Recent-flow strategies can explicitly omit age, creator, and launch-relative features and use complete recent history plus authoritative current state. Do not make reconstruction of every teacher feature a prerequisite for all research, and do not replace true CREATE time with first observed trade time."
+      ],
+      "source_references": [
+        "Sources: rust-sidecar/src/main.rs:593–602,654–681; scripts/materializeNativePumpCurveStateV1.py:218–245; normalizeNativePumpCurveAccountSeedsV1.py:38–63; materialize2CQNativeLaunchLineageV1.py:80–108,147–154. Probes: emitted CREATE schema; completed account."
+      ]
+    },
+    {
+      "id": "F06",
+      "title": "F06 — Ordering and late seeds can erase market transitions",
+      "paragraphs": [
+        "Jito transaction indices restart per received batch, while replay deduplicates by slot/transaction-index/instruction-index without signature. Distinct signatures sharing the tuple can be discarded. Later-arriving earlier-index trades are also discarded. Sorting the already damaged output cannot recover them. A separate late-seed path overwrites current reserves with an older-slot account snapshot without replaying intervening transitions.",
+        "In the late-seed reproduction, two 1 SOL buys should reach 31.975 virtual SOL under the module’s own formula. A delayed seed between them produces 30.9875 SOL, erasing 0.9875 SOL. Account seeds lose write-version/signature precision in intermediate handling. Same-slot writes, duplicate delivery, late arrival, and transaction atomicity need explicit identities and reconciliation; file order is not chain order."
+      ],
+      "source_references": [
+        "Sources: rust-sidecar/src/main.rs:19674–19687; scripts/materializeNativePumpCurveStateV1.py:98–160,217,233–250. Probes: duplicate tuple with distinct signatures; late-seed reset."
+      ]
+    },
+    {
+      "id": "F07",
+      "title": "F07 — Availability labels do not prove causal availability",
+      "paragraphs": [
+        "The generic native boundary accepts a boolean, source string, and state dictionary without checking that the state or fees were available by entry time. A signal at 1,000 ms, intended entry at 2,000 ms, and explicitly finalized state available at 900,000 ms passes. Normal materializers often select earlier rows; this counterexample establishes guard weakness, not that every produced window leaks.",
+        "Historical reconstruction assigns finalized TradeEvent information to an earlier compact-arrival timestamp. The finalized enrichment bridge also carries an old receive clock alongside later fetched state. Such records may be correct ex-post labels but unavailable strategy inputs. The temporal teacher example builder demonstrably accepts selected state at 1100 ms and CREATE received at 1500 ms, then clamps the negative age to zero. The cross-mint builder has a separate CREATE<=boundary check, so the same proof cannot explain all age-zero observations.",
+        "The native receive clock is assigned during decoding after batch deserialization and duplicated as decode-complete time. That is not original ingress time. It can be conservative, but cannot substantiate microsecond network lead. Use separate ingress, decode, execution-status, feature-ready, and finality clocks, with whole-transaction observation boundaries."
+      ],
+      "source_references": [
+        "Sources: scripts/runIndependentStrategyLabV1.py:230–240; enrichNativePumpCurveStateV1.py:219–250; twoCqDecisionSystemDecompositionV1.py:292–326,393–468; twoCqCausalEntryTimingFingerprintV1.py:304–305; rust-sidecar/src/main.rs:746–747,21404. Probes: future native state; future CREATE."
+      ]
+    },
+    {
+      "id": "F08",
+      "title": "F08 — Failed entries and unresolved positions leave economic accounting",
+      "paragraphs": [
+        "eligible() ends by checking whether the buy quote exists. The evaluator silently skips a failed quote. A synthetic eligible opportunity with insufficient real-token inventory produces zero outcomes, zero surfaces, and no rejection count. Larger sizes can therefore change the population instead of exposing capacity failures.",
+        "PnL, win rate, profit factor, and drawdown use only ACTIONABLE exits. One +2.192002151 SOL outcome plus eight unresolved 1 SOL positions reports +2.192002151 SOL, 100% wins, and zero drawdown. If all eight were total losses, net would be −5.807997849 SOL before other costs. This is a sensitivity bound, not a claim the positions were worthless. An incomplete-case positive PnL is not portfolio profit."
+      ],
+      "source_references": [
+        "Sources: scripts/runIndependentStrategyLabV1.py:247–268,382–408,429–442; runNativeLatencyBoundedStudyV1.py:56–80,126–140. Probes: failed-entry omission; unresolved-position bound."
+      ]
+    },
+    {
+      "id": "F09",
+      "title": "F09 — Checkpoint delay depends on processing schedule",
+      "paragraphs": [
+        "The checkpoint process consumes a global account-seed cursor, discards seeds for windows not yet published, and permanently advances. A window published later cannot recover its first qualifying state. On identical final files, incremental processing picks 60,000 ms for a deadline at 17,000 ms and reports 43 seconds of delay; clean replay picks 17,000 ms and reports zero delay. The broad window refresher defaults to 60 seconds, while horizons include 5/10/15 seconds. Historical incidence is unknown without saved cursors and raw streams.",
+        "A second conceptual problem remains after that fix: the next account mutation is not the earliest possible liquidation. An old state can still be current if account continuity and no mutation are established. At the exit timer, emit an intent using verified available state; then model landing. Do not wait for another trader to update the account and call that wait execution latency."
+      ],
+      "source_references": [
+        "Sources: scripts/materializeNativeReserveHorizonCheckpointsV1.py:227–303; refresh2CQFingerprintMarketWindowsV1.py:27,32–53; runNativeLatencyBoundedStudyV1.py:130–144. Probe: identical-file incremental/clean divergence."
+      ]
+    },
+    {
+      "id": "F10",
+      "title": "F10 — Window and exit rules can use the wrong information set",
+      "paragraphs": [
+        "The broad materializer suppresses duplicate signals with continue before appending the actual market event. Repeated qualifying buys disappear from the market history. Broad and event-driven windows also expire at signal+300 seconds, while a one-second delayed FIXED_300S exit needs signal+301 seconds: strict long-horizon missingness is structurally manufactured.",
+        "FIXED_CARRY first uses any later mark if one eventually exists, and carries the earlier state only when none exists anywhere in the file. Appending a 300-second mark changes a previously closed 17-second decision from −0.084952088 to −0.589086725 SOL. A genuine timer policy cannot make that decision using future file contents. Several dynamic exits additionally trigger and fill on the same mark with zero delivery delay.",
+        "Broad continuation features use activity between signal and the nominal delayed entry. That can be a legitimate confirmation rule, but its decision clock is then the end of that interval. It cannot observe the whole interval and still receive a fill at its endpoint with the original one-second delay already spent."
+      ],
+      "source_references": [
+        "Sources: scripts/materialize2CQFingerprintMarketWindowsV1.py:161–167,176,199–201,248–258; materialize2CQEventDrivenIndependentWindowsV1.py:213–215,296; runIndependentStrategyLabV1.py:287–298,325–378. Probes: carry prefix change; strict-300 truncation."
+      ]
+    },
+    {
+      "id": "F11",
+      "title": "F11 — Current reserve marks omit our own intervention and some costs",
+      "paragraphs": [
+        "The buy helper returns post_state, but the lab keeps only token quantity. It later sells into the unchanged historical reserve path. Partial sales can reuse the same liquidity twice. In a flat synthetic market with zero real SOL before our buy, the historical-state exit fails, while a self-consistent buy-and-sell works and loses normal fees: −0.002479139 / −0.012355683 / −0.024701361 SOL at 0.1 / 0.5 / 1 SOL. A separate two-leg example overstates receipts by 0.01435385 SOL when it fails to update reserves after the first leg. These errors are not uniformly optimistic.",
+        "Missing fee fields become zero in one path and 125 bps in another; explicit zero is overwritten by an “or 125” default. Historical fee_basis_points can mean protocol-only while native uses aggregate, so an event with 95 protocol plus 30 creator bps can be interpreted as total 95. Fixed 0.00001 SOL round-trip network cost does not capture all configurable priority fees, tips, failed attempts, or account actions. Account rent needs cash-lock and recovery accounting rather than automatic classification as a permanent fee.",
+        "The apparent >=2 SOL reserve filter reads virtual SOL, not real quote liquidity. A virtual-30/real-zero state passes. The reviewed materializers leave entry_impact_bps null, so the <=100 bps impact filter rejects everything. Costs and impact must be recomputed by size. Adding a proportional “stress fee” does not simulate landing drift, min-out violation, or failure."
+      ],
+      "source_references": [
+        "Sources: scripts/runIndependentStrategyLabV1.py:34,173–227,247–268,369–378; materializeNativeReserveHorizonCheckpointsV1.py:204–209; materialize2CQFingerprintMarketWindowsV1.py:198,202. Probes: own-state flat round trip; partial liquidity reuse; fee defaults; virtual reserve gate."
+      ]
+    },
+    {
+      "id": "F12",
+      "title": "F12 — Controls, cross-sectional clocks, and registration need repair",
+      "paragraphs": [
+        "The scorer adapter calls every non-crossing buy a control, including above-threshold continuation states on the same mint. A synthetic signal and three controls share its future trajectory. The separate five-minute-bucket control builder chooses controls from the original candidate set, leaves them in the candidate comparison, and does not enforce its accumulated used_mints set. Neither is a clean independent no-signal baseline.",
+        "Autonomous ranking computes each mint’s features at its own last event rather than the common decision tick. A mint last active at 1100 ms retains 2 SOL of “250 ms” buying and zero recency when ranked at 5000 ms; correct common-clock values are zero recent flow and 3900 ms recency. That script also removes teacher trades from reserve evolution. Teacher identity must not trigger entry, but actual teacher transactions still change the market state.",
+        "The latency study loads a contract but executes hardcoded grids. A synthetic contract declaring size 42 SOL, delay 9999 ms, horizon 888 seconds, and an unknown arm is accepted while the code produces the standard 567-cell surface. A file called a contract is not pre-registration enforcement. The generic lab admits up to 7 filters ×27 exits ×3 sizes ×3 stress levels=1,701 cells. These are correlated comparisons, not 1,701 independent tests, but choosing among them still consumes data."
+      ],
+      "source_references": [
+        "Sources: scripts/adapt2CQFrozenScorerNativeV1.py:239–247; materialize2CQFrozenScorerWindowsV1.py:69–135; buildIndependentMarketControlsV1.py:65–95; twoCqAutonomousWhenV2.py:117–160; runNativeLatencyBoundedStudyV1.py:18–26,84–90; runIndependentStrategyLabV1.py:40–61,444. Probes: control self-inclusion; common-clock staleness; unenforced contract."
+      ]
+    }
+  ]
+}

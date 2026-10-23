@@ -1,0 +1,47 @@
+{
+  "schema": "2CQ_NEW_WALLET_STRATEGY_MATRIX_V1",
+  "purpose": "Pre-registered offline discovery matrix for the confirmed 2CQ new wallet. This is exploratory and cannot promote or freeze a policy.",
+  "wallet": "9qz7cWBqYBP2TnGfzMmxX64G4PQip7HtogjPBBnMhWpw",
+  "read_only": true,
+  "trading_enabled": false,
+  "selection_performed": false,
+  "causal_contract": {
+    "entry_delay_seconds": 1,
+    "mark_semantics": "first causally observed exact PumpSwap transition at or after the requested time",
+    "unavailable_mark_semantics": "missed_exit_mark; never impute a price",
+    "venue": "PUMPSWAP",
+    "route_requirement": "exact single-venue PumpSwap route only"
+  },
+  "entry_filters": [
+    {"id": "ANY_EXACT_PUMPSWAP", "route": "ANY_EXACT_PUMPSWAP"},
+    {"id": "PUMPSWAP_DIRECT_ONLY", "route": "PUMPSWAP_DIRECT"},
+    {"id": "PUMPSWAP_CPI_ONLY", "route": "PUMPSWAP_CPI"},
+    {"id": "RESERVE_GE_1_SOL", "route": "ANY_EXACT_PUMPSWAP", "min_effective_quote_reserve_sol": 1.0},
+    {"id": "RESERVE_GE_2_SOL", "route": "ANY_EXACT_PUMPSWAP", "min_effective_quote_reserve_sol": 2.0},
+    {"id": "RESERVE_GE_5_SOL", "route": "ANY_EXACT_PUMPSWAP", "min_effective_quote_reserve_sol": 5.0},
+    {"id": "IMPACT_LE_50_BPS", "route": "ANY_EXACT_PUMPSWAP", "max_entry_impact_bps": 50},
+    {"id": "IMPACT_LE_100_BPS", "route": "ANY_EXACT_PUMPSWAP", "max_entry_impact_bps": 100},
+    {"id": "RESERVE_GE_2_IMPACT_LE_100", "route": "ANY_EXACT_PUMPSWAP", "min_effective_quote_reserve_sol": 2.0, "max_entry_impact_bps": 100}
+  ],
+  "exit_rules": [
+    {"id": "FIXED_5S", "kind": "FIXED", "horizon_seconds": 5},
+    {"id": "FIXED_10S", "kind": "FIXED", "horizon_seconds": 10},
+    {"id": "FIXED_15S", "kind": "FIXED", "horizon_seconds": 15},
+    {"id": "FIXED_30S", "kind": "FIXED", "horizon_seconds": 30},
+    {"id": "FIXED_60S", "kind": "FIXED", "horizon_seconds": 60},
+    {"id": "FIXED_120S", "kind": "FIXED", "horizon_seconds": 120},
+    {"id": "FIXED_300S", "kind": "FIXED", "horizon_seconds": 300},
+    {"id": "TP10_SL10_60S", "kind": "TP_SL", "horizon_seconds": 60, "take_profit_pct": 0.10, "stop_loss_pct": 0.10},
+    {"id": "TP20_SL10_120S", "kind": "TP_SL", "horizon_seconds": 120, "take_profit_pct": 0.20, "stop_loss_pct": 0.10},
+    {"id": "TRAIL10_AFTER10_120S", "kind": "TRAILING", "horizon_seconds": 120, "activation_pct": 0.10, "trail_pct": 0.10},
+    {"id": "PARTIAL_TP10_50_FINAL30", "kind": "PARTIAL_TP", "horizon_seconds": 30, "take_profit_pct": 0.10, "partial_fraction": 0.50}
+  ],
+  "notionals_sol": [0.1, 0.5, 1.0],
+  "stress_bps": [0, 25, 50],
+  "minimums_for_exploratory_rank": {
+    "attempted": 10,
+    "actionable": 5,
+    "controls": 1
+  },
+  "promotion_rule": "none; discovery output must be frozen and tested on a fresh prospective cohort before any policy decision"
+}

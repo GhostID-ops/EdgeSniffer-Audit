@@ -1,0 +1,146 @@
+{
+  "boundaryOrdinal": 3920,
+  "holdoutRowsInspected": 0,
+  "indexPrefixSha256": "860d36505f8b6dfd7a17801a2c02c13b1854140bc7762c9d1b4ed643ed490a52",
+  "partitions": [
+    {
+      "boundaryOrdinal": 3920,
+      "builtMints": 62,
+      "counters": {
+        "failedOrMissingFinalizedTransactions": 4382,
+        "missingRawArrival": 879
+      },
+      "partitionKey": "2026/09/06/05",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/sandbox-follow-through-atlas/OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_N3920/partitions/2026-09-06-05.jsonl.gz",
+      "reused": true,
+      "rows": 558,
+      "schema": "OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_V1_PARTITION",
+      "sourceSha256": "b4cfa1d76153c5d9cf690ccce12497a905d4f806f83f12e0c4dc4e6d2a89ee97",
+      "targetMints": 64
+    },
+    {
+      "boundaryOrdinal": 3920,
+      "builtMints": 375,
+      "counters": {
+        "failedOrMissingFinalizedTransactions": 66992,
+        "missingRawArrival": 39336
+      },
+      "partitionKey": "2026/09/06/14",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/sandbox-follow-through-atlas/OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_N3920/partitions/2026-09-06-14.jsonl.gz",
+      "reused": true,
+      "rows": 3375,
+      "schema": "OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_V1_PARTITION",
+      "sourceSha256": "e27f2efbca5b2b87a45a531d2cab843460a0d37878867dd81ee4d39ce534cdb0",
+      "targetMints": 387
+    },
+    {
+      "boundaryOrdinal": 3920,
+      "builtMints": 482,
+      "counters": {
+        "failedOrMissingFinalizedTransactions": 63322,
+        "missingRawArrival": 23638
+      },
+      "partitionKey": "2026/09/06/17",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/sandbox-follow-through-atlas/OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_N3920/partitions/2026-09-06-17.jsonl.gz",
+      "reused": true,
+      "rows": 4338,
+      "schema": "OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_V1_PARTITION",
+      "sourceSha256": "94826a952cd7e9969f6012e1beae8361f242c6c42e1b11bbe803580ae81d50a9",
+      "targetMints": 485
+    },
+    {
+      "boundaryOrdinal": 3920,
+      "builtMints": 525,
+      "counters": {
+        "failedOrMissingFinalizedTransactions": 62870,
+        "missingRawArrival": 30810
+      },
+      "partitionKey": "2026/09/06/19",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/sandbox-follow-through-atlas/OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_N3920/partitions/2026-09-06-19.jsonl.gz",
+      "reused": true,
+      "rows": 4725,
+      "schema": "OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_V1_PARTITION",
+      "sourceSha256": "a4bc3bd35215f6902455f0438f777c06626b71a1899827fe3fa29b99f8d96793",
+      "targetMints": 538
+    },
+    {
+      "boundaryOrdinal": 3920,
+      "builtMints": 329,
+      "counters": {
+        "failedOrMissingFinalizedTransactions": 35301,
+        "missingRawArrival": 8171
+      },
+      "partitionKey": "2026/09/06/20",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/sandbox-follow-through-atlas/OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_N3920/partitions/2026-09-06-20.jsonl.gz",
+      "reused": true,
+      "rows": 2961,
+      "schema": "OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_V1_PARTITION",
+      "sourceSha256": "27ce8d94ddeb132905fdd64c3043eb3fa54d8d248c1a9e7fdfa182d09eb79e71",
+      "targetMints": 336
+    },
+    {
+      "boundaryOrdinal": 3920,
+      "builtMints": 515,
+      "counters": {
+        "failedOrMissingFinalizedTransactions": 61869,
+        "missingRawArrival": 26637
+      },
+      "partitionKey": "2026/09/06/21",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/sandbox-follow-through-atlas/OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_N3920/partitions/2026-09-06-21.jsonl.gz",
+      "reused": true,
+      "rows": 4635,
+      "schema": "OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_V1_PARTITION",
+      "sourceSha256": "b5ab95132da8e984bb4feecd08ffce0c928c9f20676210e3b42c80ca9cdd25c5",
+      "targetMints": 516
+    },
+    {
+      "boundaryOrdinal": 3920,
+      "builtMints": 620,
+      "counters": {
+        "failedOrMissingFinalizedTransactions": 65577,
+        "missingRawArrival": 44670
+      },
+      "partitionKey": "2026/09/06/22",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/sandbox-follow-through-atlas/OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_N3920/partitions/2026-09-06-22.jsonl.gz",
+      "reused": true,
+      "rows": 5580,
+      "schema": "OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_V1_PARTITION",
+      "sourceSha256": "e6105c20aa0a3684d0c8262ee2af69cfc4a8be6f8c98f2708f6cc564976edcfe",
+      "targetMints": 632
+    },
+    {
+      "boundaryOrdinal": 3920,
+      "builtMints": 507,
+      "counters": {
+        "failedOrMissingFinalizedTransactions": 38022,
+        "missingRawArrival": 17277
+      },
+      "partitionKey": "2026/09/06/23",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/sandbox-follow-through-atlas/OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_N3920/partitions/2026-09-06-23.jsonl.gz",
+      "reused": true,
+      "rows": 4563,
+      "schema": "OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_V1_PARTITION",
+      "sourceSha256": "604ac6e42cc3c5bc2b4265071753aa52a2399fae67f9b5c024c057b985ebdd83",
+      "targetMints": 516
+    },
+    {
+      "boundaryOrdinal": 3920,
+      "builtMints": 446,
+      "counters": {
+        "failedOrMissingFinalizedTransactions": 65725,
+        "missingRawArrival": 16052
+      },
+      "partitionKey": "2026/09/07/00",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/sandbox-follow-through-atlas/OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_N3920/partitions/2026-09-07-00.jsonl.gz",
+      "reused": true,
+      "rows": 4014,
+      "schema": "OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_V1_PARTITION",
+      "sourceSha256": "11d56e58347bbfe2579ae99393455569cc7f068fc778ab0e066e62c32f3e52c3",
+      "targetMints": 446
+    }
+  ],
+  "reportSha256": "60c7608fa7a0b00b91f9f67d67521afac0d5d04f29e4bbd979b4ae5f95a5e315",
+  "schema": "OUTCOME_FIRST_FOLLOW_THROUGH_ATLAS_V1_PROVENANCE",
+  "scriptSha256": "7801ac540fd6586e2c1a6404fdc1b324c11982d35873a238c8c85672a8067545",
+  "validationRowsInspected": 0
+}

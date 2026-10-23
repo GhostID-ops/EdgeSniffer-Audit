@@ -1,0 +1,25 @@
+{
+  "schema": "KEFI_CANONICAL_VENUE_RESOLUTION_V1",
+  "outcome_blind": true,
+  "36dLXiRWXyg94ULr8dCs56hg7zTi3gQVat6dcWAKXxTWo3GvEiFM8Y8V2BwfbDcE1xkpE2CDVirMVdnwywRPgpo3": {
+    "arm_id": "ARM07_PUMPSWAP_DIRECT",
+    "program_id": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+    "direct_invocation": true,
+    "canonical_slot": 458660715,
+    "resolution_source": "finalized_transaction_program_log"
+  },
+  "Pey5UMg6gGYLmNqUPxKd2DaoZPgDTwoHAPXvzHJoeaKnfkz9YqpfqKyxv8yKpcnwg5NUgPbaf6KvQutz62Yd1Eb": {
+    "arm_id": "ARM07_PUMPSWAP_DIRECT",
+    "program_id": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+    "direct_invocation": true,
+    "canonical_slot": 458660774,
+    "resolution_source": "finalized_transaction_program_log"
+  },
+  "4jRvCCxx7iodNzKtULKUb77jwN5LBi7ifv3PhU7aJKSo1f84Eizf7o81yrunA2uXYS9szJZPo9hFDVD1JeCEHLwm": {
+    "arm_id": "ARM07_PUMPSWAP_DIRECT",
+    "program_id": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+    "direct_invocation": true,
+    "canonical_slot": 458660186,
+    "resolution_source": "finalized_transaction_program_log"
+  }
+}

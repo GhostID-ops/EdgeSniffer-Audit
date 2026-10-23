@@ -1,0 +1,57 @@
+{
+  "schema": "VPS_KEFI_FULL_META_SOURCE_SNAPSHOT_V1",
+  "captured_at_utc": "2026-10-19T01:56:03Z",
+  "service_active": true,
+  "health": {
+    "startedAtUtc": "2026-10-19T01:52:30.469602059Z",
+    "latestReceivedAtUtc": "2026-10-19T01:56:03.546272719Z",
+    "framesReceived": 203216,
+    "framesMetaComplete": 203216,
+    "framesMetaIncomplete": 0,
+    "continuityGaps": 0,
+    "receiveErrors": 0,
+    "reconnects": 0,
+    "rollingWindowPromotions": 0,
+    "rollingWindowPromotionsQueued": 2,
+    "rollingWindowPromotionFailures": 3,
+    "rollingWindowQueueFull": 0,
+    "sharedBurstGroupsCompleted": 0,
+    "sharedBurstGroupsFailed": 2,
+    "trackedWalletPumpCandidates": 12,
+    "directPumpFrames": 56004,
+    "directPumpswapFrames": 147431,
+    "routerCpiFrames": 3292
+  },
+  "candidate_summary": {
+    "rows": 12994,
+    "schema_counts": {
+      "KEFI_FULL_META_WALLET_PUMP_CANDIDATE_V1": 12994
+    },
+    "missing_field_counts": {
+      "observation_id": 12994,
+      "cohort_id": 12994,
+      "arm_id": 12994,
+      "venue": 12994,
+      "frozen_policy_id": 12994,
+      "registry_sha256": 12994,
+      "policy_sha256": 12994,
+      "finalized_slot": 12994,
+      "state": 12994
+    },
+    "forbidden_outcome_field_counts": {
+      "pnl": 0,
+      "roi": 0,
+      "profit_factor": 0,
+      "mfe": 0,
+      "mae": 0,
+      "drawdown": 0,
+      "exit": 0,
+      "outcome": 0
+    }
+  },
+  "latest_persisted_window_at_utc": "2026-10-18T07:18:13.996456700Z",
+  "latest_persisted_window_complete": true,
+  "latest_persisted_window_raw_truth": true,
+  "canonical_observation_rows": 0,
+  "fresh_canonical_observation_rows": 0
+}

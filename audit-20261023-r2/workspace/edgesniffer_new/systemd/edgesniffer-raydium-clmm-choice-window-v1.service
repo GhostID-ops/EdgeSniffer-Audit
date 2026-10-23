@@ -1,0 +1,25 @@
+[Unit]
+Description=EdgeSniffer bounded exact Raydium CLMM symmetric-choice windows V1
+After=network-online.target edgesniffer-2cq-extended-route-materializer-v1.service
+Wants=network-online.target
+OnSuccess=edgesniffer-2cq-clmm-symmetric-choice-v1.service
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer/scripts
+RuntimeDirectory=edgesniffer-raydium-clmm-choice-window-v1
+ExecStart=/usr/bin/flock -n /run/edgesniffer-raydium-clmm-choice-window-v1/materialize.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/raydiumClmmChoiceWindowEvidenceV1.py --source-state /mnt/HC_Volume_106775198/edgesniffer-research/2cq-prospective-symmetric-choice-census-v2/causal-state-v2.sqlite3 --route-state /mnt/HC_Volume_106775198/edgesniffer-research/2cq-extended-route-evidence-v1/state.sqlite3 --compact-arrivals /mnt/HC_Volume_106775198/edgesniffer-research/2cq-realtime-delivery-path-localization-v1/allenhark-signature-arrivals-v1.bin --compact-index-state /mnt/HC_Volume_106775198/edgesniffer-research/2cq-launchlab-coverage-v1/launchlab-state-v1.sqlite3 --env /root/bot/EdgeSniffer/.env --output /mnt/HC_Volume_106775198/edgesniffer-research/raydium-clmm-choice-window-v1
+Nice=15
+IOSchedulingClass=idle
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadOnlyPaths=/root/bot/EdgeSniffer/.env
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-research/raydium-clmm-choice-window-v1
+TimeoutStartSec=15min
+MemoryHigh=3G
+MemoryMax=4G
+CPUWeight=5
+IOWeight=5

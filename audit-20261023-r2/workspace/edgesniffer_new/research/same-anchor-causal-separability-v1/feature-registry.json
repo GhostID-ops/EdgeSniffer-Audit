@@ -1,0 +1,54 @@
+{
+  "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_FEATURE_REGISTRY",
+  "availabilityRule": "Every source observation must have local arrival_ms <= anchor decisionUnixMs. Derived exact-state values use only the post-crossing state and fee schedule visible in the crossing transaction.",
+  "features": [
+    {"id":"external_buy_event_count","family":"TRANSACTION_PATH_SEQUENCE","definition":"Count of successful non-creator buy events through the anchor transaction.","source":"causal decoded Pump events","tested":true},
+    {"id":"external_sell_event_count","family":"TRANSACTION_PATH_SEQUENCE","definition":"Count of successful non-creator sell events through the anchor transaction.","source":"causal decoded Pump events","tested":true},
+    {"id":"successful_transaction_count","family":"TRANSACTION_PATH_SEQUENCE","definition":"Distinct successful Pump transaction count through the anchor transaction.","source":"causal transaction signatures","tested":true},
+    {"id":"consecutive_buy_events_at_anchor","family":"TRANSACTION_PATH_SEQUENCE","definition":"Trailing consecutive non-creator buy-event run ending at the anchor.","source":"causal decoded Pump event sequence","tested":true},
+    {"id":"sell_then_renewed_buy_count","family":"TRANSACTION_PATH_SEQUENCE","definition":"Count of buy events immediately following a sell event in the causal event sequence.","source":"causal decoded Pump event sequence","tested":true},
+    {"id":"median_event_interarrival_ms","family":"TRANSACTION_PATH_SEQUENCE","definition":"Median local-arrival gap between successful Pump transactions before the anchor.","source":"causal transaction local arrival timestamps","tested":true},
+    {"id":"last_event_interarrival_ms","family":"TRANSACTION_PATH_SEQUENCE","definition":"Last local-arrival gap before the anchor.","source":"causal transaction local arrival timestamps","tested":true},
+    {"id":"buy_size_progression_ratio","family":"TRANSACTION_PATH_SEQUENCE","definition":"Mean buy size in the later half divided by mean buy size in the earlier half.","source":"causal external buy amounts","tested":true},
+    {"id":"last_buy_size_vs_prior_median","family":"TRANSACTION_PATH_SEQUENCE","definition":"Last external buy size divided by the median of prior external buys.","source":"causal external buy amounts","tested":true},
+    {"id":"external_buy_size_cv","family":"TRANSACTION_PATH_SEQUENCE","definition":"Population coefficient of variation of external buy-event sizes.","source":"causal external buy amounts","tested":true},
+
+    {"id":"unique_external_buyers","family":"PARTICIPATION_STRUCTURE","definition":"Unique non-creator buyers observed through the anchor.","source":"causal decoded buyer addresses","tested":true},
+    {"id":"repeat_buy_event_count","family":"PARTICIPATION_STRUCTURE","definition":"External buy events beyond each buyer's first event.","source":"causal decoded buyer addresses","tested":true},
+    {"id":"repeat_buy_fraction","family":"PARTICIPATION_STRUCTURE","definition":"Repeat buy events divided by external buy-event count.","source":"causal decoded buyer addresses","tested":true},
+    {"id":"first_buyer_share","family":"PARTICIPATION_STRUCTURE","definition":"Aggregate share of external gross buy SOL contributed by the first external buyer.","source":"causal buyer-level external buy amounts","tested":true},
+    {"id":"largest_buyer_share","family":"PARTICIPATION_STRUCTURE","definition":"Largest buyer's share of external gross buy SOL.","source":"causal buyer-level external buy amounts","tested":true},
+    {"id":"top2_buyer_share","family":"PARTICIPATION_STRUCTURE","definition":"Top two buyers' share of external gross buy SOL.","source":"causal buyer-level external buy amounts","tested":true},
+    {"id":"top3_buyer_share","family":"PARTICIPATION_STRUCTURE","definition":"Top three buyers' share of external gross buy SOL.","source":"causal buyer-level external buy amounts","tested":true},
+    {"id":"buyer_hhi","family":"PARTICIPATION_STRUCTURE","definition":"Herfindahl index of buyer-level external gross buy SOL shares.","source":"causal buyer-level external buy amounts","tested":true},
+    {"id":"buyer_size_cv","family":"PARTICIPATION_STRUCTURE","definition":"Population coefficient of variation across buyer aggregate sizes.","source":"causal buyer-level external buy amounts","tested":true},
+
+    {"id":"mint_age_ms","family":"PATH_TO_ANCHOR","definition":"Local create-observation to anchor-decision elapsed milliseconds.","source":"create local arrival and anchor decision local arrival","tested":true},
+    {"id":"first_external_buy_to_anchor_ms","family":"PATH_TO_ANCHOR","definition":"Elapsed local-arrival milliseconds from first external buy to anchor.","source":"causal transaction local arrival timestamps","tested":true},
+    {"id":"actual_cumulative_external_gross_buy_sol","family":"PATH_TO_ANCHOR","definition":"Actual cumulative external gross buy SOL after the full crossing transaction.","source":"causal external buy amounts","tested":true},
+    {"id":"overshoot_sol","family":"PATH_TO_ANCHOR","definition":"Actual cumulative external gross buy SOL minus the frozen anchor threshold.","source":"causal external buy amounts and frozen anchor","tested":true},
+    {"id":"external_gross_sell_sol","family":"PATH_TO_ANCHOR","definition":"Cumulative non-creator gross sell SOL through the anchor.","source":"causal external sell amounts","tested":true},
+    {"id":"net_external_flow_sol","family":"PATH_TO_ANCHOR","definition":"Cumulative external gross buys minus gross sells through the anchor.","source":"causal external trade amounts","tested":true},
+    {"id":"gross_buy_sol_per_successful_tx","family":"PATH_TO_ANCHOR","definition":"Cumulative external gross buy SOL divided by successful transaction count.","source":"causal external buy amounts and transaction signatures","tested":true},
+
+    {"id":"decision_virtual_sol","family":"EXACT_ECONOMIC_STATE","definition":"Exact post-crossing virtual SOL reserve in SOL.","source":"anchor decisionState","tested":true},
+    {"id":"decision_real_sol","family":"EXACT_ECONOMIC_STATE","definition":"Exact post-crossing real SOL reserve in SOL.","source":"anchor decisionState","tested":true},
+    {"id":"decision_real_token","family":"EXACT_ECONOMIC_STATE","definition":"Exact post-crossing real token reserve in raw units.","source":"anchor decisionState","tested":true},
+    {"id":"real_token_remaining_fraction","family":"EXACT_ECONOMIC_STATE","definition":"Post-crossing real token reserve divided by the first causally observed pre-trade real token reserve.","source":"causal exact reserve states","tested":true},
+    {"id":"hypothetical_entry_impact_bps","family":"EXACT_ECONOMIC_STATE","definition":"Exact 0.5 SOL own-buy pricing impact measured against the pre-buy marginal token rate.","source":"decisionState plus exact Pump fee/curve math","tested":true},
+    {"id":"hypothetical_inventory_raw","family":"EXACT_ECONOMIC_STATE","definition":"Exact raw token inventory from a hypothetical 0.5 SOL buy at decision state.","source":"decisionState plus exact Pump fee/curve math","tested":true},
+    {"id":"immediate_roundtrip_return_pct","family":"EXACT_ECONOMIC_STATE","definition":"Net return from immediate exact buy then exact sell, including current Pump fees and base fee but excluding future flow.","source":"decisionState plus exact Pump fee/curve math","tested":true},
+    {"id":"curve_gross_sol_distance_to_plus5","family":"EXACT_ECONOMIC_STATE","definition":"Minimum additional gross external SOL under the causally visible fee regime required for the hypothetical position to liquidate at +5% net.","source":"decisionState plus exact Pump fee/curve math","tested":true},
+    {"id":"curve_gross_sol_distance_to_plus10","family":"EXACT_ECONOMIC_STATE","definition":"Minimum additional gross external SOL under the causally visible fee regime required for the hypothetical position to liquidate at +10% net.","source":"decisionState plus exact Pump fee/curve math","tested":true},
+
+    {"id":"trailing15m_anchor_speed_percentile","family":"MARKET_RELATIVE_CONTEXT","definition":"Percentile of inverse mint age versus same-anchor crossings strictly earlier in the preceding 15 minutes, requiring 20 priors.","source":"prior causal anchor decisions only","tested":true},
+    {"id":"trailing15m_unique_buyers_percentile","family":"MARKET_RELATIVE_CONTEXT","definition":"Unique-buyer percentile versus same-anchor crossings strictly earlier in the preceding 15 minutes, requiring 20 priors.","source":"prior causal anchor decisions only","tested":true},
+    {"id":"trailing15m_tx_intensity_percentile","family":"MARKET_RELATIVE_CONTEXT","definition":"Successful-transaction-count percentile versus same-anchor crossings strictly earlier in the preceding 15 minutes, requiring 20 priors.","source":"prior causal anchor decisions only","tested":true},
+    {"id":"trailing15m_external_flow_percentile","family":"MARKET_RELATIVE_CONTEXT","definition":"Actual cumulative external-flow percentile versus same-anchor crossings strictly earlier in the preceding 15 minutes, requiring 20 priors.","source":"prior causal anchor decisions only","tested":true},
+
+    {"id":"requested_priority_fee","family":"TRANSACTION_AGGRESSIVENESS_COMPETITION","definition":"Requested priority fee in the crossing transaction.","source":"not preserved with proven decision-time decoded provenance in frozen anchor artifact","tested":false,"exclusion":"DECISION_TIME_PROVENANCE_NOT_PROVEN"},
+    {"id":"compute_units_consumed","family":"TRANSACTION_AGGRESSIVENESS_COMPETITION","definition":"Compute units consumed by crossing transaction.","source":"finalized metadata","tested":false,"exclusion":"FINALIZED_ONLY_FUTURE_INFORMATION"},
+    {"id":"jito_or_direct_tip","family":"TRANSACTION_AGGRESSIVENESS_COMPETITION","definition":"Tip paid by crossing transaction.","source":"not reliably classified in frozen evidence","tested":false,"exclusion":"INSUFFICIENT_CAUSAL_COVERAGE"},
+    {"id":"failed_competing_buys","family":"TRANSACTION_AGGRESSIVENESS_COMPETITION","definition":"Mint-resolved failed buys locally observed before decision.","source":"raw observations","tested":false,"exclusion":"MINT_RESOLUTION_COVERAGE_NOT_PROVEN"}
+  ]
+}

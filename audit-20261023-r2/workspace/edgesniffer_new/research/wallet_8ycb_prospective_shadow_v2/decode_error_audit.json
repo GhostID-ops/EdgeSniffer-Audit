@@ -1,0 +1,208 @@
+{
+  "accounted_errors": 51,
+  "categories": [
+    {
+      "category": "truncation_partial_eof_read",
+      "example": "original fragments unavailable because V1 did not log them; complete-line regression test deterministically reproduces and prevents the failure",
+      "impact": "signal admission and diagnostics",
+      "n": 47,
+      "true_8ycb_event_could_be_lost": true
+    },
+    {
+      "category": "malformed_json_concatenated_records",
+      "example": {
+        "contained_rows": [
+          {
+            "mint": "93F5qL8mhCCPTCQwbKYFxuj7x85qKLtbR2tjSG8Epump",
+            "side": "buy",
+            "signature": "5RYiEwewGiXVeZAzhzmHY2vSbHp1S9dmqWK6PR1mEaZJrphBjDsVVb84WsZkd6RUMuPsNb3NtqRYr3QuU7cBXD1g",
+            "wallet": "DTpzoWbmGb2TiChBcBBNEvZCGkM682q5Xt4RMNwtqdZ3"
+          },
+          {
+            "mint": "93F5qL8mhCCPTCQwbKYFxuj7x85qKLtbR2tjSG8Epump",
+            "side": "buy",
+            "signature": "QxFZnxp6yXAC3Bv7byjFPJXKfzFNUaEM11SP4tAavv4wF71JVc4yShBwH4WEJ8BefZyV4sGfgSy1Fax4etuzJbd",
+            "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG"
+          }
+        ],
+        "offset": 17761552378,
+        "root_cause": "two complete JSON objects concatenated before one newline",
+        "signal_admission_impact": "none: neither row is CREATE or an 8YCB-wallet buy"
+      },
+      "impact": "proven irrelevant to 8YCB signal admission for these two physical rows",
+      "n": 2,
+      "true_8ycb_event_could_be_lost": false
+    },
+    {
+      "category": "malformed_json_blank_line",
+      "example": {
+        "offset": 17761558340,
+        "root_cause": "blank line following concatenated producer write",
+        "signal_admission_impact": "none"
+      },
+      "impact": "none",
+      "n": 2,
+      "true_8ycb_event_could_be_lost": false
+    },
+    {
+      "category": "unexpected_field_type",
+      "example": null,
+      "impact": "none among the 51 JSON decode errors",
+      "n": 0,
+      "true_8ycb_event_could_be_lost": false
+    },
+    {
+      "category": "missing_slot",
+      "example": null,
+      "impact": "none among the 51 JSON decode errors",
+      "n": 0,
+      "true_8ycb_event_could_be_lost": false
+    },
+    {
+      "category": "missing_transaction_index",
+      "example": null,
+      "impact": "none among the 51 JSON decode errors",
+      "n": 0,
+      "true_8ycb_event_could_be_lost": false
+    },
+    {
+      "category": "missing_signature",
+      "example": null,
+      "impact": "none among the 51 JSON decode errors",
+      "n": 0,
+      "true_8ycb_event_could_be_lost": false
+    },
+    {
+      "category": "missing_mint",
+      "example": null,
+      "impact": "none among the 51 JSON decode errors",
+      "n": 0,
+      "true_8ycb_event_could_be_lost": false
+    },
+    {
+      "category": "decoder_schema_mismatch",
+      "example": null,
+      "impact": "none among the 51 JSON decode errors",
+      "n": 0,
+      "true_8ycb_event_could_be_lost": false
+    },
+    {
+      "category": "unsupported_transaction_shape",
+      "example": null,
+      "impact": "none among the 51 JSON decode errors",
+      "n": 0,
+      "true_8ycb_event_could_be_lost": false
+    },
+    {
+      "category": "provider_specific_representation",
+      "example": null,
+      "impact": "none among the 51 JSON decode errors",
+      "n": 0,
+      "true_8ycb_event_could_be_lost": false
+    },
+    {
+      "category": "unknown",
+      "example": null,
+      "impact": "none among the 51 JSON decode errors",
+      "n": 0,
+      "true_8ycb_event_could_be_lost": false
+    }
+  ],
+  "reported_errors": 51,
+  "schema": "8ycb-v1-decode-error-audit-v1",
+  "separate_non_decode_integrity_incident": {
+    "category": "string_integer_numeric_mismatch",
+    "event": "tahKR4TA337akDkgfGZ5Qaeng4ABdov49rVePABpump",
+    "impact": "suppressed a qualifying signal",
+    "included_in_51": false,
+    "n": 1
+  },
+  "source_scan": {
+    "attribution": {
+      "basis": "V1 only incremented this counter on JSONDecodeError. Four malformed physical lines exist in the complete service-window byte range; all other complete global and wallet lines parse. V1 advanced past non-newline-terminated reads at active EOF, so the remaining 47 were consumed partial fragments. V1 did not retain those fragments or their signatures.",
+      "partial_eof_reads_not_persisted": 47,
+      "producer_framing_blank_lines": 2,
+      "producer_framing_concatenated_records": 2
+    },
+    "global_scan": {
+      "bytes_scanned": 629145600,
+      "during_service": [
+        {
+          "contained_rows": [
+            {
+              "mint": "93F5qL8mhCCPTCQwbKYFxuj7x85qKLtbR2tjSG8Epump",
+              "side": "buy",
+              "signature": "5RYiEwewGiXVeZAzhzmHY2vSbHp1S9dmqWK6PR1mEaZJrphBjDsVVb84WsZkd6RUMuPsNb3NtqRYr3QuU7cBXD1g",
+              "wallet": "DTpzoWbmGb2TiChBcBBNEvZCGkM682q5Xt4RMNwtqdZ3"
+            },
+            {
+              "mint": "93F5qL8mhCCPTCQwbKYFxuj7x85qKLtbR2tjSG8Epump",
+              "side": "buy",
+              "signature": "QxFZnxp6yXAC3Bv7byjFPJXKfzFNUaEM11SP4tAavv4wF71JVc4yShBwH4WEJ8BefZyV4sGfgSy1Fax4etuzJbd",
+              "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG"
+            }
+          ],
+          "offset": 17761552378,
+          "root_cause": "two complete JSON objects concatenated before one newline",
+          "signal_admission_impact": "none: neither row is CREATE or an 8YCB-wallet buy"
+        },
+        {
+          "offset": 17761558340,
+          "root_cause": "blank line following concatenated producer write",
+          "signal_admission_impact": "none"
+        },
+        {
+          "contained_rows": [
+            {
+              "mint": "4VR6LxLiJ8EnnS685A2wKb7AfRhYvsMgomiUbzonpump",
+              "side": "buy",
+              "signature": "2ycwiohwDYR1HRQMUeN7EvzH34K16cfKE49U3N8Bp3UPeZVBiMs5gFhVwxnes9HpusqiCAYMQDpgaa5jTRFctiV8",
+              "wallet": "GVVP8N7jnxgr3QdtR461bsuCNNQmuNu4DBW2Ab4tzKVp"
+            },
+            {
+              "mint": "7v7BGfGEbHYwqVNacNDRkhYwMjhMhWEAN8X73jRopump",
+              "side": "state",
+              "signature": "3QHVbHyqhsv2MTf3rx3U2QYJeePJcTesAxNyUwEaSTaA3HeYNXy6V9tG1GEEvAVLsLrqiNaPtDFAW6KBbg3qqi4L",
+              "wallet": null
+            }
+          ],
+          "offset": 17832915627,
+          "root_cause": "two complete JSON objects concatenated before one newline",
+          "signal_admission_impact": "none: neither row is CREATE or an 8YCB-wallet buy"
+        },
+        {
+          "offset": 17832920403,
+          "root_cause": "blank line following concatenated producer write",
+          "signal_admission_impact": "none"
+        }
+      ],
+      "lines_scanned": 222811,
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl",
+      "persisted_malformed_lines_during_service": 4,
+      "persisted_malformed_lines_total": 8,
+      "range_end": 17849933861,
+      "range_start": 17220788261,
+      "service_window_rows": 42031
+    },
+    "schema": "8ycb-v1-decode-error-forensic-scan-v1",
+    "v1_service": {
+      "abort_completed_utc": "2026-09-03T03:32:10.787219Z",
+      "final_global_offset": 17849933861,
+      "reported_decoder_errors": 51,
+      "start_utc": "2026-09-03T02:24:46Z"
+    },
+    "wallet_scan": {
+      "lines_scanned": 8,
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/8ycb-prospective-shadow-v1/wallet_stream_observations.jsonl",
+      "persisted_malformed_lines": 0
+    }
+  },
+  "status": "PASS_FULLY_ACCOUNTED",
+  "unaccounted_errors": 0,
+  "v2_acceptance_gate": {
+    "health_counters": "persisted and exposed by category",
+    "malformed_row_policy": "fail closed and append reason, raw hash, and bounded excerpt to ingest_rejections.jsonl",
+    "partial_eof_fix": "binary follower refuses to advance until newline is present",
+    "validation_fixture_unexplained_signal_affecting_errors": 0
+  }
+}

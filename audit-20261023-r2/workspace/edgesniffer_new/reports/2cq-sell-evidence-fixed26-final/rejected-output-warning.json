@@ -1,0 +1,7 @@
+{
+  "classification": "REJECTED_NON_FIXED_COHORT",
+  "path": "TWO_CQ_ALPHA_DECOMPOSITION_FIXED26_SELL_RECOVERED_V1",
+  "reason": "The first corrected replay admitted 44 mints instead of the immutable 26-mint cohort.",
+  "replacement": "TWO_CQ_ALPHA_DECOMPOSITION_FIXED26_SELL_RECOVERED_V2",
+  "replacementCohortN": 26
+}

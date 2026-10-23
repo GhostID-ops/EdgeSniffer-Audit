@@ -1,0 +1,36 @@
+{
+  "schema": "CONSTRAINED_CAUSAL_RANKER_V1_OPERATIONAL_INCIDENT",
+  "classification": "UNINTENDED_NEEDRESTART_SERVICE_RESTARTS",
+  "occurredAtUtc": "2026-09-07T23:19:29Z",
+  "cause": "Installing the missing Debian python3.12-venv package invoked needrestart, which automatically restarted unrelated services.",
+  "affected": [
+    {
+      "unit": "edgesniffer-8ycb-production-translation-v1.service",
+      "stoppedAtUtc": "2026-09-07T23:19:29Z",
+      "startedAtUtc": "2026-09-07T23:19:36Z",
+      "codeOrConfigChanged": false
+    },
+    {
+      "unit": "edgesniffer-8ycb-prospective-shadow-v3.service",
+      "startedAtUtc": "2026-09-07T23:19:36Z",
+      "currentHealth": "active; read-only watcher forwarding normally",
+      "codeOrConfigChanged": false
+    },
+    {
+      "unit": "pump-exact-alpha-table-v1.service",
+      "startedAtUtc": "2026-09-07T23:19:29Z",
+      "completedAtUtc": "2026-09-07T23:27:04Z",
+      "effect": "unnecessary rerun of derived research-table builder",
+      "codeOrConfigChanged": false
+    }
+  ],
+  "unaffectedCriticalInput": {
+    "unit": "pump-exact-evidence-ledger-v1.service",
+    "pid": 1921840,
+    "activeSinceUtc": "2026-09-07T11:37:31Z",
+    "restarts": 0,
+    "rankerInputSha256": "331a5239bb2ae595976b5ba92b080ce2f92452ca1bbe20a099ff9f9006c7dba7"
+  },
+  "studyValidityImpact": "NONE_TO_FROZEN_INPUT_OR_MODEL_EVALUATION",
+  "boundaryViolationAcknowledged": true
+}

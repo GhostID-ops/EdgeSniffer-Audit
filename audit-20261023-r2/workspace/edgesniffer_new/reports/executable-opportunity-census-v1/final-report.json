@@ -1,0 +1,893 @@
+{
+  "breakEvenAdditionalDeliveryMarginSol": {
+    "N": 6595,
+    "P25": -0.012355683,
+    "P75": -0.004899127499999999,
+    "P90": 0.02527633140000001,
+    "median": -0.012355683,
+    "worst": 1.615823369
+  },
+  "classification": "EXECUTABLE_OPPORTUNITY_CENSUS_V1_COMPLETE",
+  "contractSha256": "82223cf3598d42f89d7a0869c73e19d4d55f1f27dbb2686c716ed0733fd28f62",
+  "counterfactualDivergenceByScenario": {
+    "P50|0.5": {
+      "affectedMintN": 1079,
+      "affectedMintRate": 0.16360879454131919,
+      "affectedStateN": 5000,
+      "affectedStateRate": 0.23672000757504025,
+      "exactMintN": 6595,
+      "exactStateN": 21122
+    },
+    "P50|1.0": {
+      "affectedMintN": 1215,
+      "affectedMintRate": 0.1842863643258001,
+      "affectedStateN": 5571,
+      "affectedStateRate": 0.26394087269626193,
+      "exactMintN": 6593,
+      "exactStateN": 21107
+    },
+    "P75|0.5": {
+      "affectedMintN": 1077,
+      "affectedMintRate": 0.16333030027297543,
+      "affectedStateN": 5000,
+      "affectedStateRate": 0.23673121537805975,
+      "exactMintN": 6594,
+      "exactStateN": 21121
+    },
+    "P75|1.0": {
+      "affectedMintN": 1212,
+      "affectedMintRate": 0.1838871187983614,
+      "affectedStateN": 5568,
+      "affectedStateRate": 0.2638737500592389,
+      "exactMintN": 6591,
+      "exactStateN": 21101
+    },
+    "P90|0.5": {
+      "affectedMintN": 1074,
+      "affectedMintRate": 0.16287534121929026,
+      "affectedStateN": 4997,
+      "affectedStateRate": 0.23658917664883292,
+      "exactMintN": 6594,
+      "exactStateN": 21121
+    },
+    "P90|1.0": {
+      "affectedMintN": 1207,
+      "affectedMintRate": 0.18315629742033385,
+      "affectedStateN": 5556,
+      "affectedStateRate": 0.2633175355450237,
+      "exactMintN": 6590,
+      "exactStateN": 21100
+    },
+    "ZERO_DELAY_ORACLE|0.5": {
+      "affectedMintN": 1438,
+      "affectedMintRate": 0.21231359811014322,
+      "affectedStateN": 5411,
+      "affectedStateRate": 0.25357326960026244,
+      "exactMintN": 6773,
+      "exactStateN": 21339
+    },
+    "ZERO_DELAY_ORACLE|1.0": {
+      "affectedMintN": 1453,
+      "affectedMintRate": 0.21452827402923372,
+      "affectedStateN": 5784,
+      "affectedStateRate": 0.2710784083985565,
+      "exactMintN": 6773,
+      "exactStateN": 21337
+    }
+  },
+  "coverageByScenario": {
+    "P50|0.5": 6595,
+    "P50|1.0": 6593,
+    "P75|0.5": 6594,
+    "P75|1.0": 6591,
+    "P90|0.5": 6594,
+    "P90|1.0": 6590,
+    "ZERO_DELAY_ORACLE|0.5": 6773,
+    "ZERO_DELAY_ORACLE|1.0": 6773
+  },
+  "deliveryCostOpportunityCurve": [
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13365.0,
+      "opportunityMints": 396,
+      "prevalence": 0.05846744426398937,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13428.0,
+      "opportunityMints": 390,
+      "prevalence": 0.05758157389635317,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13705.5,
+      "opportunityMints": 373,
+      "prevalence": 0.05507160785471726,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13792.0,
+      "opportunityMints": 354,
+      "prevalence": 0.05226635169053595,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 15328.0,
+      "opportunityMints": 316,
+      "prevalence": 0.04665583936217334,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13705.5,
+      "opportunityMints": 379,
+      "prevalence": 0.05595747822235346,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.0025,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13792.0,
+      "opportunityMints": 375,
+      "prevalence": 0.05536689797726266,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.005,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14212.0,
+      "opportunityMints": 369,
+      "prevalence": 0.054481027609626455,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.01,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14360.0,
+      "opportunityMints": 356,
+      "prevalence": 0.05256164181308135,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.02,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14599.0,
+      "opportunityMints": 338,
+      "prevalence": 0.04990403071017274,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    }
+  ],
+  "diagnosis": {
+    "allFrozenRulesTriggered": [
+      "COUNTERFACTUAL_DIVERGENCE_BLOCKER",
+      "LATER_HORIZON_OPPORTUNITY",
+      "SELECTION_PROBLEM"
+    ],
+    "interpretation": "The frozen all-cell divergence gate is triggered. The P50 0.5 SOL reference state rate is below 25%, while P50 1.0 SOL is above 25%; replay uncertainty is therefore materially more severe at 1 SOL. The unique-mint later-than-2s share remains above its frozen gate after correcting event-state weighting. Data coverage uses all eligibility-adjusted observed launches: intentional Mayhem exclusions are outside the frozen census universe.",
+    "primary": "COUNTERFACTUAL_DIVERGENCE_BLOCKER",
+    "secondary": "LATER_HORIZON_OPPORTUNITY",
+    "tertiary": "SELECTION_PROBLEM"
+  },
+  "economicAttribution": {
+    "creatorFeeLamports": {
+      "N": 169348,
+      "P75": 2962963.0,
+      "P90": 2962963.0,
+      "median": 1481482.0
+    },
+    "entryOwnCurveImpactLamports": {
+      "N": 169348,
+      "P75": 29025834.0,
+      "P90": 31372980.0,
+      "median": 7997202.0
+    },
+    "medianExitImpactLamports": {
+      "N": 169348,
+      "P75": 30483157.0,
+      "P90": 32504667.0,
+      "median": 9674531.5
+    },
+    "movementBeforeEntryInventoryDeteriorationPct": {
+      "N": 169348,
+      "P75": 0.6515351479972287,
+      "P90": 11.88543240738682,
+      "median": 0.0
+    },
+    "protocolFeeLamports": {
+      "N": 169348,
+      "P75": 9382717.0,
+      "P90": 9382717.0,
+      "median": 4691359.0
+    }
+  },
+  "evaluatorSha256": "bd257ecba307d4445d13d2a4b21d682a9f62277e2d9636de6b2fd79b28814d4a",
+  "eventStateOpportunity": [
+    {
+      "evaluableMintN": 3565,
+      "eventState": "AFTER_EXTERNAL_BUY_1",
+      "size0.5Threshold10MintN": 310,
+      "size0.5Threshold10Prevalence": 0.08695652173913043,
+      "size0.5Threshold20MintN": 173,
+      "size0.5Threshold20Prevalence": 0.0485273492286115,
+      "size0.5Threshold5MintN": 469,
+      "size0.5Threshold5Prevalence": 0.13155680224403926,
+      "size1.0Threshold10MintN": 294,
+      "size1.0Threshold10Prevalence": 0.08246844319775597,
+      "size1.0Threshold20MintN": 164,
+      "size1.0Threshold20Prevalence": 0.04600280504908836,
+      "size1.0Threshold5MintN": 456,
+      "size1.0Threshold5Prevalence": 0.1279102384291725
+    },
+    {
+      "evaluableMintN": 2577,
+      "eventState": "AFTER_EXTERNAL_BUY_2",
+      "size0.5Threshold10MintN": 272,
+      "size0.5Threshold10Prevalence": 0.10554908808692277,
+      "size0.5Threshold20MintN": 157,
+      "size0.5Threshold20Prevalence": 0.06092355452076057,
+      "size0.5Threshold5MintN": 416,
+      "size0.5Threshold5Prevalence": 0.1614280170741172,
+      "size1.0Threshold10MintN": 262,
+      "size1.0Threshold10Prevalence": 0.1016686069072565,
+      "size1.0Threshold20MintN": 147,
+      "size1.0Threshold20Prevalence": 0.0570430733410943,
+      "size1.0Threshold5MintN": 405,
+      "size1.0Threshold5Prevalence": 0.15715948777648428
+    },
+    {
+      "evaluableMintN": 1918,
+      "eventState": "AFTER_EXTERNAL_BUY_3",
+      "size0.5Threshold10MintN": 231,
+      "size0.5Threshold10Prevalence": 0.12043795620437957,
+      "size0.5Threshold20MintN": 145,
+      "size0.5Threshold20Prevalence": 0.07559958289885298,
+      "size0.5Threshold5MintN": 372,
+      "size0.5Threshold5Prevalence": 0.19395203336809178,
+      "size1.0Threshold10MintN": 223,
+      "size1.0Threshold10Prevalence": 0.11626694473409802,
+      "size1.0Threshold20MintN": 136,
+      "size1.0Threshold20Prevalence": 0.07090719499478623,
+      "size1.0Threshold5MintN": 360,
+      "size1.0Threshold5Prevalence": 0.18769551616266944
+    },
+    {
+      "evaluableMintN": 1212,
+      "eventState": "AFTER_EXTERNAL_BUY_5",
+      "size0.5Threshold10MintN": 184,
+      "size0.5Threshold10Prevalence": 0.15181518151815182,
+      "size0.5Threshold20MintN": 122,
+      "size0.5Threshold20Prevalence": 0.10066006600660066,
+      "size0.5Threshold5MintN": 284,
+      "size0.5Threshold5Prevalence": 0.23432343234323433,
+      "size1.0Threshold10MintN": 178,
+      "size1.0Threshold10Prevalence": 0.14686468646864687,
+      "size1.0Threshold20MintN": 113,
+      "size1.0Threshold20Prevalence": 0.09323432343234324,
+      "size1.0Threshold5MintN": 271,
+      "size1.0Threshold5Prevalence": 0.2235973597359736
+    },
+    {
+      "evaluableMintN": 1824,
+      "eventState": "AFTER_EXTERNAL_GROSS_BUY_0P5_SOL",
+      "size0.5Threshold10MintN": 262,
+      "size0.5Threshold10Prevalence": 0.14364035087719298,
+      "size0.5Threshold20MintN": 158,
+      "size0.5Threshold20Prevalence": 0.08662280701754387,
+      "size0.5Threshold5MintN": 396,
+      "size0.5Threshold5Prevalence": 0.21710526315789475,
+      "size1.0Threshold10MintN": 249,
+      "size1.0Threshold10Prevalence": 0.13651315789473684,
+      "size1.0Threshold20MintN": 147,
+      "size1.0Threshold20Prevalence": 0.0805921052631579,
+      "size1.0Threshold5MintN": 387,
+      "size1.0Threshold5Prevalence": 0.21217105263157895
+    },
+    {
+      "evaluableMintN": 1518,
+      "eventState": "AFTER_EXTERNAL_GROSS_BUY_1P0_SOL",
+      "size0.5Threshold10MintN": 242,
+      "size0.5Threshold10Prevalence": 0.15942028985507245,
+      "size0.5Threshold20MintN": 149,
+      "size0.5Threshold20Prevalence": 0.0981554677206851,
+      "size0.5Threshold5MintN": 359,
+      "size0.5Threshold5Prevalence": 0.23649538866930173,
+      "size1.0Threshold10MintN": 232,
+      "size1.0Threshold10Prevalence": 0.152832674571805,
+      "size1.0Threshold20MintN": 137,
+      "size1.0Threshold20Prevalence": 0.09025032938076416,
+      "size1.0Threshold5MintN": 351,
+      "size1.0Threshold5Prevalence": 0.23122529644268774
+    },
+    {
+      "evaluableMintN": 1209,
+      "eventState": "AFTER_EXTERNAL_GROSS_BUY_2P0_SOL",
+      "size0.5Threshold10MintN": 217,
+      "size0.5Threshold10Prevalence": 0.1794871794871795,
+      "size0.5Threshold20MintN": 136,
+      "size0.5Threshold20Prevalence": 0.11248966087675766,
+      "size0.5Threshold5MintN": 322,
+      "size0.5Threshold5Prevalence": 0.2663358147229115,
+      "size1.0Threshold10MintN": 207,
+      "size1.0Threshold10Prevalence": 0.17121588089330025,
+      "size1.0Threshold20MintN": 125,
+      "size1.0Threshold20Prevalence": 0.10339123242349049,
+      "size1.0Threshold5MintN": 313,
+      "size1.0Threshold5Prevalence": 0.2588916459884202
+    },
+    {
+      "evaluableMintN": 662,
+      "eventState": "AFTER_EXTERNAL_GROSS_BUY_5P0_SOL",
+      "size0.5Threshold10MintN": 151,
+      "size0.5Threshold10Prevalence": 0.2280966767371601,
+      "size0.5Threshold20MintN": 102,
+      "size0.5Threshold20Prevalence": 0.1540785498489426,
+      "size0.5Threshold5MintN": 211,
+      "size0.5Threshold5Prevalence": 0.3187311178247734,
+      "size1.0Threshold10MintN": 143,
+      "size1.0Threshold10Prevalence": 0.21601208459214502,
+      "size1.0Threshold20MintN": 95,
+      "size1.0Threshold20Prevalence": 0.14350453172205438,
+      "size1.0Threshold5MintN": 208,
+      "size1.0Threshold5Prevalence": 0.31419939577039274
+    },
+    {
+      "evaluableMintN": 2529,
+      "eventState": "AFTER_FIRST_EXTERNAL_SELL",
+      "size0.5Threshold10MintN": 160,
+      "size0.5Threshold10Prevalence": 0.06326611308817714,
+      "size0.5Threshold20MintN": 86,
+      "size0.5Threshold20Prevalence": 0.034005535784895215,
+      "size0.5Threshold5MintN": 243,
+      "size0.5Threshold5Prevalence": 0.09608540925266904,
+      "size1.0Threshold10MintN": 151,
+      "size1.0Threshold10Prevalence": 0.05970739422696718,
+      "size1.0Threshold20MintN": 80,
+      "size1.0Threshold20Prevalence": 0.03163305654408857,
+      "size1.0Threshold5MintN": 237,
+      "size1.0Threshold5Prevalence": 0.0937129300118624
+    },
+    {
+      "evaluableMintN": 1207,
+      "eventState": "AFTER_FIRST_SELL_THEN_EXTERNAL_BUY",
+      "size0.5Threshold10MintN": 141,
+      "size0.5Threshold10Prevalence": 0.11681855840927921,
+      "size0.5Threshold20MintN": 74,
+      "size0.5Threshold20Prevalence": 0.061309030654515324,
+      "size0.5Threshold5MintN": 211,
+      "size0.5Threshold5Prevalence": 0.1748135874067937,
+      "size1.0Threshold10MintN": 135,
+      "size1.0Threshold10Prevalence": 0.11184755592377796,
+      "size1.0Threshold20MintN": 71,
+      "size1.0Threshold20Prevalence": 0.058823529411764705,
+      "size1.0Threshold5MintN": 198,
+      "size1.0Threshold5Prevalence": 0.164043082021541
+    },
+    {
+      "evaluableMintN": 600,
+      "eventState": "AFTER_REAL_TOKEN_BELOW_50PCT",
+      "size0.5Threshold10MintN": 84,
+      "size0.5Threshold10Prevalence": 0.14,
+      "size0.5Threshold20MintN": 65,
+      "size0.5Threshold20Prevalence": 0.10833333333333334,
+      "size0.5Threshold5MintN": 125,
+      "size0.5Threshold5Prevalence": 0.20833333333333334,
+      "size1.0Threshold10MintN": 83,
+      "size1.0Threshold10Prevalence": 0.13833333333333334,
+      "size1.0Threshold20MintN": 62,
+      "size1.0Threshold20Prevalence": 0.10333333333333333,
+      "size1.0Threshold5MintN": 126,
+      "size1.0Threshold5Prevalence": 0.21
+    },
+    {
+      "evaluableMintN": 1465,
+      "eventState": "AFTER_REAL_TOKEN_BELOW_75PCT",
+      "size0.5Threshold10MintN": 205,
+      "size0.5Threshold10Prevalence": 0.13993174061433447,
+      "size0.5Threshold20MintN": 126,
+      "size0.5Threshold20Prevalence": 0.08600682593856655,
+      "size0.5Threshold5MintN": 303,
+      "size0.5Threshold5Prevalence": 0.2068259385665529,
+      "size1.0Threshold10MintN": 194,
+      "size1.0Threshold10Prevalence": 0.13242320819112627,
+      "size1.0Threshold20MintN": 117,
+      "size1.0Threshold20Prevalence": 0.07986348122866894,
+      "size1.0Threshold5MintN": 295,
+      "size1.0Threshold5Prevalence": 0.20136518771331058
+    },
+    {
+      "evaluableMintN": 2401,
+      "eventState": "AFTER_REAL_TOKEN_BELOW_90PCT",
+      "size0.5Threshold10MintN": 292,
+      "size0.5Threshold10Prevalence": 0.12161599333610995,
+      "size0.5Threshold20MintN": 168,
+      "size0.5Threshold20Prevalence": 0.06997084548104957,
+      "size0.5Threshold5MintN": 441,
+      "size0.5Threshold5Prevalence": 0.1836734693877551,
+      "size1.0Threshold10MintN": 279,
+      "size1.0Threshold10Prevalence": 0.11620158267388588,
+      "size1.0Threshold20MintN": 159,
+      "size1.0Threshold20Prevalence": 0.06622240733027905,
+      "size1.0Threshold5MintN": 427,
+      "size1.0Threshold5Prevalence": 0.17784256559766765
+    },
+    {
+      "evaluableMintN": 6773,
+      "eventState": "INITIAL_PRE_FIRST_SUPPORTED_TRADE",
+      "size0.5Threshold10MintN": 383,
+      "size0.5Threshold10Prevalence": 0.05654805846744426,
+      "size0.5Threshold20MintN": 218,
+      "size0.5Threshold20Prevalence": 0.03218662335744869,
+      "size0.5Threshold5MintN": 616,
+      "size0.5Threshold5Prevalence": 0.09094935774398347,
+      "size1.0Threshold10MintN": 366,
+      "size1.0Threshold10Prevalence": 0.05403809242580836,
+      "size1.0Threshold20MintN": 209,
+      "size1.0Threshold20Prevalence": 0.03085781780599439,
+      "size1.0Threshold5MintN": 606,
+      "size1.0Threshold5Prevalence": 0.08947290713125645
+    }
+  ],
+  "finalizerSha256": "05b2143957ff3dc606c83a4236ceafc2747f08ef44bc425cdd69475d816cb6a3",
+  "frozenPolicyCapture": [
+    {
+      "capturedMints": 292,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.043112357891628525,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 153,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.022589694374723166,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 241,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0355824597667208,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 277,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TP20_SL20_MAX120",
+      "prevalence": 0.04089768197253802,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 145,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "FIXED_5S_SL20",
+      "prevalence": 0.021408533884541562,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "capturedMints": 232,
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "policy": "TRAIL20_12_SL20_120S",
+      "prevalence": 0.0342536542152665,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    }
+  ],
+  "integrity": {
+    "contractHashPass": true,
+    "duplicateMints": [],
+    "duplicateOrdinals": [],
+    "extraOrdinals": [],
+    "holdoutRowsInspected": 0,
+    "liveChanges": 0,
+    "mintRows": 6848,
+    "missingOrdinals": [],
+    "partitionCount": 18,
+    "partitionHashFailures": [],
+    "uniqueMints": 6848,
+    "validationRowsInspected": 0
+  },
+  "latencyOpportunityCurve": [
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 5672.0,
+      "opportunityMints": 886,
+      "prevalence": 0.1308135242876126,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 8446.0,
+      "opportunityMints": 637,
+      "prevalence": 0.09404990403071017,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 12735.5,
+      "opportunityMints": 388,
+      "prevalence": 0.05728628377380777,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 5825.5,
+      "opportunityMints": 879,
+      "prevalence": 0.12978000885870367,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 8724.0,
+      "opportunityMints": 619,
+      "prevalence": 0.09139229292780157,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13085.0,
+      "opportunityMints": 377,
+      "prevalence": 0.05566218809980806,
+      "scenario": "ZERO_DELAY_ORACLE",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 9460.0,
+      "opportunityMints": 637,
+      "prevalence": 0.09404990403071017,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13365.0,
+      "opportunityMints": 396,
+      "prevalence": 0.05846744426398937,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18453.5,
+      "opportunityMints": 227,
+      "prevalence": 0.033515428908902994,
+      "scenario": "P50",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10007.0,
+      "opportunityMints": 626,
+      "prevalence": 0.09242580835671046,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13705.5,
+      "opportunityMints": 379,
+      "prevalence": 0.05595747822235346,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 17767.0,
+      "opportunityMints": 219,
+      "prevalence": 0.0323342684187214,
+      "scenario": "P50",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 9682.0,
+      "opportunityMints": 623,
+      "prevalence": 0.09198287317289236,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13499.0,
+      "opportunityMints": 391,
+      "prevalence": 0.057729218957625866,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18822.0,
+      "opportunityMints": 223,
+      "prevalence": 0.03292484866381219,
+      "scenario": "P75",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10279.5,
+      "opportunityMints": 612,
+      "prevalence": 0.09035877749889266,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13787.0,
+      "opportunityMints": 373,
+      "prevalence": 0.05507160785471726,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18286.0,
+      "opportunityMints": 215,
+      "prevalence": 0.031743688173630595,
+      "scenario": "P75",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 9865.0,
+      "opportunityMints": 609,
+      "prevalence": 0.08991584231507456,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 13739.0,
+      "opportunityMints": 381,
+      "prevalence": 0.05625276834489886,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 19071.5,
+      "opportunityMints": 216,
+      "prevalence": 0.03189133323490329,
+      "scenario": "P90",
+      "sizeSol": 0.5,
+      "thresholdPct": 20
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 10644.0,
+      "opportunityMints": 599,
+      "prevalence": 0.08843939170234756,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 5
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 14269.0,
+      "opportunityMints": 364,
+      "prevalence": 0.053742802303262956,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 10
+    },
+    {
+      "deliveryCostSol": 0.001,
+      "evaluableMints": 6773,
+      "medianFirstHitAfterEntryMs": 18798.0,
+      "opportunityMints": 208,
+      "prevalence": 0.030710172744721688,
+      "scenario": "P90",
+      "sizeSol": 1.0,
+      "thresholdPct": 20
+    }
+  ],
+  "population": {
+    "admissionRateInCoveredTimeRange": 0.5325038880248834,
+    "allObservedExactEvaluableRate": 0.5266718506998445,
+    "contractSha256": "82223cf3598d42f89d7a0869c73e19d4d55f1f27dbb2686c716ed0733fd28f62",
+    "coveredEndUtc": "2026-09-07T11:59:36.931000+00:00",
+    "coveredStartUtc": "2026-09-06T05:51:11.678000+00:00",
+    "discoveryOrdinalEnd": 6848,
+    "discoveryOrdinalStart": 1,
+    "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+    "eligibilityAdjustedExactEvaluableRate": 0.6990401486221488,
+    "eligibilityAdjustedObservedLaunches": 9689,
+    "eventStateRows": 21514,
+    "exactAdmittedLaunchesInCoveredTimeRange": 6848,
+    "exactAdmittedUniqueMints": 6848,
+    "exactEvaluableRateWithinAdmittedPrefix": 0.9890478971962616,
+    "exactEvaluableUniqueMints": 6773,
+    "excludedOrUnresolvedUniqueMints": 75,
+    "exclusionReasons": {
+      "NO_SOL_QUOTED_EXACT_EVENTS": 75
+    },
+    "fullUniverseExclusionReasonCombinations": {
+      "create_not_finalized_successful|missing_finalized_mint_snapshot|no_supported_exact_transition": 1046,
+      "create_not_finalized_successful|missing_finalized_mint_snapshot|no_supported_exact_transition|unsupported_mayhem_transition": 1,
+      "missing_canonical_ordering|no_supported_exact_transition|unsupported_mayhem_transition": 1,
+      "no_supported_exact_transition": 580,
+      "no_supported_exact_transition|ordering_or_reserve_continuity_mismatch": 688,
+      "no_supported_exact_transition|reserve_or_fee_mismatch": 93,
+      "no_supported_exact_transition|unsupported_mayhem_transition": 3169,
+      "no_supported_exact_transition|unsupported_trade_event_schema": 434
+    },
+    "fullUniverseExclusionReasonOccurrences": {
+      "create_not_finalized_successful": 1047,
+      "missing_canonical_ordering": 1,
+      "missing_finalized_mint_snapshot": 1047,
+      "no_supported_exact_transition": 6012,
+      "ordering_or_reserve_continuity_mismatch": 688,
+      "reserve_or_fee_mismatch": 93,
+      "unsupported_mayhem_transition": 3171,
+      "unsupported_trade_event_schema": 434
+    },
+    "intentionallyExcludedMayhemLaunches": 3171,
+    "mintRows": 6848,
+    "totalObservedLaunchesInCoveredTimeRange": 12860
+  },
+  "prohibitionsVerified": {
+    "collectorModified": false,
+    "fingerprintsSearched": false,
+    "holdoutRowsInspected": 0,
+    "liveServicesModified": false,
+    "modelsTrained": false,
+    "oracleReportedAsStrategyPnl": false,
+    "primaryUnit": "unique_mint",
+    "stateRowsTreatedAsIndependent": false,
+    "validationRowsInspected": 0
+  },
+  "referenceOpportunity": {
+    "bestPolicyCaptureConditionalOnOpportunity": 0.7373737373737373,
+    "bestPolicyCapturedMintClustered": {
+      "N": 6773,
+      "ciHigh": 0.04813228997490034,
+      "ciLow": 0.03824007086962941,
+      "rate": 0.043112357891628525
+    },
+    "definition": "P50 entry/sellability, 0.5 SOL, 0.001 SOL configurable delivery cost, +10% net threshold, any frozen event state",
+    "economicOpportunityMintsNotCapturedByBestFrozenPolicy": 104,
+    "economicOpportunityNotCapturedShare": 0.26262626262626265,
+    "mintClustered": {
+      "N": 6773,
+      "ciHigh": 0.06393400265761108,
+      "ciLow": 0.053152222058172154,
+      "rate": 0.05846744426398937
+    },
+    "oneSolMintClustered": {
+      "N": 6773,
+      "ciHigh": 0.06156799055071608,
+      "ciLow": 0.050786209951277125,
+      "rate": 0.05595747822235346
+    },
+    "zeroDelayHalfSolMintClustered": {
+      "N": 6773,
+      "ciHigh": 0.1011368669717998,
+      "ciLow": 0.08711058615089325,
+      "rate": 0.09404990403071017
+    }
+  },
+  "schema": "EXECUTABLE_OPPORTUNITY_CENSUS_V1_FINAL_AUDITED_REPORT",
+  "timeAndWindow": {
+    "rawEventStateWeightedLaterThan2sShare": 0.8405572755417957,
+    "uniqueMintBestLongestContinuousWindowMs": {
+      "N": 396,
+      "P25": 11019.5,
+      "P75": 110474.5,
+      "P90": 119451.5,
+      "median": 67655.5,
+      "worst": 119776.0
+    },
+    "uniqueMintBestTotalWindowMs": {
+      "N": 396,
+      "P25": 11256.5,
+      "P75": 112376.25,
+      "P90": 119451.5,
+      "median": 71471.0,
+      "worst": 119776.0
+    },
+    "uniqueMintEarliestHitAfterEntryMs": {
+      "N": 396,
+      "P25": 946.0,
+      "P75": 18496.75,
+      "P90": 46141.5,
+      "median": 5691.0,
+      "worst": 119013.0
+    },
+    "uniqueMintLaterThan2sShare": 0.6994949494949495
+  }
+}

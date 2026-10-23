@@ -1,0 +1,102 @@
+{
+  "schema": "KEFI_ARM08_VALIDATION_POLICY_CONTRACT_V1",
+  "contract_id": "kefi-arm08-validation-policy-contract-v1",
+  "arm_id": "ARM08_PUMPSWAP_CPI",
+  "status": "PREREGISTERED_NOT_SELECTED",
+  "read_only": true,
+  "trading_enabled": false,
+  "cohort_policy": "Do not use the existing 265-trade cohort to select a policy. All policy selection occurs only inside a discovery cohort and must be validated on a separate later prospective cohort.",
+  "entry_delay_seconds": 1,
+  "notionals_sol": [
+    0.1,
+    0.5,
+    1.0
+  ],
+  "entry_filters": [
+    {
+      "id": "BASELINE_ALL_GENUINE_ARM08",
+      "rule": "strict genuine ARM08 CPI wallet purchase only"
+    },
+    {
+      "id": "MIN_PRE_TRADE_LIQUIDITY_25_SOL",
+      "rule": "pre-entry quote liquidity >= 25 SOL"
+    },
+    {
+      "id": "MIN_PRE_TRADE_LIQUIDITY_50_SOL",
+      "rule": "pre-entry quote liquidity >= 50 SOL"
+    },
+    {
+      "id": "MIN_PRE_TRADE_LIQUIDITY_100_SOL",
+      "rule": "pre-entry quote liquidity >= 100 SOL"
+    },
+    {
+      "id": "MAX_NOTIONAL_LIQUIDITY_25_BPS",
+      "rule": "requested notional / pre-entry quote liquidity <= 25 bps"
+    },
+    {
+      "id": "MAX_NOTIONAL_LIQUIDITY_50_BPS",
+      "rule": "requested notional / pre-entry quote liquidity <= 50 bps"
+    },
+    {
+      "id": "MAX_NOTIONAL_LIQUIDITY_100_BPS",
+      "rule": "requested notional / pre-entry quote liquidity <= 100 bps"
+    },
+    {
+      "id": "NET_BUY_FLOW_30S_NONNEGATIVE",
+      "rule": "same-pool 30-second pre-entry exact tape net buy quote >= 0"
+    },
+    {
+      "id": "NET_BUY_FLOW_30S_GE_1_SOL",
+      "rule": "same-pool 30-second pre-entry exact tape net buy quote >= 1 SOL"
+    }
+  ],
+  "exit_policies": [
+    "FIXED_5S",
+    "FIXED_10S",
+    "FIXED_15S",
+    "FIXED_30S",
+    "FIXED_60S",
+    "FIXED_120S",
+    "FIXED_300S",
+    "TP100",
+    "TP200",
+    "PROTECT100_0",
+    "PARTIAL50_TP100",
+    "PARTIAL50_TP200"
+  ],
+  "stress_slippage_bps": [
+    0,
+    25,
+    50
+  ],
+  "controls": {
+    "required": true,
+    "same_market_period": true,
+    "distinct_signature_and_mint": true,
+    "route_control": "tracked-wallet ARM07 direct PumpSwap purchases captured in the same boundary window",
+    "market_control": "non-tracked-wallet exact PumpSwap transitions on the same pools and time windows",
+    "matching_features": [
+      "entry timestamp",
+      "pre-entry quote liquidity",
+      "pre-entry pool quote/base state",
+      "requested notional"
+    ],
+    "outcome_blind_matching": true
+  },
+  "promotion_gate": {
+    "minimum_genuine_arm08_entries": 50,
+    "minimum_causal_entries": 50,
+    "minimum_controls_per_arm": 50,
+    "maximum_missing_causal_entry_rate": 0.2,
+    "native_lineage_required": true,
+    "both_chronological_halves_must_be_nonnegative": true,
+    "no_single_trade_over_30_percent_of_total_pnl": true,
+    "fresh_prospective_validation_required": true,
+    "live_or_dust_execution_allowed": false
+  },
+  "selection": {
+    "winner_selection": "DISABLED_UNTIL_DISCOVERY_AND_CONTROLS_COMPLETE",
+    "policy_freeze": "DISABLED",
+    "promotion": "DISABLED"
+  }
+}

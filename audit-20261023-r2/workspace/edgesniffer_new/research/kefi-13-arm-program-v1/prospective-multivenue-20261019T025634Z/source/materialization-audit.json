@@ -1,0 +1,26 @@
+{
+  "by_arm": {
+    "ARM01_SOL_PUMP_CURVE_2CQ": 0,
+    "ARM02_SOL_PUMP_CPI_2CQ": 0,
+    "ARM03_ACTIVE_SOL_PUMP_5000MS": 0,
+    "ARM04_NON_SOL_PUMP_V2_QUOTE_NATIVE": 0,
+    "ARM05_RAYDIUM_LAUNCHLAB": 0,
+    "ARM06_STONKFUN_LAUNCHLAB": 0,
+    "ARM07_PUMPSWAP_DIRECT": 11,
+    "ARM08_PUMPSWAP_CPI": 0,
+    "ARM09_ROUTER_RAYDIUM_CLMM": 0,
+    "ARM10_ROUTER_ORCA_WHIRLPOOL": 0,
+    "ARM11_ROUTER_METEORA_DLMM": 0,
+    "ARM12_OTHER_DEX_PROTOCOL_NATIVE": 0,
+    "ARM13_AMBIGUOUS_PUMP_FAIL_CLOSED": 0
+  },
+  "generated_at_utc": "2026-10-19T03:00:39.660744+00:00",
+  "input_rows": 11,
+  "materialized_observations": 11,
+  "outcome_blind": true,
+  "quarantine": [],
+  "quarantine_reasons": {},
+  "quarantined_rows": 0,
+  "schema": "KEFI_13_ARM_FINALIZED_RPC_MATERIALIZATION_AUDIT_V1",
+  "status": "PASS_OUTCOME_BLIND_FAIL_CLOSED"
+}

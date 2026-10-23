@@ -1,0 +1,16 @@
+{
+  "decoder_error_count": 0,
+  "decoder_error_samples": [],
+  "economics_ready": false,
+  "outcome_blind": true,
+  "parity_contract": false,
+  "rows": 89,
+  "schema": "KEFI_13_ARM_PUMPSWAP_TAPE_AUDIT_V1",
+  "schema_errors": [
+    {
+      "reason": "PARITY_DURABLE_SEQUENCE_NOT_CONTIGUOUS"
+    }
+  ],
+  "status": "FAIL_TAPE_SCHEMA",
+  "unique_event_ids": 89
+}

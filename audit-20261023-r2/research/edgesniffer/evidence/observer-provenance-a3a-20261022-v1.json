@@ -1,0 +1,35 @@
+{
+  "schema": "OBSERVER_PROVENANCE_V1",
+  "service": "edgesniffer-independent-native-pump-account-observer-v3.service",
+  "pid": 1585617,
+  "binary": "/root/bot/FinalBot-cya/rust-sidecar/target/release/pumpfun-sidecar",
+  "running_binary_sha256": "3b41d1cf61f13ffbf38a0a08b86b74e03d6e51e91f5fced39cad0860896164ae",
+  "on_disk_binary_sha256": "3b41d1cf61f13ffbf38a0a08b86b74e03d6e51e91f5fced39cad0860896164ae",
+  "working_directory": "/root/bot/FinalBot-cya/rust-sidecar",
+  "adjacent_source": "/root/bot/FinalBot-cya/rust-sidecar/src/main.rs",
+  "adjacent_source_sha256": "939e6aa9def0f38381766469ae3f6950e5d8cab1e8ec815e6eb68674739a18d8",
+  "source_marker_counts": {
+    "rustNativePumpCurveTransactionReceipt": 0,
+    "rustNativeTargetTransactionReceipt": 2,
+    "rustNativePumpCurveAccountState": 1,
+    "failed: Some(false)": 7,
+    "CommitmentLevel::Processed": 4,
+    "account_txn_signature": 4
+  },
+  "allowlisted_effective_environment": {
+    "RUST_SELECTED_CANDIDATE_CURVE_RPC_FALLBACK_ENABLED": "false",
+    "RUST_SELECTED_CANDIDATE_SUBMIT_ENABLED": "false",
+    "RUST_SELECTED_CANDIDATE_NO_SUBMIT_DRY_BUILD_ENABLED": "false",
+    "RUST_SELECTED_CANDIDATE_CURVE_CACHE_ENABLED": "true",
+    "RUST_SELECTED_CANDIDATE_CURVE_CACHE_OWNER_WIDE": "true",
+    "RUST_SELECTED_CANDIDATE_YELLOWSTONE_TX_REPLAY_ENABLED": "true",
+    "RUST_SELECTED_CANDIDATE_YELLOWSTONE_TX_OWNER_WIDE_ENABLED": "true"
+  },
+  "source_to_binary_build_mapping": "UNPROVEN",
+  "subscription_delivery_completeness": "UNPROVEN",
+  "limitations": [
+    "Adjacent source and binary hashes do not prove reproducible-build equivalence.",
+    "Source marker counts do not prove effective subscription or metadata coverage.",
+    "No service changes, credentials, RPC calls or trading actions."
+  ]
+}

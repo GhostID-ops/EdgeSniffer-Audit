@@ -1,0 +1,19 @@
+[Unit]
+Description=EdgeSniffer native Pump account seed normalizer (receive-only)
+After=edgesniffer-independent-native-pump-account-observer-v1.service
+Wants=edgesniffer-independent-native-pump-account-observer-v1.service
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/EdgeSniffer
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/bash -c 'while true; do /usr/bin/python3 /root/bot/EdgeSniffer/scripts/normalizeNativePumpCurveAccountSeedsV1.py --input /mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/native-pump-account-state-events.jsonl --output /mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/native-curve-account-seeds.jsonl; sleep 5; done'
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1
+
+[Install]
+WantedBy=multi-user.target

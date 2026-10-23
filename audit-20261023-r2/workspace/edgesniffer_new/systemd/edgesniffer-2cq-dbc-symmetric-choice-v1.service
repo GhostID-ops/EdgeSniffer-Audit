@@ -1,0 +1,22 @@
+[Unit]
+Description=EdgeSniffer 2CQ Meteora DBC symmetric choice V1 (outcome-blind/no-submit)
+After=edgesniffer-meteora-dbc-choice-window-v1.service
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer/scripts
+RuntimeDirectory=edgesniffer-2cq-dbc-symmetric-v1
+ExecStart=/usr/bin/flock -n /run/edgesniffer-2cq-dbc-symmetric-v1/materialize.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/twoCqDbcSymmetricChoiceV1.py --source-state /mnt/HC_Volume_106775198/edgesniffer-research/2cq-prospective-symmetric-choice-census-v2/causal-state-v2.sqlite3 --route-state /mnt/HC_Volume_106775198/edgesniffer-research/2cq-extended-route-evidence-v1/state.sqlite3 --dbc-state /mnt/HC_Volume_106775198/edgesniffer-research/meteora-dbc-choice-window-v1/dbc-choice-window-state-v1.sqlite3 --output /mnt/HC_Volume_106775198/edgesniffer-research/2cq-dbc-symmetric-choice-v1
+Nice=15
+IOSchedulingClass=idle
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-research/2cq-dbc-symmetric-choice-v1 /mnt/HC_Volume_106775198/edgesniffer-research/2cq-prospective-symmetric-choice-census-v2 /mnt/HC_Volume_106775198/edgesniffer-research/2cq-extended-route-evidence-v1 /mnt/HC_Volume_106775198/edgesniffer-research/meteora-dbc-choice-window-v1
+TimeoutStartSec=15min
+MemoryHigh=2G
+MemoryMax=3G
+CPUWeight=5
+IOWeight=5

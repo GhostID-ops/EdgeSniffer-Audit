@@ -1,0 +1,64 @@
+{
+  "case_count": 7,
+  "cases": [
+    {
+      "detected": true,
+      "expected": true,
+      "id": "missed-tahkr4"
+    },
+    {
+      "detected": true,
+      "expected": true,
+      "id": "historical-v2-bthdh"
+    },
+    {
+      "detected": true,
+      "expected": true,
+      "id": "historical-v2-7xnij"
+    },
+    {
+      "detected": true,
+      "expected": true,
+      "id": "historical-v2-bccc"
+    },
+    {
+      "detected": false,
+      "expected": false,
+      "id": "historical-v3-control-7dhs"
+    },
+    {
+      "detected": false,
+      "expected": false,
+      "id": "historical-v3-control-bbpy"
+    },
+    {
+      "detected": false,
+      "expected": false,
+      "id": "historical-v3-control-3ing"
+    }
+  ],
+  "detected_positives": 4,
+  "expected_positives": 4,
+  "false_negative_ids": [],
+  "false_negatives": 0,
+  "false_positive_ids": [],
+  "false_positives": 0,
+  "fixture": "fixtures\\historical_matcher_fixture.json",
+  "fixture_provenance": {
+    "historical_v2_target_launches": {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/wallet-8ycb-opening-sniper-v2/target_launches.jsonl.gz",
+      "sha256": "8fe17330d31bd44a5f2b318fc3486d1a7d67007b5e32136524136ac76ac5ab68"
+    },
+    "historical_v3_generic_controls": {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/wallet-8ycb-causal-followability-v3/generic_control_selection.jsonl.gz",
+      "sha256": "b19770c6852f99d964f46dbd20e244a57794883339b9498be2403498a01ed7ee"
+    },
+    "missed_event_feeds": {
+      "global_sha256": "ebed3330f47daecca64d03429e3bbb2b1447ea36554cf6fbf9962e3e0507ac20",
+      "wallet_sha256": "8d9ee715e01dabad38e4c7fb984c7533ef878075a111d99220a7c59c485acd7f"
+    }
+  },
+  "fixture_schema": "8ycb-canonical-matcher-historical-fixture-v2",
+  "schema": "8ycb-canonical-matcher-parity-v2",
+  "status": "PASS"
+}

@@ -1,0 +1,10 @@
+{
+  "schema": "2CQ_FULL_META_SOURCE_STALL_GAP_V1",
+  "lastVerifiedPreGapReceiptUtc": "2026-09-25T04:40:44.772107670Z",
+  "collectorRestartUtc": "2026-09-25T04:49:28Z",
+  "firstVerifiedPostRecoveryReceiptUtc": "2026-09-25T04:49:41.491918198Z",
+  "gapClassification": "FAIL_CLOSED_UNCOVERED_FULL_META_INTERVAL",
+  "scientificTreatment": "NO_AUTONOMOUS_WHEN_TICKS_OR_TEACHER_LABELS_ADMITTED_FROM_THIS_INTERVAL",
+  "backfillPerformed": false,
+  "rootCause": "SILENT_STALLED_UPSTREAM_GRPC_SESSION_ON_ESTABLISHED_TLS_SOCKET"
+}

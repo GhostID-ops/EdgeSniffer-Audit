@@ -1,0 +1,57 @@
+{
+  "cohort_id": "kefi-13-arm-prospective-20261019T041500Z",
+  "coverage": {
+    "all_13_arms_observed": false,
+    "observed_arm_ids": [
+      "ARM01_SOL_PUMP_CURVE_2CQ",
+      "ARM02_SOL_PUMP_CPI_2CQ",
+      "ARM03_ACTIVE_SOL_PUMP_5000MS",
+      "ARM07_PUMPSWAP_DIRECT",
+      "ARM08_PUMPSWAP_CPI",
+      "ARM09_ROUTER_RAYDIUM_CLMM",
+      "ARM10_ROUTER_ORCA_WHIRLPOOL",
+      "ARM11_ROUTER_METEORA_DLMM",
+      "ARM12_OTHER_DEX_PROTOCOL_NATIVE"
+    ],
+    "unobserved_arm_ids": [
+      "ARM04_NON_SOL_PUMP_V2_QUOTE_NATIVE",
+      "ARM05_RAYDIUM_LAUNCHLAB",
+      "ARM06_STONKFUN_LAUNCHLAB",
+      "ARM13_AMBIGUOUS_PUMP_FAIL_CLOSED"
+    ]
+  },
+  "errors": [],
+  "generated_at_utc": "2026-10-19T04:36:38.102135Z",
+  "outcome_blind": true,
+  "registry_arm_count": 13,
+  "schema": "KEFI_13_ARM_FINALIZED_RPC_SOURCE_AUDIT_V1",
+  "source": {
+    "candidate_arm_counts": {
+      "ARM01_SOL_PUMP_CURVE_2CQ": 6,
+      "ARM02_SOL_PUMP_CPI_2CQ": 6,
+      "ARM03_ACTIVE_SOL_PUMP_5000MS": 6,
+      "ARM07_PUMPSWAP_DIRECT": 99,
+      "ARM08_PUMPSWAP_CPI": 99,
+      "ARM09_ROUTER_RAYDIUM_CLMM": 2,
+      "ARM10_ROUTER_ORCA_WHIRLPOOL": 2,
+      "ARM11_ROUTER_METEORA_DLMM": 2,
+      "ARM12_OTHER_DEX_PROTOCOL_NATIVE": 2
+    },
+    "latest_raw_capture_utc": "2026-10-19T04:35:53.378000Z",
+    "observed_program_families": {
+      "JUPITER_V6_ROUTER": 2,
+      "METEORA_DLMM": 1,
+      "PUMPSWAP_PROGRAM": 99,
+      "PUMP_PROGRAM": 6,
+      "RAYDIUM_CLMM": 1
+    },
+    "pre_boundary_rows_ignored": 367,
+    "raw_rows": 474,
+    "source_fresh": true,
+    "state_errors": 0,
+    "transport_clean": true,
+    "unique_signatures": 107,
+    "window_rows": 107
+  },
+  "status": "PASS_RAW_SOURCE_AUDIT"
+}

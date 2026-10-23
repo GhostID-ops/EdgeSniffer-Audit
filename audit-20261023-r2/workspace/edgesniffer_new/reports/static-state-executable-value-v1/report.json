@@ -1,0 +1,1834 @@
+{
+  "causalThresholdMethod": "corresponding quantile of frozen combined-static scores on all exact states in the prior chronological training population",
+  "causalThresholds": {
+    "2": {
+      "top10pct": 0.13043697138873706,
+      "top20pct": 0.08597644622679619,
+      "top5pct": 0.2842575309115493
+    },
+    "3": {
+      "top10pct": 0.3721751509832403,
+      "top20pct": 0.09191279072648331,
+      "top5pct": 0.5256667577535201
+    },
+    "4": {
+      "top10pct": 0.26623358642535355,
+      "top20pct": 0.10540548959010276,
+      "top5pct": 0.5112055914775367
+    },
+    "5": {
+      "top10pct": 0.21415025498544574,
+      "top20pct": 0.10114887714499916,
+      "top5pct": 0.449801513263023
+    }
+  },
+  "chronologicalBlockBounds": {
+    "2": [
+      1371,
+      2740
+    ],
+    "3": [
+      2741,
+      4110
+    ],
+    "4": [
+      4111,
+      5480
+    ],
+    "5": [
+      5481,
+      6848
+    ]
+  },
+  "coverage": {
+    "classification": "SEVERE_SELECTION_BIAS_OBVIOUS",
+    "comparison": {
+      "evaluable": {
+        "N": 3377,
+        "P90CausalStateCount": 21.0,
+        "causalQuantityCoverageN": 3377,
+        "medianCausalStateCount": 3,
+        "medianMaximumCumulativeNetFlowSol": 0.341333333,
+        "medianMaximumVirtualSol": 33.427509238,
+        "medianObservedLifespanMs": 5765.0,
+        "mintReasons": {
+          "NONE": 3377
+        },
+        "share": 0.4931366822429907,
+        "stateFailureReasons": {
+          "NO_EXACT_SELL_SAMPLE": 1,
+          "buy output is zero or exceeds real token reserves": 5
+        }
+      },
+      "nonEvaluable": {
+        "N": 3471,
+        "P90CausalStateCount": 0.0,
+        "causalQuantityCoverageN": 29,
+        "medianCausalStateCount": 0,
+        "medianMaximumCumulativeNetFlowSol": 34.999999999,
+        "medianMaximumVirtualSol": 65.555555551,
+        "medianObservedLifespanMs": 0.0,
+        "mintReasons": {
+          "NO_EXACT_EVENT_STATE": 3392,
+          "NO_SOL_EVENTS": 79
+        },
+        "share": 0.5068633177570093,
+        "stateFailureReasons": {
+          "buy output is zero or exceeds real token reserves": 68
+        }
+      }
+    },
+    "note": "Maximum virtual SOL is the available causal curve-progression proxy; no unavailable quantity was synthesized."
+  },
+  "descriptiveBinExpectancySpearman": 0.09999999999999999,
+  "descriptiveFirstStateScoreBins": [
+    {
+      "N": 1350,
+      "adverseFlowRate": 0.08148148148148149,
+      "afterRemovingBest1": {
+        "N": 1349,
+        "PF": 0.1606003324965195,
+        "expectancySol": -0.015283089705707933,
+        "totalPnlSol": -20.616888013
+      },
+      "afterRemovingBest2": {
+        "N": 1348,
+        "PF": 0.15436183154686398,
+        "expectancySol": -0.015408096998516321,
+        "totalPnlSol": -20.770114754
+      },
+      "averageLoserSol": -0.019743945280546623,
+      "averageWinnerSol": 0.04019749939622642,
+      "best5GrossProfitShare": 0.19073666348046767,
+      "bestTradeGrossProfitShare": 0.07424544724378772,
+      "bestTradeSol": 0.31635502,
+      "expectancySol": -0.015037431846666666,
+      "grossProfitSol": 4.260934936,
+      "losses": 1244,
+      "medianHoldingTimeMs": 60000.0,
+      "medianReturnPct": -2.671109888901111,
+      "outcomeCounts": {
+        "ADVERSE_FLOW": 110,
+        "FLOW_DECAY_TIMEOUT": 1199,
+        "PROFITABLE_CONTINUATION": 41
+      },
+      "profitFactor": 0.17348046738562667,
+      "profitableContinuationRate": 0.03037037037037037,
+      "quantileBand": [
+        0.0,
+        0.5
+      ],
+      "returnPctP10": -6.652472395276047,
+      "returnPctP50": -2.671109888901111,
+      "returnPctP90": -0.9770606093939008,
+      "scoreBounds": [
+        0.004472510943920862,
+        0.021887881367659713
+      ],
+      "sequentialMaxDrawdownSol": 20.300532993000157,
+      "timeoutRate": 0.8881481481481481,
+      "top1PctGrossProfitShare": 0.38460878600939985,
+      "totalPnlSol": -20.300532993,
+      "uniqueMintN": 1350,
+      "winRate": 0.07851851851851852,
+      "wins": 106,
+      "worstTradeSol": -0.23817646
+    },
+    {
+      "N": 809,
+      "adverseFlowRate": 0.12855377008652658,
+      "afterRemovingBest1": {
+        "N": 808,
+        "PF": 0.3018175241707182,
+        "expectancySol": -0.016130609300742574,
+        "totalPnlSol": -13.033532315
+      },
+      "afterRemovingBest2": {
+        "N": 807,
+        "PF": 0.2894659037552308,
+        "expectancySol": -0.016436319604708798,
+        "totalPnlSol": -13.264109921
+      },
+      "averageLoserSol": -0.02811415984638554,
+      "averageWinnerSol": 0.04062515797931034,
+      "best5GrossProfitShare": 0.15639043150164636,
+      "bestTradeGrossProfitShare": 0.043522900714425605,
+      "bestTradeSol": 0.256378084,
+      "expectancySol": -0.01579376295550062,
+      "grossProfitSol": 5.890647907,
+      "losses": 664,
+      "medianHoldingTimeMs": 60000.0,
+      "medianReturnPct": -2.671109888901111,
+      "outcomeCounts": {
+        "ADVERSE_FLOW": 104,
+        "FLOW_DECAY_TIMEOUT": 642,
+        "PROFITABLE_CONTINUATION": 63
+      },
+      "profitFactor": 0.31555122897992655,
+      "profitableContinuationRate": 0.07787391841779975,
+      "quantileBand": [
+        0.5,
+        0.8
+      ],
+      "returnPctP10": -11.468672353276466,
+      "returnPctP50": -2.671109888901111,
+      "returnPctP90": 4.336766432335678,
+      "scoreBounds": [
+        0.021887881367659713,
+        0.04746215598144602
+      ],
+      "sequentialMaxDrawdownSol": 12.972622595000038,
+      "timeoutRate": 0.7935723114956736,
+      "top1PctGrossProfitShare": 0.23208753172556576,
+      "totalPnlSol": -12.777154231,
+      "uniqueMintN": 809,
+      "winRate": 0.1792336217552534,
+      "wins": 145,
+      "worstTradeSol": -0.26913525
+    },
+    {
+      "N": 271,
+      "adverseFlowRate": 0.2693726937269373,
+      "afterRemovingBest1": {
+        "N": 270,
+        "PF": 0.2463696715483698,
+        "expectancySol": -0.034424176896296295,
+        "totalPnlSol": -9.294527762
+      },
+      "afterRemovingBest2": {
+        "N": 269,
+        "PF": 0.2231460942881703,
+        "expectancySol": -0.03561689327881041,
+        "totalPnlSol": -9.580944292
+      },
+      "averageLoserSol": -0.05505806486607143,
+      "averageWinnerSol": 0.07338891742553191,
+      "best5GrossProfitShare": 0.3170328768050041,
+      "bestTradeGrossProfitShare": 0.11909745104046479,
+      "bestTradeSol": 0.410800351,
+      "expectancySol": -0.032781281959409596,
+      "grossProfitSol": 3.449279119,
+      "losses": 224,
+      "medianHoldingTimeMs": 60000.0,
+      "medianReturnPct": -2.671109888901111,
+      "outcomeCounts": {
+        "ADVERSE_FLOW": 73,
+        "FLOW_DECAY_TIMEOUT": 165,
+        "PROFITABLE_CONTINUATION": 33
+      },
+      "profitFactor": 0.27967869072392354,
+      "profitableContinuationRate": 0.12177121771217712,
+      "quantileBand": [
+        0.8,
+        0.9
+      ],
+      "returnPctP10": -33.35989760102399,
+      "returnPctP50": -2.671109888901111,
+      "returnPctP90": 10.469620903790963,
+      "scoreBounds": [
+        0.04746215598144602,
+        0.05774140599491694
+      ],
+      "sequentialMaxDrawdownSol": 9.023416543999994,
+      "timeoutRate": 0.6088560885608856,
+      "top1PctGrossProfitShare": 0.2437811142531664,
+      "totalPnlSol": -8.883727411,
+      "uniqueMintN": 271,
+      "winRate": 0.17343173431734318,
+      "wins": 47,
+      "worstTradeSol": -0.259693251
+    },
+    {
+      "N": 130,
+      "adverseFlowRate": 0.38461538461538464,
+      "afterRemovingBest1": {
+        "N": 129,
+        "PF": 0.33473462253696873,
+        "expectancySol": -0.03713594533333334,
+        "totalPnlSol": -4.790536948
+      },
+      "afterRemovingBest2": {
+        "N": 128,
+        "PF": 0.28326376805788844,
+        "expectancySol": -0.0403216839921875,
+        "totalPnlSol": -5.161175551
+      },
+      "averageLoserSol": -0.07913122334065933,
+      "averageWinnerSol": 0.08375406351282051,
+      "best5GrossProfitShare": 0.5378310864578374,
+      "bestTradeGrossProfitShare": 0.2620627845621403,
+      "bestTradeSol": 0.856004101,
+      "expectancySol": -0.030265637284615385,
+      "grossProfitSol": 3.266408477,
+      "losses": 91,
+      "medianHoldingTimeMs": 31356.5,
+      "medianReturnPct": -2.8012979870201296,
+      "outcomeCounts": {
+        "ADVERSE_FLOW": 50,
+        "FLOW_DECAY_TIMEOUT": 56,
+        "PROFITABLE_CONTINUATION": 24
+      },
+      "profitFactor": 0.4536085394993284,
+      "profitableContinuationRate": 0.18461538461538463,
+      "quantileBand": [
+        0.9,
+        0.95
+      ],
+      "returnPctP10": -38.20531580684193,
+      "returnPctP50": -2.8012979870201296,
+      "returnPctP90": 11.844624713752864,
+      "scoreBounds": [
+        0.05774140599491694,
+        0.07452293289439774
+      ],
+      "sequentialMaxDrawdownSol": 3.950410906,
+      "timeoutRate": 0.4307692307692308,
+      "top1PctGrossProfitShare": 0.37553254978281153,
+      "totalPnlSol": -3.934532847,
+      "uniqueMintN": 130,
+      "winRate": 0.3,
+      "wins": 39,
+      "worstTradeSol": -0.296042126
+    },
+    {
+      "N": 140,
+      "adverseFlowRate": 0.1357142857142857,
+      "afterRemovingBest1": {
+        "N": 139,
+        "PF": 1.34516367001154,
+        "expectancySol": 0.006922514273381295,
+        "totalPnlSol": 0.962229484
+      },
+      "afterRemovingBest2": {
+        "N": 138,
+        "PF": 1.0702474946839213,
+        "expectancySol": 0.0014190749565217388,
+        "totalPnlSol": 0.19583234399999996
+      },
+      "averageLoserSol": -0.03982497777142857,
+      "averageWinnerSol": 0.06571296342857143,
+      "best5GrossProfitShare": 0.4706472576326449,
+      "bestTradeGrossProfitShare": 0.18477100313131517,
+      "bestTradeSol": 0.849929512,
+      "expectancySol": 0.012943992828571428,
+      "grossProfitSol": 4.59990744,
+      "losses": 70,
+      "medianHoldingTimeMs": 60000.0,
+      "medianReturnPct": -0.00877861221387786,
+      "outcomeCounts": {
+        "ADVERSE_FLOW": 19,
+        "FLOW_DECAY_TIMEOUT": 80,
+        "PROFITABLE_CONTINUATION": 41
+      },
+      "profitFactor": 1.6500439449263307,
+      "profitableContinuationRate": 0.29285714285714287,
+      "quantileBand": [
+        0.95,
+        1.0
+      ],
+      "returnPctP10": -11.318041959580404,
+      "returnPctP50": -0.008778612213877858,
+      "returnPctP90": 11.58855141448586,
+      "scoreBounds": [
+        0.07452293289439774,
+        0.415723532605958
+      ],
+      "sequentialMaxDrawdownSol": 0.37223841300000005,
+      "timeoutRate": 0.5714285714285714,
+      "top1PctGrossProfitShare": 0.35138242955601734,
+      "totalPnlSol": 1.812158996,
+      "uniqueMintN": 140,
+      "winRate": 0.5,
+      "wins": 70,
+      "worstTradeSol": -0.236740534
+    }
+  ],
+  "frozenFeatures": [
+    "cumulative_net_external_flow_sol",
+    "current_virtual_sol",
+    "hypothetical_entry_impact_bps",
+    "token_age_ms"
+  ],
+  "holdoutRowsInspected": 0,
+  "ordinalsAfter6848Inspected": 0,
+  "policies": {
+    "baseline": {
+      "chronological": [
+        {
+          "N": 677,
+          "adverseFlowRate": 0.23190546528803546,
+          "afterRemovingBest1": {
+            "N": 676,
+            "PF": 0.25227017787700173,
+            "expectancySol": -0.021841376394970413,
+            "totalPnlSol": -14.764770443
+          },
+          "afterRemovingBest2": {
+            "N": 675,
+            "PF": 0.23928646506645537,
+            "expectancySol": -0.022253553373333332,
+            "totalPnlSol": -15.021148527
+          },
+          "averageLoserSol": -0.034162855065743944,
+          "averageWinnerSol": 0.05351227075757576,
+          "best5GrossProfitShare": 0.22914260557293248,
+          "bestTradeGrossProfitShare": 0.05971537382522425,
+          "bestTradeSol": 0.31635502,
+          "expectancySol": -0.021341824849335302,
+          "fold": 2,
+          "grossProfitSol": 5.297714805,
+          "losses": 578,
+          "medianHoldingTimeMs": 60000.0,
+          "medianReturnPct": -2.671109888901111,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 157,
+            "FLOW_DECAY_TIMEOUT": 464,
+            "PROFITABLE_CONTINUATION": 56
+          },
+          "profitFactor": 0.2682912927155643,
+          "profitableContinuationRate": 0.0827178729689808,
+          "returnPctP10": -14.466448855511445,
+          "returnPctP50": -2.671109888901111,
+          "returnPctP90": 4.754628013719862,
+          "sequentialMaxDrawdownSol": 14.61103366900003,
+          "timeoutRate": 0.6853766617429837,
+          "top1PctGrossProfitShare": 0.2814156133117853,
+          "totalPnlSol": -14.448415423,
+          "uniqueMintN": 677,
+          "winRate": 0.14623338257016247,
+          "wins": 99,
+          "worstTradeSol": -0.26913525
+        },
+        {
+          "N": 610,
+          "adverseFlowRate": 0.1,
+          "afterRemovingBest1": {
+            "N": 609,
+            "PF": 0.23739184967759916,
+            "expectancySol": -0.017620292876847292,
+            "totalPnlSol": -10.730758362
+          },
+          "afterRemovingBest2": {
+            "N": 608,
+            "PF": 0.2275572409591143,
+            "expectancySol": -0.01787687897861842,
+            "totalPnlSol": -10.869142419
+          },
+          "averageLoserSol": -0.027007926911708252,
+          "averageWinnerSol": 0.03914633466292135,
+          "best5GrossProfitShare": 0.17660687640799216,
+          "bestTradeGrossProfitShare": 0.04123170071871367,
+          "bestTradeSol": 0.143652226,
+          "expectancySol": -0.017355911698360656,
+          "fold": 3,
+          "grossProfitSol": 3.4840237849999998,
+          "losses": 521,
+          "medianHoldingTimeMs": 60000.0,
+          "medianReturnPct": -2.671109888901111,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 61,
+            "FLOW_DECAY_TIMEOUT": 510,
+            "PROFITABLE_CONTINUATION": 39
+          },
+          "profitFactor": 0.24760085398688428,
+          "profitableContinuationRate": 0.06393442622950819,
+          "returnPctP10": -9.937866181338183,
+          "returnPctP50": -2.671109888901111,
+          "returnPctP90": 2.5583148168518313,
+          "sequentialMaxDrawdownSol": 10.587106136000036,
+          "timeoutRate": 0.8360655737704918,
+          "top1PctGrossProfitShare": 0.23040141702132497,
+          "totalPnlSol": -10.587106136,
+          "uniqueMintN": 610,
+          "winRate": 0.14590163934426228,
+          "wins": 89,
+          "worstTradeSol": -0.23817646
+        },
+        {
+          "N": 635,
+          "adverseFlowRate": 0.12125984251968504,
+          "afterRemovingBest1": {
+            "N": 634,
+            "PF": 0.2718815193178406,
+            "expectancySol": -0.01815848783280757,
+            "totalPnlSol": -11.512481286
+          },
+          "afterRemovingBest2": {
+            "N": 633,
+            "PF": 0.2484401073585701,
+            "expectancySol": -0.0187727012464455,
+            "totalPnlSol": -11.883119889
+          },
+          "averageLoserSol": -0.029280138266666665,
+          "averageWinnerSol": 0.05419708305263158,
+          "best5GrossProfitShare": 0.34134493320925263,
+          "bestTradeGrossProfitShare": 0.16507579261077693,
+          "bestTradeSol": 0.849929512,
+          "expectancySol": -0.016791420116535432,
+          "fold": 4,
+          "grossProfitSol": 5.14872289,
+          "losses": 540,
+          "medianHoldingTimeMs": 60000.0,
+          "medianReturnPct": -2.671109888901111,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 77,
+            "FLOW_DECAY_TIMEOUT": 513,
+            "PROFITABLE_CONTINUATION": 45
+          },
+          "profitFactor": 0.3256361678241478,
+          "profitableContinuationRate": 0.07086614173228346,
+          "returnPctP10": -10.843764042359576,
+          "returnPctP50": -2.671109888901111,
+          "returnPctP90": 2.9421536984630166,
+          "sequentialMaxDrawdownSol": 10.755782518000045,
+          "timeoutRate": 0.8078740157480315,
+          "top1PctGrossProfitShare": 0.3815458728251735,
+          "totalPnlSol": -10.662551774,
+          "uniqueMintN": 635,
+          "winRate": 0.14960629921259844,
+          "wins": 95,
+          "worstTradeSol": -0.283458363
+        },
+        {
+          "N": 778,
+          "adverseFlowRate": 0.07840616966580977,
+          "afterRemovingBest1": {
+            "N": 777,
+            "PF": 0.4195786476570435,
+            "expectancySol": -0.011894104574002574,
+            "totalPnlSol": -9.241719254
+          },
+          "afterRemovingBest2": {
+            "N": 776,
+            "PF": 0.3714454754404084,
+            "expectancySol": -0.012897057208762887,
+            "totalPnlSol": -10.008116394
+          },
+          "averageLoserSol": -0.0243462256146789,
+          "averageWinnerSol": 0.06077997095967742,
+          "best5GrossProfitShare": 0.3383696019580052,
+          "bestTradeGrossProfitShare": 0.11357785747564786,
+          "bestTradeSol": 0.856004101,
+          "expectancySol": -0.010778554181233933,
+          "fold": 5,
+          "grossProfitSol": 7.536716399,
+          "losses": 654,
+          "medianHoldingTimeMs": 60000.0,
+          "medianReturnPct": -2.671109888901111,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 61,
+            "FLOW_DECAY_TIMEOUT": 655,
+            "PROFITABLE_CONTINUATION": 62
+          },
+          "profitFactor": 0.47333953827255243,
+          "profitableContinuationRate": 0.07969151670951156,
+          "returnPctP10": -7.416635393646064,
+          "returnPctP50": -2.671109888901111,
+          "returnPctP90": 3.6237427025729927,
+          "sequentialMaxDrawdownSol": 9.236572249000023,
+          "timeoutRate": 0.8419023136246787,
+          "top1PctGrossProfitShare": 0.3892027191562101,
+          "totalPnlSol": -8.385715153,
+          "uniqueMintN": 778,
+          "winRate": 0.15938303341902313,
+          "wins": 124,
+          "worstTradeSol": -0.296042126
+        }
+      ],
+      "foldScoreThresholds": null,
+      "nonDivergentOnly": {
+        "N": 2175,
+        "adverseFlowRate": 0.08781609195402298,
+        "afterRemovingBest1": {
+          "N": 2174,
+          "PF": 0.23396880065720527,
+          "expectancySol": -0.01701755656669733,
+          "totalPnlSol": -36.996167976
+        },
+        "afterRemovingBest2": {
+          "N": 2173,
+          "PF": 0.21810001876855295,
+          "expectancySol": -0.017378078746433503,
+          "totalPnlSol": -37.762565116
+        },
+        "averageLoserSol": -0.0250627412132849,
+        "averageWinnerSol": 0.04901507436693548,
+        "best5GrossProfitShare": 0.22377868919731903,
+        "bestTradeGrossProfitShare": 0.07041975319014356,
+        "bestTradeSol": 0.856004101,
+        "expectancySol": -0.016616167298850574,
+        "grossProfitSol": 12.155738443,
+        "losses": 1927,
+        "medianHoldingTimeMs": 60000.0,
+        "medianReturnPct": -2.671109888901111,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 191,
+          "FLOW_DECAY_TIMEOUT": 1888,
+          "PROFITABLE_CONTINUATION": 96
+        },
+        "profitFactor": 0.2516929565361806,
+        "profitableContinuationRate": 0.044137931034482755,
+        "returnPctP10": -8.229355626443736,
+        "returnPctP50": -2.671109888901111,
+        "returnPctP90": 0.5778983410165933,
+        "sequentialMaxDrawdownSol": 36.222479324000275,
+        "timeoutRate": 0.8680459770114942,
+        "top1PctGrossProfitShare": 0.4449990466120134,
+        "totalPnlSol": -36.140163875,
+        "uniqueMintN": 2175,
+        "winRate": 0.11402298850574713,
+        "wins": 248,
+        "worstTradeSol": -0.283458363
+      },
+      "pessimistic": {
+        "N": 2700,
+        "adverseFlowRate": 0.1325925925925926,
+        "afterRemovingBest1": {
+          "N": 2699,
+          "PF": 0.2895292302740083,
+          "expectancySol": -0.017335796707669507,
+          "totalPnlSol": -46.789315314
+        },
+        "afterRemovingBest2": {
+          "N": 2698,
+          "PF": 0.2778918989235177,
+          "expectancySol": -0.017626283340993327,
+          "totalPnlSol": -47.555712454
+        },
+        "averageLoserSol": -0.02858367073611111,
+        "averageWinnerSol": 0.05031178323989899,
+        "best5GrossProfitShare": 0.1335648984081847,
+        "bestTradeGrossProfitShare": 0.04296461740124772,
+        "bestTradeSol": 0.856004101,
+        "expectancySol": -0.017012337486296297,
+        "grossProfitSol": 19.923466163,
+        "losses": 2304,
+        "medianHoldingTimeMs": 60000.0,
+        "medianReturnPct": -2.671109888901111,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 358,
+          "FLOW_DECAY_TIMEOUT": 2146,
+          "PROFITABLE_CONTINUATION": 196
+        },
+        "profitFactor": 0.30252719548133633,
+        "profitableContinuationRate": 0.0725925925925926,
+        "returnPctP10": -11.144566094339057,
+        "returnPctP50": -2.671109888901111,
+        "returnPctP90": 3.411894761052386,
+        "sequentialMaxDrawdownSol": 46.073364438000304,
+        "timeoutRate": 0.7948148148148149,
+        "top1PctGrossProfitShare": 0.30627442228562385,
+        "totalPnlSol": -45.933311213,
+        "uniqueMintN": 2700,
+        "winRate": 0.14666666666666667,
+        "wins": 396,
+        "worstTradeSol": -0.296042126
+      },
+      "pessimisticMissingN": 0,
+      "primary": {
+        "N": 2700,
+        "adverseFlowRate": 0.13185185185185186,
+        "afterRemovingBest1": {
+          "N": 2699,
+          "PF": 0.3144297471258188,
+          "expectancySol": -0.016650534489440535,
+          "totalPnlSol": -44.939792587
+        },
+        "afterRemovingBest2": {
+          "N": 2698,
+          "PF": 0.30146381299652714,
+          "expectancySol": -0.01697172798332098,
+          "totalPnlSol": -45.789722099
+        },
+        "averageLoserSol": -0.028587425366332315,
+        "averageWinnerSol": 0.052744908793611794,
+        "best5GrossProfitShare": 0.1515695134842554,
+        "bestTradeGrossProfitShare": 0.03987501784467792,
+        "bestTradeSol": 0.856004101,
+        "expectancySol": -0.01632732906888889,
+        "grossProfitSol": 21.467177879,
+        "losses": 2293,
+        "medianHoldingTimeMs": 60000.0,
+        "medianReturnPct": -2.671109888901111,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 356,
+          "FLOW_DECAY_TIMEOUT": 2142,
+          "PROFITABLE_CONTINUATION": 202
+        },
+        "profitFactor": 0.3274883509644504,
+        "profitableContinuationRate": 0.07481481481481482,
+        "returnPctP10": -11.109934000659992,
+        "returnPctP50": -2.671109888901111,
+        "returnPctP90": 3.698676153238461,
+        "sequentialMaxDrawdownSol": 44.22384171100027,
+        "timeoutRate": 0.7933333333333333,
+        "top1PctGrossProfitShare": 0.3272883075084152,
+        "totalPnlSol": -44.083788486,
+        "uniqueMintN": 2700,
+        "winRate": 0.15074074074074073,
+        "wins": 407,
+        "worstTradeSol": -0.296042126
+      },
+      "removeTop1PctActiveMints": {
+        "N": 2673,
+        "adverseFlowRate": 0.12794612794612795,
+        "afterRemovingBest1": {
+          "N": 2672,
+          "PF": 0.3060975318806943,
+          "expectancySol": -0.01677587709019461,
+          "totalPnlSol": -44.825143585
+        },
+        "afterRemovingBest2": {
+          "N": 2671,
+          "PF": 0.29294044773246647,
+          "expectancySol": -0.017100364319356045,
+          "totalPnlSol": -45.675073097
+        },
+        "averageLoserSol": -0.028345161251864853,
+        "averageWinnerSol": 0.05235909393147208,
+        "best5GrossProfitShare": 0.15772424861934162,
+        "bestTradeGrossProfitShare": 0.04149421004038502,
+        "bestTradeSol": 0.856004101,
+        "expectancySol": -0.016449360076318743,
+        "grossProfitSol": 20.629483009,
+        "losses": 2279,
+        "medianHoldingTimeMs": 60000.0,
+        "medianReturnPct": -2.671109888901111,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 342,
+          "FLOW_DECAY_TIMEOUT": 2141,
+          "PROFITABLE_CONTINUATION": 190
+        },
+        "profitFactor": 0.31934865191955825,
+        "profitableContinuationRate": 0.0710811821922933,
+        "returnPctP10": -10.964363436365636,
+        "returnPctP50": -2.671109888901111,
+        "returnPctP90": 3.204962630373743,
+        "sequentialMaxDrawdownSol": 44.051454933000265,
+        "timeoutRate": 0.8009726898615788,
+        "top1PctGrossProfitShare": 0.33982910153112117,
+        "totalPnlSol": -43.969139484,
+        "uniqueMintN": 2673,
+        "winRate": 0.14739992517770295,
+        "wins": 394,
+        "worstTradeSol": -0.296042126
+      }
+    },
+    "top10pct": {
+      "chronological": [
+        {
+          "N": 64,
+          "adverseFlowRate": 0.15625,
+          "afterRemovingBest1": {
+            "N": 63,
+            "PF": 1.033902966299806,
+            "expectancySol": 0.0009240352380952385,
+            "totalPnlSol": 0.058214220000000025
+          },
+          "afterRemovingBest2": {
+            "N": 62,
+            "PF": 0.9004452731349336,
+            "expectancySol": -0.002757157532258064,
+            "totalPnlSol": -0.17094376699999997
+          },
+          "averageLoserSol": -0.05920977175862069,
+          "averageWinnerSol": 0.05768352882857143,
+          "best5GrossProfitShare": 0.338884962679386,
+          "bestTradeGrossProfitShare": 0.12067119279851826,
+          "bestTradeSol": 0.243625908,
+          "expectancySol": 0.004716252000000001,
+          "fold": 2,
+          "grossProfitSol": 2.018923509,
+          "losses": 29,
+          "medianHoldingTimeMs": 24517.5,
+          "medianReturnPct": 3.174949450505495,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 10,
+            "FLOW_DECAY_TIMEOUT": 28,
+            "PROFITABLE_CONTINUATION": 26
+          },
+          "profitFactor": 1.1757865292623202,
+          "profitableContinuationRate": 0.40625,
+          "returnPctP10": -13.053833741662583,
+          "returnPctP50": 3.174949450505495,
+          "returnPctP90": 12.3989943900561,
+          "sequentialMaxDrawdownSol": 0.5109311009999999,
+          "timeoutRate": 0.4375,
+          "top1PctGrossProfitShare": 0.12067119279851826,
+          "totalPnlSol": 0.30184012800000004,
+          "uniqueMintN": 64,
+          "winRate": 0.546875,
+          "wins": 35,
+          "worstTradeSol": -0.26913525
+        },
+        {
+          "N": 24,
+          "adverseFlowRate": 0.2916666666666667,
+          "afterRemovingBest1": {
+            "N": 23,
+            "PF": 0.8022149916960962,
+            "expectancySol": -0.006203092217391306,
+            "totalPnlSol": -0.14267112100000004
+          },
+          "afterRemovingBest2": {
+            "N": 22,
+            "PF": 0.7024964778789838,
+            "expectancySol": -0.009754659954545455,
+            "totalPnlSol": -0.21460251900000002
+          },
+          "averageLoserSol": -0.06011203875,
+          "averageWinnerSol": 0.05940360725,
+          "best5GrossProfitShare": 0.5712345510241159,
+          "bestTradeGrossProfitShare": 0.18821800730515964,
+          "bestTradeSol": 0.134169943,
+          "expectancySol": -0.00035421575000000086,
+          "fold": 3,
+          "grossProfitSol": 0.712843287,
+          "losses": 12,
+          "medianHoldingTimeMs": 15241.0,
+          "medianReturnPct": -0.01712812871871283,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 7,
+            "FLOW_DECAY_TIMEOUT": 7,
+            "PROFITABLE_CONTINUATION": 10
+          },
+          "profitFactor": 0.9882148149566795,
+          "profitableContinuationRate": 0.4166666666666667,
+          "returnPctP10": -15.849832721672783,
+          "returnPctP50": -0.017128128718713054,
+          "returnPctP90": 14.272890311096889,
+          "sequentialMaxDrawdownSol": 0.261227833,
+          "timeoutRate": 0.2916666666666667,
+          "top1PctGrossProfitShare": 0.18821800730515964,
+          "totalPnlSol": -0.00850117800000002,
+          "uniqueMintN": 24,
+          "winRate": 0.5,
+          "wins": 12,
+          "worstTradeSol": -0.209282398
+        },
+        {
+          "N": 37,
+          "adverseFlowRate": 0.3783783783783784,
+          "afterRemovingBest1": {
+            "N": 36,
+            "PF": 0.40090000535599923,
+            "expectancySol": -0.023595375888888888,
+            "totalPnlSol": -0.849433532
+          },
+          "afterRemovingBest2": {
+            "N": 35,
+            "PF": 0.3596888968471079,
+            "expectancySol": -0.025938990714285712,
+            "totalPnlSol": -0.907864675
+          },
+          "averageLoserSol": -0.06164562347826087,
+          "averageWinnerSol": 0.05712458028571429,
+          "best5GrossProfitShare": 0.5734015196090393,
+          "bestTradeGrossProfitShare": 0.2892529110973499,
+          "bestTradeSol": 0.231328316,
+          "expectancySol": -0.01670554637837838,
+          "fold": 4,
+          "grossProfitSol": 0.7997441240000001,
+          "losses": 23,
+          "medianHoldingTimeMs": 13938.0,
+          "medianReturnPct": -3.733717262827372,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 14,
+            "FLOW_DECAY_TIMEOUT": 13,
+            "PROFITABLE_CONTINUATION": 10
+          },
+          "profitFactor": 0.5640543754811072,
+          "profitableContinuationRate": 0.2702702702702703,
+          "returnPctP10": -20.0220224597754,
+          "returnPctP50": -3.733717262827372,
+          "returnPctP90": 11.046263537364625,
+          "sequentialMaxDrawdownSol": 0.692605631,
+          "timeoutRate": 0.35135135135135137,
+          "top1PctGrossProfitShare": 0.2892529110973499,
+          "totalPnlSol": -0.618105216,
+          "uniqueMintN": 37,
+          "winRate": 0.3783783783783784,
+          "wins": 14,
+          "worstTradeSol": -0.194827985
+        },
+        {
+          "N": 69,
+          "adverseFlowRate": 0.30434782608695654,
+          "afterRemovingBest1": {
+            "N": 68,
+            "PF": 0.41039832541294624,
+            "expectancySol": -0.025958721161764706,
+            "totalPnlSol": -1.765193039
+          },
+          "afterRemovingBest2": {
+            "N": 67,
+            "PF": 0.3629115695113642,
+            "expectancySol": -0.02846809546268657,
+            "totalPnlSol": -1.907362396
+          },
+          "averageLoserSol": -0.07878615410526316,
+          "averageWinnerSol": 0.0643573534516129,
+          "best5GrossProfitShare": 0.5579438001880545,
+          "bestTradeGrossProfitShare": 0.3841439565361305,
+          "bestTradeSol": 0.76639714,
+          "expectancySol": -0.01447530288405797,
+          "fold": 5,
+          "grossProfitSol": 1.9950779570000001,
+          "losses": 38,
+          "medianHoldingTimeMs": 29535.0,
+          "medianReturnPct": -2.0658757412425874,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 21,
+            "FLOW_DECAY_TIMEOUT": 32,
+            "PROFITABLE_CONTINUATION": 16
+          },
+          "profitFactor": 0.6663867794568831,
+          "profitableContinuationRate": 0.2318840579710145,
+          "returnPctP10": -30.16678713212868,
+          "returnPctP50": -2.0658757412425874,
+          "returnPctP90": 12.149571664283357,
+          "sequentialMaxDrawdownSol": 1.121031624,
+          "timeoutRate": 0.463768115942029,
+          "top1PctGrossProfitShare": 0.3841439565361305,
+          "totalPnlSol": -0.998795899,
+          "uniqueMintN": 69,
+          "winRate": 0.4492753623188406,
+          "wins": 31,
+          "worstTradeSol": -0.296042126
+        }
+      ],
+      "foldScoreThresholds": {
+        "2": 0.13043697138873706,
+        "3": 0.3721751509832403,
+        "4": 0.26623358642535355,
+        "5": 0.21415025498544574
+      },
+      "nonDivergentOnly": {
+        "N": 94,
+        "adverseFlowRate": 0.24468085106382978,
+        "afterRemovingBest1": {
+          "N": 93,
+          "PF": 0.6266424655552281,
+          "expectancySol": -0.013050982,
+          "totalPnlSol": -1.213741326
+        },
+        "afterRemovingBest2": {
+          "N": 92,
+          "PF": 0.5517009880020869,
+          "expectancySol": -0.015840948195652172,
+          "totalPnlSol": -1.457367234
+        },
+        "averageLoserSol": -0.058051466089285714,
+        "averageWinnerSol": 0.07377731355263158,
+        "best5GrossProfitShare": 0.5752298548814169,
+        "bestTradeGrossProfitShare": 0.2733678527761234,
+        "bestTradeSol": 0.76639714,
+        "expectancySol": -0.004758980702127658,
+        "grossProfitSol": 2.803537915,
+        "losses": 56,
+        "medianHoldingTimeMs": 60000.0,
+        "medianReturnPct": -2.671109888901111,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 23,
+          "FLOW_DECAY_TIMEOUT": 50,
+          "PROFITABLE_CONTINUATION": 21
+        },
+        "profitFactor": 0.8623929837804967,
+        "profitableContinuationRate": 0.22340425531914893,
+        "returnPctP10": -22.753046389536102,
+        "returnPctP50": -2.671109888901111,
+        "returnPctP90": 12.28829075709243,
+        "sequentialMaxDrawdownSol": 0.8533517319999999,
+        "timeoutRate": 0.5319148936170213,
+        "top1PctGrossProfitShare": 0.2733678527761234,
+        "totalPnlSol": -0.4473441859999999,
+        "uniqueMintN": 94,
+        "winRate": 0.40425531914893614,
+        "wins": 38,
+        "worstTradeSol": -0.256257176
+      },
+      "pessimistic": {
+        "N": 194,
+        "adverseFlowRate": 0.26804123711340205,
+        "afterRemovingBest1": {
+          "N": 193,
+          "PF": 0.6839068755891392,
+          "expectancySol": -0.011276349015544041,
+          "totalPnlSol": -2.17633536
+        },
+        "afterRemovingBest2": {
+          "N": 192,
+          "PF": 0.648522405041754,
+          "expectancySol": -0.0126039649375,
+          "totalPnlSol": -2.419961268
+        },
+        "averageLoserSol": -0.066202963375,
+        "averageWinnerSol": 0.0608352219,
+        "best5GrossProfitShare": 0.2945440445761095,
+        "bestTradeGrossProfitShare": 0.13997686721313296,
+        "bestTradeSol": 0.76639714,
+        "expectancySol": -0.007267722783505155,
+        "grossProfitSol": 5.475169971,
+        "losses": 104,
+        "medianHoldingTimeMs": 21968.5,
+        "medianReturnPct": -1.6064724352756472,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 52,
+          "FLOW_DECAY_TIMEOUT": 80,
+          "PROFITABLE_CONTINUATION": 62
+        },
+        "profitFactor": 0.7952191627369012,
+        "profitableContinuationRate": 0.31958762886597936,
+        "returnPctP10": -19.793335646643534,
+        "returnPctP50": -1.6064724352756472,
+        "returnPctP90": 12.131406605933941,
+        "sequentialMaxDrawdownSol": 1.9717062699999994,
+        "timeoutRate": 0.41237113402061853,
+        "top1PctGrossProfitShare": 0.18447336856202234,
+        "totalPnlSol": -1.40993822,
+        "uniqueMintN": 194,
+        "winRate": 0.4639175257731959,
+        "wins": 90,
+        "worstTradeSol": -0.296042126
+      },
+      "pessimisticMissingN": 0,
+      "primary": {
+        "N": 194,
+        "adverseFlowRate": 0.26804123711340205,
+        "afterRemovingBest1": {
+          "N": 193,
+          "PF": 0.6949031791874466,
+          "expectancySol": -0.01082880468911917,
+          "totalPnlSol": -2.089959305
+        },
+        "afterRemovingBest2": {
+          "N": 192,
+          "PF": 0.6593381374086204,
+          "expectancySol": -0.012154089651041667,
+          "totalPnlSol": -2.333585213
+        },
+        "averageLoserSol": -0.0671583435490196,
+        "averageWinnerSol": 0.06007161822826087,
+        "best5GrossProfitShare": 0.291803632202765,
+        "bestTradeGrossProfitShare": 0.13867453451974948,
+        "bestTradeSol": 0.76639714,
+        "expectancySol": -0.006822485386597938,
+        "grossProfitSol": 5.526588877,
+        "losses": 102,
+        "medianHoldingTimeMs": 21968.5,
+        "medianReturnPct": -0.6228588714112859,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 52,
+          "FLOW_DECAY_TIMEOUT": 80,
+          "PROFITABLE_CONTINUATION": 62
+        },
+        "profitFactor": 0.806783506394982,
+        "profitableContinuationRate": 0.31958762886597936,
+        "returnPctP10": -19.793335646643534,
+        "returnPctP50": -0.6228588714112859,
+        "returnPctP90": 12.159371966280338,
+        "sequentialMaxDrawdownSol": 1.9451661869999997,
+        "timeoutRate": 0.41237113402061853,
+        "top1PctGrossProfitShare": 0.18275704425987105,
+        "totalPnlSol": -1.323562165,
+        "uniqueMintN": 194,
+        "winRate": 0.4742268041237113,
+        "wins": 92,
+        "worstTradeSol": -0.296042126
+      },
+      "removeTop1PctActiveMints": {
+        "N": 182,
+        "adverseFlowRate": 0.2692307692307692,
+        "afterRemovingBest1": {
+          "N": 181,
+          "PF": 0.6536919395161447,
+          "expectancySol": -0.012393502220994475,
+          "totalPnlSol": -2.243223902
+        },
+        "afterRemovingBest2": {
+          "N": 180,
+          "PF": 0.6160810636655992,
+          "expectancySol": -0.013815832277777778,
+          "totalPnlSol": -2.48684981
+        },
+        "averageLoserSol": -0.06542968494949496,
+        "averageWinnerSol": 0.060249542746987954,
+        "best5GrossProfitShare": 0.32248981595430587,
+        "bestTradeGrossProfitShare": 0.1532576026461102,
+        "bestTradeSol": 0.76639714,
+        "expectancySol": -0.008114432758241759,
+        "grossProfitSol": 5.0007120480000005,
+        "losses": 99,
+        "medianHoldingTimeMs": 29202.5,
+        "medianReturnPct": -1.6577686223137769,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 49,
+          "FLOW_DECAY_TIMEOUT": 80,
+          "PROFITABLE_CONTINUATION": 53
+        },
+        "profitFactor": 0.7720080411220261,
+        "profitableContinuationRate": 0.29120879120879123,
+        "returnPctP10": -20.00011305886941,
+        "returnPctP50": -1.6577686223137769,
+        "returnPctP90": 12.056962750372499,
+        "sequentialMaxDrawdownSol": 1.9451661869999997,
+        "timeoutRate": 0.43956043956043955,
+        "top1PctGrossProfitShare": 0.20197584630051868,
+        "totalPnlSol": -1.476826762,
+        "uniqueMintN": 182,
+        "winRate": 0.45604395604395603,
+        "wins": 83,
+        "worstTradeSol": -0.296042126
+      }
+    },
+    "top20pct": {
+      "chronological": [
+        {
+          "N": 116,
+          "adverseFlowRate": 0.25862068965517243,
+          "afterRemovingBest1": {
+            "N": 115,
+            "PF": 0.49802117806485524,
+            "expectancySol": -0.018680436626086955,
+            "totalPnlSol": -2.1482502119999998
+          },
+          "afterRemovingBest2": {
+            "N": 114,
+            "PF": 0.4444741304682929,
+            "expectancySol": -0.020854457885964912,
+            "totalPnlSol": -2.377408199
+          },
+          "averageLoserSol": -0.05706084581333333,
+          "averageWinnerSol": 0.05792534468292683,
+          "best5GrossProfitShare": 0.315185160290668,
+          "bestTradeGrossProfitShare": 0.10258195871943719,
+          "bestTradeSol": 0.243625908,
+          "expectancySol": -0.016419175034482758,
+          "fold": 2,
+          "grossProfitSol": 2.374939132,
+          "losses": 75,
+          "medianHoldingTimeMs": 36297.5,
+          "medianReturnPct": -2.671109888901111,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 30,
+            "FLOW_DECAY_TIMEOUT": 56,
+            "PROFITABLE_CONTINUATION": 30
+          },
+          "profitFactor": 0.5549489258698302,
+          "profitableContinuationRate": 0.25862068965517243,
+          "returnPctP10": -19.48281857181428,
+          "returnPctP50": -2.671109888901111,
+          "returnPctP90": 11.537446625533745,
+          "sequentialMaxDrawdownSol": 2.0174925799999994,
+          "timeoutRate": 0.4827586206896552,
+          "top1PctGrossProfitShare": 0.19907200510097114,
+          "totalPnlSol": -1.904624304,
+          "uniqueMintN": 116,
+          "winRate": 0.35344827586206895,
+          "wins": 41,
+          "worstTradeSol": -0.26913525
+        },
+        {
+          "N": 87,
+          "adverseFlowRate": 0.1839080459770115,
+          "afterRemovingBest1": {
+            "N": 86,
+            "PF": 0.6182683563790088,
+            "expectancySol": -0.01122962888372093,
+            "totalPnlSol": -0.965748084
+          },
+          "afterRemovingBest2": {
+            "N": 85,
+            "PF": 0.5728495420222487,
+            "expectancySol": -0.01271357365882353,
+            "totalPnlSol": -1.080653761
+          },
+          "averageLoserSol": -0.04517702891071428,
+          "averageWinnerSol": 0.054785015419354835,
+          "best5GrossProfitShare": 0.3204408387210292,
+          "bestTradeGrossProfitShare": 0.07900084802915483,
+          "bestTradeSol": 0.134169943,
+          "expectancySol": -0.00955836943678161,
+          "fold": 3,
+          "grossProfitSol": 1.698335478,
+          "losses": 56,
+          "medianHoldingTimeMs": 60000.0,
+          "medianReturnPct": -2.671109888901111,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 16,
+            "FLOW_DECAY_TIMEOUT": 49,
+            "PROFITABLE_CONTINUATION": 22
+          },
+          "profitFactor": 0.6713017651058385,
+          "profitableContinuationRate": 0.25287356321839083,
+          "returnPctP10": -13.529144028559715,
+          "returnPctP50": -2.671109888901111,
+          "returnPctP90": 13.184964230357702,
+          "sequentialMaxDrawdownSol": 1.0228617150000001,
+          "timeoutRate": 0.5632183908045977,
+          "top1PctGrossProfitShare": 0.07900084802915483,
+          "totalPnlSol": -0.831578141,
+          "uniqueMintN": 87,
+          "winRate": 0.3563218390804598,
+          "wins": 31,
+          "worstTradeSol": -0.236740534
+        },
+        {
+          "N": 152,
+          "adverseFlowRate": 0.34868421052631576,
+          "afterRemovingBest1": {
+            "N": 151,
+            "PF": 0.21787850719731455,
+            "expectancySol": -0.04053436939735099,
+            "totalPnlSol": -6.120689779
+          },
+          "afterRemovingBest2": {
+            "N": 150,
+            "PF": 0.188318628430348,
+            "expectancySol": -0.0423467873,
+            "totalPnlSol": -6.352018095
+          },
+          "averageLoserSol": -0.06987279647321429,
+          "averageWinnerSol": 0.06387482345,
+          "best5GrossProfitShare": 0.539064939286341,
+          "bestTradeGrossProfitShare": 0.33265434880822364,
+          "bestTradeSol": 0.849929512,
+          "expectancySol": -0.03467605438815789,
+          "fold": 4,
+          "grossProfitSol": 2.554992938,
+          "losses": 112,
+          "medianHoldingTimeMs": 43946.0,
+          "medianReturnPct": -4.642346176538235,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 53,
+            "FLOW_DECAY_TIMEOUT": 77,
+            "PROFITABLE_CONTINUATION": 22
+          },
+          "profitFactor": 0.32648524315430416,
+          "profitableContinuationRate": 0.14473684210526316,
+          "returnPctP10": -32.64190652093479,
+          "returnPctP50": -4.642346176538235,
+          "returnPctP90": 10.739861641383586,
+          "sequentialMaxDrawdownSol": 5.659468153000001,
+          "timeoutRate": 0.506578947368421,
+          "top1PctGrossProfitShare": 0.42319405737629484,
+          "totalPnlSol": -5.270760267,
+          "uniqueMintN": 152,
+          "winRate": 0.2631578947368421,
+          "wins": 40,
+          "worstTradeSol": -0.29262921
+        },
+        {
+          "N": 187,
+          "adverseFlowRate": 0.24598930481283424,
+          "afterRemovingBest1": {
+            "N": 186,
+            "PF": 0.4682215069717314,
+            "expectancySol": -0.01888151153763441,
+            "totalPnlSol": -3.511961146
+          },
+          "afterRemovingBest2": {
+            "N": 185,
+            "PF": 0.3521742333182162,
+            "expectancySol": -0.023126261005405404,
+            "totalPnlSol": -4.278358286
+          },
+          "averageLoserSol": -0.048919855444444445,
+          "averageWinnerSol": 0.07592737384615385,
+          "best5GrossProfitShare": 0.500347315703085,
+          "bestTradeGrossProfitShare": 0.21680741072749418,
+          "bestTradeSol": 0.856004101,
+          "expectancySol": -0.014202978850267379,
+          "fold": 5,
+          "grossProfitSol": 3.94822344,
+          "losses": 135,
+          "medianHoldingTimeMs": 60000.0,
+          "medianReturnPct": -3.5255755442445578,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 46,
+            "FLOW_DECAY_TIMEOUT": 111,
+            "PROFITABLE_CONTINUATION": 30
+          },
+          "profitFactor": 0.5978369986961373,
+          "profitableContinuationRate": 0.16042780748663102,
+          "returnPctP10": -17.22591442085579,
+          "returnPctP50": -3.5255755442445578,
+          "returnPctP90": 11.944966990330098,
+          "sequentialMaxDrawdownSol": 2.7489162069999984,
+          "timeoutRate": 0.5935828877005348,
+          "top1PctGrossProfitShare": 0.4109193072922945,
+          "totalPnlSol": -2.655957045,
+          "uniqueMintN": 187,
+          "winRate": 0.27807486631016043,
+          "wins": 52,
+          "worstTradeSol": -0.296042126
+        }
+      ],
+      "foldScoreThresholds": {
+        "2": 0.08597644622679619,
+        "3": 0.09191279072648331,
+        "4": 0.10540548959010276,
+        "5": 0.10114887714499916
+      },
+      "nonDivergentOnly": {
+        "N": 295,
+        "adverseFlowRate": 0.26440677966101694,
+        "afterRemovingBest1": {
+          "N": 294,
+          "PF": 0.406071099788096,
+          "expectancySol": -0.02473142574829932,
+          "totalPnlSol": -7.27103917
+        },
+        "afterRemovingBest2": {
+          "N": 293,
+          "PF": 0.3434685749160221,
+          "expectancySol": -0.02743152324232082,
+          "totalPnlSol": -8.03743631
+        },
+        "averageLoserSol": -0.05857546431578947,
+        "averageWinnerSol": 0.06775856945348838,
+        "best5GrossProfitShare": 0.3992481278485326,
+        "bestTradeGrossProfitShare": 0.14689708089206277,
+        "bestTradeSol": 0.856004101,
+        "expectancySol": -0.02174588158983051,
+        "grossProfitSol": 5.827236973,
+        "losses": 209,
+        "medianHoldingTimeMs": 60000.0,
+        "medianReturnPct": -2.8801323986760132,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 78,
+          "FLOW_DECAY_TIMEOUT": 169,
+          "PROFITABLE_CONTINUATION": 48
+        },
+        "profitFactor": 0.47599309613512014,
+        "profitableContinuationRate": 0.16271186440677965,
+        "returnPctP10": -29.496560354396454,
+        "returnPctP50": -2.8801323986760132,
+        "returnPctP90": 11.382641253587465,
+        "sequentialMaxDrawdownSol": 7.313833518000003,
+        "timeoutRate": 0.5728813559322034,
+        "top1PctGrossProfitShare": 0.32022503248899536,
+        "totalPnlSol": -6.415035069,
+        "uniqueMintN": 295,
+        "winRate": 0.29152542372881357,
+        "wins": 86,
+        "worstTradeSol": -0.29262921
+      },
+      "pessimistic": {
+        "N": 542,
+        "adverseFlowRate": 0.26752767527675275,
+        "afterRemovingBest1": {
+          "N": 541,
+          "PF": 0.41236503394924773,
+          "expectancySol": -0.023150866770794823,
+          "totalPnlSol": -12.524618923
+        },
+        "afterRemovingBest2": {
+          "N": 540,
+          "PF": 0.37640691337775023,
+          "expectancySol": -0.02461299270925926,
+          "totalPnlSol": -13.291016063
+        },
+        "averageLoserSol": -0.05564909642819843,
+        "averageWinnerSol": 0.06066030886792453,
+        "best5GrossProfitShare": 0.2412147308272077,
+        "bestTradeGrossProfitShare": 0.08875117340593866,
+        "bestTradeSol": 0.856004101,
+        "expectancySol": -0.021528809634686348,
+        "grossProfitSol": 9.644989110000001,
+        "losses": 383,
+        "medianHoldingTimeMs": 60000.0,
+        "medianReturnPct": -3.115059249407506,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 145,
+          "FLOW_DECAY_TIMEOUT": 294,
+          "PROFITABLE_CONTINUATION": 103
+        },
+        "profitFactor": 0.4525273689410699,
+        "profitableContinuationRate": 0.1900369003690037,
+        "returnPctP10": -21.637540024599755,
+        "returnPctP50": -3.115059249407506,
+        "returnPctP90": 11.545441105588946,
+        "sequentialMaxDrawdownSol": 11.773418557999992,
+        "timeoutRate": 0.5424354243542435,
+        "top1PctGrossProfitShare": 0.2559549607412672,
+        "totalPnlSol": -11.668614822,
+        "uniqueMintN": 542,
+        "winRate": 0.2933579335793358,
+        "wins": 159,
+        "worstTradeSol": -0.296042126
+      },
+      "pessimisticMissingN": 0,
+      "primary": {
+        "N": 542,
+        "adverseFlowRate": 0.26752767527675275,
+        "afterRemovingBest1": {
+          "N": 541,
+          "PF": 0.4576627385620062,
+          "expectancySol": -0.021291911012939,
+          "totalPnlSol": -11.518923857999999
+        },
+        "afterRemovingBest2": {
+          "N": 540,
+          "PF": 0.41764611464506995,
+          "expectancySol": -0.022905284018518518,
+          "totalPnlSol": -12.36885337
+        },
+        "averageLoserSol": -0.05618891731481482,
+        "averageWinnerSol": 0.06449079870731707,
+        "best5GrossProfitShare": 0.27866378181042895,
+        "bestTradeGrossProfitShare": 0.0809346031657584,
+        "bestTradeSol": 0.856004101,
+        "expectancySol": -0.019673283684501844,
+        "grossProfitSol": 10.576490988,
+        "losses": 378,
+        "medianHoldingTimeMs": 60000.0,
+        "medianReturnPct": -3.115059249407506,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 145,
+          "FLOW_DECAY_TIMEOUT": 293,
+          "PROFITABLE_CONTINUATION": 104
+        },
+        "profitFactor": 0.4979653680123789,
+        "profitableContinuationRate": 0.1918819188191882,
+        "returnPctP10": -21.637540024599755,
+        "returnPctP50": -3.115059249407506,
+        "returnPctP90": 11.744834031659687,
+        "sequentialMaxDrawdownSol": 10.767723492999993,
+        "timeoutRate": 0.540590405904059,
+        "top1PctGrossProfitShare": 0.3003305129843127,
+        "totalPnlSol": -10.662919757,
+        "uniqueMintN": 542,
+        "winRate": 0.3025830258302583,
+        "wins": 164,
+        "worstTradeSol": -0.296042126
+      },
+      "removeTop1PctActiveMints": {
+        "N": 524,
+        "adverseFlowRate": 0.2652671755725191,
+        "afterRemovingBest1": {
+          "N": 523,
+          "PF": 0.4338322176256731,
+          "expectancySol": -0.022389348284894837,
+          "totalPnlSol": -11.709629153
+        },
+        "afterRemovingBest2": {
+          "N": 522,
+          "PF": 0.39273760218601583,
+          "expectancySol": -0.024060457212643677,
+          "totalPnlSol": -12.559558664999999
+        },
+        "averageLoserSol": -0.055597472521505376,
+        "averageWinnerSol": 0.06466207056578947,
+        "best5GrossProfitShare": 0.2998671798437532,
+        "bestTradeGrossProfitShare": 0.08709287961791734,
+        "bestTradeSol": 0.856004101,
+        "expectancySol": -0.020713024908396948,
+        "grossProfitSol": 9.828634726,
+        "losses": 372,
+        "medianHoldingTimeMs": 60000.0,
+        "medianReturnPct": -3.158273117268827,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 139,
+          "FLOW_DECAY_TIMEOUT": 292,
+          "PROFITABLE_CONTINUATION": 93
+        },
+        "profitFactor": 0.475220543185269,
+        "profitableContinuationRate": 0.17748091603053434,
+        "returnPctP10": -21.635269647303527,
+        "returnPctP50": -3.158273117268827,
+        "returnPctP90": 11.577988260117397,
+        "sequentialMaxDrawdownSol": 10.900691011999994,
+        "timeoutRate": 0.5572519083969466,
+        "top1PctGrossProfitShare": 0.3231825225529294,
+        "totalPnlSol": -10.853625052,
+        "uniqueMintN": 524,
+        "winRate": 0.2900763358778626,
+        "wins": 152,
+        "worstTradeSol": -0.296042126
+      }
+    },
+    "top5pct": {
+      "chronological": [
+        {
+          "N": 39,
+          "adverseFlowRate": 0.07692307692307693,
+          "afterRemovingBest1": {
+            "N": 38,
+            "PF": 1.6346725315675616,
+            "expectancySol": 0.01324922394736842,
+            "totalPnlSol": 0.50347051
+          },
+          "afterRemovingBest2": {
+            "N": 37,
+            "PF": 1.5594334088771087,
+            "expectancySol": 0.011994192351351352,
+            "totalPnlSol": 0.443785117
+          },
+          "averageLoserSol": -0.056662574,
+          "averageWinnerSol": 0.05439459644,
+          "best5GrossProfitShare": 0.21925981734519512,
+          "bestTradeGrossProfitShare": 0.04641517292595249,
+          "bestTradeSol": 0.063118365,
+          "expectancySol": 0.014527919871794873,
+          "fold": 2,
+          "grossProfitSol": 1.359864911,
+          "losses": 14,
+          "medianHoldingTimeMs": 16541.0,
+          "medianReturnPct": 10.341568984310157,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 3,
+            "FLOW_DECAY_TIMEOUT": 11,
+            "PROFITABLE_CONTINUATION": 25
+          },
+          "profitFactor": 1.714239242441959,
+          "profitableContinuationRate": 0.6410256410256411,
+          "returnPctP10": -9.639507644923551,
+          "returnPctP50": 10.341568984310157,
+          "returnPctP90": 11.56388400115999,
+          "sequentialMaxDrawdownSol": 0.275684671,
+          "timeoutRate": 0.28205128205128205,
+          "top1PctGrossProfitShare": 0.04641517292595249,
+          "totalPnlSol": 0.566588875,
+          "uniqueMintN": 39,
+          "winRate": 0.6410256410256411,
+          "wins": 25,
+          "worstTradeSol": -0.275684671
+        },
+        {
+          "N": 11,
+          "adverseFlowRate": 0.2727272727272727,
+          "afterRemovingBest1": {
+            "N": 10,
+            "PF": 0.8233449223667991,
+            "expectancySol": -0.004849278900000001,
+            "totalPnlSol": -0.04849278900000001
+          },
+          "afterRemovingBest2": {
+            "N": 9,
+            "PF": 0.6217035905423707,
+            "expectancySol": -0.011538271333333334,
+            "totalPnlSol": -0.10384444200000001
+          },
+          "averageLoserSol": -0.0549010984,
+          "averageWinnerSol": 0.049587152833333335,
+          "best5GrossProfitShare": 0.9500414517648736,
+          "bestTradeGrossProfitShare": 0.24035195245144764,
+          "bestTradeSol": 0.071510214,
+          "expectancySol": 0.002092493181818181,
+          "fold": 3,
+          "grossProfitSol": 0.297522917,
+          "losses": 5,
+          "medianHoldingTimeMs": 8844.0,
+          "medianReturnPct": 2.972732872671273,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 3,
+            "FLOW_DECAY_TIMEOUT": 3,
+            "PROFITABLE_CONTINUATION": 5
+          },
+          "profitFactor": 1.0838505081712535,
+          "profitableContinuationRate": 0.45454545454545453,
+          "returnPctP10": -17.083252767472324,
+          "returnPctP50": 2.972732872671273,
+          "returnPctP90": 11.070219897801023,
+          "sequentialMaxDrawdownSol": 0.189088374,
+          "timeoutRate": 0.2727272727272727,
+          "top1PctGrossProfitShare": 0.24035195245144764,
+          "totalPnlSol": 0.023017424999999994,
+          "uniqueMintN": 11,
+          "winRate": 0.5454545454545454,
+          "wins": 6,
+          "worstTradeSol": -0.094236313
+        },
+        {
+          "N": 20,
+          "adverseFlowRate": 0.45,
+          "afterRemovingBest1": {
+            "N": 19,
+            "PF": 0.45347758887080064,
+            "expectancySol": -0.029153759210526316,
+            "totalPnlSol": -0.553921425
+          },
+          "afterRemovingBest2": {
+            "N": 18,
+            "PF": 0.38901994132133255,
+            "expectancySol": -0.0344028735,
+            "totalPnlSol": -0.619251723
+          },
+          "averageLoserSol": -0.09213985036363637,
+          "averageWinnerSol": 0.0767716938888889,
+          "best5GrossProfitShare": 0.6962706314014796,
+          "bestTradeGrossProfitShare": 0.33479977997388205,
+          "bestTradeSol": 0.231328316,
+          "expectancySol": -0.01612965545,
+          "fold": 4,
+          "grossProfitSol": 0.690945245,
+          "losses": 11,
+          "medianHoldingTimeMs": 4742.5,
+          "medianReturnPct": -3.2054740452595474,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 9,
+            "FLOW_DECAY_TIMEOUT": 2,
+            "PROFITABLE_CONTINUATION": 9
+          },
+          "profitFactor": 0.6817159333666419,
+          "profitableContinuationRate": 0.45,
+          "returnPctP10": -26.016260397396024,
+          "returnPctP50": -3.2054740452595474,
+          "returnPctP90": 12.814079599204009,
+          "sequentialMaxDrawdownSol": 0.653763736,
+          "timeoutRate": 0.1,
+          "top1PctGrossProfitShare": 0.33479977997388205,
+          "totalPnlSol": -0.322593109,
+          "uniqueMintN": 20,
+          "winRate": 0.45,
+          "wins": 9,
+          "worstTradeSol": -0.246143468
+        },
+        {
+          "N": 26,
+          "adverseFlowRate": 0.46153846153846156,
+          "afterRemovingBest1": {
+            "N": 25,
+            "PF": 0.31063825234977627,
+            "expectancySol": -0.04084437408,
+            "totalPnlSol": -1.021109352
+          },
+          "afterRemovingBest2": {
+            "N": 24,
+            "PF": 0.2635218575566632,
+            "expectancySol": -0.045454165958333334,
+            "totalPnlSol": -1.090899983
+          },
+          "averageLoserSol": -0.0925774235625,
+          "averageWinnerSol": 0.0531155357,
+          "best5GrossProfitShare": 0.5786749017011231,
+          "bestTradeGrossProfitShare": 0.13371969436806413,
+          "bestTradeSol": 0.071025932,
+          "expectancySol": -0.03654167,
+          "fold": 5,
+          "grossProfitSol": 0.531155357,
+          "losses": 16,
+          "medianHoldingTimeMs": 15882.5,
+          "medianReturnPct": -3.3345371546284537,
+          "outcomeCounts": {
+            "ADVERSE_FLOW": 12,
+            "FLOW_DECAY_TIMEOUT": 5,
+            "PROFITABLE_CONTINUATION": 9
+          },
+          "profitFactor": 0.35858861194261055,
+          "profitableContinuationRate": 0.34615384615384615,
+          "returnPctP10": -31.382623173768263,
+          "returnPctP50": -3.3345371546284537,
+          "returnPctP90": 11.27510304896951,
+          "sequentialMaxDrawdownSol": 1.0428459879999998,
+          "timeoutRate": 0.19230769230769232,
+          "top1PctGrossProfitShare": 0.13371969436806413,
+          "totalPnlSol": -0.95008342,
+          "uniqueMintN": 26,
+          "winRate": 0.38461538461538464,
+          "wins": 10,
+          "worstTradeSol": -0.218850149
+        }
+      ],
+      "foldScoreThresholds": {
+        "2": 0.2842575309115493,
+        "3": 0.5256667577535201,
+        "4": 0.5112055914775367,
+        "5": 0.449801513263023
+      },
+      "nonDivergentOnly": {
+        "N": 40,
+        "adverseFlowRate": 0.475,
+        "afterRemovingBest1": {
+          "N": 39,
+          "PF": 0.1848433320446271,
+          "expectancySol": -0.05882761976923077,
+          "totalPnlSol": -2.294277171
+        },
+        "afterRemovingBest2": {
+          "N": 38,
+          "PF": 0.1600467211819272,
+          "expectancySol": -0.06221231057894737,
+          "totalPnlSol": -2.364067802
+        },
+        "averageLoserSol": -0.09381743253333333,
+        "averageWinnerSol": 0.0751574121,
+        "best5GrossProfitShare": 0.6482871447884779,
+        "bestTradeGrossProfitShare": 0.3077917527178933,
+        "bestTradeSol": 0.231328316,
+        "expectancySol": -0.051573721375,
+        "grossProfitSol": 0.751574121,
+        "losses": 30,
+        "medianHoldingTimeMs": 18636.5,
+        "medianReturnPct": -9.657850421495786,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 19,
+          "FLOW_DECAY_TIMEOUT": 11,
+          "PROFITABLE_CONTINUATION": 10
+        },
+        "profitFactor": 0.26703428162030396,
+        "profitableContinuationRate": 0.25,
+        "returnPctP10": -35.65445059549404,
+        "returnPctP50": -9.657850421495786,
+        "returnPctP90": 11.775932720672794,
+        "sequentialMaxDrawdownSol": 2.115269553,
+        "timeoutRate": 0.275,
+        "top1PctGrossProfitShare": 0.3077917527178933,
+        "totalPnlSol": -2.062948855,
+        "uniqueMintN": 40,
+        "winRate": 0.25,
+        "wins": 10,
+        "worstTradeSol": -0.275684671
+      },
+      "pessimistic": {
+        "N": 96,
+        "adverseFlowRate": 0.2916666666666667,
+        "afterRemovingBest1": {
+          "N": 95,
+          "PF": 0.7200726714778418,
+          "expectancySol": -0.010569176652631579,
+          "totalPnlSol": -1.004071782
+        },
+        "afterRemovingBest2": {
+          "N": 94,
+          "PF": 0.7001361853361888,
+          "expectancySol": -0.011442361659574468,
+          "totalPnlSol": -1.075581996
+        },
+        "averageLoserSol": -0.07631705527659574,
+        "averageWinnerSol": 0.0574317986122449,
+        "best5GrossProfitShare": 0.18036876045741695,
+        "bestTradeGrossProfitShare": 0.08220160529344411,
+        "bestTradeSol": 0.231328316,
+        "expectancySol": -0.008049411104166666,
+        "grossProfitSol": 2.814158132,
+        "losses": 47,
+        "medianHoldingTimeMs": 13121.0,
+        "medianReturnPct": 3.2090159098409012,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 28,
+          "FLOW_DECAY_TIMEOUT": 21,
+          "PROFITABLE_CONTINUATION": 47
+        },
+        "profitFactor": 0.7845651895131805,
+        "profitableContinuationRate": 0.4895833333333333,
+        "returnPctP10": -23.549921000789993,
+        "returnPctP50": 3.2090159098409012,
+        "returnPctP90": 11.671136588634113,
+        "sequentialMaxDrawdownSol": 1.644200708,
+        "timeoutRate": 0.21875,
+        "top1PctGrossProfitShare": 0.08220160529344411,
+        "totalPnlSol": -0.772743466,
+        "uniqueMintN": 96,
+        "winRate": 0.5104166666666666,
+        "wins": 49,
+        "worstTradeSol": -0.275684671
+      },
+      "pessimisticMissingN": 0,
+      "primary": {
+        "N": 96,
+        "adverseFlowRate": 0.28125,
+        "afterRemovingBest1": {
+          "N": 95,
+          "PF": 0.7433309504420429,
+          "expectancySol": -0.009625247842105264,
+          "totalPnlSol": -0.914398545
+        },
+        "afterRemovingBest2": {
+          "N": 94,
+          "PF": 0.7232582384266645,
+          "expectancySol": -0.010488391053191489,
+          "totalPnlSol": -0.985908759
+        },
+        "averageLoserSol": -0.07744692736956521,
+        "averageWinnerSol": 0.0575897686,
+        "best5GrossProfitShare": 0.17676243658322321,
+        "bestTradeGrossProfitShare": 0.08033660201232343,
+        "bestTradeSol": 0.231328316,
+        "expectancySol": -0.007115314885416666,
+        "grossProfitSol": 2.87948843,
+        "losses": 46,
+        "medianHoldingTimeMs": 13121.0,
+        "medianReturnPct": 6.753239767602324,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 27,
+          "FLOW_DECAY_TIMEOUT": 21,
+          "PROFITABLE_CONTINUATION": 48
+        },
+        "profitFactor": 0.8082641454129106,
+        "profitableContinuationRate": 0.5,
+        "returnPctP10": -23.549921000789993,
+        "returnPctP50": 6.753239767602324,
+        "returnPctP90": 11.770929690703092,
+        "sequentialMaxDrawdownSol": 1.554527471,
+        "timeoutRate": 0.21875,
+        "top1PctGrossProfitShare": 0.08033660201232343,
+        "totalPnlSol": -0.683070229,
+        "uniqueMintN": 96,
+        "winRate": 0.5208333333333334,
+        "wins": 50,
+        "worstTradeSol": -0.275684671
+      },
+      "removeTop1PctActiveMints": {
+        "N": 87,
+        "adverseFlowRate": 0.3103448275862069,
+        "afterRemovingBest1": {
+          "N": 86,
+          "PF": 0.6067796698698512,
+          "expectancySol": -0.01628919176744186,
+          "totalPnlSol": -1.400870492
+        },
+        "afterRemovingBest2": {
+          "N": 85,
+          "PF": 0.5867069578544728,
+          "expectancySol": -0.017322125952941178,
+          "totalPnlSol": -1.472380706
+        },
+        "averageLoserSol": -0.07744692736956521,
+        "averageWinnerSol": 0.05836625568292683,
+        "best5GrossProfitShare": 0.212696149239186,
+        "bestTradeGrossProfitShare": 0.09666808300041284,
+        "bestTradeSol": 0.231328316,
+        "expectancySol": -0.013443013517241378,
+        "grossProfitSol": 2.393016483,
+        "losses": 46,
+        "medianHoldingTimeMs": 15217.0,
+        "medianReturnPct": -2.671109888901111,
+        "outcomeCounts": {
+          "ADVERSE_FLOW": 27,
+          "FLOW_DECAY_TIMEOUT": 21,
+          "PROFITABLE_CONTINUATION": 39
+        },
+        "profitFactor": 0.6717128648407189,
+        "profitableContinuationRate": 0.4482758620689655,
+        "returnPctP10": -25.100443915560845,
+        "returnPctP50": -2.671109888901111,
+        "returnPctP90": 11.879730602693973,
+        "sequentialMaxDrawdownSol": 1.5545274709999997,
+        "timeoutRate": 0.2413793103448276,
+        "top1PctGrossProfitShare": 0.09666808300041284,
+        "totalPnlSol": -1.169542176,
+        "uniqueMintN": 87,
+        "winRate": 0.47126436781609193,
+        "wins": 41,
+        "worstTradeSol": -0.275684671
+      }
+    }
+  },
+  "removedTopActivityMintsN": 27,
+  "schema": "STATIC_STATE_EXECUTABLE_VALUE_V1_REPORT",
+  "scoreReproductionMaximumAbsoluteDifference": 0.0,
+  "scoreSemantics": "forward probability of PROFITABLE_CONTINUATION",
+  "validationRowsInspected": 0,
+  "verdict": "STATIC_STATE_HAS_NO_USEFUL_EXECUTABLE_EDGE",
+  "verdictChecks": {
+    "chronologicalConsistency": false,
+    "descriptiveMonotonicity": false,
+    "materialPositiveExpectancy": false,
+    "minimumTrades": true,
+    "pessimisticExecution": false,
+    "profitFactor": false,
+    "survivesBestTwoRemoval": false
+  }
+}

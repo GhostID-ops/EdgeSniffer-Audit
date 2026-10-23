@@ -1,0 +1,27 @@
+{
+  "eligible_route_count": 0,
+  "gate_status": "BLOCKED_NATIVE_CAUSAL_COVERAGE",
+  "generated_at_utc": "2026-10-19T17:26:35.230124Z",
+  "input_rows": 46681,
+  "input_schemas": {
+    "KEFI_13_ARM_PUMPSWAP_EXACT_TAPE_V1": 46681
+  },
+  "interpretation": {
+    "controls": "Controls are same-route non-KEFI PumpSwap buys captured by the native route source, not venue-only tape rows.",
+    "next_step": "Only eligible routes may enter the preregistered entry/exit hypothesis surface; any selected policy still requires a separate fresh prospective cohort.",
+    "purpose": "Prove that route-specific native evidence can support realistic t+1 economics before searching policies.",
+    "t_plus_1": "A mark is usable only when the same pool/mint has a native post-entry state at least one second after the KEFI buy; the causal threshold additionally requires that mark within 30 seconds."
+  },
+  "native_input_rows": 0,
+  "native_source_required": true,
+  "policy_frozen": false,
+  "policy_selection_performed": false,
+  "read_only": true,
+  "research_only": true,
+  "routes": {},
+  "schema": "KEFI_ROUTE_CAUSAL_COVERAGE_GATE_V1",
+  "source_path": "research\\kefi-13-arm-program-v1\\prospective-multivenue-20261019T041500Z\\pumpswap-exact-tape-immutable-20261019T150904Z.jsonl",
+  "source_sha256": "7f8873cfe2135373d726209b726d5fc1a202132103014933cbdcca789e3d26a9",
+  "trading_enabled": false,
+  "validation_started": false
+}

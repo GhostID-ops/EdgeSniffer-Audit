@@ -1,0 +1,18 @@
+{
+  "schema": "KEFI_PRE_H3_FROZEN_INPUT_VERIFICATION_V1",
+  "verified_at_utc": "2026-10-12T17:21:16.9815033Z",
+  "outcomes_accessed": false,
+  "pnl_accessed": false,
+  "frozen_fingerprint": {
+    "vps_path": "/mnt/edgesniffer-expansion/kefi-cold-archives/20261007T-capacity-recovery/independent-v1/rich-preentry-fingerprint-v2.json",
+    "sha256": "db08899d92f4d69d8c0234cfff9cbd05bd27dfb1365aed88d08b85f88cfc1b4a",
+    "schema": "KEFI_RICH_PREENTRY_FINGERPRINT_V2",
+    "status": "FROZEN_FOR_PROSPECTIVE_OUTCOME_BLIND_SHADOW",
+    "feature_names": ["log_pre_pool_quote", "log_pre_pool_base", "amm_fee_bps", "observed_pool_age_seconds", "seconds_since_previous_observed_buy", "prior_pre_pool_quote_log_change", "prior_buy_count_5s", "prior_buy_count_20s", "prior_buy_count_60s", "prior_buy_quote_5s", "prior_buy_quote_20s", "prior_buy_quote_60s", "no_prior_observed_buy"]
+  },
+  "frozen_scorer": {
+    "path": "scripts/kefi_capture_first_frozen_opportunities_v1.py",
+    "sha256": "ae1771faeda813547ab8a0294c1384402580c1f1028c5672a570b613c801cff4"
+  },
+  "verification": "Read-only artifact identity/schema inspection. No qualification boundary, cohort, or fresh result was created."
+}

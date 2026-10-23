@@ -1,0 +1,23 @@
+{
+  "schema": "INDEPENDENT_BURST_PERSISTENCE_DIAGNOSTIC_V1",
+  "status": "Fixed before this diagnostic's outcome computation; existing canary is development evidence, not prospective validation",
+  "scope": "Pump SOL successful whole transactions, known non-Mayhem events, no teacher inputs",
+  "clock": "metadata_available_at_ns; file order, never chain-time sorted; no RPC enrichment",
+  "warmup_ms": 1000,
+  "burst_window_ms": 250,
+  "burst": "last two swaps buys, >=2 buyers in window, positive net executed SOL, last post-event price > first pre-event baseline observed before window; first qualifying seed per mint per capture",
+  "baseline": "last native state before the 250ms window, at most 1000ms old at seed",
+  "persistence": "at seed+2000ms retain >=50% initial move, positive executed flow since seed, >=2 buyers not present in seed window, largest buyer <=60% of confirmation buy SOL",
+  "entry_delay_ms": 1000,
+  "hold_ms": 15000,
+  "exit_delivery_ms": 1000,
+  "control": "at seed clock: non-burst other mint with successful SOL event in last250ms, same floor(log2(virtual quote lamports)) bucket, valid baseline/warmup; deterministic minimum hash(seed_id,mint); never exclude a future signal; allow and report reuse",
+  "marks": "latest causally observed event post-state at or before boundary; maximum age1000ms; missing/stale/right-censored retained; NOT executable price or proof of unchanged reserves",
+  "multi_event_and_order": "ambiguous multiple same-mint events in one transaction invalidate state/history; late canonical slot/index likewise invalidates until fresh warmup; do not reorder using future evidence",
+  "sizes_sol": [0.1, 0.5, 1.0],
+  "sizes_interpretation": "intent ledger only; price returns are size-free and not rescaled to PnL",
+  "outcomes": "seed-to+1s/+2s diagnostics; entry+1s to hold15s+exit1s primary, persistence entry+3s to+19s; same selected control and respective arm clocks",
+  "uncertainty": "paired 20-second seed-time block bootstrap,2000 draws, fixed RNG; descriptive only with few blocks and cross-block mint/control dependence; report medians and missingness",
+  "promotion": "none; no thresholds/exits selected from canary",
+  "minimum_additional_capture": "engineering floor: 100 independent seed mints with >=20s warmup/tail per bounded session, >=30 nonoverlapping20s blocks; first try fixed15min observation in bounded120s sessions if existing data insufficient. Coverage and sample targets are not validation or power guarantees."
+}

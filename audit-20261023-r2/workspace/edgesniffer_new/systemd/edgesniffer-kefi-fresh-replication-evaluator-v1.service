@@ -1,0 +1,14 @@
+[Unit]
+Description=EdgeSniffer kEFi fresh replication one-shot paper evaluator
+After=edgesniffer-kefi-capture-first-control-v3.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/bin/flock -n /run/edgesniffer-kefi-fresh-replication-evaluator-v1.lock /root/kefi-work/bin/kefi_fresh_replication_evaluator_v1.py --source-root /mnt/edgesniffer-kefi-hot/kefi-capture-first-live-v7 --control-out /root/kefi-capture-first-control-v7 --result-root /root/kefi-fresh-replication-results-v7 --minimum-partitions 6 --minimum-matches 8000
+Nice=15
+IOSchedulingClass=idle
+IOSchedulingPriority=7
+CPUQuota=50%
+IOWeight=5
+NoNewPrivileges=true

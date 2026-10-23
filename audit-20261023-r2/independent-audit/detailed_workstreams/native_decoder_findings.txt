@@ -1,0 +1,193 @@
+# Native capture, decoder, lineage, and deployment audit
+
+## Scope and verdict
+
+This workstream inspected the three supplied main Rust snapshots, native flow normalization, account normalization/replay, launch-lineage bridge, native scorer feature adapter, independent windows, and relevant boundary tests. It did not execute network collectors, ask for credentials, or submit transactions. Raw tape and deployed binaries are not included, so incidence and realized PnL cannot be established. All numerical examples below are **synthetic counterexamples executed against the included Python modules**, not estimates of production frequency.
+
+**Verdict:** Missing CREATE enrichment is a real blocker, but filling those fields alone will not make the current native replay a trustworthy profitability experiment. The native path can mismeasure signed flow, omit current valid trade types, replay instruction budgets as actual execution, silently discard legitimate transactions, erase intervening trades on seed refresh, and certify insufficient lineage. The frozen scorer is also fed a different event boundary from training. Positive or negative strategy PnL on those derived states cannot isolate the economic hypothesis.
+
+## Evidence and reproduction
+
+- `probe_native.py`: 11 adversarial offline probes, all reproduced expected failure cases against supplied code.
+- `probe_results.json`: numerical outputs and pass conditions.
+- `snapshot_inventory.json`: SHA-256, line count, and key feature presence for each main snapshot.
+- Included offline tests: `python -m unittest -v testMaterializeNativePumpCurveStateV1 testNormalizeNativePumpCurveAccountSeedsV1 testNormalizeNativePumpCurveAccountSeedsIncrementalV1 testMaterialize2CQEventDrivenIndependentWindowsV1` => **12 passed**.
+- Included standalone integration script `python testMaterializeNativeYellowstoneTransactionBridgeV1.py` => passed.
+- These passing tests are narrow. The fee-math test explicitly asserts the replay's subtract-from-gross formula; it is not an independent comparison with an executed Pump event or the separate exact helper.
+
+## Source path and what is actually established
+
+### Market-wide native path
+
+`rust-sidecar/src/main.rs:19674–19696` receives Jito entry batches, deserializes transactions, extracts native Pump observations without requiring teacher-wallet membership, and writes the normalized observation feed. `teacher_impulse_observation_from_native` at `main.rs:632–773` stamps the teacher-match label as metadata; it does not filter the market stream by that label. Thus the name "teacher impulse" does not by itself prove teacher-conditioned sampling.
+
+The normalized flow contains the instruction input, mint, wallet, source slot/index, and `local_receive_ts_ms`. `materializeNativePumpCurveStateV1.py` consumes it plus account seeds, computes derived reserve paths, and emits `NATIVE_SHRED_REPLAY` state. The research roadmap identifies `native-boundary-replay-v1.jsonl` as the independent input (`roadmap.md:28–33`). `materialize2CQEventDrivenIndependentWindowsV1.py`, `adapt2CQFrozenScorerNativeV1.py`, and `materialize2CQFrozenScorerWindowsV1.py` then consume those fields.
+
+This is a supported **code-level path**, not a verified deployment mapping. No systemd units, effective sanitized launch command, compiled artifact hash, or complete build manifest in this bundle identifies which source snapshot actually produced each cohort. The roadmap's named VPS binary is a claim in a document, not a binary available for inspection.
+
+### Native account capture scope
+
+Account capture can be owner-wide or watchlist-only. `main.rs:16844–16880` reads `curve_cache_owner_wide`; `main.rs:20534–20575` requests all Pump-owned accounts only if enabled and otherwise uses watched bonding curves. The latter can be selected by other parts of the system. Do not assume that an independent transaction stream automatically supplies independent, contemporaneous account-state coverage. Preserve the effective source filters and report eligibility/coverage across the full opportunity universe.
+
+### Finalized bridge is a different evidence clock
+
+`enrichNativePumpCurveStateV1.py:219–250` obtains finalized exact event state, assigns `canonical_state.state_observed_at_ms` to the earlier raw receive time, and separately records `fetched_at_ms` and finalized commitment. This can be useful retrospective truth, but the state was not necessarily available to a live decision at that earlier clock. The wrapper's source/fetched fields must survive every downstream admission gate. Current generic boundary admission does not enforce them.
+
+## Confirmed implementation findings
+
+### N1. Native sells contribute zero SOL to flow features
+
+**Severity: critical for the signal hypothesis.**
+
+The native Rust decoder sets `quote_lamports` only for buys, obtains sell token input, and sets `sell_quote_lamports = None` (`main.rs:21351–21368`; analogous Yellowstone path at `21510–21527`). The normalized observation retains that (`main.rs:733–760`). The replay computes reserve changes for a sell but never writes a realized sell quote to the output (`materializeNativePumpCurveStateV1.py:55–69,259–294`).
+
+The event-driven feature helper reads only `quote_lamports`/`raw_record.quoteLamports`, defaulting missing amounts to zero (`materialize2CQEventDrivenIndependentWindowsV1.py:66–76,101–103,118–141`). The frozen adapter likewise constructs an event with `quote_lamports=int(float(row.get('quote_lamports') or 0))` (`adapt2CQFrozenScorerNativeV1.py:111–124`).
+
+**Reproduced:** a sell reducing virtual SOL by **0.277008311 SOL**, followed by two **0.1 SOL buys** within 250 ms, is reported as **+0.2 SOL net flow**, with **0 SOL sells**. The actual signed buy-gross minus sell-gross flow is **−0.077008311 SOL**. The event-driven core gate passes. This is not merely a unit-scale discrepancy: the feature can have the wrong sign.
+
+**Fix:** distinguish instruction budgets, gross curve quote movement, immediate wallet quote, and fees. For processed successful events, fill signed economic flow from exact decoded trade event semantics. For unexecuted intent feeds, use separately named intent features and never impute missing sell quote to zero. Train and replay identical definitions.
+
+### N2. Current V3 decoding is incomplete, asymmetrically excluding sells
+
+**Severity: critical coverage and state fidelity.**
+
+Official Pump V3 documentation confirms `buy_v3`, `buy_exact_quote_in_v3`, and `sell_v3`, with mixed V2/V3 transactions possible on the same coin:
+
+`https://github.com/pump-fun/pump-public-docs/blob/main/docs/instructions/TRADE_V3.md`
+
+The included `main.rs` adds only `BUY_EXACT_QUOTE_IN_V3_DISCRIMINATOR` (`main.rs:77–89`). The native buy selector accepts legacy, V2, exact SOL, exact quote V2 and V3; the sell selector accepts only legacy and V2 (`21339–21350`, duplicated at `21499–21509`). There is no buy_v3 or sell_v3 discriminator anywhere in the supplied main snapshots. Both remote snapshots lack even the exact-quote V3 patch.
+
+**Consequence:** a valid sell_v3 does not become a flow event; no amount of later feature sorting can recover its missing state effect. This can manufacture continuation and erase adverse flow. The code defect is confirmed; production event share is unknown without raw tape.
+
+**Fix:** generate/version the decoder matrix from the pinned official IDL. Fixtures must cover every active instruction family and every side, including legacy/V2/V3 mixed transactions, partial fills, completion/migration boundary, and failure results. Report decode denominators against an independent successful-transaction truth source.
+
+### N3. Instruction limits are replayed as actual fills
+
+**Severity: critical state and money correctness.**
+
+Legacy/V2 exact-token buys read `max_sol_cost` at byte16 and place it in `quote_lamports` (`main.rs:21353–21361`; tracked-wallet extraction also does so). The replay then treats the whole value as spent quote and updates reserves (`materializeNativePumpCurveStateV1.py:36–54,259–265`). A slippage ceiling is not the realized cost. The exact token amount is present in instruction data but not carried as a buy transition constraint in this replay.
+
+ShredStream observations are decoded transaction intents and include no execution outcome in `NativeFlowEvent`; normalized `execution` is `None` (`main.rs:568–584,765`). A full transaction may fail after the Pump instruction, so instruction intent alone does not certify an applied state transition. The replay never checks execution status. The adversarial test supplies an explicit failed flag and `execution.success=false`; it still emits a changed reserve state and `native_economics_state_complete=true`.
+
+**Important qualification:** the separate watched-curve Yellowstone request filters `failed:false` (`main.rs:20563–20573`). That mitigates failed execution for that particular provider subscription, but it does not make raw Jito instruction replay executed truth, and does not solve amount/ALT/version gaps.
+
+**Fix:** process intent and confirmed execution in separate state machines. Never apply an uncertain instruction to an authoritative executable state. If trading on intentions is desired, that is a different strategy requiring explicit conditional-state branches and failure probabilities; it must not be labeled exact native reserves.
+
+### N4. Constant fee approximation and declared exactness are inconsistent
+
+`materializeNativePumpCurveStateV1.py:18–20,42–44` fixes 125 bps and calculates `net=gross-floor(gross*125/10000)`. The exact quote helper in the project inverses fee-inclusive input and handles rounding differently. The economics audit supplies exact size differentials. The native materializer hardcodes protocol95/creator30 (`286–288`), then calls economics complete merely when real-reserve keys exist (`289–291`). Its bridge records `causal:true,state_age_ms:0` unconditionally (`292–293`).
+
+The present documented default fee schedule may indeed be 125 bps for ordinary eligible curves; the defect is pretending a constant is an observed fee schedule and treating approximate state as exact, especially across instruction/creator/coin/version regimes. Current Pump V3 keeps fees on the curve; full account-balance interpretation must distinguish trade reserves from accrued fee liabilities. Do not infer fee amount or execution method solely from an account balance.
+
+### N5. Native CREATE vocabulary mismatch and missing launch fields
+
+**Severity: hard blocker for CREATE-derived lineage.**
+
+Rust emits `raw_record.nativeKind='creation'` and `raw_record.kind='teacherImpulseNativeObservation'` (`main.rs:654–676`). The Python replay recognizes only `nativeKind=='create'` or raw kinds `'create'/'token_create'` (`materializeNativePumpCurveStateV1.py:218`). The literal emitted CREATE followed by a buy produces **0 seeds, 0 output events, 1 missing-seed rejection** in the probe.
+
+Even repairing the spelling is insufficient: the Rust `Creation` struct contains mint/signature/slot/clock/token program/curve but no creator or initial reserve state (`main.rs:593–602`); its normalized record drops raw CREATE instruction bytes (`673`) and supplies no creator (`681`). The replay's accepted create branch uses fixed initial virtual reserve constants and omits real reserves (`222–223`). Thus it cannot supply the exact launch-lineage contract unaided.
+
+**Fix:** normalize one schema, preserve raw CREATE instruction/account/event evidence and program version, and capture the post-CREATE/pre-first-trade state plus creator/quote mint/config context. Keep synthetic/assumed initial-state models separate from exact provenance.
+
+### N6. Ordering keys drop legitimate transactions and later sorting does not repair state
+
+`run_jito_shredstream_once` sets `tx_index=0` inside each received entry batch (`main.rs:19674–19687`), not necessarily once per chain slot. The remote.current path does the same (`19174`). If a slot is delivered in more than one batch, that value is a local batch offset rather than a canonical slot transaction index. The replay's duplicate check ignores signatures and compares only `(slot,transaction_index,instruction_index)` (`materializeNativePumpCurveStateV1.py:217,250–253`).
+
+**Reproduced:** two distinct signatures with the same slot/index produce one emitted event and one duplicate rejection. A lower-index transaction arriving after a higher-index transaction is likewise silently counted as a duplicate. No invalidation or repair occurs. Stream-contract incidence requires actual wire batch evidence; the failure under those inputs is certain.
+
+The roadmap records receive-time sorting of previously derived rows (`roadmap.md:108`). Sorting feature inputs is not enough if the original state materializer already discarded transactions or applied an incomplete order. Preserve source arrival sequence and canonical sequence separately; never silently conflate them.
+
+### N7. A late older-slot seed erases previously applied intervening trades
+
+**Severity: critical reserve path correctness.**
+
+The loader retains receive time, slot, reserves and a source label, but discards account transaction signature/write version/native ns clocks (`materializeNativePumpCurveStateV1.py:98–128,132–160`). A seed is chosen if received by the trade and from an older slot; it overwrites current reserves and resets `last_order` to zeros if its receive time is newer than the last seed (`233–245`). The code does not replay already-processed trades after that seed's execution point.
+
+**Reproduced:** start at30 SOL; apply one1 SOL gross buy =>30.9875; receive a delayed duplicate slot9 seed at30 SOL; apply the next1 SOL buy =>30.9875. Under the module's own formula the correct state is31.975. **0.9875 SOL is erased.**
+
+**Fix:** identify each account write's canonical execution boundary and source availability. Rebase by replaying every subsequent valid transition, or invalidate state until a newer consistent snapshot. An older-slot state is not automatically a predecessor to the whole current path.
+
+### N8. Unlimited seed staleness is reported as zero age
+
+The Python replay has no seed freshness limit. A seed a day old and a current trade are admitted, and `state_age_ms` is still0. Receipt freshness of a new intent does not imply state completeness/freshness. Same-slot seeds are categorically rejected by `seed.slot<trade.slot`, which may exclude causally earlier same-slot writes yet still admit much older incomplete states.
+
+**Fix:** preserve snapshot age, state-valid-through execution boundary, missing-transition/fork/decoder coverage status, and decision available-at time. A freshness rule alone cannot establish complete replay; a complete event coverage proof is needed between the seed and current boundary.
+
+### N9. Completed raw curves pass normalization and replay
+
+`normalizeNativePumpCurveAccountSeedsV1.py:38–40` rejects `complete:true` before raw decoding, but `complete` is loaded from raw byte48 later (`63`) and never rechecked. The raw route also does not verify account owner or discriminator. The replay loader drops `complete` entirely.
+
+**Reproduced:** a raw account with complete byte1 is normalized with complete=true and then used to generate an economics-complete buy. A post-completion curve may not accept that buy; synthetic migration and migration delays make this flag economically relevant. The current checkpoint completeness function similarly tests reserve presence rather than phase validity (`materializeNativeReserveHorizonCheckpointsV1.py:81–102`).
+
+**Fix:** apply account identity/version/owner/discriminator/phase checks after decoding, carry phase through the state and quote schemas, and represent completion/migration as a state transition with venue eligibility, not as disappearance from the sample.
+
+### N10. Generic native boundary accepts future or finalized state
+
+`runIndependentStrategyLabV1.py:230–240` only tests a boolean source-clock label, nonempty entry source string, any parsed signal timestamp, and an entry-state dictionary. It does not require state available-at<=entry, entry=signal+1000, native source type, fee lineage, timestamp type, or a valid snapshot/replay chain.
+
+**Reproduced:** signal1000 ms, nominal entry2000 ms, state available900000 ms from a field explicitly named finalized RPC is accepted. The normal window materializers usually choose timestamps<=entry, so this probe establishes an **insufficient downstream certification boundary**, not proof they always select a future row. Finalized enrichment can preserve an old event timestamp while supplying later information, which simple `ts<=entry` does not detect.
+
+### N11. Frozen native feature boundary differs from training
+
+The adapter calls `timing.state_features(event, prior,...)` before appending current (`adapt2CQFrozenScorerNativeV1.py:203–213,252`). That function uses `current.pre_state` and external history in prior (`twoCqCausalEntryTimingFingerprintV1.py:318–352`). Frozen training's `POST_EXTERNAL_EVENT` wrapper passes event.post_state and history through the event (`twoCqDecisionSystemDecompositionV1.py:382–390,409–425`).
+
+**Reproduced:** for a1 SOL triggering buy, adapter features say gross_buy250=0, event-indexlog=0, curve_progress=0; frozen post-event training says1 SOL,0.693147,0.033333 respectively. This is a different hypothesis even before the separate score-probability/logit bug identified by the scorer auditor. Train/deploy must share the same pure feature function and explicit event boundary.
+
+### N12. Launch provenance is asserted, not enforced
+
+`materialize2CQNativeLaunchLineageV1.py:80–108` accepts missing provenance_status and validates only numeric state/nonempty creator/clock fields. It does not require a CREATE signature, raw-evidence hash, decoded account identity, instruction version, creator derivation, or account write relation. It then labels creator and reserve provenance as exact at output (`147–154`). The direct adapter's `metadata_for` is weaker still and does not enforce create-before-first-observation.
+
+**Reproduced:** arbitrary fields with no CREATE signature or provenance pass candidate_metadata. This is a schema validation weakness, not an allegation that operators fabricated data. Exactness should be checked against referenced immutable evidence; a flag is not the proof.
+
+### N13. ALT and CPI coverage require explicit accounting
+
+The Shred extractor uses only `tx.message.static_account_keys()` and only top-level instructions (`main.rs:21262–21288`). `filter_map` drops unresolved instruction-account indices rather than preserving position or rejecting the whole instruction (`21282–21286`); later positional account decoding can therefore shift if loaded addresses are unresolved. The Yellowstone extractor uses message.account_keys and does not append meta.loaded addresses (`21423–21444`). CPI instructions are not enumerated on these paths.
+
+Top-level SOL-only can be a valid **entry universe**. It is not enough for a complete **reserve evolution universe**: any successful CPI/alternate-version/ALT trade on the same curve changes state. Either include all liquidity-changing transitions or treat the state interval as unknown. Report unsupported-route counts per mint, not just global success ratios.
+
+## Clock interpretation and deployment drift
+
+### Native flow timestamps are post-deserialization/decoding timestamps
+
+`main.rs:19674–19695` receives and deserializes the batch before native extraction. Each flow calls `now_ms()` when constructing the observation (`21404`, analogous paths), and normalization copies that value to both `local_receive_ts_ms` and `decode_complete_ts_ms` (`746–747`). There is no distinct original ingress nanosecond clock on this flow object. Remote.current records a batch upstream clock in health counters (`19160–19163`) but does not pass it into each flow's receive field.
+
+This is not automatically look-ahead: a later decoder-ready timestamp can be conservative. But it cannot support a claim of precise network-arrival lead. Backlog time, batch boundaries, decode order and millisecond ties are not recoverable from the collapsed clock. The one-second rule must start from a defined observable feature-ready/decision boundary, and state/finality data must be available by that boundary. A new log must preserve both ingress and decode-ready clocks plus monotonic sequence and host identity.
+
+`sort_key` orders equal millisecond values by slot/index and then a string identity, not explicit instruction index (`materialize2CQEventDrivenIndependentWindowsV1.py:49–59`). Because transactions execute atomically, model decisions should occur at whole-transaction observation boundaries; arbitrary lexical ordering of same-transaction instruction ids must not create fictitious independent decisions.
+
+### No supplied snapshot combines all described repairs
+
+| Snapshot | Exact quote V3 | buy_v3 / sell_v3 | Real-reserve account emission | Fee-config account emission | Feed watchdog |
+|---|---:|---:|---:|---:|---:|
+| main.rs | Yes | No | No | No | No |
+| main.remote.current.rs | No | No | Yes | Yes | Yes |
+| main_remote.rs | No | No | Yes | Yes | Yes |
+
+`main.rs:17311–17329` emits virtual reserves/supply/completion but no real reserves. `main.remote.current.rs:16754–16755` emits the real reserves, and `16695–16721` captures raw fee-config bytes. Snapshot names do not prove which artifact was deployed. Require per-run source tree hash, build hash, decoder and IDL hashes, effective config (with secret values omitted), collector subscription filters, and input/output hashes.
+
+The bundle is not self-contained for a Rust build: Cargo.toml references missing `../.analysis_tmp/ledger_shim` and root binary paths; lib.rs references missing `../../kefi_*` modules. Therefore this workstream did not run `cargo test`; a Python fixture pass is not Rust deployment validation.
+
+## What to reuse, and the single highest-information build
+
+Do **not** rewrite everything. There are useful components: preserved raw event identities, separate source/finalized bridge labels, native account receive/write-version/txn-signature fields in the richer snapshot, immutable scorer JSON, existing exact quote functions, finalized decoder/resolved-account-key helpers, and focused parity test modules. The problem is disconnected contracts and certification that depends on flags instead of complete causal evidence.
+
+Build a small **versioned receive-time attempt ledger and parity replay**, independent of teacher selection, before another scorer sweep:
+
+1. Capture all Pump transactions and account updates for the predeclared market universe, with source ingress/decode-ready clocks, success/failed/unknown state, full top-level+inner instructions, resolved ALT accounts and account write signatures. Preserve raw bytes and source filters. Keep raw intent observations alongside, not inside, confirmed reserve state.
+2. Start the simplest strategy lane at a successful processed full transaction plus available native account/event state. That boundary is independently observable; label finality later without deleting or rewriting what was known. Preserve the raw-shred lane for a separate latency/intent hypothesis.
+3. Make one typed event/state/fee schema used by offline and native paths. Reconcile reserve transitions against actual successful event/account outcomes for every instruction version. Make missing sells/unsupported transitions invalidate dependent features instead of becoming zero flow.
+4. Pin one decision boundary: features from events available by t0; intended arrival t0+1000 ms; reject or explicitly model state uncertainty then. Record every opportunity/decision/attempt, including no fill, missed mark, decoder gap, completed curve, missing reserves and unavailable exits. Keep the denominator stable.
+5. Keep teacher activity only in offline outcome labels/analysis. Neither market eligibility nor control capture may depend on future teacher participation. Complete launch lineage is required for launch-specific features; an alternative current-state/250ms-completeness lane can omit launch age rather than proxy it.
+6. Run prefix invariance: replay only the first N raw observations and compare its decisions with the first N decisions from the full tape. Later finality/enrichment must not change past feature rows or eligibility. Run state parity by instruction, size, phase, source, slot/reorg and availability lag. Any unexplained discrepancy in a strategy input blocks that cohort's economic interpretation.
+
+Exact first report: source coverage denominators; per-version buy/sell/CREATE successes/failures/unsupported counts; resolved account completeness; per-transition reserve/fee/quote differences; state gap/staleness distribution; earliest source availability vs decision timestamps; native/offline feature vector and score equality; prefix-invariance failures; signal/control ledger with all censored/failed entries and exits retained. This report can tell whether an apparent strategy result is a market phenomenon or a decoder/state artifact in one controlled build.
+
+## External sources consulted
+
+Only official protocol sources were used for changing protocol claims:
+
+- Pump V3 instruction documentation: https://github.com/pump-fun/pump-public-docs/blob/main/docs/instructions/TRADE_V3.md (opened; three V3 instructions,17 accounts, mixed legacy/V2/V3, unchanged prices/fee amounts except synthetic-migration behavior and fee destination).
+- Official IDL: https://github.com/pump-fun/pump-public-docs/blob/main/idl/pump.json (opened; root also checking pinned definitions).
+- Official fee-reserve explanation: https://github.com/pump-fun/pump-public-docs/blob/main/docs/VIRTUAL_QUOTE_RESERVES_FEE_ADJUSTMENT.md (search result; root should open before final citation).
+
+Careful distinction: signed virtual quote reserve adjustment in the cited fee document concerns **PumpSwap Pool**, not a blanket assertion that every bonding-curve virtual reserve field is signed. Do not apply the pool's i128 type claim to the old bonding-curve u64 offset without checking the specific current IDL.

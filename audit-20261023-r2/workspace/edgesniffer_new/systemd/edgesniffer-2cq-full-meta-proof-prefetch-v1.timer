@@ -1,0 +1,12 @@
+[Unit]
+Description=Keep a bounded finalized-proof cache ahead of 2CQ replay
+
+[Timer]
+OnBootSec=1min
+OnUnitInactiveSec=45s
+Persistent=true
+RandomizedDelaySec=10
+Unit=edgesniffer-2cq-full-meta-proof-prefetch-v1.service
+
+[Install]
+WantedBy=timers.target

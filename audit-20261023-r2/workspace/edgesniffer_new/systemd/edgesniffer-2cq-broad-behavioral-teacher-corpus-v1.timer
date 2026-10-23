@@ -1,0 +1,12 @@
+[Unit]
+Description=Refresh 2CQ broad behavioral teacher corpus every five minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitInactiveSec=5min
+AccuracySec=15s
+Persistent=true
+Unit=edgesniffer-2cq-broad-behavioral-teacher-corpus-v1.service
+
+[Install]
+WantedBy=timers.target

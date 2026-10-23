@@ -1,0 +1,255 @@
+{
+  "checkpoints": [
+    {
+      "N": 3000,
+      "reached": true,
+      "remaining": 0
+    },
+    {
+      "N": 5000,
+      "reached": true,
+      "remaining": 0
+    },
+    {
+      "N": 10000,
+      "reached": false,
+      "remaining": 3152
+    },
+    {
+      "N": 15000,
+      "reached": false,
+      "remaining": 8152
+    },
+    {
+      "N": 25000,
+      "reached": false,
+      "remaining": 18152
+    },
+    {
+      "N": 50000,
+      "reached": false,
+      "remaining": 43152
+    }
+  ],
+  "chronologicalSplitBoundaries": {
+    "discoveryEndMint": null,
+    "holdoutEndMint": null,
+    "validationEndMint": null
+  },
+  "countingRule": "unique fresh mints in immutable receive-hour partitions with exact reconciliation, finalized successful create, finalized mint snapshot, supported non-tainted exact transition, and complete 120s evidence window",
+  "exactAdmittedN": 6848,
+  "excludedN": 6002,
+  "exclusionReasons": {
+    "create_not_finalized_successful": 1037,
+    "missing_canonical_ordering": 1,
+    "missing_finalized_mint_snapshot": 1037,
+    "no_supported_exact_transition": 6002,
+    "ordering_or_reserve_continuity_mismatch": 688,
+    "reserve_or_fee_mismatch": 93,
+    "unsupported_mayhem_transition": 3171,
+    "unsupported_trade_event_schema": 434
+  },
+  "featureCompleteness": {
+    "allAdmittedHaveFinalizedCreateSnapshotAndTransition": true,
+    "exactAdmittedShare": 0.5329182879377432
+  },
+  "freshMintsObservedN": 12850,
+  "generatedAtUtc": "2026-09-07T15:09:02.419074Z",
+  "implementationVersion": 4,
+  "regimeActivityDiversity": {
+    "activityByReceiveHour": [
+      {
+        "exactAdmittedMints": 64,
+        "failedTransactions": 11695,
+        "freshMints": 119,
+        "hourUtc": "2026-09-06T05:00:00Z",
+        "observedTransactions": 20967,
+        "successfulTransactions": 9272
+      },
+      {
+        "exactAdmittedMints": 387,
+        "failedTransactions": 222624,
+        "freshMints": 811,
+        "hourUtc": "2026-09-06T14:00:00Z",
+        "observedTransactions": 299700,
+        "successfulTransactions": 77076
+      },
+      {
+        "exactAdmittedMints": 485,
+        "failedTransactions": 198559,
+        "freshMints": 884,
+        "hourUtc": "2026-09-06T17:00:00Z",
+        "observedTransactions": 294557,
+        "successfulTransactions": 95998
+      },
+      {
+        "exactAdmittedMints": 538,
+        "failedTransactions": 199409,
+        "freshMints": 987,
+        "hourUtc": "2026-09-06T19:00:00Z",
+        "observedTransactions": 322299,
+        "successfulTransactions": 122890
+      },
+      {
+        "exactAdmittedMints": 336,
+        "failedTransactions": 256421,
+        "freshMints": 693,
+        "hourUtc": "2026-09-06T20:00:00Z",
+        "observedTransactions": 345362,
+        "successfulTransactions": 88941
+      },
+      {
+        "exactAdmittedMints": 516,
+        "failedTransactions": 230577,
+        "freshMints": 1042,
+        "hourUtc": "2026-09-06T21:00:00Z",
+        "observedTransactions": 348944,
+        "successfulTransactions": 118367
+      },
+      {
+        "exactAdmittedMints": 632,
+        "failedTransactions": 177732,
+        "freshMints": 1092,
+        "hourUtc": "2026-09-06T22:00:00Z",
+        "observedTransactions": 321453,
+        "successfulTransactions": 143721
+      },
+      {
+        "exactAdmittedMints": 516,
+        "failedTransactions": 218317,
+        "freshMints": 872,
+        "hourUtc": "2026-09-06T23:00:00Z",
+        "observedTransactions": 314513,
+        "successfulTransactions": 96196
+      },
+      {
+        "exactAdmittedMints": 446,
+        "failedTransactions": 262344,
+        "freshMints": 771,
+        "hourUtc": "2026-09-07T00:00:00Z",
+        "observedTransactions": 342775,
+        "successfulTransactions": 80431
+      },
+      {
+        "exactAdmittedMints": 343,
+        "failedTransactions": 277412,
+        "freshMints": 600,
+        "hourUtc": "2026-09-07T02:00:00Z",
+        "observedTransactions": 355994,
+        "successfulTransactions": 78582
+      },
+      {
+        "exactAdmittedMints": 273,
+        "failedTransactions": 269379,
+        "freshMints": 498,
+        "hourUtc": "2026-09-07T04:00:00Z",
+        "observedTransactions": 334782,
+        "successfulTransactions": 65403
+      },
+      {
+        "exactAdmittedMints": 352,
+        "failedTransactions": 246248,
+        "freshMints": 673,
+        "hourUtc": "2026-09-07T05:00:00Z",
+        "observedTransactions": 328270,
+        "successfulTransactions": 82022
+      },
+      {
+        "exactAdmittedMints": 283,
+        "failedTransactions": 283196,
+        "freshMints": 572,
+        "hourUtc": "2026-09-07T06:00:00Z",
+        "observedTransactions": 353494,
+        "successfulTransactions": 70298
+      },
+      {
+        "exactAdmittedMints": 362,
+        "failedTransactions": 244308,
+        "freshMints": 666,
+        "hourUtc": "2026-09-07T07:00:00Z",
+        "observedTransactions": 327604,
+        "successfulTransactions": 83296
+      },
+      {
+        "exactAdmittedMints": 259,
+        "failedTransactions": 264996,
+        "freshMints": 576,
+        "hourUtc": "2026-09-07T08:00:00Z",
+        "observedTransactions": 336212,
+        "successfulTransactions": 71216
+      },
+      {
+        "exactAdmittedMints": 348,
+        "failedTransactions": 179435,
+        "freshMints": 625,
+        "hourUtc": "2026-09-07T09:00:00Z",
+        "observedTransactions": 255903,
+        "successfulTransactions": 76468
+      },
+      {
+        "exactAdmittedMints": 353,
+        "failedTransactions": 183054,
+        "freshMints": 664,
+        "hourUtc": "2026-09-07T10:00:00Z",
+        "observedTransactions": 281006,
+        "successfulTransactions": 97952
+      },
+      {
+        "exactAdmittedMints": 355,
+        "failedTransactions": 211503,
+        "freshMints": 716,
+        "hourUtc": "2026-09-07T11:00:00Z",
+        "observedTransactions": 304795,
+        "successfulTransactions": 93292
+      }
+    ],
+    "assessment": "INSUFFICIENT_DIVERSITY",
+    "exactAdmittedPerHourMax": 632.0,
+    "exactAdmittedPerHourMedian": 354.0,
+    "exactAdmittedPerHourMin": 64.0
+  },
+  "replayCompleteness": {
+    "allCountedRowsHaveComplete120sWindow": true,
+    "exactReconciledPartitionN": 18
+  },
+  "researchPlan": {
+    "discovery": "first 10,000 chronological exact-admitted mints",
+    "earliestExploratoryN": 3000,
+    "etaToExploratoryHoursAtObservedRate": 0.0,
+    "holdout": "next untouched 10,000 chronological exact-admitted mints",
+    "minimumDiversityHours": 24,
+    "observedExactAdmissionRatePerHour": 227.2042763006313,
+    "rateCaveat": "provisional until at least 24 exact-admitted UTC hours are represented",
+    "startDiscoveryNow": true,
+    "validation": "next untouched 10,000 chronological exact-admitted mints"
+  },
+  "schema": "PUMP_EXACT_EVIDENCE_READINESS_V1",
+  "utcCoverage": {
+    "admittedMintHoursRepresented": 20,
+    "exactPartitionHours": 18,
+    "firstCreateUtc": "2026-09-06T05:51:11Z",
+    "hours": [
+      "2026-09-06T05:00:00Z",
+      "2026-09-06T14:00:00Z",
+      "2026-09-06T16:00:00Z",
+      "2026-09-06T17:00:00Z",
+      "2026-09-06T18:00:00Z",
+      "2026-09-06T19:00:00Z",
+      "2026-09-06T20:00:00Z",
+      "2026-09-06T21:00:00Z",
+      "2026-09-06T22:00:00Z",
+      "2026-09-06T23:00:00Z",
+      "2026-09-07T00:00:00Z",
+      "2026-09-07T02:00:00Z",
+      "2026-09-07T04:00:00Z",
+      "2026-09-07T05:00:00Z",
+      "2026-09-07T06:00:00Z",
+      "2026-09-07T07:00:00Z",
+      "2026-09-07T08:00:00Z",
+      "2026-09-07T09:00:00Z",
+      "2026-09-07T10:00:00Z",
+      "2026-09-07T11:00:00Z"
+    ],
+    "lastCreateUtc": "2026-09-07T11:59:37Z"
+  }
+}

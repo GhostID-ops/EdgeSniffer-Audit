@@ -1,0 +1,3742 @@
+{
+  "blocks": [
+    {
+      "endOrdinal": 1000,
+      "name": "A_1_1000",
+      "startOrdinal": 1
+    },
+    {
+      "endOrdinal": 2000,
+      "name": "B_1001_2000",
+      "startOrdinal": 1001
+    },
+    {
+      "endOrdinal": 3000,
+      "name": "C_2001_3000",
+      "startOrdinal": 2001
+    },
+    {
+      "endOrdinal": 4000,
+      "name": "D_3001_4000",
+      "startOrdinal": 3001
+    },
+    {
+      "endOrdinal": 5000,
+      "name": "E_4001_5000",
+      "startOrdinal": 4001
+    },
+    {
+      "endOrdinal": 3000,
+      "name": "EARLY_1_3000",
+      "startOrdinal": 1
+    },
+    {
+      "endOrdinal": 5000,
+      "name": "LATER_3001_5000",
+      "startOrdinal": 3001
+    }
+  ],
+  "schema": "PUMP_EXACT_ALPHA_N5000_CHRONOLOGY_V1",
+  "top15": [
+    {
+      "candidateId": "C-4cf71d36f6e15aac",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 9,
+            "PF": 3.574300741097505,
+            "SL": 1,
+            "TP": 2,
+            "WR": 0.8333333333333334,
+            "bestRoiPct": 25.701386186138137,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 5.133416649166842,
+            "matchUniqueMintN": 12,
+            "medianRoiPct": 3.351021689783102,
+            "passN": 12,
+            "totalPnlSol": 0.308008079,
+            "worstRoiPct": -21.45810461895381
+          },
+          "1.00": {
+            "MAX_HOLD": 8,
+            "PF": 1.2857540866241959,
+            "SL": 2,
+            "TP": 1,
+            "WR": 0.8181818181818182,
+            "bestRoiPct": 25.74916835415823,
+            "executableShareOfMatches": 0.9166666666666666,
+            "expectancyReturnPct": 1.2761791554678588,
+            "matchUniqueMintN": 12,
+            "medianRoiPct": 2.19081364593177,
+            "passN": 11,
+            "totalPnlSol": 0.140380409,
+            "worstRoiPct": -27.5679240603797
+          },
+          "matchingUniqueN": 12
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 29,
+            "PF": 6.232088606852841,
+            "SL": 1,
+            "TP": 19,
+            "WR": 0.673469387755102,
+            "bestRoiPct": 27.67630543694563,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 8.45095414351979,
+            "matchUniqueMintN": 49,
+            "medianRoiPct": 4.735386646133539,
+            "passN": 49,
+            "totalPnlSol": 2.07050447,
+            "worstRoiPct": -28.11739502604974
+          },
+          "1.00": {
+            "MAX_HOLD": 29,
+            "PF": 5.7450861335778844,
+            "SL": 1,
+            "TP": 19,
+            "WR": 0.6530612244897959,
+            "bestRoiPct": 26.64235858820706,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 7.921039713168781,
+            "matchUniqueMintN": 49,
+            "medianRoiPct": 4.094544927275364,
+            "passN": 49,
+            "totalPnlSol": 3.881328866,
+            "worstRoiPct": -28.230589647051765
+          },
+          "matchingUniqueN": 49
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 15,
+            "PF": 2.9299822232334436,
+            "SL": 2,
+            "TP": 9,
+            "WR": 0.5,
+            "bestRoiPct": 46.031137088629116,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.367171605207025,
+            "matchUniqueMintN": 26,
+            "medianRoiPct": -0.08316426835731643,
+            "passN": 26,
+            "totalPnlSol": 0.827740586,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 14,
+            "PF": 2.7550993220792583,
+            "SL": 2,
+            "TP": 9,
+            "WR": 0.48,
+            "bestRoiPct": 46.20760846195769,
+            "executableShareOfMatches": 0.9615384615384616,
+            "expectancyReturnPct": 6.260499925500373,
+            "matchUniqueMintN": 26,
+            "medianRoiPct": -0.34476797616011917,
+            "passN": 25,
+            "totalPnlSol": 1.565132807,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 26
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 15,
+            "PF": 0.575451276434095,
+            "SL": 2,
+            "TP": 3,
+            "WR": 0.3,
+            "bestRoiPct": 21.06257477425226,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.4522541074589252,
+            "matchUniqueMintN": 20,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 20,
+            "totalPnlSol": -0.245227863,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 13,
+            "PF": 0.6151854665765394,
+            "SL": 2,
+            "TP": 3,
+            "WR": 0.3333333333333333,
+            "bestRoiPct": 22.384638476807616,
+            "executableShareOfMatches": 0.9,
+            "expectancyReturnPct": -2.3816640194576806,
+            "matchUniqueMintN": 20,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 18,
+            "totalPnlSol": -0.428701667,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 20
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 53,
+            "PF": 4.395503987727876,
+            "SL": 4,
+            "TP": 30,
+            "WR": 0.6436781609195402,
+            "bestRoiPct": 46.031137088629116,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 7.370623155837407,
+            "matchUniqueMintN": 87,
+            "medianRoiPct": 4.127888121118789,
+            "passN": 87,
+            "totalPnlSol": 3.206253135,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 51,
+            "PF": 3.5383266419017882,
+            "SL": 5,
+            "TP": 29,
+            "WR": 0.6235294117647059,
+            "bestRoiPct": 46.20760846195769,
+            "executableShareOfMatches": 0.9770114942528736,
+            "expectancyReturnPct": 6.572722526975601,
+            "matchUniqueMintN": 87,
+            "medianRoiPct": 3.790763246183769,
+            "passN": 85,
+            "totalPnlSol": 5.586842082,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 87
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 9,
+            "PF": 2.89816851537551,
+            "SL": 1,
+            "TP": 3,
+            "WR": 0.6153846153846154,
+            "bestRoiPct": 21.42330936690633,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 4.953341697352258,
+            "matchUniqueMintN": 13,
+            "medianRoiPct": 2.5557326426735734,
+            "passN": 13,
+            "totalPnlSol": 0.32197043,
+            "worstRoiPct": -20.31562624373756
+          },
+          "1.00": {
+            "MAX_HOLD": 9,
+            "PF": 2.8310633564507044,
+            "SL": 1,
+            "TP": 3,
+            "WR": 0.6153846153846154,
+            "bestRoiPct": 21.567388363058186,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 4.821189163284953,
+            "matchUniqueMintN": 13,
+            "medianRoiPct": 2.531014544927275,
+            "passN": 13,
+            "totalPnlSol": 0.626757725,
+            "worstRoiPct": -20.39437022814886
+          },
+          "matchingUniqueN": 13
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 24,
+            "PF": 1.1027011307231724,
+            "SL": 3,
+            "TP": 6,
+            "WR": 0.42424242424242425,
+            "bestRoiPct": 21.42330936690633,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.46510181564851044,
+            "matchUniqueMintN": 33,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 33,
+            "totalPnlSol": 0.07674256700000001,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 22,
+            "PF": 1.135995833552948,
+            "SL": 3,
+            "TP": 6,
+            "WR": 0.45161290322580644,
+            "bestRoiPct": 22.384638476807616,
+            "executableShareOfMatches": 0.9393939393939394,
+            "expectancyReturnPct": 0.6388873152408432,
+            "matchUniqueMintN": 33,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 31,
+            "totalPnlSol": 0.198056058,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 33
+        }
+      },
+      "classification": "MOSTLY_CONSISTENT",
+      "clauses": [
+        [
+          "firstBuyerShareBps",
+          "le",
+          360.40437631955825
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 4,
+      "state": "FIXED_25MS"
+    },
+    {
+      "candidateId": "C-15ed82eb4ecd7f4f",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 12,
+            "PF": 1.6683578586980143,
+            "SL": 2,
+            "TP": 2,
+            "WR": 0.6875,
+            "bestRoiPct": 25.701386186138137,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.244851026489735,
+            "matchUniqueMintN": 16,
+            "medianRoiPct": 2.057559724402756,
+            "passN": 16,
+            "totalPnlSol": 0.17958987799999998,
+            "worstRoiPct": -21.45810461895381
+          },
+          "1.00": {
+            "MAX_HOLD": 12,
+            "PF": 0.8230156624221028,
+            "SL": 3,
+            "TP": 1,
+            "WR": 0.625,
+            "bestRoiPct": 25.74916835415823,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.9037282626086872,
+            "matchUniqueMintN": 16,
+            "medianRoiPct": 1.8675793621031895,
+            "passN": 16,
+            "totalPnlSol": -0.14459724499999999,
+            "worstRoiPct": -27.5679240603797
+          },
+          "matchingUniqueN": 16
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 24,
+            "PF": 5.333753891875397,
+            "SL": 2,
+            "TP": 19,
+            "WR": 0.6666666666666666,
+            "bestRoiPct": 27.67630543694563,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 8.578220480017421,
+            "matchUniqueMintN": 45,
+            "medianRoiPct": 4.735386646133539,
+            "passN": 45,
+            "totalPnlSol": 1.930118909,
+            "worstRoiPct": -28.11739502604974
+          },
+          "1.00": {
+            "MAX_HOLD": 24,
+            "PF": 5.1567045001719665,
+            "SL": 2,
+            "TP": 19,
+            "WR": 0.6444444444444445,
+            "bestRoiPct": 26.64235858820706,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 8.440928473135411,
+            "matchUniqueMintN": 45,
+            "medianRoiPct": 4.346172769136154,
+            "passN": 45,
+            "totalPnlSol": 3.798436805,
+            "worstRoiPct": -28.230589647051765
+          },
+          "matchingUniqueN": 45
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 15,
+            "PF": 3.0747049318342503,
+            "SL": 2,
+            "TP": 11,
+            "WR": 0.5,
+            "bestRoiPct": 24.416962830371695,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.112603988245832,
+            "matchUniqueMintN": 28,
+            "medianRoiPct": 0.406970630293697,
+            "passN": 28,
+            "totalPnlSol": 0.855773116,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 15,
+            "PF": 2.8508718910476643,
+            "SL": 2,
+            "TP": 11,
+            "WR": 0.4642857142857143,
+            "bestRoiPct": 24.711062244688776,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 5.799705233616689,
+            "matchUniqueMintN": 28,
+            "medianRoiPct": -0.3068883655581722,
+            "passN": 28,
+            "totalPnlSol": 1.623925585,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 28
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 13,
+            "PF": 0.44613615056296035,
+            "SL": 6,
+            "TP": 3,
+            "WR": 0.45454545454545453,
+            "bestRoiPct": 21.06257477425226,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -4.969135272283641,
+            "matchUniqueMintN": 22,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 22,
+            "totalPnlSol": -0.546610346,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 13,
+            "PF": 0.4251686932385573,
+            "SL": 6,
+            "TP": 3,
+            "WR": 0.45454545454545453,
+            "bestRoiPct": 21.09518332408338,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -5.200057336076956,
+            "matchUniqueMintN": 22,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 22,
+            "totalPnlSol": -1.144018334,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 22
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 51,
+            "PF": 3.6323537458706725,
+            "SL": 6,
+            "TP": 32,
+            "WR": 0.6179775280898876,
+            "bestRoiPct": 27.67630543694563,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.663937637028124,
+            "matchUniqueMintN": 89,
+            "medianRoiPct": 3.687342526574734,
+            "passN": 89,
+            "totalPnlSol": 2.965481903,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 51,
+            "PF": 3.0235280311098545,
+            "SL": 7,
+            "TP": 31,
+            "WR": 0.5842696629213483,
+            "bestRoiPct": 26.64235858820706,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 5.930043546411482,
+            "matchUniqueMintN": 89,
+            "medianRoiPct": 2.6356773216133917,
+            "passN": 89,
+            "totalPnlSol": 5.277765145,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 89
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 7,
+            "PF": 1.3979455839321167,
+            "SL": 4,
+            "TP": 4,
+            "WR": 0.6,
+            "bestRoiPct": 32.391864481355185,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.492843431565684,
+            "matchUniqueMintN": 15,
+            "medianRoiPct": 2.5557326426735734,
+            "passN": 15,
+            "totalPnlSol": 0.18696512699999998,
+            "worstRoiPct": -21.470771292287075
+          },
+          "1.00": {
+            "MAX_HOLD": 7,
+            "PF": 1.3824129559209086,
+            "SL": 4,
+            "TP": 4,
+            "WR": 0.6,
+            "bestRoiPct": 32.52215748921255,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.4589036188152393,
+            "matchUniqueMintN": 15,
+            "medianRoiPct": 2.531014544927275,
+            "passN": 15,
+            "totalPnlSol": 0.368837387,
+            "worstRoiPct": -22.19520432397838
+          },
+          "matchingUniqueN": 15
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 20,
+            "PF": 0.7531146480514792,
+            "SL": 10,
+            "TP": 7,
+            "WR": 0.5135135135135135,
+            "bestRoiPct": 32.391864481355185,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -1.9440087707231035,
+            "matchUniqueMintN": 37,
+            "medianRoiPct": 0.15909560904390957,
+            "passN": 37,
+            "totalPnlSol": -0.359645219,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 20,
+            "PF": 0.7376431196654247,
+            "SL": 10,
+            "TP": 7,
+            "WR": 0.5135135135135135,
+            "bestRoiPct": 32.52215748921255,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.0950731651747145,
+            "matchUniqueMintN": 37,
+            "medianRoiPct": 0.1421879890600547,
+            "passN": 37,
+            "totalPnlSol": -0.775180947,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 37
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "firstBuyerShareBps",
+          "le",
+          2202.5049596318086
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 3,
+      "state": "FIRST_IMPULSE_EVENT"
+    },
+    {
+      "candidateId": "C-9c914a1b33f160b6",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 14,
+            "PF": 1.316084329343415,
+            "SL": 2,
+            "TP": 2,
+            "WR": 0.5555555555555556,
+            "bestRoiPct": 25.701386186138137,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 1.141211954547121,
+            "matchUniqueMintN": 18,
+            "medianRoiPct": 1.7246546534534655,
+            "passN": 18,
+            "totalPnlSol": 0.102710103,
+            "worstRoiPct": -21.45810461895381
+          },
+          "1.00": {
+            "MAX_HOLD": 13,
+            "PF": 0.6978236037209852,
+            "SL": 3,
+            "TP": 1,
+            "WR": 0.5294117647058824,
+            "bestRoiPct": 25.74916835415823,
+            "executableShareOfMatches": 0.9444444444444444,
+            "expectancyReturnPct": -1.6089248377287526,
+            "matchUniqueMintN": 18,
+            "medianRoiPct": 1.446722266388668,
+            "passN": 17,
+            "totalPnlSol": -0.27351859,
+            "worstRoiPct": -27.5679240603797
+          },
+          "matchingUniqueN": 18
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 30,
+            "PF": 4.277300009869731,
+            "SL": 3,
+            "TP": 20,
+            "WR": 0.660377358490566,
+            "bestRoiPct": 27.67630543694563,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 7.612268307505604,
+            "matchUniqueMintN": 53,
+            "medianRoiPct": 4.735386646133539,
+            "passN": 53,
+            "totalPnlSol": 2.017271274,
+            "worstRoiPct": -28.11739502604974
+          },
+          "1.00": {
+            "MAX_HOLD": 30,
+            "PF": 3.9188410211687406,
+            "SL": 3,
+            "TP": 20,
+            "WR": 0.6415094339622641,
+            "bestRoiPct": 26.64235858820706,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.949653512109798,
+            "matchUniqueMintN": 53,
+            "medianRoiPct": 4.031229743851281,
+            "passN": 53,
+            "totalPnlSol": 3.683334778,
+            "worstRoiPct": -28.230589647051765
+          },
+          "matchingUniqueN": 53
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 22,
+            "PF": 2.343413866415038,
+            "SL": 3,
+            "TP": 11,
+            "WR": 0.4166666666666667,
+            "bestRoiPct": 46.031137088629116,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 4.716853425910185,
+            "matchUniqueMintN": 36,
+            "medianRoiPct": -0.8629768702312977,
+            "passN": 36,
+            "totalPnlSol": 0.849042107,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 21,
+            "PF": 2.2367249174462605,
+            "SL": 3,
+            "TP": 11,
+            "WR": 0.4,
+            "bestRoiPct": 46.20760846195769,
+            "executableShareOfMatches": 0.9722222222222222,
+            "expectancyReturnPct": 4.602319965543029,
+            "matchUniqueMintN": 36,
+            "medianRoiPct": -1.277835810820946,
+            "passN": 35,
+            "totalPnlSol": 1.610820042,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 36
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 21,
+            "PF": 0.3139840594525196,
+            "SL": 6,
+            "TP": 3,
+            "WR": 0.23333333333333334,
+            "bestRoiPct": 21.06257477425226,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -5.619868227984386,
+            "matchUniqueMintN": 30,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 30,
+            "totalPnlSol": -0.8429886639999999,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 19,
+            "PF": 0.3149030642298849,
+            "SL": 6,
+            "TP": 3,
+            "WR": 0.25,
+            "bestRoiPct": 22.384638476807616,
+            "executableShareOfMatches": 0.9333333333333333,
+            "expectancyReturnPct": -5.934851711455728,
+            "matchUniqueMintN": 30,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 28,
+            "totalPnlSol": -1.661766788,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 30
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 66,
+            "PF": 2.888118802115427,
+            "SL": 8,
+            "TP": 33,
+            "WR": 0.5607476635514018,
+            "bestRoiPct": 46.031137088629116,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 5.549521110396372,
+            "matchUniqueMintN": 107,
+            "medianRoiPct": 1.896278837211628,
+            "passN": 107,
+            "totalPnlSol": 2.969023484,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 64,
+            "PF": 2.4470496188355964,
+            "SL": 9,
+            "TP": 32,
+            "WR": 0.5428571428571428,
+            "bestRoiPct": 46.20760846195769,
+            "executableShareOfMatches": 0.9813084112149533,
+            "expectancyReturnPct": 4.781534406613681,
+            "matchUniqueMintN": 107,
+            "medianRoiPct": 1.7144229278853607,
+            "passN": 105,
+            "totalPnlSol": 5.02063623,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 107
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 13,
+            "PF": 1.3057815729255358,
+            "SL": 5,
+            "TP": 5,
+            "WR": 0.43478260869565216,
+            "bestRoiPct": 74.84822951770482,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 1.9743619346415233,
+            "matchUniqueMintN": 23,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 23,
+            "totalPnlSol": 0.22705389299999998,
+            "worstRoiPct": -29.11379726202738
+          },
+          "1.00": {
+            "MAX_HOLD": 13,
+            "PF": 1.3135554206810043,
+            "SL": 5,
+            "TP": 5,
+            "WR": 0.43478260869565216,
+            "bestRoiPct": 75.31443552782235,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.0382964867784357,
+            "matchUniqueMintN": 23,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 23,
+            "totalPnlSol": 0.46881053599999994,
+            "worstRoiPct": -29.205420072899635
+          },
+          "matchingUniqueN": 23
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 34,
+            "PF": 0.6875575186488286,
+            "SL": 11,
+            "TP": 8,
+            "WR": 0.32075471698113206,
+            "bestRoiPct": 74.84822951770482,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.32425891212786,
+            "matchUniqueMintN": 53,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 53,
+            "totalPnlSol": -0.615934771,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 32,
+            "PF": 0.6957316902032583,
+            "SL": 11,
+            "TP": 8,
+            "WR": 0.3333333333333333,
+            "bestRoiPct": 75.31443552782235,
+            "executableShareOfMatches": 0.9622641509433962,
+            "expectancyReturnPct": -2.3391182102913017,
+            "matchUniqueMintN": 53,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 51,
+            "totalPnlSol": -1.192956252,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 53
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "firstBuyerShareBps",
+          "le",
+          1985.1116617920266
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 3,
+      "state": "FIXED_25MS"
+    },
+    {
+      "candidateId": "C-0a6c383e69389ffa",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 11,
+            "PF": 1.2776504908241912,
+            "SL": 2,
+            "TP": 2,
+            "WR": 0.6666666666666666,
+            "bestRoiPct": 23.629386706132937,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 1.0910199031343017,
+            "matchUniqueMintN": 15,
+            "medianRoiPct": 1.553030469695303,
+            "passN": 15,
+            "totalPnlSol": 0.08182731100000001,
+            "worstRoiPct": -26.235675643243567
+          },
+          "1.00": {
+            "MAX_HOLD": 10,
+            "PF": 0.6292541821483295,
+            "SL": 3,
+            "TP": 1,
+            "WR": 0.6428571428571429,
+            "bestRoiPct": 23.71089744551277,
+            "executableShareOfMatches": 0.9333333333333333,
+            "expectancyReturnPct": -2.2327204435406394,
+            "matchUniqueMintN": 15,
+            "medianRoiPct": 0.5062695186524068,
+            "passN": 14,
+            "totalPnlSol": -0.312582425,
+            "worstRoiPct": -27.5679240603797
+          },
+          "matchingUniqueN": 15
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 31,
+            "PF": 5.048035853062084,
+            "SL": 1,
+            "TP": 19,
+            "WR": 0.6274509803921569,
+            "bestRoiPct": 26.04129438705613,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 7.4353469955496525,
+            "matchUniqueMintN": 51,
+            "medianRoiPct": 4.386014539854601,
+            "passN": 51,
+            "totalPnlSol": 1.896032444,
+            "worstRoiPct": -28.11739502604974
+          },
+          "1.00": {
+            "MAX_HOLD": 31,
+            "PF": 4.663292391928903,
+            "SL": 1,
+            "TP": 19,
+            "WR": 0.6078431372549019,
+            "bestRoiPct": 24.643800580997095,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.957408232566681,
+            "matchUniqueMintN": 51,
+            "medianRoiPct": 3.2311472442637785,
+            "passN": 51,
+            "totalPnlSol": 3.54829594,
+            "worstRoiPct": -28.230589647051765
+          },
+          "matchingUniqueN": 51
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 22,
+            "PF": 1.8540978354000286,
+            "SL": 2,
+            "TP": 9,
+            "WR": 0.3333333333333333,
+            "bestRoiPct": 22.9990042099579,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.8267168601041264,
+            "matchUniqueMintN": 33,
+            "medianRoiPct": -1.9839487605123949,
+            "passN": 33,
+            "totalPnlSol": 0.466412946,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 21,
+            "PF": 1.7616237053811499,
+            "SL": 2,
+            "TP": 9,
+            "WR": 0.34375,
+            "bestRoiPct": 22.757884710576448,
+            "executableShareOfMatches": 0.9696969696969697,
+            "expectancyReturnPct": 2.6929510008699955,
+            "matchUniqueMintN": 33,
+            "medianRoiPct": -2.231050794746026,
+            "passN": 32,
+            "totalPnlSol": 0.861748629,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 33
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 16,
+            "PF": 0.41378257010919256,
+            "SL": 4,
+            "TP": 3,
+            "WR": 0.2608695652173913,
+            "bestRoiPct": 21.06257477425226,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -4.094823460461047,
+            "matchUniqueMintN": 23,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 23,
+            "totalPnlSol": -0.470909407,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 14,
+            "PF": 0.4367502966803846,
+            "SL": 4,
+            "TP": 3,
+            "WR": 0.2857142857142857,
+            "bestRoiPct": 22.384638476807616,
+            "executableShareOfMatches": 0.9130434782608695,
+            "expectancyReturnPct": -4.208778498964648,
+            "matchUniqueMintN": 23,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 21,
+            "totalPnlSol": -0.883847904,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 23
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 64,
+            "PF": 2.867018408878787,
+            "SL": 5,
+            "TP": 30,
+            "WR": 0.5353535353535354,
+            "bestRoiPct": 26.04129438705613,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 4.937875269732151,
+            "matchUniqueMintN": 99,
+            "medianRoiPct": 1.0587658123418766,
+            "passN": 99,
+            "totalPnlSol": 2.444272701,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 62,
+            "PF": 2.3921846206336372,
+            "SL": 6,
+            "TP": 29,
+            "WR": 0.5257731958762887,
+            "bestRoiPct": 24.643800580997095,
+            "executableShareOfMatches": 0.9797979797979798,
+            "expectancyReturnPct": 4.224166656486305,
+            "matchUniqueMintN": 99,
+            "medianRoiPct": 0.34999475002624986,
+            "passN": 97,
+            "totalPnlSol": 4.097462144,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 99
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 13,
+            "PF": 0.8824353224641305,
+            "SL": 4,
+            "TP": 4,
+            "WR": 0.38095238095238093,
+            "bestRoiPct": 21.372373276267236,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.7431534065611722,
+            "matchUniqueMintN": 21,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 21,
+            "totalPnlSol": -0.07803188800000001,
+            "worstRoiPct": -29.11379726202738
+          },
+          "1.00": {
+            "MAX_HOLD": 13,
+            "PF": 0.8923172241983255,
+            "SL": 4,
+            "TP": 4,
+            "WR": 0.38095238095238093,
+            "bestRoiPct": 24.17559122204389,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.6848718137361692,
+            "matchUniqueMintN": 21,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 21,
+            "totalPnlSol": -0.14382380000000003,
+            "worstRoiPct": -29.205420072899635
+          },
+          "matchingUniqueN": 21
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 29,
+            "PF": 0.6258164369024324,
+            "SL": 8,
+            "TP": 7,
+            "WR": 0.3181818181818182,
+            "bestRoiPct": 21.372373276267236,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.495162752917925,
+            "matchUniqueMintN": 44,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 44,
+            "totalPnlSol": -0.548941295,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 27,
+            "PF": 0.6462182933861162,
+            "SL": 8,
+            "TP": 7,
+            "WR": 0.3333333333333333,
+            "bestRoiPct": 24.17559122204389,
+            "executableShareOfMatches": 0.9545454545454546,
+            "expectancyReturnPct": -2.4468251563504086,
+            "matchUniqueMintN": 44,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 42,
+            "totalPnlSol": -1.027671704,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 44
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "firstBuyerShareBps",
+          "le",
+          1177.800617092662
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 2,
+      "state": "FIXED_50MS"
+    },
+    {
+      "candidateId": "C-24018e200697c2a0",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 21,
+            "PF": 0.6086480453882299,
+            "SL": 5,
+            "TP": 6,
+            "WR": 0.34375,
+            "bestRoiPct": 23.688973110268897,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -3.1605057011929882,
+            "matchUniqueMintN": 32,
+            "medianRoiPct": -1.5934646653533464,
+            "passN": 32,
+            "totalPnlSol": -0.5056859690000001,
+            "worstRoiPct": -56.5889797102029
+          },
+          "1.00": {
+            "MAX_HOLD": 20,
+            "PF": 0.5242179583892935,
+            "SL": 6,
+            "TP": 5,
+            "WR": 0.3225806451612903,
+            "bestRoiPct": 31.06671436642817,
+            "executableShareOfMatches": 0.96875,
+            "expectancyReturnPct": -4.39701016011049,
+            "matchUniqueMintN": 32,
+            "medianRoiPct": -2.053280433597832,
+            "passN": 31,
+            "totalPnlSol": -1.363079965,
+            "worstRoiPct": -56.750547947260266
+          },
+          "matchingUniqueN": 32
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 37,
+            "PF": 4.433350205183094,
+            "SL": 1,
+            "TP": 19,
+            "WR": 0.543859649122807,
+            "bestRoiPct": 48.924692353076466,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 7.017559105110704,
+            "matchUniqueMintN": 57,
+            "medianRoiPct": 2.2057129428705715,
+            "passN": 57,
+            "totalPnlSol": 2.000024345,
+            "worstRoiPct": -28.767766922330775
+          },
+          "1.00": {
+            "MAX_HOLD": 37,
+            "PF": 4.087453992398723,
+            "SL": 1,
+            "TP": 19,
+            "WR": 0.543859649122807,
+            "bestRoiPct": 48.266428067859664,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.628201683552986,
+            "matchUniqueMintN": 57,
+            "medianRoiPct": 0.37651301743491283,
+            "passN": 57,
+            "totalPnlSol": 3.77809385,
+            "worstRoiPct": -28.879451102744486
+          },
+          "matchingUniqueN": 57
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 21,
+            "PF": 1.652803855012578,
+            "SL": 3,
+            "TP": 11,
+            "WR": 0.42857142857142855,
+            "bestRoiPct": 22.9990042099579,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.8258122047350955,
+            "matchUniqueMintN": 35,
+            "medianRoiPct": -2.328821511784882,
+            "passN": 35,
+            "totalPnlSol": 0.494522081,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 20,
+            "PF": 1.6071070932784481,
+            "SL": 3,
+            "TP": 11,
+            "WR": 0.4411764705882353,
+            "bestRoiPct": 24.27839000804996,
+            "executableShareOfMatches": 0.9714285714285714,
+            "expectancyReturnPct": 2.785841897261102,
+            "matchUniqueMintN": 35,
+            "medianRoiPct": -2.3987218063909683,
+            "passN": 34,
+            "totalPnlSol": 0.947190981,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 35
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 21,
+            "PF": 1.5089039648260447,
+            "SL": 2,
+            "TP": 5,
+            "WR": 0.2857142857142857,
+            "bestRoiPct": 34.338564014359854,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 1.7133414951564772,
+            "matchUniqueMintN": 28,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 28,
+            "totalPnlSol": 0.239870208,
+            "worstRoiPct": -25.062869571304287
+          },
+          "1.00": {
+            "MAX_HOLD": 19,
+            "PF": 1.61144455277111,
+            "SL": 2,
+            "TP": 5,
+            "WR": 0.3076923076923077,
+            "bestRoiPct": 33.66573867130664,
+            "executableShareOfMatches": 0.9285714285714286,
+            "expectancyReturnPct": 1.9899967154010383,
+            "matchUniqueMintN": 28,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 26,
+            "totalPnlSol": 0.517401733,
+            "worstRoiPct": -21.7881243593782
+          },
+          "matchingUniqueN": 28
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 79,
+            "PF": 1.755584245296865,
+            "SL": 9,
+            "TP": 36,
+            "WR": 0.4596774193548387,
+            "bestRoiPct": 48.924692353076466,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 3.2078073687005064,
+            "matchUniqueMintN": 124,
+            "medianRoiPct": -0.7382776172238277,
+            "passN": 124,
+            "totalPnlSol": 1.9888604570000001,
+            "worstRoiPct": -56.5889797102029
+          },
+          "1.00": {
+            "MAX_HOLD": 77,
+            "PF": 1.5952081103943145,
+            "SL": 10,
+            "TP": 35,
+            "WR": 0.45901639344262296,
+            "bestRoiPct": 48.266428067859664,
+            "executableShareOfMatches": 0.9838709677419355,
+            "expectancyReturnPct": 2.7558918484096107,
+            "matchUniqueMintN": 124,
+            "medianRoiPct": -1.2717358413207935,
+            "passN": 122,
+            "totalPnlSol": 3.362204866,
+            "worstRoiPct": -56.750547947260266
+          },
+          "matchingUniqueN": 124
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 19,
+            "PF": 0.7234171596138521,
+            "SL": 9,
+            "TP": 9,
+            "WR": 0.40540540540540543,
+            "bestRoiPct": 62.50794372056279,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -3.0943448403353804,
+            "matchUniqueMintN": 37,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 37,
+            "totalPnlSol": -0.5724595199999999,
+            "worstRoiPct": -56.42462395376046
+          },
+          "1.00": {
+            "MAX_HOLD": 19,
+            "PF": 0.7087786397500327,
+            "SL": 9,
+            "TP": 9,
+            "WR": 0.40540540540540543,
+            "bestRoiPct": 61.647704861475695,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -3.260481940833539,
+            "matchUniqueMintN": 37,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 37,
+            "totalPnlSol": -1.20638435,
+            "worstRoiPct": -56.58138929305353
+          },
+          "matchingUniqueN": 37
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 40,
+            "PF": 0.8691162455255566,
+            "SL": 11,
+            "TP": 14,
+            "WR": 0.35384615384615387,
+            "bestRoiPct": 62.50794372056279,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -1.023341495815811,
+            "matchUniqueMintN": 65,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 65,
+            "totalPnlSol": -0.3325893119999999,
+            "worstRoiPct": -56.42462395376046
+          },
+          "1.00": {
+            "MAX_HOLD": 38,
+            "PF": 0.8618912183624209,
+            "SL": 11,
+            "TP": 14,
+            "WR": 0.36507936507936506,
+            "bestRoiPct": 61.647704861475695,
+            "executableShareOfMatches": 0.9692307692307692,
+            "expectancyReturnPct": -1.0936177334986341,
+            "matchUniqueMintN": 65,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 63,
+            "totalPnlSol": -0.6889826170000001,
+            "worstRoiPct": -56.58138929305353
+          },
+          "matchingUniqueN": 65
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "earlyReserveMovementPct",
+          "ge",
+          42.0051088
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 3,
+      "state": "FIXED_100MS"
+    },
+    {
+      "candidateId": "C-5939409f1a7a0a19",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 16,
+            "PF": 0.7773121114939923,
+            "SL": 1,
+            "TP": 2,
+            "WR": 0.21052631578947367,
+            "bestRoiPct": 23.648033919660804,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.717615055428393,
+            "matchUniqueMintN": 19,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 19,
+            "totalPnlSol": -0.068174112,
+            "worstRoiPct": -20.671790682093178
+          },
+          "1.00": {
+            "MAX_HOLD": 15,
+            "PF": 0.30698897238618,
+            "SL": 2,
+            "TP": 1,
+            "WR": 0.16666666666666666,
+            "bestRoiPct": 23.729638851805742,
+            "executableShareOfMatches": 0.9473684210526315,
+            "expectancyReturnPct": -3.409725756926771,
+            "matchUniqueMintN": 19,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 18,
+            "totalPnlSol": -0.613753705,
+            "worstRoiPct": -27.5960584197079
+          },
+          "matchingUniqueN": 19
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 37,
+            "PF": 3.4489884595304563,
+            "SL": 1,
+            "TP": 19,
+            "WR": 0.45614035087719296,
+            "bestRoiPct": 25.860952190478095,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 5.57418228975605,
+            "matchUniqueMintN": 57,
+            "medianRoiPct": -0.41290427095729043,
+            "passN": 57,
+            "totalPnlSol": 1.588657839,
+            "worstRoiPct": -28.767766922330775
+          },
+          "1.00": {
+            "MAX_HOLD": 38,
+            "PF": 3.0058845010549256,
+            "SL": 1,
+            "TP": 18,
+            "WR": 0.42105263157894735,
+            "bestRoiPct": 24.570291548542258,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 4.925667782187405,
+            "matchUniqueMintN": 57,
+            "medianRoiPct": -1.095477622611887,
+            "passN": 57,
+            "totalPnlSol": 2.807644674,
+            "worstRoiPct": -28.879451102744486
+          },
+          "matchingUniqueN": 57
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 25,
+            "PF": 1.750987152043168,
+            "SL": 1,
+            "TP": 9,
+            "WR": 0.3142857142857143,
+            "bestRoiPct": 22.642133378666212,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.5019072380704763,
+            "matchUniqueMintN": 35,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 35,
+            "totalPnlSol": 0.437838145,
+            "worstRoiPct": -24.855864241357587
+          },
+          "1.00": {
+            "MAX_HOLD": 24,
+            "PF": 1.7512022803252358,
+            "SL": 1,
+            "TP": 9,
+            "WR": 0.3235294117647059,
+            "bestRoiPct": 22.757884710576448,
+            "executableShareOfMatches": 0.9714285714285714,
+            "expectancyReturnPct": 2.531079521072983,
+            "matchUniqueMintN": 35,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 34,
+            "totalPnlSol": 0.86057134,
+            "worstRoiPct": -24.993730131349345
+          },
+          "matchingUniqueN": 35
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 23,
+            "PF": 0.43663970910199473,
+            "SL": 3,
+            "TP": 3,
+            "WR": 0.13793103448275862,
+            "bestRoiPct": 22.863109768902312,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.9655930820002143,
+            "matchUniqueMintN": 29,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 29,
+            "totalPnlSol": -0.43001529699999996,
+            "worstRoiPct": -46.63341706582934
+          },
+          "1.00": {
+            "MAX_HOLD": 21,
+            "PF": 0.4381522878850941,
+            "SL": 3,
+            "TP": 3,
+            "WR": 0.14814814814814814,
+            "bestRoiPct": 21.6079381603092,
+            "executableShareOfMatches": 0.9310344827586207,
+            "expectancyReturnPct": -3.0893627531862338,
+            "matchUniqueMintN": 29,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 27,
+            "totalPnlSol": -0.834132114,
+            "worstRoiPct": -46.79933230333848
+          },
+          "matchingUniqueN": 29
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 78,
+            "PF": 2.2734084347378842,
+            "SL": 3,
+            "TP": 30,
+            "WR": 0.36936936936936937,
+            "bestRoiPct": 25.860952190478095,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 3.52847259275155,
+            "matchUniqueMintN": 111,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 111,
+            "totalPnlSol": 1.958321872,
+            "worstRoiPct": -28.767766922330775
+          },
+          "1.00": {
+            "MAX_HOLD": 77,
+            "PF": 1.8902725446845963,
+            "SL": 4,
+            "TP": 28,
+            "WR": 0.3486238532110092,
+            "bestRoiPct": 24.570291548542258,
+            "executableShareOfMatches": 0.9819819819819819,
+            "expectancyReturnPct": 2.8022449878576294,
+            "matchUniqueMintN": 111,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 109,
+            "totalPnlSol": 3.054462309,
+            "worstRoiPct": -28.879451102744486
+          },
+          "matchingUniqueN": 111
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 14,
+            "PF": 0.5504355958307353,
+            "SL": 5,
+            "TP": 3,
+            "WR": 0.22727272727272727,
+            "bestRoiPct": 21.372373276267236,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -3.370320951335941,
+            "matchUniqueMintN": 22,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 22,
+            "totalPnlSol": -0.37073901200000003,
+            "worstRoiPct": -30.94822891771082
+          },
+          "1.00": {
+            "MAX_HOLD": 14,
+            "PF": 0.5404848680114316,
+            "SL": 5,
+            "TP": 3,
+            "WR": 0.22727272727272727,
+            "bestRoiPct": 21.515720021399893,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -3.4564385678071607,
+            "matchUniqueMintN": 22,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 22,
+            "totalPnlSol": -0.760420287,
+            "worstRoiPct": -31.022539287303562
+          },
+          "matchingUniqueN": 22
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 37,
+            "PF": 0.4957361695105379,
+            "SL": 8,
+            "TP": 6,
+            "WR": 0.17647058823529413,
+            "bestRoiPct": 22.863109768902312,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -3.1401815746548416,
+            "matchUniqueMintN": 51,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 51,
+            "totalPnlSol": -0.800754309,
+            "worstRoiPct": -46.63341706582934
+          },
+          "1.00": {
+            "MAX_HOLD": 35,
+            "PF": 0.4920926102150838,
+            "SL": 8,
+            "TP": 6,
+            "WR": 0.1836734693877551,
+            "bestRoiPct": 21.6079381603092,
+            "executableShareOfMatches": 0.9607843137254902,
+            "expectancyReturnPct": -3.2541723026078744,
+            "matchUniqueMintN": 51,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 49,
+            "totalPnlSol": -1.594552401,
+            "worstRoiPct": -46.79933230333848
+          },
+          "matchingUniqueN": 51
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "firstBuyerShareBps",
+          "le",
+          325.4568453474247
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 2,
+      "state": "FIXED_1000MS"
+    },
+    {
+      "candidateId": "C-8038909b91a695c6",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 9,
+            "PF": 2.5035569125527943,
+            "SL": 0,
+            "TP": 2,
+            "WR": 0.2727272727272727,
+            "bestRoiPct": 23.648033919660804,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.492896598306744,
+            "matchUniqueMintN": 11,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 11,
+            "totalPnlSol": 0.137110684,
+            "worstRoiPct": -3.777930220697793
+          },
+          "1.00": {
+            "MAX_HOLD": 8,
+            "PF": 0.5755395878096381,
+            "SL": 1,
+            "TP": 1,
+            "WR": 0.2,
+            "bestRoiPct": 23.729638851805742,
+            "executableShareOfMatches": 0.9090909090909091,
+            "expectancyReturnPct": -1.865361303193484,
+            "matchUniqueMintN": 11,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 10,
+            "totalPnlSol": -0.186537063,
+            "worstRoiPct": -27.5960584197079
+          },
+          "matchingUniqueN": 11
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 29,
+            "PF": 3.990176040882594,
+            "SL": 1,
+            "TP": 17,
+            "WR": 0.5106382978723404,
+            "bestRoiPct": 26.15352366476335,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.486281932925352,
+            "matchUniqueMintN": 47,
+            "medianRoiPct": 0.5691177088229118,
+            "passN": 47,
+            "totalPnlSol": 1.524291497,
+            "worstRoiPct": -28.767766922330775
+          },
+          "1.00": {
+            "MAX_HOLD": 29,
+            "PF": 3.6893068010119894,
+            "SL": 1,
+            "TP": 17,
+            "WR": 0.48936170212765956,
+            "bestRoiPct": 24.570291548542258,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.088055408659127,
+            "matchUniqueMintN": 47,
+            "medianRoiPct": -0.10542217288913555,
+            "passN": 47,
+            "totalPnlSol": 2.861400349,
+            "worstRoiPct": -28.879451102744486
+          },
+          "matchingUniqueN": 47
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 17,
+            "PF": 1.1400138028419304,
+            "SL": 0,
+            "TP": 3,
+            "WR": 0.15,
+            "bestRoiPct": 22.642133378666212,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.40388913110868896,
+            "matchUniqueMintN": 20,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 20,
+            "totalPnlSol": 0.040389317000000015,
+            "worstRoiPct": -11.404771552284478
+          },
+          "1.00": {
+            "MAX_HOLD": 16,
+            "PF": 1.2888333850929887,
+            "SL": 0,
+            "TP": 3,
+            "WR": 0.15789473684210525,
+            "bestRoiPct": 26.306967565162175,
+            "executableShareOfMatches": 0.95,
+            "expectancyReturnPct": 0.8424174194918499,
+            "matchUniqueMintN": 20,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 19,
+            "totalPnlSol": 0.16006010999999998,
+            "worstRoiPct": -11.46837865810671
+          },
+          "matchingUniqueN": 20
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 20,
+            "PF": 0.0,
+            "SL": 2,
+            "TP": 0,
+            "WR": 0.0,
+            "bestRoiPct": -2.471111888881111,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -6.335772842271577,
+            "matchUniqueMintN": 22,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 22,
+            "totalPnlSol": -0.696941982,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 18,
+            "PF": 0.0,
+            "SL": 2,
+            "TP": 0,
+            "WR": 0.0,
+            "bestRoiPct": -2.470123749381253,
+            "executableShareOfMatches": 0.9090909090909091,
+            "expectancyReturnPct": -6.767929930350348,
+            "matchUniqueMintN": 22,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 20,
+            "totalPnlSol": -1.3535927540000001,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 22
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 55,
+            "PF": 2.913363506470281,
+            "SL": 1,
+            "TP": 22,
+            "WR": 0.38461538461538464,
+            "bestRoiPct": 26.15352366476335,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 4.36352430834666,
+            "matchUniqueMintN": 78,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 78,
+            "totalPnlSol": 1.701791498,
+            "worstRoiPct": -28.767766922330775
+          },
+          "1.00": {
+            "MAX_HOLD": 53,
+            "PF": 2.377767407485344,
+            "SL": 2,
+            "TP": 21,
+            "WR": 0.3684210526315789,
+            "bestRoiPct": 26.306967565162175,
+            "executableShareOfMatches": 0.9743589743589743,
+            "expectancyReturnPct": 3.7301437124393324,
+            "matchUniqueMintN": 78,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 76,
+            "totalPnlSol": 2.834923396,
+            "worstRoiPct": -28.879451102744486
+          },
+          "matchingUniqueN": 78
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 12,
+            "PF": 0.6822809311487873,
+            "SL": 4,
+            "TP": 3,
+            "WR": 0.2631578947368421,
+            "bestRoiPct": 21.372373276267236,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.225025444482397,
+            "matchUniqueMintN": 19,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 19,
+            "totalPnlSol": -0.211379531,
+            "worstRoiPct": -29.97027869721303
+          },
+          "1.00": {
+            "MAX_HOLD": 12,
+            "PF": 0.66972141210389,
+            "SL": 4,
+            "TP": 3,
+            "WR": 0.2631578947368421,
+            "bestRoiPct": 21.515720021399893,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.3214956767321424,
+            "matchUniqueMintN": 19,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 19,
+            "totalPnlSol": -0.44108638399999994,
+            "worstRoiPct": -30.075055624721877
+          },
+          "matchingUniqueN": 19
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 32,
+            "PF": 0.3332173329278322,
+            "SL": 6,
+            "TP": 3,
+            "WR": 0.12195121951219512,
+            "bestRoiPct": 21.372373276267236,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -4.430792340857079,
+            "matchUniqueMintN": 41,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 41,
+            "totalPnlSol": -0.908321513,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 30,
+            "PF": 0.332607441870523,
+            "SL": 6,
+            "TP": 3,
+            "WR": 0.1282051282051282,
+            "bestRoiPct": 21.515720021399893,
+            "executableShareOfMatches": 0.9512195121951219,
+            "expectancyReturnPct": -4.601718370895325,
+            "matchUniqueMintN": 41,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 39,
+            "totalPnlSol": -1.794679138,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 41
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "firstBuyerShareBps",
+          "le",
+          276.4806473474171
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 2,
+      "state": "FIXED_250MS"
+    },
+    {
+      "candidateId": "C-13f0cdc0e2b4278a",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 18,
+            "PF": 0.5238608166000049,
+            "SL": 4,
+            "TP": 2,
+            "WR": 0.25,
+            "bestRoiPct": 23.648033919660804,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.5738985526811398,
+            "matchUniqueMintN": 24,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 24,
+            "totalPnlSol": -0.30887091499999997,
+            "worstRoiPct": -26.235675643243567
+          },
+          "1.00": {
+            "MAX_HOLD": 17,
+            "PF": 0.3002590512845387,
+            "SL": 5,
+            "TP": 1,
+            "WR": 0.21739130434782608,
+            "bestRoiPct": 23.729638851805742,
+            "executableShareOfMatches": 0.9583333333333334,
+            "expectancyReturnPct": -4.797385986983109,
+            "matchUniqueMintN": 24,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 23,
+            "totalPnlSol": -1.103404294,
+            "worstRoiPct": -27.5960584197079
+          },
+          "matchingUniqueN": 24
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 36,
+            "PF": 3.641468095685699,
+            "SL": 2,
+            "TP": 20,
+            "WR": 0.5689655172413793,
+            "bestRoiPct": 25.5410027899721,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.2042413472417,
+            "matchUniqueMintN": 58,
+            "medianRoiPct": 2.5663894361056387,
+            "passN": 58,
+            "totalPnlSol": 1.799247983,
+            "worstRoiPct": -28.767766922330775
+          },
+          "1.00": {
+            "MAX_HOLD": 36,
+            "PF": 3.350154933884539,
+            "SL": 2,
+            "TP": 20,
+            "WR": 0.5689655172413793,
+            "bestRoiPct": 24.643800580997095,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 5.701828664994606,
+            "matchUniqueMintN": 58,
+            "medianRoiPct": 2.2095338523307384,
+            "passN": 58,
+            "totalPnlSol": 3.307077161,
+            "worstRoiPct": -28.879451102744486
+          },
+          "matchingUniqueN": 58
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 28,
+            "PF": 1.6699040879844438,
+            "SL": 2,
+            "TP": 9,
+            "WR": 0.3076923076923077,
+            "bestRoiPct": 22.9990042099579,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.2083159527379084,
+            "matchUniqueMintN": 39,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 39,
+            "totalPnlSol": 0.430625917,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 27,
+            "PF": 1.5976788969065954,
+            "SL": 2,
+            "TP": 9,
+            "WR": 0.3157894736842105,
+            "bestRoiPct": 22.757884710576448,
+            "executableShareOfMatches": 0.9743589743589743,
+            "expectancyReturnPct": 2.0834579353419023,
+            "matchUniqueMintN": 39,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 38,
+            "totalPnlSol": 0.791717974,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 39
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 18,
+            "PF": 0.393369157202661,
+            "SL": 4,
+            "TP": 3,
+            "WR": 0.2,
+            "bestRoiPct": 22.863109768902312,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -4.283522588774112,
+            "matchUniqueMintN": 25,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 25,
+            "totalPnlSol": -0.535445678,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 16,
+            "PF": 0.4044586447892149,
+            "SL": 4,
+            "TP": 3,
+            "WR": 0.21739130434782608,
+            "bestRoiPct": 21.61325513372433,
+            "executableShareOfMatches": 0.92,
+            "expectancyReturnPct": -4.340315437553247,
+            "matchUniqueMintN": 25,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 23,
+            "totalPnlSol": -0.9982775420000001,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 25
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 82,
+            "PF": 1.9738082881809862,
+            "SL": 8,
+            "TP": 31,
+            "WR": 0.4214876033057851,
+            "bestRoiPct": 25.5410027899721,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 3.175179793656609,
+            "matchUniqueMintN": 121,
+            "medianRoiPct": -1.7093095069049309,
+            "passN": 121,
+            "totalPnlSol": 1.921002985,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 80,
+            "PF": 1.6951953326381977,
+            "SL": 9,
+            "TP": 30,
+            "WR": 0.42016806722689076,
+            "bestRoiPct": 24.643800580997095,
+            "executableShareOfMatches": 0.9834710743801653,
+            "expectancyReturnPct": 2.517122574891327,
+            "matchUniqueMintN": 121,
+            "medianRoiPct": -2.4420257898710505,
+            "passN": 119,
+            "totalPnlSol": 2.9953908410000003,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 121
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 20,
+            "PF": 0.8414214262152865,
+            "SL": 4,
+            "TP": 5,
+            "WR": 0.3103448275862069,
+            "bestRoiPct": 24.550348296517036,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.9256773087441538,
+            "matchUniqueMintN": 29,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 29,
+            "totalPnlSol": -0.134224552,
+            "worstRoiPct": -29.97027869721303
+          },
+          "1.00": {
+            "MAX_HOLD": 20,
+            "PF": 0.8130992009726342,
+            "SL": 4,
+            "TP": 5,
+            "WR": 0.3103448275862069,
+            "bestRoiPct": 22.033012634936824,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -1.09816351952723,
+            "matchUniqueMintN": 29,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 29,
+            "totalPnlSol": -0.318469013,
+            "worstRoiPct": -30.075055624721877
+          },
+          "matchingUniqueN": 29
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 38,
+            "PF": 0.6127009457340316,
+            "SL": 8,
+            "TP": 8,
+            "WR": 0.25925925925925924,
+            "bestRoiPct": 24.550348296517036,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.480235308758023,
+            "matchUniqueMintN": 54,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 54,
+            "totalPnlSol": -0.6696702299999999,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 36,
+            "PF": 0.6104529516417263,
+            "SL": 8,
+            "TP": 8,
+            "WR": 0.2692307692307692,
+            "bestRoiPct": 22.033012634936824,
+            "executableShareOfMatches": 0.9629629629629629,
+            "expectancyReturnPct": -2.532192252500276,
+            "matchUniqueMintN": 54,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 52,
+            "totalPnlSol": -1.316746555,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 54
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "firstBuyerShareBps",
+          "le",
+          1413.4275618374559
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 2,
+      "state": "FIXED_100MS"
+    },
+    {
+      "candidateId": "C-890154d137e1a1c7",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 12,
+            "PF": 0.9837121133708628,
+            "SL": 1,
+            "TP": 2,
+            "WR": 0.26666666666666666,
+            "bestRoiPct": 23.648033919660804,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.05331434685653124,
+            "matchUniqueMintN": 15,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 15,
+            "totalPnlSol": -0.003998616000000006,
+            "worstRoiPct": -20.37910520894791
+          },
+          "1.00": {
+            "MAX_HOLD": 11,
+            "PF": 0.36493485660185254,
+            "SL": 2,
+            "TP": 1,
+            "WR": 0.21428571428571427,
+            "bestRoiPct": 23.729638851805742,
+            "executableShareOfMatches": 0.9333333333333333,
+            "expectancyReturnPct": -3.4666627309720592,
+            "matchUniqueMintN": 15,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 14,
+            "totalPnlSol": -0.485335209,
+            "worstRoiPct": -27.5960584197079
+          },
+          "matchingUniqueN": 15
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 33,
+            "PF": 3.6135144346366563,
+            "SL": 1,
+            "TP": 19,
+            "WR": 0.49056603773584906,
+            "bestRoiPct": 25.865193548064518,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 5.9946422082948985,
+            "matchUniqueMintN": 53,
+            "medianRoiPct": -0.09854521454785452,
+            "passN": 53,
+            "totalPnlSol": 1.588596071,
+            "worstRoiPct": -28.767766922330775
+          },
+          "1.00": {
+            "MAX_HOLD": 33,
+            "PF": 3.3600210020860017,
+            "SL": 1,
+            "TP": 19,
+            "WR": 0.4716981132075472,
+            "bestRoiPct": 24.570291548542258,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 5.702827257561825,
+            "matchUniqueMintN": 53,
+            "medianRoiPct": -0.36268278658606706,
+            "passN": 53,
+            "totalPnlSol": 3.022513559,
+            "worstRoiPct": -28.879451102744486
+          },
+          "matchingUniqueN": 53
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 19,
+            "PF": 1.112973419903496,
+            "SL": 0,
+            "TP": 3,
+            "WR": 0.13636363636363635,
+            "bestRoiPct": 25.775454845451545,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.3223479765202349,
+            "matchUniqueMintN": 22,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 22,
+            "totalPnlSol": 0.03545863200000002,
+            "worstRoiPct": -11.404771552284478
+          },
+          "1.00": {
+            "MAX_HOLD": 18,
+            "PF": 1.1759314559490182,
+            "SL": 0,
+            "TP": 3,
+            "WR": 0.14285714285714285,
+            "bestRoiPct": 26.023088784556077,
+            "executableShareOfMatches": 0.9545454545454546,
+            "expectancyReturnPct": 0.5068073421537653,
+            "matchUniqueMintN": 22,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 21,
+            "totalPnlSol": 0.106430074,
+            "worstRoiPct": -11.46837865810671
+          },
+          "matchingUniqueN": 22
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 20,
+            "PF": 0.0,
+            "SL": 3,
+            "TP": 0,
+            "WR": 0.0,
+            "bestRoiPct": -2.471111888881111,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -6.398110723240594,
+            "matchUniqueMintN": 23,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 23,
+            "totalPnlSol": -0.7357900909999999,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 18,
+            "PF": 0.0,
+            "SL": 3,
+            "TP": 0,
+            "WR": 0.0,
+            "bestRoiPct": -2.470123749381253,
+            "executableShareOfMatches": 0.9130434782608695,
+            "expectancyReturnPct": -6.808107773746846,
+            "matchUniqueMintN": 23,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 21,
+            "totalPnlSol": -1.4297097810000001,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 23
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 64,
+            "PF": 2.3879821833637225,
+            "SL": 2,
+            "TP": 24,
+            "WR": 0.36666666666666664,
+            "bestRoiPct": 25.865193548064518,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 3.600088636891409,
+            "matchUniqueMintN": 90,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 90,
+            "totalPnlSol": 1.620056087,
+            "worstRoiPct": -28.767766922330775
+          },
+          "1.00": {
+            "MAX_HOLD": 62,
+            "PF": 1.9976273748589555,
+            "SL": 3,
+            "TP": 23,
+            "WR": 0.3522727272727273,
+            "bestRoiPct": 26.023088784556077,
+            "executableShareOfMatches": 0.9777777777777777,
+            "expectancyReturnPct": 3.0040854613908747,
+            "matchUniqueMintN": 90,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 88,
+            "totalPnlSol": 2.643608424,
+            "worstRoiPct": -28.879451102744486
+          },
+          "matchingUniqueN": 90
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 14,
+            "PF": 0.7047084382778767,
+            "SL": 4,
+            "TP": 3,
+            "WR": 0.2857142857142857,
+            "bestRoiPct": 21.372373276267236,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -1.8723196196609462,
+            "matchUniqueMintN": 21,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 21,
+            "totalPnlSol": -0.196595526,
+            "worstRoiPct": -29.97027869721303
+          },
+          "1.00": {
+            "MAX_HOLD": 14,
+            "PF": 0.6919465711476522,
+            "SL": 4,
+            "TP": 3,
+            "WR": 0.2857142857142857,
+            "bestRoiPct": 21.515720021399893,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -1.9604181836233676,
+            "matchUniqueMintN": 21,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 21,
+            "totalPnlSol": -0.411689877,
+            "worstRoiPct": -30.075055624721877
+          },
+          "matchingUniqueN": 21
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 34,
+            "PF": 0.33475040888348223,
+            "SL": 7,
+            "TP": 3,
+            "WR": 0.13636363636363635,
+            "bestRoiPct": 21.372373276267236,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -4.238074060168489,
+            "matchUniqueMintN": 44,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 44,
+            "totalPnlSol": -0.932385617,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 32,
+            "PF": 0.33430554699105336,
+            "SL": 7,
+            "TP": 3,
+            "WR": 0.14285714285714285,
+            "bestRoiPct": 21.515720021399893,
+            "executableShareOfMatches": 0.9545454545454546,
+            "expectancyReturnPct": -4.384262978685107,
+            "matchUniqueMintN": 44,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 42,
+            "totalPnlSol": -1.841399658,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 44
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "firstBuyerShareBps",
+          "le",
+          287.7597446888051
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 2,
+      "state": "FIXED_500MS"
+    },
+    {
+      "candidateId": "C-11dd82cf19e566a0",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 21,
+            "PF": 0.524050571842162,
+            "SL": 7,
+            "TP": 6,
+            "WR": 0.4117647058823529,
+            "bestRoiPct": 24.225113748862512,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -4.3705261241505236,
+            "matchUniqueMintN": 34,
+            "medianRoiPct": -1.5934646653533464,
+            "passN": 34,
+            "totalPnlSol": -0.742996871,
+            "worstRoiPct": -56.47828501714983
+          },
+          "1.00": {
+            "MAX_HOLD": 20,
+            "PF": 0.45823745326471266,
+            "SL": 8,
+            "TP": 5,
+            "WR": 0.3939393939393939,
+            "bestRoiPct": 31.62450907745461,
+            "executableShareOfMatches": 0.9705882352941176,
+            "expectancyReturnPct": -5.561807166721742,
+            "matchUniqueMintN": 34,
+            "medianRoiPct": -1.6174597127014365,
+            "passN": 33,
+            "totalPnlSol": -1.835405542,
+            "worstRoiPct": -56.63725311373443
+          },
+          "matchingUniqueN": 34
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 36,
+            "PF": 3.29944648552256,
+            "SL": 2,
+            "TP": 19,
+            "WR": 0.543859649122807,
+            "bestRoiPct": 48.924692353076466,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.303175922626739,
+            "matchUniqueMintN": 57,
+            "medianRoiPct": 2.2203517964820354,
+            "passN": 57,
+            "totalPnlSol": 1.796423102,
+            "worstRoiPct": -29.221737782622174
+          },
+          "1.00": {
+            "MAX_HOLD": 36,
+            "PF": 3.061423689070673,
+            "SL": 2,
+            "TP": 19,
+            "WR": 0.5263157894736842,
+            "bestRoiPct": 48.266428067859664,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 5.838208207204578,
+            "matchUniqueMintN": 57,
+            "medianRoiPct": 1.1889848550757247,
+            "passN": 57,
+            "totalPnlSol": 3.327795317,
+            "worstRoiPct": -29.343532982335088
+          },
+          "matchingUniqueN": 57
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 22,
+            "PF": 1.5682498375222471,
+            "SL": 3,
+            "TP": 11,
+            "WR": 0.4166666666666667,
+            "bestRoiPct": 24.386694733052668,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.584150241830915,
+            "matchUniqueMintN": 36,
+            "medianRoiPct": -1.3688175118248818,
+            "passN": 36,
+            "totalPnlSol": 0.465151695,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 21,
+            "PF": 1.5082176880698142,
+            "SL": 3,
+            "TP": 11,
+            "WR": 0.42857142857142855,
+            "bestRoiPct": 24.27839000804996,
+            "executableShareOfMatches": 0.9722222222222222,
+            "expectancyReturnPct": 2.4451781141094293,
+            "matchUniqueMintN": 36,
+            "medianRoiPct": -2.327319863400683,
+            "passN": 35,
+            "totalPnlSol": 0.8558166190000001,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 36
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 27,
+            "PF": 1.241150573171513,
+            "SL": 2,
+            "TP": 5,
+            "WR": 0.29411764705882354,
+            "bestRoiPct": 34.338564014359854,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.7892995599455771,
+            "matchUniqueMintN": 34,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 34,
+            "totalPnlSol": 0.13418226700000002,
+            "worstRoiPct": -21.717262027379725
+          },
+          "1.00": {
+            "MAX_HOLD": 25,
+            "PF": 1.266354469205255,
+            "SL": 2,
+            "TP": 5,
+            "WR": 0.3125,
+            "bestRoiPct": 33.66573867130664,
+            "executableShareOfMatches": 0.9411764705882353,
+            "expectancyReturnPct": 0.8946622173139134,
+            "matchUniqueMintN": 34,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 32,
+            "totalPnlSol": 0.286293341,
+            "worstRoiPct": -21.7881243593782
+          },
+          "matchingUniqueN": 34
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 79,
+            "PF": 1.480426690020396,
+            "SL": 12,
+            "TP": 36,
+            "WR": 0.47244094488188976,
+            "bestRoiPct": 48.924692353076466,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.3914373864135374,
+            "matchUniqueMintN": 127,
+            "medianRoiPct": -0.40881351186488135,
+            "passN": 127,
+            "totalPnlSol": 1.518577926,
+            "worstRoiPct": -56.47828501714983
+          },
+          "1.00": {
+            "MAX_HOLD": 77,
+            "PF": 1.3512062949615353,
+            "SL": 13,
+            "TP": 35,
+            "WR": 0.464,
+            "bestRoiPct": 48.266428067859664,
+            "executableShareOfMatches": 0.984251968503937,
+            "expectancyReturnPct": 1.8785557224213878,
+            "matchUniqueMintN": 127,
+            "medianRoiPct": -0.8221919890400547,
+            "passN": 125,
+            "totalPnlSol": 2.348206394,
+            "worstRoiPct": -56.63725311373443
+          },
+          "matchingUniqueN": 127
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 19,
+            "PF": 0.5134233857676549,
+            "SL": 13,
+            "TP": 9,
+            "WR": 0.36585365853658536,
+            "bestRoiPct": 62.50794372056279,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -6.946967930320697,
+            "matchUniqueMintN": 41,
+            "medianRoiPct": -2.4740838591614085,
+            "passN": 41,
+            "totalPnlSol": -1.424142667,
+            "worstRoiPct": -56.42462395376046
+          },
+          "1.00": {
+            "MAX_HOLD": 19,
+            "PF": 0.5088151599135634,
+            "SL": 13,
+            "TP": 9,
+            "WR": 0.36585365853658536,
+            "bestRoiPct": 61.647704861475695,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -7.025269559018058,
+            "matchUniqueMintN": 41,
+            "medianRoiPct": -2.4760039199804003,
+            "passN": 41,
+            "totalPnlSol": -2.880374921,
+            "worstRoiPct": -56.58138929305353
+          },
+          "matchingUniqueN": 41
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 46,
+            "PF": 0.6296715545846441,
+            "SL": 15,
+            "TP": 14,
+            "WR": 0.3333333333333333,
+            "bestRoiPct": 62.50794372056279,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -3.439860001399986,
+            "matchUniqueMintN": 75,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 75,
+            "totalPnlSol": -1.2899604,
+            "worstRoiPct": -56.42462395376046
+          },
+          "1.00": {
+            "MAX_HOLD": 44,
+            "PF": 0.6261588839120816,
+            "SL": 15,
+            "TP": 14,
+            "WR": 0.3424657534246575,
+            "bestRoiPct": 61.647704861475695,
+            "executableShareOfMatches": 0.9733333333333334,
+            "expectancyReturnPct": -3.5535186433656873,
+            "matchUniqueMintN": 75,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 73,
+            "totalPnlSol": -2.59408158,
+            "worstRoiPct": -56.58138929305353
+          },
+          "matchingUniqueN": 75
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "earlyReserveMovementPct",
+          "ge",
+          39.18318022
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 3,
+      "state": "FIXED_50MS"
+    },
+    {
+      "candidateId": "C-ffd67d49b3b03f84",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 20,
+            "PF": 0.20805316100206964,
+            "SL": 2,
+            "TP": 1,
+            "WR": 0.08695652173913043,
+            "bestRoiPct": 21.513014469855303,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -3.634407525489962,
+            "matchUniqueMintN": 23,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 23,
+            "totalPnlSol": -0.417961045,
+            "worstRoiPct": -28.393150868491315
+          },
+          "1.00": {
+            "MAX_HOLD": 19,
+            "PF": 0.21123311297827363,
+            "SL": 2,
+            "TP": 1,
+            "WR": 0.09090909090909091,
+            "bestRoiPct": 21.63834860825696,
+            "executableShareOfMatches": 0.9565217391304348,
+            "expectancyReturnPct": -3.7460902422760616,
+            "matchUniqueMintN": 23,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 22,
+            "totalPnlSol": -0.8241439740000001,
+            "worstRoiPct": -28.487793661031695
+          },
+          "matchingUniqueN": 23
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 45,
+            "PF": 2.7607248120096224,
+            "SL": 1,
+            "TP": 16,
+            "WR": 0.43548387096774194,
+            "bestRoiPct": 24.85921980780192,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 4.102455352865826,
+            "matchUniqueMintN": 62,
+            "medianRoiPct": -2.443218767812322,
+            "passN": 62,
+            "totalPnlSol": 1.271773877,
+            "worstRoiPct": -35.96329796702033
+          },
+          "1.00": {
+            "MAX_HOLD": 46,
+            "PF": 2.4256706434352653,
+            "SL": 1,
+            "TP": 15,
+            "WR": 0.4032258064516129,
+            "bestRoiPct": 24.33678881605592,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 3.499627805086781,
+            "matchUniqueMintN": 62,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 62,
+            "totalPnlSol": 2.169780088,
+            "worstRoiPct": -36.12204038979805
+          },
+          "matchingUniqueN": 62
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 29,
+            "PF": 1.2090270260440497,
+            "SL": 4,
+            "TP": 9,
+            "WR": 0.30952380952380953,
+            "bestRoiPct": 22.044431155688443,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.8559976400235998,
+            "matchUniqueMintN": 42,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 42,
+            "totalPnlSol": 0.179761302,
+            "worstRoiPct": -25.878078819211808
+          },
+          "1.00": {
+            "MAX_HOLD": 28,
+            "PF": 1.2198913961850413,
+            "SL": 4,
+            "TP": 9,
+            "WR": 0.3170731707317073,
+            "bestRoiPct": 22.189804650976747,
+            "executableShareOfMatches": 0.9761904761904762,
+            "expectancyReturnPct": 0.9123140579419056,
+            "matchUniqueMintN": 42,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 41,
+            "totalPnlSol": 0.374050634,
+            "worstRoiPct": -26.017824710876447
+          },
+          "matchingUniqueN": 42
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 33,
+            "PF": 0.3651499701790018,
+            "SL": 3,
+            "TP": 3,
+            "WR": 0.07692307692307693,
+            "bestRoiPct": 22.10360756392436,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.810428521355812,
+            "matchUniqueMintN": 39,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 39,
+            "totalPnlSol": -0.548039042,
+            "worstRoiPct": -46.18082379176208
+          },
+          "1.00": {
+            "MAX_HOLD": 31,
+            "PF": 0.39655854732007706,
+            "SL": 3,
+            "TP": 3,
+            "WR": 0.08108108108108109,
+            "bestRoiPct": 25.531918340408296,
+            "executableShareOfMatches": 0.9487179487179487,
+            "expectancyReturnPct": -2.744907305193204,
+            "matchUniqueMintN": 39,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 37,
+            "totalPnlSol": -1.015620781,
+            "worstRoiPct": -46.34621336893316
+          },
+          "matchingUniqueN": 39
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 94,
+            "PF": 1.4898325455206174,
+            "SL": 7,
+            "TP": 26,
+            "WR": 0.33070866141732286,
+            "bestRoiPct": 24.85921980780192,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 1.6276595249795534,
+            "matchUniqueMintN": 127,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 127,
+            "totalPnlSol": 1.033574134,
+            "worstRoiPct": -35.96329796702033
+          },
+          "1.00": {
+            "MAX_HOLD": 93,
+            "PF": 1.4029391249673167,
+            "SL": 7,
+            "TP": 25,
+            "WR": 0.32,
+            "bestRoiPct": 24.33678881605592,
+            "executableShareOfMatches": 0.984251968503937,
+            "expectancyReturnPct": 1.3757425196874016,
+            "matchUniqueMintN": 127,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 125,
+            "totalPnlSol": 1.719686748,
+            "worstRoiPct": -36.12204038979805
+          },
+          "matchingUniqueN": 127
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 25,
+            "PF": 0.5187802710781083,
+            "SL": 4,
+            "TP": 3,
+            "WR": 0.15625,
+            "bestRoiPct": 22.993869861301388,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.797162659623404,
+            "matchUniqueMintN": 32,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 32,
+            "totalPnlSol": -0.447550501,
+            "worstRoiPct": -34.66537954620454
+          },
+          "1.00": {
+            "MAX_HOLD": 25,
+            "PF": 0.507489290659842,
+            "SL": 4,
+            "TP": 3,
+            "WR": 0.15625,
+            "bestRoiPct": 23.094985025074873,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.885743758781206,
+            "matchUniqueMintN": 32,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 32,
+            "totalPnlSol": -0.9234426200000001,
+            "worstRoiPct": -34.768491057544715
+          },
+          "matchingUniqueN": 32
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 58,
+            "PF": 0.4448254564008853,
+            "SL": 7,
+            "TP": 6,
+            "WR": 0.11267605633802817,
+            "bestRoiPct": 22.993869861301388,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.8044495414200785,
+            "matchUniqueMintN": 71,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 71,
+            "totalPnlSol": -0.995589543,
+            "worstRoiPct": -46.18082379176208
+          },
+          "1.00": {
+            "MAX_HOLD": 56,
+            "PF": 0.45501575877912986,
+            "SL": 7,
+            "TP": 6,
+            "WR": 0.11594202898550725,
+            "bestRoiPct": 25.531918340408296,
+            "executableShareOfMatches": 0.971830985915493,
+            "expectancyReturnPct": -2.8102227619296687,
+            "matchUniqueMintN": 71,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 69,
+            "totalPnlSol": -1.939063401,
+            "worstRoiPct": -46.34621336893316
+          },
+          "matchingUniqueN": 71
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "firstBuyerShareBps",
+          "le",
+          466.8641612715743
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 2,
+      "state": "FIXED_5000MS"
+    },
+    {
+      "candidateId": "C-a77761f65bcbd17f",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 415,
+            "PF": 0.3889091726238439,
+            "SL": 4,
+            "TP": 12,
+            "WR": 0.08352668213457076,
+            "bestRoiPct": 53.594032459675404,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -1.645904512648609,
+            "matchUniqueMintN": 431,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 431,
+            "totalPnlSol": -3.546959694,
+            "worstRoiPct": -34.81237847621524
+          },
+          "1.00": {
+            "MAX_HOLD": 408,
+            "PF": 0.41079192839515344,
+            "SL": 4,
+            "TP": 12,
+            "WR": 0.08490566037735849,
+            "bestRoiPct": 54.22820035899821,
+            "executableShareOfMatches": 0.9837587006960556,
+            "expectancyReturnPct": -1.5473552011956921,
+            "matchUniqueMintN": 431,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 424,
+            "totalPnlSol": -6.560818857,
+            "worstRoiPct": -34.970152749236256
+          },
+          "matchingUniqueN": 431
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 321,
+            "PF": 1.272011341241223,
+            "SL": 6,
+            "TP": 29,
+            "WR": 0.17134831460674158,
+            "bestRoiPct": 323.16144218557815,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.7549502976880345,
+            "matchUniqueMintN": 356,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 356,
+            "totalPnlSol": 1.343824968,
+            "worstRoiPct": -45.11061969380306
+          },
+          "1.00": {
+            "MAX_HOLD": 316,
+            "PF": 1.2676612120454267,
+            "SL": 6,
+            "TP": 29,
+            "WR": 0.17094017094017094,
+            "bestRoiPct": 311.45799771001145,
+            "executableShareOfMatches": 0.9859550561797753,
+            "expectancyReturnPct": 0.7357251937387037,
+            "matchUniqueMintN": 356,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 351,
+            "totalPnlSol": 2.582408342,
+            "worstRoiPct": -45.28208588957055
+          },
+          "matchingUniqueN": 356
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 241,
+            "PF": 1.2057623307820446,
+            "SL": 4,
+            "TP": 23,
+            "WR": 0.1828358208955224,
+            "bestRoiPct": 142.8969348306517,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.5246665182601906,
+            "matchUniqueMintN": 268,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 268,
+            "totalPnlSol": 0.7030601650000001,
+            "worstRoiPct": -40.51383626163739
+          },
+          "1.00": {
+            "MAX_HOLD": 238,
+            "PF": 1.1604015804439576,
+            "SL": 4,
+            "TP": 22,
+            "WR": 0.17045454545454544,
+            "bestRoiPct": 143.8723980380098,
+            "executableShareOfMatches": 0.9850746268656716,
+            "expectancyReturnPct": 0.4208074876292285,
+            "matchUniqueMintN": 268,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 264,
+            "totalPnlSol": 1.1109373219999996,
+            "worstRoiPct": -40.67899630501847
+          },
+          "matchingUniqueN": 268
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 214,
+            "PF": 0.7708294533625265,
+            "SL": 2,
+            "TP": 11,
+            "WR": 0.18061674008810572,
+            "bestRoiPct": 63.70039599604004,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.6080448649258,
+            "matchUniqueMintN": 227,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 227,
+            "totalPnlSol": -0.6901378229999999,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 213,
+            "PF": 0.7558515699648112,
+            "SL": 2,
+            "TP": 11,
+            "WR": 0.18141592920353983,
+            "bestRoiPct": 64.0362356188219,
+            "executableShareOfMatches": 0.9955947136563876,
+            "expectancyReturnPct": -0.6504682547383723,
+            "matchUniqueMintN": 227,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 226,
+            "totalPnlSol": -1.4700656060000001,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 227
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 977,
+            "PF": 0.8940736851485082,
+            "SL": 14,
+            "TP": 64,
+            "WR": 0.13838862559241707,
+            "bestRoiPct": 323.16144218557815,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.284371480645383,
+            "matchUniqueMintN": 1055,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 1055,
+            "totalPnlSol": -1.5000745609999997,
+            "worstRoiPct": -45.11061969380306
+          },
+          "1.00": {
+            "MAX_HOLD": 962,
+            "PF": 0.8965147402578717,
+            "SL": 14,
+            "TP": 63,
+            "WR": 0.13570741097208855,
+            "bestRoiPct": 311.45799771001145,
+            "executableShareOfMatches": 0.9848341232227488,
+            "expectancyReturnPct": -0.27598256551546885,
+            "matchUniqueMintN": 1055,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 1039,
+            "totalPnlSol": -2.867473193000001,
+            "worstRoiPct": -45.28208588957055
+          },
+          "matchingUniqueN": 1055
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 265,
+            "PF": 1.1445172634681586,
+            "SL": 10,
+            "TP": 24,
+            "WR": 0.1939799331103679,
+            "bestRoiPct": 148.4589540104599,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.4058618450604793,
+            "matchUniqueMintN": 299,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 299,
+            "totalPnlSol": 0.606769526,
+            "worstRoiPct": -39.64329016709833
+          },
+          "1.00": {
+            "MAX_HOLD": 264,
+            "PF": 1.1160254007253574,
+            "SL": 10,
+            "TP": 25,
+            "WR": 0.19063545150501673,
+            "bestRoiPct": 140.1196419017905,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.3298663867884674,
+            "matchUniqueMintN": 299,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 299,
+            "totalPnlSol": 0.9863054279999999,
+            "worstRoiPct": -40.00738776306118
+          },
+          "matchingUniqueN": 299
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 479,
+            "PF": 0.9884372175630065,
+            "SL": 12,
+            "TP": 35,
+            "WR": 0.188212927756654,
+            "bestRoiPct": 148.4589540104599,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.03169865525679333,
+            "matchUniqueMintN": 526,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 526,
+            "totalPnlSol": -0.08336829699999988,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 477,
+            "PF": 0.96668769792801,
+            "SL": 12,
+            "TP": 36,
+            "WR": 0.18666666666666668,
+            "bestRoiPct": 140.1196419017905,
+            "executableShareOfMatches": 0.9980988593155894,
+            "expectancyReturnPct": -0.09214433508784836,
+            "matchUniqueMintN": 526,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 525,
+            "totalPnlSol": -0.4837601780000002,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 526
+        }
+      },
+      "classification": "REGIME_SENSITIVE",
+      "clauses": [
+        [
+          "recurrentWalletShareBps",
+          "le",
+          2181.437503347893
+        ],
+        [
+          "globalTrades5sPrior",
+          "le",
+          481.0
+        ],
+        [
+          "buyerHhi",
+          "ge",
+          0.2706786618918683
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 3,
+      "state": "FIRST_IMPULSE_EVENT"
+    },
+    {
+      "candidateId": "C-a5f407bd0c5a0f85",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 26,
+            "PF": 0.3112546406221058,
+            "SL": 4,
+            "TP": 2,
+            "WR": 0.125,
+            "bestRoiPct": 23.648033919660804,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -3.356185244397556,
+            "matchUniqueMintN": 32,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 32,
+            "totalPnlSol": -0.536995009,
+            "worstRoiPct": -26.235675643243567
+          },
+          "1.00": {
+            "MAX_HOLD": 25,
+            "PF": 0.15283356858514344,
+            "SL": 5,
+            "TP": 1,
+            "WR": 0.0967741935483871,
+            "bestRoiPct": 23.729638851805742,
+            "executableShareOfMatches": 0.96875,
+            "expectancyReturnPct": -5.028646711605152,
+            "matchUniqueMintN": 32,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 31,
+            "totalPnlSol": -1.558888275,
+            "worstRoiPct": -27.5960584197079
+          },
+          "matchingUniqueN": 32
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 40,
+            "PF": 2.5289257195915313,
+            "SL": 4,
+            "TP": 19,
+            "WR": 0.47619047619047616,
+            "bestRoiPct": 28.63320546794532,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 4.735232619102381,
+            "matchUniqueMintN": 63,
+            "medianRoiPct": -0.3646241537584624,
+            "passN": 63,
+            "totalPnlSol": 1.4916131910000001,
+            "worstRoiPct": -28.767766922330775
+          },
+          "1.00": {
+            "MAX_HOLD": 40,
+            "PF": 2.344023525094127,
+            "SL": 4,
+            "TP": 19,
+            "WR": 0.4603174603174603,
+            "bestRoiPct": 28.404256978715107,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 4.276704349811585,
+            "matchUniqueMintN": 63,
+            "medianRoiPct": -0.3667803660981695,
+            "passN": 63,
+            "totalPnlSol": 2.694337212,
+            "worstRoiPct": -28.879451102744486
+          },
+          "matchingUniqueN": 63
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 44,
+            "PF": 1.1529637257206828,
+            "SL": 2,
+            "TP": 12,
+            "WR": 0.25862068965517243,
+            "bestRoiPct": 22.9990042099579,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.6425661984759462,
+            "matchUniqueMintN": 58,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 58,
+            "totalPnlSol": 0.18634606100000004,
+            "worstRoiPct": -32.79524824751753
+          },
+          "1.00": {
+            "MAX_HOLD": 43,
+            "PF": 1.1584715228757136,
+            "SL": 2,
+            "TP": 12,
+            "WR": 0.2631578947368421,
+            "bestRoiPct": 26.306967565162175,
+            "executableShareOfMatches": 0.9827586206896551,
+            "expectancyReturnPct": 0.6748205065992213,
+            "matchUniqueMintN": 58,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 57,
+            "totalPnlSol": 0.384649612,
+            "worstRoiPct": -32.9439189804051
+          },
+          "matchingUniqueN": 58
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 31,
+            "PF": 0.3206314123330103,
+            "SL": 5,
+            "TP": 3,
+            "WR": 0.1282051282051282,
+            "bestRoiPct": 22.863109768902312,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -4.066770968187754,
+            "matchUniqueMintN": 39,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 39,
+            "totalPnlSol": -0.793028269,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 29,
+            "PF": 0.30723557332935403,
+            "SL": 5,
+            "TP": 3,
+            "WR": 0.13513513513513514,
+            "bestRoiPct": 21.61325513372433,
+            "executableShareOfMatches": 0.9487179487179487,
+            "expectancyReturnPct": -4.296866142696313,
+            "matchUniqueMintN": 39,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 37,
+            "totalPnlSol": -1.589848422,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 39
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 110,
+            "PF": 1.3837103624164862,
+            "SL": 10,
+            "TP": 33,
+            "WR": 0.3202614379084967,
+            "bestRoiPct": 28.63320546794532,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 1.491441612381262,
+            "matchUniqueMintN": 153,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 153,
+            "totalPnlSol": 1.140964243,
+            "worstRoiPct": -32.79524824751753
+          },
+          "1.00": {
+            "MAX_HOLD": 108,
+            "PF": 1.242360793607278,
+            "SL": 11,
+            "TP": 32,
+            "WR": 0.31125827814569534,
+            "bestRoiPct": 28.404256978715107,
+            "executableShareOfMatches": 0.9869281045751634,
+            "expectancyReturnPct": 1.006682747380965,
+            "matchUniqueMintN": 153,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 151,
+            "totalPnlSol": 1.520098549,
+            "worstRoiPct": -32.9439189804051
+          },
+          "matchingUniqueN": 153
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 30,
+            "PF": 0.6391947696865069,
+            "SL": 5,
+            "TP": 5,
+            "WR": 0.25,
+            "bestRoiPct": 24.550348296517036,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.052121863781362,
+            "matchUniqueMintN": 40,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 40,
+            "totalPnlSol": -0.410428477,
+            "worstRoiPct": -29.97027869721303
+          },
+          "1.00": {
+            "MAX_HOLD": 30,
+            "PF": 0.6170710824793452,
+            "SL": 5,
+            "TP": 5,
+            "WR": 0.25,
+            "bestRoiPct": 22.033012634936824,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -2.1916676816615914,
+            "matchUniqueMintN": 40,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 40,
+            "totalPnlSol": -0.876671456,
+            "worstRoiPct": -30.075055624721877
+          },
+          "matchingUniqueN": 40
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 61,
+            "PF": 0.47785595074570536,
+            "SL": 10,
+            "TP": 8,
+            "WR": 0.189873417721519,
+            "bestRoiPct": 24.550348296517036,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -3.0466954722857835,
+            "matchUniqueMintN": 79,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 79,
+            "totalPnlSol": -1.203456746,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 59,
+            "PF": 0.4619657978652515,
+            "SL": 10,
+            "TP": 8,
+            "WR": 0.19480519480519481,
+            "bestRoiPct": 22.033012634936824,
+            "executableShareOfMatches": 0.9746835443037974,
+            "expectancyReturnPct": -3.2032565525484062,
+            "matchUniqueMintN": 79,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 77,
+            "totalPnlSol": -2.466519878,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 79
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "firstBuyerShareBps",
+          "le",
+          1669.2531566988214
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 2,
+      "state": "FIXED_250MS"
+    },
+    {
+      "candidateId": "C-9420136c1852953e",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 17,
+            "PF": 0.9985784622656853,
+            "SL": 3,
+            "TP": 3,
+            "WR": 0.4782608695652174,
+            "bestRoiPct": 23.629386706132937,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.005991635735816733,
+            "matchUniqueMintN": 23,
+            "medianRoiPct": -1.304260957390426,
+            "passN": 23,
+            "totalPnlSol": -0.0006890450000000036,
+            "worstRoiPct": -26.235675643243567
+          },
+          "1.00": {
+            "MAX_HOLD": 16,
+            "PF": 0.6095932928812162,
+            "SL": 4,
+            "TP": 2,
+            "WR": 0.45454545454545453,
+            "bestRoiPct": 23.71089744551277,
+            "executableShareOfMatches": 0.9565217391304348,
+            "expectancyReturnPct": -2.1761607601052906,
+            "matchUniqueMintN": 23,
+            "medianRoiPct": -1.6371440642796786,
+            "passN": 22,
+            "totalPnlSol": -0.478757761,
+            "worstRoiPct": -27.5679240603797
+          },
+          "matchingUniqueN": 23
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 37,
+            "PF": 3.366764474117182,
+            "SL": 4,
+            "TP": 21,
+            "WR": 0.5967741935483871,
+            "bestRoiPct": 48.924692353076466,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.580442766540076,
+            "matchUniqueMintN": 62,
+            "medianRoiPct": 3.0816675833241667,
+            "passN": 62,
+            "totalPnlSol": 2.039957657,
+            "worstRoiPct": -28.11739502604974
+          },
+          "1.00": {
+            "MAX_HOLD": 37,
+            "PF": 3.120126495583517,
+            "SL": 4,
+            "TP": 21,
+            "WR": 0.5806451612903226,
+            "bestRoiPct": 48.266428067859664,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 6.028085693442501,
+            "matchUniqueMintN": 62,
+            "medianRoiPct": 2.5932959835200826,
+            "passN": 62,
+            "totalPnlSol": 3.737431817,
+            "worstRoiPct": -28.230589647051765
+          },
+          "matchingUniqueN": 62
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 26,
+            "PF": 1.4990897987892255,
+            "SL": 3,
+            "TP": 11,
+            "WR": 0.325,
+            "bestRoiPct": 24.386694733052668,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 2.0590113348866512,
+            "matchUniqueMintN": 40,
+            "medianRoiPct": -2.227530324696753,
+            "passN": 40,
+            "totalPnlSol": 0.411806385,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 25,
+            "PF": 1.4410352493484877,
+            "SL": 3,
+            "TP": 11,
+            "WR": 0.3333333333333333,
+            "bestRoiPct": 24.27839000804996,
+            "executableShareOfMatches": 0.975,
+            "expectancyReturnPct": 1.9223448857114689,
+            "matchUniqueMintN": 40,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 39,
+            "totalPnlSol": 0.749718254,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 40
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 23,
+            "PF": 0.3055127846474761,
+            "SL": 6,
+            "TP": 3,
+            "WR": 0.21875,
+            "bestRoiPct": 21.06257477425226,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -5.299684809401906,
+            "matchUniqueMintN": 32,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 32,
+            "totalPnlSol": -0.8479580489999999,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 21,
+            "PF": 0.30690909576183045,
+            "SL": 6,
+            "TP": 3,
+            "WR": 0.23333333333333334,
+            "bestRoiPct": 22.384638476807616,
+            "executableShareOfMatches": 0.9375,
+            "expectancyReturnPct": -5.564767392829703,
+            "matchUniqueMintN": 32,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 30,
+            "totalPnlSol": -1.669438565,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 32
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 80,
+            "PF": 2.1286168592625714,
+            "SL": 10,
+            "TP": 35,
+            "WR": 0.488,
+            "bestRoiPct": 48.924692353076466,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 3.9216807783922163,
+            "matchUniqueMintN": 125,
+            "medianRoiPct": -0.3324306756932431,
+            "passN": 125,
+            "totalPnlSol": 2.451074997,
+            "worstRoiPct": -30.339836001639984
+          },
+          "1.00": {
+            "MAX_HOLD": 78,
+            "PF": 1.854841930699188,
+            "SL": 11,
+            "TP": 34,
+            "WR": 0.4796747967479675,
+            "bestRoiPct": 48.266428067859664,
+            "executableShareOfMatches": 0.984,
+            "expectancyReturnPct": 3.2588392423891537,
+            "matchUniqueMintN": 125,
+            "medianRoiPct": -0.3667803660981695,
+            "passN": 123,
+            "totalPnlSol": 4.0083923100000005,
+            "worstRoiPct": -30.788237658811706
+          },
+          "matchingUniqueN": 125
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 23,
+            "PF": 0.3177449532242146,
+            "SL": 16,
+            "TP": 5,
+            "WR": 0.25,
+            "bestRoiPct": 23.28259877401226,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -7.847574201530712,
+            "matchUniqueMintN": 44,
+            "medianRoiPct": -2.91140388596114,
+            "passN": 44,
+            "totalPnlSol": -1.726483589,
+            "worstRoiPct": -49.909570304296956
+          },
+          "1.00": {
+            "MAX_HOLD": 23,
+            "PF": 0.3166987107504574,
+            "SL": 16,
+            "TP": 5,
+            "WR": 0.25,
+            "bestRoiPct": 24.17559122204389,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -7.871369279517238,
+            "matchUniqueMintN": 44,
+            "medianRoiPct": -2.913959980200099,
+            "passN": 44,
+            "totalPnlSol": -3.4634198,
+            "worstRoiPct": -50.07235733821331
+          },
+          "matchingUniqueN": 44
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 46,
+            "PF": 0.31376384380052164,
+            "SL": 22,
+            "TP": 8,
+            "WR": 0.23684210526315788,
+            "bestRoiPct": 23.28259877401226,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -6.774778668002794,
+            "matchUniqueMintN": 76,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 76,
+            "totalPnlSol": -2.574441638,
+            "worstRoiPct": -49.909570304296956
+          },
+          "1.00": {
+            "MAX_HOLD": 44,
+            "PF": 0.31354516933303045,
+            "SL": 22,
+            "TP": 8,
+            "WR": 0.24324324324324326,
+            "bestRoiPct": 24.17559122204389,
+            "executableShareOfMatches": 0.9736842105263158,
+            "expectancyReturnPct": -6.936260406535805,
+            "matchUniqueMintN": 76,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 74,
+            "totalPnlSol": -5.132858365,
+            "worstRoiPct": -50.07235733821331
+          },
+          "matchingUniqueN": 76
+        }
+      },
+      "classification": "EARLY_ONLY",
+      "clauses": [
+        [
+          "firstBuyerShareBps",
+          "le",
+          2541.942043721403
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 2,
+      "state": "FIXED_50MS"
+    },
+    {
+      "candidateId": "C-d5b466a2292b281f",
+      "chronology": {
+        "A_1_1000": {
+          "0.50": {
+            "MAX_HOLD": 459,
+            "PF": 0.3942738514071266,
+            "SL": 9,
+            "TP": 15,
+            "WR": 0.09523809523809523,
+            "bestRoiPct": 53.594032459675404,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -1.7765612733106622,
+            "matchUniqueMintN": 483,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 483,
+            "totalPnlSol": -4.290438379,
+            "worstRoiPct": -34.81237847621524
+          },
+          "1.00": {
+            "MAX_HOLD": 452,
+            "PF": 0.38578108533500327,
+            "SL": 10,
+            "TP": 14,
+            "WR": 0.09453781512605042,
+            "bestRoiPct": 54.22820035899821,
+            "executableShareOfMatches": 0.9855072463768116,
+            "expectancyReturnPct": -1.8140483041282274,
+            "matchUniqueMintN": 483,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 476,
+            "totalPnlSol": -8.634913102,
+            "worstRoiPct": -38.69641391793041
+          },
+          "matchingUniqueN": 483
+        },
+        "B_1001_2000": {
+          "0.50": {
+            "MAX_HOLD": 352,
+            "PF": 1.1346687308030843,
+            "SL": 10,
+            "TP": 33,
+            "WR": 0.17468354430379746,
+            "bestRoiPct": 323.16144218557815,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.4105639971448388,
+            "matchUniqueMintN": 395,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 395,
+            "totalPnlSol": 0.8108720030000001,
+            "worstRoiPct": -45.11061969380306
+          },
+          "1.00": {
+            "MAX_HOLD": 347,
+            "PF": 1.1210634719763684,
+            "SL": 10,
+            "TP": 33,
+            "WR": 0.1717948717948718,
+            "bestRoiPct": 311.45799771001145,
+            "executableShareOfMatches": 0.9873417721518988,
+            "expectancyReturnPct": 0.36759382638984245,
+            "matchUniqueMintN": 395,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 390,
+            "totalPnlSol": 1.433623091,
+            "worstRoiPct": -45.28208588957055
+          },
+          "matchingUniqueN": 395
+        },
+        "C_2001_3000": {
+          "0.50": {
+            "MAX_HOLD": 262,
+            "PF": 1.000608138518561,
+            "SL": 8,
+            "TP": 25,
+            "WR": 0.17627118644067796,
+            "bestRoiPct": 142.8969348306517,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": 0.0017843313092293716,
+            "matchUniqueMintN": 295,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 295,
+            "totalPnlSol": 0.002631915000000121,
+            "worstRoiPct": -40.51383626163739
+          },
+          "1.00": {
+            "MAX_HOLD": 259,
+            "PF": 0.9648102853904935,
+            "SL": 8,
+            "TP": 24,
+            "WR": 0.16494845360824742,
+            "bestRoiPct": 143.8723980380098,
+            "executableShareOfMatches": 0.9864406779661017,
+            "expectancyReturnPct": -0.10593261191769644,
+            "matchUniqueMintN": 295,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 291,
+            "totalPnlSol": -0.30826544200000033,
+            "worstRoiPct": -40.67899630501847
+          },
+          "matchingUniqueN": 295
+        },
+        "D_3001_4000": {
+          "0.50": {
+            "MAX_HOLD": 239,
+            "PF": 0.6561793557833387,
+            "SL": 4,
+            "TP": 11,
+            "WR": 0.16929133858267717,
+            "bestRoiPct": 63.70039599604004,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.963853677998653,
+            "matchUniqueMintN": 254,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 254,
+            "totalPnlSol": -1.2241064119999998,
+            "worstRoiPct": -47.14763532364676
+          },
+          "1.00": {
+            "MAX_HOLD": 237,
+            "PF": 0.648020344533081,
+            "SL": 4,
+            "TP": 11,
+            "WR": 0.17063492063492064,
+            "bestRoiPct": 64.0362356188219,
+            "executableShareOfMatches": 0.9921259842519685,
+            "expectancyReturnPct": -0.9872474776515007,
+            "matchUniqueMintN": 254,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 252,
+            "totalPnlSol": -2.487876083,
+            "worstRoiPct": -47.31837560812196
+          },
+          "matchingUniqueN": 254
+        },
+        "EARLY_1_3000": {
+          "0.50": {
+            "MAX_HOLD": 1073,
+            "PF": 0.8005451514909647,
+            "SL": 27,
+            "TP": 73,
+            "WR": 0.1423699914748508,
+            "bestRoiPct": 323.16144218557815,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -0.5928217718675327,
+            "matchUniqueMintN": 1173,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 1173,
+            "totalPnlSol": -3.476934461,
+            "worstRoiPct": -45.11061969380306
+          },
+          "1.00": {
+            "MAX_HOLD": 1058,
+            "PF": 0.7833389024176898,
+            "SL": 28,
+            "TP": 71,
+            "WR": 0.13828867761452032,
+            "bestRoiPct": 311.45799771001145,
+            "executableShareOfMatches": 0.9863597612958227,
+            "expectancyReturnPct": -0.6490508129136104,
+            "matchUniqueMintN": 1173,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 1157,
+            "totalPnlSol": -7.509555453000001,
+            "worstRoiPct": -45.28208588957055
+          },
+          "matchingUniqueN": 1173
+        },
+        "E_4001_5000": {
+          "0.50": {
+            "MAX_HOLD": 286,
+            "PF": 0.6221846434313202,
+            "SL": 27,
+            "TP": 24,
+            "WR": 0.18397626112759644,
+            "bestRoiPct": 148.4589540104599,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -1.7399697047539908,
+            "matchUniqueMintN": 337,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 337,
+            "totalPnlSol": -2.931878271,
+            "worstRoiPct": -49.0439949600504
+          },
+          "1.00": {
+            "MAX_HOLD": 285,
+            "PF": 0.6133177424877438,
+            "SL": 27,
+            "TP": 25,
+            "WR": 0.18100890207715134,
+            "bestRoiPct": 140.1196419017905,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -1.7829435200005008,
+            "matchUniqueMintN": 337,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 337,
+            "totalPnlSol": -6.008549705,
+            "worstRoiPct": -49.229430952845235
+          },
+          "matchingUniqueN": 337
+        },
+        "LATER_3001_5000": {
+          "0.50": {
+            "MAX_HOLD": 525,
+            "PF": 0.6328761104710104,
+            "SL": 31,
+            "TP": 35,
+            "WR": 0.17766497461928935,
+            "bestRoiPct": 148.4589540104599,
+            "executableShareOfMatches": 1.0,
+            "expectancyReturnPct": -1.40641053251058,
+            "matchUniqueMintN": 591,
+            "medianRoiPct": -2.471111888881111,
+            "passN": 591,
+            "totalPnlSol": -4.155984683,
+            "worstRoiPct": -49.0439949600504
+          },
+          "1.00": {
+            "MAX_HOLD": 522,
+            "PF": 0.6241677733075747,
+            "SL": 31,
+            "TP": 36,
+            "WR": 0.1765704584040747,
+            "bestRoiPct": 140.1196419017905,
+            "executableShareOfMatches": 0.9966159052453468,
+            "expectancyReturnPct": -1.442509899165275,
+            "matchUniqueMintN": 591,
+            "medianRoiPct": -2.470123749381253,
+            "passN": 589,
+            "totalPnlSol": -8.496425788,
+            "worstRoiPct": -49.229430952845235
+          },
+          "matchingUniqueN": 591
+        }
+      },
+      "classification": "UNSTABLE",
+      "clauses": [
+        [
+          "recurrentWalletShareBps",
+          "le",
+          4166.666666666667
+        ]
+      ],
+      "positiveBothPrimary1kBlocks": 1,
+      "state": "FIRST_IMPULSE_EVENT"
+    }
+  ]
+}

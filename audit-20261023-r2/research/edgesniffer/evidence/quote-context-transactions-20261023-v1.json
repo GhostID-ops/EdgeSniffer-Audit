@@ -1,0 +1,137 @@
+{
+  "schema": "PUMP_CAPTURE_QUALITY_V1",
+  "input": {
+    "source": "context-canary1/capture.jsonl",
+    "source_prefix_bytes": 144965003,
+    "source_device": 64785,
+    "source_inode": 70910325,
+    "start_byte": 0,
+    "end_byte": 144965003,
+    "unsealed_tail_bytes_excluded": 0,
+    "snapshot_bytes": 144965003,
+    "sha256": "58e5c756178ecec26232281025fefdde7ed5074c5185d45b98d1f24aa90bca58"
+  },
+  "account_input": null,
+  "session_start_ns": 1792736760090810300,
+  "session_end_ns": 1792736820127136360,
+  "kinds": {
+    "SESSION_START": 1,
+    "CONNECT_ATTEMPT": 1,
+    "CONNECTED": 1,
+    "MINT_DISCOVERED": 236,
+    "TRANSACTION": 7808,
+    "CONTEXT_SUBSCRIPTION_REQUESTED": 139,
+    "PING": 6,
+    "ACCOUNT": 4487,
+    "SLOT": 1579,
+    "OTHER": 6,
+    "SESSION_END": 1
+  },
+  "counts": {
+    "transaction_frames": 7808,
+    "instruction_identity_complete": 7808,
+    "transactions_with_pump_instructions": 5192,
+    "pump_instruction_count": 8924,
+    "inner_pump_instruction_count": 5291,
+    "trade_event_prefixes": 2287,
+    "successful_trade_event_prefixes": 2267,
+    "signed_sol_flow_events": 1990,
+    "transactions_with_signed_sol_flow": 1982,
+    "event_quote_layout_unknown": 0
+  },
+  "execution_statuses": {
+    "FAILED": 4444,
+    "SUCCESS": 3364
+  },
+  "decoder_gaps": {},
+  "account_join_counts": {
+    "transaction_rows": 7808,
+    "signature_slot_account_matches": 0,
+    "matches_by_one_second_boundary": 0,
+    "FAILED_denominator": 4444,
+    "FAILED_identity_match": 0,
+    "SUCCESS_denominator": 3364,
+    "SUCCESS_identity_match": 0,
+    "SOL_FLOW_denominator": 1982,
+    "SOL_FLOW_identity_match": 0,
+    "SOL_FLOW_timely_match": 0
+  },
+  "reconnect_gaps": [],
+  "observed_slot_count": 265,
+  "slot_numeric_discontinuities": 0,
+  "finalized_sample_size": 4,
+  "finalized_comparison": {
+    "resolved_blocks": 4,
+    "expected_pump_signatures": 79,
+    "observed_expected": 79,
+    "missing_transactions": 0,
+    "observed_not_finalized": 0
+  },
+  "native_vs_finalized_metadata": {
+    "compared_transactions": 79,
+    "execution_status_equal_matches": 79,
+    "resolved_accounts_equal_matches": 79,
+    "lamport_balances_equal_matches": 79,
+    "fee_equal_matches": 79,
+    "event_payloads_equal_matches": 79
+  },
+  "account_join_rates": {
+    "SUCCESS": 0.0,
+    "FAILED": 0.0,
+    "SOL_FLOW": 0.0
+  },
+  "reference_results": [
+    {
+      "slot": 460340369,
+      "result": {
+        "expected_pump_signatures": 34,
+        "observed_expected": 34,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460340454,
+      "result": {
+        "expected_pump_signatures": 31,
+        "observed_expected": 31,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460340610,
+      "result": {
+        "expected_pump_signatures": 10,
+        "observed_expected": 10,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460340613,
+      "result": {
+        "expected_pump_signatures": 4,
+        "observed_expected": 4,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    }
+  ],
+  "global_capture_completeness": "UNKNOWN",
+  "independent_scope": "Pump program transactions including CPI and failed/unknown execution; no teacher or mint shortlist",
+  "economic_admission": false,
+  "limitations": [
+    "Numeric slot gaps may be skipped slots, not necessarily capture loss.",
+    "Finalized comparison is only for the preselected interior slot sample, not the whole stream.",
+    "Unresolved reference blocks are unknown, not zero missing.",
+    "Later finality/reference data are never decision-time features.",
+    "Account joins prove identity/clock association, not entry-state continuity/fee validity.",
+    "Trade-event prefix amounts preserve unknown fee tails; transaction deltas are not swap fills.",
+    "Missing metadata/decodes remain in the denominator. No PnL evaluated."
+  ]
+}

@@ -1,0 +1,19 @@
+[Unit]
+Description=EdgeSniffer teacher-matched native Pump reserve replay v3 (receive-only research)
+After=edgesniffer-independent-teacher-matched-feed-v1.service edgesniffer-independent-native-pump-seed-normalizer-v1.service
+Wants=edgesniffer-independent-teacher-matched-feed-v1.service
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/EdgeSniffer
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/materializeNativePumpCurveStateV1.py --input /mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/teacher-matched-native-observations-v1.jsonl --output /mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/native-pre-finality-pump-state-v3.jsonl --state /mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/native-pre-finality-pump-state-v3.state.json --account-seed-input /mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1/native-curve-account-seeds.jsonl --poll-ms 100 --start-at-end
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-research/independent-strategy-lab-v1
+
+[Install]
+WantedBy=multi-user.target

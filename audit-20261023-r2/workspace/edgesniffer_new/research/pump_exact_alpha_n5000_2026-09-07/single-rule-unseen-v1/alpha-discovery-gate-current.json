@@ -1,0 +1,50 @@
+{
+  "alphaScanStarted": false,
+  "blockers": [
+    "EXACT_N_LT_10000:6848",
+    "HEALTHY_SOURCE_CHAIN_HOURS_LT_24:represented=20,exact=18,span=30.141",
+    "SUPPORTED_EXACT_POPULATION_NOT_BROAD:bias=MATERIALLY_BIASED,mayhem=MAYHEM_EXACT_REPLAY_EVIDENCE_BLOCKER",
+    "STORAGE_RUNWAY_TO_N30000_NOT_PROVEN"
+  ],
+  "classification": "BLOCKED",
+  "coverage": {
+    "admissionBias": "MATERIALLY_BIASED",
+    "biasUnderstood": true,
+    "broadExactReplaySupport": false,
+    "mayhem": "MAYHEM_EXACT_REPLAY_EVIDENCE_BLOCKER",
+    "quoteNative": "CURRENT_LEDGER_SUPPORTS_EXACT_QUOTE_NATIVE_REPLAY",
+    "reconciliationClean": true
+  },
+  "exactAdmittedN": 6848,
+  "generatedAtUtc": "2026-09-07T15:09:02.516119Z",
+  "knownEvidenceGaps": {
+    "count": 1,
+    "documentedAndExcludedFromContinuityClaims": true,
+    "historicalGapExactlyRecovered": false
+  },
+  "operationalHealth": {
+    "evidenceFlowHealthy": true,
+    "healthy": true,
+    "processAlive": true,
+    "reconciliationBacklog": 852,
+    "streamConnected": true,
+    "watchdogState": "EVIDENCE_FLOW_HEALTHY"
+  },
+  "schema": "PUMP_EXACT_ALPHA_READINESS_GATE_V1",
+  "sourceChainHours": {
+    "admittedMintHoursRepresented": 20,
+    "exactReconciledPartitionHours": 18,
+    "firstToLastCreateSpanHours": 30.140555555555554,
+    "minimumRequired": 24
+  },
+  "storage": {
+    "estimatedDaysToN30000": 4.245812105183455,
+    "estimatedGrowthGiBPerDay": 15.425468953855509,
+    "observedExactAdmissionRatePerHour": 227.2042763006313,
+    "requiredGiBToN30000With25PctMargin": 81.8670535155141,
+    "rootFreeGiB": 46.49380874633789,
+    "runwaySafeToN30000": false,
+    "usableCombinedGiBAfter10GiBRootReserve": 89.66572189331055,
+    "volumeFreeGiB": 53.171913146972656
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "bootstrap": {
+    "replicates": 1000,
+    "unit": "mint"
+  },
+  "chronologyBlocks": [
+    [
+      1,
+      70
+    ],
+    [
+      71,
+      140
+    ],
+    [
+      141,
+      210
+    ],
+    [
+      211,
+      280
+    ],
+    [
+      281,
+      350
+    ]
+  ],
+  "createdAtUtc": "2026-09-11T02:14:23.301206+00:00",
+  "crossMintUniverse": "LAUNCHED_120S",
+  "developmentOrdinals": [
+    1,
+    350
+  ],
+  "fullMarketAlertRateClaimPermitted": false,
+  "internalAssessmentOrdinals": [
+    246,
+    350
+  ],
+  "internalTrainOrdinals": [
+    1,
+    245
+  ],
+  "outcomesPermitted": 0,
+  "schema": "2CQ_EVENT_DRIVEN_FINGERPRINT_FREEZE_V1_CONTRACT",
+  "sourceHashes": {
+    "crossExamples": "c01621f26192709b1812670a9e6b2f0c91dd506e14d3874600d99798a72d0364",
+    "entryTape": "6319ec4b88698c93bbac2351f30336b90e0b00201fcf2347af532bf957aa3400",
+    "parentContract": "c7873752eb36b085683458265a892d6648af9efe854a438d5a4717d17d70922b",
+    "temporalExamples": "31daf285c7bdcc425cb98b130d358fd8e527007faf290eab23aff4a97b96ac6b"
+  },
+  "triggerClock": "after every successful external Pump transaction",
+  "triggerThreshold": "training teacher-score P10; 90% training recall target",
+  "validationRowsPermitted": 0
+}

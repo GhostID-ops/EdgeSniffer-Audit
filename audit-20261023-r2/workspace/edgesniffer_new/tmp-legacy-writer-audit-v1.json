@@ -1,0 +1,1314 @@
+{
+  "activeUnits": [
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/local/lib/edgesniffer-8ycb-production-translation-v1/production_shadow.py service --ledger /mnt/HC_Volume_106775198/edgesniffer-derived/8ycb-prospective-shadow-v3/cohort_ledger.jsonl --builder /usr/local/lib/edgesniffer-8ycb-production-translation-v1/eight_ycb_no_submit_builder --output /mnt/HC_Volume_106775198/edgesniffer-derived/8ycb-production-translation-v1/prospective ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-8ycb-production-translation-v1.service",
+      "MainPID": "1352462",
+      "NRestarts": "14",
+      "SubState": "running",
+      "unit": "edgesniffer-8ycb-production-translation-v1.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/local/lib/edgesniffer-8ycb-shadow-v3/shadow_observer.py --spec /usr/local/lib/edgesniffer-8ycb-shadow-v3/frozen_spec_template.json --output /mnt/HC_Volume_106775198/edgesniffer-derived/8ycb-prospective-shadow-v3 --global-feed /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --wallet-feed /mnt/HC_Volume_106775198/edgesniffer-derived/8ycb-prospective-shadow-v3/wallet_stream_observations.jsonl --watcher /usr/local/lib/edgesniffer-8ycb-shadow-v3/node_modules/.bin/tsx --watcher-script /usr/local/lib/edgesniffer-8ycb-shadow-v3/wallet_stream_watcher.ts ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-8ycb-prospective-shadow-v3.service",
+      "MainPID": "1352461",
+      "NRestarts": "13",
+      "SubState": "running",
+      "unit": "edgesniffer-8ycb-prospective-shadow-v3.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/npm ; argv[]=/usr/bin/npm run ui:live ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-dashboard.service",
+      "MainPID": "734189",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-dashboard.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/modelAProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --historical-enriched /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-enrichment-v1/enriched_1s_2s_snapshots.jsonl.gz --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z --poll-ms 10 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-model-a-1s-prospective-v2.service",
+      "MainPID": "1352465",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-model-a-1s-prospective-v2.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/mnt/HC_Volume_106775198/edgesniffer-bin/pumpfun-sidecar-ranker-v2-lifecycle-repair-v3-7992d04956cdc56d ; argv[]=/mnt/HC_Volume_106775198/edgesniffer-bin/pumpfun-sidecar-ranker-v2-lifecycle-repair-v3-7992d04956cdc56d ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-ranker-v2-n25-tiny-live-v3.service",
+      "MainPID": "1357511",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-ranker-v2-n25-tiny-live-v3.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/local/sbin/edgesniffer-disk-fail-closed-guard ; argv[]=/usr/local/sbin/edgesniffer-disk-fail-closed-guard ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-ranker-v2-n25-v3-disk-guard.service",
+      "MainPID": "1354398",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-ranker-v2-n25-v3-disk-guard.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/rankerV2ProductionTranslationV1.py service --builder /root/bot/EdgeSniffer/rust-sidecar/target/release/ranker_v2_no_submit_builder --builder-source /root/bot/EdgeSniffer/rust-sidecar/src/bin/ranker_v2_no_submit_builder.rs --output /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-production-translation-v1/prospective --poll-sec 2 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-ranker-v2-production-translation-v1.service",
+      "MainPID": "1352467",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-ranker-v2-production-translation-v1.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --mode prospective-v2 --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-prospective-shadow-v2 --canonical-spec /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-ranker-v2-canonical-freeze/canonical_score_spec.json --semantic-freeze-manifest /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-event-gated-semantic-freeze/freeze_manifest.json --atlas-script /mnt/HC_Volume_106775198/memecoinExecutableAlphaAtlasV1.py --self-script /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --poll-ms 10 --read-bytes 65536 --status-every-sec 5 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-ranker-v2-prospective-shadow-v2.service",
+      "MainPID": "1352469",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-ranker-v2-prospective-shadow-v2.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_mc5000_prospective_v1 --rule bc100_ge2_mc5000_prospective_v1 --max-mc-usd 5000 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-bc100-ge2-mc5000-prospective-v1.service",
+      "MainPID": "1352473",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-mc5000-prospective-v1.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_0p5_v1 --rule bc100_ge2_net60_ge_0p5_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-bc100-ge2-net60-ge-0p5-v1.service",
+      "MainPID": "1352477",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-0p5-v1.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_1p0_v1 --rule bc100_ge2_net60_ge_1p0_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-bc100-ge2-net60-ge-1p0-v1.service",
+      "MainPID": "1352480",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-1p0-v1.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_2p0_v1 --rule bc100_ge2_net60_ge_2p0_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-bc100-ge2-net60-ge-2p0-v1.service",
+      "MainPID": "1352490",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-2p0-v1.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseFastFlowDetectorV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/fast-flow-detector-v1 --poll-ms 1 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-fast-flow-detector-v1.service",
+      "MainPID": "1352501",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-fast-flow-detector-v1.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/node ; argv[]=/usr/bin/node /root/bot/FinalBot-cya/scripts/teacherImpulseReceiptToSelectedEvents.mjs ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-mc5000-selected-event-adapter.service",
+      "MainPID": "1352506",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-mc5000-selected-event-adapter.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_capsule ; argv[]=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_capsule --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --follow --start-at-end --poll-ms 25 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-parity-v1-capsule-normalizer.service",
+      "MainPID": "875549",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-capsule-normalizer.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_detected_swap_adapter ; argv[]=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_detected_swap_adapter --input /var/lib/edgesniffer-teacher-impulse-parity-v1/detected-swaps.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --follow --start-at-end --poll-ms 25 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-parity-v1-detected-swap-adapter.service",
+      "MainPID": "875556",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-detected-swap-adapter.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_mayhem_supply_enricher ; argv[]=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_mayhem_supply_enricher --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --follow --start-at-end --poll-ms 100 --request-timeout-ms 1500 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-parity-v1-mayhem-supply-enricher.service",
+      "MainPID": "875562",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-mayhem-supply-enricher.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_receipt ; argv[]=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_receipt --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-receipts.jsonl --follow --start-at-end --poll-ms 25 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-parity-v1-nosubmit.service",
+      "MainPID": "1352513",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-nosubmit.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_emit_capsules ; argv[]=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_emit_capsules --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --follow --start-at-end --poll-ms 25 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-parity-v1-observation-emitter.service",
+      "MainPID": "875580",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-observation-emitter.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/bash ; argv[]=/usr/bin/bash -c set -a; source /root/bot/FinalBot-cya/.env; set +a; export TRACKED_WALLETS=2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG RUST_ONLY_BUYS=true RUST_ONLY_SELLS=true JUPITER_FALLBACK_ENABLED=false RUST_EXECUTOR_ENABLED=false RUST_HOT_SNIPER_ENABLED=false RUST_SELECTED_CANDIDATE_SNIPER_ENABLED=false RUST_SELECTED_CANDIDATE_SUBMIT_ENABLED=false RUST_EXIT_WATCHER_ENABLED=false SIMULATION_MODE=true SHADOW_EXECUTION_MODE=true TEACHER_IMPULSE_PARITY_DIR=/var/lib/edgesniffer-teacher-impulse-parity-v1 TEACHER_IMPULSE_OBSERVATION_FEED_ENABLED=true TEACHER_IMPULSE_OBSERVATION_FEED_FILE=/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl; exec /mnt/HC_Volume_106775198/edgesniffer-bin/pumpfun-sidecar-teacher-source-jito-known-good-868d27df21d3196f ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-parity-v1-source-feed.service",
+      "MainPID": "1238806",
+      "NRestarts": "16679",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-source-feed.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/edgesniffer-teacher-impulse-top3-flow-prospective-v1.service",
+      "MainPID": "1352521",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecStart": "{ path=/usr/local/bin/pump-exact-evidence-ledger-v1 ; argv[]=/usr/local/bin/pump-exact-evidence-ledger-v1 run ; ignore_errors=no ; start_time=[Sun 2026-09-06 06:14:02 UTC] ; stop_time=[n/a] ; pid=1604933 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/etc/systemd/system/pump-exact-evidence-ledger-v1.service",
+      "MainPID": "1604933",
+      "NRestarts": "0",
+      "SubState": "running",
+      "unit": "pump-exact-evidence-ledger-v1.service"
+    }
+  ],
+  "dfBytes": "Filesystem        1B-blocks        Used   Available Use% Mounted on\n/dev/sda1       80290492416 40593641472 39680073728  51% /\n/dev/sdb       105089261568 83975680000 15728095232  85% /mnt/HC_Volume_106775198",
+  "generatedUtc": "2026-09-06T14:02:24.542102+00:00",
+  "largestFiles": [
+    {
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl",
+      "sizeBytes": 31634859479
+    },
+    {
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl",
+      "sizeBytes": 26317948575
+    },
+    {
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl",
+      "sizeBytes": 25084305852
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/decision-receipts.jsonl",
+      "sizeBytes": 4457472873
+    },
+    {
+      "path": "/root/bot/EdgeSniffer/runtime/research-cache/ranker-v2-exact-curve-rpc-v1.sqlite",
+      "sizeBytes": 988381184
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/wallet-8ycb-causal-followability-v3/all_launch_stream_120s.tsv",
+      "sizeBytes": 861427742
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/wallet-8ycb-causal-followability-v3/all_launch_stream_120s.tsv",
+      "sizeBytes": 861427742
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-exact-curve-relabel-v1/run-20260906T0118Z/matched-observations.jsonl",
+      "sizeBytes": 339133919
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-exact-curve-relabel-v1/run-20260906T0118Z/matched-observations.jsonl",
+      "sizeBytes": 339133919
+    },
+    {
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/live-mc5000-selected-events.jsonl",
+      "sizeBytes": 324399201
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_0p5_v1/outcomes.jsonl",
+      "sizeBytes": 215400654
+    },
+    {
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/research/production-candidate-path-v1/rule-a-production-path.stdout.jsonl",
+      "sizeBytes": 210180547
+    },
+    {
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/research/production-candidate-path-v1/rule-a-production-path-events.jsonl",
+      "sizeBytes": 210180137
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_1p0_v1/outcomes.jsonl",
+      "sizeBytes": 193640227
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/executable-alpha-ranking-engine-v2-full-universe/full_universe_scores.jsonl.gz",
+      "sizeBytes": 176353936
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-ranking-engine-v2-full-universe/full_universe_scores.jsonl.gz",
+      "sizeBytes": 176353936
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_2p0_v1/outcomes.jsonl",
+      "sizeBytes": 174101754
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/service_health.jsonl",
+      "sizeBytes": 169018646
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-prospective-shadow-v2/service_health.jsonl",
+      "sizeBytes": 169018646
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_0p5_v1/qualifications.jsonl",
+      "sizeBytes": 146960534
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_1p0_v1/qualifications.jsonl",
+      "sizeBytes": 132083212
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_2p0_v1/qualifications.jsonl",
+      "sizeBytes": 118735079
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-n25-tiny-live-v2/pumpfun-sidecar.stdout.jsonl",
+      "sizeBytes": 112029274
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-n25-tiny-live-v2/rust-selected-candidate-audit.jsonl",
+      "sizeBytes": 112029274
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-n25-tiny-live-v2/pumpfun-sidecar.stdout.jsonl",
+      "sizeBytes": 112029274
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-n25-tiny-live-v2/rust-selected-candidate-audit.jsonl",
+      "sizeBytes": 112029274
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_mc5000_prospective_v1/outcomes.jsonl",
+      "sizeBytes": 99936435
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/executable-alpha-enrichment-v1/enriched_1s_2s_snapshots.jsonl.gz",
+      "sizeBytes": 94794546
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-enrichment-v1/enriched_1s_2s_snapshots.jsonl.gz",
+      "sizeBytes": 94794546
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net2s_ge_5_prospective_v1/outcomes.jsonl",
+      "sizeBytes": 94128121
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_2s_ge5_prospective_v1/outcomes.jsonl",
+      "sizeBytes": 93994610
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net1s_ge_5_prospective_v1/outcomes.jsonl",
+      "sizeBytes": 90730563
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_1s_ge5_prospective_v1/outcomes.jsonl",
+      "sizeBytes": 90595095
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_2s_ge5_prospective_v1/outcomes.jsonl",
+      "sizeBytes": 88825330
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_1s_ge5_prospective_v1/outcomes.jsonl",
+      "sizeBytes": 87464218
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_net5s_ge5_prospective_v1/outcomes.jsonl",
+      "sizeBytes": 85373914
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_grossbuy5s_ge5_prospective_v1/outcomes.jsonl",
+      "sizeBytes": 85263336
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net2s_ge_5_prospective_v1/qualifications.jsonl",
+      "sizeBytes": 79903913
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_2s_ge5_prospective_v1/qualifications.jsonl",
+      "sizeBytes": 79802724
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net1s_ge_5_prospective_v1/qualifications.jsonl",
+      "sizeBytes": 77041606
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_1s_ge5_prospective_v1/qualifications.jsonl",
+      "sizeBytes": 76939564
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_2s_ge5_prospective_v1/qualifications.jsonl",
+      "sizeBytes": 75438554
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_1s_ge5_prospective_v1/qualifications.jsonl",
+      "sizeBytes": 74294050
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_truenet5s_ge5_prospective_v1/outcomes.jsonl",
+      "sizeBytes": 74112307
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_mc5000_prospective_v1/qualifications.jsonl",
+      "sizeBytes": 73786256
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_net5s_ge5_prospective_v1/qualifications.jsonl",
+      "sizeBytes": 72516517
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_grossbuy5s_ge5_prospective_v1/qualifications.jsonl",
+      "sizeBytes": 72428171
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/memecoin-executable-alpha-atlas-v1/candidate_outcomes.jsonl.gz",
+      "sizeBytes": 71205194
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/memecoin-executable-alpha-atlas-v1/candidate_outcomes.jsonl.gz",
+      "sizeBytes": 71205194
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/all_scores.jsonl.gz",
+      "sizeBytes": 71043852
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-prospective-shadow-v2/all_scores.jsonl.gz",
+      "sizeBytes": 71043852
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-scorer-direct-emitter-v1/pumpfun-sidecar.stdout.jsonl",
+      "sizeBytes": 65821628
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-scorer-direct-emitter-v1/rust-selected-candidate-audit.jsonl",
+      "sizeBytes": 65821628
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-scorer-direct-emitter-v1/pumpfun-sidecar.stdout.jsonl",
+      "sizeBytes": 65821628
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-scorer-direct-emitter-v1/rust-selected-candidate-audit.jsonl",
+      "sizeBytes": 65821628
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/durable-executable-fingerprint-v2/raw_replay_outcomes.jsonl",
+      "sizeBytes": 65739071
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/durable-executable-fingerprint-v2/raw_replay_outcomes.jsonl",
+      "sizeBytes": 65739071
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_truenet5s_ge5_prospective_v1/qualifications.jsonl",
+      "sizeBytes": 63010700
+    },
+    {
+      "path": "/root/bot/EdgeSniffer/runtime/ranker-v2-n25-tiny-live-v3/pumpfun-sidecar.stdout.jsonl",
+      "sizeBytes": 62601681
+    },
+    {
+      "path": "/root/bot/EdgeSniffer/runtime/ranker-v2-n25-tiny-live-v3/rust-selected-candidate-audit.jsonl",
+      "sizeBytes": 62601681
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-n25-tiny-live-v1/pumpfun-sidecar.stdout.jsonl",
+      "sizeBytes": 59730641
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-n25-tiny-live-v1/rust-selected-candidate-audit.jsonl",
+      "sizeBytes": 59730641
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-n25-tiny-live-v1/pumpfun-sidecar.stdout.jsonl",
+      "sizeBytes": 59730641
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-n25-tiny-live-v1/rust-selected-candidate-audit.jsonl",
+      "sizeBytes": 59730641
+    },
+    {
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/detected-swaps.jsonl",
+      "sizeBytes": 54289762
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/wallet-8ycb-opening-sniper-v2/target_stream_observations.jsonl",
+      "sizeBytes": 53922137
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/wallet-8ycb-opening-sniper-v2/target_stream_observations.jsonl",
+      "sizeBytes": 53922137
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/executable-alpha-ranking-engine-v2-full-universe/full_universe_outcomes.jsonl.gz",
+      "sizeBytes": 42087571
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-ranking-engine-v2-full-universe/full_universe_outcomes.jsonl.gz",
+      "sizeBytes": 42087571
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1/grossbuy_2s_ge5_fastdetector_v1/qualifications.jsonl",
+      "sizeBytes": 40804967
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/reacceleration-v1-forensics-v1/parent_feature_table.jsonl",
+      "sizeBytes": 40338198
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/reacceleration-v1-forensics-v1/parent_feature_table.jsonl",
+      "sizeBytes": 40338198
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1/grossbuy_1s_ge5_fastdetector_v1/qualifications.jsonl",
+      "sizeBytes": 39429737
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1/bc50_ge2_grossbuy5s_ge5_fastdetector_v1/qualifications.jsonl",
+      "sizeBytes": 38743856
+    },
+    {
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/all_1s_scores.jsonl.gz",
+      "sizeBytes": 16981404
+    },
+    {
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/all_1s_scores.jsonl.gz",
+      "sizeBytes": 16981404
+    },
+    {
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/live-rule-a-econ-v1-20260902T153000Z/stdout.jsonl",
+      "sizeBytes": 11218934
+    },
+    {
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/live-rule-a-econ-v1-20260902T153000Z/rust-selected-candidate-audit.jsonl",
+      "sizeBytes": 11218826
+    }
+  ],
+  "sampleSeconds": 60,
+  "schema": "EDGESNIFFER_LEGACY_STORAGE_WRITER_AUDIT_V1",
+  "writers": [
+    {
+      "estimatedBytesPerDay": 55997280.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --mode prospective-v2 --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-prospective-shadow-v2 --canonical-spec /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-ranker-v2-canonical-freeze/canonical_score_spec.json --semantic-freeze-manifest /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-event-gated-semantic-freeze/freeze_manifest.json --atlas-script /mnt/HC_Volume_106775198/memecoinExecutableAlphaAtlasV1.py --self-script /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --poll-ms 10 --read-bytes 65536 --status-every-sec 5 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 8,
+      "finalSizeBytes": 169018646,
+      "modifiedUtc": "2026-09-06T14:01:20.844637+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/service_health.jsonl",
+      "pid": 1352469,
+      "sampleGrowthBytes": 38887,
+      "sizeBytes": 168979759,
+      "unit": "edgesniffer-ranker-v2-prospective-shadow-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 5328000.0,
+      "execStart": "{ path=/mnt/HC_Volume_106775198/edgesniffer-bin/pumpfun-sidecar-ranker-v2-lifecycle-repair-v3-7992d04956cdc56d ; argv[]=/mnt/HC_Volume_106775198/edgesniffer-bin/pumpfun-sidecar-ranker-v2-lifecycle-repair-v3-7992d04956cdc56d ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 1,
+      "finalSizeBytes": 62601681,
+      "modifiedUtc": "2026-09-06T14:01:24.049685+00:00",
+      "path": "/root/bot/EdgeSniffer/runtime/ranker-v2-n25-tiny-live-v3/pumpfun-sidecar.stdout.jsonl",
+      "pid": 1357511,
+      "sampleGrowthBytes": 3700,
+      "sizeBytes": 62597981,
+      "unit": "edgesniffer-ranker-v2-n25-tiny-live-v3.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/npm ; argv[]=/usr/bin/npm run ui:live ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 1,
+      "finalSizeBytes": 0,
+      "modifiedUtc": "2026-09-02T15:50:42.084782+00:00",
+      "path": "/root/bot/EdgeSniffer/data/dashboard-systemd.log",
+      "pid": 734189,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 0,
+      "unit": "edgesniffer-dashboard.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/npm ; argv[]=/usr/bin/npm run ui:live ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 2,
+      "finalSizeBytes": 0,
+      "modifiedUtc": "2026-09-02T15:50:42.084782+00:00",
+      "path": "/root/bot/EdgeSniffer/data/dashboard-systemd.log",
+      "pid": 734189,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 0,
+      "unit": "edgesniffer-dashboard.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/modelAProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --historical-enriched /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-enrichment-v1/enriched_1s_2s_snapshots.jsonl.gz --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z --poll-ms 10 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 3,
+      "finalSizeBytes": 16981404,
+      "modifiedUtc": "2026-09-06T02:18:04.677509+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/all_1s_scores.jsonl.gz",
+      "pid": 1352465,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 16981404,
+      "unit": "edgesniffer-model-a-1s-prospective-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/modelAProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --historical-enriched /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-enrichment-v1/enriched_1s_2s_snapshots.jsonl.gz --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z --poll-ms 10 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 5,
+      "finalSizeBytes": 1424392,
+      "modifiedUtc": "2026-09-06T00:04:01.017683+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/secondary_triggers.jsonl",
+      "pid": 1352465,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 1424392,
+      "unit": "edgesniffer-model-a-1s-prospective-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/modelAProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --historical-enriched /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-enrichment-v1/enriched_1s_2s_snapshots.jsonl.gz --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z --poll-ms 10 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 6,
+      "finalSizeBytes": 1034926,
+      "modifiedUtc": "2026-09-06T00:06:08.177665+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/executable_outcomes.jsonl",
+      "pid": 1352465,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 1034926,
+      "unit": "edgesniffer-model-a-1s-prospective-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/modelAProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --historical-enriched /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-enrichment-v1/enriched_1s_2s_snapshots.jsonl.gz --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z --poll-ms 10 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 4,
+      "finalSizeBytes": 957033,
+      "modifiedUtc": "2026-09-06T00:04:01.017683+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/primary_triggers.jsonl",
+      "pid": 1352465,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 957033,
+      "unit": "edgesniffer-model-a-1s-prospective-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/modelAProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --historical-enriched /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-enrichment-v1/enriched_1s_2s_snapshots.jsonl.gz --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z --poll-ms 10 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 8,
+      "finalSizeBytes": 188822,
+      "modifiedUtc": "2026-09-06T02:08:59.457884+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/status.jsonl",
+      "pid": 1352465,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 188822,
+      "unit": "edgesniffer-model-a-1s-prospective-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/modelAProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --historical-enriched /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-enrichment-v1/enriched_1s_2s_snapshots.jsonl.gz --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z --poll-ms 10 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 7,
+      "finalSizeBytes": 929,
+      "modifiedUtc": "2026-09-05T18:42:52.774229+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/checkpoints.jsonl",
+      "pid": 1352465,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 929,
+      "unit": "edgesniffer-model-a-1s-prospective-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --mode prospective-v2 --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-prospective-shadow-v2 --canonical-spec /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-ranker-v2-canonical-freeze/canonical_score_spec.json --semantic-freeze-manifest /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-event-gated-semantic-freeze/freeze_manifest.json --atlas-script /mnt/HC_Volume_106775198/memecoinExecutableAlphaAtlasV1.py --self-script /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --poll-ms 10 --read-bytes 65536 --status-every-sec 5 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 3,
+      "finalSizeBytes": 71043852,
+      "modifiedUtc": "2026-09-06T02:18:03.696493+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/all_scores.jsonl.gz",
+      "pid": 1352469,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 71043852,
+      "unit": "edgesniffer-ranker-v2-prospective-shadow-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --mode prospective-v2 --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-prospective-shadow-v2 --canonical-spec /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-ranker-v2-canonical-freeze/canonical_score_spec.json --semantic-freeze-manifest /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-event-gated-semantic-freeze/freeze_manifest.json --atlas-script /mnt/HC_Volume_106775198/memecoinExecutableAlphaAtlasV1.py --self-script /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --poll-ms 10 --read-bytes 65536 --status-every-sec 5 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 5,
+      "finalSizeBytes": 691044,
+      "modifiedUtc": "2026-09-06T02:20:26.844749+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/outcomes.jsonl.gz",
+      "pid": 1352469,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 691044,
+      "unit": "edgesniffer-ranker-v2-prospective-shadow-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --mode prospective-v2 --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-prospective-shadow-v2 --canonical-spec /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-ranker-v2-canonical-freeze/canonical_score_spec.json --semantic-freeze-manifest /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-event-gated-semantic-freeze/freeze_manifest.json --atlas-script /mnt/HC_Volume_106775198/memecoinExecutableAlphaAtlasV1.py --self-script /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --poll-ms 10 --read-bytes 65536 --status-every-sec 5 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 7,
+      "finalSizeBytes": 648574,
+      "modifiedUtc": "2026-09-06T02:16:08.450675+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/diagnostic_later_crossings.jsonl.gz",
+      "pid": 1352469,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 648574,
+      "unit": "edgesniffer-ranker-v2-prospective-shadow-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --mode prospective-v2 --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-prospective-shadow-v2 --canonical-spec /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-ranker-v2-canonical-freeze/canonical_score_spec.json --semantic-freeze-manifest /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-event-gated-semantic-freeze/freeze_manifest.json --atlas-script /mnt/HC_Volume_106775198/memecoinExecutableAlphaAtlasV1.py --self-script /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --poll-ms 10 --read-bytes 65536 --status-every-sec 5 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 4,
+      "finalSizeBytes": 475852,
+      "modifiedUtc": "2026-09-06T02:16:08.398674+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/signals.jsonl.gz",
+      "pid": 1352469,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 475852,
+      "unit": "edgesniffer-ranker-v2-prospective-shadow-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --mode prospective-v2 --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-prospective-shadow-v2 --canonical-spec /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-ranker-v2-canonical-freeze/canonical_score_spec.json --semantic-freeze-manifest /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-event-gated-semantic-freeze/freeze_manifest.json --atlas-script /mnt/HC_Volume_106775198/memecoinExecutableAlphaAtlasV1.py --self-script /mnt/HC_Volume_106775198/rankerV2EventGatedProspectiveV2.py --poll-ms 10 --read-bytes 65536 --status-every-sec 5 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 6,
+      "finalSizeBytes": 167125,
+      "modifiedUtc": "2026-09-06T02:20:26.844749+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/entry_quality.jsonl.gz",
+      "pid": 1352469,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 167125,
+      "unit": "edgesniffer-ranker-v2-prospective-shadow-v2.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_mc5000_prospective_v1 --rule bc100_ge2_mc5000_prospective_v1 --max-mc-usd 5000 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 4,
+      "finalSizeBytes": 99936435,
+      "modifiedUtc": "2026-09-06T02:17:58.072405+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_mc5000_prospective_v1/outcomes.jsonl",
+      "pid": 1352473,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 99936435,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-mc5000-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_mc5000_prospective_v1 --rule bc100_ge2_mc5000_prospective_v1 --max-mc-usd 5000 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 3,
+      "finalSizeBytes": 73786256,
+      "modifiedUtc": "2026-09-06T02:17:58.526412+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_mc5000_prospective_v1/qualifications.jsonl",
+      "pid": 1352473,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 73786256,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-mc5000-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_mc5000_prospective_v1 --rule bc100_ge2_mc5000_prospective_v1 --max-mc-usd 5000 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 5,
+      "finalSizeBytes": 144541,
+      "modifiedUtc": "2026-09-06T02:09:19.428201+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_mc5000_prospective_v1/status.jsonl",
+      "pid": 1352473,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 144541,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-mc5000-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_0p5_v1 --rule bc100_ge2_net60_ge_0p5_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 4,
+      "finalSizeBytes": 215400654,
+      "modifiedUtc": "2026-09-06T02:17:52.164311+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_0p5_v1/outcomes.jsonl",
+      "pid": 1352477,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 215400654,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-0p5-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_0p5_v1 --rule bc100_ge2_net60_ge_0p5_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 3,
+      "finalSizeBytes": 146960534,
+      "modifiedUtc": "2026-09-06T02:18:05.774526+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_0p5_v1/qualifications.jsonl",
+      "pid": 1352477,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 146960534,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-0p5-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_0p5_v1 --rule bc100_ge2_net60_ge_0p5_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 5,
+      "finalSizeBytes": 125695,
+      "modifiedUtc": "2026-09-06T02:09:19.095196+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_0p5_v1/status.jsonl",
+      "pid": 1352477,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 125695,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-0p5-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_1p0_v1 --rule bc100_ge2_net60_ge_1p0_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 4,
+      "finalSizeBytes": 193640227,
+      "modifiedUtc": "2026-09-06T02:18:03.727494+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_1p0_v1/outcomes.jsonl",
+      "pid": 1352480,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 193640227,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-1p0-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_1p0_v1 --rule bc100_ge2_net60_ge_1p0_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 3,
+      "finalSizeBytes": 132083212,
+      "modifiedUtc": "2026-09-06T02:17:13.328699+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_1p0_v1/qualifications.jsonl",
+      "pid": 1352480,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 132083212,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-1p0-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_1p0_v1 --rule bc100_ge2_net60_ge_1p0_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 5,
+      "finalSizeBytes": 127685,
+      "modifiedUtc": "2026-09-06T02:09:19.030195+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_1p0_v1/status.jsonl",
+      "pid": 1352480,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 127685,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-1p0-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_2p0_v1 --rule bc100_ge2_net60_ge_2p0_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 4,
+      "finalSizeBytes": 174101754,
+      "modifiedUtc": "2026-09-06T02:17:24.766879+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_2p0_v1/outcomes.jsonl",
+      "pid": 1352490,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 174101754,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-2p0-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_2p0_v1 --rule bc100_ge2_net60_ge_2p0_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 3,
+      "finalSizeBytes": 118735079,
+      "modifiedUtc": "2026-09-06T02:17:09.298635+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_2p0_v1/qualifications.jsonl",
+      "pid": 1352490,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 118735079,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-2p0-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseProspectiveShadowV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/bc100_ge2_net60_ge_2p0_v1 --rule bc100_ge2_net60_ge_2p0_v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 5,
+      "finalSizeBytes": 126635,
+      "modifiedUtc": "2026-09-06T02:09:19.789207+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_2p0_v1/status.jsonl",
+      "pid": 1352490,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 126635,
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-2p0-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseFastFlowDetectorV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/fast-flow-detector-v1 --poll-ms 1 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 4,
+      "finalSizeBytes": 40804967,
+      "modifiedUtc": "2026-09-06T13:53:22.617409+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1/grossbuy_2s_ge5_fastdetector_v1/qualifications.jsonl",
+      "pid": 1352501,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 40804967,
+      "unit": "edgesniffer-teacher-impulse-fast-flow-detector-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseFastFlowDetectorV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/fast-flow-detector-v1 --poll-ms 1 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 3,
+      "finalSizeBytes": 39429737,
+      "modifiedUtc": "2026-09-06T13:53:22.617409+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1/grossbuy_1s_ge5_fastdetector_v1/qualifications.jsonl",
+      "pid": 1352501,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 39429737,
+      "unit": "edgesniffer-teacher-impulse-fast-flow-detector-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseFastFlowDetectorV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/fast-flow-detector-v1 --poll-ms 1 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 5,
+      "finalSizeBytes": 38743856,
+      "modifiedUtc": "2026-09-06T10:22:11.219419+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1/bc50_ge2_grossbuy5s_ge5_fastdetector_v1/qualifications.jsonl",
+      "pid": 1352501,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 38743856,
+      "unit": "edgesniffer-teacher-impulse-fast-flow-detector-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseFastFlowDetectorV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/fast-flow-detector-v1 --poll-ms 1 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 6,
+      "finalSizeBytes": 102124,
+      "modifiedUtc": "2026-09-06T01:53:24.504019+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1/status.jsonl",
+      "pid": 1352501,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 102124,
+      "unit": "edgesniffer-teacher-impulse-fast-flow-detector-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_capsule ; argv[]=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_capsule --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --follow --start-at-end --poll-ms 25 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 4,
+      "finalSizeBytes": 26317948575,
+      "modifiedUtc": "2026-09-06T14:01:13.622527+00:00",
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl",
+      "pid": 875549,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 26317948575,
+      "unit": "edgesniffer-teacher-impulse-parity-v1-capsule-normalizer.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_detected_swap_adapter ; argv[]=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_detected_swap_adapter --input /var/lib/edgesniffer-teacher-impulse-parity-v1/detected-swaps.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --follow --start-at-end --poll-ms 25 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 3,
+      "finalSizeBytes": 25084305852,
+      "modifiedUtc": "2026-09-06T14:01:13.602527+00:00",
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl",
+      "pid": 875556,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 25084305852,
+      "unit": "edgesniffer-teacher-impulse-parity-v1-detected-swap-adapter.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_mayhem_supply_enricher ; argv[]=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_mayhem_supply_enricher --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --follow --start-at-end --poll-ms 100 --request-timeout-ms 1500 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 7,
+      "finalSizeBytes": 25084305852,
+      "modifiedUtc": "2026-09-06T14:01:13.602527+00:00",
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl",
+      "pid": 875562,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 25084305852,
+      "unit": "edgesniffer-teacher-impulse-parity-v1-mayhem-supply-enricher.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_receipt ; argv[]=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_receipt --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-receipts.jsonl --follow --start-at-end --poll-ms 25 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 4,
+      "finalSizeBytes": 4457472873,
+      "modifiedUtc": "2026-09-06T14:01:13.626527+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/decision-receipts.jsonl",
+      "pid": 1352513,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 4457472873,
+      "unit": "edgesniffer-teacher-impulse-parity-v1-nosubmit.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_emit_capsules ; argv[]=/root/bot/FinalBot-cya/rust-sidecar/target/release/teacher_impulse_emit_capsules --input /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --follow --start-at-end --poll-ms 25 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 4,
+      "finalSizeBytes": 31634859479,
+      "modifiedUtc": "2026-09-06T14:01:13.610527+00:00",
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl",
+      "pid": 875580,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 31634859479,
+      "unit": "edgesniffer-teacher-impulse-parity-v1-observation-emitter.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/bash ; argv[]=/usr/bin/bash -c set -a; source /root/bot/FinalBot-cya/.env; set +a; export TRACKED_WALLETS=2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG RUST_ONLY_BUYS=true RUST_ONLY_SELLS=true JUPITER_FALLBACK_ENABLED=false RUST_EXECUTOR_ENABLED=false RUST_HOT_SNIPER_ENABLED=false RUST_SELECTED_CANDIDATE_SNIPER_ENABLED=false RUST_SELECTED_CANDIDATE_SUBMIT_ENABLED=false RUST_EXIT_WATCHER_ENABLED=false SIMULATION_MODE=true SHADOW_EXECUTION_MODE=true TEACHER_IMPULSE_PARITY_DIR=/var/lib/edgesniffer-teacher-impulse-parity-v1 TEACHER_IMPULSE_OBSERVATION_FEED_ENABLED=true TEACHER_IMPULSE_OBSERVATION_FEED_FILE=/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl; exec /mnt/HC_Volume_106775198/edgesniffer-bin/pumpfun-sidecar-teacher-source-jito-known-good-868d27df21d3196f ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 1,
+      "finalSizeBytes": 54289762,
+      "modifiedUtc": "2026-09-06T14:01:13.518525+00:00",
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/detected-swaps.jsonl",
+      "pid": 1238806,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 54289762,
+      "unit": "edgesniffer-teacher-impulse-parity-v1-source-feed.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 13,
+      "finalSizeBytes": 94128121,
+      "modifiedUtc": "2026-09-06T02:16:47.261287+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net2s_ge_5_prospective_v1/outcomes.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 94128121,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 16,
+      "finalSizeBytes": 93994610,
+      "modifiedUtc": "2026-09-06T02:16:47.262288+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_2s_ge5_prospective_v1/outcomes.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 93994610,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 12,
+      "finalSizeBytes": 90730563,
+      "modifiedUtc": "2026-09-06T02:16:47.261287+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net1s_ge_5_prospective_v1/outcomes.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 90730563,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 15,
+      "finalSizeBytes": 90595095,
+      "modifiedUtc": "2026-09-06T02:16:47.262288+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_1s_ge5_prospective_v1/outcomes.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 90595095,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 19,
+      "finalSizeBytes": 88825330,
+      "modifiedUtc": "2026-09-06T02:16:47.263288+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_2s_ge5_prospective_v1/outcomes.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 88825330,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 18,
+      "finalSizeBytes": 87464218,
+      "modifiedUtc": "2026-09-06T02:16:47.262288+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_1s_ge5_prospective_v1/outcomes.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 87464218,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 14,
+      "finalSizeBytes": 85373914,
+      "modifiedUtc": "2026-09-06T02:15:56.992494+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_net5s_ge5_prospective_v1/outcomes.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 85373914,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 17,
+      "finalSizeBytes": 85263336,
+      "modifiedUtc": "2026-09-06T02:15:56.992494+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_grossbuy5s_ge5_prospective_v1/outcomes.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 85263336,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 4,
+      "finalSizeBytes": 79903913,
+      "modifiedUtc": "2026-09-06T02:17:11.805675+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net2s_ge_5_prospective_v1/qualifications.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 79903913,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 7,
+      "finalSizeBytes": 79802724,
+      "modifiedUtc": "2026-09-06T02:17:11.806675+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_2s_ge5_prospective_v1/qualifications.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 79802724,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 3,
+      "finalSizeBytes": 77041606,
+      "modifiedUtc": "2026-09-06T02:17:11.805675+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net1s_ge_5_prospective_v1/qualifications.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 77041606,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 6,
+      "finalSizeBytes": 76939564,
+      "modifiedUtc": "2026-09-06T02:17:11.805675+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_1s_ge5_prospective_v1/qualifications.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 76939564,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 10,
+      "finalSizeBytes": 75438554,
+      "modifiedUtc": "2026-09-06T02:17:11.806675+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_2s_ge5_prospective_v1/qualifications.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 75438554,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 9,
+      "finalSizeBytes": 74294050,
+      "modifiedUtc": "2026-09-06T02:17:11.806675+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_1s_ge5_prospective_v1/qualifications.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 74294050,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 20,
+      "finalSizeBytes": 74112307,
+      "modifiedUtc": "2026-09-06T02:15:56.992494+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_truenet5s_ge5_prospective_v1/outcomes.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 74112307,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 5,
+      "finalSizeBytes": 72516517,
+      "modifiedUtc": "2026-09-06T02:15:04.408664+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_net5s_ge5_prospective_v1/qualifications.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 72516517,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 8,
+      "finalSizeBytes": 72428171,
+      "modifiedUtc": "2026-09-06T02:15:04.408664+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_grossbuy5s_ge5_prospective_v1/qualifications.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 72428171,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 11,
+      "finalSizeBytes": 63010700,
+      "modifiedUtc": "2026-09-06T02:15:04.408664+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_truenet5s_ge5_prospective_v1/qualifications.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 63010700,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 26,
+      "finalSizeBytes": 175497,
+      "modifiedUtc": "2026-09-06T02:09:19.791207+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_grossbuy5s_ge5_prospective_v1/status.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 175497,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 29,
+      "finalSizeBytes": 174432,
+      "modifiedUtc": "2026-09-06T02:09:19.791207+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_truenet5s_ge5_prospective_v1/status.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 174432,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 23,
+      "finalSizeBytes": 171120,
+      "modifiedUtc": "2026-09-06T02:09:19.790207+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_net5s_ge5_prospective_v1/status.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 171120,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 25,
+      "finalSizeBytes": 167763,
+      "modifiedUtc": "2026-09-06T02:09:19.791207+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_2s_ge5_prospective_v1/status.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 167763,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 24,
+      "finalSizeBytes": 167745,
+      "modifiedUtc": "2026-09-06T02:09:19.791207+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_1s_ge5_prospective_v1/status.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 167745,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 28,
+      "finalSizeBytes": 166750,
+      "modifiedUtc": "2026-09-06T02:09:19.791207+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_2s_ge5_prospective_v1/status.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 166750,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 27,
+      "finalSizeBytes": 166749,
+      "modifiedUtc": "2026-09-06T02:09:19.791207+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_1s_ge5_prospective_v1/status.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 166749,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 22,
+      "finalSizeBytes": 163363,
+      "modifiedUtc": "2026-09-06T02:09:19.790207+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net2s_ge_5_prospective_v1/status.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 163363,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /root/bot/FinalBot-cya/scripts/teacherImpulseTop3FlowProspectiveV1.py --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --base-out-dir /var/lib/edgesniffer-teacher-impulse-parity-v1/research/top3-flow-prospective-v1 --tp-pct 20 --sl-pct -20 --max-hold-ms 120000 --cost-bps 250 --poll-ms 25 --start-at-end ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "fd": 21,
+      "finalSizeBytes": 163345,
+      "modifiedUtc": "2026-09-06T02:09:19.790207+00:00",
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net1s_ge_5_prospective_v1/status.jsonl",
+      "pid": 1352521,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 163345,
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/local/bin/pump-exact-evidence-ledger-v1 ; argv[]=/usr/local/bin/pump-exact-evidence-ledger-v1 run ; ignore_errors=no ; start_time=[Sun 2026-09-06 06:14:02 UTC] ; stop_time=[n/a] ; pid=1604933 ; code=(null) ; status=0/0 }",
+      "fd": 11,
+      "finalSizeBytes": 364459185,
+      "modifiedUtc": "2026-09-06T07:18:42.757337+00:00",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/partitions/2026/09/06/07/evidence.frames.partial",
+      "pid": 1604933,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 364459185,
+      "unit": "pump-exact-evidence-ledger-v1.service"
+    },
+    {
+      "estimatedBytesPerDay": 0.0,
+      "execStart": "{ path=/usr/local/bin/pump-exact-evidence-ledger-v1 ; argv[]=/usr/local/bin/pump-exact-evidence-ledger-v1 run ; ignore_errors=no ; start_time=[Sun 2026-09-06 06:14:02 UTC] ; stop_time=[n/a] ; pid=1604933 ; code=(null) ; status=0/0 }",
+      "fd": 10,
+      "finalSizeBytes": 10895168,
+      "modifiedUtc": "2026-09-06T07:18:42.760337+00:00",
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/state/evidence-ids.bin",
+      "pid": 1604933,
+      "sampleGrowthBytes": 0,
+      "sizeBytes": 10895168,
+      "unit": "pump-exact-evidence-ledger-v1.service"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "average_precision_ties": {
+    "negative_n": 9,
+    "positive_n": 1,
+    "reported_ap": 1.0,
+    "reported_auc": 0.5,
+    "scores": "all 0.5",
+    "threshold_grouped_ap": 0.1
+  },
+  "create_after_selected_state": {
+    "create_receive_ms": 1500,
+    "note": "Synthetic receipt reorder: CREATE was known before teacher but unavailable at selected state.",
+    "raw_selected_age_ms": -400,
+    "rejected": false,
+    "reported_log_age_ms": 0.0,
+    "selected_receive_ms": 1100,
+    "teacher_receive_ms": 2000
+  },
+  "cross_mint_split": {
+    "assessment_teacher_mints": [
+      "B"
+    ],
+    "candidate_mint_intersection": [
+      "A",
+      "C"
+    ],
+    "dropped": 0,
+    "train_teacher_mints": [
+      "A"
+    ]
+  },
+  "high_score_overlapping_controls": {
+    "above_threshold_control_n": 3,
+    "control_mark_signatures": [
+      "s2",
+      "s3"
+    ],
+    "control_mint": "M",
+    "control_time": 1100,
+    "controls": 3,
+    "signal_mark_signatures": [
+      "s2",
+      "s3"
+    ],
+    "signal_mint": "M",
+    "signal_time": 1000,
+    "signals": 1,
+    "toy_scorer_purpose": "Constant above-threshold score isolates crossing/control routing."
+  },
+  "legacy_control_overlap": {
+    "candidate_control_signature_intersection": [
+      "b",
+      "b2"
+    ],
+    "control_mints": [
+      "B",
+      "B"
+    ],
+    "control_n": 2,
+    "control_signatures": [
+      "b",
+      "b2"
+    ],
+    "input_candidates_retained": 4
+  },
+  "preserved_report_recalculation": {
+    "above_threshold_state_n": 3732,
+    "any_crossing_n": 64,
+    "assessment_episodes": 76,
+    "first_crossing_is_selected_n": 24,
+    "first_crossing_lead_at_least_1000ms_n": 25,
+    "maximum_above_threshold_states_per_episode": 1156,
+    "selected_state_lead_at_least_1000ms_n": 0,
+    "selected_state_pass_n": 60,
+    "unique_assessment_mints": 67
+  },
+  "ranking_ties": {
+    "actualRankedFirstPct": 100.0,
+    "actualRankedTop10Pct": 100.0,
+    "actualRankedTop3Pct": 100.0,
+    "chanceRankedFirstPct": 10.0,
+    "chanceRankedTop10Pct": 10.0,
+    "chanceRankedTop3Pct": 30.0,
+    "meanCandidateStates": 10.0,
+    "meanReciprocalRank": 1.0,
+    "medianRank": 1,
+    "mintBalancedPairwiseConcordance": 0.5,
+    "n": 1
+  },
+  "score_units": {
+    "accidental_probability_cutoff": 0.6135589144144981,
+    "adapter_accepts": false,
+    "adapter_linear_predictor": -5.551115123125783e-17,
+    "correct_logit_cutoff": -0.15109936969630694,
+    "frozen_model_accepts": true,
+    "frozen_probability_score": 0.5,
+    "frozen_threshold": 0.4622968637150163,
+    "synthetic_vector_purpose": "Actual frozen model mean vector adjusted to zero linear predictor; scoring-unit parity only."
+  },
+  "stale_autonomous_ranking_clock": {
+    "common_tick_ms": 5000,
+    "features_using_common_decision_clock": {
+      "gross_buy_sol_250ms": 0.0,
+      "log_age_ms": 8.412054873292933,
+      "log_ms_since_last_external": 8.268988209506656
+    },
+    "features_using_last_event_clock_as_emit_does": {
+      "gross_buy_sol_250ms": 2.0,
+      "log_age_ms": 6.398594934535208,
+      "log_ms_since_last_external": 0.0
+    },
+    "last_event_ms": 1100
+  }
+}

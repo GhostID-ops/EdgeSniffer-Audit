@@ -1,0 +1,264 @@
+{
+  "schema": "PUMP_CAPTURE_QUALITY_V1",
+  "input": {
+    "source": "/mnt/HC_Volume_106775198/edgesniffer-research/transaction-evidence-v1-qvxRqmv3/canary2/capture.jsonl",
+    "source_prefix_bytes": 563909219,
+    "source_device": 64785,
+    "source_inode": 15597603,
+    "start_byte": 0,
+    "end_byte": 563909219,
+    "unsealed_tail_bytes_excluded": 0,
+    "snapshot_bytes": 563909219,
+    "sha256": "501608a7370a83a78faac740b1eb1c3e9bebed6b2b54bed0fca2624440505ee4"
+  },
+  "account_input": {
+    "source": "/mnt/HC_Volume_106775198/edgesniffer-research/transaction-evidence-v1-qvxRqmv3/quality1/accounts.jsonl",
+    "source_prefix_bytes": 134217274,
+    "source_device": 64785,
+    "source_inode": 15597610,
+    "start_byte": 0,
+    "end_byte": 134217274,
+    "unsealed_tail_bytes_excluded": 0,
+    "snapshot_bytes": 134217274,
+    "sha256": "6d332bc674317315ae4229c2004875c0f18853e41c79bb154fecf03132427874"
+  },
+  "session_start_ns": 1792728122122847824,
+  "session_end_ns": 1792728242123459642,
+  "kinds": {
+    "SESSION_START": 1,
+    "CONNECT_ATTEMPT": 1,
+    "CONNECTED": 1,
+    "PING": 12,
+    "TRANSACTION": 45825,
+    "OTHER": 12,
+    "SLOT": 3384,
+    "SESSION_END": 1
+  },
+  "counts": {
+    "transaction_frames": 45825,
+    "instruction_identity_complete": 45825,
+    "transactions_with_pump_instructions": 31964,
+    "pump_instruction_count": 41098,
+    "inner_pump_instruction_count": 11521,
+    "trade_event_prefixes": 5908,
+    "successful_trade_event_prefixes": 5820,
+    "signed_sol_flow_events": 5058,
+    "transactions_with_signed_sol_flow": 5056,
+    "event_quote_layout_unknown": 0
+  },
+  "execution_statuses": {
+    "FAILED": 38775,
+    "SUCCESS": 7050
+  },
+  "decoder_gaps": {},
+  "account_join_counts": {
+    "transaction_rows": 45825,
+    "signature_slot_account_matches": 5813,
+    "matches_by_one_second_boundary": 5786,
+    "FAILED_denominator": 38775,
+    "FAILED_identity_match": 0,
+    "SUCCESS_denominator": 7050,
+    "SUCCESS_identity_match": 5813,
+    "SOL_FLOW_denominator": 5056,
+    "SOL_FLOW_identity_match": 5056,
+    "SOL_FLOW_timely_match": 5033
+  },
+  "reconnect_gaps": [],
+  "observed_slot_count": 566,
+  "slot_numeric_discontinuities": 0,
+  "finalized_sample_size": 16,
+  "finalized_comparison": {
+    "resolved_blocks": 16,
+    "expected_pump_signatures": 923,
+    "observed_expected": 923,
+    "missing_transactions": 0,
+    "observed_not_finalized": 0
+  },
+  "native_vs_finalized_metadata": {
+    "compared_transactions": 923,
+    "execution_status_equal_matches": 923,
+    "resolved_accounts_equal_matches": 923,
+    "lamport_balances_equal_matches": 923,
+    "fee_equal_matches": 923,
+    "event_payloads_equal_matches": 923
+  },
+  "account_join_rates": {
+    "SUCCESS": 0.8245390070921986,
+    "FAILED": 0.0,
+    "SOL_FLOW": 1.0
+  },
+  "reference_results": [
+    {
+      "slot": 460299837,
+      "result": {
+        "expected_pump_signatures": 48,
+        "observed_expected": 48,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460299745,
+      "result": {
+        "expected_pump_signatures": 29,
+        "observed_expected": 29,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460299697,
+      "result": {
+        "expected_pump_signatures": 59,
+        "observed_expected": 59,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460300134,
+      "result": {
+        "expected_pump_signatures": 192,
+        "observed_expected": 192,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460300167,
+      "result": {
+        "expected_pump_signatures": 132,
+        "observed_expected": 132,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460299779,
+      "result": {
+        "expected_pump_signatures": 22,
+        "observed_expected": 22,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460299737,
+      "result": {
+        "expected_pump_signatures": 27,
+        "observed_expected": 27,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460299954,
+      "result": {
+        "expected_pump_signatures": 45,
+        "observed_expected": 45,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460299928,
+      "result": {
+        "expected_pump_signatures": 83,
+        "observed_expected": 83,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460299658,
+      "result": {
+        "expected_pump_signatures": 41,
+        "observed_expected": 41,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460300182,
+      "result": {
+        "expected_pump_signatures": 103,
+        "observed_expected": 103,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460299701,
+      "result": {
+        "expected_pump_signatures": 38,
+        "observed_expected": 38,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460299741,
+      "result": {
+        "expected_pump_signatures": 28,
+        "observed_expected": 28,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460299636,
+      "result": {
+        "expected_pump_signatures": 22,
+        "observed_expected": 22,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460299659,
+      "result": {
+        "expected_pump_signatures": 42,
+        "observed_expected": 42,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    },
+    {
+      "slot": 460300074,
+      "result": {
+        "expected_pump_signatures": 12,
+        "observed_expected": 12,
+        "missing_signatures": [],
+        "observed_not_in_finalized_block": []
+      },
+      "error": null
+    }
+  ],
+  "global_capture_completeness": "UNKNOWN",
+  "independent_scope": "Pump program transactions including CPI and failed/unknown execution; no teacher or mint shortlist",
+  "economic_admission": false,
+  "limitations": [
+    "Numeric slot gaps may be skipped slots, not necessarily capture loss.",
+    "Finalized comparison is only for the preselected interior slot sample, not the whole stream.",
+    "Unresolved reference blocks are unknown, not zero missing.",
+    "Later finality/reference data are never decision-time features.",
+    "Account joins prove identity/clock association, not entry-state continuity/fee validity.",
+    "Trade-event prefix amounts preserve unknown fee tails; transaction deltas are not swap fills.",
+    "Missing metadata/decodes remain in the denominator. No PnL evaluated."
+  ]
+}

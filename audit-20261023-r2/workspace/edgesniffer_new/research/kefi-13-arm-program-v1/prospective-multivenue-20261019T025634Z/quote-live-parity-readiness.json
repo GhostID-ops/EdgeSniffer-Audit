@@ -1,0 +1,20 @@
+{
+  "arm_id": "ARM07_PUMPSWAP_DIRECT",
+  "blockers": [
+    "EXACT_TAPE_DECODER_ERRORS_PRESENT",
+    "MISSING_CONTINUITY_EPOCH",
+    "MISSING_DURABLE_OUTPUT_SEQUENCE",
+    "MISSING_SOURCE_INSTANCE_ID",
+    "TAPE_FIELDS_MISSING:continuity_epoch,durable_output_sequence,instruction_amount_raw,instruction_limit_raw,source_instance_id"
+  ],
+  "dust_execution_authorized": false,
+  "frozen_policy_id": "kefi-pumpswap-fixed-30s-challenge-v1",
+  "generated_at_utc": "2026-10-19T03:39:05.113021+00:00",
+  "live_trading_authorized": false,
+  "outcome_source": "POST_FREEZE",
+  "paper_promotion_decision": "PROMOTE_ARM07_TO_QUOTE_LIVE_PARITY_PAPER",
+  "schema": "KEFI_ARM_QUOTE_LIVE_PARITY_READINESS_V1",
+  "status": "BLOCKED_QUOTE_LIVE_PARITY_READINESS",
+  "tape_decoder_errors": 46,
+  "tape_rows": 1226
+}

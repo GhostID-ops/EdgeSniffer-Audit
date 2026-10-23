@@ -1,0 +1,1747 @@
+{
+  "chronological_stability": {
+    "holdout_latest_25pct": {
+      "end": "2026-09-02T19:59:18Z",
+      "native": {
+        "average_trade_sol": 1.5878058152123458,
+        "breakeven": 0,
+        "expectancy_sol": 1.5878058152123458,
+        "losses": 25,
+        "max_drawdown_sol": 0.3149515409999992,
+        "median_trade_sol": 0.740565411,
+        "n": 405,
+        "profit_factor": 439.3207945985803,
+        "top1_loss_share": 0.16323956672318646,
+        "top1_positive_pnl_share": 0.030376583540491123,
+        "top5_loss_share": 0.4692487607268378,
+        "top5_positive_pnl_share": 0.12005373409060563,
+        "total_pnl_sol": 643.061355161,
+        "wins": 380,
+        "wr": 0.9382716049382716
+      },
+      "start": "2026-08-25T00:20:20Z",
+      "tracker_comparable": {
+        "average_trade_sol": 1.6826053734246913,
+        "breakeven": 0,
+        "expectancy_sol": 1.6826053734246913,
+        "losses": 11,
+        "max_drawdown_sol": 0.20062643199999997,
+        "median_trade_sol": 0.8385476839999999,
+        "n": 405,
+        "profit_factor": 1730.498575021506,
+        "top1_loss_share": 0.5091796795376805,
+        "top1_positive_pnl_share": 0.02953578737465117,
+        "top5_loss_share": 0.8454076656809553,
+        "top5_positive_pnl_share": 0.1164244364997359,
+        "total_pnl_sol": 681.455176237,
+        "wins": 394,
+        "wr": 0.9728395061728395
+      }
+    },
+    "train_earliest_50pct": {
+      "end": "2026-08-18T00:07:47Z",
+      "native": {
+        "average_trade_sol": 1.1560967264400495,
+        "breakeven": 0,
+        "expectancy_sol": 1.1560967264400495,
+        "losses": 29,
+        "max_drawdown_sol": 0.14715432000000028,
+        "median_trade_sol": 0.6230810610000002,
+        "n": 809,
+        "profit_factor": 903.9280733744571,
+        "top1_loss_share": 0.14206381699881543,
+        "top1_positive_pnl_share": 0.012756982616883175,
+        "top5_loss_share": 0.44746654692993404,
+        "top5_positive_pnl_share": 0.04998283520181739,
+        "total_pnl_sol": 935.28225169,
+        "wins": 780,
+        "wr": 0.9641532756489494
+      },
+      "start": "2026-08-03T23:21:09Z",
+      "tracker_comparable": {
+        "average_trade_sol": 1.228003245932015,
+        "breakeven": 0,
+        "expectancy_sol": 1.228003245932015,
+        "losses": 10,
+        "max_drawdown_sol": 0.076220147000015,
+        "median_trade_sol": 0.7041031849999999,
+        "n": 809,
+        "profit_factor": 4897.595064558774,
+        "top1_loss_share": 0.37567814962849355,
+        "top1_positive_pnl_share": 0.01248638048962959,
+        "top5_loss_share": 0.8851918748297228,
+        "top5_positive_pnl_share": 0.04833217961533166,
+        "total_pnl_sol": 993.454625959,
+        "wins": 799,
+        "wr": 0.9876390605686032
+      }
+    },
+    "validation_next_25pct": {
+      "end": "2026-08-25T00:13:42Z",
+      "native": {
+        "average_trade_sol": 1.1322662574158415,
+        "breakeven": 0,
+        "expectancy_sol": 1.1322662574158415,
+        "losses": 24,
+        "max_drawdown_sol": 0.5467906099999951,
+        "median_trade_sol": 0.6062892784999999,
+        "n": 404,
+        "profit_factor": 239.39265414019226,
+        "top1_loss_share": 0.22880757874767288,
+        "top1_positive_pnl_share": 0.021230327306918432,
+        "top5_loss_share": 0.5566919085314357,
+        "top5_positive_pnl_share": 0.07682252171603375,
+        "total_pnl_sol": 457.435567996,
+        "wins": 380,
+        "wr": 0.9405940594059405
+      },
+      "start": "2026-08-18T00:13:26Z",
+      "tracker_comparable": {
+        "average_trade_sol": 1.2158634788762377,
+        "breakeven": 0,
+        "expectancy_sol": 1.2158634788762377,
+        "losses": 15,
+        "max_drawdown_sol": 0.47219555099999866,
+        "median_trade_sol": 0.6779085604999999,
+        "n": 404,
+        "profit_factor": 549.3693074473224,
+        "top1_loss_share": 0.44776495443685166,
+        "top1_positive_pnl_share": 0.020247756358959812,
+        "top5_loss_share": 0.8721181014392054,
+        "top5_positive_pnl_share": 0.07351829029585309,
+        "total_pnl_sol": 491.208845466,
+        "wins": 389,
+        "wr": 0.9628712871287128
+      }
+    }
+  },
+  "coverage": {
+    "ambiguous_multi_asset_creates": 5,
+    "create_decode_errors": 0,
+    "decoded_self_create_launches": 2255,
+    "native_transaction_end": "2026-09-02T21:49:24Z",
+    "native_transaction_start": "2026-08-03T23:21:09Z",
+    "parsed_endpoint_duplicate_rows_removed": 7,
+    "requested_window_end": "2026-09-02T23:20:05Z",
+    "requested_window_start": "2026-08-03T23:20:05Z",
+    "self_created_with_initial_buy": 1624,
+    "self_created_without_initial_buy": 626,
+    "successful_target_fee_payer_transactions": 5869
+  },
+  "entry_curve": {
+    "classification_counts": {
+      "PRISTINE_CREATOR_INITIAL_BUY": 1624
+    },
+    "external_buy_rank_before_target": 0,
+    "gross_sol_consumed_before_target": 0.0,
+    "historical_sol_usd_attached": false,
+    "implied_market_cap_after_sol_median": 29.841954022988496,
+    "implied_market_cap_before_sol_median": 27.958993476234856,
+    "initial_buy_curve_price_impact_pct_median": 6.7347222222222,
+    "initial_buy_curve_price_impact_pct_p10": 6.7347222222222,
+    "initial_buy_curve_price_impact_pct_p90": 20.86249999999994,
+    "initial_real_sol_reserves_lamports": 0,
+    "initial_virtual_sol_reserves_lamports": 30000000000,
+    "initial_virtual_token_reserves_raw": 1073000000000000,
+    "method_note": "Deterministic Pump curve estimate using 30 SOL / 1.073B-token virtual initialization and 125 bps fee; USD MC is intentionally null without a historical SOL/USD series."
+  },
+  "exit_behavior": {
+    "class_counts": {
+      "DELAYED_EXIT": 74,
+      "FAST_FULL_EXIT": 1132,
+      "FAST_PARTIAL_EXIT": 314,
+      "LONG_HOLD": 4,
+      "SCALE_OUT": 94
+    },
+    "hold_to_first_sell_seconds": {
+      "median": 4.0,
+      "p10": 1.0,
+      "p90": 8.0
+    },
+    "hold_to_last_sell_seconds": {
+      "median": 4.0,
+      "p10": 1.0,
+      "p90": 11.0
+    }
+  },
+  "final_classification": "8YCB_DATASET_PARTIAL_BUT_USEFUL",
+  "follower_audit": {
+    "reason": "The retained stream is under seven days; complete routed-flow coverage, account readiness, network/tip costs, landing, and first-sellable outcomes are not proven.",
+    "status": "partial_curve_only_upper_bound",
+    "stream_overlap": {
+      "after_relation_rows": 425,
+      "ambiguous_same_slot_rows": 693,
+      "before_relation_rows": 0,
+      "canonical_block_order_slots_available": 103,
+      "canonical_block_order_slots_missing": 131,
+      "completeness": {
+        "complete_identity": 219,
+        "missing_create": 15,
+        "synthetic_target_initial_buy_from_native_ledger": 219
+      },
+      "extracted_mints": 222,
+      "extracted_observations": 18693,
+      "follower_curve_only_economics": {
+        "delay_1000ms": {
+          "expectancy_roi_pct": 4.321821726027397,
+          "median_roi_pct": -1.2536320000000045,
+          "n": 219,
+          "profit_factor_on_roi": 1.6457045171938092,
+          "sl_rate": 0.2009132420091324,
+          "tp_rate": 0.3607305936073059,
+          "wr": 0.4885844748858447
+        },
+        "delay_1000ms_entry_5pct_worse": {
+          "expectancy_roi_pct": 1.5720077305936075,
+          "median_roi_pct": -6.065978999999999,
+          "n": 219,
+          "profit_factor_on_roi": 1.1812500959833492,
+          "sl_rate": 0.2237442922374429,
+          "tp_rate": 0.3515981735159817,
+          "wr": 0.3881278538812785
+        },
+        "delay_100ms": {
+          "expectancy_roi_pct": 12.932144333333333,
+          "median_roi_pct": 20.494512000000007,
+          "n": 219,
+          "profit_factor_on_roi": 5.140087904527169,
+          "sl_rate": 0.0639269406392694,
+          "tp_rate": 0.5342465753424658,
+          "wr": 0.6757990867579908
+        },
+        "delay_100ms_entry_5pct_worse": {
+          "expectancy_roi_pct": 9.991906255707763,
+          "median_roi_pct": 13.070026999999996,
+          "n": 219,
+          "profit_factor_on_roi": 3.0637222852340806,
+          "sl_rate": 0.091324200913242,
+          "tp_rate": 0.4931506849315068,
+          "wr": 0.5799086757990868
+        },
+        "delay_250ms": {
+          "expectancy_roi_pct": 9.849102054794521,
+          "median_roi_pct": 7.756508000000006,
+          "n": 219,
+          "profit_factor_on_roi": 3.351675282864656,
+          "sl_rate": 0.091324200913242,
+          "tp_rate": 0.4703196347031963,
+          "wr": 0.593607305936073
+        },
+        "delay_250ms_entry_5pct_worse": {
+          "expectancy_roi_pct": 6.851180840182649,
+          "median_roi_pct": -1.9022289999999997,
+          "n": 219,
+          "profit_factor_on_roi": 2.1021073560086228,
+          "sl_rate": 0.1278538812785388,
+          "tp_rate": 0.4474885844748858,
+          "wr": 0.4977168949771689
+        },
+        "delay_25ms": {
+          "expectancy_roi_pct": 23.71575720091324,
+          "median_roi_pct": 24.386404000000006,
+          "n": 219,
+          "profit_factor_on_roi": 34.66878704631556,
+          "sl_rate": 0.0182648401826484,
+          "tp_rate": 0.8082191780821918,
+          "wr": 0.9360730593607306
+        },
+        "delay_25ms_entry_5pct_worse": {
+          "expectancy_roi_pct": 20.317026949771687,
+          "median_roi_pct": 23.111723999999988,
+          "n": 219,
+          "profit_factor_on_roi": 18.95331794822984,
+          "sl_rate": 0.0273972602739726,
+          "tp_rate": 0.7214611872146118,
+          "wr": 0.867579908675799
+        },
+        "delay_500ms": {
+          "expectancy_roi_pct": 9.03465902283105,
+          "median_roi_pct": 1.728897000000007,
+          "n": 219,
+          "profit_factor_on_roi": 2.937618772518049,
+          "sl_rate": 0.1095890410958904,
+          "tp_rate": 0.4520547945205479,
+          "wr": 0.5799086757990868
+        },
+        "delay_500ms_entry_5pct_worse": {
+          "expectancy_roi_pct": 5.732195753424658,
+          "median_roi_pct": -3.831441000000002,
+          "n": 219,
+          "profit_factor_on_roi": 1.8243975669947463,
+          "sl_rate": 0.1461187214611872,
+          "tp_rate": 0.4292237442922374,
+          "wr": 0.4657534246575342
+        },
+        "delay_50ms": {
+          "expectancy_roi_pct": 18.153361520547946,
+          "median_roi_pct": 22.115478999999993,
+          "n": 219,
+          "profit_factor_on_roi": 11.453979394487034,
+          "sl_rate": 0.0410958904109589,
+          "tp_rate": 0.6575342465753424,
+          "wr": 0.7990867579908676
+        },
+        "delay_50ms_entry_5pct_worse": {
+          "expectancy_roi_pct": 15.349086789954338,
+          "median_roi_pct": 21.57449199999999,
+          "n": 219,
+          "profit_factor_on_roi": 6.586739579419802,
+          "sl_rate": 0.0502283105022831,
+          "tp_rate": 0.6073059360730594,
+          "wr": 0.7214611872146118
+        }
+      },
+      "limitations": [
+        "Retained stream is under seven days and does not satisfy the requested complete-period minimum.",
+        "Completeness is established only for rows present in the source feed; routed inner-instruction coverage is not independently proven.",
+        "Follower simulation uses 0.1 SOL, Pump curve plus 125 bps trade fees, and excludes network/tip/account-ready costs.",
+        "First-sellable-adjusted outcomes are unavailable because account-ready telemetry was not retained."
+      ],
+      "positive_launches_in_overlap_by_block_time": 234,
+      "repeated_after_wallets_top20": [
+        [
+          "24678QKx2Dy8ZCw6Ra8o9DeTqPLL5GR9ZQKxt5FddHmq",
+          63
+        ],
+        [
+          "DnRApgn4QXqkRHrde2W8EQAzXKcX3eXHVU4fQBKUzNpY",
+          48
+        ],
+        [
+          "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+          46
+        ],
+        [
+          "FDKdqQc5YfCNM3Y1VFwrc7NjY3SjKvn4dnyJv363yarJ",
+          36
+        ],
+        [
+          "GDQeTnqkyeLyRSjWaeFY5HsxaWoQmmXFc1N6wyuuHiQD",
+          36
+        ],
+        [
+          "3j72HFDm4LKGEgsmcUUupXcLibL1MQXBefMrXM2je8Kc",
+          25
+        ],
+        [
+          "DTpzoWbmGb2TiChBcBBNEvZCGkM682q5Xt4RMNwtqdZ3",
+          19
+        ],
+        [
+          "DxhpC9c4kGkYJR34xUrfFeDx9vwb6yoHUMWrTCZybwtH",
+          16
+        ],
+        [
+          "5STFy6TFx6yo5dQu3qeWgSWqkzBVKc2XgTiR9WjhU7zk",
+          12
+        ],
+        [
+          "7aws8n4SCPqZvJmHV9wzJ9ePWcYYxJndEdi6yeNeoadn",
+          12
+        ],
+        [
+          "AMDEmVocLtN5ji2gBY7BrmSHEyM5vt6TGszBbg4crMXg",
+          10
+        ],
+        [
+          "uWJ77U2xiWhEp89DzCcLPXy2js8x7yo3bh1Lsa5fu2d",
+          7
+        ],
+        [
+          "Eo2iSe4NLvuf5vPAoy7r5eTY76XbSCAdSSdFTrYgiYb7",
+          5
+        ],
+        [
+          "9VCgsSDDdyga1PPRwhwz3Js6W8yumkrUEmCqyXjmxN3A",
+          5
+        ],
+        [
+          "B8fW55EgJoQHJ4sJXJcYvexHssNz2CQAKnpwNH6HHdEB",
+          5
+        ],
+        [
+          "D4gmNL2AcSR3dpvSssev9Aemd8GBeNpmFCFCokBPVAUt",
+          4
+        ],
+        [
+          "2mqrindMAjJEQPLhroYWyiYPo5h9iAsahfdd4QtsjwdY",
+          4
+        ],
+        [
+          "CiHR2ADKJvxiCYghVHRN25rSFYy2GWNVFzq8yszXBmWW",
+          4
+        ],
+        [
+          "3bTYzG94soZcUPD3qX3JGv6AY5Vp1dhGi9GxorbbzH7s",
+          4
+        ],
+        [
+          "CGL4borHkrAjjmWy8adeaYp46DHkm7EFnpE2YjatQ4nr",
+          4
+        ]
+      ],
+      "repeated_before_wallets_top20": [],
+      "same_slot_participant_rows": 1118,
+      "source_snapshot": {
+        "duration_seconds": 468290.967,
+        "first_observation_ts_ms": 1787924365262,
+        "first_observation_utc": "2026-08-28T13:39:25.262000Z",
+        "input": "/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl",
+        "snapshot_bytes": 17416449429,
+        "snapshot_last_observation_ts_ms": 1788392656229,
+        "snapshot_last_observation_utc": "2026-09-02T23:44:16.229000Z",
+        "target_positive_mints_at_or_after_first_observation": 234
+      },
+      "target_outcomes": 219
+    }
+  },
+  "funding_clue": {
+    "indexed_transfer_audit": {
+      "candidate_cooccurrence_count": 0,
+      "candidate_funder": "odinBE4Y5Efui9Dh9EMncGN9tAPQT3oPu3WAdA6rDkL",
+      "caveat": "This does not disprove funding before the indexed scan window. Infrastructure/funder identity is not treated as creator identity or alpha.",
+      "classification": "NOT_VERIFIED_WITHIN_INDEXED_SCAN",
+      "newest_utc": "2026-09-02T21:49:24Z",
+      "oldest_utc": "2026-05-24T20:08:40Z",
+      "pages_scanned": 100,
+      "rows_scanned": 4829,
+      "source": "Helius enhanced address transactions filtered to TRANSFER",
+      "target_wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ"
+    },
+    "odin_address": "odinBE4Y5Efui9Dh9EMncGN9tAPQT3oPu3WAdA6rDkL",
+    "verified_in_target_fee_payer_extract": false
+  },
+  "identity": {
+    "atomic_create_and_initial_buy_count": 1624,
+    "creator_is_target_count": 1624,
+    "creator_is_target_rate": 1.0,
+    "interpretation": "8YCB is the creator in both the positive and closest matched negative set. Positives are atomic initial buys of its own launches; controls are its own CREATE transactions without an initial buy.",
+    "opening_class_counts": {
+      "CREATOR_SELF_INITIAL_BUY_AT_CREATE": 1624
+    }
+  },
+  "integrity": {
+    "best_native_trades": [
+      {
+        "first_buy_at": "2026-08-30T00:22:08Z",
+        "first_buy_signature": "44wc5befhbRbqVUX4YNXCeHQx7ZaSdFiL7GmK2fF1B7mVbCeuTYQFNDk45vhYFwUsHFjuGYegRzKRA49iLWyzUwx",
+        "mint": "GK3o7eTuDGTSfrQ1RWBo9ScvvVfB3FaG13QHRcsipump",
+        "native_pnl_sol": 19.578572525999995,
+        "native_roi_pct": 128.81537459505068,
+        "native_sol_received": 34.777513326,
+        "native_sol_spent": 15.1989408,
+        "sell_count": 10
+      },
+      {
+        "first_buy_at": "2026-08-29T20:34:31Z",
+        "first_buy_signature": "2Vg8mFbbKcG5Cfkyf1sVUygiYLZ4iHZsjhgC6yg79UPXFHRbaNLLVrgykLv4HzQPYiAmdcR2HynvCVmvF72aMDcV",
+        "mint": "Drsp36HBKgD4JnM2LpGY5suz9j4ZpsGbciq2MeTupump",
+        "native_pnl_sol": 18.231287315000003,
+        "native_roi_pct": 118.77820506289403,
+        "native_sol_received": 33.580304675,
+        "native_sol_spent": 15.34901736,
+        "sell_count": 8
+      },
+      {
+        "first_buy_at": "2026-08-27T18:43:29Z",
+        "first_buy_signature": "5GoG4NhA9ZrdgViLtuGaWdi16XZCXZzpgAwnEghw7o2gPAu2yLoinxBnacPn4iLahTLs3gz7qt86FBLSEr1rdFtJ",
+        "mint": "EEFvk7SsSPEH9kPzkek8GPNDqiZKwrZce1q5zyvzpump",
+        "native_pnl_sol": 13.763206046,
+        "native_roi_pct": 451.39911775965084,
+        "native_sol_received": 16.812216446,
+        "native_sol_spent": 3.0490104,
+        "sell_count": 4
+      },
+      {
+        "first_buy_at": "2026-08-28T16:59:29Z",
+        "first_buy_signature": "suJbqkbJMc6sDmecJ84sJFuJTTj477xPhrcH6qKHb2cEtv7LecPf8BstpfiQWGvYRQMuVPgaQhSjpW3KGgdUTfp",
+        "mint": "Av2WpDdkohV3ugxMSSUqzHfJXjSmiGUSLe3PVGxPpump",
+        "native_pnl_sol": 13.485300329000001,
+        "native_roi_pct": 265.77421513192485,
+        "native_sol_received": 18.559268969,
+        "native_sol_spent": 5.07396864,
+        "sell_count": 9
+      },
+      {
+        "first_buy_at": "2026-08-28T18:20:42Z",
+        "first_buy_signature": "2z6R58dADV82LFSh4PyA15YGxMTeDoqbFWYcb96LANng2Hpf6K1gMyB6Z6x8w4JzsNHGoRsV62YXGDkSQ5AhMM7S",
+        "mint": "3YowmBnTtnjGnbobEFWvwA6QbdcA61fAHYw24yYjpump",
+        "native_pnl_sol": 12.319681804999998,
+        "native_roi_pct": 242.8050244570889,
+        "native_sol_received": 17.393580845,
+        "native_sol_spent": 5.07389904,
+        "sell_count": 6
+      }
+    ],
+    "closed_positions": 1618,
+    "closed_positions_with_residual_dust_1_to_3_raw_units": 9,
+    "conservative_zero_value_open_inventory": {
+      "average_trade_sol": 1.0789801078725432,
+      "breakeven": 0,
+      "expectancy_sol": 1.0789801078725432,
+      "losses": 134,
+      "max_drawdown_sol": 230.26708039000005,
+      "median_trade_sol": 0.60777751,
+      "n": 1679,
+      "profit_factor": 8.640686122172948,
+      "top1_loss_share": 0.36663627050456676,
+      "top1_positive_pnl_share": 0.009556547436389182,
+      "top5_loss_share": 0.4272059712832585,
+      "top5_positive_pnl_share": 0.03776919821227455,
+      "total_pnl_sol": 1811.607601118,
+      "wins": 1545,
+      "wr": 0.9201905896366885
+    },
+    "left_censored_sell_only_positions": 11,
+    "native_wr_by_minimum_profit_sol": {
+      "0.0": 0.9517923362175525,
+      "0.001": 0.9511742892459827,
+      "0.01": 0.9474660074165636,
+      "0.05": 0.9159456118665018,
+      "0.1": 0.8702101359703337
+    },
+    "native_wr_by_minimum_roi_pct": {
+      "0.0": 0.9517923362175525,
+      "1.0": 0.9437577255871447,
+      "10.0": 0.8288009888751545,
+      "20.0": 0.6606922126081582,
+      "5.0": 0.8986402966625463
+    },
+    "network_fees_all_reconstructed_position_transactions_sol": 3.318635,
+    "partial_or_scaleout_closed_positions": 408,
+    "positions_with_at_least_one_transfer_in_position_interval": 58,
+    "pump_economic_events": 4263,
+    "pump_fee_note": "Native wallet delta includes Pump fees and every other lamport movement, but the indexed extract does not isolate Pump fee transfers reliably enough for a separate total.",
+    "pump_fees_separately_reconstructed": false,
+    "submitted_signature_audit": {
+      "by_day": {
+        "2026-08-30": {
+          "failed": 19646,
+          "success": 3642
+        },
+        "2026-08-31": {
+          "failed": 56079,
+          "success": 7968
+        },
+        "2026-09-01": {
+          "failed": 21622,
+          "success": 5534
+        },
+        "2026-09-02": {
+          "failed": 5105,
+          "success": 927
+        }
+      },
+      "failed_signatures": 102452,
+      "failure_rate": 0.850061813927632,
+      "newest": "2026-09-02T22:34:19Z",
+      "oldest": "2026-08-30T19:39:28Z",
+      "pages": 121,
+      "submitted_signatures": 120523,
+      "successful_signatures": 18071
+    },
+    "successful_transactions_without_exactly_one_target_token_delta": 1439,
+    "token_transfer_event_kinds": {
+      "transfer_in": 24,
+      "transfer_out": 144
+    },
+    "token_transfer_events": 168,
+    "trade_parse_rejection_note": "These are successful wallet transactions that do not expose exactly one non-zero target token delta; they are not transaction failures. CREATE identity/control decoding runs independently over the full transaction set.",
+    "trade_parse_rejection_reasons": {
+      "target_token_change_count_not_one": 1439
+    },
+    "unresolved_all_counted_as_losses_wr": 0.9172126265634306,
+    "unresolved_native_cash_pnl_sol_not_counted_in_wr": -224.171573729,
+    "unresolved_native_cost_sol": 276.945985092,
+    "unresolved_positions": 61,
+    "unresolved_positions_with_at_least_one_transfer": 58,
+    "worst_native_trades": [
+      {
+        "first_buy_at": "2026-08-19T01:22:25Z",
+        "first_buy_signature": "bLRgTkeGnAeq8CKBM5jVQ1MwmiX26U4Js8VZXM5PgeEmT2wXdQoYGfM1119R2LZHZU9wVDeQCzZ5wxsuuugqFWF",
+        "mint": "CZm9xSGz1NbDqdq2ZX3Vuxr7YH5QdmA5mWF7z3rwpump",
+        "native_pnl_sol": -0.439043414,
+        "native_roi_pct": -41.19382468648972,
+        "native_sol_received": 0.626755689,
+        "native_sol_spent": 1.065799103,
+        "sell_count": 1
+      },
+      {
+        "first_buy_at": "2026-08-24T01:05:38Z",
+        "first_buy_signature": "3HmutVHFXEat2BiaQCHDhvDZZexRukmxmWzComVLn9UfB3xJdysxuRTMc2HwBojerkfVaY7hsigo8JSy5fHc7ZTB",
+        "mint": "GUXhEASc6xTgypB4TX5J4iJ6hvBsdC7YjxXxvVozpump",
+        "native_pnl_sol": -0.27488544300000006,
+        "native_roi_pct": -27.4283354009696,
+        "native_sol_received": 0.727309692,
+        "native_sol_spent": 1.002195135,
+        "sell_count": 1
+      },
+      {
+        "first_buy_at": "2026-08-25T20:48:18Z",
+        "first_buy_signature": "4HCX43pVsibuMrYW9VK2ebMhwx7pp8rocgPC2JBnjkjgLfq9UQZ1xacwXV5s9whSQtVtSn85LNjpXkq4Fg6enCdR",
+        "mint": "8EckrGkugUW3wm8ooXUh4kexcbiNqE7dChdgDhcpump",
+        "native_pnl_sol": -0.23948910999999995,
+        "native_roi_pct": -25.05165858124667,
+        "native_sol_received": 0.716491945,
+        "native_sol_spent": 0.955981055,
+        "sell_count": 1
+      },
+      {
+        "first_buy_at": "2026-08-04T02:04:42Z",
+        "first_buy_signature": "4fpDsfE2YUs2jeRumXjqFqfNXPPdNcd4hWAV4So8UYB2bx4gEkhY2c5z5XhtHFYqJUWSy6Rt8Mt9DRmKc6oVZEE7",
+        "mint": "BnDheV7vgsxhLpXsK1svdwJHPwuwp6GCeaSnik7Qpump",
+        "native_pnl_sol": -0.14715431999999984,
+        "native_roi_pct": -4.779251629944899,
+        "native_sol_received": 2.93187,
+        "native_sol_spent": 3.07902432,
+        "sell_count": 1
+      },
+      {
+        "first_buy_at": "2026-08-25T15:28:33Z",
+        "first_buy_signature": "4es19QGTsF9LGA6MB7YQUkyvd6L2oaAB4wBSjdo4T1YWRPrx59EojquUMoygme8XGP2tBwNbF3V9JJGzNgU3qJuY",
+        "mint": "HZ3mRQ4WSYMdrdQ7ZtM1g2EBHv1vR3uHhjwZLBSLpump",
+        "native_pnl_sol": -0.14435337000000015,
+        "native_roi_pct": -4.688314671061236,
+        "native_sol_received": 2.93465007,
+        "native_sol_spent": 3.07900344,
+        "sell_count": 1
+      }
+    ]
+  },
+  "mayhem": {
+    "control_agent_presence_rate": 1.0,
+    "control_create_tx_with_mayhem_agent_reference": 626,
+    "control_create_tx_with_mayhem_program_reference": 626,
+    "control_program_presence_rate": 1.0,
+    "create_tx_with_mayhem_agent_reference": 1624,
+    "create_tx_with_mayhem_program_reference": 1624,
+    "note": "This is exact CREATE-transaction account presence, not proof that Mayhem mode was active. Presence is universal in both matched sets and has zero observed selection lift.",
+    "observed_agent_presence_rate_lift": 0.0,
+    "observed_program_presence_rate_lift": 0.0,
+    "positive_agent_presence_rate": 1.0,
+    "positive_program_presence_rate": 1.0
+  },
+  "metadata": {
+    "blindape_launch_count": 2,
+    "blindape_mints": [
+      "AF1As73PRoLLjZAkQi2RiEumBqu5quQLd46GJv1qpump",
+      "EwW7NjmpnUNXAH5ZBf2boqkXikwA3ihumuJrCo5Fpump"
+    ],
+    "metadata_uri_domains": {
+      "metadata.j7tracker.io": 1624
+    },
+    "onchain_create_metadata_rows": 2255,
+    "repeated_metadata_uri_groups": [],
+    "repeated_name_groups": [
+      {
+        "count": 11,
+        "normalized_name": "memewarsgeneral"
+      },
+      {
+        "count": 5,
+        "normalized_name": "thefearlessgoose"
+      },
+      {
+        "count": 4,
+        "normalized_name": "neverkillyourself"
+      },
+      {
+        "count": 4,
+        "normalized_name": "orangie"
+      },
+      {
+        "count": 4,
+        "normalized_name": "ansum"
+      },
+      {
+        "count": 3,
+        "normalized_name": "allbarknobite"
+      },
+      {
+        "count": 3,
+        "normalized_name": "thelasthope"
+      },
+      {
+        "count": 3,
+        "normalized_name": "thecageisalliknow"
+      },
+      {
+        "count": 3,
+        "normalized_name": "14kmarketcap"
+      },
+      {
+        "count": 3,
+        "normalized_name": "originalcoin"
+      },
+      {
+        "count": 3,
+        "normalized_name": "botcoin"
+      },
+      {
+        "count": 3,
+        "normalized_name": "sealon"
+      },
+      {
+        "count": 3,
+        "normalized_name": "trumpcoin"
+      },
+      {
+        "count": 3,
+        "normalized_name": "cupsey"
+      },
+      {
+        "count": 3,
+        "normalized_name": "truthcoin"
+      },
+      {
+        "count": 3,
+        "normalized_name": "housecoin"
+      },
+      {
+        "count": 3,
+        "normalized_name": "cyberhog"
+      },
+      {
+        "count": 3,
+        "normalized_name": "alon"
+      },
+      {
+        "count": 3,
+        "normalized_name": "cristianoronaldo"
+      },
+      {
+        "count": 2,
+        "normalized_name": "justiceformiiko"
+      },
+      {
+        "count": 2,
+        "normalized_name": "onewalletuncs"
+      },
+      {
+        "count": 2,
+        "normalized_name": "shitcoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "trenchcat"
+      },
+      {
+        "count": 2,
+        "normalized_name": "socialcoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "faggot"
+      },
+      {
+        "count": 2,
+        "normalized_name": "boobcoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "thebabyhippo"
+      },
+      {
+        "count": 2,
+        "normalized_name": "americanrebirth"
+      },
+      {
+        "count": 2,
+        "normalized_name": "the10commandments"
+      },
+      {
+        "count": 2,
+        "normalized_name": "thepygmyhippo"
+      },
+      {
+        "count": 2,
+        "normalized_name": "fraudcoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "memecoinsareback"
+      },
+      {
+        "count": 2,
+        "normalized_name": "jeff"
+      },
+      {
+        "count": 2,
+        "normalized_name": "doginswing"
+      },
+      {
+        "count": 2,
+        "normalized_name": "pandacoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "heygrokmakenomistakes"
+      },
+      {
+        "count": 2,
+        "normalized_name": "terafab"
+      },
+      {
+        "count": 2,
+        "normalized_name": "thesisypheanswan"
+      },
+      {
+        "count": 2,
+        "normalized_name": "itsbwatho"
+      },
+      {
+        "count": 2,
+        "normalized_name": "officialpumpfunappcoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "thewnbaprospect"
+      },
+      {
+        "count": 2,
+        "normalized_name": "niggabutttoken"
+      },
+      {
+        "count": 2,
+        "normalized_name": "chillansemtripleneetofficial"
+      },
+      {
+        "count": 2,
+        "normalized_name": "hakunamatata"
+      },
+      {
+        "count": 2,
+        "normalized_name": "pepe"
+      },
+      {
+        "count": 2,
+        "normalized_name": "dihcoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "jim"
+      },
+      {
+        "count": 2,
+        "normalized_name": "neko"
+      },
+      {
+        "count": 2,
+        "normalized_name": "yourcoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "officialbarrontrump"
+      },
+      {
+        "count": 2,
+        "normalized_name": "thegrievingparrot"
+      },
+      {
+        "count": 2,
+        "normalized_name": "gake"
+      },
+      {
+        "count": 2,
+        "normalized_name": "fomodog"
+      },
+      {
+        "count": 2,
+        "normalized_name": "pumpers"
+      },
+      {
+        "count": 2,
+        "normalized_name": "howcryptosupportspeakstoyou"
+      },
+      {
+        "count": 2,
+        "normalized_name": "tenacioustermite"
+      },
+      {
+        "count": 2,
+        "normalized_name": "itsjustgettingstarted"
+      },
+      {
+        "count": 2,
+        "normalized_name": "kiki"
+      },
+      {
+        "count": 2,
+        "normalized_name": "justiceforkaya"
+      },
+      {
+        "count": 2,
+        "normalized_name": "layooo"
+      },
+      {
+        "count": 2,
+        "normalized_name": "legostarwarspfpcult"
+      },
+      {
+        "count": 2,
+        "normalized_name": "theshilloor"
+      },
+      {
+        "count": 2,
+        "normalized_name": "dankdoge"
+      },
+      {
+        "count": 2,
+        "normalized_name": "theautisticindex6900"
+      },
+      {
+        "count": 2,
+        "normalized_name": "anthropicssecret"
+      },
+      {
+        "count": 2,
+        "normalized_name": "lazycat"
+      },
+      {
+        "count": 2,
+        "normalized_name": "celebrities"
+      },
+      {
+        "count": 2,
+        "normalized_name": "thedreamer"
+      },
+      {
+        "count": 2,
+        "normalized_name": "theartofmemes"
+      },
+      {
+        "count": 2,
+        "normalized_name": "haveibeenflocked"
+      },
+      {
+        "count": 2,
+        "normalized_name": "pivottomemecoins"
+      },
+      {
+        "count": 2,
+        "normalized_name": "booskee"
+      },
+      {
+        "count": 2,
+        "normalized_name": "crimelanguagemodel"
+      },
+      {
+        "count": 2,
+        "normalized_name": "abdoolelsayid"
+      },
+      {
+        "count": 2,
+        "normalized_name": "groktok"
+      },
+      {
+        "count": 2,
+        "normalized_name": "jailwheres29"
+      },
+      {
+        "count": 2,
+        "normalized_name": "alxjobs"
+      },
+      {
+        "count": 2,
+        "normalized_name": "averagepumpfunuser"
+      },
+      {
+        "count": 2,
+        "normalized_name": "memelife"
+      },
+      {
+        "count": 2,
+        "normalized_name": "outstandingrefugeeaward"
+      },
+      {
+        "count": 2,
+        "normalized_name": "clearandfitforpurchasecoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "spx6900"
+      },
+      {
+        "count": 2,
+        "normalized_name": "greenification"
+      },
+      {
+        "count": 2,
+        "normalized_name": "chinesedogecoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "ronaldocoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "tokenz"
+      },
+      {
+        "count": 2,
+        "normalized_name": "megacap"
+      },
+      {
+        "count": 2,
+        "normalized_name": "cap"
+      },
+      {
+        "count": 2,
+        "normalized_name": "catcoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "trustintrump"
+      },
+      {
+        "count": 2,
+        "normalized_name": "officialxijinping"
+      },
+      {
+        "count": 2,
+        "normalized_name": "sexcoin"
+      },
+      {
+        "count": 2,
+        "normalized_name": "frens"
+      },
+      {
+        "count": 2,
+        "normalized_name": "murathecat"
+      },
+      {
+        "count": 2,
+        "normalized_name": "dwog"
+      },
+      {
+        "count": 2,
+        "normalized_name": "crusadooooor"
+      },
+      {
+        "count": 2,
+        "normalized_name": "religionofsolana"
+      },
+      {
+        "count": 2,
+        "normalized_name": "thesolanaconstitution"
+      },
+      {
+        "count": 2,
+        "normalized_name": "alfie"
+      },
+      {
+        "count": 2,
+        "normalized_name": "floatingteslaroadster"
+      }
+    ],
+    "repeated_symbol_groups": [
+      {
+        "count": 11,
+        "normalized_symbol": "mwg"
+      },
+      {
+        "count": 9,
+        "normalized_symbol": "elon"
+      },
+      {
+        "count": 8,
+        "normalized_symbol": "dog"
+      },
+      {
+        "count": 7,
+        "normalized_symbol": "fomo"
+      },
+      {
+        "count": 7,
+        "normalized_symbol": "goose"
+      },
+      {
+        "count": 6,
+        "normalized_symbol": "sol"
+      },
+      {
+        "count": 6,
+        "normalized_symbol": "trump"
+      },
+      {
+        "count": 6,
+        "normalized_symbol": "cat"
+      },
+      {
+        "count": 5,
+        "normalized_symbol": "cupsey"
+      },
+      {
+        "count": 5,
+        "normalized_symbol": "pepe"
+      },
+      {
+        "count": 5,
+        "normalized_symbol": "up"
+      },
+      {
+        "count": 5,
+        "normalized_symbol": "alon"
+      },
+      {
+        "count": 5,
+        "normalized_symbol": "wif"
+      },
+      {
+        "count": 5,
+        "normalized_symbol": "green"
+      },
+      {
+        "count": 4,
+        "normalized_symbol": "sonny"
+      },
+      {
+        "count": 4,
+        "normalized_symbol": "orangie"
+      },
+      {
+        "count": 4,
+        "normalized_symbol": "tard"
+      },
+      {
+        "count": 4,
+        "normalized_symbol": "memecoins"
+      },
+      {
+        "count": 4,
+        "normalized_symbol": "ansum"
+      },
+      {
+        "count": 4,
+        "normalized_symbol": "solana"
+      },
+      {
+        "count": 4,
+        "normalized_symbol": "djt"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "social"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "bob"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "never"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "panda"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "14k"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "pumpfun"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "jim"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "seyong"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "pump"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "it"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "sealon"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "meme"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "shit"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "banana"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "ily"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "mushroom"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "gm"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "house"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "cyberhog"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "solhouse"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "7"
+      },
+      {
+        "count": 3,
+        "normalized_symbol": "pair"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "rusty"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "1"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "unbothered"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "owu"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "trenchcat"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "stenk"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "umit"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "tucker"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "carlson"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "faggot"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "musk"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "pablo"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "wesley"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "mommy"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "grass"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "trump2028"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "rebuild"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "fraud"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "back"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "jeff"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "mike"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "penguin"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "gg"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "terafab"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "swan"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "floyd"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "enes"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "family"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "niggabutt"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "peak"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "hakunamatata"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "original"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "dihcoin"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "neko"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "corgi"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "barron"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "bull"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "tupac"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "birkin"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "doug"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "wolf"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "kadu"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "bark"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "tod"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "frank"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "gake"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "imposter"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "froggy"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "bot"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "ocean"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "fomodog"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "pumpers"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "speaks"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "pumper"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "termite"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "started"
+      },
+      {
+        "count": 2,
+        "normalized_symbol": "pnut"
+      }
+    ]
+  },
+  "native_economics": {
+    "average_trade_sol": 1.2582071537991348,
+    "breakeven": 0,
+    "expectancy_sol": 1.2582071537991348,
+    "losses": 78,
+    "max_drawdown_sol": 0.5467906100000164,
+    "median_trade_sol": 0.6345440140000003,
+    "n": 1618,
+    "profit_factor": 461.39945945452234,
+    "top1_loss_share": 0.09929139318259293,
+    "top1_positive_pnl_share": 0.009596394219619836,
+    "top5_loss_share": 0.2815448289409594,
+    "top5_positive_pnl_share": 0.03792667988271856,
+    "total_pnl_sol": 2035.779174847,
+    "wins": 1540,
+    "wr": 0.9517923362175525
+  },
+  "position_size": {
+    "cluster_counts": {
+      "OTHER": 43,
+      "~1_SOL": 813,
+      "~3_SOL": 768
+    },
+    "cluster_outcomes": {
+      "OTHER": {
+        "closed_n": 36,
+        "launch_n": 43,
+        "mean_name_length": 10.465116279069768,
+        "mean_name_upper_ratio": 0.2746433746768309,
+        "mean_name_word_count": 1.6046511627906976,
+        "median_native_roi_pct": 117.732195329946,
+        "native_closed_economics": {
+          "average_trade_sol": 7.036532069361111,
+          "breakeven": 0,
+          "expectancy_sol": 7.036532069361111,
+          "losses": 0,
+          "max_drawdown_sol": 0.0,
+          "median_trade_sol": 6.48444971,
+          "n": 36,
+          "profit_factor": null,
+          "top1_loss_share": null,
+          "top1_positive_pnl_share": 0.07728938509374442,
+          "top5_loss_share": null,
+          "top5_positive_pnl_share": 0.29828233391340525,
+          "total_pnl_sol": 253.31515449699998,
+          "wins": 36,
+          "wr": 1.0
+        },
+        "unresolved_n": 7
+      },
+      "~1_SOL": {
+        "closed_n": 809,
+        "launch_n": 813,
+        "mean_name_length": 13.044280442804428,
+        "mean_name_upper_ratio": 0.24987097196378108,
+        "mean_name_word_count": 2.249692496924969,
+        "median_native_roi_pct": 36.49064711478567,
+        "native_closed_economics": {
+          "average_trade_sol": 0.6093280275043262,
+          "breakeven": 0,
+          "expectancy_sol": 0.6093280275043262,
+          "losses": 23,
+          "max_drawdown_sol": 0.10326846899999964,
+          "median_trade_sol": 0.378545699,
+          "n": 809,
+          "profit_factor": 639.8594451306724,
+          "top1_loss_share": 0.07438708848864413,
+          "top1_positive_pnl_share": 0.007100823955922585,
+          "top5_loss_share": 0.36368290789569163,
+          "top5_positive_pnl_share": 0.03253878498507016,
+          "total_pnl_sol": 492.94637425099995,
+          "wins": 786,
+          "wr": 0.9715698393077874
+        },
+        "unresolved_n": 4
+      },
+      "~3_SOL": {
+        "closed_n": 725,
+        "launch_n": 768,
+        "mean_name_length": 12.811197916666666,
+        "mean_name_upper_ratio": 0.24688888565689035,
+        "mean_name_word_count": 2.1276041666666665,
+        "median_native_roi_pct": 34.51949863656881,
+        "native_closed_economics": {
+          "average_trade_sol": 1.7632703609268967,
+          "breakeven": 0,
+          "expectancy_sol": 1.7632703609268967,
+          "losses": 26,
+          "max_drawdown_sol": 0.14715431999999984,
+          "median_trade_sol": 1.0625229369999998,
+          "n": 725,
+          "profit_factor": 771.5041235674063,
+          "top1_loss_share": 0.08869335218456043,
+          "top1_positive_pnl_share": 0.010752251478354893,
+          "top5_loss_share": 0.38922511991267966,
+          "top5_positive_pnl_share": 0.036469381727048014,
+          "total_pnl_sol": 1278.3710116720001,
+          "wins": 699,
+          "wr": 0.9641379310344828
+        },
+        "unresolved_n": 43
+      }
+    },
+    "count": 1624,
+    "mean_principal_sol": 2.125619063458744,
+    "median_principal_sol": 1.0,
+    "outcome_sample_note": "Cluster outcome rows are positions whose first buy signature is the atomic CREATE buy; unrelated rebuy cycles are excluded.",
+    "p10": 1.0,
+    "p90": 3.0,
+    "principal_vs_closed_native_roi_pearson": 0.06508756406108483
+  },
+  "schema": "wallet-8ycb-opening-sniper-v2-forensics-v1",
+  "selection_validity": {
+    "ambiguous_n": 5,
+    "closest_matched_control": "8YCB_SELF_CREATED_WITHOUT_INITIAL_BUY",
+    "closest_matched_control_valid": true,
+    "control_n": 626,
+    "hour_table": [
+      {
+        "bought_n": 126,
+        "bought_rate": 0.7590361445783133,
+        "n": 166,
+        "utc_hour": 0
+      },
+      {
+        "bought_n": 68,
+        "bought_rate": 0.7311827956989247,
+        "n": 93,
+        "utc_hour": 1
+      },
+      {
+        "bought_n": 51,
+        "bought_rate": 0.7183098591549296,
+        "n": 71,
+        "utc_hour": 2
+      },
+      {
+        "bought_n": 44,
+        "bought_rate": 0.8461538461538461,
+        "n": 52,
+        "utc_hour": 3
+      },
+      {
+        "bought_n": 30,
+        "bought_rate": 1.0,
+        "n": 30,
+        "utc_hour": 4
+      },
+      {
+        "bought_n": 13,
+        "bought_rate": 0.7647058823529411,
+        "n": 17,
+        "utc_hour": 5
+      },
+      {
+        "bought_n": 8,
+        "bought_rate": 1.0,
+        "n": 8,
+        "utc_hour": 6
+      },
+      {
+        "bought_n": 1,
+        "bought_rate": 1.0,
+        "n": 1,
+        "utc_hour": 7
+      },
+      {
+        "bought_n": 0,
+        "bought_rate": null,
+        "n": 0,
+        "utc_hour": 8
+      },
+      {
+        "bought_n": 0,
+        "bought_rate": null,
+        "n": 0,
+        "utc_hour": 9
+      },
+      {
+        "bought_n": 3,
+        "bought_rate": 1.0,
+        "n": 3,
+        "utc_hour": 10
+      },
+      {
+        "bought_n": 6,
+        "bought_rate": 0.75,
+        "n": 8,
+        "utc_hour": 11
+      },
+      {
+        "bought_n": 18,
+        "bought_rate": 0.782608695652174,
+        "n": 23,
+        "utc_hour": 12
+      },
+      {
+        "bought_n": 40,
+        "bought_rate": 0.6557377049180327,
+        "n": 61,
+        "utc_hour": 13
+      },
+      {
+        "bought_n": 100,
+        "bought_rate": 0.8695652173913043,
+        "n": 115,
+        "utc_hour": 14
+      },
+      {
+        "bought_n": 142,
+        "bought_rate": 0.7513227513227513,
+        "n": 189,
+        "utc_hour": 15
+      },
+      {
+        "bought_n": 141,
+        "bought_rate": 0.7704918032786885,
+        "n": 183,
+        "utc_hour": 16
+      },
+      {
+        "bought_n": 145,
+        "bought_rate": 0.8333333333333334,
+        "n": 174,
+        "utc_hour": 17
+      },
+      {
+        "bought_n": 113,
+        "bought_rate": 0.6208791208791209,
+        "n": 182,
+        "utc_hour": 18
+      },
+      {
+        "bought_n": 115,
+        "bought_rate": 0.7098765432098766,
+        "n": 162,
+        "utc_hour": 19
+      },
+      {
+        "bought_n": 114,
+        "bought_rate": 0.5906735751295337,
+        "n": 193,
+        "utc_hour": 20
+      },
+      {
+        "bought_n": 113,
+        "bought_rate": 0.6494252873563219,
+        "n": 174,
+        "utc_hour": 21
+      },
+      {
+        "bought_n": 106,
+        "bought_rate": 0.7019867549668874,
+        "n": 151,
+        "utc_hour": 22
+      },
+      {
+        "bought_n": 127,
+        "bought_rate": 0.654639175257732,
+        "n": 194,
+        "utc_hour": 23
+      }
+    ],
+    "model_assisted_forensics_run": true,
+    "model_note": "Features are on-chain CREATE metadata/time and strictly prior completed creator history only. CREATE fields become observable simultaneous with the atomic initial buy; creator history is left-censored at the research-window start. Discrimination is explanatory rather than preemptively followable.",
+    "positive_n": 1624,
+    "primary_reason": "The target is a launch creator rather than a third-party opening sniper.",
+    "primary_third_party_ignored_universe_valid": false
+  },
+  "timing": {
+    "create_to_buy_latency_ms": {
+      "median": 0,
+      "n": 1624,
+      "p90": 0
+    },
+    "external_buy_rank_before_target": {
+      "median": 0,
+      "n": 1624,
+      "p90": 0
+    },
+    "slot_difference": {
+      "median": 0,
+      "n": 1624,
+      "p90": 0
+    }
+  },
+  "token_program": {
+    "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb": 2255
+  },
+  "tracker_comparable_economics": {
+    "average_trade_sol": 1.338763070248455,
+    "breakeven": 0,
+    "expectancy_sol": 1.338763070248455,
+    "losses": 36,
+    "max_drawdown_sol": 0.47219555100014077,
+    "median_trade_sol": 0.7202934900000001,
+    "n": 1618,
+    "profit_factor": 1452.1718566498223,
+    "top1_loss_share": 0.2687074732836091,
+    "top1_positive_pnl_share": 0.009290850577783198,
+    "top5_loss_share": 0.6585906404438984,
+    "top5_positive_pnl_share": 0.03662275968474769,
+    "total_pnl_sol": 2166.118647662,
+    "wins": 1582,
+    "wr": 0.9777503090234858
+  },
+  "wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ"
+}

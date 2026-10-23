@@ -1,0 +1,258 @@
+{
+  "boundary_counts": {
+    "burst:decision:control": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 2,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:mint": 1,
+      "NO_FROZEN_CONTROL": 3,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 0
+    },
+    "burst:decision:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 1,
+      "STRICT_1S_REQUEST_AGE_FAIL": 2,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 1
+    },
+    "burst:entry:control": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 2,
+      "NO_FROZEN_CONTROL": 3,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:curve": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 0
+    },
+    "burst:entry:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 2,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 3,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:curve": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 0
+    },
+    "burst:exit:control": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 2,
+      "NO_FROZEN_CONTROL": 3,
+      "SAME_SLOT_RPC_TOUCH_UNRESOLVED:curve": 2,
+      "STRICT_1S_REQUEST_AGE_FAIL": 1,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 0
+    },
+    "burst:exit:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 2,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 4,
+      "STRICT_1S_REQUEST_AGE_FAIL": 2,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:global": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 1
+    },
+    "persistence:decision:control": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 2,
+      "NO_FROZEN_CONTROL": 3,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 0
+    },
+    "persistence:decision:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 2
+    },
+    "persistence:entry:control": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 2,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 1,
+      "NO_FROZEN_CONTROL": 3,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 0
+    },
+    "persistence:entry:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 2,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 1,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 2
+    },
+    "persistence:exit:control": {
+      "NO_FROZEN_CONTROL": 3,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 1,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 0
+    },
+    "persistence:exit:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 1,
+      "SAME_SLOT_RPC_TOUCH_UNRESOLVED:curve": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 5,
+      "denominator": 9,
+      "ready_observation": 2
+    }
+  },
+  "context_chain_intentions": {
+    "burst": {
+      "matched": 0,
+      "target": 0
+    },
+    "persistence": {
+      "matched": 0,
+      "target": 6
+    }
+  },
+  "continuous_state_certified": false,
+  "drain_only_seeds": 2,
+  "implementation_sha256": {
+    "burst_persistence_v1.py": "23e40ac090cc590bd0b7c008c23a35b5fcdb00e6751153e9a0a19da9b8b3126c",
+    "quote_context_adapter_v1.py": "830a308384aebba7357ed830fa7d776117fa4e0f42ba37cc3419f17f00e3dba6",
+    "state_continuity_v1.py": "14ef4a4e935d365604f813e4abbb547c179e9522e789b34453ab4f5c752d144e",
+    "synchronized_context_v1.py": "4119a8ed0e05a2cfdeffbb202e8df044da99100430b1c555e1ca6fed7d9e36ad",
+    "transaction_evidence_v1.py": "2e3cb96409f467d3dc0e23c4cbf2805917e7847f0267890c2351ae248ef69148"
+  },
+  "inputs": {
+    "bootstrap.jsonl": "f20c8b721f6441a2434bc00efa3279f8c387c058d554f0bde2eb026496ba3f7a",
+    "capture.jsonl": "7798d8c88a44ed864ec59c392a90f6d76baef19a735a199c49b2ff2935f31eee",
+    "completion.json": "b2646385fbf691baffd92180cda5b7c84291c47334dc22eaa197c76b8284f92a",
+    "manifest.json": "23f8826a37c0554d308359cbd55c383d2861e55e995e9d87c2a38ee5c1870abf",
+    "scheduler.jsonl": "943729ad57c2eed6fb6f7d686691ecb78bf3bb0fcdb3a192341d4c8fe9716264"
+  },
+  "intent_statuses": {
+    "POLICY_ABSTENTION": 12,
+    "UNRESOLVED_ECONOMICS": 42
+  },
+  "intentions": 54,
+  "native_advance_specification": true,
+  "native_capture": {
+    "counts": {
+      "clock": 842,
+      "curve": 4918,
+      "fee": 142,
+      "global": 146,
+      "mint": 1580,
+      "other": 2790
+    },
+    "end_ns": 1792764096437261351,
+    "full_write_and_fork_coverage_certified": false,
+    "layout_failures": {},
+    "mint_extension_types": {
+      "1": 4,
+      "12": 31,
+      "14": 52,
+      "16": 4,
+      "18": 1471,
+      "19": 1471,
+      "25": 29,
+      "26": 29,
+      "3": 2,
+      "4": 31,
+      "6": 30
+    },
+    "normalized_transaction_digest": "c0fe811186048682b5c5bcf41e000f490e11c872d2fedfcf94d050dabc2414ee",
+    "observed_discontinuities_and_requests": {
+      "CONNECTED": 1,
+      "CONTEXT_SUBSCRIPTION_REQUESTED": 184
+    },
+    "raw_to_normalized_transactions": 12869,
+    "server_subscription_activation_acknowledged": false,
+    "slot_status_counts": {
+      "0": 350,
+      "1": 350,
+      "2": 350,
+      "3": 350,
+      "4": 350,
+      "5": 350
+    },
+    "start_ns": 1792764021904399164
+  },
+  "net_economics_certified": false,
+  "observation_quotes": 0,
+  "opportunities": 9,
+  "outputs": {
+    "boundaries.jsonl": "86a48aa97593c2026756be4220d685911d52980af3dc287e9b9a9f66b77110ac",
+    "intentions.jsonl": "6151b32feb63fb5686642bb825c77a2be8419e5c2a13075f67bc52c6198e83bb",
+    "observation-quotes.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "opportunities.jsonl": "8726d9cd97b861a67a0cd39546d1b04c85789ed873d7442b99d38ae09f8a6315",
+    "teacher-labels.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "population": "A3h4_sync_engineering_canary_v3",
+  "prospective_expansion_allowed": false,
+  "recorded_faults": [],
+  "remaining": [
+    "Full transition/fork qualification and own-state hold replay are required; single-bank reads are not fills.",
+    "Execution/network costs, intervening unsupported transactions and non-executable/unknown outcomes must be accounted.",
+    "Original frozen controls and strict age remain unchanged; old78/468 never replaced."
+  ],
+  "schema": "NATIVE_CONTINUITY_READSET_AUDIT_V1",
+  "teacher_event_labels": 0,
+  "timing": {
+    "rpc_response_latency": {
+      "count": 279,
+      "maximum_ms": 438.65959,
+      "median_ms": 303.196449,
+      "over_1s": 0
+    },
+    "scheduler_signal_observation_lag": {
+      "count": 11,
+      "maximum_ms": 119.301135,
+      "median_ms": 35.396556,
+      "over_1s": 0
+    },
+    "synchronized_response_latency": {
+      "count": 127,
+      "maximum_ms": 438.65959,
+      "median_ms": 389.472247,
+      "over_1s": 0
+    }
+  },
+  "unknown_transaction_privileges": 0,
+  "without_control": 3
+}

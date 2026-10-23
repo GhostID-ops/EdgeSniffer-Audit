@@ -1,0 +1,22 @@
+{
+  "decoder_error_count": 2,
+  "decoder_error_samples": [
+    {
+      "error": "PumpSwapExactError:PumpSwap event cannot be joined uniquely to instruction",
+      "pool": "9Fa1fiC2Pv7V3rM4DM4BRu2athRHqFzApa7H8LtgZidL",
+      "signature": "3rypYYGwboTzuXgXBr9msXVxUJpAgiUbRgvhav6raNwfsdEAXQT79FEtQ1WELtXnBWRv4JvrnGH7mwzBn5EByQSY"
+    },
+    {
+      "error": "PumpSwapExactError:PumpSwap event cannot be joined uniquely to instruction",
+      "pool": "9Fa1fiC2Pv7V3rM4DM4BRu2athRHqFzApa7H8LtgZidL",
+      "signature": "5JyvjQKKjqAoThsoofYHBFDohHbP7czVHgYvQPtW95iuB9yUtCAXCrr1qfCit4JFokLrAaE2ksYmFr4nGGYz8JQY"
+    }
+  ],
+  "economics_ready": false,
+  "outcome_blind": true,
+  "rows": 37,
+  "schema": "KEFI_13_ARM_PUMPSWAP_TAPE_AUDIT_V1",
+  "schema_errors": [],
+  "status": "PASS_TAPE_SCHEMA_FAIL_CLOSED_DECODER_ERRORS",
+  "unique_event_ids": 37
+}

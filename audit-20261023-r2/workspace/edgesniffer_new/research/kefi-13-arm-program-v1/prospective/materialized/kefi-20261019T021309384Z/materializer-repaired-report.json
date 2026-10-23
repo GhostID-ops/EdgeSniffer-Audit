@@ -1,0 +1,9 @@
+{
+  "materialized_observations": 4,
+  "outcome_blind": true,
+  "rejected_rows": 0,
+  "rejections": [],
+  "schema": "KEFI_13_ARM_PROSPECTIVE_OBSERVATION_MATERIALIZER_V1",
+  "tracked_teacher_rows": 4,
+  "window_id": "kefi-20261019T021309384Z"
+}

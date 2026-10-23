@@ -1,0 +1,99 @@
+{
+  "generated_at_utc": "2026-10-19T04:47:04.248315+00:00",
+  "global_comparison_complete": false,
+  "global_winner_claim": false,
+  "overall_status": "INCOMPLETE_GLOBAL_COMPARISON",
+  "passed_requirement_count": 7,
+  "registry_arm_count": 13,
+  "requirement_count": 10,
+  "requirements": [
+    {
+      "evidence": [
+        "registry.json",
+        "registry-audit-current-v4.json"
+      ],
+      "reason": "13 unique registry arms are required.",
+      "requirement_id": "REGISTRY_13_UNIQUE",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "registry.json",
+        "registry-audit-current-v4.json"
+      ],
+      "reason": "Every declared component path must resolve.",
+      "requirement_id": "REAL_VENUE_AND_COMPONENT_BINDINGS",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "discovery-analysis-current-v3.json"
+      ],
+      "reason": "Discovery must emit one outcome-blind row for every arm.",
+      "requirement_id": "OUTCOME_BLIND_COMMON_DISCOVERY",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "frozen-policies.json",
+        "registry-audit-current-v4.json"
+      ],
+      "reason": "Exactly one frozen policy slot is required per arm.",
+      "requirement_id": "FROZEN_POLICY_PER_ARM",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "exact-coverage-audit-current-v4.json"
+      ],
+      "reason": "All 13 arms need exact module coverage; fail-closed ARM13 remains a deliberate gap.",
+      "requirement_id": "EXACT_DECODER_EVALUATOR_MODULE_AUDIT",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "collection-manifest.json",
+        "prospective-source-gate-current-v4.json"
+      ],
+      "reason": "The collection boundary must be 13-way, receive-only, and transport-clean.",
+      "requirement_id": "PARALLEL_RECEIVE_ONLY_COLLECTION",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "fresh-cohort-audit-current-v7.json"
+      ],
+      "reason": "Fresh observations must pass hash, boundary, partition, and outcome-blind checks.",
+      "requirement_id": "FRESH_COHORT_AUDIT",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "prospective-ranking-current-v9.json",
+        "ARM07_PUMPSWAP_DIRECT/economics-report.json"
+      ],
+      "reason": "At least one exact arm currently passes the executable paper gate.",
+      "requirement_id": "OUT_OF_SAMPLE_EXECUTABLE_RANKING",
+      "status": "INCOMPLETE"
+    },
+    {
+      "evidence": [
+        "prospective-ranking-current-v9.json",
+        "program-status-audit-current-v10.json"
+      ],
+      "reason": "All 13 arms need comparable fresh executable economics; current evidence evaluates one arm.",
+      "requirement_id": "GLOBAL_13_ARM_COMPARISON",
+      "status": "INCOMPLETE"
+    },
+    {
+      "evidence": [
+        "final-review-current-v10.json",
+        "program-status-audit-current-v10.json"
+      ],
+      "reason": "Global kill/promote decisions are not supportable while 12 arms have no data; ARM07 is only an evaluated-arm candidate.",
+      "requirement_id": "EXPLICIT_KILL_PROMOTE_DECISIONS",
+      "status": "INCOMPLETE"
+    }
+  ],
+  "schema": "KEFI_CANONICAL_13_ARM_COMPLETION_AUDIT_V1"
+}

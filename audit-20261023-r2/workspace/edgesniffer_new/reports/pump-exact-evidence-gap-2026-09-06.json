@@ -1,0 +1,26 @@
+{
+  "schema": "PUMP_EXACT_EVIDENCE_GAP_V1",
+  "classification": "UNRECOVERED_AUTHORITATIVE_EVIDENCE_INTERVAL",
+  "cause": "RabbitStream HTTP/2 session remained connected but yielded no updates; the pre-hardening collector had no stream-idle timeout",
+  "lastObservedRawTransaction": {
+    "slot": 444734005,
+    "receivedAtUtc": "2026-09-06T07:18:24.958272658Z",
+    "signature": "2D3XUxi5Mq9Tumwy1YfU1qg7HuzfXRtcK1WZ7tRJN9ZJqQynnuzgoKTzzDiL3uXxewaLYG5PgEdxmTbC2YnBmj6d"
+  },
+  "lastDurableRecord": {
+    "slot": 444734028,
+    "receivedAtUtc": "2026-09-06T07:18:42.758185146Z",
+    "kind": "rpc_account_snapshot"
+  },
+  "firstPostRecoveryPartition": {
+    "startSlot": 444812521,
+    "openedAtUtc": "2026-09-06T14:12:46.959713585Z"
+  },
+  "unrecoveredRawStreamSlotRange": {
+    "firstMissingSlot": 444734006,
+    "lastMissingSlot": 444812520,
+    "slotCount": 78515
+  },
+  "exactlyRecovered": false,
+  "researchRule": "Never treat this interval as continuous evidence or include it in healthy-hour readiness calculations."
+}

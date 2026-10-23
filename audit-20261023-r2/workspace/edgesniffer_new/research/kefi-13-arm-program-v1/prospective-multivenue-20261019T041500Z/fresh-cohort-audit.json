@@ -1,0 +1,15 @@
+{
+  "accepted_rows": 17,
+  "accepted_rows_by_arm": {
+    "ARM07_PUMPSWAP_DIRECT": 17
+  },
+  "cohort_id": "kefi-13-arm-prospective-20261019T041500Z",
+  "cohort_started_at_utc": "2026-10-19T04:10:47.330883+00:00",
+  "economics_readable": true,
+  "errors": [],
+  "outcome_blind": true,
+  "registry_arm_count": 13,
+  "rows_seen": 17,
+  "schema": "KEFI_13_ARM_FRESH_COHORT_AUDIT_V1",
+  "status": "PASS_CLEAN_FRESH_COHORT"
+}

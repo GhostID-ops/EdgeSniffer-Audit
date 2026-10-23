@@ -1,0 +1,9 @@
+{
+  "boundaryOrdinal": 3920,
+  "holdoutRowsInspected": 0,
+  "inputIndexPrefixSha256": "860d36505f8b6dfd7a17801a2c02c13b1854140bc7762c9d1b4ed643ed490a52",
+  "reportSha256": "76cb85eb976429fc252b88566172f17e458a5ae2d65a892eaf5f0a1b4640bd1c",
+  "schema": "NON_AUTHORITATIVE_SANDBOX_ALPHA_ARCHAEOLOGY_V1",
+  "scriptSha256": "be8364f3f8c19881ef00b53ac5b2fb2ebfb4fb397fa11608ee9db9278b990077",
+  "validationRowsInspected": 0
+}

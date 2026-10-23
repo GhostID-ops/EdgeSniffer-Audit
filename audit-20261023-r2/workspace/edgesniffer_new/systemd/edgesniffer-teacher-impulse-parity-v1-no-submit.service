@@ -1,0 +1,18 @@
+[Unit]
+Description=EdgeSniffer teacher impulse parity v1 no-submit receipt writer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/EdgeSniffer/rust-sidecar
+Environment=RUST_LOG=info
+Environment=RUST_SELECTED_CANDIDATE_SUBMIT_ENABLED=false
+Environment=RUST_SELECTED_CANDIDATE_NO_SUBMIT_DRY_BUILD_ENABLED=true
+ExecStart=/root/bot/EdgeSniffer/rust-sidecar/target/release/teacher_impulse_receipt --input /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl --output /var/lib/edgesniffer-teacher-impulse-parity-v1/decision-receipts.jsonl --follow --start-at-end --poll-ms 25 --create-input-if-missing
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,20 @@
+{
+  "conflicts": [],
+  "dropped": [
+    {
+      "line": 1,
+      "observation_id": "obs-9124980d7781b971e48f8c9f6d649b50",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 2,
+      "observation_id": "obs-10bc3cdcd67a6cbd4f937e2a11ca017f",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    }
+  ],
+  "fresh_rows": 4,
+  "identical_overlaps_dropped": 2,
+  "input_rows": 6,
+  "schema": "KEFI_13_ARM_PROSPECTIVE_BATCH_DEDUP_V1",
+  "status": "PASS"
+}

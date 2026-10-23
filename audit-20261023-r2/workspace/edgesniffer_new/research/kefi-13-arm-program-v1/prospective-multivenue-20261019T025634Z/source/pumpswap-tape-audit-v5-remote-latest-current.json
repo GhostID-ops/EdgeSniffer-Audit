@@ -1,0 +1,25 @@
+{
+  "decoder_error_count": 0,
+  "decoder_error_samples": [],
+  "economics_ready": true,
+  "ignored_noncanonical_count": 2,
+  "ignored_noncanonical_samples": [
+    {
+      "pool": "CkEeZKJpcro2dEp8RXJpSYfjF3TPoijmH8xVGuEAxoue",
+      "reason": "MIXED_PUMP_CURVE_ROUTE_WITHOUT_DIRECT_PUMPSWAP_INSTRUCTION",
+      "signature": "5pGEM5kZXkif8yRNbeUqcdSfLoANqNS5V9TdtxT5RQT71onAXisJqUBK3fL6491sGf7xJZvAkERWMibN6jHqAMfz"
+    },
+    {
+      "pool": "CgEvWhgiuNYj6mjGsWM8Sv93iCuvxvN9BBYas8xL8tit",
+      "reason": "MIXED_PUMP_CURVE_ROUTE_WITHOUT_DIRECT_PUMPSWAP_INSTRUCTION",
+      "signature": "2DvvaFjs5M8YnFcoZ2YRmhgwJLdaZTfJCz3qgyaQPonyejQvfhiFXzUtWyMZ8xazijsZBFyG3YpEq39kEM5rAgAA"
+    }
+  ],
+  "outcome_blind": true,
+  "parity_contract": true,
+  "rows": 695,
+  "schema": "KEFI_13_ARM_PUMPSWAP_TAPE_AUDIT_V1",
+  "schema_errors": [],
+  "status": "PASS_TAPE_SCHEMA_FAIL_CLOSED_DECODER_ERRORS",
+  "unique_event_ids": 695
+}

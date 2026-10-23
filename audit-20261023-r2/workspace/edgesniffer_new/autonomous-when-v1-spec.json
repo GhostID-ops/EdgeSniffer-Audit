@@ -1,0 +1,19 @@
+{
+  "schema": "2CQ_AUTONOMOUS_WHEN_V1_SPEC",
+  "outcomeBlind": true,
+  "economicOutcomesRead": 0,
+  "pnlRead": 0,
+  "frozenWhichFingerprintSha256": "7606a3a138591516f503e7f7b56501f1828b92947a2b38707bff166fbb233b64",
+  "decisionTick": "One global event-driven one-second tick, emitted only after at least one non-2CQ external decoded Pump causal event has been observed in that second.",
+  "candidateEligibility": "Pump CREATE/CREATE_V2 observed in the same full-meta source within 120 seconds; at least one non-2CQ external causal state; valid finite frozen-V2 features.",
+  "teacherIsolation": "The 2CQ wallet journal is never read by this lane.  2CQ causal events are not state updates and cannot trigger ticks, persistence, ranking, or FIRE state.",
+  "fireSemantics": "UNSET_PRE_WHEN_DEVELOPMENT; no score threshold, cooldown, or trade decision is applied.",
+  "causalOrdering": "Original source receipt time is primary; source observed slot/index is retained; finalized block proofs reconcile compact causal events before a tick becomes FINAL.",
+  "continuity": "Any source reconnect, continuity gap, malformed frame, canonical-proof discrepancy, or uncertain rotation fails the lane closed.",
+  "memoryBound": "Only current 120-second candidate event state and bounded SQLite-backed compact records are retained in memory; source partitions are tailed incrementally.",
+  "retention": "Compact decision/event/proof records are append-only. Existing raw lane remains authoritative and its existing protections are unchanged.",
+  "stoppingRules": {
+    "development": "At least 72 uninterrupted valid wall-clock hours AND 350 independent canonical teacher acquisitions after immutable boundary.",
+    "validation": "Immediately following development: at least 72 uninterrupted valid wall-clock hours AND 150 independent canonical teacher acquisitions, untouched."
+  }
+}

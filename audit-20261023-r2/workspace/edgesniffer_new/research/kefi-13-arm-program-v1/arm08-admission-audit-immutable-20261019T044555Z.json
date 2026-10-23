@@ -1,0 +1,2429 @@
+{
+  "admission_contract": [
+    "finalized successful transaction",
+    "exactly one underlying PumpSwap venue invoked through CPI",
+    "not top-level/direct PumpSwap (ARM07 route)",
+    "exactly one canonical PumpSwap BUY transition by the tracked wallet",
+    "positive finalized wallet token settlement for the purchased mint",
+    "signature and event identity distinct from ARM07 observations",
+    "no decoder, ambiguity, or non-trading failure"
+  ],
+  "admitted_arm08_count": 0,
+  "admitted_arm08_observations": [],
+  "arm07_partition_excluded": true,
+  "arm_id": "ARM08_PUMPSWAP_CPI",
+  "cohort_created": false,
+  "collector_changed": false,
+  "counts": {
+    "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE": 478
+  },
+  "decisions": [
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "1cdb55PZXvaqRKZ6ZpbbP72wgRnXmWDwg6vzKutTmTgR5vQEJ8HtVjQyR42AasZXueoe2iNoHuP8c1xUFinpVwP",
+      "slot": 458674920
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2aRrQF6F74XByYiwTcPTG47J93UQmBVWvbZzM7P679QEBibSNa6Rww4ftgD2smYQ7ymRxJazic8pDSXyQDhukhqM",
+      "slot": 458674924
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "rA1dBscu66Bx5cX3NMpLXdVd2XC1toFuKeTDbVQaPZZWDJriEmrZRvTog6DKGeDPY8PwggJwPTJUfvrQj7vxG6Z",
+      "slot": 458674953
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5gwEBxx7Je9VPqLjZiVFJ16hAB1Y1uPu9RRH8GZ2YmYBz8Pazmk9FdfFnZtezkJtov4fne8WV1WZkiqV8kY77Wgr",
+      "slot": 458675016
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2kk3XMFLKz4aLx8A7yut61mBD9tt5KdXuftTgCioUzb76fHmKHK6Y9sZgy55GX4dajweYTSFpTv5KUpgnLZG6yKZ",
+      "slot": 458675034
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2JsJyYAHpuXpmtvYRotCFnG8za1UqdzZAs4A2TeMUtdSY3qsudXwWWsC39ktJSnTFdG5CKHSBGTxwKmaJKdHaHr3",
+      "slot": 458675116
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2MnGkZvoAmXcoxx12uhTLFhq1mbnPyMo9jkSRsHEowQQXdDZFVbQkaVMt7hpbV2vNszgQTVmvrbXVnYgNddSyMXb",
+      "slot": 458675213
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "43QHLv5m73v54JSQBuVKw6pNncrDtq7CSCWhA2jBsD8e2jkmhUJc3tfH3ZQn5M5xYYD6HMyMGkAcKRp2XD5wqLP3",
+      "slot": 458675321
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4q71EN5ev7bvzgLEPy43nqFu3N4axNfEUWtTBtShfJuNP2xT3bQ2HyV8N8JqA3SaJob6hD4TL5s8DzbXrW8xPW58",
+      "slot": 458675481
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3CmyYFS7bF8tDj3cBULJ3zyVRa6cSPiUCwsJYCHqYrFFpMXWjaFZvJtsUx8ydhmgWSfXrSmvhWH1DHC4bueCAcq7",
+      "slot": 458675553
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3EmSHAXArtUZUfekjEYW5RTGzwHctry54MaCRjkH3C2BYwBqZQVvdrbanr4wfsyo7k7fSZpvPm6M5A5QUdjo8Hgv",
+      "slot": 458675665
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3HMdXxf4NnMfeYdRwN53NWj87gLShYAmnYaDQEcyVq7udMnXrEpYNi8UGyhHYsnik1qBfDS8MBut5ZqjuHRm13v6",
+      "slot": 458675701
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5SShsCWbdmohw6mC2WwXitE7G4E4q1jZk7GdURWoN3hD1jtyPDPg2ZT665ZvErmmafBLfT3jR9Gzc4gQ1CoJo8QT",
+      "slot": 458675792
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5CfBeEgmFn9n1DpVo3YXsMDSE6SMPhWQHBtWRRjcGNL4CN1KsgWgE8CRrfWYvFCBDkv5FKM5mnzfj115mbZjkKK",
+      "slot": 458676147
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3YWtW3T7Jbz2KhNux7taA4M3oxWr6HA7skXnGgoc7pWCiLFNDpL1vwAxG81xaiq892b1ERmniKkY21kiPGjNwD3j",
+      "slot": 458676186
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "Vi5EDBXDbK6z2h9mFicSHsdTNs3i1Lx45LhC3XGto4DaJWZefTbBQg717esfZVfBZ6U2WbrHeoAAcV5YYz1eZpy",
+      "slot": 458676257
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "H68GPru7vMWetZsca44o9T5gmzHipo43ckDye4bniPoV8WYkJS1VgTeTPbWDyeUMbD4CJnhpJXbo99b9RxKr3t4",
+      "slot": 458676323
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4TPuKWKbrPNj5aDeXE4zv6twJQYRDCNoA2TEDRC8bByEzF1a3kEkUhcSTaJA2SZHioPe9dq817164yBaoGS4Quer",
+      "slot": 458676593
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "JAqQfTyHcJebktQFNMo16fJhXbbaWSj19BT8yAP7sTu71NBmXc6UPUWfX4YwJuzWP2X2HXXKjyp6aFyvQKtj3xG",
+      "slot": 458676683
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3QruyWnD54GTNLfuHnhu51LgiwyJjixUs7uagcXXoXMkd7UweQqyUYYqWcSoq89ijdt5cKVmotphXbW4n7JoJQH1",
+      "slot": 458676723
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2wUzt3HUgmXxN2Xnx3hcwoFB1yNi3sJ7oFkqaRyJqsVEry7rsenb1uhMWYsex1sBiJ6spp8mTkAf2N3pM4pMAyQn",
+      "slot": 458676764
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "587oNoEZQyks2VShi36qkRVA976cB6N4A4cDS9G9yq9Tkop3viW9Zn5ynSuRDpLprB8aiES2X55tWNfNMHjmuqvf",
+      "slot": 458677118
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "Rca4JXohkV6NQj7hLZqFre8Cm4mfWf11dY82XsrkoKVMabfqJEVrSAPdq4RxmZQuQgY2m3Y86AQM4cMhNrNq3Tr",
+      "slot": 458677216
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3aowmZ17NHaWNH5AsG3ubPbodNQZQDbVn1x1cj5Lpsv2AM8J86GHayFMGAtBXdk1YJGhnBxsiHE3tpxUEjSbJeib",
+      "slot": 458677437
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "1FDR5N9CdyQTTuR1W2c3UYzGpKJuZ4wRYh37ipL3h4PYosXsVsX5YXSspdNgEzWUYYcgdCLiwA2RgcHZ91EeYPM",
+      "slot": 458677768
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3sZwTHtY7Kf5RaNCAkgSnvpTQKZsusLqpUv4uUN5E3USqsRj1RGPUDhoC8i1hSynjz8giUYZu2MjzzeGu3ZE11HP",
+      "slot": 458678109
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4Qwa1xbpu6XZYMK8Q9JKZZyXhM7WTCjKXKVoGhD9HQGbrCUycRWaY6zo29NsSS4emQxn65gbFhVwec7H2MBiDZiL",
+      "slot": 458678191
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2iLDMjL6sVRePKEmPQjLqVMQzRAUa9bdrCKs1GzC6CyaPbBADsezULvLftnvjjY6uKmyod37qiaz7JsMCPnSCF3w",
+      "slot": 458678224
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "KuBX4i63ds7ZBbLLCnwY57YyS7jc4LLgBmW8actMFX2b5p2TmEKmi1KXUEgMKTGEZU6VtvasUS2S6JSDboPNKjQ",
+      "slot": 458678290
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2CJ1kJT8sbjEeFkYAKWyDcUboBKYxKB4hbnuiAkNX4FSSG85iyHCc9THwkyQ7YeYJnMrDoFjCZSjaa7wNKd32pxg",
+      "slot": 458678344
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5iLPHqKjWZR56FQaNfhr4B6KhMZomYLNUPs8pgxVpugS5GoWToNvX5fF2xDcxPxkmuYCGryNeEyFGBnT22p9oj2J",
+      "slot": 458678469
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "oueGRE7bWymjjusaRUyZtsfTLhMmgdsw8786VJRas17KBBqkqTSUgDLz95f66vd58rjjSEMqJY1dLZZpePA5BJK",
+      "slot": 458678864
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4zFomBCBSgU7yRZNhDMzA3x77Zh8mD8kVcPzjSKhHHLyRb2n9LZsZeuoNRC2DtiKYu7hmr4LzxWV61H8kjCsD7Us",
+      "slot": 458679038
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "61YXLyXiZzkrh8NyDuqy3ZfsGm2ZV7rB4d3gYRJvSpSFLMnYmsTXYKjGg3Pd4msyGUHUHdweT95jG7UrTQSvbm94",
+      "slot": 458679486
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5MC1ZschT1NEbVasUGnUCKggMWmDpwNDNpCbexzad9b8zMN1d4jMrapXVsEtGRe2mWn7iMVwu3wrMorJ3vYE97ss",
+      "slot": 458679666
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4nV4WvQZ7i6cAaiE9LzPDU4xRgyLF7atd27Hvr6vbnuddYFBpEnjEhrsbx1hZ8knSGykoiug8SG2UdNZvdXwv4Cw",
+      "slot": 458679798
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2MvgxhiJDdSQXC2uPP8UzCuHDqDJSyfJwW4dihksAqeXZKDtbxXdxhvq8D9WQbhnumN85jBU5Hb7f5cqDpiDj73K",
+      "slot": 458679960
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "1d5k8PY5mHP53VehE8TZkDrpb4552hpTE3EdZ7yjSFfZaaYT5MQbVg3GdtjeX67Ug4v8uTHNCopoJEsM1k66Fco",
+      "slot": 458680127
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "496QfVNxeVKcm3sdnkGHUjV3VJhMoLZaYj7Yrz176FbTrMmXwQzMyusmLb6NLmxVhFPJcmeT4zCYRw6WYxnkNEka",
+      "slot": 458680232
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4N2xC6zsyWrGWkhbExiGq7hFccGFvZ2rBcWB9CYcNdqb7z2xCcJBHi9Eiq9zN8mC4z78utjcYCS4c5cyU2vMHwpn",
+      "slot": 458680328
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4mkrZzvG2u3yz1Dd6CszE9xCRjqwB5B7EWR8KjZNbEZGVVqcgb6Frwn85TKoL5WohNjTStgiirVb6yiHDxrNLucW",
+      "slot": 458680459
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4YL6qfGTppm9iTMS19aQq3AGubJimfheosQCKBgJfUtfZzY9f48JjvxDybUREngujna1xfaXpLDJUKtmRvGPyHTY",
+      "slot": 458680753
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "kXuyUWETnqgLnoNHx1wLdPjUCjbnbmEsvKozBz7BoHyVroqVYLtmKNCCokEpw58vC6s4mx3bST565KgT2HvKiXH",
+      "slot": 458680784
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4sX7BSLphNRtLCUQ8p4TE3TEd6MTkJCrjvvRcUqSF9tHiJzyWa6zqYXYfgSa3VkwTXVoW6XaF6YXnY7tbk9nyKYh",
+      "slot": 458680876
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "r8hQh89S6jUeuyXZHWsybb1FVt3CDz2eTEW3V5LophCC3jxbvQm6jwjFhmKLKsB86JxXJyFJdZpCpkyFY9hcHgx",
+      "slot": 458681202
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4aH8mwzeF2fJwEVqpwNt5oG5oeZFALV9Y5iZ7GYjxXPdRGSJWyK5LP2VGhJdkWmUqzmfPd4JKMcsEm2UYuDPLkjZ",
+      "slot": 458681269
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4NEmNRiKrQG5J49SedCkRGnWRkzNpdLYE6PsszJL8bwg9LaKDZ4XZ3K5qzo5Rwe7uxdg5EXetSuGrak1pbusvRk1",
+      "slot": 458681311
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3XNFQbAuFZYdtv7Vqs8VrAbcrLVsPFNZ9Yq8QUKxQgD1mcNcBR6AXwd6NSnjhKHFRoSYMEBJwrMNDAJFWD3bygkv",
+      "slot": 458681389
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5PgDuVo2M3h5wmijAKoxd1TX5xyinajqFGSpqzW5ZrJggKVpp9ntNhs9keHpstNtXDioc7sv5c8kdXyoKJJ8QTii",
+      "slot": 458681421
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "34YMLdpFngcHFKjsaW7wpGVBWyPA6n7PRBwbD1nt1DSmWfsSh7vXFaTAzLEKcNGJCWwaQtcY6eAPQW9D4cWq5FPG",
+      "slot": 458681445
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3n6owCGR8EEhcs3bLMaR4MUVAiHFhUJqh28Py7dhmn6jkxLPizuXBJphtYkSmadGa1iU7NNTKUVLAGnzrc21eP6e",
+      "slot": 458681528
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "398utACFnP6dte5fgy5cXyEQ5SfG9cyS1wHohpe3wjGF3cvvHVg7noZUtY8x5oux3DRQYfp6C9gVMJ3wTQsK3xDf",
+      "slot": 458681564
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5Vja9FuWsh2HMvZGPXvanjcZJPGk2zgNz1K9GUjUTkPShxtH4KJ7LZvQn6kRYoSrwLoh2bxg66LQVbjadTRBXi7U",
+      "slot": 458681574
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4eWpgsehF3rYPrsTLX7HkxoDLjKFPtAFGd1kT8SUvPpg1JHrKnhtqd3pAepSxt5Lv7nAvFc9qaFxHji6VwhEuDT6",
+      "slot": 458681758
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4EPwGz5rNV1A5PSjPa2Xnoa512Mo4wdtuKCeHZFAYZkfuW9rs7upiYhkXCPHbrxTWNjnzUEeNNbKfvM3NAJmUfFn",
+      "slot": 458681767
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3yEkHYu1CiWoGgpDRb9c639Y3p33PEPXNeNaU1BrfqTg6rBfAWHFK6i5Nd6m6wnVcndWKGbeSyBc7tHH9LbwuB1g",
+      "slot": 458681787
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "gSgynbCPa9FgZur11ZAQPgM9M3jUfBtHkBbo7s8ti8PXPEk1nGNwmCQCU7D7MYnu9gf9iDN3rQN99HhsdsGQ6W1",
+      "slot": 458681805
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4da5JsJxtRNwvPc2ubyPdYtcmtt95SEkaMxTVUX3ZoJ1qeSk66RUVB4pf7jFfvkMZmyj549yKazWfGSXwJ7Vxeit",
+      "slot": 458681833
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "boMPLKXkTV6MzNhSSRTXjnF8g5gFGfCbLNQuyptgNKbaNqg4ejgtNCJuuBhGk4q3qJVmvP74XVwBgKjaY55rHme",
+      "slot": 458681863
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "x74dwYWkV7tY3fkGJSkNDhBtUw2C9TyRZAkHb2ym3FxXAqXXxvoA6cYLYwDEycKh5cB6NnQeAp5s8pk28QGNAkk",
+      "slot": 458681877
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "WJZkZgpk7VcPAkNo6GbNKLsgLySvcqawZkXLqdMigh7unKwnhi4gbca2t6Z3frPuJEpoexn1Px3ag2Jek7Pm9Rx",
+      "slot": 458681997
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "uqv9m46KY52NfK6i6K8KXNaVWGmqy9kTAxe1svX32oA6Wj5krGazE7Ef3EyZra8xcXTRiA47G1ougQ8AhwakkNr",
+      "slot": 458682022
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "47jX7gb6bezpug1aAn93E1fH19mkwaMt1k8DJrsk4cURLMnhwLtpKkzNQxYrF7RzJMb71LcxmRPeu3TYaw1xTCuu",
+      "slot": 458682034
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5jyA8QK5Gj8jdGi5ff5nF16XZXkrr328CvXYRnZnDUouTwTpX9YGqpPwGYx4SPvNpeMQU2STigJfX3oGYJStt31w",
+      "slot": 458682066
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4Z3cXjJy3bjctmcAmeZG5xwJUQiV4FG1E1ir584wFBsbcEZy5U9TBXHRj2PVjaLJmEuL4ZVLCA9TYHrWXgEKhfLZ",
+      "slot": 458682088
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5kMmEiWE7a9jAtXbE4Spqggqdhrepp4Kjs7SUWTrrZZedsRw2pZhR4RwJXLC6TG1q25iSWRbupJfHy2wajcPe2yn",
+      "slot": 458682105
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2afcwTwomqsVfyJ2W9Bs3CCVQity9bTrXdieBAf7Xoe79L7boBjxtaB4mJb1KtgqsQk58P6jg9wevi7yKK6gtgaC",
+      "slot": 458682168
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2mPyoJD6FwhDCp83Rw39VFx4sddB1r8ej39Y83wgNcsiqTxLuY1TZSF4HCAJjFmzBZgpsuUes6SVB36X5grwLkKo",
+      "slot": 458682482
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "33enNgZQJW6457jTSKDuTz9FhK5ZFQoXgDKruX79zf56bAJLfece2pEzE24V5Z51Kms5v1G3wf9YVYb33n96GfyV",
+      "slot": 458682710
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2uZAiZRtxdTbpCSWpyF13duCwsZ64BkTMdz9EYV2comu2Aaw1RwYB8vEbQ4tCvdYrefivv9kaYCLfMJihnUNpnDq",
+      "slot": 458682712
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "25FHVhRTvorAuMM415QDMJ9DpdVrhGH7FQuXyK14UqNajoPfD8r9apJhW3wfZmSpthPQh2WCxAp84LCD7k28xCJu",
+      "slot": 458682760
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3NPpXFU6wMXaBDLwrnLRpvfUTDSZJY21qBkC7eJ4qdvUp2ZBDgjew4GtwsmFJNTitri4NzF6WJWiUGvSt6cqtRJs",
+      "slot": 458682912
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4Fe9srC3dpZ1TBt1VQ4pUjZ97icEAS8QyK6ge87gWDsNE6m4egf5CZZu9QgPXZov5vW8s7db5WteG5F3Wgx1MWdA",
+      "slot": 458682941
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5VXGjnLoodmvPizQMCaaPzWH3NhAKjNP8BEQExWPyVvNMQNBm1XBcTwVS5cVns6FncsChi1vbyYdy1fh2h2SezW2",
+      "slot": 458682964
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "125pY9KCapDy3714Sgj3WVfBKHNhHdvC7bPmZJtwSKvLnjTsknx4pmWd9yYcfo8yghehF2JXuRBkh7v9JKds7K9V",
+      "slot": 458683037
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2MjM6tc42cFAh4UGbnjP9Vr715im7BT5ecBHLAoxFTARNevqLGKkL45yEyPrBawDUWKTavBXWga6uoXjPhmnjrAz",
+      "slot": 458683039
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2ZwovVKHzhPRm5sP2eixjNbuf33UrXYBNtHfabnQe6sekt5QMgFwio6CApKX1TZZxMU1cvnGEQHq5ZyKH9DVcUM2",
+      "slot": 458683074
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5kWiYfJxdMshtXPpo63qf4ZAek7t7vtTntzZDhWSF7WWb1z8h3Lp2UbCBrPzXJNUekA25qfhBWtosVwEw2ep1VyT",
+      "slot": 458683101
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "LJLvvSxXpwhnbtk61A6EEQsRYSKEzSKGBEmVkKXyTBgYyqytub8PHo5vh9FYrqrHL1vBYvKUq1ZVEHg5fcUVv5x",
+      "slot": 458683111
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3WQnvdJqRVxr8p4uyyWcuJ1K9zDbYJ72AKxG9QrfeMWZWiF2SSSRk8S6YdnysMSv75PCJbHWwpH4aGQdoq3AdMD9",
+      "slot": 458683152
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3tH49SP7D3GQE2oNjM8jdcqmB7v4tpKvMXxuPdHMcztTVSJDd1ZFA3EXCxne57vapiA1PhXRiWim1sTJS7FmGDLt",
+      "slot": 458683156
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2miMaaXqBkNRuoqVbkrU2YssUdN9kDFkdnKwTopN1LpSkub9x3cQt1EDJC99E5MvNo4xuJwARBKJkv4zQFgCWfmR",
+      "slot": 458683160
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "m4jZuXphriHHWX1EjHpGQRDe2dSasNKsBSC7VzLtGQo69GBKHHWdhA3p2sLn6GeFzcC4NkWJpWujhjSE98MW7oR",
+      "slot": 458683180
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5Dp4XYPbHq3rPkV4egBDHbv113TeJ9Pbdh6DQWhLmfzqQHfuK6EdzzAW8BRhzdDNN2HcuccVdsiaRHpzGSR9ZrgE",
+      "slot": 458683190
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3qdiuM3oscDzSwyCXMQ3cpbwU9EU1gXqJMRs7QF9uD4qrukfQR8wmPSW6CtZVS9e6dgKouWYAySLJvPv2g8CKhUf",
+      "slot": 458683193
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "uK2KBKjB2hjif9wVqoh8WMpCPD5VmsBSt4sADBcwo9CtnboNiun2KFoFAtwxFyKxKRER62ZfA3ZSj6tALsUcX1h",
+      "slot": 458683204
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2pwrfFX9YtXnVsXDok76WVkELQsAY8fAJb5HEMfSqJk2AUVXr3BzWyr1b5tdti7QgdPQWMfd1ztKnaaHF7KatSpM",
+      "slot": 458683221
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2eskQXeEBvBhEU5G3GxKQFufRm9yuWBfgECgWgZ1MhVLsS3mBK5VHVA7RXwvseoGnWuvw4rEbKUbwA4hhafYyMCF",
+      "slot": 458683228
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4u3Z8e4JUuhcx36x9Pb2pMtbpA1qiSNYCfUnph6YCRzynXvjGHQVRLzeb4MFXoHiAZyPGSjHDqRbUsgo4t9eknsP",
+      "slot": 458683259
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2WsDiDsTiGWLSNWrvVtxmZqXTZSHYZVWQr1gbFWfn5ptFjWXecqLTXmUxt42pXBHkETaWBiQMKmuy3adPjGBdhUn",
+      "slot": 458683326
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "26xpiCeZGpDBojUMSnEyHaGV3uxaxGtVbWDpaGvtq9rKAgt23RnxnF7etc9TtEt9ypCKRgnWKehmtdde3ML8Zi9W",
+      "slot": 458683356
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3t4mMkcdASnVdjgdXKtvCRXJx99N6caRTm4ZpfQfWp7QLwrB8j3MyHsemCca5ifZfDex7FzPb3dzu2LLNqatf5FH",
+      "slot": 458683357
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4Ry2jpguyWWS58B9CmBCugxANNPRJBrSvEVUhybrKAQF71SpENyT5rRDHhm94fJrnWQYEjpw6YcbvJKaBjSSBWMo",
+      "slot": 458683371
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2WYXj12g1TGv5zxuqXcdmPf4NSjNn5mGowySZthsC44QrxfgJPe1XX59w6zAqZ5hAccNFEgtoQmEhuS7hjytdCAX",
+      "slot": 458683374
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5pFJRRWPdcjrpu3L2s8bkjEssuQtXMjQjmjHUMqZx6z3WrjbVdvE2dFWBaAq36mVMbQdAkuGuE8VSk1i3wTNPMpS",
+      "slot": 458683376
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "VEbxwaamboqY7mtLjxiFq4cnZbz1jbGNniQsFcvTnRyzb27aeJcf4m9kztQuBNoeS3GhpfgY46oE7D5xKUKc7b4",
+      "slot": 458683410
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4TyNp6GzH4w4vis3rG4P3vFBF8ZF1Yq6QDLxwChWovzRxru5d556cBDFpoBFUw1YRYoBaipcu5vo4P6GeZgzc9cH",
+      "slot": 458683411
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2USnv7jQ7s8UnWdmuEyMCMJGcDzUxPyib8H2WmEkTeRnxD1FuSnQpDGhrx1y3LEjtxpZq7MuLoRoMZyHdpSYzb5g",
+      "slot": 458683444
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5e4ekwi6GAiZCdz6tkKacUa2VsDGrV6UGgshyaMVd7N66U2iMEPk2BH5gx1DyRvhMWNGvHYHKzZcurrDR47cgy2a",
+      "slot": 458683477
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5zuAyHqgWwMWPb65YK3BpHtFd4gbh9GYQNMtd4MtwmgCSAiix6M1iSz8c8ACz4BB33eRp3jYKRk2nT5d5n4MyLUT",
+      "slot": 458683595
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5UevakiKXEQg8L99dtMhf9chSRF91zJdYWKTJMNBnGY3dTwAEJTmmoXKzywEpQkM7Nn6Cemi6XTbJRn4Zsz43wfv",
+      "slot": 458683663
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4UZPNXeahCQDscZ32agibDDnED89vKB7vDCQTuNvortpDFp8fhZxELTUSUjNAvEBhBn1nnvoSNTMcWDDWwHYGqge",
+      "slot": 458683734
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4V6myT6UoMNCH6Fb6m39zTnUJqmR2BQSKoa1FCr7PqTBcYZdCEa6aieS8ZPwT5SJazaCtVGVQiHRz6m3GyN5UG93",
+      "slot": 458683858
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5Y5ToHLkFornQaLVu8uFZDwqzgeuRLSUdd2ZjCNbvhBDkYxZ9f3t8Lk431DMW6if8orpsZtnaA6zcfZ8qqnyMk1u",
+      "slot": 458683887
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2wJJmy4XxZPwQiECCDN5VYTCPp5T95HsnHuuKJcRG7RTc5xu5xCHdsKYi1i1r1Ze1jZMHgiweprGapXAALiCyrXD",
+      "slot": 458684102
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "gSNBDJ6XezBYaTTox15c5wRap42tiFXLA9jkAGSPSmB1Du31BoVxu1ZSkyerfFc1yLuqE6XpBh1mwHvqb98urAF",
+      "slot": 458684155
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2GgPG1F6M13SGcHsyKNPBWufofYfDCAEWRWL1MkZECyYDfBUqXZZWEiBwYmSwgQceJRfBmFNy1icXwyjMpfu8CtH",
+      "slot": 458684206
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3XMbXa3jC1SoF3yKzgeSLbZ3nKQEJv8yBFjy4wZqkasfKKHamD9BdyLqzmgXtBKXN17D3dCg4rTSyQqe9TqQs5HW",
+      "slot": 458684215
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2QPSRh1PyC3KjaiXxkiH9TaRivhPp1VLQFKXGf65WfcaL1EkDD29p1Zo6KC4GhAdBaAx87EPUD5B9LQVtKJRrwY",
+      "slot": 458684231
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3dzUrp2ageNvweYdHe5KzyyfoyqMsuhFFNbs751mEv7E6ifRtUdzFMEYSBPqNukaBtYr9d7ujyEhApAY9UWSQoRP",
+      "slot": 458684255
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "62rsNic1oCuxATLWAJG5kHyx8Z7njyPQ4rJV3RMwW7wuYZbPqdAc7paJDp239o9awtM9s5VYLjCDJQcoxaJzvsbS",
+      "slot": 458684341
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4KABBcPAkDZzc24VEp2HFbNJed3xA6CQhLGGiGzY6pkFT2dLh1Eemo4SZs1gAKiLmP861hMfFR11aWyNsVbKsku7",
+      "slot": 458684372
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5NEm8k5TYkLq7L1gNY6N1kHupeFSYSRoFcHaVy7y9jkSWoXkAvHpYdxEDnNijipjL7ZgwPcqH2kF5785B2jYEWwy",
+      "slot": 458684381
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5AWaohLq41j8X4GCeB3jNVejMnaCgNgjZbt1UoULyTKtgof6xKEotVncgTFzLA8oJNfTAcM8MbBDkjijBWnMwGSm",
+      "slot": 458684391
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4yQqhBEkDgyFRWCCoHKRLxX46e7hf1wxnXEiVMhUDSycLERjZSzptW771bvUpR5coULbhZaxscxcetdTyND8mutS",
+      "slot": 458684398
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2bYHmdLJExVaLPZJqGbbgMEA3n5ngB2Zsx8Xf5DHgj2bhW3t7wnw6p2TomK1MYRMTqcCgsMpNQ6umzM4amJn77dZ",
+      "slot": 458684438
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2kucL4X4d7pF1i56r3hZoUoCAhA4yDWv9ZwDYzpPr96PxEQ8EnWLVmh9sRYDUPifT4QpmJUSRuYfd1P7NeMb9XQ1",
+      "slot": 458684458
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4ZB48DJuHLYqpyPdT6p8apfLsDhsLFFiGD2bczjaD7oikXKfGrA6X7wwyQTqtveL9ceh16vYWbQvJ8QtjdoACWuZ",
+      "slot": 458684477
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2jDJAE1mSj7gXRWNBfw8YDvzEBmSDz2ygR76dE2X67bN87noT8Dai34pLW5ft2TbzhdMHbSxYgr7gYb7GLeEo3iT",
+      "slot": 458684547
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "VE5PuwEeJjfPsxSyZTQtBmJYTsgm6528DD2giEMJEMU1xSpb8q4tNzFi2UkdYtWdJbN8KkprEU5hrtxAVrz4skN",
+      "slot": 458684587
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3KMdyzExiUnb3FA5CHN7JHdta9tHiYNyVaTGBbCTfmx7rnGPWkkkdvWj79z2wFZsS1tBfUwrVi2D7dMp8WD16eyR",
+      "slot": 458684603
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2C6f62fFfKv8dqSNAL9JXSbt6wX1my6bj8SYkUiuuEUNb29KHbGgcDDjLG7GrchB7qviamQdD7ppK7TKM8uXeuyd",
+      "slot": 458684603
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2DTbYt1qU2nv9qkGpsyzMxwfatPF3949aPF2R6ZsRPxiZXdxvCk2r2in2yUQYBRVKF7CHqopk32LTxDGgCNT6ecW",
+      "slot": 458684643
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "27Ud4ucAiXrWUgExfjshZgBdEG5cA5qLnKh7YePXMUx9uuzBQokN4VwnLw1rsavzkvt7LN3Lao7LEhj1gCHS7eYD",
+      "slot": 458684699
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2GLPjQo1E3knkgvgFLWD19HaHDEiAxrZcTaSsZPsCyk8fiAaoTqh6Zt9u9GjMiLcRSxxNZLXSwYRY3RuL42YoxB5",
+      "slot": 458684735
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2XmVgoDHjTfcbrXZoDMxamTzopMDJNhTpuEzfW9AJkWzgQy28XxrsCPPFUqhcA3XWrd8AF7ggN8K3kGK1C5cn7Mj",
+      "slot": 458684741
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4LHbpqS8ajoimXM8QcHfNkhrM5iz1WqHLbtQf9G9F4S3nfPNb8JAoDH6wjWLm2FW8pS2qGTttbCwGAQCEjr6TqKp",
+      "slot": 458684753
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5BHsmKDkpoF1bLCJ4sJA3PViJWetYYBe6qWVFtWrKCSPZY7yyyreLV5TcwK6gSC7pwFHqXjyFuqvTdxJEvYJqmmv",
+      "slot": 458684754
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "9BRbc68pJpvNpfHvRPUystyiPRw6EnAyaStz3MZoKqG7UFSD2ZCUpvjorZacCNS9L3ctQmeJyQX93KbkS8cFqSX",
+      "slot": 458684772
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "51ZEK4E8GbjJCkbgFdrzE2jfeeRn4kTnv25fy27WuphfJH9rpvQ2FRw2F2PtGnMqqmcHnjcs4tAt1jANAhtS243K",
+      "slot": 458684779
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "25Uq27XmCs5u8iAJcKo8GJm5fzRbjWBoBwiJZ2qryLNvyL4CT6EmG4J4dJaTEv6AuoFeGxCt67wmf539t33hjHRC",
+      "slot": 458684780
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4b6nFW6QmGjAH8P6GtYrA2wZAwcknekibvxYepFtipKbu99z5Nyu2BMmvZxGzmhk18BEu7E5Hv2EaMqjd56zLyoM",
+      "slot": 458684781
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "54t5xoLdzZVbz1QYoUw4qpMx1nyv5w2qfWimtqRQEo2NTy1nh5fo14JgroCXXRpwh2aKKMXHRVBr8mj86Tr9qLMy",
+      "slot": 458684785
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "f4erL2dWnCg17TSyxthPv7c9qEbue7CqPXXtM5gJzF4SZZMVY1WzqPJY3677yUjCKb8Sx7RbkMGktZHXV7hM3iW",
+      "slot": 458684826
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2zwP2Lyrp7EpHS5L4ZahFrN3uR9kLeSCSy4FjowTyuhiR2Xzs4sCrbopzaS3oEXWoWVUPXrji997yGzq68gD64Zn",
+      "slot": 458684837
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3Hr5M7edFNYBWRegd7vSjSxHgknstwWVFWMM3ZtCKj7Q5K7pddioXohHW8b2nBoezqKkeKfWwVqhwmKWC3U51uGn",
+      "slot": 458684840
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2rZrkUwSLCA6TcyBa3cXy9VdHaAJhuWDVbXHrECNXCW3nX2g8EjoUwmNMqh9TB7hwQ8TYawPtGafwAKMaUfXre2G",
+      "slot": 458684893
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2LYrbZTSziEtfiq1L7PtD6FWU4nh3VdatUeM2rz4a4i5yr1FsgdZ15sUtcc3PohgZSmKqEhnR4gTJVmrNo4v4WP",
+      "slot": 458684918
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5UmZMQmmwBsaDSEAwTUvRvfik5HSU4Xu4Jsp2bqmaBtjeUL3D3oEd1gDQEhCHAxHzH3kfWQdYeYXsrNNdRGg3qAc",
+      "slot": 458684936
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4CpYyS6noT8ESqKXwXHJYFFfe28uY6VWFGmt7Pd4stn1i5daDCJKNx4RZKSfHUr9o4Kgs2bPFSisNutoLkU8Memo",
+      "slot": 458684945
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2fmWQTYy7HiGsBSDMLfR6iyJ78FPag4i34E4ZNmiV5Mk4N1TYwiqRtjsYyo7iY9RDfkLqzrRCUVE19J4mYNUbuHu",
+      "slot": 458684990
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3ooGVe8qu6onLhAfRCpQF922tzDDeqk5xfuXAbuQfcpd3kTGQWhS7vwdjf8FFaL6LS8FEW6c4Dj6NVnDw4w9hsbF",
+      "slot": 458685001
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4meJbKXKtqv2dzvGAhF3kRbtmBjH34dSDZyz5gmoDThZEXKuuwMfMkB2hCG2pYkD64A1EnxfZtNKGnTwGgGEDVDJ",
+      "slot": 458685263
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2UbSQHXq8CYttkqEoVcYhsPphC65ncMpbksZx1KoG8UJyvVKfiJ7URM6UbN8CDDuRo4Ehoj5Znzvy7c6iJy7FGWA",
+      "slot": 458685401
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4RhpNdeXBM9HCdusiwgaV4MFzTEBR9qxQtedU1fxww7MvoQrY1jHkj9fmUFejwFQ6Mgnn65YXXKRYovDJqn4j4FM",
+      "slot": 458685417
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2prQ83dwvb8d6gANAn49hxiqo5S7Un4yEQs4yhPyXQpRfC4d4u9Svtv787TXJCXZkPwt97S4No5cQGaexWmxELai",
+      "slot": 458685471
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3ZTnbgEAi4pTsG9b9chFWQu2vJEeTJuPWrPsNuC27dFnuoYPg1AfxnjJywgmQttfeuxjLa7HNE61u2HCxREfbWxp",
+      "slot": 458685608
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "GUCFj1aUhRfqvq6247mYyuuxWWiahRCyDx1sEsX4kkwFeMeKAeThpPk8JjWRpe12AvNwMbMiv3DRKv6Db2qXPAP",
+      "slot": 458685628
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "ZAvDhdKHB9ZZx7yoA5VTkm6p3i4rncoCHDV2nMmAVnSJkSoRXq1yUpWePX3J6wGNnfgrnMd13nUnA1rcELfeoDE",
+      "slot": 458685686
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2MCdYmkdVpne6V9AqSmJDNRwtRHKDfEVa3n49xNuK9sfAmhpepbSnEtYSngJ2Ra6JAooTrkmUm1KT3AYKUj6A3EJ",
+      "slot": 458685692
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2nS9ZUfztA6RJ7WAecFjapg1F59V5sqSh4M8qA189haGoZCAGBmuQdktLTWPQW8yzqdwcLUumtnx8UbKBLfsx4e5",
+      "slot": 458685728
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "211bGnGwz95KKR8LAhZ2XPeKhJWsA13WXxoZn9ooCJsjTPbhCVr2pEScK8h4fra58SSm8VArWZg4eNvpvneNESi9",
+      "slot": 458685852
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2bf9AdW2WoBJNPmp7Na55kbqUd4vMZghUrEYBriy83QwCkLAaWE2zjeaGCEx5yASrivcNtUBCXzXUbRSQQ5QSTZ7",
+      "slot": 458685970
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5dgo1bWAgfakt41nvXMEihahjAwtXh1eooeDgrxGcdRedQozBRssp74BqRtrdkjyrZEoNgTVwbiTZve17AfkMRkS",
+      "slot": 458686125
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "geJv9mx3NK2CbmX1FJSx2u5zu4HmfVk9gPheJMM8RvmNq4hcqriXvdxAyr9T9M3y51SXXspx7MaQcvoWmfc1a56",
+      "slot": 458686173
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5xEnhWX6xkvG2fYhM1ETcnQSGYxvZkUiuV3nFVeV8ymq6bQDxU2k3kShDQQSLUAm5fSnkiuqcYcxMacdnqyfAqPB",
+      "slot": 458686231
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "xqeK9S1SzN2XWbsse64C7dkfPjvbYMc3MTp4yi9QfSizhfYnxJT3YqSNPm3Qp6m2RYvoD2rA7qbb4Bzadj9d3De",
+      "slot": 458686287
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5zWtFBauECEZ8L8oWUWR1prLByz52WtrYBL8Vs5GzDxk2Fm6CSFCvCeKky7qSP6wo5La1pxAHCoJPvicJSUcuheW",
+      "slot": 458686298
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "43hnZRLFNz1DpXoMgZtNH11eUsjgDQexcKpTon44k6hTSRfJuZhcn5RnUqWBbDv5uqMRJ2p9g19fmCHQYzygfe4C",
+      "slot": 458686364
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4hyViYrfWovHxRiU2H9E8uasDf7sv5YDfY79cdRyrk4FqmN2kYmRAcHb8pXKxX882oGuisuVVruKG9bFbWnKuerR",
+      "slot": 458686472
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "62yHckbEo2dqugEgcp7epPnScaV7z2YobfJSaGhimpziGTdeoSiTh72PD4cvEmJqiPKm1LsvWr2uMyUZpnaizZ8K",
+      "slot": 458686486
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5uMJfWavmkrx7PP13qaXi5ydR8KZYF4kzHETkyhyceQrQQGRzLJNtCdgmJBdySB2LyhEoU5HApfdKyzHVyNTzRuv",
+      "slot": 458686509
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2Yh3hG9KCEyq9LkJrS6RMt7TUc99499zNYzXXbA8nbnvXJhuTdjz5eU4XFkvg9ppYXCyAHeBUQaorpt5oYvgcVi6",
+      "slot": 458686649
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "LxCCUqYAe2LWaxsSBp1J6ytRis1aeLJYmN5p9DiGoMzQSMdm1W7JBdM5MRzVQXsySvobYzrKCYcosW7rw62B5HW",
+      "slot": 458686660
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2qc21SCC42VL4syKeh6mVYP7x7goGt4TCe23EJgdZd6TG53DqJ233GFHKb1FUAqRL2LdfNorLtWQxWbMcDwh7GrW",
+      "slot": 458686672
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2SZBFHbDcupGuRv1HeSK9yYQ4AtV1EthUyNodp78rzYcEPeupmWbqo4NJiP2HnRNGDFcc6wsjyTdK4ZXrLLvcotL",
+      "slot": 458686673
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5DjJSkFaD4tu4FeVNbMArSygX5MpZCxX7ZxFk1UwXwqG6UPeuYhx9q134cKPNBSfGgKdQmiMtag3qRMsLkyZXtXU",
+      "slot": 458686705
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "6EB3zpAHGxP1kQXNZbEwsxv9GXuiNxgLxUrVDHsQRktdNtZiQgpKnAD94h1bfMxtniQc31Mmv99ZC21KnLQ2Y9X",
+      "slot": 458686721
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3Cb1Xikt4UA3cChGHdD2BFRt3YycEXxMrAMjENJcR2YFqWKNREUxd4MCZ6W4Xnz3zdQnkkQ3gvSES4VLtPrdEAg4",
+      "slot": 458686795
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3TMuE82Kz7PyN2Bqfb3wnjvRopsLfsa5Ts88SGofaM5GVXLcDptp4K1g5pp4pgLvkUkCGuNG6KwXh7zjFN9CtUUp",
+      "slot": 458686901
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4GdmFj5TgnMDHa7pbCPri7GGV6KifpTpeYcbzxgxDhMc4dBscTa3QWNVNu7yJ4SvDND87nyq1NdcMujMpzt9hj4G",
+      "slot": 458687043
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4aoeDsxYP8fV8d1iV8qamrCnGBkMPseM5MyhyL1GNYBYXjCg3s1TkoPUJJtW7orcyMCVNouub8ujCF5VBh2HxQ7v",
+      "slot": 458687223
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2C5LBRrGbZfxEgVWpjovDX4aG6ef4W4CxYmrFU1fgCVkheA6wyT4JLeXMrJPhdjANSvKg9niMEkrPGAMqj7S67CT",
+      "slot": 458687227
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4dPWJSCYfgHPpciWZGzqpm1JLW95CogQuzoTjEkRyrkZyQSjcHdrk69EwWPa6LHVDGqwpPEWhvZTS9W6Ccbt7YcW",
+      "slot": 458687232
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3wto1PVEbk3tZXjBFwFDnuXqZ2aU6FEuJhvTfbThCCDZvrZew4j1eZVh757xKmBRWCxSP6CKeh9nnqjnKhHGqFtC",
+      "slot": 458687242
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "AH8vndkuzNLZPQ5xtWLVRsbUgj1pYET4PahSfdrZyfHzFmTc11o1sWLfJcywhcqxxNkvehNo4J1avH9NBW9bDwp",
+      "slot": 458687271
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "qybiVsis35ZfJW6MQqhcoMjC9S1MavuMuwPpkyhtom99XMT58rUAhffzzze7voMjihHRfNEUqk1FrFgTS5Sx4Wa",
+      "slot": 458687313
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5XGgCmkmm5nGwWvMj6xywVeA3w6AgTzRBDrstMb8sStvWwVJNFo7RaRGUgxQB2aqTzoH43WggD4RQP6R4mii1YTK",
+      "slot": 458687321
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "29MogQxK1mjMPUru2u9TTdWobxLbw4Z4AyEaAPep94SYxTwndc8ZZyEZKdxnLStDmwJswfK6i8BiTigjZDS6TxFZ",
+      "slot": 458687339
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2uHCBjphGcTfLTL2So5Y27H5TTSuzG3pADoReVo6AXfQRAfUKafmKDTe6gJr7RGsFWKh6ez1yeT95vXkUNvrTBGy",
+      "slot": 458687347
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5GhKacMCub8oRHyZFbJLkYbWP5ivrnvSLHSHYKzAFY4AuKgKFWm8ayBnZhc4szB9FUZbVZCWDrCaW5TFQw6mnVn1",
+      "slot": 458687353
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "yyVqkhuapkFD6VDstMKyhKETdaZcUMtJDDG1wPEHcgkmRRLHRB8DeeHtJzjtiRCWf9P9MKo4cnUT1TYXunu1jD5",
+      "slot": 458687647
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2Hr5zaK85coWss3aSWuv6o9HfffGZGQEukRiRRPeKJpx5QWBk5cdBUfA1rB4pDpZzhCi4BVKa2c8Qy779R4s9vV4",
+      "slot": 458687655
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "32khgmC4dgYzNpsgHVgJXDz7JL9Z1TW4AdLoQRJXqedAcdw53TYnk2jTLyfFjQNzak9aKqh9Faie4YVvmSWcKFjj",
+      "slot": 458687662
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3Fcvaj89Vce7t6wX59WjRYmeRceL6zPyxZqBUqKXVHcHq7LeTehMzfgyroQxtN8sjhWJDa9nBK94FS1bwRU4ELKt",
+      "slot": 458687668
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3G1C2HSLYzSobUDEtFM6YSCG5F5hK9ZHt9YBgBXgtrrKjMWxxCWPeSwJmcApCFu8vjp4vMv7X3GmtE1LALqcgPFz",
+      "slot": 458687709
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "25T9csox3Vi3xy82Y5Q2FQXMrJXyai2WJzF1AzUYK7zFh1EcG26Qi5FnNyPoCCxpFQouhtCLLbgFy9kAkCAb3sau",
+      "slot": 458687710
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4aJ7E4DoSjM2W3y8WHx1vhhPJUjGgRCPynRWB8ihWdoaN5VgstDFXDHKGiNEzU1kh6F1LeqkdkLEsTS7rcBh3dCj",
+      "slot": 458687726
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3zoCUynGF2yhQUBRy2Efp3NYL3dKLRDWjHjyhaR9BswPb9ctMCia6k9zRxDuschDBvbCMPmWRgnBxVnzQsaenfax",
+      "slot": 458687848
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2WxtzVE9skax67AMAgomPwvuXGuxjkfeouZcGPW6ac7dWshBJ7uhEeR4jyNNgV7GngX9Ki8999Adbv5Ya1rYTYxV",
+      "slot": 458687886
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "51nr5qAByqe5bkv739XjRbviuT9t7dvh3qtiPAUgh4MgfNfMa98WQLMbzgk7MR9noaD6GSEDC7UpWjQpECVFSXh",
+      "slot": 458687925
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3ppLJkeXa9PJ7UpPabAcP4MvwQ63y2m7ksncGVLfNduzpFWnxjGhrASvKFH4A7fBJzhHk2kJHZeBfa5RMHxJYDqp",
+      "slot": 458687933
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2fbQiwb6TEheVDnHox1rVXLMZzrfbyJzW5g7EwEHRPhqEcMNJq2gaBXVtpYsAZuy3AmK1q9B7FM1CH8GxmKgdS4E",
+      "slot": 458687975
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3HqFkWPdUo42Ld2tSPqQd83EDJGcrkXnte7rGDcukbQoWAivyEdVzY5UyP5h75YMFBqh7j7QtrRA9uikMHHz5gwY",
+      "slot": 458688010
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "64JUYmH6vN28u1G6udcyjf6wKQz6Kkzb1X6QJL1GR4NPYqiAD7AJH3XkDvLWoBFEKbqXhYsgVQe8Z8MNHMa9SHk7",
+      "slot": 458688047
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5rmUkF7fZ6QaUfgrAjqNofqVyeeAqgm8rhdcG7jxQug2ArqxZx4Pcyq4SdJ2SbgxrKA5YFydaYqsk2vrBvYEvxMC",
+      "slot": 458688060
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5hKsDGQJSG2rmfhYf14x9Y7tqQTnUCK4Jsuh52BMUgeew3oyJjQ7GU3wQqcfggLy4J3Zz1yG1v36HBQN7D7UpAcH",
+      "slot": 458688074
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "XtQTnbZCy7yX7Zin9sunYXT5a5ncymH3Y85A6H7VUJNfh98YjWEHWGbAaz4AgEoeKK5tGDTZqxrnQtSjpydUhKV",
+      "slot": 458688158
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "NjseSoT1nBkztMHhjLk8bcyCt8PweM3cZhaRpQEaFJxAC1qq39wNQcVtZAsYvk5xSvU98hWN5nCrTkwRw73foQ9",
+      "slot": 458688177
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4DFWyxbcVHAmmdBBy4XxLzazeuSTbcWchHWjhyHpUbKNvkDtDP3JLd4gjtQfgYYx7B6iSS34W2fg7TQpfRXfrriS",
+      "slot": 458688185
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4h9zb8QTz2QWcWMYk84VSBAMmba29KZXHcH3xrbTxJpKrNqNKNm2JvptV4Vso5QMXUwuroYNbJjLpPbX8WqGpuaw",
+      "slot": 458688201
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5UyR33VFbhnWnTMHaaR9FurKCFPdHHyrf4HCXvHrZnKieXuA49N8WuXEvtq861kKZNutYBSGnNqcz3UXTZR9jxQ2",
+      "slot": 458688225
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5bjGuMtr8J7Xs8aFvE6ZDmVsTCLnuNYQnjXuQheYyFXXy5WLbZcPUuLec8xLXeqymzPCP2zKQaeMFN3Ux8i8z1X4",
+      "slot": 458688239
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4p9qmL6nvbMZ4X5yHJkKUbmfn8Qo6Fj7CBSGxWJws2fY8wNsKpfHUrVAcTCTjqaNz5xWRoz3anVBzZGAgwmQy1BK",
+      "slot": 458688270
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3v4FnXfSjWnma1i5hFtBshPEf61vXN1MsQw9mjuYin1U17vW4e6sHpdPTqNPDa1a6mmqhLQJbdDM8FjQesa7YM78",
+      "slot": 458688306
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "523HVzsGg9dLqAtQKEDwKPkG2t7huTy74maCGCZDMYRnnJi8rHR1F54gkubMRhb4aGbFQCfmXUfANMxf85YSjcvV",
+      "slot": 458688316
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "442ydssq8bwv6LtRsm8fQuwShNsdMjgG8gd2g8Cj1dUP6X2Md6onyyW4jwLJaCSyzxBsM1G6vLkAA47Xu8RK3mp5",
+      "slot": 458688322
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3CVBppgh8ZfyCFPzzcemnRtq1ZqQ9o82Hd8qK6e3gG1cVSZ8VhzN9ywweKJ8PQRAC7i6MRP71HjWd7eaKp8mMkm1",
+      "slot": 458688375
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3eZwY52CdwdFP1Lcmzn2MVCpGCq8NQvA7HEH86a2RbxoQFjMLnXZRVmkv2HgZdHcCXY6qtz3ip4xZhDDY7urTk6z",
+      "slot": 458688507
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5o2YEGAtfv6LAuvnfBMRsnaPCQ61yYJthNt1WCVReFnqRNyL9puKAig4rGMPH4aghohT5oXDvMY5e5SpsXnV6nCG",
+      "slot": 458688586
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3kecM5KyC7AwfEZ7c4XAJcbZZaSesQ9Wuv2b3sTKNhcsLZrGKdym7PzpWmnP8djqyJAoHuUnHuD4KeeYbHGxTqZh",
+      "slot": 458688596
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "54RWuAjbVXsyaNoTgGkGAHozpDzQUajEnCwqXq3Zm8pn5HDvbC4GYxPV8EQyyqCbCtDiJRQupcLWfQkexVxbGiNm",
+      "slot": 458688635
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3S6y5xWSQ3dHFEqEvZPi9wYoTtMR8hYpc6nHQfFiwREYSpBj1bquh7wjYYbgDLvPufgUAwXgm5YNCLYbQVUBx7Rj",
+      "slot": 458688667
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "52WLCGZ6EkvNbmamb6KStBsh7c4d5vXvYCRXFhUnEaBdVzxqeZ5QXzfsdCt82cf1q3yqmcNKeeg4iPkAATu2zF3W",
+      "slot": 458688723
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4mYbjJbWQycLPZ4qajuvEC79RumvxmJWntWV8wNockFESAiYoVfbyffTtZrrWW8oqb4XNqCmeSdtutsKm7huWigj",
+      "slot": 458688770
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "54t3FPmsQGzarrqnEQq338Aa5FeTwaQ2AFoNgzaQnAnUh4TDBFFieJYQ9PAu7ebcc14R1oJoWTo6Z3DujCQL5JHG",
+      "slot": 458688790
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "ZdzKAQxzKgWgkUkXC8Sh58kzrQMB4vDaRtKD6cAVrrpZGrdG5JT7q7yf9PaAKkzSHY7tRfQiL93LtcNKLVBdTbs",
+      "slot": 458688840
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "TVqajZauTEVTy2WLrRJypfLQsbcJks87mWvwFT9g2oceuZeM4ExYXv5aFWQCEKXxdHbvFymwoQ9C1eVqWikAnWn",
+      "slot": 458688871
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5Vnhg9PPvhkoWm8KUCrDHv7vwuLffWoefmSWEXkn3MhvxKft2dRw51vsCAALdfbt3xduLQuJQrNvwficRE55E5GB",
+      "slot": 458688877
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "51FQE4gD4f7V9Jc2HVX7qCy2imdEFWgDWaEZJe65ZG8nSToEbSoU55wtkwB6eGdVzLUy65em4KZGrR3c3Broh3Bx",
+      "slot": 458688892
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "42gKpSk9ZGKtPqLZTGRdMULAo9phJZ1QFQiJ6jWE9JJ7Jo3Lzy1Bdmtnp9pSG9TBvpWDjgaQzDgpm5TVMPgQKiPe",
+      "slot": 458688918
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5oLhYAnfSUzV3eqSNT45D1URVVJEsP44ZtByGwSLSbqL2hraJ7P7mdTJjiSFMEHe9PHz5Mk6opPkPfbEUkSvDK2u",
+      "slot": 458688955
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "kN1XmgY1EoamvW7bdA7bt7wUjFBTbSMTK7qdP94VCQmVbMPkgBnS82NwWPWY6epbsx8X2nWKrkijq5i1xqEC6A4",
+      "slot": 458688959
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "e2L5PXCwJJfvmN71QV1vvT3BwUfpB3QnQvF5Pe96JgUj9zCY93SC2gUVjDBaxKLZVSANTxwc7L2X2wurSrZbNQq",
+      "slot": 458688967
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4bXQQKErjFAFB4miG5XNmaSuNJSpa1kPCjfvrjSZrLCrsDMPSqrBMByjUNbavTYHwrix1a3RJgqpzBkNhxtimaL5",
+      "slot": 458688975
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "W3TGf9a5PjWx247Tt8JksrXYFWNtiPEKVCSB8jNTVtu2vKq3oJp6hB3Qd42JchTxbdGRgomNhHemXozzCBKpBta",
+      "slot": 458689043
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5dsG6X5ohnKhgoUDcaMjsH5L6WdMDGnSCi9svRaAA2nZFC8uWjzTo6vc56YeSc2YCxMLQTHF1nDxYWQ6Enkdf7wg",
+      "slot": 458689048
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2DK3bx75Zh6Bfi66KXEaH4jETPbt1EwhVRYQYc5yHoQKPWbycYK3vdMrVN97nP8Xgn6xTCMsJ4CvqJ338gcopztY",
+      "slot": 458689063
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "xYqaXvHcaDDQ1akSZxBnTW9sq14wzQe4Bh6cN2n5tRcz2179D2vRxcKd726ssF3VFNTjytjW5ZTsdkv37mD7Hqu",
+      "slot": 458689300
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "WB2wonheUR6446xgYGUdsEjpRcifbCB7kPFXXHCyVmGN5vrDpj1uJmVeKdCFJmpydNZDUELVRn9p2yJrJFbuvSb",
+      "slot": 458689381
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "8ZUWbeFHxRUsHr2Y34ZQQxWY6SnPN6k5Zs3488gVWbTVe7MvvNF1hpZDKLiCgkxBfWWaetVxr3QWJT9gMQP9m6y",
+      "slot": 458689419
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4Si7Cmtn3ZqsdRqGNLANikqQULCCM4Yi1djLRTrGkj8NxdnFGBAuzNXgC6a99ttdDBQzXyuC9XroJwPfQ3z5Zrhn",
+      "slot": 458689453
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "PPQQBBjCTUn6XkNkjGqdwJ1oWa5pRutQDyA4nFT9JV8ij7mMrqfT5yWJPwhMTzfE5H32ZvVLhxYunyuhiRpTLvS",
+      "slot": 458689461
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3sJ4yR4dLGS1K5tFYaWmNinCMAFbuNYxDyBLMRMgEZcHvpSqMxRnZwmQRnCUctSiGEZ8bLbci1AfLt4NYArQQP7s",
+      "slot": 458689546
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "55eRcUPPvjw3w85DBVWBy8SHbxVnHhbhUqWMtM7vsomQshXcj86GJRUGkLPNLZqjCuiwP7qMv354s7wigE1UfPV",
+      "slot": 458689547
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5xoaZMNUb1nEHHRGXRjpgPnVBAUrzzMoPbu6DWYru7h5qXNqNmgcdhXrMAzbh6gBs66p9MCUW93V1EJus5mU8zN2",
+      "slot": 458689574
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5Mb9BHrmHKeU1gbqZ18gCrDd5jG9KaD73T8Ghz8taKncWHj7MW29Qv9NJYoU5nvGv3xwYcm1PEzkBNqS6zzHRtWe",
+      "slot": 458689581
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "F5RQH1JoiBrKWv4oRw5DMev4mYPc1FrLutJgzEQwjkUuybKGUvjUghqyphZDHKgEdkuu6FEVWc9GwkyQDSiX4vs",
+      "slot": 458689599
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2XFYyLwoptD47tKqCykrVJVMu6Nw5b3C39hpT18hKmXqurhsCRGngN36wrS1GrvdBETDMafgr4KoY9nPs7LHWcUS",
+      "slot": 458689602
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5qMhnqoHrGJB5iKN1BYmcJrSvzWzc98eHqiqg3FRNpPwN4MtPHXLLhqyXXU2zaKEdd7ETDW1fmbWNf1JZLMQWc4z",
+      "slot": 458689612
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3PKLA5oVHHkrcH3cJuESSnaKE1N8FfXkdw49oySru9CyrxQZFjHY4wCr1uxhYaSYnbykNoHyywg3R53EyfSfSdof",
+      "slot": 458689619
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2H1qUFcnSrkm1Z297hKByLunTLhoLXbPcqjx4V5J7Fh9rTmiSZS1JBic1bZxpPPcRSAw26VScou4jFodWVKrPY7K",
+      "slot": 458689652
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2i9DQ7XKnizztWSVTcnmYCGTKSQQA9cP2gYzz7Mb6VyTMsbPEREVzyirgULmhv6XYVBF9SqU1Pw3M8VEgWEdGgvS",
+      "slot": 458689677
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5hPcV4VjZJuyFSxkbGnG7ZQfUvnqshkgkjPxrvCK17E9Q8dFbALKH91uKmJJE3Kzi2MV3pgyaFLSXbmr1Fk5iUKa",
+      "slot": 458689699
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4stNAtQWhkHeHMe2r6geLtVhDCWPpG6Bpgjzax5E9bYbwbHnx8UNSnwmFTbnb5ZaBSWMbpe83HnucLooVA868Nqe",
+      "slot": 458689714
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2GSVqWq76LP6UVGbr5kggQPPLfjKHNbKHJURqZBHvxp5Xw1eoEkD2eP9V2TQz4mqywkWeZSvpkAmMGeSui8aytQp",
+      "slot": 458689723
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "Szd8jyTJiowMND64EDgfvuRLcasg87w5rzn9zvie3EeGfFu2nDpMpnFS1PohkP8FmwnyaWCwJQkNKbBrjyNWsF3",
+      "slot": 458689729
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "t5UhcTxvJNfXyY5naoyJfHBgwqJLuC5YiPXFrxhUeLBp9sXS8MP4iZA3rwf35fETgdXMy9xpBikqGWpDZ9iUQzK",
+      "slot": 458689746
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4e6pbMxWWUn3hR28QZHgdvj6MFwe9LHt28QvH8ZA3TV847xVA6wpzyx7CoRLvwBsam7LKDR3PxjWESVKtJXQSegX",
+      "slot": 458689792
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "NkmYzHTCrzJUfU4DxvkidxKrYnLwjvKPRyqkc5anf9F6iUYiihWUd6ckDcwYCppu7RWunzJhQp29bNz4oqHXxtH",
+      "slot": 458689922
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "aDNGUnSnsEELPwP1VcoUkQijYNeEkiXm257AzPQWXPBeQDi3SsA1euEuSMXF2tWYDLABcrQkCDHuTwVDuzcpc5G",
+      "slot": 458689933
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5WEsM9VDraJ3PCoqMJS1jnxDkGgWwvm6ncEsbvnqFRgtxduNttavMEHsdqHKP2XEu8iyBQVLvr7bGLYgnwhF6U7",
+      "slot": 458689950
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5jpZXy3Phtfre7ALhWaJCBx8Xe3qj2K33QtTNoZLJQ8NGnHNxFnQ4PsM6fGLaWf4fonVeNAjLsJHDPzeoYF1EDbQ",
+      "slot": 458690018
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3QasdoV933wtxxMHyGgRz4ie1H7TJxZCz31vLQc72mRJ82akyfurLWk8pLNqum6AWZLmFy4UfVfJHo8P4FtaaHjr",
+      "slot": 458690083
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5YWsT62fBWdH8bwNqrT83D6bXAzY1AgBXtdXm63XAdpVhCeza5KcJC6rncQTxj9eEHS4eMuzK3VeeqXWsDAF77bB",
+      "slot": 458690119
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5yL7KBcptv7CfsY2NFg7fW6tZvoEdEoQYSrarBWQSptJs34zkjtQEWGPXWn5icNWjNT4v8rrFrdsfxhZGNkYyJrv",
+      "slot": 458690143
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4chBZNqwbDh8kSw7754g14dQQSnbRuRJcrPYCMpKEJnJ6PDPxtuzTtbroakFAao63Ga3xjYWhY6GWgKnAqLN7z8",
+      "slot": 458690201
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5nXBTaKWJRss62N16TGTND19fPCcJ8btCZ3bjRrZcU3mjKJEDG6v3B2gUU9MKwUJJrdEidzT8GPTJCyqHEgpP6Ky",
+      "slot": 458690203
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "62WDr3DQfdgGz3fJQpeKtPNenfpdfdPuCdmZatYLEA6jJ5vM4rLj7RMybYq2gD2Kb7Ym6xEYy3R3vDy9DXoQJf2U",
+      "slot": 458690219
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2Sehd7jdLv3YDxsRQPGsgppAQ8N3VMM1iMuHdUnCMASMabkVaNg4RJCdnji52eRb2BWH7BtCmfmU8vvJjZQfsdnv",
+      "slot": 458690239
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4ShsBHc4xGaeV72nu7WuYAZNfKnEZreUmAxCLtqCUybZNKDmTsNdX8S6zBaBFrCMiUutw8Z2yfTikN5MECAAS9ek",
+      "slot": 458690249
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2dc5tSEKMXTm82vmbcvzi46ZPe2rP1FUzL1938dhkvVhGjPr2qefwpeFTQx35udoKhvWgB8zSHvCYSqaZ1cHX3dE",
+      "slot": 458690273
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3RQRCiAWYfMjBC218ztvzFzWZQipnwp2aNg1YF4ZiWT8itX5fY3BYDtrQXyTTBKtF7qv7XMeciGBhwLC2uTBF2iE",
+      "slot": 458690338
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "FGkqkBGe1wvBSgXpBT433JAidysg77SgwZN1WBwq3J6CnXweMQrA6GjxkUKTSRJK1pehLFY9JGNECJMBZVKtyGm",
+      "slot": 458690377
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3pUMXYF4Abcg575TsoAjhVzy3QZXxu3atAWBuNYVrZewvKurBfruKNnQHYLFRsPKddP1w9fRuY8D18Lc1dDT6RWt",
+      "slot": 458690377
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "iKJ7rQyL3ny1nAz8FRKvJToCPRa3kpeyw2mLgjMM3qMgdRwiJzJK6DwoZAhrL9LevknsFdDRusViuMsmxPYo49j",
+      "slot": 458690385
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2tQtK8dNQu8YGJpFtKLWFRPdSjRH3QYWqBimyYKW1QPKJUMChmYihYwwpQs5DcUzSVbjBnFQDhsiUXvgA71avh9z",
+      "slot": 458690406
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "Kmy3U67XKskXtwUDzPJAxjn4AcEC5tZeVgfomMdFs3yAqbyBiUeuZ1aXMgX3jdAu3uak8Ga3QW9s3iTQUmw1icu",
+      "slot": 458690418
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4bJBZZQY1fhVhswXNv4K2bqYvy7YrhjFSZmijoM62FSEME4bvoWEMQuWnf3FnBpxCEFsoEhssxA6ASqYGUhgcwnT",
+      "slot": 458690534
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2sFp3b1W4MV128qEvHjpscYvyyVLkEUCer9Nhnm1aXVNqLWRq2Ta15vHVGsreuEtLcaejddnfvb3Ek3LdchhRa7B",
+      "slot": 458690589
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "235oxqA7sYTHe7XaF6Zq37eGV47oRaRTPvnPhnWsb9ppocxYMMoU7j8faqkugtJ3nEFTRuRSsQ3oq4cYCiTWb7gx",
+      "slot": 458690611
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "DkxNf99NTGpmsmPrnHazMBTjeB42gwTwhUC9sYYGfZDZdoNwUo2rVJwZ5Zrd7uhtdh7NUQnogJ1ZNf9yxQC2JWM",
+      "slot": 458690647
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3btAsAtgGViSRZk4yrD4YNmWHWmAYV8RTAaEfgLtxqEPoCAwp5oyVo5XqpSWmPJATj6mucCcH1J3W1ZPnojy5eVa",
+      "slot": 458690650
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2uUj72y4uLPE2o2uofzVvJqqFVQxiHTq5KB5kkGFhmCCh8tHaKe3xUcJuPt9eRyrJwN58LJ4ry3W16EzZQzKpzcx",
+      "slot": 458690708
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "36PgAUNy7Jpx8cfztb4uULA1RUHLXfGd4ci9NnKwjrfd1n946QuvbbyQsDrSYUV6CV6WXDTARhV4WueYG4GUq2AH",
+      "slot": 458690718
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4GoaKrMEK1XeSbx86Er7rFW8BqcVLNCa9ZuUzABWaENzWht2uSWJYjrkt58TG3d8Lm3FXPn5HpfasVDNGsMpwCML",
+      "slot": 458690729
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4c3JztHGZkV1mkjgwzdmTcd8T2ocWRCvW5mHotAAZxNau4hj2uQwEWppudMr7VLYDezQWFqyEUiYgen3qL71fvr7",
+      "slot": 458690742
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4Qx8ULnYJwiuPkBeLmhj9McKoU6AT1f8d7Xx2dkuSxsn81gA3LUzqPX7pNu4LVGbwj61EDzYDySfnw5ksc6bsZfY",
+      "slot": 458690770
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "BgdToQBL1Cq4aXWKJLrGSLjdrjV8Uy88GoKDaNhcNrEW2QXQMrtuqM7xvyUQfgqAQBbdR9xTg5YoGeEzfAT9pz4",
+      "slot": 458690780
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2sfggoX17mKr29NyeAzZbSJuv8JknAdq55sD8dFY4bjg5BYnp7NRmkywgK4wXxX6GypDLDuw785iqeWqiQWbL9VR",
+      "slot": 458690782
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2KsWNNy7G9a87mvn1t3jeGj8kCTnCUon9RBDoSWp6qxdcrHRWy58L8sC9QaAzCGK12zsvThXrURRVbYWu3oGr1rF",
+      "slot": 458690792
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "ebfLb7yXsCj3bbXP8zQV26RHkUuVZHgxjN9XZBkbos3s5cdJA8JmcJwAJ8o5bQtfboLxp22AdcVcraJLnmvZXFT",
+      "slot": 458690796
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "52iBCGRLQqgmumRryjA94oHH6zWFFhVEV2tQ9oCVipHDxNUALJNY7pgT3W3dFycutN6GeiWdUSrTEMChwGnVvFd6",
+      "slot": 458690813
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5bDydPvdGX8jvaiRmwQ662DX6kAWn2LXTcpNgWKMp38xgR3ZwJhgeRSP8rTYTuJDEcvcENRQKEGZYyxtvSysVEkz",
+      "slot": 458690914
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2EPkKyBgxZpzJtEF3tVvf3BPjPCWeocjz5Zbc1ZTthPYGAGr8JZePMSHVitSAsShGiwAF4AmoHxWjvmxqEess4rp",
+      "slot": 458690923
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5NWazkqrWVoRWsW1bevQzskdZxV55Gk9Z1aPhWB4GZ38jefTHGEzbLEs2vQdwpbKopN6gSKPWE2vsW3ooKvGCV4b",
+      "slot": 458691001
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "47CQNoeUZjtDzZSVZLPPbMuxogX3fFgDqd4sxNKWFrRT1Tm8Q7v8dRoXtcZQtjTqbhK3h2WWKS5CsLarZWBiyzhk",
+      "slot": 458691013
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "23h8LR4qHkb6npvCfWbJVggwHkz7BRhXm2CkD8nBbWdTCpvT3ESbPjdJ432ggsz6DRbsPBnjT5cwcL1b5m4suaQH",
+      "slot": 458691015
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "wwGCVMrmWKNUbpoWFCQNaNQXMkEiNPZtumLEtrKuMqFcMstfJh5h4LrSDfnDJV8QLHsNDQNwyg4SGRVxvpw3fSp",
+      "slot": 458691099
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2gYMMBHzvBAzwQVDrJ15vxv32eCFdBqD4GgdNWyXTJrRVeXTbBwNQm2FyBTDM1VqdZkQRigNTfsewCxhwNgaopoX",
+      "slot": 458691119
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "KtDALAjrMwGDahMsMetgoCcy864iw6F4ejd3zH6jFEDCeZmgTSQb3vJbTfbHEjkpmBChR81oeh643NkXbFVn1ur",
+      "slot": 458691129
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2P61sxiA1TRjad7WRVUqij8AUZrhwnumRKDrmKmXNqrPLhAhVXn2J8NKvjSfQUEL9RgU1KZU1T78tcGTgYmidFqz",
+      "slot": 458691141
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "37XouyyW5hzWXwZZPV5uQVE2XYwyPUbP3hcxvowV8Xu7CDBa3a67dSE5qBVBVzQTsKNhsfbCdXcmZnJ8bLFbpCGW",
+      "slot": 458691274
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3oysKjDxD1cCY5Jie5jbKi8jdNQsHAbeGSLwRUtave8YVrgaUBdQh2c4EVDLn5zPQYbj7Yk7eLA5WbFbqeg84bfS",
+      "slot": 458691275
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "52dHBR8b1psZBC9G1xfQtXcvUeRWXUcxfV6KX3uLkZQtEuzCtMccqXn6P4QVNuMiYJd7Gw9J7rNSvLpGLgB7MBom",
+      "slot": 458691313
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "6vR6RLpXnxDfQJTYeBRZwadnCJCSGVvBJt9W4vdToP4eTbsgLK4wyG4f4Gg61y43qMya2YUtzV7edfsiKFmqqAx",
+      "slot": 458691340
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4E4yGFDyyXCcvECpTiCwK8G3L3WuKPGGZPZHmFnsArFbxYMvJKoHRTv38FwAra2Kr3z9HNuUNJ7yvFVUL3zEANKj",
+      "slot": 458691351
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3dFXFkVYZ7fQ1Gm2veJnD7v9XTWmH4BRtKkr2ydo85TN38qYjAWtxWZYa3BeeukHjkLHYN6iZsRSCqeZYkPqtUro",
+      "slot": 458691365
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2cQah23aT2fFCLfs5BCrrGtoqsY6EfuZs36Uvzk69jZEKLzmt5Ry6Gk8r1FrWjFitm8JW3hJMyNLgfzsyYcrABaN",
+      "slot": 458691372
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3RhD9YSUYYh5FyskxLiXQCvmr3A6rEonH22TFXwgPyYTdy6GH4ohmJsZp3SiCeTZzBG7k2gcxPAsBvKqnXuSuJ33",
+      "slot": 458691414
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4d17NMwwgnQJaiQj5KERTR9cExSvAoSEz7VGLz35uhALAWXK1b2v8q8pwGrt9F4KBKtGXkBqyRpoPiqqkhRMx6cB",
+      "slot": 458691473
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4kQ2fmRJj5rteTVEjiMWUxqTwRrGrpZ9zTCVi5H1MWvbeKvZyz259EbW97Ufs99GmbQNeX1HYR5UD7FHVV4q8aBm",
+      "slot": 458691478
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "8SxecgByvHmpHGR91mvgPpwCEH6FTGg3AZJXnfQ1gHjsKc3Ma4wdAdwY4R4eDMnJqsJAJCVHJCDJy5Em68pfdBo",
+      "slot": 458691504
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2Nt4CqPgVeDQxEekCtJHWxS9tHBwp8JQkpGCTeGwY3H2ACR8FkT8S2fHND7u1wXcN7Uy8tzsJCgSigG68DeUXT2Y",
+      "slot": 458691524
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3yyfRhCU4da5MDKWeENVvngWTCQF6wU48DoWybBSCewoYBLmGPGEmgDcDYSgkN2bt5LSBepbZ9n9g8sKDUuMxMmg",
+      "slot": 458691530
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5U2jQxFDh1efCoXLDx1DNKKxJQ321pqEWKvN6GSzTBjzgqCM791XKPVc3zmSWt1hXRnmo4AcQd1tExw56YDmAmqM",
+      "slot": 458691547
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4o6LhzjZBZXdMkN34A4ueDCu9mGG9dr3QUeQsrT51HB31Poy79YzwDUTLD1Dkdyu7qoLu1WsJm6uBtmezSGCerxK",
+      "slot": 458691579
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3SoBzveDWuMmiinkijDZZYkJRJmZpPX6RpesL3tZcZdPRkU32zxxUiLN8Jn6v74pfpX2qDWq9kNcZ4Fj1WpayBhY",
+      "slot": 458691613
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2VPdJJxQ2KFLAp6tMupKapQZd58YQ88T6KMe6AuKyNCwtuB2ptdi5qQLYzVeMyfevaBuX5EDKYNLcb7XN1BDDcWb",
+      "slot": 458691625
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4VCFuPZEZUCt9b1b4JACZmzpomLKHngaKsTYogUVz3W4QjhCKhpMWFyYJFwe1gBpWNpYpYsbQwFh8jr3wtD3eep5",
+      "slot": 458691778
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4ToS98e7xgGCFR7km2TgQD1Rz1PhFx7CFRnykW71G2QjTVDZVcBtgoDxBGzjaBjDVxsoRGVnbNNf4ZPxeupfuCqx",
+      "slot": 458691798
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3WJqJGkYRQN3pMkqXNMQPVW3F8Jy7WJQDhKcpHdE3kZyF1nqHvDkyuANXsoHFTwNKJQXyGHeZZRBHWHv5i1NSLyr",
+      "slot": 458691826
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5ayp2n4niEJHSE8u5hwsPKLjxu9e8tQxMfMhd8zhVVnAhkkGq883mdajAofCdvTYHXzGxgFzpfJnShAqah49DHJn",
+      "slot": 458691827
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2VTNTxKUGXuVBshMGk3VLRgYVYnBqiMJBZfrLTYYzc1fVMyHNPav9zwZXZ2pJT7hF5efboWqv6ce63pjjP2Nq2TC",
+      "slot": 458691887
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3DdYtcnAt13V4oBuCUA5ox3Epf9kxfsSA4p9y5pyvZxuwGfcwd6dswMA3SR6BAqS2w4RxibKCc3fS9uEZY49rPAe",
+      "slot": 458691923
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "J1gN6n2PBuLuj2FheyWmH2gdk8hLRqf8n8qcdiUfEgEoqMptwnyqXRARDqXenuqfU4AHy8uiGA4KvxMN8ZqHw41",
+      "slot": 458691975
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "aTnMvFwFmPHwB14L3SMkpzK3jEeWPEwgrKggB4VqwUzUsFmodjJd6PRTwG3n1sxPKULomPRN1YEcLMxs8fTNn6e",
+      "slot": 458692016
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3uTtZJamdY4h48A8AT4ea1emeS1qtshptSqBGc4Kt33ynCz6bp1Q2PU8V6Vbd7P8S7yHjKMpbmAf2LkvwgkeQxSN",
+      "slot": 458692047
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "61Xm3p6HabNzMN8usC1YrzBNripos7qyESA84PfBpAvTmiYjnRrNjriFMrDas8Yhku9B7gK5eeLHudYMF5D9i2sd",
+      "slot": 458692273
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3xQaPUfmYuH73aRGN4GDVsf1UvKsbKQ6fYshH3AjpvUgmBTBiEVaHEAqtcEwD3PNeScp8UpJnDWwAB1HF3QUD2GG",
+      "slot": 458692452
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "21ownEd6GF9jWZaBcGeVaDceywdYg62m2iQ5P7Mgcc8kKR4HNZgudjoAbqFJ8W2iA5Z93hPH4q7ikoKUKN1Dm4ff",
+      "slot": 458692461
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5XvFBBwaCttSUrTRewRPcanthQHa6YKvb7rAoL15X7sZooe6pwV7SB9kR7V5VE3vy5ZZjqs4tjN4bmikV8XrnL8r",
+      "slot": 458692507
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4h2vMREvDYxkqkWCXd2ZvS54npSTxfDGLjLn8YkCXNmo9fKqfzTRAe7vadCzwyHFoVCWFSJXC8NELz9FXyB1zrTH",
+      "slot": 458692534
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "442BYgcCkSNkdc2877zwqUsUpJrBDeF2JWfGFnvMNPXNmsHjMuWj3GRmgXvrcztZWAHdt4tm6vodooaxb2AtUXRP",
+      "slot": 458692582
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3c1wVXePpFSyc6yVTUapUtcpPsPMNvrVU2z7tNBnx4CpbY8Z48jHuqvaN7CYmxKCS3bjLdo64hWjN6vEXwtHHJWz",
+      "slot": 458692617
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5WfVMYfYNUw5K3s4Cu87TK1jwp7FczWUKAc7AbJsvJtMrmrZr6NfCBGDTeCpKnP7UTfxyoJPcjd7zMRkv6rWfV5L",
+      "slot": 458692629
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3nvH1Av5u95h7dofoCQ1Er2FFGiqSfPfSkcRnF5fXakYQSC9atWKN3NpvvFhMhyXCM1rqgFbR8cduRwhV8hHQeLu",
+      "slot": 458692645
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "AG84s5nV4KrgJ35XEVvtSAEvHygiiH15FVXvFtuvhA9BHsoQRukxefEaaeiMVDEh7NUeLVbvbss3e2WJ7ew8zsK",
+      "slot": 458692648
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2nf8aefaSYQM13teSP3MmjQXTcFYsQvrDVncYqqrvFaS7pn3918C9C9KMuLYN1Bxjm4rPdKyvKU6rGRG681YNsxN",
+      "slot": 458693141
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2ixbtNLhQQJmoYXVxHyt2UJ7x3EcSnZUihzdb7msYAQeYv7JVKvbqzor4ihQ8FSUAt1jMktY5x1QhLJBbaZnrsFW",
+      "slot": 458693225
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "W4xUPxRKxCYdF5LtZgFPtUfBR3FToTpWBwha34QmR4p94emChmtFHnTyvo8qi13ku8RP7ETz8iSWAnECf2HcKLa",
+      "slot": 458693287
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "43S8LfKAsf25hiT6RzQZ54C1RhFGHpTuFFpxBPPaJnWiSDGhszhb8tsUB8MTF9hYoEnHusXK6rMeZ4QHZwWceoDz",
+      "slot": 458693324
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "52LBXLSGsFwK8PFRYr2mXP41ovGjddY5NPLiTqdtxWwsizfMhBvfyJwh2osg7XevrU6vyRpFPYym3dM8LPjyjUJM",
+      "slot": 458693340
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "veBJSAM69i5VywnsifPmfFUgvtWyFZtFAZFgRtvSKaXp1sTv2L3ixkdBaF2uFAN9g5coShzwNG4R6pEJF5BoigP",
+      "slot": 458693420
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4RfLpbS6LPCaVvgHfzo4YZnYEc5Pq48CwxeaTsB8JjsDFqUNjHRzSGwBaVRocJAmK1viU6Xmf793kAHzFBCWb8M2",
+      "slot": 458693511
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "29BNiyc71vXb4faszfSUugjT4CVUjo1qiStt95F25LP4vtMQq6JPCfhQJBDh45YbJoeosPPJDRdvCpitHdRfFpSv",
+      "slot": 458693631
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5jXrKpYqCUhwiagWCRxG6bBEzrythZVuSbyLZoeyL437UuD1jw2quMDLbfSHzY5vvfSaq6SPJVFourtqxbny8T3p",
+      "slot": 458693641
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2uoxmmUNXyfoDh4YB5fK2KQz4PtB1fCYqFDw11UznNs3eSQXUtV5UYKqg4bsQMpreZwjz8qEgqsBCSMz3JrM7ujY",
+      "slot": 458693713
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3cRpHphSsTfXAwm31PL69d6qtH7HKHnTqQdaobYHoBEGEcdArgymmGFdjUjbQELi4mE5QY8iEc6yCmcxToqbe4Kd",
+      "slot": 458693788
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5zfsRGqSYgMXXPAohad6C2edxFQL2HReiyeDnSm5CuXwSWkMywEdAS6GHt4GTxamuXLRjxPQUouBbES6pAC49eff",
+      "slot": 458693805
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "42o7HXZAwEsPW5kFNJBJSYENF8gySQ9PWewShJr2MkPz9YwM4uEfZsvz7A4GeW2rEWnz2kzMXTrFPtE7hQVfJEz1",
+      "slot": 458693813
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4WfNrVuVaMPznDfZVSimCknBPCfrcjURhvQwCDKaNNnkPQok8ndYPMaF57xYyDGcXPWGQyQYHyK9VrGKNiWy3SuF",
+      "slot": 458693886
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2oPxoXzve7b3rQwzNXTBqudiPgjAbd28d81rEQPaQtM7rUjA6M9JqKCn2JJ99SFxHrBw5nsdACmqiFwBAtSUn7Gx",
+      "slot": 458693992
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3ZJaASDBrx8dGkF17Kr73YhnagDjdMkd5CviZrbyEsNp48riqGyEiyeuBJAHNxBGcZn6dJW7Wy5iMXujvZLw2opA",
+      "slot": 458693998
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "wD3NQRQ6UyttV43gVbdUrcFyyEdLNssVrMPbMmUGUxTGsSg7s3SRujt8YQEw1eV46YpdKsrHsnoh3PPXVZCFez9",
+      "slot": 458694018
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3wrW6Sb6Kcx1bYoivwfKm7VHmzChGAqAP9kEfLdLuNBVMNyNxB9XPbbhzCuQYYPy3SyRJcK8SyrjzWkSAeeWgG1f",
+      "slot": 458694298
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3Zdyw417w73U3uxe7a9VABnEhyZryGVgzgQbWyGP3WoPUkz6P2dZ1BxF8kvcojXr53kjSwdkAz6WGMuTdmZsPvEP",
+      "slot": 458694355
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "65Ut84qFoikNuY4BTBQG4UVADGAdiLeSAHjWi76ocNv1vACSKZT8cALwNCDtYbLNoiS2LnQ8JZkZJSo751y7bKSc",
+      "slot": 458694453
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3NyrjZeun881iB1uSrjUvAqqWGbV3ZinqfMvctPaNAP7Ev4Lyxbd89tnpK9ojktD4BRHJo65HJFjinmwwgGDad9Y",
+      "slot": 458694475
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5oCMVmTHFKH23NWHupxjgZJKsWRVYcfRtc5DcEaX1zw41Tb2XtK5E8NtWCBWnW4Y2wUxaz4hhKa6fbSJb8PVeEF8",
+      "slot": 458694495
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4ojcvFzYkxzw9mtopyT6M55wPn5yXGzdmcDttPNVtZqweiDiG5SNYDkHGaf5LjfP6TxBxNy7FCUNquwGvdsXTvyx",
+      "slot": 458694659
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5CbAkbzENZsReTXgP3XT8Cqr8ataMfQNyJuGLneSSMBY5KXjYDeCNFGvNGDrLFVSkU1AzK15r79o1WFEGh8mjt3u",
+      "slot": 458694856
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5D15aQHDYdeNh8CyzTAs1xYQX5vW6uq38Ndw6ua6TTiL3HM96YwtykUTHFyWQHQcj1dj9mu2xK8gNP449VsVgWNY",
+      "slot": 458694859
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3MKGXBxBa6EqGAgkTVWhHiBFnWwHvZwihfXNBYfRZVXZ2FeE3jPZodV7SUycLC7JjotB1iV66nX3A4yBXmqbxKyL",
+      "slot": 458694899
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "orPkLgAMBeSfWiJeLaiCsNLquiDUzQQwHpjXhAtombCXpCKYfzXNsb1kwFy8FYwX9siviffY3TgSbwstAdie9nc",
+      "slot": 458695064
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "46UXispbqaWbdEvhsxf22SWJSm5AmVTd46Ew2eRCR7ukoh7kEaw3ck7AXnv8oJmB8ydyVCxzeSjeG7bfeTiqimu8",
+      "slot": 458695337
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4tmdtCoZLM6WmAqHEh5WRbkXAGwHBHRcfHhcV5pqcrYMTaqkvxqtFa3ARrFbzBk7zrdQbbeGnVHbhb7VpMqtMM7D",
+      "slot": 458695397
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "26xt6anFARYTR1mSG4YtMQvSniSdg1tcYdGpdv6m7sN1aZMykccUntnyF7AVVDn1bXvXHGfPkFtE9etS8TFbyb3r",
+      "slot": 458695419
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5578XA5bzoZWvayMhtMZuQNPPU9QNkK5RArHVaPfRHbSJQwGgECa9NPVS8YnkZAawgw44hr5RUccLsvSsFLLo3TW",
+      "slot": 458695438
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5Lveg2jw3fXpyTMK66qqLJYcaWhU2VxBB7fqFF8bQHWtbSE6GTp44LYkNyacLAVMsEzy9mQyfZoaojgkJCphNbNJ",
+      "slot": 458695440
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4UAtGzQHUzWr96enU7JBWuL58HLFqKp88tFeeGzHtcqGcPsGgW1qJQx9w51SLA3nCq8CuWkDjkDbPn2sGWEzU3vW",
+      "slot": 458695459
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4Qzygt4ap3MWbpnKABM9xyMmMveN8vZatBSh6isxVSZ8kmMGYnRXiXu21pVzwsSERnxzuwVKHkEFrarNMhTwRcSL",
+      "slot": 458695519
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "43Ap9DgJDW7U9dZRjr4akuYRVdz7gLE6fWCxpRwtYXJnMSqgRuBHT64kavMvWEy8ViehVMTKckixCvoPPnF1HEtm",
+      "slot": 458695553
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "c4i5ddQuL5DqYe5naTpAyofaZJLnjviq9jLhW153bjXJWogbo6GZdtgc38LSea2g5hJq6gqM9VG7fKNQhUZfcyN",
+      "slot": 458695594
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5V5HXpZGsrkHeFnCa4VzKNAAYaUe2Bf6RcFWSGHoGjmNWtFteeDizXtV7qYM3dEo6sLnes5ACrrTSAKBLwnzq42q",
+      "slot": 458695712
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4YH4srEk7F95ZyE3NF5eM2oGDFbFb9a2QrszSQ1ZUraNgHXdr5BcSN79oW4k79PSktMAZa6Lfa8Pm9CxYcBjJ9hA",
+      "slot": 458695733
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "ZQfTWeaoUSzicmQVkr6K9npBK2142wRr8aRA1HZKiu7nLFJSRPjuTfpnRBEDpV4pbHyXJ9VXPEo6VnePrzzuhuB",
+      "slot": 458695753
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "49Kh7NKoSEeoubGdpBvJjemcxEfgvzhVTFQiafKaj8hFbnVcCHndmgpRA73Hymdc4pc6DxePwVFM5tFWjmF4fQXd",
+      "slot": 458695776
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4MUxzJisjJLWyNEH78PsdK1JGGPFJemxzLdMVj6Ge8msZWn1eCpbzM7BTKnxtjWyr2GiQ3idjiyhcYBcFD2UxpoR",
+      "slot": 458695825
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4dZQ51eEa13zu3ZNJtWdvQRM6ysQvrjyim3WnLEwo8FKPN6MLtqWzjaWXuER1tSXK1mvRxyR1y6KdXpxKskX6nax",
+      "slot": 458695833
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "UEizpzULzGycf9XE4HcAAzwfrZT3hFUz93QybRzvKGC3S9v9jtJ1nqRpqL28UrazcbPvP1DSZa2WdpK98dD8pFb",
+      "slot": 458695892
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4LUX5Vo1opvMKdf9PPjijr1DgofpKuXzYSDbdmtxFEfdwaDsDesb3TZHHKng634c3JKjfkX416u38u23rM6J2xGH",
+      "slot": 458695946
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2FkhUvqkdkahNLG39bSBchZb9bfFyoyVdc9CoY2MY6vPZ6PxSUZxUv6R8DsTSC2gAMbgQDC3ompRLvwP4FGwdhTj",
+      "slot": 458695953
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "qWSUyRoPExorVXrYEL6oARaEKkBJqynefTGFbR25rd44PH3frcMFcxhKofuE1UbhADGVn3goKMKVUYh8YdmsMq6",
+      "slot": 458696025
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "36PU5wS3r3LNsg1o8kPHpr4Pm7LvPWHgnBhxfyogDdFsZPngAz8uXTGybQXMFZqxBcd6hZR3rT575ys4wJwbb4vi",
+      "slot": 458696212
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "v6fk6B7EeWKk4J399hUcXs97AQTMvstifCF9LRSymR48GBAFE5DZKo4SxxbqrSvdiz7nyreA644MkTtfVHX2tSb",
+      "slot": 458696233
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4TDRoTjrTxg1bw8nLyZyia3MVpUJRHjNExhA8Pbu3qZaPhxwjoM1xgDpp7jr9fqvtEZbr1wKnEaHkWx1Hi9VnmkB",
+      "slot": 458696240
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "S4VViBWL7DKp7ZPDogzuXUQKNDYdK47M1VEeszziitoGY7iJc1sttq7Dp5kHEdFTZPerVFaY5XonVfuPZkup1aW",
+      "slot": 458696257
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "AUf1Ga3e2EgCy2yz24JKpbuMUSbcyuNtGH1AiQz8Qmd4WRefx2tq955qySn4oYYpvoHa1V27hETeKJNxP4RiCpG",
+      "slot": 458696328
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2kpvsYaNLSENj9Y6xXLdPt5NBZuuGexEKPW7PZJ2CJiU4H7yM4NXrVLmkvSXvRoLMbXv2hAwJ5n9UUkTtYAWh5xG",
+      "slot": 458696353
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4do3tom5NC1xUdVBtW3fknHugfMH3Mv43itkADaAZKnxSAYVxDVW6BwA2oq4tD4vhSkPzdDyeaYavvQZ6Sw19zw6",
+      "slot": 458696379
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "48Dp5SxkooBVV6hCj1XeqejgBwg3wK2iCeDPWVkujY26SXdmj77ecKTXcwQLpceKWw3tsDrTnJHmFcvpg8gRzTZW",
+      "slot": 458696383
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "41GdYJtYgo1fWECTJCRZ57ZgrMFGrWsakxxaoih7CGCDY3jE3fieV5ymuuWF2uAsJasqpWVXAoUx2ZbZnLzH3i5h",
+      "slot": 458696391
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2Rg4FiBoJedNP6VKPjw8c3wzL4WnaK29HdWnpsB9Zz5m7RYvwwCEdipbFgbcCLY8en2zt8NSK8SrSE3DViD2xqg3",
+      "slot": 458696483
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "23wxXhpARPaeb61RwNugR5tBEAPZ9dRUca82asCHZHZRoqvV8C89TuA7h5ULe3R3Z4FB4PxwjrykHanPSScidCoy",
+      "slot": 458696516
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3h5dXLfASUwJdPdcM79knwUsV2wyejEXa44HjCr4XMi7ehZZzgAeaPryqEXqbtKDV54Bj9jnYRYWyiT9kvgJtPfk",
+      "slot": 458696622
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5j7Z7w3rHdyodTRVFhijkBFtvSRg6xxEk6xgAox7VsXaYgHrdfx8KfgedwEQAQTz9mYp3XSFwJkhed5vNBjcCBVY",
+      "slot": 458696633
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4mzgNzuMaYVgvggRqjW8uqHweDsgAKsG83JqqVHnJXgzAwdoSzBvEYYJZj4y1nnPzM3jDyQm78jLiBqAWSiAvu3G",
+      "slot": 458696661
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4RuvGHA1ZwZyU5d1xRi2TFay6D97gHJ3DahMphpvgRd122PcVEBeZcrJJTFPYjx5t9q2ks1zeZAA58WGYSBZjZuj",
+      "slot": 458696697
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "Kta3CY73xrgHF8XioUgFwBKvGhqY3mmWaW8suCiyKdDvQ4eJp83kNQc8i39djyQUeUGG77tAXQZJiSy98ra2Fwx",
+      "slot": 458696811
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3BES4LDhRQEvqFTm8Ax3bVP9RRmAiSXx5h9kGH7qyEeTz4C2KLpxWZrpe1raKqfavaEBrzg7gdfLo2gjQ4NLibFQ",
+      "slot": 458696827
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "Tfsm4XaRytkGpQcghVfurVBLfsVhQTpkSFHoSyMuw3qnbqUH9xsevWtNRiX2WRNc9ifp6RK9v6BbrQNf8iyWrbC",
+      "slot": 458696829
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "61xyvapoh4CBJ13RMYk4z86aLP42cpw73EwVXnMyTK5E2aMRkHoRuAB81V6jpiLLMt2wpJp4LaoZK4a8B8iffAEf",
+      "slot": 458696843
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5rmHgGwuEMte3yC4qpCbstmW8WBCb1tmVXWsE9cphj6zB8nDn6drEcHyqDwzPAmVTNYXmyY3ZTnUYpb4hA8NaAxy",
+      "slot": 458697015
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "28ArJSuKK5ossp39gkd3iFUpMLdn7a4grh1CgtfkFX6z54thZzkxsVAoupczo9gZBdkjQdUB15b4xT6Lz6z66ovN",
+      "slot": 458697056
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2f1ziiAtw9v33r63Qewifp17JFmpHX5V4jBsNoVwpGUoWNsrqjuXcDbEMYMeM6bHbiFpwAn7nGoP98Af33xRY51y",
+      "slot": 458697259
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "27oPK3PxEDcansBTUFRP9V9mh9BfA56jvATH4GJ95VmWGHTufT4MuaycRaWthLFGdBbgTDtHcUJjWouaMLSqkW9A",
+      "slot": 458697292
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3DH4jhktYXzenrfGDyiivmqeyZxx3uw6MWSmtro1NRSg137F47Tr7tFAL93MvuMvJDArMinAMEQLFz3rX7u6Td3i",
+      "slot": 458697719
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3YRDNaeKVDvkSgDm75WaRHzqf1bECUPcWYLpx6DHgxXjJk4pifEPG6mk2kne58vZCZAizvUZg8BaHowsvhmmPfj3",
+      "slot": 458698186
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5tAK6FhKAGgdQa2QD92R838DtbXWiXKLd5AoRDszgfLJZNmgUZpLPkDQa56tjE5Dfb3i1vER5fhkL4ZcATF5PTgK",
+      "slot": 458698295
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4wY4EdGh2HYuCw3bLdsgpamyBARt6Dys1KU98RWsjhrWgBJxWC6BYmPNqHYEADgEjfoxtJKpKq4v7bsBiJC5uMYw",
+      "slot": 458698331
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4xQ28z52A5bFXpnH7K24NyyGeKXo1Dgg3s5eqxBAE8XNVqLN3MSDtoSUr9Xc3onHNTyPdf4UTCUTNsMnsXcvwiYS",
+      "slot": 458698582
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5V2Jkmv482o2uC92WxvXqTAe19tUg4Ccf6DSJu43L7TqxTffaRpQJNqWbugVddS9KLbcVkh2PZpyiTUULB9bUeiq",
+      "slot": 458698712
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "hGwN2f4KJXtzrV4TCf4gDZFKwrg7no6jNrTUtjWj97ZeXk11Jzm1WbGCwvYkZikVhmUA94p72Hwve7PgvRohG5i",
+      "slot": 458698719
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3KUhs7GKpu597b3GixtPiWA4Nd67DbUheLvMNS2SjHV5e9ZhEbqd6rk2MDsa93jk4GRChbPq6hY9TakdvHwo5t5u",
+      "slot": 458698767
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4LJ79BpCzSdCH7b1pdqpGnaiRJaLZeYHN6eMHV2WcyXD5CMAKixTHGs5j7JoD314BXuYTuQzpK22GYRBtwxt86tP",
+      "slot": 458698894
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2cSQSS8KWYosW6cxThjcpSpN5kUmyGLzed5MNHcFzmxGjxP4wJfy6BCHihv16dERMxX5dA9YjUZXyf3x2AeXvujp",
+      "slot": 458698898
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5XadawxkinKbcnBAt6drCZxm18Cifsc1XSgfmrYEpLNpfeLvE9LoLtJ18Msr89UPWuJQa97C87K31UpU4mmd3e6Z",
+      "slot": 458698904
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5nEXnDeNSURB1kjhjGupwnJQSLJZnRkkz7gzxXD1CmrJr73kgWqeqob5WVXLh2BAUj6vNWjXq7ngpBdNT3wo5FQU",
+      "slot": 458698968
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "V6bewoCdVHB9SpJUVsh1aPJpBYczqetrAAhAe6rY9TuqF7csByeTK2GMPVVkkooXqrgxquyfAWzvi3QePMBT9fZ",
+      "slot": 458699078
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4XnbTYjkgVe22ZZc7Vm53BEELNGo3ggfY3DHG1owfww5f8aiWd7SZHri1yKC2tUs379Jk4Jy6jijVE3YrSmqrbQf",
+      "slot": 458699321
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5WEzAgiThNzDNy4h6kwPntV9e4W7HFCpCHC5SBna7JVnSxvWCUtwtMzzn69PtrxaRfdAqksbnx1JZXwWqrfxbdhi",
+      "slot": 458699340
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5JnJfxvT5NkEeWHEyHYiRvF9BBu4FxE38nEU29ibKxZf7VYgUW4iKLzsLy5puPCLVrggjNPgDzx9XuhuKHNyNkmc",
+      "slot": 458699354
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5ypjnt5LastALV4sCQu2FF9wW22kLn1Ld2PmEZpodj3k4fHdVMSfeEAtCq9aFj67XSN2wVedaBmHTuvG9YaZuerx",
+      "slot": 458699401
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "261tYzG5gsVC1zqJ3oQgHchy2XrAyiEPwQ9HhMS3j4PAAtL5U5Lw4QjyQPWp7TyfyJcscnzqvJQYm2NfEA46Yt1D",
+      "slot": 458699457
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2u3DaHKirjVAgB3QSEu7Qw7U829Jo8vJZtT3fzCPsQ8Bkv3m7B2F7vYUMq2owXxoNoXoT36nLmsUa5EpBSBhjEHC",
+      "slot": 458699459
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3KSvVutxZxb4pwXZgZxgh2h26oouSCkcGPPADjf5W9eo9szZy6AZAJt1P2DLRsZnjSFx5NM8MwppbkKD7VUxYono",
+      "slot": 458699637
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4hwiengS1adBHoACHHwLLuapP1TgSjH9smx4NcwUBzMnPm2wvR3SkYG5hAshMGfui99NBEqWbZHoFYaVXbNxLx2G",
+      "slot": 458699650
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4VfkNUfDsztU3fnNEdTm5SJxgFnvLwQU6ttaWdf52sgn6dGxt2zJ38NdzvwYTqY1ENuZnC8U2yfWeurgB5k4QfY2",
+      "slot": 458699682
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "65k989htKBj7TbuERHJSBcgyW63cUHkypTDCWcvGmZxUasRCMR4UR5JLnEoQmdq5H2eZoswnyVCD4ZwGQcexzxGq",
+      "slot": 458699684
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3ACBMHWTWTzAB83pQeRCodMveEnemjPLZcPRMEB8q3YHuNpnXgreJhXVuBx53gC6ViwMg9qme6GsB8UGeGCU3v2v",
+      "slot": 458699745
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4kqhh2X3Knrdn55DNFRU2PusbiVo3WpxQnCECtPJJXUusHGZAuuQSLawQzR312DWnjLegt3hJvqDCYpNz59vowsc",
+      "slot": 458699816
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "47Dfviv5nSVpao6Zqpvrsw3417V721i6aqN4gWid94pZXTudcbGqsnapkgAC9cZGrxFCAq8BUf7JFdqgmX6Ksib4",
+      "slot": 458699821
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2k7v18wTxcsxnbVrLPz7QoHHcB5phTr1BWLwgUddQDYynKDt2z1X9WyUGKC1vmbxSt2dxQRE1BEs2MnunqjpU48Q",
+      "slot": 458699893
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2jP5VvZcDbe2Lr5iw5uw1rMhkEyy1nrwpZHreRpErj99zFp7zk9T33RkaSA7NvFr2iY7B8cxZ1ivzSc7cfLTke8C",
+      "slot": 458699943
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4w4ohZ37wrECGQtRoG8Giez5oaPtcVPLv75vxfxrVAVd4TzM9jmckkYmoh3WBSyk1yNnjzooVgLi3AsMEBKZ8MNZ",
+      "slot": 458699972
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5FpEvJaHvowxYFtqkj2PyUF8xZ8661MBWcWb34LstE6mCp2JDSEiJYERJTnnao7r6QH4BznRPzHnjdUPcxgM6o9W",
+      "slot": 458699980
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5G9NgsBLXZWaUU1ZAXrc2moJHQPqpCyme1yTQKDzLw7GZ3yzFJoTFTUTs4WmpV8Qg28DqhE3SfPWS4UXNNjBFe16",
+      "slot": 458700097
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "ecaKkdTPPpwGZRymFXec2Vh4iy9kuYVBbepuP54ixtRZhCMusVdZXCGUMyyPuUY23gQ3TDzUAvw75BUE3hwXkDr",
+      "slot": 458700142
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "Nz9FDLvEnEqi7hJBQGHXwUUPzpgk7Z5YyVQBv7MQnhPyHMxvuZnNJQhCx3Ly6wRJCnWSEgYEuQCRUhkcvG42Xs7",
+      "slot": 458700244
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "kNySRANEm7ThmFaQ4zDtToP3UGdUJRNhXUoqoXSLRQNASCUmx18uwoAFct52nKgqj8RDXBCuJN993DEGD2mtEdy",
+      "slot": 458700276
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4CwahQ9XKSen97VucgEfLi9Ki8CAkzRDgWsrguvjsGAhqYe7r18HKEYcZLD5PY8pJ9ozTnaxQBCapZVmeS8PPTVU",
+      "slot": 458700355
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2NWBk3Mn5VySLg7pW3DAjExBKpeeg2D1ff45MLy8ne2viBPrGGiksiVGAUBH6jEQm4NrWrZzNvS9ZQWMaFnSnX5k",
+      "slot": 458700448
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "447Yb2mgKJJ6eNm5Y7zCsQKwah1b3frBU7swYvHYMc9ZQKdALsQQt3Fp17CtBbRwF3xnGATkSWYp65Mjo4ZWtxDG",
+      "slot": 458700521
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5kodf1jKuDej329HYhK5P84qNKBARXs22t8sHWoZN4zKRYRbhtgKx8NMKT5im7x6Xxr1PQir2KCYMjZucgnTXMM5",
+      "slot": 458700539
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "xkWxiZvaxcpDvJQGGU1JGSxoA97WreAKb7sgxt7kGdC6tpx7azmaXso7HUbz4AHGhE7z375PbxkqTF7UhzY5fm1",
+      "slot": 458700580
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "UR42ZVcHYWZ5Hc3WTXLfVNeC8vAXV3s9DCxvkadLcWLPbj1yo2YfHoqL8MbiBNdSUGKAbbP96A3LkpPkXA7Gryc",
+      "slot": 458700620
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3Qsp7fuSvucnCNLt2HWEiRnHhx3WxGBfFDd5CoUJUhScTpZkWnQ2xhCCziyTVuncWvWooR1uXypCf54f2A9wM2Cd",
+      "slot": 458700775
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5AEFZePxaSgRLmVtdrLUbob3dcKBan3BTzpm4qvzk25zDShio21uWTB2ZEUGd9VenvhkBYXpEeiQtUwEqQaaCACU",
+      "slot": 458700901
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "j9QsEGZwqpVSpEZpfmHQRCJE3JLkCsu3n5bW7sv4TRqhyn8VvZiAVgctiQ8aXRoAS4oEBqVkmdbDBPEtvkoUppD",
+      "slot": 458700979
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5pjHQ4DbUAnLyz9MxLHB8g9dP3buxxtBPEDpuAYpj7U4MEbJYBgUqDMnGWYj4rcQAVyR33UVzx5SGo3TvBG5WwAz",
+      "slot": 458700983
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5P9QMWWgBGdYskCniXT8b2W2xqdqotfde3UU8Zf4CKX35BqaWLPmNp4xmYLpYWpCQcK753vKrZ67Ze9kRA9UnTG4",
+      "slot": 458701028
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "27nqG7LF1hm8qvh7vmyb2qV8otoinoQnhf8VkHob58YG68ZUfx4SbfjYUDXk2Yexr2hpTSxfhfMetFDyJokg3CXF",
+      "slot": 458701045
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2VWraeDxsKBRAE4Jm8stBvSs2cMT1hB9aba3GpbKLuwY3jK9JTcxbWf31NerW5MbgkcM5ezTAjLVtvRuJtobyekr",
+      "slot": 458701085
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "23CcAz5dRvuNQwGzgZ1tjT9rXB6E2eVoi8EDqugcHFNDcPXTo2iFGqkHmGT6Xo5uMhyfxnuRWqkEVhpKP9oakMCj",
+      "slot": 458701115
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "4fZm5R55rRf5pVy8wmP9Af6t6excVv1L2hJ1NSYbdkGYBcNRr2xam49UbwSjWhR8GNHXm1Ri9xkZW4ASt3MkeidW",
+      "slot": 458701292
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3kgMsLK6uXuKL7buR24rdkrdKJXk2xTurVVrhDZDdVqVb9Zk3Tsg1L8cSGojZcMtqXWMorrTZeouHeoVw6jFMi4T",
+      "slot": 458701353
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5atfgAaZGseQtdgRPWLxB2BqbXnRtioCEgg7oBD3aQDgE89MxjCy89K46fycWzdf9gD2fRNgMcwcQxLuszwabnKz",
+      "slot": 458701443
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5WpfrrQ2PqriKSkHk5vsWnLvf7fqNG5fwyhJvPZYbnx2YnQc7rdEjA5eqqVsHP4y71AfWZP75JtUCyXBrQKue6Hp",
+      "slot": 458701773
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "1gAdB5vH99sd23sKiJTfTxt9piiZJcFR3WEXRDEs1Yt82hvxoGiJ2sCy6NVsPk31iWQypxyAJ7ttmkmh4iTuMYG",
+      "slot": 458701946
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2CKdRvLBvwsUvgVfSskjmJB35rZz3DedZKNmhK97X2PjgK57Tc7enXQYFWrNJWAdNJZwY8uNUJLit6oSts7dYkUB",
+      "slot": 458701949
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "42Jwn4bZiDESeWiCyajCPLhUt4uBuPPLHqnjfPzV8mZwxtBTvYKg25UDynjPkHTQBEq5Tff8NGTRHGeSKoQNbHj",
+      "slot": 458702045
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5BJodEw6Tpo4WWJkftBMrsN59ZYjgPVP7gQ4KhtcqvyXAuWgsAopZguGD3WRexUKqFUQqz6ZX6zWyDEUGcE7jsS9",
+      "slot": 458702095
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "JmESaM9j66K7mxm5uVKPpCV6KiEtFuK2SuaPGKmrQLJEdTg9njN87XZJikYpdow6RCNnekdd7p6tjC5R1aSuJFa",
+      "slot": 458702118
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3Co8HPNxjaTthdzzYRS1P2Hz32PbGcDznQCWsNWc3asxgeiJ1MxHnjUncXo5TyozmGT2Aa21pNUuhz9uoihSR6yR",
+      "slot": 458702362
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3R6AxpTaEPuU9Ji9e5oMyAs1ignrpg31H4qHmvo6wjE9dXM7xLTdzMSXjsfTcoJ2CHw7AC9zyEqEH2WTFF7s2NLx",
+      "slot": 458702607
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5RJA2JzJGjDhjjK4ZcC5xWcEjLLta3D74doXwLLu8155LPyDrqonQVXtiPg2EcJ5u7tZjCES19wiivBqaW4Dzp1W",
+      "slot": 458702613
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3UPwzKrmHC5L4AhDwrjbkM86RM36712JFS3qsV6icYGP6PiKUWFJFVaLLzMLSzoDkFn9oFAQJFaAu4Q9kDoA9iUK",
+      "slot": 458702673
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2i7ZRQM9ycihBY4Rk7s784mrTDsaPrkV3uhRDajiN5P964MV5Dqn2TLri85jgeMf1nvCs3pNhak4GzYP75stR8St",
+      "slot": 458702693
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3u2BPfs78BGp9ptFJfCqWc7ecJbArYHThPJ57mUHpmcbfsXYzeVyJTSqJUSHj4Pmn1tGUiHe95wdKnp5s3K9KHMt",
+      "slot": 458702729
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2c9vzwaJz5MzLtbwm22yoVKwr7igP8CMvyHmn1iggYfCJLFVndEcLRYvWUYQP1vTHciYJsoF7A252q7HFNr7henY",
+      "slot": 458702871
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "AHt8n1qKKL82hqr7HdYEGCJFA49e6mqoEoH4mVBka6wKeCv5y2hRPm16XEMmdeMW3Yk1g48vPGKPo39mFQQxUnT",
+      "slot": 458703020
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5XZSAaSivXwn3ok3kc71J7q4WUetyyGczQvNCDrtK3iLvLbisxYBVPgH6LtunqEiQxhuTPeXCwJJwjq2vQ776p27",
+      "slot": 458703251
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "QNEheN2gWSGEsaqPCuPwK6ikd9AJ7LeAkkvN6c7FsNs7ku3iaYgDYh6BBbzS6xAgCP6k47AaMTeYo2cxCuLa15C",
+      "slot": 458703339
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5rpvvSU4XmnrNNoC1TeEeySmjdKwEEBoF7zSFvLM1ggnxwVkXvSySvjUgR26j7PdbVAbZEe1mRwKbsTTCWWhSY7C",
+      "slot": 458703354
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5R7YDUdWugnSEuZTLYe4iiLbnPAsAHDkCW6TBxPCE27AUP2DNqqiSiG7mWomyEeLuYVubThVZ7DTyCdL5nMJzsKz",
+      "slot": 458703591
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "q2LzvrA9nGcNvh3Wr2jR8U72VvSdyU6dMbESaNbbBonNph9zmt3h5iv6dvDpVVELSWECYWAbp3sQ3sXeDiCEgpE",
+      "slot": 458703608
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "Ww69rQAs7sCjfG4NtAKk5BYmr64Si4CPvUYFgvjnaXjnydGoctSEXPanAuh8EtdLyHL7zieWCUKBsoWwYkJiLw6",
+      "slot": 458703631
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "25u3ddNWmw1bmxCcyLkHyCY5mEBJL5pijAnQm5g92yMttpzLH1DfpgfG81sTBBRGX8EUPq81T3SJ8LSo5MuUkkze",
+      "slot": 458703799
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "3Rrv7pwf577VSCrn4NtUuttubadf9vdCSdhiK6a7i9gD12Up25uWHqkEfY43TgwZH7hJZCZKhcjjHi2gsPd1dKyw",
+      "slot": 458703943
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2CNJV8mVeLn2oL78BWfNdbZCfnKdQwhmMiMP4rHS1euSby9Q2oPNtD5ABsphGHk5ZEU7VsKWthfbnQ1DHzpWGGKL",
+      "slot": 458704002
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "47EGAuQtcmCvzWtNrEm2dEn7aZTVNUQRRPD6augYrs2oquq1B1sENyMh8rCHAii7sQpATabEeLNeFTBu9kT7sprb",
+      "slot": 458704013
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "pvNTRWLE6RuYG9mZx8YWq2Z19dPUzSPQncrwPowGmP9WUjju6B4L6S98ymDHh4kBemvf3Xk61d455tGwydm5nHm",
+      "slot": 458704238
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "65Wwckk7N8tMTTiyBbNkiyddZ3oZJVgtUSqrkpeqMjskKwVXuyY4prkCsZGBVBFkhvo7D7FGd5hwWE5eBasPsSpg",
+      "slot": 458704252
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "31ntPw9pxwdiKzRoxWb3XXodjyb3UNXGXkhPChUghgiuEn3LCs8biD8CLysHUePkViTRgymvb98as9JMWBXrGczA",
+      "slot": 458704530
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "5xJAKDvJX9hXPxo3wbV1onLmaXkB1rcn9iSuhvuFb1ue8ZQyFs8nECJ7AjK667EQKRhFcVfzSanR96bMfaxjqE2z",
+      "slot": 458704590
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "2nQyvrWELAcAq9asUqwc91SQkYVQAjhPUf24CtiZCBqY4RiaVcPLzBwZM4U1oJgbxSuQ1Q6W1vGVcW8Pz6S9S4yX",
+      "slot": 458704831
+    },
+    {
+      "decision": "REJECT_ARM07_DIRECT_OR_NON_CPI_ROUTE",
+      "signature": "48G1q8fs5cwd1UA3dVpR8QmHLgZMYZTb1AM4yFQzMqsS5m2pbUbXWVe9rYXqQGfdheFMUAXZQMr8rUZLTtrEGnrH",
+      "slot": 458705148
+    }
+  ],
+  "inputs": {
+    "arm07_observation_rows": 60,
+    "arm07_signature_count": 60,
+    "arm08_candidate_rows": 478,
+    "raw_path": "research\\kefi-13-arm-program-v1\\prospective-multivenue-20261019T041500Z\\raw-transactions-remote-latest-20261019T044555Z.jsonl",
+    "raw_rows_total": 498,
+    "raw_sha256": "c3865959d4abdd5c8c175c06a27f61c26ddfb753e62ff0bd1b94c75a4047d6c6"
+  },
+  "interpretation": {
+    "arm07_reuse": "Direct PumpSwap candidates are rejected before economics and cannot be relabeled as ARM08.",
+    "promotion": "No ARM08 policy can be evaluated or promoted until at least one genuine CPI admission exists and its independent frozen policy is sealed.",
+    "zero_admitted": "The latest source contains no proven CPI-linked PumpSwap wallet purchases. Its ARM08-labelled candidates resolve to direct PumpSwap or fail closed."
+  },
+  "policy_changed": false,
+  "read_only": true,
+  "research_only": true,
+  "schema": "KEFI_ARM08_GENUINE_CPI_WALLET_PURCHASE_ADMISSION_AUDIT_V1"
+}

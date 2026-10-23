@@ -1,0 +1,1950 @@
+{
+  "by_arm": {
+    "ARM01_SOL_PUMP_CURVE_2CQ": 0,
+    "ARM02_SOL_PUMP_CPI_2CQ": 0,
+    "ARM03_ACTIVE_SOL_PUMP_5000MS": 0,
+    "ARM04_NON_SOL_PUMP_V2_QUOTE_NATIVE": 0,
+    "ARM05_RAYDIUM_LAUNCHLAB": 0,
+    "ARM06_STONKFUN_LAUNCHLAB": 0,
+    "ARM07_PUMPSWAP_DIRECT": 938,
+    "ARM08_PUMPSWAP_CPI": 265,
+    "ARM09_ROUTER_RAYDIUM_CLMM": 0,
+    "ARM10_ROUTER_ORCA_WHIRLPOOL": 0,
+    "ARM11_ROUTER_METEORA_DLMM": 0,
+    "ARM12_OTHER_DEX_PROTOCOL_NATIVE": 0,
+    "ARM13_AMBIGUOUS_PUMP_FAIL_CLOSED": 0
+  },
+  "generated_at_utc": "2026-10-19T15:10:48.308775+00:00",
+  "ignored_event_reasons": {
+    "ARM08_NOT_EXACTLY_ONE_WALLET_BUY:0": 265,
+    "PUMPSWAP_SELL_NOT_ENTRY": 931,
+    "RAYDIUM_CLMM_EXACT_ENTRY_NOT_MATERIALIZED:validated_transitions=1:wallet_acquisitions=0": 6,
+    "RAYDIUM_CLMM_EXACT_ENTRY_NOT_MATERIALIZED:validated_transitions=2:wallet_acquisitions=0": 1
+  },
+  "input_rows": 2548,
+  "materialized_observations": 1203,
+  "outcome_blind": true,
+  "quarantine": [
+    {
+      "line": 32,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "uCWxrVspzyCpKv6pcWfv5GvwrsHjTCkm3M3BUNC3j7aKnhEkSFa4eSuawPZ3xKxdPKdJuiCdK2zbdTfyxTygJqn"
+    },
+    {
+      "line": 38,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "T59xTbpTevjkAPQoaGZW4z6g9XrMDD8qBAtRs7os95X7SvobH7kM5fRq7ZpjxdfJTDC7eMM6Ye6YVLoQbLH9KVC"
+    },
+    {
+      "line": 71,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3ExfqhNUUHJ1oFg7LNkkJo828eL5wrNXd21i8qTDw95oZesj73Kiq7p2dnRw1BbqWVkahgS2YmJ7QGMVS1d2ZWJ6"
+    },
+    {
+      "line": 77,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "24LyitX47aSj3y9bwQ4cshWvPiLZT165bvwSttV1r4jMpeqRvvWokkL6EDZLZ2TpbY4JdSAoNdXSBE9mgB6konSE"
+    },
+    {
+      "line": 158,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "27HFixEMN3FmuCJBMrf5nXMGzb84pihpaFyQyYDZxy3qAJCS2C3JQq2THGzSBE9W3eAWBKgao76nJgJbJDyfag3G"
+    },
+    {
+      "line": 165,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2HPzWthy2FrpyhDVCrXzoWMPVgdy4wA6i5ij8WUqkb8ZMzNT7WuGueGNDV4GWCWwTR8mEeBfWh6WZxYKbGnCdp6Q"
+    },
+    {
+      "line": 236,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3iAjQe1EhGBWyko1ppEfaYoB3BwxUeKWYgs8zkWLTixDYGC18xNHWn1PeiSZW8r2VoPNfaAWdKZrTGSbBWqVEcci"
+    },
+    {
+      "line": 303,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "gXh2s1o69F7DqgQ7GfTg5L4otKuBzQZFHWz7AZeFFVah1SHv4CTVA7BM3L51C9McH7FtwDfqe4Jexx3NnCLyqCu"
+    },
+    {
+      "line": 360,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "roeGusCrMKC9zLFeJFsDFAgdz27JcTARpYrX3tWCgfALaHj2vU8NCYjL5JKuBt8n6H4k8Ro3PnKc1cDE5yFjZad"
+    },
+    {
+      "line": 362,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "WMaUFqLxKAxVvJKNZKZm4MmNmAR4GzJ6UctfN2ptmKHgtSf5Rn5oqN4GpSESPXGpj8MfddpiyZomq4nYV2QVPP5"
+    },
+    {
+      "line": 376,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5FHuQcjKsgz6Mwd8P5ZCCDC4Q3V9xFKm9UwGZhoXqz5XwoEVbEMYRNC2JvCGksxWftJsx6B2D3NDqoVwe9E6ntNf"
+    },
+    {
+      "line": 389,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "JgBPy7qDQPQQQfrch3y6naxEVuXp8SzHWZ8QBiKPTvea7GYQemw9Yag8yMaUVc6A6hCoqEpqkVhy42M1bZVzkJ2"
+    },
+    {
+      "line": 416,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2GVJbMWJvkCuYtYH5dXX8ya9s3S4JuDjnhNqpYM89eh7XapJbLbpRbztAEU4o8Nr2d5NzCHyPnn99mJpLUjnXyYZ"
+    },
+    {
+      "line": 424,
+      "reason": "EXACT_VENUE_ENTRY_NOT_MATERIALIZED",
+      "signature": "5g9p9CKsceT4bBNZVpkQpGYcnnDtgzC5aTVfmxXHy5N7wjCSKJcHfMeY7GGhMdMv2auwZfxawczmk8381eU8k1tn"
+    },
+    {
+      "line": 437,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4mDmwyUc4GCXxybunjybfY1FGCmmZGR63hPKabTNj42TB2svjuLhcbATWjKRGG4xA3azz3nXuhyB4oCS6kqBEGcK"
+    },
+    {
+      "line": 447,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "24NaVzVw8qUT39ASsF4AUFQCsYTmLoyjutpkmEKykiRtQuz3ZBfBMe1UaaTsPbFZ1HCUVc77pQyBDhuySUYpfov8"
+    },
+    {
+      "line": 473,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3EXtgeuR51Z9LgT2bGEqVYidYZ9KeECMxw2uMoq53XSTdLrP8xqR5yvT8QAVfXT9AgBHMyEZaZJS7sj6dCND3X4j"
+    },
+    {
+      "line": 488,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3vwxbKxuEbZVgUpWWuFLhLvK77TQufJWvHpVXaYybLXPi1oJ9w1vZqCb1DMZB5qqdtxTNZBm83cibdUBQFpxgGXy"
+    },
+    {
+      "line": 523,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2yrKrB81CZu44RspxvdFEnT7cGLz6r1KrP9fNvKtujDhqz31xUUb63EgXVhfKPVpJ19EbcoZYkR1RozHubxtyi7Y"
+    },
+    {
+      "line": 546,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "31GGGHoKu7hcvsNWtDTfs7yeBN6xY9Bbh7vHNCYg8LoTBJu2txADeQycEdh5RWhmSopJyzGMs7jgmfxNCTCKycBM"
+    },
+    {
+      "line": 559,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2Xv2zHwHv18eV1HVRh81FAVPZW1wsG5FRhr968ctCmAT8GcXw3QxzQ1s9XwxC2pf2dQbKXwCfwQugvZsWZUPs2LE"
+    },
+    {
+      "line": 588,
+      "observed_program_ids": [
+        "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+        "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+      ],
+      "reason": "ROUTER_UNDERLYING_VENUE_NOT_UNIQUELY_RESOLVED",
+      "signature": "5VtHwsErvcqNwM5C4rrQjd5FDVPik5pCW2rrbf2h583RXBSohPNxh2yEfmFH4nxjHGMCqKfgEfZdKyvxnNrtNwxg"
+    },
+    {
+      "line": 595,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "Wpu8X5jgujpqQKx9A5AfrJWVStrp5qjzeSUrk6bnpfB9CT9JRbfGzhDKnGayg9cJay7GxxJg5J7CsXEEELST7E2"
+    },
+    {
+      "line": 630,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2cM3cgizdjftf78FkX6GyKwFwY9dbcsJbby6JiQCjjSasYt77Dvd7w8adG6DL3yMj7jZVZM3dxunQjMn5KNn66K8"
+    },
+    {
+      "line": 644,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "njcNoJitHgG3bJNYoULuseb5EjfWuzBF7BLyuqDMiNmgEtNPbQMtV6emQpTHGjtixuDnEs9YB6NQ2vtYepyhnyb"
+    },
+    {
+      "line": 646,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "xHQaPbBahVeyQtMA8n5v3ER9EqabLDyjFbdGVJvttqzsm2NDyX3viTVhKKAX7tbnS4NZkD8vRT3uLTXkfwZtNV9"
+    },
+    {
+      "line": 670,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "499CYvn4uMkkDYUxRiyVv11Bzweb1JSwcCyHGrH7aJMk2Bfm1atRHUCGiuhGsBzRJxEN6sMpdpU7ZZVUpDGojiJV"
+    },
+    {
+      "line": 688,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "QdL2PUfTrGmAPqn7kDEdVzKjwzALfoiPxB88A6Le45LxxXZq5h3xYda1YqFKKixVmiAwVnZkSSp8R3qJLGbP1NT"
+    },
+    {
+      "line": 692,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4xMeMHyRN2LJiCkU9yYWAJSr1qhcZp2UdocYTwDxvQaRvHMD3bnWzatAYK5FHh38h7RmPW3GwUUEV2YW7Q5TE7nW"
+    },
+    {
+      "line": 693,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5aHrMub781KZ2vxqvtt7Ef6f87ujbkUZqP1ekTcPRG3ZaNtqk5huie9Mv2jpCxQdbPb83ZmwnhYumW6usm8gVcTG"
+    },
+    {
+      "line": 701,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4hDeayzsRZGxmuUZZfhuLpF42pgXqjqsxZNDQHaPpbqQ3t1sAezrqte2VcRHzkRPwpJn9aa1vWaA3vJPmkWoZUo9"
+    },
+    {
+      "line": 707,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4QwzHR38vn9B1yCM3WUN5MiwibkucEq5JSPFBM2Bn5WLcKVfvnBqFEb1QuAB8rLAvAY5AHAbQ8mwwTbmuGptMr8S"
+    },
+    {
+      "line": 708,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3bHXn8eS6p38JECJjUvSqRtwqGw3EFpTSueGFsxBYkfFxstaB6cT9oZcFoNTthpxjmnaRmDU4TFY2TjpAYhmwQFr"
+    },
+    {
+      "line": 718,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "65fuXmb1r9qZgx8LKSaK3awXHnJRrCrFcAR8d3mmzRkxtV19hhiytEXDZiUU7bpvMD48cmaUcCgEeQQCtWDx7oXi"
+    },
+    {
+      "line": 719,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5C5bsHUtqSCXp3C6bdErcLZL3qHgqWgcwFyEoAYp321ygbbXkWUYECtc6KQVP1gNDGFee9dyrzLPGtZoBrn3SZ7"
+    },
+    {
+      "line": 720,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3goEs4HoCoAMof1F8X513QQauvjd2ZntVkZNT94p941onc358mcDu5Jf1Hf8AxyrieWVUsEBdSAw6iSMDWFnofjn"
+    },
+    {
+      "line": 724,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "xhBdDJ7koDTbTEkUU95WrWHJsMY5mHnVfchfJduaPxq4dLQ4FzV3a4kFWnX69WiLHgwxKkUs8BknXrjmwoZtMTQ"
+    },
+    {
+      "line": 730,
+      "observed_program_ids": [
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+        "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo",
+        "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+      ],
+      "reason": "PUMPSWAP_ROUTER_PATH_NOT_AN_ARM07_DIRECT_ENTRY",
+      "signature": "2eEH6anEoeouZD2jeRCtEGcKtu69yazqJyjuUnmoSL4HozhctJfE4cdQPqw4f4vfVxEohGoFuwL3WwAyfRjjQJAf"
+    },
+    {
+      "line": 731,
+      "observed_program_ids": [
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"
+      ],
+      "reason": "ROUTER_UNDERLYING_VENUE_NOT_UNIQUELY_RESOLVED",
+      "signature": "2Bb1HWqq37LkQ4WKe4zAhKe8gTkVhpWb8hDP5p8d9mzGZpx6JExRo2wvC4XkioTXyxS7xMu82sK71Dzn2o6JTLct"
+    },
+    {
+      "line": 745,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "n9jYZndub1Q8Ltj8moDYUTCPSC37LJkm7LChuRpxZDu7eRs2ZWz4YjTknepHXH5aS8jyJzDyYof4dn9yYuPdmt3"
+    },
+    {
+      "line": 803,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "32CJ1bSxRn4jU4ZKPVr77vNUPm3LMWnn1ZNALzxerZZG41nayiN2pwbGyKPYKckdbjitL92pYokgJXg1s8AcNDRF"
+    },
+    {
+      "line": 818,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4iR81LBiUmMaHFeX8N3cmzfqVbhGYaVHcR34azaYQMpT3iT89NHHVy7aXKgnuCAGw3Gr2ismSHVqcNXZbCzgi1X3"
+    },
+    {
+      "line": 836,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4swXVooRhJ3xLVDqZieZVB1RsLTHDoVHiYvsZ7DXCrwWpExkfu6YFAMsQHmq6vCYzRdxLWc1224kM7oSXf48XAht"
+    },
+    {
+      "line": 840,
+      "observed_program_ids": [
+        "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+        "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+      ],
+      "reason": "ROUTER_UNDERLYING_VENUE_NOT_UNIQUELY_RESOLVED",
+      "signature": "YBWdxt5Mpwac8n37q63sp91TKgu32MLHkLKeCLjCeA4CDb7JW4DLhNRB3KbjYrUhWN2XDMPwGiLAEev89mujK43"
+    },
+    {
+      "line": 841,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "YfiguVVYCrWmPTVKmZa7PCjxjyyt5zny637JAVMDBErtqs36XeiJHXHSdUBsoPfLrKGscee2x3rmvx5mm2mccFS"
+    },
+    {
+      "line": 847,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3GxRqv5zUqP4YxtJzF18sXHYGX6cg4DXfKj3QykpuFJjexPgxELoPApDfvrDUgoif6LrSzJz7rsHEVtFY4Rkd2wN"
+    },
+    {
+      "line": 860,
+      "observed_program_ids": [
+        "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+        "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo",
+        "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+      ],
+      "reason": "ROUTER_UNDERLYING_VENUE_NOT_UNIQUELY_RESOLVED",
+      "signature": "2iEqCh3tTEzvFovtsbhradmJKPFCDuw856zhJ9fzNvsZqhv6ZpdPs6cPTbUdRHoJCVA7W3x6iKG5R8CwC8aGqs44"
+    },
+    {
+      "line": 867,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3LnEGwtGC4FgPXauVQ2urYA512XMmdmVPRe4gCAVNeAqrEW5ikPBT7N12xeiauYPbHFYXRDqicbVokpmmhBWKFrM"
+    },
+    {
+      "line": 873,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2HezHbKe6LSomYC74sUrRLq55z7F1TaHFsN2v4wz4bJM1rEKE9JteTbyvYgLUkLspEZiHeZKts42qdnBeR4mD4ah"
+    },
+    {
+      "line": 888,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3xiq8CLX9q35PtKyeipNXJpGDwox2jYgycDcqTmpDGKXcDbMtV8r7Tyfe1iAmSSoxrLScpWTBomR5BEeXn7fQFTm"
+    },
+    {
+      "line": 903,
+      "reason": "EXACT_VENUE_ENTRY_NOT_MATERIALIZED",
+      "signature": "eKn7WeTeneqwtJTtcTXCD5JjVZ5Jtg8jT3xkraCCT3AFoGmj4BkMAXqABzNxY6gLkPFw4VY8YU4Cj9nsCQouTrd"
+    },
+    {
+      "line": 920,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4SuVE8v27TaXgdfzE5Ws92GXMiWXUQSHf7471rU1u7jMDvs5VbjiZdAeDMs9g1qfSGRMqoQnZ5meYp6Gz8hWeywK"
+    },
+    {
+      "line": 937,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3HQWQqNKSPKDtQEAHLMtzrvqK4W3XW4rE4n4JEGbvTBiw3UtnKkiq7ZmDJecXngWD7KPF5GM53CTkTGKWG8yRUFq"
+    },
+    {
+      "line": 938,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4XhPupTxXcWzRqP45z1kEX7fGkeDJxdVsE5oaC98B4ZCWa9U5GykwxbBKBfjtcWogJWZvdtNFGmdrMsXrfAPjJmW"
+    },
+    {
+      "line": 985,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4ATnCka9BtvyYLb6u6zZntzaTWVoVsxr5RgiiC4PFMAE3DwErx4nREK5UUZZfgpM1SVsLHZqK1bqvrKf4CnShw24"
+    },
+    {
+      "line": 1045,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4ChdHCVs8K2iyuiwGwa6QTanTfdSXBKL8jFmVjYbGxjzvRnKNmc1hQgbct48cqmAET9NGNu6yokFbXcrHKZ95HUE"
+    },
+    {
+      "line": 1070,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "24bcEFMjM9LM1SDWKZdaPCEXkQyPVBvVQRv8Tenvt2Cj8WnpYgntFjNZ499nv9aFJ76JrRDdv3VskgkFCpP7tghi"
+    },
+    {
+      "line": 1080,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5JRuauahrcVhddRn6jssuhbb42qT38TtjuuPzUvyHXEJYG8RoSZY9hao5YyQub5xxgtxyUh7rm5di3Q2hkpB8Gh4"
+    },
+    {
+      "line": 1115,
+      "observed_program_ids": [
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"
+      ],
+      "reason": "ROUTER_UNDERLYING_VENUE_NOT_UNIQUELY_RESOLVED",
+      "signature": "95QeZAscFWenMEP2MmRrxnB61oNXPTnFbRWsJUyfUJyW182D5QH2VWHFroFd4qwRjrivSqcKvA4AXwKRfQqQdGX"
+    },
+    {
+      "line": 1139,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5btAEmwKNjFFx7XhQY27bPDDmKW5QAPhLfymt5sUt2TMXradwGJ7WVS7NMBfLKPFAWMDfDo6qdKCaoFmJA6qQT55"
+    },
+    {
+      "line": 1196,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "ykVf2djJxYv4Z8TwKsjJBU7xqFcNDjJxmBh9Z4jkyXg7XZ4dvS8TtsM1VSb4q86WzKQZdT5mnYXt3yZgtcHustq"
+    },
+    {
+      "line": 1226,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2DJ4XMJedvouNJyYMsoCUKhf1wmT9P1mCetWy1mZjCuxj38Peyh1DRtGpQrK3YQVh6yUjytfBpdkV3xvTzsxei7i"
+    },
+    {
+      "line": 1270,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "59YWgtEynnYe3wu6C8jLEGvbCJ1MqVNiKG3Uu6Q9k2tLP9CnnsCTjG3iM173W6GYSmhLGurg3nzo3mH5VXkmZTAy"
+    },
+    {
+      "line": 1286,
+      "observed_program_ids": [
+        "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+        "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+      ],
+      "reason": "ROUTER_UNDERLYING_VENUE_NOT_UNIQUELY_RESOLVED",
+      "signature": "ghWZZFwCxPdde3MAWuBZhaTzLM8nz15bFbnaeDyAAZcKVQsch9TDfrc3imp3nKe48i2G4KjF6iw3NdhEyjvbvrY"
+    },
+    {
+      "line": 1299,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2DALRYJDL6rMQ7SMva5yciCsyVrxna3dQukSTuRFhFFo8RrTScmEgUojWn23N9zK51kD13mm868E2kDiyZnVhMmX"
+    },
+    {
+      "line": 1316,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3AqeheR1TX8WeLP4xo8URWcmuKVaBSjwaWhQg9szxvDuN74NHrWbmNuvtRtQA2H3NYce6Y9BeiPQTBRXkvYFnbYp"
+    },
+    {
+      "line": 1330,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5UGooRxqQzysqJgybMSdEbUCqKK8MtUK8PJ4f5vLZ2pR1CXhFcUAzVAkDPcEDCfEZbeMhTXiyddjx7tWXM7zN9wG"
+    },
+    {
+      "line": 1371,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4vUgrLMdYViaCPHu8xM8wkpmtw8tNUeDsN7r91hcLAa1MuiVNd95aNTVCac5n8gqBLi2cqWJ9crDf2XYe5pK9Uur"
+    },
+    {
+      "line": 1398,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5ByDwcu54vwrqAfNbH6u9u8iiBGiHbqLCCUqX9EgYnXKXxJd7uTpSeQBLZPPuoC88aEqWt5DcJvs4zsfokUfDJST"
+    },
+    {
+      "line": 1402,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3Eqw7xPfyNqXgL1LBGrez2eBBAtACwSU1mqsSLR7TfVeXzrgLJrktZf87SBUEbxHxJrvkpDT18KkQ28Vmx1s8Uhx"
+    },
+    {
+      "line": 1408,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3MijXzsGS7hYFPQ7x2wBMCUYmzbfcx6PKW95vVJ6HjXtHZnNQMyAPxGsmFRst7KosSodDinmMQ5JRrjj7xcUjj2B"
+    },
+    {
+      "line": 1434,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3F94qyCZ74XP2C6kfuxmtfFdADmS5tBbSxDL5RqKFCosiD9TN84ps9sSMsSGu4Dk1DogiAyE4AKvxFYWMViuBySN"
+    },
+    {
+      "line": 1438,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "24Uo7PLZkKwr7N1npw8Atp8Hh79Qpw9mLrU4tQJDDVy4JAbpmkMwHL6zB6atnTEugbujRvknRRrov4FshCRurWrp"
+    },
+    {
+      "line": 1440,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "cpHCtnZyQ23uJX9GbdQD6QY9maX7TarZXq7caZ9HdXfa477moYZwp57b9RkEnyMWCVtg5zDVTXTTvgbS3xpvYPQ"
+    },
+    {
+      "line": 1451,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2SYVLBYub6HRKBd83xhYttjvSBSPK8RMeHG7WCtziBpbkbA1sKwXCUoqyoEekjdPm14i7R3akTsJPaE55jzWXwkN"
+    },
+    {
+      "line": 1475,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "63Dz5HTWQAbmsHxcTXpAhUBhhbqezF6nPqEhm19UP8RJnigtBTev9QdxqMhJe4hMNNMisUjRgrJ7JFr8XA9wcq6D"
+    },
+    {
+      "line": 1479,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2Sh7Feczy1jR7kgrwef9dW1B6Wm78KmCZhRMAZGqVnXfKDMxWbe5aspHrwNx3s2cCmwZ525Bgbx99ucxQXrpuTWQ"
+    },
+    {
+      "line": 1491,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3o5R9bEgsqi4DqtzJS8kHsKWyEqH7J877LE1PcWpffxUBDx1WWKFDyvVFQ7d6nNJirtuMMfrhzX8zr2wci8RdbTa"
+    },
+    {
+      "line": 1504,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3eRhFxf2MPnRcH2M3t67RQbP2xTbWBGD8smq2EqbLj8NaBB7nibDvWB89wTNP3pxypcEEcuaKhfGRkpASwQbigoz"
+    },
+    {
+      "line": 1510,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5hdh2v45TF9f2Scx5EWHMJWH3YAajUAazSuWr4B8gFHtc1rR2NVZZyWjMYmervjCGfSnsXRB4ijhcUJUYfphz8rk"
+    },
+    {
+      "line": 1511,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4psmje8BZxYZwf3cFXiDD3rvYRGRCVqDVZauEi3JGv9D9SDzW7J9qDj48ZruiE9fWhGtVPQMVYmiAirVYrebj7WL"
+    },
+    {
+      "line": 1523,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4uXgnrFCru2aGn2bocLwfJR5T1mnzU6KE8T7QS6aEakwQreHMiYgnFfBR3oXCeKujhxYThtCMi68xppzuG21nYhx"
+    },
+    {
+      "line": 1542,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5yph7gPqqxQPt4yfSsbwQfWjGAh3wbKARhbUEFjAsS3g6JDwQ1f4SqvW5XBVTAnJTyx1TNppdMyf8dttLyvRTVuc"
+    },
+    {
+      "line": 1553,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3RpBnAvSYdXGZyxvBPMgJRbLr6GrcWphiMH3PZUMjXusKG7Uxfc4bgSzodoHccMYfbQSTaEnV8nsuGMNZ4YsJW9x"
+    },
+    {
+      "line": 1572,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4U4DNfWPYkxLYuDHyT3MyAnhakDc2JJn7Ewc7hCqVKpnVFSHYuCoJMhGRpsTg2j7fmgM7FiE598C9ZUcKgBRJS2Y"
+    },
+    {
+      "line": 1588,
+      "observed_program_ids": [
+        "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK"
+      ],
+      "reason": "NO_CANONICAL_ARM_PROGRAM_OBSERVED",
+      "signature": "4ot6omx76yrn1Sgedp4kqnkAhtyBpvjjkzp3ZMMxdq7qwNJc4nme9W9SNbusf9XJ1tqyv7aT44omBG2VMjh3SP7H"
+    },
+    {
+      "line": 1628,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5EWpCJbHS5iu8KfUmAZzYFCWYMT2gegHqcPBysBDHouLEkZFp9XpeFmA8xB1Qtkq6uxzecHYxtbMLJaH1bM2U9ou"
+    },
+    {
+      "line": 1641,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2artQsz97uqNwioe7xNMG8AYm4zfoP1dqv91qgpyyEqrBr86jiDxr89hEi3LUVEScbjsvDW1xG76PDop3v5p8wH3"
+    },
+    {
+      "line": 1652,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "YM2XNJAy5sdoguyJ3Hoq6216cbYciEg7dTaTHNB95EfVPYjrfj8DizUFYDGjvmmkavXvrbGDJz8pxkPtQnDfUhZ"
+    },
+    {
+      "line": 1709,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "zcwnAePSHoLZVJndaCT5fEzRDiu1qXiZj8CuyZ9B54iJ5jf41ACbVd5JVGBmQk2PsDRbqQ66S8wGLKFYXwHvJCS"
+    },
+    {
+      "line": 1734,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5NaY28EBs6MLBzoLFfKWTL3A5agtgcQx284YiVzWYRjWuMGjtkNfDwBk1tvMBfdm7vh5gCnCPwGTiEy1cWTXDDRg"
+    },
+    {
+      "line": 1748,
+      "observed_program_ids": [
+        "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+        "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+      ],
+      "reason": "ROUTER_UNDERLYING_VENUE_NOT_UNIQUELY_RESOLVED",
+      "signature": "tvEvKkQJGCSNuS5dLFLEgxQykXUjYbpXR9LzhFeDg9MpYn2snUd355tPmSqkNUiTgutvzT573tyimKDM7i3habu"
+    },
+    {
+      "line": 1753,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3qrmi4kAvRMHT94ESZrjULJ6KoEwyPDkuN99m6z6Zjd55hvKEprVqXm9vNp5FtkNNB8sRsh4ECdACwCoereN6JS8"
+    },
+    {
+      "line": 1755,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3Gr8zicA8K14VYP3HDCDugCJgsD1a1NqdU21rLBeg8y9RSqvVB5UgXwFmbNysqFvKX2J8om624fjRR1Ty5DddYL4"
+    },
+    {
+      "line": 1772,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "wCQrCiZdEBfKFjsCn168fn3N4ESCeJAXvsRmLe2VZHmKkSbm5G192j6TpGJQYq87srUrVNjJAExMnfmNXp69K3V"
+    },
+    {
+      "line": 1795,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3iSEMUtjiuebjcuXoakH3PTwb7YFfS9WiArHAsDZurhGTSTM9wotw8VFZiTriyhBqHciECPDSxZifH7doxHze1kt"
+    },
+    {
+      "line": 1796,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "35jjiqUiSbrtp7oxfAM9FGeQPH5UvZkybNa6aNeU9J3aKu8WwtKS8UQ7VSFX7EPGFBLJX7wUEQqDgYhcifRBx2xw"
+    },
+    {
+      "line": 1799,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "66PyxKR4bw7RYKpLwWBzN9NVXfuDQvrJVhNPX1cWzquwt9tTp9nqtiVmK9HqZNUS6D7x7gBkKGX4gpBkaPU6qjBe"
+    },
+    {
+      "line": 1803,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2UH4NKCE23WsmnyNA1zbwAz599DVf7PFGH7xrknkiF3rE1QPJDQJSCm3WNfxsPMnpcfP4sypL86C7Z2vbxgY9dtZ"
+    },
+    {
+      "line": 1804,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "5bLb1pXas7ReekjDqhjUQGiwfiXN5X7oVAc6DQX4nhn9q87NEHgbnURrAZmtbZb1Yzv9PJrt8sMa2g9vxueGUyV8"
+    },
+    {
+      "line": 1819,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2RoNhrs4cZ9m13pUEhP3jYVoqWMpZ1wEMz67atpFeF8xp6GHf1ECbLuThHs1qXRyxYo5YsFdjUGmESLidGwwv6mz"
+    },
+    {
+      "line": 1837,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3hWENGUXvbWUyycAmgkbG5hR9SpKzvFuv4jKfg6Un4CryoeKeAV2DeLshdon5YqPVtiim86RGNwDnBbsTr6qjpVg"
+    },
+    {
+      "line": 1842,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "38bhA42z317LxzMJRmkLxEKb7gdRmFjLggnZwxY4JQsreewobtQ4JEzXyEJKscMucqt1m4YSGqe6hqP6eFQ4XD5q"
+    },
+    {
+      "line": 1869,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2Zk622F2Xzc6rNdsLGJWdoRvqAyNnAZc3rz8HcpaRDDGPNYpBs57ha5Evoh1qdYNeGiWGnAxKzNAW7iQoFnkby7p"
+    },
+    {
+      "line": 1873,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3gbb1VXasV1UrXpnUtC47aUzFdd9CVwShn5H5VGpqikNFuCYKTWcFV7KXiLfreWFjKkUqvUhYjvAsfRPQVB1HAaC"
+    },
+    {
+      "line": 1884,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3mK3pXyCKddmu4hCiTXRGdqRV6Dty417WtXgYGUvaT2GMtzAQ8imDJAk5iMbFwci1cp8EA3DpQWEVPHhr9BRYDhm"
+    },
+    {
+      "line": 1894,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "45PXGPXp64auVzVLHcvpWVpSeCcJMyzxguELbHQHdgb9Q35BESSg16ALs4qdUKeXL4fwVbRGB9BFXHmnjPp3XRXj"
+    },
+    {
+      "line": 1912,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4gLLAqDYoFiFYGQJXTaPzmJ73VARCeGronqCKGNzE79ntF4Ui898MNLWrL2x6632DrZArk8J2qWmknEZ2xAMTmxp"
+    },
+    {
+      "line": 1915,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "25iBvbVbwGBZti4APc8ebHm9aA6sRXQcTNc4oT3pcmTfjieuPg4nTgTjW2D9v2Q3Y7C2GwCxFvC5gyBbxzTVPNua"
+    },
+    {
+      "line": 1936,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2MXe2EvxPFbs39rT4PZ9dmiCHBTcKHnZsNEX5dsNZddmaBzTu1v7tHJq5cHwFkjYEFViZCTzkg5VnChGWU3ZhUa8"
+    },
+    {
+      "line": 1941,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "36qVHy2jj6vfEEzJcm8mgc8b4Qjdcmv4D9xuU78cmkyxAod43TuDvmJCGb7nYY9YeeHCz3uZzPrD65KtpYoZM3Ru"
+    },
+    {
+      "line": 1951,
+      "observed_program_ids": [
+        "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK"
+      ],
+      "reason": "NO_CANONICAL_ARM_PROGRAM_OBSERVED",
+      "signature": "2s8jXs9A8ZDAg5gQf2QLCtgrtWbLFq1aWFwYUM9t6yQtXWPybbNtsw9dPFwJU6CjwYQmxPvfEoHGd3PS4PDwCHn1"
+    },
+    {
+      "line": 1967,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "qBPJX8eDDh8tvh9a9v1dFeANpe3y8AbfVMp2kYpz4ZpPaDynswt8JNs8fnuNge6WdaPDmtCij3Cnen7oHai3SmC"
+    },
+    {
+      "line": 1985,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "49DDStLqVnd8NKFwJY7JtTLJQFPnECt1XKHhYrhSRESasWm5WarDqPU4ML9YhZFmawPSPpCNo24gKCJ7sb4EgmRe"
+    },
+    {
+      "line": 1989,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4AzL1NTaZhB77vYoi6mTjf5MSwhG4JvgR3WeFBQx7mwAh1M3iKpseeWF2NHdUg4WDEsRao9hFyYX4Uw4gnWzmyNU"
+    },
+    {
+      "line": 1997,
+      "observed_program_ids": [
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+        "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo",
+        "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+      ],
+      "reason": "PUMPSWAP_ROUTER_PATH_NOT_AN_ARM07_DIRECT_ENTRY",
+      "signature": "5aisTJDR3AfnKbZBBsWspesYbWc2x1r2BUdFcCxkr3jwBqLyGEUAUczm53fuaPxthKkXvyidvxK1NXpdAvM11jyt"
+    },
+    {
+      "line": 2003,
+      "observed_program_ids": [
+        "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+        "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo"
+      ],
+      "reason": "ROUTER_UNDERLYING_VENUE_NOT_UNIQUELY_RESOLVED",
+      "signature": "4DuMgmJSVwxHLS85E2dm5DBEVR6gtV2CLqnKxZXmRo8i7fmLVLBW8oBionGj1Hd4w85Yi6ZBXQuQ1nErH37WoDEb"
+    },
+    {
+      "line": 2018,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "uuUVEsohUY8VtoFuvjQHJ6GdEqy6u73SRwLXKAFeJ4xeDLmW3PKHjbY32yT2YwpwdQaqg1J5r6a79BB73kAx9Qe"
+    },
+    {
+      "line": 2029,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3VV5Mibec7b3oRUuevzPvLXa8BoxQ8NKexz7B2pHKQKVMGachDR9rL19Vh2dY1sSMgPW3DDZx3aiBcGc32s3TNLV"
+    },
+    {
+      "line": 2040,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "JhLWGhutZ5wGN3ex6HsrAfthkX7pbM7ZDQvYRS5r8HoAr7eEFSUUtaFr6g1pWBfJD2cQTcS7KBTDNHB6DmgQGqC"
+    },
+    {
+      "line": 2086,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2sF9khGArQgTAQcAcphecEWBWY1VXqWHzRNrGPdAKdvVmjsoL9NBt3trdfZWD5BsKBqFArCrsupmCqc7t3omKAZo"
+    },
+    {
+      "line": 2112,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2s2yh1QXfJnsMLD7QZHMLt1AEEnuyHyBBgeWZohG56UFmCS62Tdow25hZyfpN6eZNjsP3wqAWGMeRiL7cQgR5Wmz"
+    },
+    {
+      "line": 2156,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "wqceUvSdTR8YC826g2dn7GcH6vKDVy159kxfPNEeWvq6QBabBzHR73wfo1CxAdUV7bzMD5drckjLnXy5LYqQ7GP"
+    },
+    {
+      "line": 2181,
+      "observed_program_ids": [
+        "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+        "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo"
+      ],
+      "reason": "ROUTER_UNDERLYING_VENUE_NOT_UNIQUELY_RESOLVED",
+      "signature": "WRwJuMM3586V8wwwrmbhxjaKtvcbENRT5nDp3VvJHGiLzsC1e7nKrcWmtN7EkQk4bPQ9GUeK6CEF6Ei1byZhHJi"
+    },
+    {
+      "line": 2188,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4RFoP1snjbXfeedWKWykF8TyB5SKo5HsGa4uqp9DK7jxoDe3myojL5krmktcHc33CbMg4rzFtLt9A5ab6ts15FzD"
+    },
+    {
+      "line": 2199,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4S7XCxMRuNsTyZmGgiqgSQ1hacGmWmvxANqgstvME16h5R75VoBc3KRFwyb3FC4jLBXhv7ru7PsK6Li2jsVLuAR6"
+    },
+    {
+      "line": 2225,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2d5Uj4WW1BTFQJvqS9e15jYV32wnWioNEVUK9f9rydEnhKvady7mYBu7EtwWZWNwVwhiQtaMpt9fV42QEHq6MCaP"
+    },
+    {
+      "line": 2237,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4xRCLTc1GHS8TPDYxYwPg9UhHuXWd7zfa4zx6Cjcs3jvy9GMbEZgaR5teb3vrc43YeVYYDh6sY9fc6AV8yGGqYQm"
+    },
+    {
+      "line": 2244,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "58ewV5ZrMxAPbmZUKCr7eDTLLtqMh3Eu2qvTDbZ1BqYRz43CL2MuGuSAEATRN1qizNvoi1FucErTgnQwccoyvjiC"
+    },
+    {
+      "line": 2345,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "RWGTV9dUJTKNmEepsHeXp2f4mLpCxB39chy7KpFnsRi6iJD9RczG2aB5ZotcPwZV2SsvcAk5DwPmu4DJqcYuMkG"
+    },
+    {
+      "line": 2375,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "28k9bVXAvzdNqfKsAh1AP9vZ3moHKXiCozQXdStzQF3dqU4YWZR95MYiD9nbR2DMoeETZvCgnwpPZZnMxZFva7ir"
+    },
+    {
+      "line": 2414,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "6349eqU2xaWAUee1sHdRruAHYgPCK5F32GHjqJibSMR4g66HJLnnFcAbY33nzeecMA2puMW65KeTpgYfNE3JQzV2"
+    },
+    {
+      "line": 2416,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "35ZjWBYdLo7FDmUC5mtXfacCTYAGoMXynRUGU7j2Zve2gcAiZjiE4K4f2Sj5VigZMKEWAHGwXFDPBTpAWHSjPoBa"
+    },
+    {
+      "line": 2447,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "44HkkGcNsywC4VhzdDcCWmj2pboR5B6DupDu8so7YbGgud9SrJNQCM2UHrCwSjVnVfvXLM4M7WitUvUsRwXVpAVD"
+    },
+    {
+      "line": 2470,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "B6s4miG138A5ZDaK6NbSQcDV7QNmZzdieojvvH35ZGNUffwwzHojjs5aYKgZjVhTV11v3X1i7qs4Tb4tqyEeYaX"
+    },
+    {
+      "line": 2471,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2U4mpUDJoupUv32Mdv8LCYtYoqMRTERuWNv1kenwgDDoDt938pcmSa2VANmkVWFAPJ3hwYpMBMHvPgmzd3fhbzz8"
+    },
+    {
+      "line": 2487,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "29ZAMakZuHH5rkdqDwHp616yr2rG4zh6ewfCiqW3F8UicMCzj2xbv3T9ScpLcW7xPoSxHQzVp4rE3kW55ZMgyvDm"
+    },
+    {
+      "line": 2492,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3WxYiusikyQJvyXeis735V9mwGYNgNUkQMZFaXaiZuaPt36bzrZQZ5AsAmQmDR4fW8Ug4Cxszn8YwktXN1yDhH6m"
+    },
+    {
+      "line": 2493,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2T9SNLMKGGFMbZKXHmxGeoNGgxwjMnBqKeBBRUAqvYnsZh8EDtYWwgTDtC1tvCnFUKKJU5wSgGQCrhMpSMv5nbs4"
+    },
+    {
+      "line": 2502,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "bL3xVWBWnkjnDrdLyNUqPiQ8ofd6kGnrmj8Jo5tFMH61N7dr2rJidqG1ZXoe4wuPeUdRPos9NdSVjNXJSJSAEHu"
+    },
+    {
+      "line": 2517,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "4kP4RPEGLFDiApndhJkqCrmueUeKA7NnP6MXUjvSaa8RHXZV6UK45AhAHy3QfMf1i61BQa9a1z9AxW1DwWoCYctC"
+    },
+    {
+      "line": 2548,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3uTdhppzMrZZddNNVkxU4Cf1zpeFTNTCcb4bF2avo9RqZixAEaajhpLpszLDT51ukBKYBQAQBRFhZYL9MhVbnks2"
+    }
+  ],
+  "quarantine_reasons": {
+    "EXACT_VENUE_ENTRY_NOT_MATERIALIZED": 2,
+    "NO_CANONICAL_ARM_PROGRAM_OBSERVED": 2,
+    "PUMPSWAP_ROUTER_PATH_NOT_AN_ARM07_DIRECT_ENTRY": 2,
+    "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY": 127,
+    "ROUTER_UNDERLYING_VENUE_NOT_UNIQUELY_RESOLVED": 9
+  },
+  "quarantined_rows": 142,
+  "schema": "KEFI_13_ARM_FINALIZED_RPC_MATERIALIZATION_AUDIT_V1",
+  "status": "PASS_OUTCOME_BLIND_FAIL_CLOSED"
+}

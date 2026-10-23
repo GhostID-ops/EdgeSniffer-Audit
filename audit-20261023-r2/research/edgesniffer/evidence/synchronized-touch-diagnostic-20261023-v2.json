@@ -1,0 +1,35 @@
+{
+  "schema": "BOUNDED_WRITABLE_PRIVILEGE_DIAGNOSTIC_V1",
+  "source_capture": "h4-sync-canary2/capture.jsonl",
+  "source_sha256": "9743994f9a3916b75789f29fc6bb2d877cc00c1289287970a6146ea75f08a786",
+  "boundary_selection": "All unique pending fee/global signatures in h4-sync-native-audit2; no return or arithmetic-agreement selection",
+  "unique_signatures": 16,
+  "successful_and_complete_instruction_identity": 16,
+  "fee": {
+    "unique_signatures": 15,
+    "boundary_occurrences": 53,
+    "affected_boundaries": 23,
+    "matching_retained_native_writes": 0,
+    "static_writable_fee_keys": 15,
+    "alt_usage": 0,
+    "fee_getter": "get_fees_with_quote_mint",
+    "getter_calls_per_transaction": 1,
+    "pinned_idl_fee_role": "readonly",
+    "enclosing_pump_idl_fee_role": "readonly",
+    "pump_variants": {"buy": 10, "buy_exact_quote_in_v2": 2, "sell": 2, "buy_exact_sol_in": 1},
+    "example": {"line": 2000, "slot": 460462315, "signature": "5qo9Z1AXW9TEtF4u4GWjZb4j77rH4RazTX4pBkMdf52SUceUyTQ9EoTucboNEXaMcRtYqXR8sM5rNGN5HFCYMvYd"}
+  },
+  "global": {
+    "unique_signatures": 1,
+    "boundary_occurrences": 3,
+    "matching_retained_native_writes": 0,
+    "role": "ALT writable; unvalidated router followed by Pump buy_exact_quote_in_v2 IDL-readonly global role",
+    "router": "AveaiuA1emN71q9mS2QQ9BEWNAAHmp8sHSvwLFHQjufM",
+    "example": {"line": 12703, "slot": 460462459, "signature": "5ZqFjuuhuz9hUFSJupitq5P1sqj2VVXmA3k65uoM4Nw8T4my8pGmKUxn8yY6aAyWP7ahnNYDdqMLfynRet7H1S7p"}
+  },
+  "whole_capture_native_fee_records": 0,
+  "whole_capture_native_global_records": 4,
+  "global_record_data_hashes_and_lamports_identical": true,
+  "scope": "Read-only review of retained raw instructions, logs, privileges, account records and pinned IDLs; no new RPC or capture",
+  "conclusion": "Unmatched writable privilege is not an evidenced missing mutation. Fee-getter explanation is supported at the IDL/instruction level; deployed mutation absence and CPI writable flags remain unproven. Router case unresolved. No quote admission changed."
+}

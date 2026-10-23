@@ -1,0 +1,225 @@
+{
+  "arm_id": "ARM07_PUMPSWAP_DIRECT",
+  "cohort": "FRESH_PROSPECTIVE",
+  "control_comparison": {
+    "actionable_n": 1,
+    "mae_quote": -0.059738061,
+    "max_drawdown_quote": -0.039072072,
+    "mfe_quote": -0.002349469,
+    "observations_n": 1,
+    "pnl_quote": -0.039072072,
+    "profit_factor": 0.0,
+    "roi_mean_bps": -3907.2072,
+    "win_rate_pct": 0.0
+  },
+  "control_policy_id": "kefi-pumpswap-matched-nonteacher-buy-control-30s-v1",
+  "control_results": [
+    {
+      "entry": {
+        "charged_fee_base": 98765432,
+        "creator_fee": 296297,
+        "curve_quote_in": 98765429,
+        "effective_quote_reserve": 52174120233,
+        "fee_total": 1234570,
+        "gross_quote_in": 100000000,
+        "lp_fee": 19754,
+        "pre_pool_base": 349787874993216,
+        "protocol_fee": 918519,
+        "token_out": 660896162421
+      },
+      "entry_received_at_unix_ns": 1792383027000000000,
+      "exit": {
+        "creator_fee": 185098,
+        "effective_quote_reserve": 41310122710,
+        "fee_total": 771241,
+        "gross_quote_out": 61699169,
+        "lp_fee": 12340,
+        "net_quote_out": 60927928,
+        "pre_pool_base": 441836167707866,
+        "protocol_fee": 573803,
+        "token_in": 660896162421
+      },
+      "exit_received_at_unix_ns": 1792383079000000000,
+      "mae_quote": -59738061,
+      "mark_count": 13,
+      "mfe_quote": -2349469,
+      "mint": "3ftvkyh9ehavuzUHe5SMfQHQk79q7NiVM4sNvhH5pump",
+      "observation_id": "control-c424d3e51a783e1c7cf857e0695ea189-0",
+      "pnl_quote": -39072072,
+      "pool": "8uCUixXf6eCYT4LokFycM2DGRveFbYQWfQPgFw6sYDW6",
+      "reason": "",
+      "result_type": "MATCHED_CONTROL",
+      "roi_bps": -3907.2072,
+      "status": "ECONOMICS_AVAILABLE",
+      "target_observation_id": "obs-ba452c98d219af982abb361ec14b100b"
+    }
+  ],
+  "controls_contract": "same-venue controls required before promotion",
+  "exact_evaluator": true,
+  "failures": {
+    "NO_MARK_AT_FROZEN_HORIZON": 7
+  },
+  "fixed_exit_seconds": 30.0,
+  "metrics": {
+    "actionable_n": 2,
+    "controls_actionable_n": 1,
+    "controls_n": 1,
+    "controls_outperformed": false,
+    "mae_quote": -0.063321011,
+    "max_drawdown_quote": -0.061945147,
+    "mfe_quote": -0.043020836,
+    "observations_n": 9,
+    "pnl_quote": -0.061945147,
+    "profit_factor": 0.0,
+    "roi_mean_bps": -3097.25735,
+    "win_rate_pct": 0.0
+  },
+  "outcome_source": "POST_FREEZE",
+  "paper_quote_in_lamports": 100000000,
+  "policy_id": "kefi-pumpswap-fixed-30s-challenge-v1",
+  "promotion_blocker": "SAMPLE_BELOW_GATE",
+  "promotion_eligible": false,
+  "results": [
+    {
+      "entry_received_at_unix_ns": 1792383045000000000,
+      "mint": "3xrmyTm2sWrh6SpRegMrrmsP47fALoQBKyEFse5Dpump",
+      "observation_id": "obs-7ecb818b0ffcb67fa75ef432dd9cda24",
+      "pool": "QxWB59DYacTPnG2DQ1TmLCdb1eorCjX9yqPBN2dTfVD",
+      "reason": "NO_MARK_AT_FROZEN_HORIZON",
+      "result_type": "SELECTED",
+      "status": "ECONOMICS_UNAVAILABLE"
+    },
+    {
+      "entry_received_at_unix_ns": 1792383054000000000,
+      "mint": "3xrmyTm2sWrh6SpRegMrrmsP47fALoQBKyEFse5Dpump",
+      "observation_id": "obs-9ef49cb0e14d27af4760d14443977eed",
+      "pool": "QxWB59DYacTPnG2DQ1TmLCdb1eorCjX9yqPBN2dTfVD",
+      "reason": "NO_MARK_AT_FROZEN_HORIZON",
+      "result_type": "SELECTED",
+      "status": "ECONOMICS_UNAVAILABLE"
+    },
+    {
+      "entry": {
+        "charged_fee_base": 98765432,
+        "creator_fee": 296297,
+        "curve_quote_in": 98765429,
+        "effective_quote_reserve": 53958741852,
+        "fee_total": 1234570,
+        "gross_quote_in": 100000000,
+        "lp_fee": 19754,
+        "pre_pool_base": 338173825151656,
+        "protocol_fee": 918519,
+        "token_out": 617858362281
+      },
+      "entry_received_at_unix_ns": 1792383055000000000,
+      "exit": {
+        "creator_fee": 118539,
+        "effective_quote_reserve": 34185633276,
+        "fee_total": 493912,
+        "gross_quote_out": 39512819,
+        "lp_fee": 7903,
+        "net_quote_out": 39018907,
+        "pre_pool_base": 533939783015524,
+        "protocol_fee": 367470,
+        "token_in": 617858362281
+      },
+      "exit_received_at_unix_ns": 1792383129000000000,
+      "mae_quote": -62356957,
+      "mark_count": 11,
+      "mfe_quote": -42056782,
+      "mint": "3ftvkyh9ehavuzUHe5SMfQHQk79q7NiVM4sNvhH5pump",
+      "observation_id": "obs-ba452c98d219af982abb361ec14b100b",
+      "pnl_quote": -60981093,
+      "pool": "8uCUixXf6eCYT4LokFycM2DGRveFbYQWfQPgFw6sYDW6",
+      "reason": "",
+      "result_type": "SELECTED",
+      "roi_bps": -6098.1093,
+      "status": "ECONOMICS_AVAILABLE"
+    },
+    {
+      "entry": {
+        "charged_fee_base": 98911968,
+        "creator_fee": 840752,
+        "curve_quote_in": 98911967,
+        "effective_quote_reserve": 248809399097,
+        "fee_total": 1088032,
+        "gross_quote_in": 100000000,
+        "lp_fee": 197824,
+        "pre_pool_base": 86643041336964,
+        "protocol_fee": 49456,
+        "token_out": 34430484096
+      },
+      "entry_received_at_unix_ns": 1792383072000000000,
+      "exit": {
+        "creator_fee": 851169,
+        "effective_quote_reserve": 250526886067,
+        "fee_total": 1101513,
+        "gross_quote_out": 100137459,
+        "lp_fee": 200275,
+        "net_quote_out": 99035946,
+        "pre_pool_base": 86104782276268,
+        "protocol_fee": 50069,
+        "token_in": 34430484096
+      },
+      "exit_received_at_unix_ns": 1792383126000000000,
+      "mae_quote": -964054,
+      "mark_count": 1,
+      "mfe_quote": -964054,
+      "mint": "FGkCj28xhabWTYg9QyzACvs4NsN6LUyesP6EwiHepump",
+      "observation_id": "obs-6be068ebdee4b972a630cf132ebaeafb",
+      "pnl_quote": -964054,
+      "pool": "3ENsvQnHuHtQzMBxpDG4pkxwbBnzJvFcz2yyCfxC9QNH",
+      "reason": "",
+      "result_type": "SELECTED",
+      "roi_bps": -96.4054,
+      "status": "ECONOMICS_AVAILABLE"
+    },
+    {
+      "entry_received_at_unix_ns": 1792383087000000000,
+      "mint": "3xrmyTm2sWrh6SpRegMrrmsP47fALoQBKyEFse5Dpump",
+      "observation_id": "obs-b1f32fa9d3570f36db75d2406ca9d36d",
+      "pool": "QxWB59DYacTPnG2DQ1TmLCdb1eorCjX9yqPBN2dTfVD",
+      "reason": "NO_MARK_AT_FROZEN_HORIZON",
+      "result_type": "SELECTED",
+      "status": "ECONOMICS_UNAVAILABLE"
+    },
+    {
+      "entry_received_at_unix_ns": 1792383137000000000,
+      "mint": "3xrmyTm2sWrh6SpRegMrrmsP47fALoQBKyEFse5Dpump",
+      "observation_id": "obs-920f80d9bd3481b8c6ddf05bebcea154",
+      "pool": "QxWB59DYacTPnG2DQ1TmLCdb1eorCjX9yqPBN2dTfVD",
+      "reason": "NO_MARK_AT_FROZEN_HORIZON",
+      "result_type": "SELECTED",
+      "status": "ECONOMICS_UNAVAILABLE"
+    },
+    {
+      "entry_received_at_unix_ns": 1792383138000000000,
+      "mint": "AyCeUvLXUZV2jnh8rT3Q6kAbuvVjyQSJAGuvDEQzpump",
+      "observation_id": "obs-39cce49affb1f7ead7e820dabdedf435",
+      "pool": "GMUBXfXB8176mmfvBig7vRGBoBSNzX8sGvGMseHdJy6r",
+      "reason": "NO_MARK_AT_FROZEN_HORIZON",
+      "result_type": "SELECTED",
+      "status": "ECONOMICS_UNAVAILABLE"
+    },
+    {
+      "entry_received_at_unix_ns": 1792383163000000000,
+      "mint": "CLSq3Sdv6hzoC9MEhHVGMTRUF6A4FifLUXs72XZBpump",
+      "observation_id": "obs-d5bb443ebd80fe1b166b9c489395ee89",
+      "pool": "88ut5kyLiVQV6wCcxy3QEHyxpYDQkzqb9J1ZoaREFzkm",
+      "reason": "NO_MARK_AT_FROZEN_HORIZON",
+      "result_type": "SELECTED",
+      "status": "ECONOMICS_UNAVAILABLE"
+    },
+    {
+      "entry_received_at_unix_ns": 1792383164000000000,
+      "mint": "3xrmyTm2sWrh6SpRegMrrmsP47fALoQBKyEFse5Dpump",
+      "observation_id": "obs-fa98a65fc16fd36396aaa65438e930bf",
+      "pool": "QxWB59DYacTPnG2DQ1TmLCdb1eorCjX9yqPBN2dTfVD",
+      "reason": "NO_MARK_AT_FROZEN_HORIZON",
+      "result_type": "SELECTED",
+      "status": "ECONOMICS_UNAVAILABLE"
+    }
+  ],
+  "schema": "KEFI_ARM07_FRESH_PROSPECTIVE_ECONOMICS_V1",
+  "venue": "PUMPSWAP"
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "READSET_PLUS_NATIVE_TRANSITIONS_V1",
+  "status": "SEPARATE_ENGINEERING_SPECIFICATION_NOT_STRATEGY_CONFIRMATION",
+  "reason": "Snapshot-only known-conflict rejection discards the very native curve transitions that trigger bursts. Advance raw context using those observed writes rather than polling faster or silently ignoring changes.",
+  "unchanged": "Frozen burst/persistence, native decision times, full1s delay, controls,0.1/0.5/1 SOL and strict1s freshness. Snapshot-only results preserved separately.",
+  "selection": "Only native accounts and parent links available by each boundary; RPC base read set must already have completed. Whole validated raw account state, never delta inference or future backfill.",
+  "fail_closed": [
+    "Missing or conflicting native parent ancestry, known dead bank or receipt/write-order regression",
+    "Unknown execution or observed writable touch without corresponding native account write",
+    "Differing same-slot RPC/native state with unresolved ordering",
+    "Invalid owner/layout, unsupported economics, stale base read set or stale curve",
+    "Transport/sequence faults and future reference information"
+  ],
+  "limitations": "Account/transaction subscriptions are not globally complete merely because observed touches match. These are causal observation quotes, not certified fills or full write/fork proof. Own-state hold replay, slippage/network/failed-attempt costs and later completeness qualification still precede net returns.",
+  "prospective_expansion_allowed": false,
+  "trading_enabled": false
+}

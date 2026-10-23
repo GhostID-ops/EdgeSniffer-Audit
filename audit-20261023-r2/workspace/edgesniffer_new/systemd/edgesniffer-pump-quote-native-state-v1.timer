@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh non-SOL Pump V2 exact state in bounded increments
+
+[Timer]
+OnCalendar=*-*-* *:00,05,10,15,20,25,30,35,40,45,50,55:45 UTC
+Persistent=true
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,59 @@
+{
+  "schema": "KEFI_13_ARM_IMMUTABLE_SNAPSHOT_RECEIPT_V1",
+  "snapshot_id": "kefi-13-arm-source-immutable-20261019T150904Z",
+  "captured_at_utc": "2026-10-19T15:09:04Z",
+  "vps_destination_ip": "159.195.207.109",
+  "workspace_firewall_source_ip": "174.93.243.162",
+  "source_service": {
+    "unit": "edgesniffer-kefi-13arm-finalized-rpc-source-v1.service",
+    "active": true,
+    "enabled": true,
+    "collector_changed": false,
+    "cohort_id": "kefi-13-arm-multivenue-prospective-20261019T025634Z",
+    "boundary_utc": "2026-10-19T02:56:34.388060Z",
+    "records_in_snapshot": 2548,
+    "source_state_records_written": 2548,
+    "source_state_errors": 2
+  },
+  "tape_service": {
+    "unit": "edgesniffer-kefi-13arm-pumpswap-tape-v1.service",
+    "active": true,
+    "enabled": true,
+    "collector_changed": false,
+    "tape_rows_in_snapshot": 46681,
+    "tape_state_errors": 566
+  },
+  "raw_transactions": {
+    "path": "prospective-multivenue-20261019T041500Z/raw-transactions-immutable-20261019T150904Z.jsonl",
+    "bytes": 41449703,
+    "sha256": "97c0a606a7ae89323330891b008c9092cb16fbf5de514e6c48c61ea69664f989"
+  },
+  "source_state": {
+    "path": "prospective-multivenue-20261019T041500Z/source-state-immutable-20261019T150904Z.json",
+    "bytes": 271000,
+    "sha256": "e05700ca5bc948c8045ec6092fffe51b57cb844a8908bb6a32d15e044499a98d"
+  },
+  "source_manifest": {
+    "path": "prospective-multivenue-20261019T041500Z/source-manifest-immutable-20261019T150904Z.json",
+    "sha256": "06e24e068913002bc484145213eb9bd2017d5c6b79619a32782ca7705ddc9380"
+  },
+  "pumpswap_tape": {
+    "path": "prospective-multivenue-20261019T041500Z/pumpswap-exact-tape-immutable-20261019T150904Z.jsonl",
+    "bytes": 55013588,
+    "sha256": "7f8873cfe2135373d726209b726d5fc1a202132103014933cbdcca789e3d26a9"
+  },
+  "pumpswap_tape_state": {
+    "path": "prospective-multivenue-20261019T041500Z/pumpswap-tape-state-immutable-20261019T150904Z.json",
+    "bytes": 1921880,
+    "sha256": "787df65e2e35f4b4b31a466f536c3ca5dbaa0a2a3a8989b7160652b789d041a3"
+  },
+  "analysis_contracts": {
+    "registry_sha256": "ebf49fb316527a55f02343dd9370f70662b20ed430c4e58da05cc8fadd4a4a2c",
+    "frozen_policies_sha256": "b981d869f652294ecdf2c5e3fda1e07ba8830cbe57a9d6361643f2f85c03ffc0",
+    "discovery_policy_selection": "DISABLED_DISCOVERY_ONLY"
+  },
+  "read_only": true,
+  "cohort_reset": false,
+  "policy_changed": false,
+  "trading_enabled": false
+}

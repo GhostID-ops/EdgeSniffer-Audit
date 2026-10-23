@@ -1,0 +1,43 @@
+{
+  "schema": "PUMP_CURVE_PROSPECTIVE_POLICY_PREREGISTERED_V1",
+  "policy_id": "PUMP_TOP_LEVEL_0_5_SOL_5S_STRESS50_V1",
+  "status": "PROSPECTIVE_PAPER_VALIDATION_ONLY",
+  "venue": "PUMP_BONDING_CURVE",
+  "route": "PUMP_BONDING_CURVE_TOP_LEVEL",
+  "discovery_manifest_sha256": "4a5b5508475adf818868796f7fef9f5706cd987727ca99f750b1b552f6753bcb",
+  "discovery_analysis_sha256": "a1cdc0dc1f0d9affd41d12f7c1981064ef8dfa4cddee114ce43e56e47e747cc3",
+  "entry": {
+    "admission": "exact Pump TradeEvent with tracked wallet as buyer",
+    "entry_delay_seconds": 1,
+    "quote": "SOL",
+    "notional_sol": 0.5
+  },
+  "exit": {
+    "type": "fixed_horizon",
+    "horizon_seconds": 5,
+    "partial_take_profit": false,
+    "dynamic_selling": false
+  },
+  "execution_assumptions": {
+    "additional_stress_bps": 50,
+    "network_fee_sol_round_trip": 0.00001,
+    "failed_entry_or_exit": "counted_as_non_actionable_and_reported",
+    "exit_mark": "first_finalized same-mint same-quote market mark at or after target"
+  },
+  "controls": {
+    "required": true,
+    "scope": "same finalized market period, same mint and quote, non-wallet Pump bonding-curve BUY",
+    "minimum_control_records": 30
+  },
+  "minimum_fresh_sample": {
+    "minimum_actionable_wallet_outcomes": 30,
+    "minimum_actionable_control_outcomes": 30
+  },
+  "promotion": {
+    "policy_frozen_for_validation": true,
+    "promotion_allowed": false,
+    "trading_enabled": false,
+    "requires_human_review_after_sample_gate": true
+  },
+  "hypothesis": "The Pump top-level route may retain a positive short-horizon edge at 0.5 SOL after one-second delay and 50 bps stress; this is tested prospectively without changing the rule."
+}

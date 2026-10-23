@@ -1,0 +1,26 @@
+{
+  "schema": "KEFI_PUMPSWAP_QUOTE_LIVE_PARITY_TAPE_MANIFEST_V1",
+  "cohort_id": "kefi-13-arm-parity-prospective-v2",
+  "cohort_started_at_utc": "2026-10-19T03:43:30.061222Z",
+  "arm_id": "ARM07_PUMPSWAP_DIRECT",
+  "frozen_policy_id": "kefi-pumpswap-fixed-30s-challenge-v1",
+  "registry_sha256": "c1d04e11171ce64cfc09e0b3262219b40a494ed3e6e001a5362a023683e93bab8",
+  "policies_sha256": "b981d869f652294ecdf2c5e3fda1e07ba8830cbe57a9d6361643f2f85c03ffc0",
+  "source_service": "edgesniffer-kefi-13arm-pumpswap-parity-tape-v2.service",
+  "source_mode": "RECEIVE_ONLY_OUTCOME_BLIND",
+  "raw_pool_source": "/mnt/edgesniffer-kefi-hot/kefi-13-arm-multivenue-prospective-20261019T025634Z/raw-transactions.jsonl",
+  "tape_output": "/mnt/edgesniffer-kefi-hot/kefi-13-arm-multivenue-prospective-20261019T025634Z/pumpswap-exact-tape-v4.jsonl",
+  "state_output": "/mnt/edgesniffer-kefi-hot/kefi-13-arm-multivenue-prospective-20261019T025634Z/pumpswap-tape-state-v4.json",
+  "required_parity_fields": [
+    "source_instance_id",
+    "continuity_epoch",
+    "durable_output_sequence",
+    "instruction_amount_raw",
+    "instruction_limit_raw",
+    "exact_transition_validated"
+  ],
+  "live_trading_authorized": false,
+  "dust_execution_authorized": false,
+  "policy_changes_allowed": false,
+  "status": "ACTIVE_RECEIVE_ONLY_PARITY_COLLECTION"
+}

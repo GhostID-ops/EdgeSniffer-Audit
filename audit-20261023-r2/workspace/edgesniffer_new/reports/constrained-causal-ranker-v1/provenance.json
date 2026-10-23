@@ -1,0 +1,12 @@
+{
+  "contractSha256": "f5bf3b603a0994018101b88c844b30d9de14c176dbd49943ef013ac1869802a4",
+  "featureRegistrySha256": "2be66a10a9fe81aee7aa397ad4b1224c01f1471d75dc0bf83c38d06578d53c90",
+  "holdoutRowsInspected": 0,
+  "inputAnalysisRowsSha256": "331a5239bb2ae595976b5ba92b080ce2f92452ca1bbe20a099ff9f9006c7dba7",
+  "modelArtifact": null,
+  "oofPredictionsSha256": "74541f84e8e05d3eb9fd9d8b0535bc190a212ddd37ba5f40fc74e705ab29a573",
+  "reportSha256": "ccc9f54e8db2ca017b920d2dfa00571142f9ef9bc32e91b65505b286b5117a70",
+  "schema": "CONSTRAINED_CAUSAL_RANKER_V1_PROVENANCE",
+  "scriptSha256": "655ef6ea95c5fa4326b9b9cecdf1a0853cc5564e54a76e81ac2ecfc8bf96e3b2",
+  "validationRowsInspected": 0
+}

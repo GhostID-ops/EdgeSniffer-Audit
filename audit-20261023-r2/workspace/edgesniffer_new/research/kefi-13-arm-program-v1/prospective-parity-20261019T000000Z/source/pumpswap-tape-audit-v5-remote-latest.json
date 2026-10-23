@@ -1,0 +1,14 @@
+{
+  "decoder_error_count": 0,
+  "decoder_error_samples": [],
+  "economics_ready": true,
+  "ignored_noncanonical_count": 0,
+  "ignored_noncanonical_samples": [],
+  "outcome_blind": true,
+  "parity_contract": true,
+  "rows": 236,
+  "schema": "KEFI_13_ARM_PUMPSWAP_TAPE_AUDIT_V1",
+  "schema_errors": [],
+  "status": "PASS_TAPE_SCHEMA_FAIL_CLOSED_DECODER_ERRORS",
+  "unique_event_ids": 236
+}

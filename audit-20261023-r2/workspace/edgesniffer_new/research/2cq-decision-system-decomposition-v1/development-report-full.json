@@ -1,0 +1,958 @@
+{
+  "contractSha256": "c7873752eb36b085683458265a892d6648af9efe854a438d5a4717d17d70922b",
+  "conviction": {
+    "adjacentAccuracyPct": 85.71428571428571,
+    "confusionActualRowsPredictedColumns": [
+      [
+        4,
+        14,
+        1,
+        0,
+        0
+      ],
+      [
+        6,
+        21,
+        3,
+        0,
+        0
+      ],
+      [
+        5,
+        14,
+        22,
+        0,
+        0
+      ],
+      [
+        2,
+        4,
+        6,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        1,
+        0,
+        0
+      ]
+    ],
+    "exactAccuracyPct": 44.76190476190476,
+    "frozenTrainTopFeatureTrendsValidation": [
+      {
+        "feature": "creator_participated",
+        "spearmanWithSizeTierValidation": -0.220707977866019
+      },
+      {
+        "feature": "total_external_sell_sol",
+        "spearmanWithSizeTierValidation": 0.36505758739633837
+      },
+      {
+        "feature": "unique_sellers_total",
+        "spearmanWithSizeTierValidation": 0.3678190752638798
+      },
+      {
+        "feature": "gross_sell_sol_5000ms",
+        "spearmanWithSizeTierValidation": 0.33126530554158234
+      },
+      {
+        "feature": "log_age_ms",
+        "spearmanWithSizeTierValidation": 0.3460590984006888
+      },
+      {
+        "feature": "unique_buyers_total",
+        "spearmanWithSizeTierValidation": 0.22891939230751143
+      },
+      {
+        "feature": "log_event_index",
+        "spearmanWithSizeTierValidation": 0.2361812070533838
+      },
+      {
+        "feature": "gross_sell_sol_2000ms",
+        "spearmanWithSizeTierValidation": 0.27608961618971123
+      },
+      {
+        "feature": "creator_buy_sol_5000ms",
+        "spearmanWithSizeTierValidation": -0.3148447418135557
+      },
+      {
+        "feature": "total_external_buy_sol",
+        "spearmanWithSizeTierValidation": 0.22836535052585152
+      },
+      {
+        "feature": "total_external_net_sol",
+        "spearmanWithSizeTierValidation": 0.19780829418577853
+      },
+      {
+        "feature": "unique_sellers_1000ms",
+        "spearmanWithSizeTierValidation": 0.2616237142306571
+      }
+    ],
+    "majorityBaselineAccuracyPct": 28.571428571428573,
+    "majorityBaselineAdjacentAccuracyPct": 85.71428571428571,
+    "majorityBaselineMeanAbsoluteTierError": 0.8857142857142857,
+    "majorityBaselineTier": 1,
+    "meanAbsoluteTierError": 0.7333333333333333,
+    "spearmanExpectedTier": 0.4109979076229586,
+    "strongerStateFeatureTrendsTrain": [
+      {
+        "feature": "creator_participated",
+        "spearmanWithSizeTierTrain": -0.4243621649333384
+      },
+      {
+        "feature": "total_external_sell_sol",
+        "spearmanWithSizeTierTrain": 0.4097050507643288
+      },
+      {
+        "feature": "unique_sellers_total",
+        "spearmanWithSizeTierTrain": 0.4092115161896469
+      },
+      {
+        "feature": "gross_sell_sol_5000ms",
+        "spearmanWithSizeTierTrain": 0.3617801014098951
+      },
+      {
+        "feature": "log_age_ms",
+        "spearmanWithSizeTierTrain": 0.35271257366336567
+      },
+      {
+        "feature": "unique_buyers_total",
+        "spearmanWithSizeTierTrain": 0.3141549951738478
+      },
+      {
+        "feature": "log_event_index",
+        "spearmanWithSizeTierTrain": 0.3136704809759636
+      },
+      {
+        "feature": "gross_sell_sol_2000ms",
+        "spearmanWithSizeTierTrain": 0.3034224649210037
+      },
+      {
+        "feature": "creator_buy_sol_5000ms",
+        "spearmanWithSizeTierTrain": -0.2973607272076565
+      },
+      {
+        "feature": "total_external_buy_sol",
+        "spearmanWithSizeTierTrain": 0.28595535449676285
+      },
+      {
+        "feature": "total_external_net_sol",
+        "spearmanWithSizeTierTrain": 0.24818948932607904
+      },
+      {
+        "feature": "unique_sellers_1000ms",
+        "spearmanWithSizeTierTrain": 0.24542602997793966
+      }
+    ],
+    "tierBoundariesSol": [
+      1.4907741468071136,
+      2.3847213307824298,
+      3.8559888232072037,
+      5.558985446102086
+    ],
+    "trainingTierCounts": {
+      "0": 49,
+      "1": 92,
+      "2": 81,
+      "3": 14,
+      "4": 9
+    },
+    "validationN": 105,
+    "validationTierCounts": {
+      "0": 19,
+      "1": 30,
+      "2": 41,
+      "3": 12,
+      "4": 3
+    }
+  },
+  "crossSectionalSelection": {
+    "choiceUniverses": [
+      "LAUNCHED_120S",
+      "ACTIVE_250MS",
+      "ACTIVE_1000MS",
+      "ACTIVE_5000MS"
+    ],
+    "latestDevelopmentEntryUnixNs": 1789080248768660222,
+    "status": "PENDING_FINALIZED_FULL_UNIVERSE_MATERIALIZATION"
+  },
+  "deferredActions": [
+    "ADD_WHILE_EXPOSED",
+    "PARTIAL_EXIT",
+    "FINAL_FLATTEN"
+  ],
+  "entryTiming": {
+    "models": {
+      "FULL_CAUSAL": {
+        "coefficients": [
+          {
+            "feature": "log_event_index",
+            "standardizedCoefficient": 0.4103095749457637
+          },
+          {
+            "feature": "buy_count_250ms",
+            "standardizedCoefficient": 0.3909497660279711
+          },
+          {
+            "feature": "creator_buy_sol_5000ms",
+            "standardizedCoefficient": -0.3603493794739298
+          },
+          {
+            "feature": "gross_buy_sol_250ms",
+            "standardizedCoefficient": 0.3453646061748891
+          },
+          {
+            "feature": "last_external_side",
+            "standardizedCoefficient": 0.34497848022644395
+          },
+          {
+            "feature": "mean_buy_sol_1000ms",
+            "standardizedCoefficient": -0.3435854070058223
+          },
+          {
+            "feature": "net_flow_sol_250ms",
+            "standardizedCoefficient": 0.30866326129800553
+          },
+          {
+            "feature": "log_price_change_250ms",
+            "standardizedCoefficient": 0.2731367737772289
+          },
+          {
+            "feature": "log_median_interarrival_ms_5s",
+            "standardizedCoefficient": -0.2648408143221046
+          },
+          {
+            "feature": "buyer_hhi_1000ms",
+            "standardizedCoefficient": -0.25790778163020167
+          },
+          {
+            "feature": "last_external_trade_sol",
+            "standardizedCoefficient": 0.2550812374761164
+          },
+          {
+            "feature": "repeat_buyer_share_1000ms",
+            "standardizedCoefficient": -0.25301695004510283
+          },
+          {
+            "feature": "consecutive_sells",
+            "standardizedCoefficient": -0.2515595099757152
+          },
+          {
+            "feature": "log_age_ms",
+            "standardizedCoefficient": 0.24132806767405968
+          },
+          {
+            "feature": "top_buyer_share_1000ms",
+            "standardizedCoefficient": -0.22209909677852424
+          },
+          {
+            "feature": "consecutive_buys",
+            "standardizedCoefficient": 0.21986893083648484
+          },
+          {
+            "feature": "largest_buy_sol_1000ms",
+            "standardizedCoefficient": -0.2062906903235914
+          },
+          {
+            "feature": "buy_count_1000ms",
+            "standardizedCoefficient": -0.1791060449455645
+          },
+          {
+            "feature": "buy_sell_imbalance_1000ms",
+            "standardizedCoefficient": 0.15195325931566897
+          },
+          {
+            "feature": "unique_buyers_1000ms",
+            "standardizedCoefficient": -0.14185361229446422
+          },
+          {
+            "feature": "buy_count_acceleration_1s",
+            "standardizedCoefficient": -0.0919460892243112
+          },
+          {
+            "feature": "log_price_change_1000ms",
+            "standardizedCoefficient": 0.08940388131921702
+          },
+          {
+            "feature": "net_acceleration_1s",
+            "standardizedCoefficient": 0.08903828424086105
+          },
+          {
+            "feature": "net_flow_sol_5000ms",
+            "standardizedCoefficient": -0.08561674998297542
+          },
+          {
+            "feature": "gross_buy_sol_5000ms",
+            "standardizedCoefficient": -0.08480808378393777
+          },
+          {
+            "feature": "log_price_change_2000ms",
+            "standardizedCoefficient": 0.05356831978154075
+          },
+          {
+            "feature": "sell_count_250ms",
+            "standardizedCoefficient": 0.04494537091118642
+          },
+          {
+            "feature": "distance_from_launch_log_price",
+            "standardizedCoefficient": 0.042282322169153896
+          },
+          {
+            "feature": "gross_sell_sol_2000ms",
+            "standardizedCoefficient": 0.04157097798502961
+          },
+          {
+            "feature": "total_external_sell_sol",
+            "standardizedCoefficient": 0.04117858043172155
+          },
+          {
+            "feature": "log_market_cap_sol",
+            "standardizedCoefficient": 0.0395215398672157
+          },
+          {
+            "feature": "unique_sellers_1000ms",
+            "standardizedCoefficient": 0.038513087933226935
+          },
+          {
+            "feature": "net_flow_sol_1000ms",
+            "standardizedCoefficient": 0.03726784965579077
+          },
+          {
+            "feature": "gross_sell_sol_5000ms",
+            "standardizedCoefficient": -0.0358776765972378
+          },
+          {
+            "feature": "curve_progress",
+            "standardizedCoefficient": -0.03536978473430021
+          },
+          {
+            "feature": "unique_sellers_total",
+            "standardizedCoefficient": 0.03450673770031706
+          },
+          {
+            "feature": "net_flow_sol_2000ms",
+            "standardizedCoefficient": -0.03347141116569558
+          },
+          {
+            "feature": "total_external_buy_sol",
+            "standardizedCoefficient": 0.03301556949658715
+          },
+          {
+            "feature": "sell_count_1000ms",
+            "standardizedCoefficient": 0.03278528184765763
+          },
+          {
+            "feature": "gross_sell_sol_1000ms",
+            "standardizedCoefficient": -0.028511461862039233
+          },
+          {
+            "feature": "log_price_change_5000ms",
+            "standardizedCoefficient": -0.027096510135252
+          },
+          {
+            "feature": "total_external_net_sol",
+            "standardizedCoefficient": -0.023571241867620246
+          },
+          {
+            "feature": "gross_buy_sol_1000ms",
+            "standardizedCoefficient": 0.020921446696654824
+          },
+          {
+            "feature": "creator_participated",
+            "standardizedCoefficient": -0.01699221535066312
+          },
+          {
+            "feature": "unique_buyers_total",
+            "standardizedCoefficient": -0.013143167309622401
+          },
+          {
+            "feature": "gross_sell_sol_250ms",
+            "standardizedCoefficient": -0.005605257529398419
+          },
+          {
+            "feature": "gross_buy_sol_2000ms",
+            "standardizedCoefficient": -0.001768841541455037
+          },
+          {
+            "feature": "log_ms_since_last_external",
+            "standardizedCoefficient": 0.0
+          }
+        ],
+        "featureNames": [
+          "log_age_ms",
+          "log_event_index",
+          "curve_progress",
+          "log_market_cap_sol",
+          "distance_from_launch_log_price",
+          "gross_buy_sol_250ms",
+          "gross_sell_sol_250ms",
+          "net_flow_sol_250ms",
+          "buy_count_250ms",
+          "sell_count_250ms",
+          "gross_buy_sol_1000ms",
+          "gross_sell_sol_1000ms",
+          "net_flow_sol_1000ms",
+          "buy_count_1000ms",
+          "sell_count_1000ms",
+          "gross_buy_sol_2000ms",
+          "gross_sell_sol_2000ms",
+          "net_flow_sol_2000ms",
+          "gross_buy_sol_5000ms",
+          "gross_sell_sol_5000ms",
+          "net_flow_sol_5000ms",
+          "total_external_buy_sol",
+          "total_external_sell_sol",
+          "total_external_net_sol",
+          "buy_sell_imbalance_1000ms",
+          "largest_buy_sol_1000ms",
+          "mean_buy_sol_1000ms",
+          "net_acceleration_1s",
+          "buy_count_acceleration_1s",
+          "unique_buyers_1000ms",
+          "unique_sellers_1000ms",
+          "repeat_buyer_share_1000ms",
+          "buyer_hhi_1000ms",
+          "top_buyer_share_1000ms",
+          "creator_buy_sol_5000ms",
+          "creator_participated",
+          "unique_buyers_total",
+          "unique_sellers_total",
+          "last_external_side",
+          "last_external_trade_sol",
+          "consecutive_buys",
+          "consecutive_sells",
+          "log_ms_since_last_external",
+          "log_median_interarrival_ms_5s",
+          "log_price_change_250ms",
+          "log_price_change_1000ms",
+          "log_price_change_2000ms",
+          "log_price_change_5000ms"
+        ],
+        "fitControlPolicy": {
+          "fullAssessmentControlsRetained": true,
+          "maximumPerDecision": 32
+        },
+        "intercept": -0.47006280778545523,
+        "trainMeans": {
+          "buy_count_1000ms": 4.20010055304173,
+          "buy_count_250ms": 2.296631473102061,
+          "buy_count_acceleration_1s": 1.8793363499245852,
+          "buy_sell_imbalance_1000ms": 0.38178719835625435,
+          "buyer_hhi_1000ms": 0.47351288270238795,
+          "consecutive_buys": 2.5796882855706387,
+          "consecutive_sells": 0.8491704374057315,
+          "creator_buy_sol_5000ms": 1.4461577306480644,
+          "creator_participated": 0.42081447963800905,
+          "curve_progress": 0.41824623881448647,
+          "distance_from_launch_log_price": 0.6565575464049359,
+          "gross_buy_sol_1000ms": 4.247681977117646,
+          "gross_buy_sol_2000ms": 5.757329104439919,
+          "gross_buy_sol_250ms": 3.0652446647209652,
+          "gross_buy_sol_5000ms": 9.857118965581197,
+          "gross_sell_sol_1000ms": 1.4997751315852188,
+          "gross_sell_sol_2000ms": 2.467340973890397,
+          "gross_sell_sol_250ms": 0.6509535784213173,
+          "gross_sell_sol_5000ms": 4.688442209260935,
+          "largest_buy_sol_1000ms": 2.033629723681247,
+          "last_external_side": 0.452991452991453,
+          "last_external_trade_sol": 1.0913428732644546,
+          "log_age_ms": 6.508579067215866,
+          "log_event_index": 3.2873814032087787,
+          "log_market_cap_sol": 4.007035718622379,
+          "log_median_interarrival_ms_5s": 3.4132668641642128,
+          "log_ms_since_last_external": 0.0,
+          "log_price_change_1000ms": 0.15084859175602525,
+          "log_price_change_2000ms": 0.177496719314627,
+          "log_price_change_250ms": 0.13539781019767874,
+          "log_price_change_5000ms": 0.2704932419767659,
+          "mean_buy_sol_1000ms": 1.2185000168495463,
+          "net_acceleration_1s": 2.205825560515334,
+          "net_flow_sol_1000ms": 2.747906845532428,
+          "net_flow_sol_2000ms": 3.2899881305495224,
+          "net_flow_sol_250ms": 2.414291086299648,
+          "net_flow_sol_5000ms": 5.168676756320261,
+          "repeat_buyer_share_1000ms": 0.02980263504507139,
+          "sell_count_1000ms": 1.9979889391654098,
+          "sell_count_250ms": 0.8486676721970839,
+          "top_buyer_share_1000ms": 0.5436943972900028,
+          "total_external_buy_sol": 40.075935018175464,
+          "total_external_net_sol": 13.401486214668678,
+          "total_external_sell_sol": 26.674448803506788,
+          "unique_buyers_1000ms": 4.055806938159879,
+          "unique_buyers_total": 53.81347410759175,
+          "unique_sellers_1000ms": 1.8205128205128205,
+          "unique_sellers_total": 31.404223227752638
+        },
+        "trainScales": {
+          "buy_count_1000ms": 4.4565022447386,
+          "buy_count_250ms": 2.259106751275827,
+          "buy_count_acceleration_1s": 4.51281849638206,
+          "buy_sell_imbalance_1000ms": 0.7609233238555677,
+          "buyer_hhi_1000ms": 0.3289469125217674,
+          "consecutive_buys": 2.9006179372102228,
+          "consecutive_sells": 2.0729228436551783,
+          "creator_buy_sol_5000ms": 2.4967069378476947,
+          "creator_participated": 0.4936898351850083,
+          "curve_progress": 0.3081980458294237,
+          "distance_from_launch_log_price": 0.40128802440377903,
+          "gross_buy_sol_1000ms": 4.684319523843538,
+          "gross_buy_sol_2000ms": 5.935518209729277,
+          "gross_buy_sol_250ms": 3.995324892835524,
+          "gross_buy_sol_5000ms": 10.15227785765197,
+          "gross_sell_sol_1000ms": 3.1635852941508116,
+          "gross_sell_sol_2000ms": 4.314430883533294,
+          "gross_sell_sol_250ms": 1.6977782580504015,
+          "gross_sell_sol_5000ms": 7.1002540894743955,
+          "largest_buy_sol_1000ms": 2.2752806857638155,
+          "last_external_side": 0.8915148588311315,
+          "last_external_trade_sol": 1.406776870152213,
+          "log_age_ms": 4.581461239347179,
+          "log_event_index": 1.8089447274015114,
+          "log_market_cap_sol": 0.3945962586676962,
+          "log_median_interarrival_ms_5s": 2.702575543381103,
+          "log_ms_since_last_external": 1.0,
+          "log_price_change_1000ms": 0.26003226765034604,
+          "log_price_change_2000ms": 0.28777019482586236,
+          "log_price_change_250ms": 0.24011533396843407,
+          "log_price_change_5000ms": 0.3450134345729586,
+          "mean_buy_sol_1000ms": 1.5027516630492248,
+          "net_acceleration_1s": 6.359696535754054,
+          "net_flow_sol_1000ms": 5.049960875873572,
+          "net_flow_sol_2000ms": 5.672127222747781,
+          "net_flow_sol_250ms": 4.5012169141103895,
+          "net_flow_sol_5000ms": 7.081028084921937,
+          "repeat_buyer_share_1000ms": 0.13638082573737817,
+          "sell_count_1000ms": 3.083877857894439,
+          "sell_count_250ms": 1.704023123698504,
+          "top_buyer_share_1000ms": 0.3199527395390127,
+          "total_external_buy_sol": 64.38263278519311,
+          "total_external_net_sol": 10.265532826678598,
+          "total_external_sell_sol": 57.49592675192294,
+          "unique_buyers_1000ms": 4.26266812954476,
+          "unique_buyers_total": 95.47361710464152,
+          "unique_sellers_1000ms": 2.8999508566182537,
+          "unique_sellers_total": 72.48212624294547
+        },
+        "training": {
+          "averagePrecision": 0.2368292647653432,
+          "positiveN": 177,
+          "rocAuc": 0.8236754966887417,
+          "rowN": 1989,
+          "withinMint": {
+            "actualRankedFirstPct": 77.96610169491525,
+            "actualRankedTop10Pct": 86.44067796610169,
+            "actualRankedTop3Pct": 85.87570621468926,
+            "chanceRankedFirstPct": 20.147604907669542,
+            "chanceRankedTop10Pct": 22.586049244109546,
+            "chanceRankedTop3Pct": 58.46541359306512,
+            "meanCandidateStates": 11.23728813559322,
+            "meanReciprocalRank": 0.8275595951443409,
+            "medianRank": 1,
+            "mintBalancedPairwiseConcordance": 0.9509288258413165,
+            "n": 177
+          }
+        },
+        "validation": {
+          "averagePrecision": 0.018110954408946677,
+          "positiveN": 76,
+          "rocAuc": 0.7039396526891898,
+          "rowN": 7750,
+          "withinMint": {
+            "actualRankedFirstPct": 68.42105263157895,
+            "actualRankedTop10Pct": 77.63157894736842,
+            "actualRankedTop3Pct": 69.73684210526316,
+            "chanceRankedFirstPct": 19.615714706781503,
+            "chanceRankedTop10Pct": 22.75938515286985,
+            "chanceRankedTop3Pct": 52.92609148876557,
+            "meanCandidateStates": 101.97368421052632,
+            "meanReciprocalRank": 0.7123077989907766,
+            "medianRank": 1.0,
+            "mintBalancedPairwiseConcordance": 0.9335874046608317,
+            "n": 76
+          }
+        }
+      },
+      "LIFECYCLE": {
+        "coefficients": [
+          {
+            "feature": "log_event_index",
+            "standardizedCoefficient": 0.36625298084954894
+          },
+          {
+            "feature": "log_age_ms",
+            "standardizedCoefficient": -0.3142321780562952
+          },
+          {
+            "feature": "distance_from_launch_log_price",
+            "standardizedCoefficient": 0.25193112499128717
+          },
+          {
+            "feature": "log_market_cap_sol",
+            "standardizedCoefficient": 0.2437168254215163
+          },
+          {
+            "feature": "curve_progress",
+            "standardizedCoefficient": 0.03394111653999702
+          }
+        ],
+        "featureNames": [
+          "log_age_ms",
+          "log_event_index",
+          "curve_progress",
+          "log_market_cap_sol",
+          "distance_from_launch_log_price"
+        ],
+        "fitControlPolicy": {
+          "fullAssessmentControlsRetained": true,
+          "maximumPerDecision": 32
+        },
+        "intercept": 0.18923460341479625,
+        "trainMeans": {
+          "curve_progress": 0.41824623881448647,
+          "distance_from_launch_log_price": 0.6565575464049359,
+          "log_age_ms": 6.508579067215866,
+          "log_event_index": 3.2873814032087787,
+          "log_market_cap_sol": 4.007035718622379
+        },
+        "trainScales": {
+          "curve_progress": 0.3081980458294237,
+          "distance_from_launch_log_price": 0.40128802440377903,
+          "log_age_ms": 4.581461239347179,
+          "log_event_index": 1.8089447274015114,
+          "log_market_cap_sol": 0.3945962586676962
+        },
+        "training": {
+          "averagePrecision": 0.08567321381349939,
+          "positiveN": 177,
+          "rocAuc": 0.5143893191653883,
+          "rowN": 1989,
+          "withinMint": {
+            "actualRankedFirstPct": 73.44632768361582,
+            "actualRankedTop10Pct": 79.09604519774011,
+            "actualRankedTop3Pct": 85.87570621468926,
+            "chanceRankedFirstPct": 20.147604907669542,
+            "chanceRankedTop10Pct": 22.586049244109546,
+            "chanceRankedTop3Pct": 58.46541359306512,
+            "meanCandidateStates": 11.23728813559322,
+            "meanReciprocalRank": 0.8032469840567273,
+            "medianRank": 1,
+            "mintBalancedPairwiseConcordance": 0.9190713057514827,
+            "n": 177
+          }
+        },
+        "validation": {
+          "averagePrecision": 0.005491280915475264,
+          "positiveN": 76,
+          "rocAuc": 0.1683701288012839,
+          "rowN": 7750,
+          "withinMint": {
+            "actualRankedFirstPct": 56.578947368421055,
+            "actualRankedTop10Pct": 64.47368421052632,
+            "actualRankedTop3Pct": 76.3157894736842,
+            "chanceRankedFirstPct": 19.615714706781503,
+            "chanceRankedTop10Pct": 22.75938515286985,
+            "chanceRankedTop3Pct": 52.92609148876557,
+            "meanCandidateStates": 101.97368421052632,
+            "meanReciprocalRank": 0.6761332113111065,
+            "medianRank": 1.0,
+            "mintBalancedPairwiseConcordance": 0.8038607161475838,
+            "n": 76
+          }
+        }
+      },
+      "LIFECYCLE_FLOW": {
+        "coefficients": [
+          {
+            "feature": "buy_count_250ms",
+            "standardizedCoefficient": 0.6352098616199255
+          },
+          {
+            "feature": "gross_buy_sol_250ms",
+            "standardizedCoefficient": 0.4838482378518559
+          },
+          {
+            "feature": "mean_buy_sol_1000ms",
+            "standardizedCoefficient": -0.4632895917826316
+          },
+          {
+            "feature": "largest_buy_sol_1000ms",
+            "standardizedCoefficient": -0.4517607024990562
+          },
+          {
+            "feature": "net_flow_sol_250ms",
+            "standardizedCoefficient": 0.4478695167410263
+          },
+          {
+            "feature": "log_event_index",
+            "standardizedCoefficient": 0.439266859198485
+          },
+          {
+            "feature": "buy_sell_imbalance_1000ms",
+            "standardizedCoefficient": 0.24942272650293043
+          },
+          {
+            "feature": "log_age_ms",
+            "standardizedCoefficient": 0.18196422935771267
+          },
+          {
+            "feature": "net_acceleration_1s",
+            "standardizedCoefficient": 0.16830063147796098
+          },
+          {
+            "feature": "net_flow_sol_1000ms",
+            "standardizedCoefficient": 0.12228134481538395
+          },
+          {
+            "feature": "buy_count_1000ms",
+            "standardizedCoefficient": -0.1221310875097131
+          },
+          {
+            "feature": "gross_buy_sol_5000ms",
+            "standardizedCoefficient": -0.09659772508034105
+          },
+          {
+            "feature": "gross_buy_sol_1000ms",
+            "standardizedCoefficient": 0.092984829395475
+          },
+          {
+            "feature": "net_flow_sol_5000ms",
+            "standardizedCoefficient": -0.07867647415658831
+          },
+          {
+            "feature": "gross_sell_sol_5000ms",
+            "standardizedCoefficient": -0.059656544254547646
+          },
+          {
+            "feature": "gross_sell_sol_1000ms",
+            "standardizedCoefficient": -0.05751239131905546
+          },
+          {
+            "feature": "curve_progress",
+            "standardizedCoefficient": -0.05387440773538572
+          },
+          {
+            "feature": "gross_sell_sol_250ms",
+            "standardizedCoefficient": -0.048785484578028546
+          },
+          {
+            "feature": "distance_from_launch_log_price",
+            "standardizedCoefficient": 0.04680159939645732
+          },
+          {
+            "feature": "log_market_cap_sol",
+            "standardizedCoefficient": 0.04298344553306825
+          },
+          {
+            "feature": "total_external_net_sol",
+            "standardizedCoefficient": -0.04291098048671504
+          },
+          {
+            "feature": "gross_buy_sol_2000ms",
+            "standardizedCoefficient": 0.041947183073679645
+          },
+          {
+            "feature": "sell_count_1000ms",
+            "standardizedCoefficient": 0.03697904902293466
+          },
+          {
+            "feature": "net_flow_sol_2000ms",
+            "standardizedCoefficient": 0.029035151168277006
+          },
+          {
+            "feature": "total_external_sell_sol",
+            "standardizedCoefficient": 0.02191918572800396
+          },
+          {
+            "feature": "buy_count_acceleration_1s",
+            "standardizedCoefficient": -0.020347624985181067
+          },
+          {
+            "feature": "gross_sell_sol_2000ms",
+            "standardizedCoefficient": 0.019536110300013863
+          },
+          {
+            "feature": "total_external_buy_sol",
+            "standardizedCoefficient": 0.01273262342350663
+          },
+          {
+            "feature": "sell_count_250ms",
+            "standardizedCoefficient": -0.00320482412513803
+          }
+        ],
+        "featureNames": [
+          "log_age_ms",
+          "log_event_index",
+          "curve_progress",
+          "log_market_cap_sol",
+          "distance_from_launch_log_price",
+          "gross_buy_sol_250ms",
+          "gross_sell_sol_250ms",
+          "net_flow_sol_250ms",
+          "buy_count_250ms",
+          "sell_count_250ms",
+          "gross_buy_sol_1000ms",
+          "gross_sell_sol_1000ms",
+          "net_flow_sol_1000ms",
+          "buy_count_1000ms",
+          "sell_count_1000ms",
+          "gross_buy_sol_2000ms",
+          "gross_sell_sol_2000ms",
+          "net_flow_sol_2000ms",
+          "gross_buy_sol_5000ms",
+          "gross_sell_sol_5000ms",
+          "net_flow_sol_5000ms",
+          "total_external_buy_sol",
+          "total_external_sell_sol",
+          "total_external_net_sol",
+          "buy_sell_imbalance_1000ms",
+          "largest_buy_sol_1000ms",
+          "mean_buy_sol_1000ms",
+          "net_acceleration_1s",
+          "buy_count_acceleration_1s"
+        ],
+        "fitControlPolicy": {
+          "fullAssessmentControlsRetained": true,
+          "maximumPerDecision": 32
+        },
+        "intercept": -0.24408022554628322,
+        "trainMeans": {
+          "buy_count_1000ms": 4.20010055304173,
+          "buy_count_250ms": 2.296631473102061,
+          "buy_count_acceleration_1s": 1.8793363499245852,
+          "buy_sell_imbalance_1000ms": 0.38178719835625435,
+          "curve_progress": 0.41824623881448647,
+          "distance_from_launch_log_price": 0.6565575464049359,
+          "gross_buy_sol_1000ms": 4.247681977117646,
+          "gross_buy_sol_2000ms": 5.757329104439919,
+          "gross_buy_sol_250ms": 3.0652446647209652,
+          "gross_buy_sol_5000ms": 9.857118965581197,
+          "gross_sell_sol_1000ms": 1.4997751315852188,
+          "gross_sell_sol_2000ms": 2.467340973890397,
+          "gross_sell_sol_250ms": 0.6509535784213173,
+          "gross_sell_sol_5000ms": 4.688442209260935,
+          "largest_buy_sol_1000ms": 2.033629723681247,
+          "log_age_ms": 6.508579067215866,
+          "log_event_index": 3.2873814032087787,
+          "log_market_cap_sol": 4.007035718622379,
+          "mean_buy_sol_1000ms": 1.2185000168495463,
+          "net_acceleration_1s": 2.205825560515334,
+          "net_flow_sol_1000ms": 2.747906845532428,
+          "net_flow_sol_2000ms": 3.2899881305495224,
+          "net_flow_sol_250ms": 2.414291086299648,
+          "net_flow_sol_5000ms": 5.168676756320261,
+          "sell_count_1000ms": 1.9979889391654098,
+          "sell_count_250ms": 0.8486676721970839,
+          "total_external_buy_sol": 40.075935018175464,
+          "total_external_net_sol": 13.401486214668678,
+          "total_external_sell_sol": 26.674448803506788
+        },
+        "trainScales": {
+          "buy_count_1000ms": 4.4565022447386,
+          "buy_count_250ms": 2.259106751275827,
+          "buy_count_acceleration_1s": 4.51281849638206,
+          "buy_sell_imbalance_1000ms": 0.7609233238555677,
+          "curve_progress": 0.3081980458294237,
+          "distance_from_launch_log_price": 0.40128802440377903,
+          "gross_buy_sol_1000ms": 4.684319523843538,
+          "gross_buy_sol_2000ms": 5.935518209729277,
+          "gross_buy_sol_250ms": 3.995324892835524,
+          "gross_buy_sol_5000ms": 10.15227785765197,
+          "gross_sell_sol_1000ms": 3.1635852941508116,
+          "gross_sell_sol_2000ms": 4.314430883533294,
+          "gross_sell_sol_250ms": 1.6977782580504015,
+          "gross_sell_sol_5000ms": 7.1002540894743955,
+          "largest_buy_sol_1000ms": 2.2752806857638155,
+          "log_age_ms": 4.581461239347179,
+          "log_event_index": 1.8089447274015114,
+          "log_market_cap_sol": 0.3945962586676962,
+          "mean_buy_sol_1000ms": 1.5027516630492248,
+          "net_acceleration_1s": 6.359696535754054,
+          "net_flow_sol_1000ms": 5.049960875873572,
+          "net_flow_sol_2000ms": 5.672127222747781,
+          "net_flow_sol_250ms": 4.5012169141103895,
+          "net_flow_sol_5000ms": 7.081028084921937,
+          "sell_count_1000ms": 3.083877857894439,
+          "sell_count_250ms": 1.704023123698504,
+          "total_external_buy_sol": 64.38263278519311,
+          "total_external_net_sol": 10.265532826678598,
+          "total_external_sell_sol": 57.49592675192294
+        },
+        "training": {
+          "averagePrecision": 0.20478978697334724,
+          "positiveN": 177,
+          "rocAuc": 0.792285578877789,
+          "rowN": 1989,
+          "withinMint": {
+            "actualRankedFirstPct": 75.70621468926554,
+            "actualRankedTop10Pct": 84.7457627118644,
+            "actualRankedTop3Pct": 83.05084745762711,
+            "chanceRankedFirstPct": 20.147604907669542,
+            "chanceRankedTop10Pct": 22.586049244109546,
+            "chanceRankedTop3Pct": 58.46541359306512,
+            "meanCandidateStates": 11.23728813559322,
+            "meanReciprocalRank": 0.8083473964829897,
+            "medianRank": 1,
+            "mintBalancedPairwiseConcordance": 0.9399855686563499,
+            "n": 177
+          }
+        },
+        "validation": {
+          "averagePrecision": 0.014609915001512132,
+          "positiveN": 76,
+          "rocAuc": 0.6297657503806428,
+          "rowN": 7750,
+          "withinMint": {
+            "actualRankedFirstPct": 65.78947368421052,
+            "actualRankedTop10Pct": 75.0,
+            "actualRankedTop3Pct": 67.10526315789474,
+            "chanceRankedFirstPct": 19.615714706781503,
+            "chanceRankedTop10Pct": 22.75938515286985,
+            "chanceRankedTop3Pct": 52.92609148876557,
+            "meanCandidateStates": 101.97368421052632,
+            "meanReciprocalRank": 0.6849749976196278,
+            "medianRank": 1.0,
+            "mintBalancedPairwiseConcordance": 0.9179800591032673,
+            "n": 76
+          }
+        }
+      }
+    }
+  },
+  "generatedAtUtc": "2026-09-11T00:59:54.102888Z",
+  "integrity": {
+    "compactArrivalFilter": "/root/bot/EdgeSniffer/scripts/compact-arrival-filter-v1",
+    "compactArrivalFilterSha256": "1f9f115bffed6a1021cbd0cdffe42be5c1f954ce7e72333321ac43b8a917040c",
+    "correctedFromSupersededTape": "/mnt/HC_Volume_106775198/edgesniffer-research/2cq-decision-system-decomposition-v1-superseded-receipt-clock-leak",
+    "developmentSha256": "b3a843cb545eccb3303148f37eb8037fb8c0f618b5c6fa97916130e2813e0155",
+    "outcomesRead": 0,
+    "submissions": 0,
+    "teacherEntryIncludedInFeatures": false,
+    "temporalControlsUsePostEventState": true,
+    "validationPathAccepted": false,
+    "validationRowsRead": 0
+  },
+  "population": {
+    "acquisitionClasses": {
+      "FLAT_TO_REENTRY": 17,
+      "NEW_FROM_FLAT": 333
+    },
+    "convictionCrossBoundaryRepeatEpisodesDropped": 0,
+    "crossBoundaryRepeatEpisodesDropped": 0,
+    "developmentN": 350,
+    "internalConvictionAssessmentN": 105,
+    "internalConvictionTrainN": 245,
+    "internalTimingAssessmentN": 76,
+    "internalTimingTrainN": 177,
+    "routes": {
+      "PUMP_BONDING_CURVE": 208,
+      "PUMP_CPI": 142
+    },
+    "sameMintTemporalControls": 22980,
+    "timingIdentifiableN": 253,
+    "uniqueMints": 334
+  },
+  "schema": "2CQ_DECISION_SYSTEM_DECOMPOSITION_V1",
+  "verdict": "2CQ_DEVELOPMENT_DECISION_TAPE_BUILT_CROSS_SECTIONAL_PENDING"
+}

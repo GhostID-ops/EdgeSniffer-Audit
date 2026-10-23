@@ -1,0 +1,51 @@
+{
+  "schema": "PUMP_CURVE_DELAYED_STRATEGY_PREREGISTRATION_V1",
+  "status": "HYPOTHESIS_REGISTRATION_ONLY",
+  "policy_frozen": false,
+  "promotion_allowed": false,
+  "trading_enabled": false,
+  "evaluator": {
+    "entry_delay_seconds": 1,
+    "entry_state": "native_receive_ordered_state_at_decision_boundary; blocktime-before-boundary proxy until native receive telemetry exists",
+    "notionals_sol": [0.1, 0.5, 1.0],
+    "stress_bps": 50,
+    "network_fee_sol_round_trip": 0.00001,
+    "exit_mark": "selected_same-mint_market_mark_post_state",
+    "exit_rule": {
+      "kind": "TRAILING",
+      "activation_pct": 0.05,
+      "trail_pct": 0.03,
+      "horizon_seconds": 60
+    }
+  },
+  "candidate_arms": [
+    {
+      "id": "CANDIDATE_POSITIVE_FLOW_TRAIL_5_3_60S",
+      "entry_filter": {
+        "minimum_net_flow_sol_during_delay": 0.0,
+        "minimum_price_change_bps_during_delay": null
+      }
+    },
+    {
+      "id": "CANDIDATE_FLOW_AND_PRICE_TRAIL_5_3_60S",
+      "entry_filter": {
+        "minimum_net_flow_sol_during_delay": 0.0,
+        "minimum_price_change_bps_during_delay": 0.0
+      }
+    }
+  ],
+  "validation_requirements": {
+    "fresh_prospective_cohort": true,
+    "minimum_actionable_per_candidate_size": 50,
+    "minimum_same_period_controls_per_candidate_size": 50,
+    "report_each_size_separately": true,
+    "report_pnl_roi_profit_factor_win_rate_drawdown_mfe_mae": true,
+    "must_include_native_receive_clock": true,
+    "must_include_failed_or_missed_entries_and_exits": true,
+    "no_strategy_changes_after_cohort_start": true
+  },
+  "discovery_basis": {
+    "artifact": "pump-curve-delayed-strategy-lab-v1.json",
+    "interpretation": "Exploratory ranking only; no candidate is declared profitable or promoted from the discovery tape."
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "caveat": "Features are on-chain CREATE metadata/time and strictly prior completed creator history only. CREATE fields become observable simultaneous with the atomic initial buy; creator history is left-censored at the research-window start. Discrimination is explanatory rather than preemptively followable.",
+  "features": [
+    "name_length",
+    "symbol_length",
+    "name_word_count",
+    "name_digit_count",
+    "name_upper_ratio",
+    "symbol_upper_ratio",
+    "prior_same_name_count",
+    "prior_same_symbol_count",
+    "prior_same_metadata_uri_count",
+    "utc_hour_sin",
+    "utc_hour_cos",
+    "log1p_prior_creator_self_launch_count_in_window",
+    "log1p_prior_creator_completed_position_count_in_window",
+    "prior_creator_completed_native_wr_in_window",
+    "prior_creator_completed_native_expectancy_sol_in_window"
+  ],
+  "model": "class_weighted_logistic_regression",
+  "splits": {
+    "holdout_latest_25pct": {
+      "n": 563,
+      "negative_n": 129,
+      "positive_n": 434,
+      "positive_rate": 0.7708703374777975,
+      "roc_auc": 0.9263565891472868
+    },
+    "train_earliest_50pct": {
+      "n": 1125,
+      "negative_n": 368,
+      "positive_n": 757,
+      "positive_rate": 0.6728888888888889,
+      "roc_auc": 0.9139229510079835
+    },
+    "validation_next_25pct": {
+      "n": 562,
+      "negative_n": 129,
+      "positive_n": 433,
+      "positive_rate": 0.7704626334519573,
+      "roc_auc": 0.8218128435111087
+    }
+  },
+  "standardized_coefficients": {
+    "log1p_prior_creator_completed_position_count_in_window": 0.09265142256374923,
+    "log1p_prior_creator_self_launch_count_in_window": -0.008953828618835378,
+    "name_digit_count": -0.06040154052699414,
+    "name_length": -0.46131062962586233,
+    "name_upper_ratio": -1.1056914875200738,
+    "name_word_count": -0.7891603025560847,
+    "prior_creator_completed_native_expectancy_sol_in_window": 0.14524157043105596,
+    "prior_creator_completed_native_wr_in_window": -0.011882993932851789,
+    "prior_same_metadata_uri_count": 0.0,
+    "prior_same_name_count": -0.4384567084082617,
+    "prior_same_symbol_count": -0.2550938969383933,
+    "symbol_length": -0.10364179221294063,
+    "symbol_upper_ratio": 0.09663879784697593,
+    "utc_hour_cos": -0.17431175561201512,
+    "utc_hour_sin": 0.2016927887253104
+  },
+  "training_boundary": "earliest_50pct_only"
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "TWO_CQ_EXACT_SELL_EVIDENCE_RECOVERY_V1_CLASSIFICATION_AMENDMENT",
+  "parentReportSha256": "b97784f6ab819f6d3a65ed425baa47e81942124b2df1c5356d91bb4c7db897ad",
+  "originalClassification": "2CQ_EXACT_SELL_EVIDENCE_RECOVERED",
+  "correctedClassification": "2CQ_SELL_JOIN_BUG_FOUND_AND_FIXED_OFFLINE",
+  "reason": "All 34 finalized Pump-curve sells were present and wallet/mint decodable, but their raw observation frames lacked both recognized Pump instruction-kind metadata and target-mint discovery metadata. The prior offline join therefore never retained their signature arrival evidence. The fixed offline join keys raw observations to already-authorized finalized target signatures and recovers 24 of 26 mint schedules without changing the official ledger or economic semantics.",
+  "dataRowsChanged": false,
+  "officialLedgerModified": false
+}

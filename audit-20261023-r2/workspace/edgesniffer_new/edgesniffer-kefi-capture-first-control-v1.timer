@@ -1,0 +1,13 @@
+[Unit]
+Description=Schedule low-impact kEFi capture-first control materialization
+
+[Timer]
+# The service exits after each bounded one-window pass, so schedule from the
+# timer's own activation rather than a stale prior service-inactive timestamp.
+OnBootSec=1min
+OnUnitActiveSec=7min
+Persistent=true
+Unit=edgesniffer-kefi-capture-first-control-v1.service
+
+[Install]
+WantedBy=timers.target

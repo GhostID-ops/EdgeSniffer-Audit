@@ -1,0 +1,21 @@
+[Unit]
+Description=EdgeSniffer KEFI native route-causal PumpSwap tape (receive-only)
+After=network-online.target edgesniffer-kefi-13arm-finalized-rpc-source-v1.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+EnvironmentFile=/root/bot/EdgeSniffer/.env
+Environment=TRACKED_WALLET=kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf
+Environment=KEFI_ROUTE_CAUSAL_COHORT_ID=kefi-arm08-validation-20261019T152521Z
+Environment=KEFI_ROUTE_CAUSAL_BOUNDARY_UTC=2026-10-19T15:25:21.339Z
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/kefiRouteCausalTapeSourceV1.py --pool-source /mnt/edgesniffer-kefi-hot/kefi-13-arm-multivenue-prospective-20261019T025634Z/raw-transactions.jsonl --output /mnt/edgesniffer-kefi-hot/kefi-arm08-validation-20261019T152521Z/route-causal-tape.jsonl --state /mnt/edgesniffer-kefi-hot/kefi-arm08-validation-20261019T152521Z/route-causal-tape-state.json --cohort-id ${KEFI_ROUTE_CAUSAL_COHORT_ID} --boundary-utc ${KEFI_ROUTE_CAUSAL_BOUNDARY_UTC} --interval-seconds 15 --limit 25
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

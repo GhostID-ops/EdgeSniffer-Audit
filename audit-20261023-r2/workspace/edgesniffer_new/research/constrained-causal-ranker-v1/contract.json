@@ -1,0 +1,119 @@
+{
+  "schema": "CONSTRAINED_CAUSAL_RANKER_V1_CONTRACT",
+  "purpose": "Test whether one small preregistered nonlinear model improves forward-style causal ranking at the frozen >=2 SOL anchor.",
+  "population": {
+    "discoveryOrdinalStart": 1,
+    "discoveryOrdinalEnd": 6848,
+    "anchor": "EXTERNAL_GROSS_BUY_GE_2_SOL",
+    "primaryUnit": "unique_mint",
+    "validationRowsPermitted": 0,
+    "holdoutRowsPermitted": 0,
+    "sameTimestampPostTriggerRowsPermitted": false
+  },
+  "economics": {
+    "scenario": "P50",
+    "sizeSol": 0.5,
+    "policy": "TP20_SL20_MAX120",
+    "standardizedDeliveryCostSol": 0.001,
+    "counterfactualReplay": "STRICT_NO_RESUBMISSION_PARENT_SEMANTICS"
+  },
+  "targets": {
+    "primary": "POLICY_GE_10",
+    "secondaryReportingOnly": ["POLICY_POSITIVE", "OPPORTUNITY_GE_10"]
+  },
+  "candidateFeatures": [
+    "net_external_flow_sol",
+    "buy_size_progression_ratio",
+    "last_buy_size_vs_prior_median",
+    "gross_buy_sol_per_successful_tx"
+  ],
+  "redundancy": {
+    "method": "pairwise_spearman_complete_cases_feature_only",
+    "transactionEfficiencyComparedTo": "net_external_flow_sol",
+    "excludeTransactionEfficiencyAtAbsRhoGte": 0.75,
+    "replacementPermitted": false
+  },
+  "preprocessing": {
+    "numericTransform": "IDENTITY",
+    "missingValues": "NATIVE_HISTOGRAM_GRADIENT_BOOSTING_NAN_BRANCH",
+    "imputation": "NONE",
+    "scaling": "NONE"
+  },
+  "model": {
+    "library": "scikit-learn",
+    "class": "HistGradientBoostingClassifier",
+    "configuration": {
+      "loss": "log_loss",
+      "learning_rate": 0.05,
+      "max_iter": 40,
+      "max_leaf_nodes": 4,
+      "max_depth": 2,
+      "min_samples_leaf": 40,
+      "l2_regularization": 10.0,
+      "max_bins": 64,
+      "early_stopping": false,
+      "random_state": 20260907
+    },
+    "hyperparameterSearch": false,
+    "competingModelFamilies": 0
+  },
+  "evaluation": {
+    "method": "EXPANDING_WINDOW_CHRONOLOGICAL",
+    "blocks": [
+      [1, 1370],
+      [1371, 2740],
+      [2741, 4110],
+      [4111, 5480],
+      [5481, 6848]
+    ],
+    "block1": "TRAIN_ONLY_NO_PRIOR_HISTORY",
+    "bootstrapReplicates": 500,
+    "bootstrapSeed": 20260907,
+    "calibrationBins": 10,
+    "permutationRepeatsPerFold": 30,
+    "partialDependenceQuantiles": [0.1, 0.25, 0.5, 0.75, 0.9],
+    "rankingBucketsPct": [5, 10, 20],
+    "liftCurvePct": [1, 2, 5, 10, 20, 30, 50, 100]
+  },
+  "reference": {
+    "strongestCorrectedUnivariateFeature": "net_external_flow_sol",
+    "correctedDiscoveryAuc": 0.664,
+    "materialAucImprovement": 0.02
+  },
+  "freezeGate": {
+    "pooledForwardAucGte": 0.684,
+    "pairedBootstrapAucDelta95CiLowerGt": 0.0,
+    "top10EnrichmentGte": 2.0,
+    "stableEvaluationBlocksRequired": 3,
+    "stableBlockAucGt": 0.55,
+    "stableBlockTop10EnrichmentGt": 1.25,
+    "nonDivergentAucGte": 0.58,
+    "nonDivergentTop10EnrichmentGte": 1.5,
+    "top10PfAfterRemovingBestTwoGt": 1.0,
+    "requiredPartialDependenceDirections": {
+      "net_external_flow_sol": "HIGHER_PROBABILITY_AT_P90_THAN_P10",
+      "buy_size_progression_ratio": "HIGHER_PROBABILITY_AT_P90_THAN_P10"
+    }
+  },
+  "parents": {
+    "sameAnchorContractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+    "sameAnchorFeatureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+    "sameAnchorCorrectedCodeSha256": "1e56012a7dea5f380fb276885ebaae8de959be0b9bb4d0c59a68c3d2c12c9bb4",
+    "sameAnchorReportSha256": "4fc9fa06e8308a054298340f925c280f609ccf69d7eec2e7567421707eeaabe0",
+    "sameAnchorAnalysisRowsSha256": "331a5239bb2ae595976b5ba92b080ce2f92452ca1bbe20a099ff9f9006c7dba7",
+    "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd"
+  },
+  "prohibitions": [
+    "threshold_search",
+    "feature_combination_tournament",
+    "automl",
+    "future_fold_training",
+    "validation_access",
+    "holdout_access",
+    "exit_tuning",
+    "new_features",
+    "2cq_analysis",
+    "collector_or_service_changes",
+    "shadow_or_live_trading"
+  ]
+}

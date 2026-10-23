@@ -1,0 +1,1037 @@
+{
+  "causal_boundary_note": "Features are on-chain CREATE metadata/time and strictly prior completed creator history only. CREATE fields become observable simultaneous with the atomic initial buy; creator history is left-censored at the research-window start. Discrimination is explanatory rather than preemptively followable.",
+  "comparison": "8YCB_SELF_CREATED_WITH_INITIAL_BUY_vs_8YCB_SELF_CREATED_WITHOUT_INITIAL_BUY",
+  "features": [
+    {
+      "available_before_atomic_initial_buy": false,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": -1.5403755628642102,
+        "train_earliest_50pct": -1.0389785047218016,
+        "validation_next_25pct": -0.8652756397938923
+      },
+      "control_mean": 20.715654952076676,
+      "control_median": 20.0,
+      "control_n": 626,
+      "control_nonzero_prevalence": 1.0,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 8.0,
+          "minimum": 1.0,
+          "n": 450,
+          "positive_rate": 0.9266666666666666,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 12.0,
+          "minimum": 8.0,
+          "n": 450,
+          "positive_rate": 0.9,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 16.0,
+          "minimum": 12.0,
+          "n": 450,
+          "positive_rate": 0.7244444444444444,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 22.0,
+          "minimum": 16.0,
+          "n": 450,
+          "positive_rate": 0.68,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 32.0,
+          "minimum": 22.0,
+          "n": 450,
+          "positive_rate": 0.37777777777777777,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "name_length",
+      "mean_difference": -7.849891405278646,
+      "positive_mean": 12.86576354679803,
+      "positive_median": 12.0,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 1.0,
+      "rank_bucket_positive_rate_trend_correlation": -0.9465213989498003,
+      "standardized_mean_difference": -1.1034156998068372
+    },
+    {
+      "available_before_atomic_initial_buy": false,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": -0.4596551037343984,
+        "train_earliest_50pct": -0.15779645033208362,
+        "validation_next_25pct": -0.11518453021028083
+      },
+      "control_mean": 6.0814696485623,
+      "control_median": 6.0,
+      "control_n": 626,
+      "control_nonzero_prevalence": 1.0,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 4.0,
+          "minimum": 1.0,
+          "n": 450,
+          "positive_rate": 0.7422222222222222,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 5.0,
+          "minimum": 4.0,
+          "n": 450,
+          "positive_rate": 0.7111111111111111,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 6.0,
+          "minimum": 5.0,
+          "n": 450,
+          "positive_rate": 0.7688888888888888,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 7.0,
+          "minimum": 6.0,
+          "n": 450,
+          "positive_rate": 0.7,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 13.0,
+          "minimum": 7.0,
+          "n": 450,
+          "positive_rate": 0.6866666666666666,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "symbol_length",
+      "mean_difference": -0.5371346731928419,
+      "positive_mean": 5.544334975369458,
+      "positive_median": 5.0,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 1.0,
+      "rank_bucket_positive_rate_trend_correlation": -0.578851168464408,
+      "standardized_mean_difference": -0.21912180146367957
+    },
+    {
+      "available_before_atomic_initial_buy": false,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": -1.6727330833332978,
+        "train_earliest_50pct": -1.166487876946963,
+        "validation_next_25pct": -1.1371429907951003
+      },
+      "control_mean": 4.110223642172524,
+      "control_median": 4.0,
+      "control_n": 626,
+      "control_nonzero_prevalence": 1.0,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.9355555555555556,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 2.0,
+          "minimum": 1.0,
+          "n": 450,
+          "positive_rate": 0.8711111111111111,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 3.0,
+          "minimum": 2.0,
+          "n": 450,
+          "positive_rate": 0.7777777777777778,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 4.0,
+          "minimum": 3.0,
+          "n": 450,
+          "positive_rate": 0.6911111111111111,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 9.0,
+          "minimum": 4.0,
+          "n": 450,
+          "positive_rate": 0.3333333333333333,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "name_word_count",
+      "mean_difference": -1.935346794881883,
+      "positive_mean": 2.1748768472906406,
+      "positive_median": 2.0,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.999384236453202,
+      "rank_bucket_positive_rate_trend_correlation": -0.9271613556149003,
+      "standardized_mean_difference": -1.2712812285050803
+    },
+    {
+      "available_before_atomic_initial_buy": false,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": -0.2733774912529294,
+        "train_earliest_50pct": -0.19330486912486577,
+        "validation_next_25pct": -0.18075319792363115
+      },
+      "control_mean": 0.25559105431309903,
+      "control_median": 0.0,
+      "control_n": 626,
+      "control_nonzero_prevalence": 0.11022364217252396,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.5888888888888889,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.74,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.8222222222222222,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.7422222222222222,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 7.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.7155555555555555,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "name_digit_count",
+      "mean_difference": -0.14783243362344387,
+      "positive_mean": 0.10775862068965517,
+      "positive_median": 0.0,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.04310344827586207,
+      "rank_bucket_positive_rate_trend_correlation": 0.4783866023010692,
+      "standardized_mean_difference": -0.21601112899334174
+    },
+    {
+      "available_before_atomic_initial_buy": false,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": -1.0930729719116423,
+        "train_earliest_50pct": -1.3060557918560067,
+        "validation_next_25pct": -0.595339180604551
+      },
+      "control_mean": 0.6604222559845482,
+      "control_median": 1.0,
+      "control_n": 626,
+      "control_nonzero_prevalence": 0.731629392971246,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.6377777777777778,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 0.16666666666666666,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.9488888888888889,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 0.23076923076923078,
+          "minimum": 0.16666666666666666,
+          "n": 450,
+          "positive_rate": 0.9755555555555555,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 1.0,
+          "minimum": 0.23076923076923078,
+          "n": 450,
+          "positive_rate": 0.6955555555555556,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 1.0,
+          "minimum": 1.0,
+          "n": 450,
+          "positive_rate": 0.3511111111111111,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "name_upper_ratio",
+      "mean_difference": -0.41130561220243644,
+      "positive_mean": 0.24911664378211176,
+      "positive_median": 0.18181818181818182,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.8078817733990148,
+      "rank_bucket_positive_rate_trend_correlation": -0.5115762305379484,
+      "standardized_mean_difference": -1.0861232233724007
+    },
+    {
+      "available_before_atomic_initial_buy": false,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": 0.029395213951534913,
+        "train_earliest_50pct": -0.10521124018461306,
+        "validation_next_25pct": 0.041842531254476414
+      },
+      "control_mean": 0.5791956534768037,
+      "control_median": 1.0,
+      "control_n": 626,
+      "control_nonzero_prevalence": 0.8466453674121406,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 0.125,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.7244444444444444,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 0.25,
+          "minimum": 0.125,
+          "n": 450,
+          "positive_rate": 0.7333333333333333,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 1.0,
+          "minimum": 0.25,
+          "n": 450,
+          "positive_rate": 0.6377777777777778,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 1.0,
+          "minimum": 1.0,
+          "n": 450,
+          "positive_rate": 0.7622222222222222,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 1.0,
+          "minimum": 1.0,
+          "n": 450,
+          "positive_rate": 0.7511111111111111,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "symbol_upper_ratio",
+      "mean_difference": -0.018786377134645593,
+      "positive_mean": 0.5604092763421581,
+      "positive_median": 0.42857142857142855,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.8343596059113301,
+      "rank_bucket_positive_rate_trend_correlation": 0.26409714079450086,
+      "standardized_mean_difference": -0.04287458128717316
+    },
+    {
+      "available_before_atomic_initial_buy": false,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": -0.6834534226560136,
+        "train_earliest_50pct": -0.4630980616681413,
+        "validation_next_25pct": -0.16602404787695668
+      },
+      "control_mean": 0.963258785942492,
+      "control_median": 1.0,
+      "control_n": 626,
+      "control_nonzero_prevalence": 0.5191693290734825,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.6911111111111111,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.8733333333333333,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.8666666666666667,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.7977777777777778,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 26.0,
+          "minimum": 1.0,
+          "n": 450,
+          "positive_rate": 0.38,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "prior_same_name_count",
+      "mean_difference": -0.6005740568784526,
+      "positive_mean": 0.3626847290640394,
+      "positive_median": 0.0,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.11514778325123153,
+      "rank_bucket_positive_rate_trend_correlation": -0.5391656464402653,
+      "standardized_mean_difference": -0.3500093541300089
+    },
+    {
+      "available_before_atomic_initial_buy": false,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": -0.5488562302895399,
+        "train_earliest_50pct": -0.5560855425649687,
+        "validation_next_25pct": -0.11594485183790953
+      },
+      "control_mean": 1.6533546325878594,
+      "control_median": 1.0,
+      "control_n": 626,
+      "control_nonzero_prevalence": 0.7092651757188498,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.7911111111111111,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.92,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.8933333333333333,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.5955555555555555,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 34.0,
+          "minimum": 1.0,
+          "n": 450,
+          "positive_rate": 0.4088888888888889,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "prior_same_symbol_count",
+      "mean_difference": -0.8263841892381057,
+      "positive_mean": 0.8269704433497537,
+      "positive_median": 0.0,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.22475369458128078,
+      "rank_bucket_positive_rate_trend_correlation": -0.7955048614872007,
+      "standardized_mean_difference": -0.32654326019873176
+    },
+    {
+      "available_before_atomic_initial_buy": false,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": null,
+        "train_earliest_50pct": null,
+        "validation_next_25pct": null
+      },
+      "control_mean": 0.0,
+      "control_median": 0.0,
+      "control_n": 626,
+      "control_nonzero_prevalence": 0.0,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.5733333333333334,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.6844444444444444,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.8555555555555555,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.7333333333333333,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 0.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.7622222222222222,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "prior_same_metadata_uri_count",
+      "mean_difference": 0.0,
+      "positive_mean": 0.0,
+      "positive_median": 0.0,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.0,
+      "rank_bucket_positive_rate_trend_correlation": 0.6499406751692038,
+      "standardized_mean_difference": null
+    },
+    {
+      "available_before_atomic_initial_buy": true,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": 0.4276070211863736,
+        "train_earliest_50pct": 0.16168330484743915,
+        "validation_next_25pct": -0.0839244917538142
+      },
+      "control_mean": -0.5588408517901574,
+      "control_median": -0.7071067811865477,
+      "control_n": 626,
+      "control_nonzero_prevalence": 0.9361022364217252,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": -0.9659258262890683,
+          "minimum": -1.0,
+          "n": 450,
+          "positive_rate": 0.7066666666666667,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": -0.7071067811865477,
+          "minimum": -0.9659258262890683,
+          "n": 450,
+          "positive_rate": 0.7022222222222222,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": -0.5000000000000004,
+          "minimum": -0.7071067811865477,
+          "n": 450,
+          "positive_rate": 0.6755555555555556,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 0.0,
+          "minimum": -0.5000000000000004,
+          "n": 450,
+          "positive_rate": 0.7333333333333333,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.7911111111111111,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "utc_hour_sin",
+      "mean_difference": 0.0743930863077033,
+      "positive_mean": -0.4844477654824541,
+      "positive_median": -0.7071067811865475,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.9224137931034483,
+      "rank_bucket_positive_rate_trend_correlation": 0.7213168840921891,
+      "standardized_mean_difference": 0.1534764756863791
+    },
+    {
+      "available_before_atomic_initial_buy": true,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": -0.06124637250246573,
+        "train_earliest_50pct": -0.17790104258824802,
+        "validation_next_25pct": -0.2237045005975401
+      },
+      "control_mean": 0.2950487546030784,
+      "control_median": 0.5000000000000001,
+      "control_n": 626,
+      "control_nonzero_prevalence": 1.0,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": -0.5000000000000004,
+          "minimum": -1.0,
+          "n": 450,
+          "positive_rate": 0.76,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": -1.8369701987210297e-16,
+          "minimum": -0.5000000000000004,
+          "n": 450,
+          "positive_rate": 0.76,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 0.7071067811865474,
+          "minimum": -1.8369701987210297e-16,
+          "n": 450,
+          "positive_rate": 0.68,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 0.9659258262890683,
+          "minimum": 0.7071067811865474,
+          "n": 450,
+          "positive_rate": 0.7022222222222222,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 1.0,
+          "minimum": 0.9659258262890683,
+          "n": 450,
+          "positive_rate": 0.7066666666666667,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "utc_hour_cos",
+      "mean_difference": -0.10654125532513287,
+      "positive_mean": 0.18850749927794552,
+      "positive_median": 0.2588190451025203,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 1.0,
+      "rank_bucket_positive_rate_trend_correlation": -0.715786490094077,
+      "standardized_mean_difference": -0.16242556216416693
+    },
+    {
+      "available_before_atomic_initial_buy": true,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": 0.18745772369918798,
+        "train_earliest_50pct": 0.28754411202991736,
+        "validation_next_25pct": -0.36767133351074366
+      },
+      "control_mean": 6.494380841478455,
+      "control_median": 6.7363734861220905,
+      "control_n": 626,
+      "control_nonzero_prevalence": 1.0,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 6.1092475827643655,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.5733333333333334,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 6.803505257608338,
+          "minimum": 6.111467339502679,
+          "n": 450,
+          "positive_rate": 0.6844444444444444,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 7.20934025660291,
+          "minimum": 6.804614520062624,
+          "n": 450,
+          "positive_rate": 0.8555555555555555,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 7.4977617006225685,
+          "minimum": 7.210079628170788,
+          "n": 450,
+          "positive_rate": 0.7333333333333333,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 7.720905251936779,
+          "minimum": 7.498315870766981,
+          "n": 450,
+          "positive_rate": 0.7622222222222222,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "log1p_prior_creator_self_launch_count_in_window",
+      "mean_difference": 0.3154455916332175,
+      "positive_mean": 6.809826433111673,
+      "positive_median": 7.084645358025232,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.999384236453202,
+      "rank_bucket_positive_rate_trend_correlation": 0.6499406751692038,
+      "standardized_mean_difference": 0.3125930472767167
+    },
+    {
+      "available_before_atomic_initial_buy": true,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": 0.18953555252145304,
+        "train_earliest_50pct": 0.30887713938862493,
+        "validation_next_25pct": -0.37931733022678904
+      },
+      "control_mean": 6.051068925742506,
+      "control_median": 6.261491684321042,
+      "control_n": 626,
+      "control_nonzero_prevalence": 1.0,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 5.552959584921617,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.5733333333333334,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 6.331501849893691,
+          "minimum": 5.556828061699537,
+          "n": 450,
+          "positive_rate": 0.6844444444444444,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 6.852242569051878,
+          "minimum": 6.331501849893691,
+          "n": 450,
+          "positive_rate": 0.8555555555555555,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 7.151485463904735,
+          "minimum": 6.853299093186078,
+          "n": 450,
+          "positive_rate": 0.7333333333333333,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 7.358830898342354,
+          "minimum": 7.151485463904735,
+          "n": 450,
+          "positive_rate": 0.7622222222222222,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "log1p_prior_creator_completed_position_count_in_window",
+      "mean_difference": 0.3381969581966491,
+      "positive_mean": 6.389265883939155,
+      "positive_median": 6.693942863395522,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.999384236453202,
+      "rank_bucket_positive_rate_trend_correlation": 0.6499406751692038,
+      "standardized_mean_difference": 0.3225919503461704
+    },
+    {
+      "available_before_atomic_initial_buy": true,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": -0.16267278284607917,
+        "train_earliest_50pct": -0.018847107199369093,
+        "validation_next_25pct": -0.05990282373924938
+      },
+      "control_mean": 0.9717092823662647,
+      "control_median": 0.9706610382150109,
+      "control_n": 626,
+      "control_nonzero_prevalence": 1.0,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 0.9682119205298013,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.6466666666666666,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 0.9702194357366771,
+          "minimum": 0.9682119205298013,
+          "n": 450,
+          "positive_rate": 0.7355555555555555,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 0.9736842105263158,
+          "minimum": 0.9702194357366771,
+          "n": 450,
+          "positive_rate": 0.6911111111111111,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 0.97669256381798,
+          "minimum": 0.9736842105263158,
+          "n": 450,
+          "positive_rate": 0.8377777777777777,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 1.0,
+          "minimum": 0.9767008387698043,
+          "n": 450,
+          "positive_rate": 0.6977777777777778,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "prior_creator_completed_native_wr_in_window",
+      "mean_difference": 2.4213215282675726e-05,
+      "positive_mean": 0.9717334955815474,
+      "positive_median": 0.9721648694556431,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.999384236453202,
+      "rank_bucket_positive_rate_trend_correlation": 0.4482315336807487,
+      "standardized_mean_difference": 0.0013411688373097174
+    },
+    {
+      "available_before_atomic_initial_buy": true,
+      "available_by_create": true,
+      "chronological_standardized_mean_difference": {
+        "holdout_latest_25pct": 0.2243530339292245,
+        "train_earliest_50pct": 0.3601816820129764,
+        "validation_next_25pct": 0.06395937468995795
+      },
+      "control_mean": 1.083674575874257,
+      "control_median": 1.1724904284760624,
+      "control_n": 626,
+      "control_nonzero_prevalence": 1.0,
+      "coverage": 1.0,
+      "equal_frequency_rank_buckets": [
+        {
+          "maximum": 1.0340749045962263,
+          "minimum": 0.0,
+          "n": 450,
+          "positive_rate": 0.5733333333333334,
+          "rank_bucket": 1
+        },
+        {
+          "maximum": 1.1731938021828046,
+          "minimum": 1.034628415608365,
+          "n": 450,
+          "positive_rate": 0.7266666666666667,
+          "rank_bucket": 2
+        },
+        {
+          "maximum": 1.1849429286327986,
+          "minimum": 1.1731967954132334,
+          "n": 450,
+          "positive_rate": 0.6977777777777778,
+          "rank_bucket": 3
+        },
+        {
+          "maximum": 1.1946855377662753,
+          "minimum": 1.1849611343914808,
+          "n": 450,
+          "positive_rate": 0.78,
+          "rank_bucket": 4
+        },
+        {
+          "maximum": 1.292789499184901,
+          "minimum": 1.1947022373396825,
+          "n": 450,
+          "positive_rate": 0.8311111111111111,
+          "rank_bucket": 5
+        }
+      ],
+      "feature": "prior_creator_completed_native_expectancy_sol_in_window",
+      "mean_difference": 0.052889807074572026,
+      "positive_mean": 1.136564382948829,
+      "positive_median": 1.1821688727597244,
+      "positive_n": 1624,
+      "positive_nonzero_prevalence": 0.999384236453202,
+      "rank_bucket_positive_rate_trend_correlation": 0.9231115958883948,
+      "standardized_mean_difference": 0.36391609654975554
+    }
+  ],
+  "hour_table": [
+    {
+      "bought_n": 126,
+      "bought_rate": 0.7590361445783133,
+      "n": 166,
+      "utc_hour": 0
+    },
+    {
+      "bought_n": 68,
+      "bought_rate": 0.7311827956989247,
+      "n": 93,
+      "utc_hour": 1
+    },
+    {
+      "bought_n": 51,
+      "bought_rate": 0.7183098591549296,
+      "n": 71,
+      "utc_hour": 2
+    },
+    {
+      "bought_n": 44,
+      "bought_rate": 0.8461538461538461,
+      "n": 52,
+      "utc_hour": 3
+    },
+    {
+      "bought_n": 30,
+      "bought_rate": 1.0,
+      "n": 30,
+      "utc_hour": 4
+    },
+    {
+      "bought_n": 13,
+      "bought_rate": 0.7647058823529411,
+      "n": 17,
+      "utc_hour": 5
+    },
+    {
+      "bought_n": 8,
+      "bought_rate": 1.0,
+      "n": 8,
+      "utc_hour": 6
+    },
+    {
+      "bought_n": 1,
+      "bought_rate": 1.0,
+      "n": 1,
+      "utc_hour": 7
+    },
+    {
+      "bought_n": 0,
+      "bought_rate": null,
+      "n": 0,
+      "utc_hour": 8
+    },
+    {
+      "bought_n": 0,
+      "bought_rate": null,
+      "n": 0,
+      "utc_hour": 9
+    },
+    {
+      "bought_n": 3,
+      "bought_rate": 1.0,
+      "n": 3,
+      "utc_hour": 10
+    },
+    {
+      "bought_n": 6,
+      "bought_rate": 0.75,
+      "n": 8,
+      "utc_hour": 11
+    },
+    {
+      "bought_n": 18,
+      "bought_rate": 0.782608695652174,
+      "n": 23,
+      "utc_hour": 12
+    },
+    {
+      "bought_n": 40,
+      "bought_rate": 0.6557377049180327,
+      "n": 61,
+      "utc_hour": 13
+    },
+    {
+      "bought_n": 100,
+      "bought_rate": 0.8695652173913043,
+      "n": 115,
+      "utc_hour": 14
+    },
+    {
+      "bought_n": 142,
+      "bought_rate": 0.7513227513227513,
+      "n": 189,
+      "utc_hour": 15
+    },
+    {
+      "bought_n": 141,
+      "bought_rate": 0.7704918032786885,
+      "n": 183,
+      "utc_hour": 16
+    },
+    {
+      "bought_n": 145,
+      "bought_rate": 0.8333333333333334,
+      "n": 174,
+      "utc_hour": 17
+    },
+    {
+      "bought_n": 113,
+      "bought_rate": 0.6208791208791209,
+      "n": 182,
+      "utc_hour": 18
+    },
+    {
+      "bought_n": 115,
+      "bought_rate": 0.7098765432098766,
+      "n": 162,
+      "utc_hour": 19
+    },
+    {
+      "bought_n": 114,
+      "bought_rate": 0.5906735751295337,
+      "n": 193,
+      "utc_hour": 20
+    },
+    {
+      "bought_n": 113,
+      "bought_rate": 0.6494252873563219,
+      "n": 174,
+      "utc_hour": 21
+    },
+    {
+      "bought_n": 106,
+      "bought_rate": 0.7019867549668874,
+      "n": 151,
+      "utc_hour": 22
+    },
+    {
+      "bought_n": 127,
+      "bought_rate": 0.654639175257732,
+      "n": 194,
+      "utc_hour": 23
+    }
+  ]
+}

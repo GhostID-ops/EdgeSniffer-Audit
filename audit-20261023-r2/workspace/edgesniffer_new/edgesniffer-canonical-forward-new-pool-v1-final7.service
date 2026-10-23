@@ -1,0 +1,34 @@
+[Unit]
+Description=EdgeSniffer Canonical State V1 restricted forward new-pool capture (final7)
+After=network-online.target
+Wants=network-online.target
+RequiresMountsFor=/mnt/edgesniffer-canonical-hot
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=/etc/edgesniffer/kefi-full-meta.env
+EnvironmentFile=/etc/edgesniffer/kefi-choice-state-observer-v1-live.env
+EnvironmentFile=/root/bot/EdgeSniffer/.env
+Environment=CANONICAL_SHYFT_GRPC_ENDPOINT=https://grpc.fra.shyft.to
+Environment=FINALIZED_RECONCILIATION_CANARY_ROOT=/mnt/edgesniffer-canonical-hot/canonical-state-v1-forward-new-pool-v1-final7-20261017T202500Z
+Environment=FINALIZED_RANGE_SLOT_COUNT=3
+Environment=CANONICAL_FORWARD_CAPTURE_SEGMENT_LIMIT=256
+Environment=CANONICAL_FORWARD_CAPTURE_RPC_BUDGET=2048
+Environment=CANONICAL_CANARY_TOTAL_CAP_BYTES=6442450944
+Environment=CANONICAL_CANARY_PROTECTED_RESERVE_BYTES=171798691840
+Environment=CANONICAL_CANARY_START_FLOOR_BYTES=194347270144
+Environment=CANONICAL_CANARY_MAX_SECONDS=5400
+Environment=CANONICAL_FINALIZED_RPC_TIMEOUT_SECONDS=90
+ExecStartPre=/usr/bin/mountpoint -q /mnt/edgesniffer-canonical-hot
+ExecStartPre=/bin/sh -c 'test "$(findmnt -no SOURCE --target /mnt/edgesniffer-canonical-hot)" = "/dev/vdd1"'
+ExecStartPre=/bin/sh -c 'test "$(df -B1 --output=avail /mnt/edgesniffer-canonical-hot | tail -n1 | tr -d " ")" -ge 194347270144'
+ExecStart=/usr/local/lib/edgesniffer/edgesniffer-kefi-finalized-rpc-canary-v1-final7
+Restart=no
+MemoryMax=8G
+CPUQuota=200%
+IOSchedulingClass=idle
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

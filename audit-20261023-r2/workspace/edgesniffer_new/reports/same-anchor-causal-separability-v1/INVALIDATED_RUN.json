@@ -1,0 +1,14 @@
+{
+  "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_INVALIDATION",
+  "invalidatedAtUtc": "2026-09-07T21:45:50Z",
+  "classification": "INVALIDATED_EQUAL_TIMESTAMP_POST_TRIGGER_LEAKAGE",
+  "reason": "Feature extraction admitted transactions with local arrival_ms equal to the anchor decision timestamp even when deterministic transaction ordering placed them after the crossing transaction.",
+  "affectedPrimaryRows": 459,
+  "affectedPrimaryPopulationN": 1209,
+  "invalidReportSha256": "9d2428e8f5c40b646145a2c70877f0410376d9b1dee271970bfe22418058cddd",
+  "invalidScriptSha256": "1c81529abe659db3c6a3494a396f89c70127e0b76157ceedad4059eb55a8b653",
+  "correctedScriptSha256": "1e56012a7dea5f380fb276885ebaae8de959be0b9bb4d0c59a68c3d2c12c9bb4",
+  "researchContractChanged": false,
+  "economicLabelsChanged": false,
+  "remediation": "Filter eligible event groups through the exact trigger signature and slot, inclusive, before constructing any feature. Added a regression test for a later transaction sharing the decision millisecond."
+}

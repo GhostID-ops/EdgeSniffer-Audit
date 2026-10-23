@@ -1,0 +1,65 @@
+{
+  "schema": "2CQ_INCREMENTAL_RECONCILIATION_V1_REPORT",
+  "completedAtUtc": "2026-09-11T19:31:51.593444Z",
+  "problem": {
+    "staleEligibleN": 448,
+    "lastStaleStatusUtc": "2026-09-11T03:16:35.988405Z",
+    "rootCauses": [
+      "cumulative reconciliation eagerly loaded finalized transaction JSON",
+      "all undecided episodes were reevaluated on every run",
+      "arrival joins repeatedly scanned the full compact journal",
+      "unsupported non-Pump routes entered expensive mint-history replay",
+      "batch decisions were not durable until the entire batch completed"
+    ],
+    "previousTimeoutChangeWasSufficient": false,
+    "previousTimeoutChangeExplanation": "TimeoutStartSec=infinity removed an artificial kill deadline but did not bound memory or make checkpoint publication incremental."
+  },
+  "repair": {
+    "transactionCache": "DISK_BACKED_ONE_ENTRY_CACHE",
+    "episodePolicy": "ONLY_EPISODES_WITHOUT_A_DURABLE_PRIOR_DECISION",
+    "arrivalJoinBatchEpisodes": 16,
+    "checkpointGranularity": "ONE_EPISODE",
+    "rpcPrewarmWorkers": 8,
+    "supportedTierARoutes": [
+      "PUMP_BONDING_CURVE",
+      "PUMP_CPI"
+    ],
+    "unsupportedRouteHandling": "FAIL_FAST_WITH_IDENTICAL_INELIGIBLE_RESULT",
+    "postTargetPolicy": "RETURN_EXISTING_STATUS_WITHOUT_REBUILD"
+  },
+  "verification": {
+    "finalEligibleN": 500,
+    "developmentEligibleN": 350,
+    "sealedValidationEligibleN": 150,
+    "uniqueSignatures": 500,
+    "uniqueOrdinals": 500,
+    "ordinalRange": [
+      1,
+      500
+    ],
+    "newEpisodesEvaluatedFinalRun": 68,
+    "newEligibleFinalRun": 23,
+    "outcomesRead": 0,
+    "submissions": 0,
+    "observedPythonRssUpperBoundMiB": 850,
+    "priorOomRangeGiB": "10.4-12.3",
+    "postCompletionNoOpSeconds": 0.31,
+    "postCompletionNoOpMaxRssKiB": 6400,
+    "frozenEvaluatorSha256": "0dd6f25dd208b7a9955cc692ff1f9a93560450dbcf46376809ce9bfe49f28a08",
+    "regressionTest": "PASS"
+  },
+  "collection": {
+    "captureFirst": "ACTIVE_RUNNING_ZERO_RESTARTS",
+    "compactAllenharkObserver": "ACTIVE_RUNNING_ZERO_RESTARTS",
+    "exactEvidenceLedger": "ACTIVE_RUNNING_ZERO_RESTARTS",
+    "allenharkArrivalJournalAdvancing": true,
+    "volumeFreeGiB": 510
+  },
+  "scopeBoundary": {
+    "completedCohort": "2CQ_PROSPECTIVE_TIER_A_ENTRY_CENSUS_V3",
+    "symmetricChoiceCohortRawCollectionActive": true,
+    "symmetricChoiceDevelopmentMaterializedN": 0,
+    "symmetricChoiceMaterializerImplementedByThisRepair": false,
+    "nextRequiredWork": "Apply the incremental checkpoint architecture to materialize 2CQ_PROSPECTIVE_SYMMETRIC_CHOICE_CENSUS_V1 without reading outcomes."
+  }
+}

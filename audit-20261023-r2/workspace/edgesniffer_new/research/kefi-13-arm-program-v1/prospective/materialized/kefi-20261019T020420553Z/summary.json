@@ -1,0 +1,11 @@
+{
+  "candidate_buy_events": 13189,
+  "outcome_blind": true,
+  "partitions": [
+    "2026/10/19/02"
+  ],
+  "protobuf_transactions_decoded": 80202,
+  "schema": "KEFI_UNIFIED_MARKET_TEACHER_V1",
+  "source_frames_scanned": 80202,
+  "tracked_teacher_events": 1
+}

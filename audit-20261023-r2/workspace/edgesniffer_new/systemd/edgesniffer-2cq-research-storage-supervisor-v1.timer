@@ -1,0 +1,11 @@
+[Unit]
+Description=Run EdgeSniffer 2CQ hot/cold storage supervisor every five minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=5min
+Persistent=true
+Unit=edgesniffer-2cq-research-storage-supervisor-v1.service
+
+[Install]
+WantedBy=timers.target

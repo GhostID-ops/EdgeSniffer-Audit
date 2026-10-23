@@ -1,0 +1,66 @@
+{
+  "schema": "8ycb-live-dust-pilot-preparation-v2",
+  "pilot_id": "8ycb-live-dust-pilot-v1",
+  "prepared_without_arming": true,
+  "real_market_submission_enabled": false,
+  "real_market_submission_count": 0,
+  "position_size_lamports": 10000000,
+  "max_curve_spend_lamports": 13500000,
+  "old_max_wallet_at_risk_lamports": 426520000,
+  "new_max_wallet_at_risk_lamports": 169520000,
+  "buy_fee_hard_cap_lamports": 76010000,
+  "sell_fee_hard_cap_lamports": 76010000,
+  "jito_tip_hard_cap_lamports": 1000000,
+  "setup_reserve_lamports": 3000000,
+  "dedicated_wallet_balance_lamports_at_audit": 460089634,
+  "risk_buffer_after_max_debit_lamports": 290569634,
+  "fee_cap_basis": {
+    "network_cap_per_leg": "pilot-local MAX_NETWORK_FEE_LAMPORTS=76010000",
+    "priority_fee_calibration": 75000000,
+    "base_fee_assumption": 5000,
+    "jito_tip": "existing sender requires nonzero tip; isolated prior 1000000-lamport-tip benchmarks landed",
+    "setup_reserve": 3000000
+  },
+  "automated_exit": {
+    "source": "existing production Rust PumpfunBuilder::build_sell",
+    "fixture_classification": "8YCB_TINY_LIVE_CALIBRATION_DRY_RUN_PASS",
+    "sell_broadcaster_boundary": "RPC_SEND_TRANSACTION_CALL_BLOCKED",
+    "submission_count": 0,
+    "restart_persistence": true,
+    "duplicate_state_reservation_rejected": true,
+    "duplicate_signal_rejected": true,
+    "terminal_disarmed": true
+  },
+  "emergency_exit": {
+    "binary_path": "/usr/local/lib/8ycb-live-dust-pilot/emergency-exit",
+    "binary_sha256": "19bd4339d214ffb3bd6786f9892642ad06c28b92a963625215ba21d13af3659f",
+    "mode_proven": "dry-run",
+    "classification": "8YCB_EMERGENCY_EXIT_DRY_RUN_PASS",
+    "sell_only": true,
+    "buy_path_present": false,
+    "broadcaster_boundary": "RPC_SEND_TRANSACTION_CALL_BLOCKED",
+    "submission_count": 0,
+    "submit_requires_arm_token": "REDACTED_OPERATIONAL_ARMING_VALUE",
+    "submit_requires_global_gate": "ARMED_FOR_8YCB_REAL_MARKET_SUBMISSION_V1"
+  },
+  "source_provenance": {
+    "source_copy": "/var/lib/8ycb-live-dust-pilot/build-source",
+    "source_revision": "012c14fbd515b82c8f11283114e05903b9203061",
+    "cargo_lock_sha256": "33b71ccab93400f9745524cd9e9b693298bf3cadad0f7d3d7768863abf8c3a63",
+    "pumpfun_source_sha256": "5f37dbe263f451b9fec34c8027a0ebc56e46847ffec1bff94f5508dd112a99dc",
+    "live_source_sha256": "47f07d1249852b2b2bfa80b6da5c62e644c2ddfe86e7d942da0517d2f17cb9ca",
+    "calibration_source_sha256": "750317661fcef58d6eb3b562510635007a127b84c7e64b7dd421c60fd483683a",
+    "emergency_source_sha256": "3c458994e361a8e573bdebe46a50da17d5dac7edcfad4f2b8c291e8ba8d33dc5",
+    "toolchain": "rustc/cargo 1.96.0",
+    "build_command": "cargo build --release --locked --bin pilot_emergency_exit --target-dir /var/lib/8ycb-live-dust-pilot/build-target"
+  },
+  "service_state": {
+    "unit": "8ycb-live-dust-pilot.service",
+    "enabled": false,
+    "active": false,
+    "arm_file_present": false,
+    "global_submission_gate_present": false,
+    "legacy_sender": "disabled/inactive",
+    "v5_shadow": "active; not modified or restarted"
+  }
+}

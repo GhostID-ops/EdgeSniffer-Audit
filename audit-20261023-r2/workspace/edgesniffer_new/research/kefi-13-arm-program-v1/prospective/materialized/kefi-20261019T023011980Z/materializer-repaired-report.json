@@ -1,0 +1,15 @@
+{
+  "materialized_observations": 5,
+  "outcome_blind": true,
+  "rejected_rows": 1,
+  "rejections": [
+    {
+      "event_signature": "59uADVeUtToue74Bxf58NWKNHM7PfowyMJHcWYaLy9DonY3WqzAbKbtKgMZ8ywrgwqDuzsVNgjzkkWwpvbyzza57",
+      "line": 11156,
+      "reason": "VENUE_RESOLUTION_MISSING"
+    }
+  ],
+  "schema": "KEFI_13_ARM_PROSPECTIVE_OBSERVATION_MATERIALIZER_V1",
+  "tracked_teacher_rows": 6,
+  "window_id": "kefi-20261019T023011980Z"
+}

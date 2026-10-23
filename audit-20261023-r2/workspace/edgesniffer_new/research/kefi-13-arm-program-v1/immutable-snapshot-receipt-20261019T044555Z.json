@@ -1,0 +1,39 @@
+{
+  "schema": "KEFI_13_ARM_IMMUTABLE_SNAPSHOT_RECEIPT_V1",
+  "snapshot_id": "kefi-13-arm-source-immutable-20261019T044555Z",
+  "captured_at_utc": "2026-10-19T04:45:55Z",
+  "capture_status": "LATEST_AVAILABLE_REMOTE_COPY_REGISTERED",
+  "fresh_vps_capture_in_this_run": false,
+  "fresh_vps_capture_blocker": "SSH TCP/22 to 87.99.145.246 timed out before authentication; receive-only service was not modified.",
+  "source_service_expected_cohort_id": "kefi-13-arm-multivenue-prospective-20261019T025634Z",
+  "source_boundary_utc": "2026-10-19T02:56:34.388060Z",
+  "collection_mode": "RECEIVE_ONLY_FINALIZED_RPC",
+  "live_trading_enabled": false,
+  "jupiter_fallback_enabled": false,
+  "tracked_wallet": "kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf",
+  "raw_transactions": {
+    "path": "prospective-multivenue-20261019T041500Z/raw-transactions-remote-latest-20261019T044555Z.jsonl",
+    "rows": 498,
+    "bytes": 7861351,
+    "sha256": "c3865959d4abdd5c8c175c06a27f61c26ddfb753e62ff0bd1b94c75a4047d6c6"
+  },
+  "source_state": {
+    "path": "prospective-multivenue-20261019T041500Z/source-state-remote-latest-20261019T044555Z.json",
+    "records_written": 499,
+    "bytes": 57368,
+    "sha256": "2bc22b53c18e1707a04a44c705458247d284a823737b58072ab698a74040b625"
+  },
+  "source_manifest": {
+    "path": "prospective-multivenue-20261019T041500Z/source-manifest-remote.json",
+    "sha256": "06e24e068913002bc484145213eb9bd2017d5c6b79619a32782ca7705ddc9380"
+  },
+  "analysis_inputs": {
+    "registry_sha256": "ebf49fb316527a55f02343dd9370f70662b20ed430c4e58da05cc8fadd4a4a2c",
+    "frozen_policies_sha256": "b981d869f652294ecdf2c5e3fda1e07ba8830cbe57a9d6361643f2f85c03ffc0",
+    "collection_manifest_sha256": "be1b9f72baba574e8f6f1b9924c2ccb0e0de6067053306bfab0574b864da77f8"
+  },
+  "read_only": true,
+  "cohort_reset": false,
+  "policy_changed": false,
+  "collector_changed": false
+}

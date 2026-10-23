@@ -1,0 +1,35 @@
+{
+  "conflicts": [],
+  "dropped": [
+    {
+      "line": 1,
+      "observation_id": "obs-84c8bc24b04ac6b98d86572595e6ca2c",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 2,
+      "observation_id": "obs-3de850dc66efade7808b2d857c9ea8b6",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 3,
+      "observation_id": "obs-4726d47d1705f567f03482088e348921",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 4,
+      "observation_id": "obs-54f1dd625f8692cc43347ab7a1c07aac",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 5,
+      "observation_id": "obs-c03fa3a210d50147aca3d87588da414b",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    }
+  ],
+  "fresh_rows": 4,
+  "identical_overlaps_dropped": 5,
+  "input_rows": 9,
+  "schema": "KEFI_13_ARM_PROSPECTIVE_BATCH_DEDUP_V1",
+  "status": "PASS"
+}

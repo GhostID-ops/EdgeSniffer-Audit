@@ -1,0 +1,226 @@
+{
+  "after_relation_rows": 425,
+  "ambiguous_same_slot_rows": 693,
+  "before_relation_rows": 0,
+  "canonical_block_order_slots_available": 103,
+  "canonical_block_order_slots_missing": 131,
+  "completeness": {
+    "complete_identity": 219,
+    "missing_create": 15,
+    "synthetic_target_initial_buy_from_native_ledger": 219
+  },
+  "extracted_mints": 222,
+  "extracted_observations": 18693,
+  "follower_curve_only_economics": {
+    "delay_1000ms": {
+      "expectancy_roi_pct": 4.321821726027397,
+      "median_roi_pct": -1.2536320000000045,
+      "n": 219,
+      "profit_factor_on_roi": 1.6457045171938092,
+      "sl_rate": 0.2009132420091324,
+      "tp_rate": 0.3607305936073059,
+      "wr": 0.4885844748858447
+    },
+    "delay_1000ms_entry_5pct_worse": {
+      "expectancy_roi_pct": 1.5720077305936075,
+      "median_roi_pct": -6.065978999999999,
+      "n": 219,
+      "profit_factor_on_roi": 1.1812500959833492,
+      "sl_rate": 0.2237442922374429,
+      "tp_rate": 0.3515981735159817,
+      "wr": 0.3881278538812785
+    },
+    "delay_100ms": {
+      "expectancy_roi_pct": 12.932144333333333,
+      "median_roi_pct": 20.494512000000007,
+      "n": 219,
+      "profit_factor_on_roi": 5.140087904527169,
+      "sl_rate": 0.0639269406392694,
+      "tp_rate": 0.5342465753424658,
+      "wr": 0.6757990867579908
+    },
+    "delay_100ms_entry_5pct_worse": {
+      "expectancy_roi_pct": 9.991906255707763,
+      "median_roi_pct": 13.070026999999996,
+      "n": 219,
+      "profit_factor_on_roi": 3.0637222852340806,
+      "sl_rate": 0.091324200913242,
+      "tp_rate": 0.4931506849315068,
+      "wr": 0.5799086757990868
+    },
+    "delay_250ms": {
+      "expectancy_roi_pct": 9.849102054794521,
+      "median_roi_pct": 7.756508000000006,
+      "n": 219,
+      "profit_factor_on_roi": 3.351675282864656,
+      "sl_rate": 0.091324200913242,
+      "tp_rate": 0.4703196347031963,
+      "wr": 0.593607305936073
+    },
+    "delay_250ms_entry_5pct_worse": {
+      "expectancy_roi_pct": 6.851180840182649,
+      "median_roi_pct": -1.9022289999999997,
+      "n": 219,
+      "profit_factor_on_roi": 2.1021073560086228,
+      "sl_rate": 0.1278538812785388,
+      "tp_rate": 0.4474885844748858,
+      "wr": 0.4977168949771689
+    },
+    "delay_25ms": {
+      "expectancy_roi_pct": 23.71575720091324,
+      "median_roi_pct": 24.386404000000006,
+      "n": 219,
+      "profit_factor_on_roi": 34.66878704631556,
+      "sl_rate": 0.0182648401826484,
+      "tp_rate": 0.8082191780821918,
+      "wr": 0.9360730593607306
+    },
+    "delay_25ms_entry_5pct_worse": {
+      "expectancy_roi_pct": 20.317026949771687,
+      "median_roi_pct": 23.111723999999988,
+      "n": 219,
+      "profit_factor_on_roi": 18.95331794822984,
+      "sl_rate": 0.0273972602739726,
+      "tp_rate": 0.7214611872146118,
+      "wr": 0.867579908675799
+    },
+    "delay_500ms": {
+      "expectancy_roi_pct": 9.03465902283105,
+      "median_roi_pct": 1.728897000000007,
+      "n": 219,
+      "profit_factor_on_roi": 2.937618772518049,
+      "sl_rate": 0.1095890410958904,
+      "tp_rate": 0.4520547945205479,
+      "wr": 0.5799086757990868
+    },
+    "delay_500ms_entry_5pct_worse": {
+      "expectancy_roi_pct": 5.732195753424658,
+      "median_roi_pct": -3.831441000000002,
+      "n": 219,
+      "profit_factor_on_roi": 1.8243975669947463,
+      "sl_rate": 0.1461187214611872,
+      "tp_rate": 0.4292237442922374,
+      "wr": 0.4657534246575342
+    },
+    "delay_50ms": {
+      "expectancy_roi_pct": 18.153361520547946,
+      "median_roi_pct": 22.115478999999993,
+      "n": 219,
+      "profit_factor_on_roi": 11.453979394487034,
+      "sl_rate": 0.0410958904109589,
+      "tp_rate": 0.6575342465753424,
+      "wr": 0.7990867579908676
+    },
+    "delay_50ms_entry_5pct_worse": {
+      "expectancy_roi_pct": 15.349086789954338,
+      "median_roi_pct": 21.57449199999999,
+      "n": 219,
+      "profit_factor_on_roi": 6.586739579419802,
+      "sl_rate": 0.0502283105022831,
+      "tp_rate": 0.6073059360730594,
+      "wr": 0.7214611872146118
+    }
+  },
+  "limitations": [
+    "Retained stream is under seven days and does not satisfy the requested complete-period minimum.",
+    "Completeness is established only for rows present in the source feed; routed inner-instruction coverage is not independently proven.",
+    "Follower simulation uses 0.1 SOL, Pump curve plus 125 bps trade fees, and excludes network/tip/account-ready costs.",
+    "First-sellable-adjusted outcomes are unavailable because account-ready telemetry was not retained."
+  ],
+  "positive_launches_in_overlap_by_block_time": 234,
+  "repeated_after_wallets_top20": [
+    [
+      "24678QKx2Dy8ZCw6Ra8o9DeTqPLL5GR9ZQKxt5FddHmq",
+      63
+    ],
+    [
+      "DnRApgn4QXqkRHrde2W8EQAzXKcX3eXHVU4fQBKUzNpY",
+      48
+    ],
+    [
+      "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+      46
+    ],
+    [
+      "FDKdqQc5YfCNM3Y1VFwrc7NjY3SjKvn4dnyJv363yarJ",
+      36
+    ],
+    [
+      "GDQeTnqkyeLyRSjWaeFY5HsxaWoQmmXFc1N6wyuuHiQD",
+      36
+    ],
+    [
+      "3j72HFDm4LKGEgsmcUUupXcLibL1MQXBefMrXM2je8Kc",
+      25
+    ],
+    [
+      "DTpzoWbmGb2TiChBcBBNEvZCGkM682q5Xt4RMNwtqdZ3",
+      19
+    ],
+    [
+      "DxhpC9c4kGkYJR34xUrfFeDx9vwb6yoHUMWrTCZybwtH",
+      16
+    ],
+    [
+      "5STFy6TFx6yo5dQu3qeWgSWqkzBVKc2XgTiR9WjhU7zk",
+      12
+    ],
+    [
+      "7aws8n4SCPqZvJmHV9wzJ9ePWcYYxJndEdi6yeNeoadn",
+      12
+    ],
+    [
+      "AMDEmVocLtN5ji2gBY7BrmSHEyM5vt6TGszBbg4crMXg",
+      10
+    ],
+    [
+      "uWJ77U2xiWhEp89DzCcLPXy2js8x7yo3bh1Lsa5fu2d",
+      7
+    ],
+    [
+      "Eo2iSe4NLvuf5vPAoy7r5eTY76XbSCAdSSdFTrYgiYb7",
+      5
+    ],
+    [
+      "9VCgsSDDdyga1PPRwhwz3Js6W8yumkrUEmCqyXjmxN3A",
+      5
+    ],
+    [
+      "B8fW55EgJoQHJ4sJXJcYvexHssNz2CQAKnpwNH6HHdEB",
+      5
+    ],
+    [
+      "D4gmNL2AcSR3dpvSssev9Aemd8GBeNpmFCFCokBPVAUt",
+      4
+    ],
+    [
+      "2mqrindMAjJEQPLhroYWyiYPo5h9iAsahfdd4QtsjwdY",
+      4
+    ],
+    [
+      "CiHR2ADKJvxiCYghVHRN25rSFYy2GWNVFzq8yszXBmWW",
+      4
+    ],
+    [
+      "3bTYzG94soZcUPD3qX3JGv6AY5Vp1dhGi9GxorbbzH7s",
+      4
+    ],
+    [
+      "CGL4borHkrAjjmWy8adeaYp46DHkm7EFnpE2YjatQ4nr",
+      4
+    ]
+  ],
+  "repeated_before_wallets_top20": [],
+  "same_slot_participant_rows": 1118,
+  "source_snapshot": {
+    "duration_seconds": 468290.967,
+    "first_observation_ts_ms": 1787924365262,
+    "first_observation_utc": "2026-08-28T13:39:25.262000Z",
+    "input": "/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl",
+    "snapshot_bytes": 17416449429,
+    "snapshot_last_observation_ts_ms": 1788392656229,
+    "snapshot_last_observation_utc": "2026-09-02T23:44:16.229000Z",
+    "target_positive_mints_at_or_after_first_observation": 234
+  },
+  "target_outcomes": 219
+}

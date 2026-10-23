@@ -1,0 +1,77 @@
+{
+  "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_CONTRACT",
+  "purpose": "Measure univariate causal separability at frozen lifecycle anchors without constructing a strategy.",
+  "population": {
+    "discoveryOrdinalStart": 1,
+    "discoveryOrdinalEnd": 6848,
+    "primaryUnit": "unique_mint_within_anchor",
+    "validationRowsPermitted": 0,
+    "holdoutRowsPermitted": 0
+  },
+  "anchors": {
+    "primary": "EXTERNAL_GROSS_BUY_GE_2_SOL",
+    "secondary": "EXTERNAL_GROSS_BUY_GE_5_SOL",
+    "broadControl": "EXTERNAL_GROSS_BUY_GE_1_SOL",
+    "firstChronologicalCrossingPerMint": true,
+    "entryState": "actual_post_crossing_transaction_state",
+    "combinedAnchorPopulationPermitted": false
+  },
+  "economics": {
+    "scenario": "P50",
+    "sizeSol": 0.5,
+    "policy": "TP20_SL20_MAX120",
+    "standardizedDeliveryCostSol": 0.001,
+    "counterfactualReplay": "STRICT_NO_RESUBMISSION_PARENT_SEMANTICS"
+  },
+  "targets": {
+    "primary": "POLICY_GE_10",
+    "secondary": ["POLICY_POSITIVE", "OPPORTUNITY_GE_10"],
+    "oracleOpportunityIsStrategyPnl": false
+  },
+  "causality": {
+    "rule": "feature_available_timestamp_lte_decision_timestamp",
+    "timestampSemantic": "local_observation_availability",
+    "sameSlotAfterDecisionPermitted": false,
+    "silentImputationPermitted": false,
+    "finalizedOnlyTransactionFieldsPermitted": false
+  },
+  "analysis": {
+    "univariateOnly": true,
+    "thresholdSearch": false,
+    "featurePairs": false,
+    "machineLearning": false,
+    "compositeScores": false,
+    "exitTuning": false,
+    "bootstrapReplicates": 500,
+    "bootstrapSeed": 20260907,
+    "confidenceLevel": 0.95,
+    "fdrMethod": "BENJAMINI_HOCHBERG_WITHIN_TARGET_ACROSS_TESTED_PRIMARY_ANCHOR_FEATURES",
+    "chronologicalBlocks": [
+      [1, 1370],
+      [1371, 2740],
+      [2741, 4110],
+      [4111, 5480],
+      [5481, 6848]
+    ],
+    "decileMethod": "whole_anchor_feature_distribution_equal_count_rank_bins",
+    "trailingContextWindowMs": 900000,
+    "trailingContextMinimumPriorN": 20
+  },
+  "parents": {
+    "lifecycleAnchorContractSha256": "65cb16764312ecd271ac3f7199762927992d5bdc9c27653c94280fcfca71f0d4",
+    "lifecycleAnchorReportSha256": "c963b69d35b409347afbeabc6b537b60b3a1f63216cdb285420efb7ae89508bf",
+    "lifecycleAnchorProvenanceSha256": "14ce67596dd1db52ed3e3490a8622a626ad1fc7ae4c1457015a20aff6fac249c",
+    "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd"
+  },
+  "prohibitions": [
+    "strategy_search",
+    "threshold_optimization",
+    "feature_generation_after_outcome_inspection",
+    "validation_access",
+    "holdout_access",
+    "2cq_analysis",
+    "collector_or_service_changes",
+    "shadow_or_live_trading",
+    "model_training"
+  ]
+}

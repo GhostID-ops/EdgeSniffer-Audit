@@ -1,0 +1,20 @@
+{
+  "schema": "KEFI_COMPARISON_CONTRACT_V1",
+  "purpose": "Outcome-blind comparison of kEFi-selected PumpSwap buys against comparable non-selected candidate buys.",
+  "selected_sample": "The sealed 1656 kEFi entry rows in enriched-v1.jsonl.",
+  "candidate_universe": "PumpSwap BUY events from the same closed source partitions, with complete canonical event fields and no selected-wallet admission identity.",
+  "exclusions": [
+    "The 1656 selected entry signatures.",
+    "Malformed or unsupported event layouts.",
+    "Incomplete source frames.",
+    "Events without canonical pool, mint, slot, timestamp, reserve, and fee fields."
+  ],
+  "matching_rule": "No predictive threshold is selected in this contract. Controls are stratified descriptively by source partition, mint/pool, and entry-time context where available.",
+  "labels": "No economic outcome labels are used to define the comparison cohort.",
+  "horizon": "120 seconds after each candidate entry, requiring complete replay evidence or explicit exclusion.",
+  "selection_rule": "Selected versus non-selected status is fixed by the wallet admission record, never inferred from replay performance.",
+  "analysis_status": "PREDECLARED_BEFORE_COMPARISON",
+  "pnl_read": false,
+  "threshold_tuning": false,
+  "holdout": "None accessed; this is an isolated kEFi research sibling."
+}

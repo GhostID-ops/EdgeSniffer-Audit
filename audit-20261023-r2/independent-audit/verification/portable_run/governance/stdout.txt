@@ -1,0 +1,68 @@
+{
+  "strict_300s_window_truncation": {
+    "source_has_mark_at_deadline": 302000,
+    "deadline": 302000,
+    "last_retained_mark": 301000,
+    "observation_as_of": 302000,
+    "matured": true,
+    "strict_exit_found": false,
+    "materializer_report": {
+      "matched_signals": 1,
+      "windows_written": 1,
+      "rejected": {},
+      "max_virtual_sol_sol": 46.171004438
+    }
+  },
+  "control_self_inclusion": {
+    "candidate_count": 4,
+    "control_count": 2,
+    "controls_also_in_candidate_input": [
+      "B",
+      "D"
+    ],
+    "matched_pairs": [
+      {
+        "candidate": "A",
+        "control": "B"
+      },
+      {
+        "candidate": "C",
+        "control": "D"
+      }
+    ],
+    "note": "The evaluator does not restrict candidate input to the left member or use pair IDs."
+  },
+  "preregistration_contract_not_enforced": {
+    "declared_contract": {
+      "entry_delay_ms": 9999,
+      "sizes_sol": [
+        42
+      ],
+      "exit_horizons_seconds": [
+        888
+      ],
+      "maximum_checkpoint_delay_ms": [
+        999
+      ],
+      "candidate_filters": [
+        "NOT_A_REAL_ARM"
+      ]
+    },
+    "actual_first_strategy_id": "FLOW_005_AND_PRICE_10BPS|FIXED_15S|0.1|stress0|maxdelay_lte120s",
+    "actual_surface_count": 567,
+    "actual_entry_delay_from_imported_code_ms": 1000
+  },
+  "search_surface_size": {
+    "filters": 7,
+    "exits": 27,
+    "sizes": 3,
+    "stress_levels": 3,
+    "possible_cells": 1701,
+    "latency_study_cells": 567
+  },
+  "normal_approximation_effective_sample_size": {
+    "formula": "(1.96+0.84)^2 * sigma^2 / delta^2; independent paired differences only, illustrative",
+    "sigma_25pct_delta_2pct": 1225,
+    "sigma_50pct_delta_2pct": 4900
+  }
+}

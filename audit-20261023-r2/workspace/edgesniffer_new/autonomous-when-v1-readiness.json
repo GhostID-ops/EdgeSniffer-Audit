@@ -1,0 +1,80 @@
+{
+  "schema": "2CQ_AUTONOMOUS_WHEN_V1_READINESS_V1",
+  "generatedAtUtc": "2026-09-25T04:05:33Z",
+  "outcomeBlind": true,
+  "economicOutcomesRead": 0,
+  "pnlRead": 0,
+  "v2Which": {
+    "artifact": "fingerprint-v2-development-v1/frozen-fingerprint.json",
+    "sha256": "7606a3a138591516f503e7f7b56501f1828b92947a2b38707bff166fbb233b64",
+    "status": "FROZEN_UNCHANGED"
+  },
+  "phase1": {
+    "rawFullMetaCoverage": {
+      "source": "shyft-yellowstone-confirmed-full-meta",
+      "postRecoveryStartUtc": "2026-09-24T20:58:55.953902079Z",
+      "observedUntilUtc": "2026-09-25T04:04:52.363898933Z",
+      "framesReceived": 4894139,
+      "framesMetaComplete": 4894135,
+      "framesMetaIncomplete": 4,
+      "reconnects": 0,
+      "continuityGaps": 0,
+      "closedPostRecoveryPartitions": 7
+    },
+    "retainedHistoricalRaw": {
+      "closedSegments": [
+        {"startUtc": "2026-09-22T11:00:00Z", "endUtc": "2026-09-24T09:00:00Z", "closedHours": 46},
+        {"startUtc": "2026-09-24T20:00:00Z", "endUtc": "2026-09-25T02:00:00Z", "closedHours": 7}
+      ],
+      "historicalContinuityDisposition": "NOT_CERTIFIABLE_FOR_AUTONOMOUS_REPLAY",
+      "reasons": [
+        "pre-gap candidate journal contains collector continuity epochs 1, 2, and 3",
+        "storage-incident full-meta uncovered interval is fail-closed excluded",
+        "raw full-meta frames are not by themselves canonical causal state"
+      ]
+    },
+    "existingCanonicalStatePlane": {
+      "transactions": 2149091,
+      "causalEvents": 2313114,
+      "firstUtc": "2026-09-22T01:46:24Z",
+      "lastUtc": "2026-09-22T22:40:30Z",
+      "postRecoveryTransactions": 0,
+      "disposition": "TEACHER_WINDOW_MATERIALIZATION_ONLY_NOT_CONTINUOUS_AUTONOMOUS_STATE"
+    },
+    "teacherLabelsInCleanPostRecoveryRaw": {
+      "canonicalSuccessfulAcquisitionRowsPendingMaterialization": 479,
+      "uniqueAcquisitionSignatures": 479,
+      "distinctSelectedMints": 298,
+      "firstUtc": "2026-09-24T21:03:31Z",
+      "lastUtc": "2026-09-25T03:51:30Z"
+    },
+    "arbitraryTimeReplayProbe": {
+      "partition": "2026/09/22/14",
+      "result": "FAIL_CLOSED_OOM",
+      "memoryPeakBytes": 13700000000,
+      "meaning": "current whole-partition normalizer holds too much immutable source material in memory and is not an autonomous replay index"
+    },
+    "historicalAutonomousReplayAllowed": false,
+    "why": "No retained interval is both demonstrably continuous and accompanied by an exact canonical causal-state plane for non-teacher decision points."
+  },
+  "minimumProspectiveRequirement": {
+    "newExperiment": "AUTONOMOUS_WHEN_V1",
+    "separateFromV2": true,
+    "requiredCompactContinuousLane": [
+      "retain original full-meta realtime receipts and source epochs from the existing whole-Pump feed",
+      "continuously attach finalized slot and transaction order for causal Pump frames before label joins",
+      "stream compact decoded create/trade/reserve state, not repeated whole-partition protobuf scans",
+      "predeclare event-driven decision ticks, candidate-universe construction, and the FIRE/NO-FIRE record before labels are joined",
+      "preserve raw evidence for all open decision windows, teacher labels, and autonomous FIRE records"
+    ],
+    "developmentMinimum": "at least 7 uninterrupted calendar days and 350 independent teacher-acquisition labels after a clean autonomous boundary",
+    "untouchedValidationMinimum": "the next at least 3 uninterrupted calendar days and 150 independent teacher-acquisition labels, with no WHEN feature/rule changes after development freeze",
+    "whyWallClockMatters": "false alerts per hour and FIRE-state occupancy cannot be validated from teacher-event counts alone"
+  },
+  "phase3PreliminaryDecision": {
+    "whenModelFitted": false,
+    "fireThresholdSelected": false,
+    "autonomousReplayRun": false,
+    "reason": "developing or measuring a WHEN rule before the continuous causal data contract exists would be teacher-window-biased and not scientifically interpretable"
+  }
+}

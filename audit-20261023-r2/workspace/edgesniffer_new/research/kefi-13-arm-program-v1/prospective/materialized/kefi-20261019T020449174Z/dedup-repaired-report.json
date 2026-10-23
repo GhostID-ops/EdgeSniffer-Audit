@@ -1,0 +1,9 @@
+{
+  "conflicts": [],
+  "dropped": [],
+  "fresh_rows": 0,
+  "identical_overlaps_dropped": 0,
+  "input_rows": 0,
+  "schema": "KEFI_13_ARM_PROSPECTIVE_BATCH_DEDUP_V1",
+  "status": "PASS"
+}

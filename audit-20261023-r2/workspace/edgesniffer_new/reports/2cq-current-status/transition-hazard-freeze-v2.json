@@ -1,0 +1,3186 @@
+{
+  "developmentChoiceSetN": 211,
+  "developmentTimingN": 253,
+  "families": {
+    "BASE_PLUS_TRANSITION": {
+      "model": {
+        "assessmentEpisodeN": 76,
+        "coefficients": [
+          {
+            "feature": "log_event_index",
+            "standardizedCoefficient": 0.37144524817719576
+          },
+          {
+            "feature": "transition_new_flow250_high",
+            "standardizedCoefficient": 0.3408056966556422
+          },
+          {
+            "feature": "transition_log_interarrival_ms",
+            "standardizedCoefficient": 0.29634864334729344
+          },
+          {
+            "feature": "transition_new_buy_count250_high",
+            "standardizedCoefficient": 0.2862058243451392
+          },
+          {
+            "feature": "transition_new_price_high",
+            "standardizedCoefficient": 0.27374665643734153
+          },
+          {
+            "feature": "log_age_ms",
+            "standardizedCoefficient": 0.26253114222930923
+          },
+          {
+            "feature": "delta_log_price_change_250ms",
+            "standardizedCoefficient": 0.2553313376856329
+          },
+          {
+            "feature": "delta_net_flow_sol_250ms",
+            "standardizedCoefficient": 0.24318352732091145
+          },
+          {
+            "feature": "mean_buy_sol_1000ms",
+            "standardizedCoefficient": -0.23672465744988042
+          },
+          {
+            "feature": "buy_count_250ms",
+            "standardizedCoefficient": 0.23482929214383483
+          },
+          {
+            "feature": "delta_curve_progress",
+            "standardizedCoefficient": 0.21713196749768401
+          },
+          {
+            "feature": "buyer_hhi_1000ms",
+            "standardizedCoefficient": -0.21600486511546368
+          },
+          {
+            "feature": "log_median_interarrival_ms_5s",
+            "standardizedCoefficient": -0.201139648451283
+          },
+          {
+            "feature": "creator_buy_sol_5000ms",
+            "standardizedCoefficient": -0.18969429093076773
+          },
+          {
+            "feature": "delta_gross_buy_sol_250ms",
+            "standardizedCoefficient": 0.18775996468757358
+          },
+          {
+            "feature": "delta_top_buyer_share_1000ms",
+            "standardizedCoefficient": 0.17735500256350756
+          },
+          {
+            "feature": "top_buyer_share_1000ms",
+            "standardizedCoefficient": -0.1742519369555737
+          },
+          {
+            "feature": "repeat_buyer_share_1000ms",
+            "standardizedCoefficient": -0.17273516726604837
+          },
+          {
+            "feature": "delta_buy_count_250ms",
+            "standardizedCoefficient": 0.17086671465245873
+          },
+          {
+            "feature": "consecutive_sells",
+            "standardizedCoefficient": -0.16947571499418324
+          },
+          {
+            "feature": "last_external_side",
+            "standardizedCoefficient": 0.164128352122826
+          },
+          {
+            "feature": "gross_buy_sol_250ms",
+            "standardizedCoefficient": 0.15911645648359155
+          },
+          {
+            "feature": "transition_log_event_number",
+            "standardizedCoefficient": 0.15763378393450844
+          },
+          {
+            "feature": "consecutive_buys",
+            "standardizedCoefficient": 0.15637674415704414
+          },
+          {
+            "feature": "last_external_trade_sol",
+            "standardizedCoefficient": 0.1458519529967897
+          },
+          {
+            "feature": "transition_is_first_observed_state",
+            "standardizedCoefficient": 0.1452606608552866
+          },
+          {
+            "feature": "net_flow_sol_250ms",
+            "standardizedCoefficient": 0.13673720937417086
+          },
+          {
+            "feature": "log_price_change_250ms",
+            "standardizedCoefficient": 0.11893996550858217
+          },
+          {
+            "feature": "delta_net_acceleration_1s",
+            "standardizedCoefficient": 0.10817851076140192
+          },
+          {
+            "feature": "largest_buy_sol_1000ms",
+            "standardizedCoefficient": -0.10297111433377029
+          },
+          {
+            "feature": "creator_participated",
+            "standardizedCoefficient": -0.0948154675961668
+          },
+          {
+            "feature": "delta_consecutive_buys",
+            "standardizedCoefficient": 0.09327357696266289
+          },
+          {
+            "feature": "buy_count_1000ms",
+            "standardizedCoefficient": -0.08741158262209482
+          },
+          {
+            "feature": "buy_count_acceleration_1s",
+            "standardizedCoefficient": -0.08163420937993955
+          },
+          {
+            "feature": "net_flow_sol_5000ms",
+            "standardizedCoefficient": -0.075131637594166
+          },
+          {
+            "feature": "sell_count_250ms",
+            "standardizedCoefficient": 0.06729404828576731
+          },
+          {
+            "feature": "distance_from_launch_log_price",
+            "standardizedCoefficient": 0.06504341923413037
+          },
+          {
+            "feature": "delta_sell_count_250ms",
+            "standardizedCoefficient": -0.06320025826471477
+          },
+          {
+            "feature": "log_market_cap_sol",
+            "standardizedCoefficient": 0.06259877922654287
+          },
+          {
+            "feature": "buy_sell_imbalance_1000ms",
+            "standardizedCoefficient": 0.06189454740046746
+          },
+          {
+            "feature": "unique_buyers_1000ms",
+            "standardizedCoefficient": -0.05750395769774505
+          },
+          {
+            "feature": "log_price_change_2000ms",
+            "standardizedCoefficient": 0.05224014470272652
+          },
+          {
+            "feature": "gross_buy_sol_5000ms",
+            "standardizedCoefficient": -0.04346722402869128
+          },
+          {
+            "feature": "log_price_change_1000ms",
+            "standardizedCoefficient": 0.038267922366782246
+          },
+          {
+            "feature": "gross_sell_sol_1000ms",
+            "standardizedCoefficient": -0.033545514161620035
+          },
+          {
+            "feature": "unique_sellers_1000ms",
+            "standardizedCoefficient": 0.033259712430349524
+          },
+          {
+            "feature": "gross_sell_sol_2000ms",
+            "standardizedCoefficient": 0.02957865850124664
+          },
+          {
+            "feature": "log_price_change_5000ms",
+            "standardizedCoefficient": -0.025355654023467046
+          },
+          {
+            "feature": "sell_count_1000ms",
+            "standardizedCoefficient": 0.023240892723811354
+          },
+          {
+            "feature": "net_acceleration_1s",
+            "standardizedCoefficient": 0.021054204229670543
+          },
+          {
+            "feature": "unique_buyers_total",
+            "standardizedCoefficient": -0.018268890041674608
+          },
+          {
+            "feature": "gross_buy_sol_1000ms",
+            "standardizedCoefficient": -0.01777281326738141
+          },
+          {
+            "feature": "net_flow_sol_2000ms",
+            "standardizedCoefficient": -0.01557653228084293
+          },
+          {
+            "feature": "gross_sell_sol_5000ms",
+            "standardizedCoefficient": 0.012947335484223594
+          },
+          {
+            "feature": "gross_sell_sol_250ms",
+            "standardizedCoefficient": 0.012909418367474581
+          },
+          {
+            "feature": "total_external_sell_sol",
+            "standardizedCoefficient": -0.010992178891794204
+          },
+          {
+            "feature": "total_external_buy_sol",
+            "standardizedCoefficient": -0.010409457909800291
+          },
+          {
+            "feature": "gross_buy_sol_2000ms",
+            "standardizedCoefficient": 0.006563873205632324
+          },
+          {
+            "feature": "net_flow_sol_1000ms",
+            "standardizedCoefficient": 0.004487848909483186
+          },
+          {
+            "feature": "delta_buy_count_acceleration_1s",
+            "standardizedCoefficient": -0.004205319031324682
+          },
+          {
+            "feature": "total_external_net_sol",
+            "standardizedCoefficient": -0.0036995375901255987
+          },
+          {
+            "feature": "curve_progress",
+            "standardizedCoefficient": -0.0036134050149410073
+          },
+          {
+            "feature": "unique_sellers_total",
+            "standardizedCoefficient": -0.0012455458897001233
+          },
+          {
+            "feature": "log_ms_since_last_external",
+            "standardizedCoefficient": 0.0
+          }
+        ],
+        "crossBoundaryRepeatDropped": 0,
+        "featureNames": [
+          "log_age_ms",
+          "log_event_index",
+          "curve_progress",
+          "log_market_cap_sol",
+          "distance_from_launch_log_price",
+          "gross_buy_sol_250ms",
+          "gross_sell_sol_250ms",
+          "net_flow_sol_250ms",
+          "buy_count_250ms",
+          "sell_count_250ms",
+          "gross_buy_sol_1000ms",
+          "gross_sell_sol_1000ms",
+          "net_flow_sol_1000ms",
+          "buy_count_1000ms",
+          "sell_count_1000ms",
+          "gross_buy_sol_2000ms",
+          "gross_sell_sol_2000ms",
+          "net_flow_sol_2000ms",
+          "gross_buy_sol_5000ms",
+          "gross_sell_sol_5000ms",
+          "net_flow_sol_5000ms",
+          "total_external_buy_sol",
+          "total_external_sell_sol",
+          "total_external_net_sol",
+          "buy_sell_imbalance_1000ms",
+          "largest_buy_sol_1000ms",
+          "mean_buy_sol_1000ms",
+          "net_acceleration_1s",
+          "buy_count_acceleration_1s",
+          "unique_buyers_1000ms",
+          "unique_sellers_1000ms",
+          "repeat_buyer_share_1000ms",
+          "buyer_hhi_1000ms",
+          "top_buyer_share_1000ms",
+          "creator_buy_sol_5000ms",
+          "creator_participated",
+          "unique_buyers_total",
+          "unique_sellers_total",
+          "last_external_side",
+          "last_external_trade_sol",
+          "consecutive_buys",
+          "consecutive_sells",
+          "log_ms_since_last_external",
+          "log_median_interarrival_ms_5s",
+          "log_price_change_250ms",
+          "log_price_change_1000ms",
+          "log_price_change_2000ms",
+          "log_price_change_5000ms",
+          "transition_log_interarrival_ms",
+          "transition_is_first_observed_state",
+          "transition_log_event_number",
+          "transition_new_price_high",
+          "transition_new_flow250_high",
+          "transition_new_buy_count250_high",
+          "delta_net_flow_sol_250ms",
+          "delta_gross_buy_sol_250ms",
+          "delta_buy_count_250ms",
+          "delta_sell_count_250ms",
+          "delta_log_price_change_250ms",
+          "delta_net_acceleration_1s",
+          "delta_buy_count_acceleration_1s",
+          "delta_consecutive_buys",
+          "delta_top_buyer_share_1000ms",
+          "delta_curve_progress"
+        ],
+        "intercept": -0.929646679304927,
+        "trainEpisodeN": 177,
+        "trainMeans": {
+          "buy_count_1000ms": 4.217194570135747,
+          "buy_count_250ms": 2.3137254901960786,
+          "buy_count_acceleration_1s": 1.8964303670186022,
+          "buy_sell_imbalance_1000ms": 0.3822139635287314,
+          "buyer_hhi_1000ms": 0.4704751619576855,
+          "consecutive_buys": 2.6199095022624435,
+          "consecutive_sells": 0.8552036199095022,
+          "creator_buy_sol_5000ms": 1.444146669813474,
+          "creator_participated": 0.4203117144293615,
+          "curve_progress": 0.41902247318624397,
+          "delta_buy_count_250ms": 0.03770739064856712,
+          "delta_buy_count_acceleration_1s": 0.07290095525389644,
+          "delta_consecutive_buys": 0.09954751131221719,
+          "delta_curve_progress": 0.004463295768735467,
+          "delta_gross_buy_sol_250ms": 0.050270542447963806,
+          "delta_log_price_change_250ms": 0.0012073899771658373,
+          "delta_net_acceleration_1s": 0.06413458072649574,
+          "delta_net_flow_sol_250ms": 0.03216828363750629,
+          "delta_sell_count_250ms": -0.0015082956259426848,
+          "delta_top_buyer_share_1000ms": -0.005886299986132702,
+          "distance_from_launch_log_price": 0.6579151605977095,
+          "gross_buy_sol_1000ms": 4.274297413748617,
+          "gross_buy_sol_2000ms": 5.783944541070889,
+          "gross_buy_sol_250ms": 3.091860101351936,
+          "gross_buy_sol_5000ms": 9.883734402212168,
+          "gross_sell_sol_1000ms": 1.502736987190548,
+          "gross_sell_sol_2000ms": 2.4703028294957265,
+          "gross_sell_sol_250ms": 0.6539154340266465,
+          "gross_sell_sol_5000ms": 4.691404064866264,
+          "largest_buy_sol_1000ms": 2.040723260075415,
+          "last_external_side": 0.45500251382604323,
+          "last_external_trade_sol": 1.0825525609311213,
+          "log_age_ms": 6.508579067215866,
+          "log_event_index": 3.2925208995855173,
+          "log_market_cap_sol": 4.008357392826952,
+          "log_median_interarrival_ms_5s": 3.345994293609084,
+          "log_ms_since_last_external": 0.0,
+          "log_price_change_1000ms": 0.1522062059487988,
+          "log_price_change_2000ms": 0.17885433350740057,
+          "log_price_change_250ms": 0.13675542439045232,
+          "log_price_change_5000ms": 0.27185085616953947,
+          "mean_buy_sol_1000ms": 1.2108704261600487,
+          "net_acceleration_1s": 2.2294791415409754,
+          "net_flow_sol_1000ms": 2.7715604265580693,
+          "net_flow_sol_2000ms": 3.3136417115751633,
+          "net_flow_sol_250ms": 2.437944667325289,
+          "net_flow_sol_5000ms": 5.192330337345902,
+          "repeat_buyer_share_1000ms": 0.030158427337972887,
+          "sell_count_1000ms": 2.0065359477124183,
+          "sell_count_250ms": 0.8572146807440925,
+          "top_buyer_share_1000ms": 0.5416955835809731,
+          "total_external_buy_sol": 40.10255045480643,
+          "total_external_net_sol": 13.425139795694319,
+          "total_external_sell_sol": 26.677410659112116,
+          "transition_is_first_observed_state": 0.0889894419306184,
+          "transition_log_event_number": 3.280775788306698,
+          "transition_log_interarrival_ms": 2.659962212252037,
+          "transition_new_buy_count250_high": 0.21669180492709905,
+          "transition_new_flow250_high": 0.21820010055304173,
+          "transition_new_price_high": 0.2885872297637003,
+          "unique_buyers_1000ms": 4.069884364002011,
+          "unique_buyers_total": 53.82855706385118,
+          "unique_sellers_1000ms": 1.8265460030165912,
+          "unique_sellers_total": 31.415284062342884
+        },
+        "trainScales": {
+          "buy_count_1000ms": 4.47169591169248,
+          "buy_count_250ms": 2.28293286159203,
+          "buy_count_acceleration_1s": 4.525813602659306,
+          "buy_sell_imbalance_1000ms": 0.7614397071153312,
+          "buyer_hhi_1000ms": 0.3261217132131799,
+          "consecutive_buys": 2.9504583400115982,
+          "consecutive_sells": 2.086406317941564,
+          "creator_buy_sol_5000ms": 2.496259976071856,
+          "creator_participated": 0.49360893138476775,
+          "curve_progress": 0.3074930263381155,
+          "delta_buy_count_250ms": 1.6592856085889693,
+          "delta_buy_count_acceleration_1s": 2.7293195487777653,
+          "delta_consecutive_buys": 2.1553876971598322,
+          "delta_curve_progress": 0.0648668880211844,
+          "delta_gross_buy_sol_250ms": 2.189010179815977,
+          "delta_log_price_change_250ms": 0.11798983071405265,
+          "delta_net_acceleration_1s": 3.4123692976195947,
+          "delta_net_flow_sol_250ms": 2.3386586143043844,
+          "delta_sell_count_250ms": 1.0628787084495463,
+          "delta_top_buyer_share_1000ms": 0.30704182070162794,
+          "distance_from_launch_log_price": 0.39997971232451696,
+          "gross_buy_sol_1000ms": 4.7060985514388785,
+          "gross_buy_sol_2000ms": 5.948852165409518,
+          "gross_buy_sol_250ms": 4.023572912979911,
+          "gross_buy_sol_5000ms": 10.165835353385868,
+          "gross_sell_sol_1000ms": 3.171421203585676,
+          "gross_sell_sol_2000ms": 4.317436658544705,
+          "gross_sell_sol_250ms": 1.7080108320557739,
+          "gross_sell_sol_5000ms": 7.098952441984766,
+          "largest_buy_sol_1000ms": 2.277110396540613,
+          "last_external_side": 0.8904901529000652,
+          "last_external_trade_sol": 1.3648297321608835,
+          "log_age_ms": 4.581461239347179,
+          "log_event_index": 1.8028645847329439,
+          "log_market_cap_sol": 0.3933246140386574,
+          "log_median_interarrival_ms_5s": 2.68087780204791,
+          "log_ms_since_last_external": 1.0,
+          "log_price_change_1000ms": 0.2611320638772743,
+          "log_price_change_2000ms": 0.28879318790354314,
+          "log_price_change_250ms": 0.2413094919823375,
+          "log_price_change_5000ms": 0.3461584386844568,
+          "mean_buy_sol_1000ms": 1.4731124837206893,
+          "net_acceleration_1s": 6.37160920342286,
+          "net_flow_sol_1000ms": 5.068429125736161,
+          "net_flow_sol_2000ms": 5.691669467413702,
+          "net_flow_sol_250ms": 4.520841406218647,
+          "net_flow_sol_5000ms": 7.104772086570211,
+          "repeat_buyer_share_1000ms": 0.13827789984925615,
+          "sell_count_1000ms": 3.1087960510814434,
+          "sell_count_250ms": 1.7306640558100994,
+          "top_buyer_share_1000ms": 0.31769686979549966,
+          "total_external_buy_sol": 64.3559701264067,
+          "total_external_net_sol": 10.241641173925299,
+          "total_external_sell_sol": 57.49737445043664,
+          "transition_is_first_observed_state": 0.28472850429048285,
+          "transition_log_event_number": 1.8087531447882257,
+          "transition_log_interarrival_ms": 2.823146713474217,
+          "transition_new_buy_count250_high": 0.4119908574283355,
+          "transition_new_flow250_high": 0.41302399043116633,
+          "transition_new_price_high": 0.45310555125821794,
+          "unique_buyers_1000ms": 4.267882914496018,
+          "unique_buyers_total": 95.45560232412883,
+          "unique_sellers_1000ms": 2.920357145579616,
+          "unique_sellers_total": 72.48756407746517
+        },
+        "training": {
+          "averagePrecision": 0.376798659057212,
+          "positiveN": 177,
+          "rocAuc": 0.9062776717676257,
+          "rowN": 1989,
+          "withinMint": {
+            "actualRankedFirstPct": 75.14124293785311,
+            "actualRankedTop10Pct": 85.87570621468926,
+            "actualRankedTop3Pct": 87.00564971751412,
+            "chanceRankedFirstPct": 20.147604907669542,
+            "chanceRankedTop10Pct": 22.586049244109546,
+            "chanceRankedTop3Pct": 58.46541359306512,
+            "meanCandidateStates": 11.23728813559322,
+            "meanReciprocalRank": 0.8287709622455386,
+            "medianRank": 1,
+            "mintBalancedPairwiseConcordance": 0.956177112210642,
+            "n": 177
+          }
+        },
+        "validation": {
+          "averagePrecision": 0.04535560407906213,
+          "positiveN": 76,
+          "rocAuc": 0.8291754111627779,
+          "rowN": 7750,
+          "withinMint": {
+            "actualRankedFirstPct": 56.578947368421055,
+            "actualRankedTop10Pct": 73.6842105263158,
+            "actualRankedTop3Pct": 73.6842105263158,
+            "chanceRankedFirstPct": 19.615714706781503,
+            "chanceRankedTop10Pct": 22.75938515286985,
+            "chanceRankedTop3Pct": 52.92609148876557,
+            "meanCandidateStates": 101.97368421052632,
+            "meanReciprocalRank": 0.6603103147932174,
+            "medianRank": 1.0,
+            "mintBalancedPairwiseConcordance": 0.9064829702637096,
+            "n": 76
+          }
+        }
+      },
+      "trigger": {
+        "anyRisingCrossingPct": 89.47368421052632,
+        "assessmentN": 76,
+        "firstRisingIsTeacherStatePct": 34.21052631578947,
+        "firstRisingLeadMs": {
+          "p50": 115.03115149999999,
+          "p75": 13142.26480275,
+          "p90": 63650.29193400008
+        },
+        "rows": [
+          {
+            "eligibleOrdinal": 247,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 423158.52643,
+            "mint": "ETetifkD5Tj5pDVCNvgUGjkwN57Ge4CxRsAJZtgqpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 9.038921
+          },
+          {
+            "eligibleOrdinal": 249,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 245.114797,
+            "mint": "Cdmwu1u1mkw29TuDwwvVBxm21hbP1DoWX1H7fAjspump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 245.114797
+          },
+          {
+            "eligibleOrdinal": 250,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 35.824329,
+            "mint": "7N37bDgM2hZmsdzt3hhnfTQeoKEeGYQQt3uoVqD9pump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 35.824329
+          },
+          {
+            "eligibleOrdinal": 251,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 114.41332,
+            "mint": "8LkzndDpFp4T6T56PnR3K4D1n8rLwKa4osuwSJ9Bpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 114.41332
+          },
+          {
+            "eligibleOrdinal": 252,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 75.863791,
+            "mint": "9HgXuMge5jYyNpYLmwS5x7gYT7Y4HqgS16acPyUcpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 75.863791
+          },
+          {
+            "eligibleOrdinal": 253,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 7.91169,
+            "mint": "wo7gJ4kRJH1cQ8s8q55sLvhnNuEFyu6mgpFQRBfpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 7.91169
+          },
+          {
+            "eligibleOrdinal": 255,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "A6jSo2ynHrL3PrBWFKwWQcQWdzYqds17JYocdFXnpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 110.696484
+          },
+          {
+            "eligibleOrdinal": 256,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 153.282512,
+            "mint": "2hiCi3UKmNGDcmvRer9HSGWjG1r52TNdMparqzsLpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 153.282512
+          },
+          {
+            "eligibleOrdinal": 257,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "25sHUmrjSGUAdtZaKSUAiCcJc43FGPaqyhg9ip6ypump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 75.51503
+          },
+          {
+            "eligibleOrdinal": 259,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 20.119479,
+            "mint": "HdF44BGUtKazye1iF1HXYwfwtTasvHgQbUuyjLXLpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 20.119479
+          },
+          {
+            "eligibleOrdinal": 260,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 45284.708634,
+            "mint": "HdF44BGUtKazye1iF1HXYwfwtTasvHgQbUuyjLXLpump",
+            "risingCrossingN": 3,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 39.485309
+          },
+          {
+            "eligibleOrdinal": 261,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 13768.569504,
+            "mint": "DVE31ex45ur2cX36LFRnFMjTudmKt1DGNDCpUbLipump",
+            "risingCrossingN": 26,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 27.061085
+          },
+          {
+            "eligibleOrdinal": 262,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 11407.716587,
+            "mint": "8WV8PmCKcCJCBF6L3ZMSX2qVpgGcWqshDNTU9Vcupump",
+            "risingCrossingN": 7,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 74.475029
+          },
+          {
+            "eligibleOrdinal": 263,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 7191.709485,
+            "mint": "HdPxbxTkfc5qKQTkPf2DXU2ZRZ9BUKWMc8QVFSa1pump",
+            "risingCrossingN": 14,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 22.75197
+          },
+          {
+            "eligibleOrdinal": 264,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 76960.477851,
+            "mint": "8WV8PmCKcCJCBF6L3ZMSX2qVpgGcWqshDNTU9Vcupump",
+            "risingCrossingN": 124,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 7.189748
+          },
+          {
+            "eligibleOrdinal": 265,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 2792.050643,
+            "mint": "GPxf8V1GkeQT3SWnqcPpq3bPy2wh9RqBXr7NC9ifpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 16.262287
+          },
+          {
+            "eligibleOrdinal": 266,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "BacNyd3ntDrVgDzPVQaxUYqHC325mC6mXZ5NoCsxpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 26.187931
+          },
+          {
+            "eligibleOrdinal": 267,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 57.013933,
+            "mint": "4kvpo8RMdwpX6sG8ziEzAFntQb9ixdT5cZbCQHxcpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 20.103538
+          },
+          {
+            "eligibleOrdinal": 271,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 23.16087,
+            "mint": "8gC6VSWBuQBD5GJAmGmWSqPM69mDt4gLFWUjAVXxpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 23.16087
+          },
+          {
+            "eligibleOrdinal": 272,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 22.301837,
+            "mint": "GqXDd1o5dGvPP2d1DHYEHtxJ5iDqimw6xzhR6N3epump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 22.301837
+          },
+          {
+            "eligibleOrdinal": 273,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 70.200732,
+            "mint": "Hrr2mr9Z3x3RayFjXLxRAeAXyYAuwiu3MucLDqxspump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 70.200732
+          },
+          {
+            "eligibleOrdinal": 274,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "BduSTbjk8ZFZdE44Kg6Rn4J8VgrzXLhCm5avzP8zpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 8.73365
+          },
+          {
+            "eligibleOrdinal": 275,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 103.441485,
+            "mint": "FG3R4SZfGJXx2pYLo1ek9RHYQBFLZC9PUXjRabovpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 103.441485
+          },
+          {
+            "eligibleOrdinal": 277,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 19.463597,
+            "mint": "Dx1Pev3qdxD1Be5WwVhzA54e5pnP8bCPwBWn49cgK5Df",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 19.463597
+          },
+          {
+            "eligibleOrdinal": 278,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 25532.032271,
+            "mint": "stckEbaDMoxn179hXPnShVfydFSKCLeMG8qgDrEKgk3",
+            "risingCrossingN": 9,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 11.862509
+          },
+          {
+            "eligibleOrdinal": 279,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "5Dd6N96xdWSpnZPrFj68K8CmzyCoFFfMwcU8LghZpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 20.243332
+          },
+          {
+            "eligibleOrdinal": 280,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "HLD9nhixLUvS4QNmTZKrjBDnDwWr8B7CAyT2mQNMpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 59.677667
+          },
+          {
+            "eligibleOrdinal": 281,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 22.267668,
+            "mint": "77Yi3VpTPGmuh4GRG7bDpMA1nC1hF35FM4NfRJkQpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 22.267668
+          },
+          {
+            "eligibleOrdinal": 282,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 39.963239,
+            "mint": "GvkhhB6XkM3nv5qN7xbXE4zRJGmSuXdSaZYXedUfCuV7",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 39.963239
+          },
+          {
+            "eligibleOrdinal": 283,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 47.502916,
+            "mint": "Co4mtvmnJXrschbRrG3xKgj3jdsngAAV1dJ2oapupump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 47.502916
+          },
+          {
+            "eligibleOrdinal": 284,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 72.082112,
+            "mint": "BJZK6VW3VPhL7coCRsnH1gme7b7TpjFuaeWV1ygZpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 72.082112
+          },
+          {
+            "eligibleOrdinal": 286,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 43.407835,
+            "mint": "7eAKtFmi2YPKjBkr5yYHaLd5Nk3fNWmcVPWqHX2Fpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 43.407835
+          },
+          {
+            "eligibleOrdinal": 287,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 24.190106,
+            "mint": "CRejxGoN8fGHPAWPwyb2U6PZvAp94ig5L2DthZAPpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 24.190106
+          },
+          {
+            "eligibleOrdinal": 288,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "8Lh9x4qHDcpG4XpW9xK6cnv5WZutcV5nv4tNG8Pvpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 36.725517
+          },
+          {
+            "eligibleOrdinal": 289,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 447015.032842,
+            "mint": "Be5sJ6RMq7ttSgSSzbnXM9LEFofofjX62eCnhVWd7zfU",
+            "risingCrossingN": 16,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 10.553679
+          },
+          {
+            "eligibleOrdinal": 290,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 11079.653567,
+            "mint": "5fUzubBrPqYzjNRJtUMdRTWkhNH5BXEfTr8GFVQeDAKG",
+            "risingCrossingN": 21,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 28.567376
+          },
+          {
+            "eligibleOrdinal": 291,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 16396.42477,
+            "mint": "5fUzubBrPqYzjNRJtUMdRTWkhNH5BXEfTr8GFVQeDAKG",
+            "risingCrossingN": 31,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 33.954166
+          },
+          {
+            "eligibleOrdinal": 292,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 144.997795,
+            "mint": "7SQKRzt9wN1VzJW9A4Rr4stwzDhKDSKa7ktFsypYpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 127.013476
+          },
+          {
+            "eligibleOrdinal": 293,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 5.368591,
+            "mint": "9q7ysmfVsfBBtzhC8G5fu3k9GQD2vZbzP9ePqKKZpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 5.368591
+          },
+          {
+            "eligibleOrdinal": 296,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 167.539935,
+            "mint": "Erfj1ZuYSgHQDcXrtbL78jQKbSaFBmjwDTbxT7CUpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 7.03687
+          },
+          {
+            "eligibleOrdinal": 297,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 24633.028656,
+            "mint": "42NA1ConZCUASLDUqP73pV6HgxRb9JBdWe8imjrVpump",
+            "risingCrossingN": 8,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 13.579837
+          },
+          {
+            "eligibleOrdinal": 300,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 90.292868,
+            "mint": "231S4uCBAm4HdEuZhG5Jgnq9DR54UwEXURea91RMpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 90.292868
+          },
+          {
+            "eligibleOrdinal": 301,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 181.526892,
+            "mint": "rqoXyRPiABvBbUUmE5i2zLqHVED9JpMHzfa5TH5pump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 181.526892
+          },
+          {
+            "eligibleOrdinal": 302,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 9832.12269,
+            "mint": "rqoXyRPiABvBbUUmE5i2zLqHVED9JpMHzfa5TH5pump",
+            "risingCrossingN": 6,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 101.708033
+          },
+          {
+            "eligibleOrdinal": 303,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 37.064853,
+            "mint": "8u2a4o51Hsasv5r2UFxUs9Q4FAwdooCrbFPzqwL9pump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 37.064853
+          },
+          {
+            "eligibleOrdinal": 305,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 73.932985,
+            "mint": "GQK2R8AeMRmgyX9Qz88UxUmzd7UtG21MTNjuzssBpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 73.932985
+          },
+          {
+            "eligibleOrdinal": 309,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 64.972526,
+            "mint": "A1jbz2LkDVGfzvtqi5Y3mduD4cUvquv6hMq7pJGbpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 64.972526
+          },
+          {
+            "eligibleOrdinal": 310,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 4499.679357,
+            "mint": "5duhjUPJF6r6JuLy1RyqQUFiVD8Wxowch5QtbREkpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 39.938157
+          },
+          {
+            "eligibleOrdinal": 312,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 40777.128718,
+            "mint": "A9CZBdtKmfSq9niRGVFhwsgUTN6GtdvSbp6EKrsgLa5m",
+            "risingCrossingN": 129,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 26.921615
+          },
+          {
+            "eligibleOrdinal": 313,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 89.525599,
+            "mint": "5ivH3zKRd6TsdawNG4jbi3B3jmyQRbWmzYBgdvC7pump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 89.525599
+          },
+          {
+            "eligibleOrdinal": 314,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 441010.626285,
+            "mint": "A9CZBdtKmfSq9niRGVFhwsgUTN6GtdvSbp6EKrsgLa5m",
+            "risingCrossingN": 325,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 17.872884
+          },
+          {
+            "eligibleOrdinal": 315,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 60.691493,
+            "mint": "T7pKZSiKzsu2kitGC9fsMQbNSxf96MUtNf4mozapump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 60.691493
+          },
+          {
+            "eligibleOrdinal": 316,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "ns52eFupLHEUNovcndinfR41kWi4h6E5ThswQiapump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 37.419327
+          },
+          {
+            "eligibleOrdinal": 318,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 12933.496569,
+            "mint": "2q9uyFeADMCmXs8QdJhykRErSDggatsiKdX9SggPpump",
+            "risingCrossingN": 9,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 4.587823
+          },
+          {
+            "eligibleOrdinal": 319,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 32.561156,
+            "mint": "CK1bdrVvQJzQPEm3rYH6aw6hdZ8XjUJTuivGynkhpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 32.561156
+          },
+          {
+            "eligibleOrdinal": 321,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 177.152206,
+            "mint": "BoyacLGEqdV5PLM27bPTqdBVEs1gdyHvQYKZAYdqpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 165.038784
+          },
+          {
+            "eligibleOrdinal": 322,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 60.084172,
+            "mint": "6sDVtCQnVCCN6zhxApzmGqPewVTxZudSoPXCQaepump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 33.534965
+          },
+          {
+            "eligibleOrdinal": 323,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 57311.051729,
+            "mint": "HAH9woBnkA6sAMyyQn27NKfXFPimWT2oXvhGDEXjpump",
+            "risingCrossingN": 99,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 34.545015
+          },
+          {
+            "eligibleOrdinal": 324,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 13.607777,
+            "mint": "8HKVnsz2txeTC3GNeGEKbotPiJ9vh7SYjKAQgVRkpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 13.607777
+          },
+          {
+            "eligibleOrdinal": 325,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 2775.893308,
+            "mint": "8HKVnsz2txeTC3GNeGEKbotPiJ9vh7SYjKAQgVRkpump",
+            "risingCrossingN": 6,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 6.636837
+          },
+          {
+            "eligibleOrdinal": 326,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 115.648983,
+            "mint": "5jAiqCY6EZWNo2bLtbnJq2Xp74cfVZMTDMyP4JPNpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 115.648983
+          },
+          {
+            "eligibleOrdinal": 328,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 19.203491,
+            "mint": "5NN2B3fwfs6Czsya7tQUUiopi7Z73baBKEhRGQk6pump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 19.203491
+          },
+          {
+            "eligibleOrdinal": 332,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 7100.47532,
+            "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+            "risingCrossingN": 6,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 9.605871
+          },
+          {
+            "eligibleOrdinal": 333,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 78658.291268,
+            "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+            "risingCrossingN": 43,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 102.122748
+          },
+          {
+            "eligibleOrdinal": 334,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 96168.316253,
+            "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+            "risingCrossingN": 55,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 60.466826
+          },
+          {
+            "eligibleOrdinal": 336,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 57945.926541,
+            "mint": "LeEDV9NEhqgv5ZF53HcvKcVD7bSXqANmpgKYM5Rpump",
+            "risingCrossingN": 33,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 32.237193
+          },
+          {
+            "eligibleOrdinal": 338,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 50.498023,
+            "mint": "CqC8bDkSWpNgzeszSLyNRQXeqgvTznkkcCJs2JPPpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 50.498023
+          },
+          {
+            "eligibleOrdinal": 339,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 350.286008,
+            "mint": "DZftnjVaUy3pzs4cHoanhifSfKAeg26mD196iusSpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 263.963966
+          },
+          {
+            "eligibleOrdinal": 340,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 27.834092,
+            "mint": "BxYpkBGvhKP9J376itHfXUeSoSDDY7ahmFwj89jnpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 27.834092
+          },
+          {
+            "eligibleOrdinal": 341,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 28938.007177,
+            "mint": "BQHmePDcsp26n6wtkJioygL7Bq3iA1Vbpg3DnnZ6pump",
+            "risingCrossingN": 80,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 36.86481
+          },
+          {
+            "eligibleOrdinal": 342,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 10.776435,
+            "mint": "CE8nFru2x1pz3HjiPpi8SKqtFcgmh5vWAaKNMHYCpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 10.776435
+          },
+          {
+            "eligibleOrdinal": 344,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 35.555548,
+            "mint": "EUGePJqBTeqdvDoVjdqRnYMVvZ159LJaspvgNKFUpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 35.555548
+          },
+          {
+            "eligibleOrdinal": 345,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 77168.645297,
+            "mint": "EUGePJqBTeqdvDoVjdqRnYMVvZ159LJaspvgNKFUpump",
+            "risingCrossingN": 17,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 59.471898
+          },
+          {
+            "eligibleOrdinal": 346,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 95.736128,
+            "mint": "BQCgvEdbz9jF3wZzdUR89LJMR2Baprwfqj73fgSLpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 95.736128
+          },
+          {
+            "eligibleOrdinal": 347,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 58.019249,
+            "mint": "mEKiLnDMgaEKDK5yks9hs7946L3ueundsTkWZtKpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 58.019249
+          },
+          {
+            "eligibleOrdinal": 350,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 22142.342548,
+            "mint": "uhC33w365uThbaFy5TKq6pehGmf6zfhM91kSW3Upump",
+            "risingCrossingN": 16,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 180.896403
+          }
+        ],
+        "teacherStateRecallPct": 80.26315789473684,
+        "threshold": 0.5786964673641963,
+        "thresholdPolicy": "P10 of internal-training teacher-state scores; fixed 90% teacher recall target"
+      }
+    },
+    "STATIC_FULL_CAUSAL_BASELINE": {
+      "model": {
+        "assessmentEpisodeN": 76,
+        "coefficients": [
+          {
+            "feature": "log_event_index",
+            "standardizedCoefficient": 0.4123033048061856
+          },
+          {
+            "feature": "buy_count_250ms",
+            "standardizedCoefficient": 0.39059216793191354
+          },
+          {
+            "feature": "creator_buy_sol_5000ms",
+            "standardizedCoefficient": -0.35591202911063574
+          },
+          {
+            "feature": "mean_buy_sol_1000ms",
+            "standardizedCoefficient": -0.3496594245064808
+          },
+          {
+            "feature": "gross_buy_sol_250ms",
+            "standardizedCoefficient": 0.3464023040799708
+          },
+          {
+            "feature": "last_external_side",
+            "standardizedCoefficient": 0.3457434176527418
+          },
+          {
+            "feature": "net_flow_sol_250ms",
+            "standardizedCoefficient": 0.3107029062358127
+          },
+          {
+            "feature": "log_price_change_250ms",
+            "standardizedCoefficient": 0.27518397388551435
+          },
+          {
+            "feature": "log_median_interarrival_ms_5s",
+            "standardizedCoefficient": -0.26496354164219865
+          },
+          {
+            "feature": "repeat_buyer_share_1000ms",
+            "standardizedCoefficient": -0.2599834504241165
+          },
+          {
+            "feature": "buyer_hhi_1000ms",
+            "standardizedCoefficient": -0.25883412947473794
+          },
+          {
+            "feature": "consecutive_sells",
+            "standardizedCoefficient": -0.2546958526515458
+          },
+          {
+            "feature": "last_external_trade_sol",
+            "standardizedCoefficient": 0.25176288174299477
+          },
+          {
+            "feature": "log_age_ms",
+            "standardizedCoefficient": 0.240868292529124
+          },
+          {
+            "feature": "top_buyer_share_1000ms",
+            "standardizedCoefficient": -0.22366581983764514
+          },
+          {
+            "feature": "largest_buy_sol_1000ms",
+            "standardizedCoefficient": -0.20592688123172476
+          },
+          {
+            "feature": "consecutive_buys",
+            "standardizedCoefficient": 0.20445854671494842
+          },
+          {
+            "feature": "buy_count_1000ms",
+            "standardizedCoefficient": -0.18160527971947157
+          },
+          {
+            "feature": "buy_sell_imbalance_1000ms",
+            "standardizedCoefficient": 0.15728821226009956
+          },
+          {
+            "feature": "unique_buyers_1000ms",
+            "standardizedCoefficient": -0.14051238304499358
+          },
+          {
+            "feature": "buy_count_acceleration_1s",
+            "standardizedCoefficient": -0.09668987955255709
+          },
+          {
+            "feature": "log_price_change_1000ms",
+            "standardizedCoefficient": 0.09031140454867452
+          },
+          {
+            "feature": "net_acceleration_1s",
+            "standardizedCoefficient": 0.0897002688339556
+          },
+          {
+            "feature": "gross_buy_sol_5000ms",
+            "standardizedCoefficient": -0.08597016473152756
+          },
+          {
+            "feature": "net_flow_sol_5000ms",
+            "standardizedCoefficient": -0.08541715935843044
+          },
+          {
+            "feature": "log_price_change_2000ms",
+            "standardizedCoefficient": 0.054361564280658456
+          },
+          {
+            "feature": "sell_count_250ms",
+            "standardizedCoefficient": 0.043579227229286664
+          },
+          {
+            "feature": "distance_from_launch_log_price",
+            "standardizedCoefficient": 0.0426705480679753
+          },
+          {
+            "feature": "gross_sell_sol_2000ms",
+            "standardizedCoefficient": 0.042646039494814866
+          },
+          {
+            "feature": "total_external_sell_sol",
+            "standardizedCoefficient": 0.04118453764334436
+          },
+          {
+            "feature": "log_market_cap_sol",
+            "standardizedCoefficient": 0.039900990942231984
+          },
+          {
+            "feature": "unique_sellers_1000ms",
+            "standardizedCoefficient": 0.038918304901600705
+          },
+          {
+            "feature": "net_flow_sol_1000ms",
+            "standardizedCoefficient": 0.03783803980841805
+          },
+          {
+            "feature": "gross_sell_sol_5000ms",
+            "standardizedCoefficient": -0.037623732884960875
+          },
+          {
+            "feature": "curve_progress",
+            "standardizedCoefficient": -0.035208422151081414
+          },
+          {
+            "feature": "unique_sellers_total",
+            "standardizedCoefficient": 0.03430255134864974
+          },
+          {
+            "feature": "total_external_buy_sol",
+            "standardizedCoefficient": 0.03309222736718794
+          },
+          {
+            "feature": "net_flow_sol_2000ms",
+            "standardizedCoefficient": -0.03302655108077671
+          },
+          {
+            "feature": "sell_count_1000ms",
+            "standardizedCoefficient": 0.03296813250523764
+          },
+          {
+            "feature": "log_price_change_5000ms",
+            "standardizedCoefficient": -0.027206475565044654
+          },
+          {
+            "feature": "gross_sell_sol_1000ms",
+            "standardizedCoefficient": -0.027204416487743452
+          },
+          {
+            "feature": "total_external_net_sol",
+            "standardizedCoefficient": -0.023269745789885363
+          },
+          {
+            "feature": "gross_buy_sol_1000ms",
+            "standardizedCoefficient": 0.022418306499996224
+          },
+          {
+            "feature": "creator_participated",
+            "standardizedCoefficient": -0.017031265814068112
+          },
+          {
+            "feature": "unique_buyers_total",
+            "standardizedCoefficient": -0.012228526639587562
+          },
+          {
+            "feature": "gross_sell_sol_250ms",
+            "standardizedCoefficient": -0.006360402199707665
+          },
+          {
+            "feature": "gross_buy_sol_2000ms",
+            "standardizedCoefficient": -0.0006479633442885196
+          },
+          {
+            "feature": "log_ms_since_last_external",
+            "standardizedCoefficient": 0.0
+          }
+        ],
+        "crossBoundaryRepeatDropped": 0,
+        "featureNames": [
+          "log_age_ms",
+          "log_event_index",
+          "curve_progress",
+          "log_market_cap_sol",
+          "distance_from_launch_log_price",
+          "gross_buy_sol_250ms",
+          "gross_sell_sol_250ms",
+          "net_flow_sol_250ms",
+          "buy_count_250ms",
+          "sell_count_250ms",
+          "gross_buy_sol_1000ms",
+          "gross_sell_sol_1000ms",
+          "net_flow_sol_1000ms",
+          "buy_count_1000ms",
+          "sell_count_1000ms",
+          "gross_buy_sol_2000ms",
+          "gross_sell_sol_2000ms",
+          "net_flow_sol_2000ms",
+          "gross_buy_sol_5000ms",
+          "gross_sell_sol_5000ms",
+          "net_flow_sol_5000ms",
+          "total_external_buy_sol",
+          "total_external_sell_sol",
+          "total_external_net_sol",
+          "buy_sell_imbalance_1000ms",
+          "largest_buy_sol_1000ms",
+          "mean_buy_sol_1000ms",
+          "net_acceleration_1s",
+          "buy_count_acceleration_1s",
+          "unique_buyers_1000ms",
+          "unique_sellers_1000ms",
+          "repeat_buyer_share_1000ms",
+          "buyer_hhi_1000ms",
+          "top_buyer_share_1000ms",
+          "creator_buy_sol_5000ms",
+          "creator_participated",
+          "unique_buyers_total",
+          "unique_sellers_total",
+          "last_external_side",
+          "last_external_trade_sol",
+          "consecutive_buys",
+          "consecutive_sells",
+          "log_ms_since_last_external",
+          "log_median_interarrival_ms_5s",
+          "log_price_change_250ms",
+          "log_price_change_1000ms",
+          "log_price_change_2000ms",
+          "log_price_change_5000ms"
+        ],
+        "intercept": -0.4524661644270525,
+        "trainEpisodeN": 177,
+        "trainMeans": {
+          "buy_count_1000ms": 4.217194570135747,
+          "buy_count_250ms": 2.3137254901960786,
+          "buy_count_acceleration_1s": 1.8964303670186022,
+          "buy_sell_imbalance_1000ms": 0.3822139635287314,
+          "buyer_hhi_1000ms": 0.4704751619576855,
+          "consecutive_buys": 2.6199095022624435,
+          "consecutive_sells": 0.8552036199095022,
+          "creator_buy_sol_5000ms": 1.444146669813474,
+          "creator_participated": 0.4203117144293615,
+          "curve_progress": 0.41902247318624397,
+          "distance_from_launch_log_price": 0.6579151605977095,
+          "gross_buy_sol_1000ms": 4.274297413748617,
+          "gross_buy_sol_2000ms": 5.783944541070889,
+          "gross_buy_sol_250ms": 3.091860101351936,
+          "gross_buy_sol_5000ms": 9.883734402212168,
+          "gross_sell_sol_1000ms": 1.502736987190548,
+          "gross_sell_sol_2000ms": 2.4703028294957265,
+          "gross_sell_sol_250ms": 0.6539154340266465,
+          "gross_sell_sol_5000ms": 4.691404064866264,
+          "largest_buy_sol_1000ms": 2.040723260075415,
+          "last_external_side": 0.45500251382604323,
+          "last_external_trade_sol": 1.0825525609311213,
+          "log_age_ms": 6.508579067215866,
+          "log_event_index": 3.2925208995855173,
+          "log_market_cap_sol": 4.008357392826952,
+          "log_median_interarrival_ms_5s": 3.345994293609084,
+          "log_ms_since_last_external": 0.0,
+          "log_price_change_1000ms": 0.1522062059487988,
+          "log_price_change_2000ms": 0.17885433350740057,
+          "log_price_change_250ms": 0.13675542439045232,
+          "log_price_change_5000ms": 0.27185085616953947,
+          "mean_buy_sol_1000ms": 1.2108704261600487,
+          "net_acceleration_1s": 2.2294791415409754,
+          "net_flow_sol_1000ms": 2.7715604265580693,
+          "net_flow_sol_2000ms": 3.3136417115751633,
+          "net_flow_sol_250ms": 2.437944667325289,
+          "net_flow_sol_5000ms": 5.192330337345902,
+          "repeat_buyer_share_1000ms": 0.030158427337972887,
+          "sell_count_1000ms": 2.0065359477124183,
+          "sell_count_250ms": 0.8572146807440925,
+          "top_buyer_share_1000ms": 0.5416955835809731,
+          "total_external_buy_sol": 40.10255045480643,
+          "total_external_net_sol": 13.425139795694319,
+          "total_external_sell_sol": 26.677410659112116,
+          "unique_buyers_1000ms": 4.069884364002011,
+          "unique_buyers_total": 53.82855706385118,
+          "unique_sellers_1000ms": 1.8265460030165912,
+          "unique_sellers_total": 31.415284062342884
+        },
+        "trainScales": {
+          "buy_count_1000ms": 4.47169591169248,
+          "buy_count_250ms": 2.28293286159203,
+          "buy_count_acceleration_1s": 4.525813602659306,
+          "buy_sell_imbalance_1000ms": 0.7614397071153312,
+          "buyer_hhi_1000ms": 0.3261217132131799,
+          "consecutive_buys": 2.9504583400115982,
+          "consecutive_sells": 2.086406317941564,
+          "creator_buy_sol_5000ms": 2.496259976071856,
+          "creator_participated": 0.49360893138476775,
+          "curve_progress": 0.3074930263381155,
+          "distance_from_launch_log_price": 0.39997971232451696,
+          "gross_buy_sol_1000ms": 4.7060985514388785,
+          "gross_buy_sol_2000ms": 5.948852165409518,
+          "gross_buy_sol_250ms": 4.023572912979911,
+          "gross_buy_sol_5000ms": 10.165835353385868,
+          "gross_sell_sol_1000ms": 3.171421203585676,
+          "gross_sell_sol_2000ms": 4.317436658544705,
+          "gross_sell_sol_250ms": 1.7080108320557739,
+          "gross_sell_sol_5000ms": 7.098952441984766,
+          "largest_buy_sol_1000ms": 2.277110396540613,
+          "last_external_side": 0.8904901529000652,
+          "last_external_trade_sol": 1.3648297321608835,
+          "log_age_ms": 4.581461239347179,
+          "log_event_index": 1.8028645847329439,
+          "log_market_cap_sol": 0.3933246140386574,
+          "log_median_interarrival_ms_5s": 2.68087780204791,
+          "log_ms_since_last_external": 1.0,
+          "log_price_change_1000ms": 0.2611320638772743,
+          "log_price_change_2000ms": 0.28879318790354314,
+          "log_price_change_250ms": 0.2413094919823375,
+          "log_price_change_5000ms": 0.3461584386844568,
+          "mean_buy_sol_1000ms": 1.4731124837206893,
+          "net_acceleration_1s": 6.37160920342286,
+          "net_flow_sol_1000ms": 5.068429125736161,
+          "net_flow_sol_2000ms": 5.691669467413702,
+          "net_flow_sol_250ms": 4.520841406218647,
+          "net_flow_sol_5000ms": 7.104772086570211,
+          "repeat_buyer_share_1000ms": 0.13827789984925615,
+          "sell_count_1000ms": 3.1087960510814434,
+          "sell_count_250ms": 1.7306640558100994,
+          "top_buyer_share_1000ms": 0.31769686979549966,
+          "total_external_buy_sol": 64.3559701264067,
+          "total_external_net_sol": 10.241641173925299,
+          "total_external_sell_sol": 57.49737445043664,
+          "unique_buyers_1000ms": 4.267882914496018,
+          "unique_buyers_total": 95.45560232412883,
+          "unique_sellers_1000ms": 2.920357145579616,
+          "unique_sellers_total": 72.48756407746517
+        },
+        "training": {
+          "averagePrecision": 0.23636788159567176,
+          "positiveN": 177,
+          "rocAuc": 0.822336339032938,
+          "rowN": 1989,
+          "withinMint": {
+            "actualRankedFirstPct": 77.96610169491525,
+            "actualRankedTop10Pct": 86.44067796610169,
+            "actualRankedTop3Pct": 84.7457627118644,
+            "chanceRankedFirstPct": 20.147604907669542,
+            "chanceRankedTop10Pct": 22.586049244109546,
+            "chanceRankedTop3Pct": 58.46541359306512,
+            "meanCandidateStates": 11.23728813559322,
+            "meanReciprocalRank": 0.8267378540185121,
+            "medianRank": 1,
+            "mintBalancedPairwiseConcordance": 0.9486336281012036,
+            "n": 177
+          }
+        },
+        "validation": {
+          "averagePrecision": 0.018088977295220604,
+          "positiveN": 76,
+          "rocAuc": 0.7027342839114988,
+          "rowN": 7750,
+          "withinMint": {
+            "actualRankedFirstPct": 68.42105263157895,
+            "actualRankedTop10Pct": 78.94736842105263,
+            "actualRankedTop3Pct": 69.73684210526316,
+            "chanceRankedFirstPct": 19.615714706781503,
+            "chanceRankedTop10Pct": 22.75938515286985,
+            "chanceRankedTop3Pct": 52.92609148876557,
+            "meanCandidateStates": 101.97368421052632,
+            "meanReciprocalRank": 0.7127502735763838,
+            "medianRank": 1.0,
+            "mintBalancedPairwiseConcordance": 0.9348272590136224,
+            "n": 76
+          }
+        }
+      },
+      "trigger": {
+        "anyRisingCrossingPct": 84.21052631578948,
+        "assessmentN": 76,
+        "firstRisingIsTeacherStatePct": 31.57894736842105,
+        "firstRisingLeadMs": {
+          "p50": 108.9274025,
+          "p75": 13142.26480275,
+          "p90": 57755.46409740001
+        },
+        "rows": [
+          {
+            "eligibleOrdinal": 247,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 9.038921,
+            "mint": "ETetifkD5Tj5pDVCNvgUGjkwN57Ge4CxRsAJZtgqpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 9.038921
+          },
+          {
+            "eligibleOrdinal": 249,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "Cdmwu1u1mkw29TuDwwvVBxm21hbP1DoWX1H7fAjspump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 245.114797
+          },
+          {
+            "eligibleOrdinal": 250,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 35.824329,
+            "mint": "7N37bDgM2hZmsdzt3hhnfTQeoKEeGYQQt3uoVqD9pump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 35.824329
+          },
+          {
+            "eligibleOrdinal": 251,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 114.41332,
+            "mint": "8LkzndDpFp4T6T56PnR3K4D1n8rLwKa4osuwSJ9Bpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 114.41332
+          },
+          {
+            "eligibleOrdinal": 252,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 75.863791,
+            "mint": "9HgXuMge5jYyNpYLmwS5x7gYT7Y4HqgS16acPyUcpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 75.863791
+          },
+          {
+            "eligibleOrdinal": 253,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 7.91169,
+            "mint": "wo7gJ4kRJH1cQ8s8q55sLvhnNuEFyu6mgpFQRBfpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 7.91169
+          },
+          {
+            "eligibleOrdinal": 255,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "A6jSo2ynHrL3PrBWFKwWQcQWdzYqds17JYocdFXnpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 110.696484
+          },
+          {
+            "eligibleOrdinal": 256,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 153.282512,
+            "mint": "2hiCi3UKmNGDcmvRer9HSGWjG1r52TNdMparqzsLpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 153.282512
+          },
+          {
+            "eligibleOrdinal": 257,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "25sHUmrjSGUAdtZaKSUAiCcJc43FGPaqyhg9ip6ypump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 75.51503
+          },
+          {
+            "eligibleOrdinal": 259,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 20.119479,
+            "mint": "HdF44BGUtKazye1iF1HXYwfwtTasvHgQbUuyjLXLpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 20.119479
+          },
+          {
+            "eligibleOrdinal": 260,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 45284.708634,
+            "mint": "HdF44BGUtKazye1iF1HXYwfwtTasvHgQbUuyjLXLpump",
+            "risingCrossingN": 3,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 39.485309
+          },
+          {
+            "eligibleOrdinal": 261,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 13768.569504,
+            "mint": "DVE31ex45ur2cX36LFRnFMjTudmKt1DGNDCpUbLipump",
+            "risingCrossingN": 19,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 27.061085
+          },
+          {
+            "eligibleOrdinal": 262,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 11407.716587,
+            "mint": "8WV8PmCKcCJCBF6L3ZMSX2qVpgGcWqshDNTU9Vcupump",
+            "risingCrossingN": 6,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 74.475029
+          },
+          {
+            "eligibleOrdinal": 263,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 7191.709485,
+            "mint": "HdPxbxTkfc5qKQTkPf2DXU2ZRZ9BUKWMc8QVFSa1pump",
+            "risingCrossingN": 12,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 22.75197
+          },
+          {
+            "eligibleOrdinal": 264,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 76960.477851,
+            "mint": "8WV8PmCKcCJCBF6L3ZMSX2qVpgGcWqshDNTU9Vcupump",
+            "risingCrossingN": 102,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 7.189748
+          },
+          {
+            "eligibleOrdinal": 265,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 2792.050643,
+            "mint": "GPxf8V1GkeQT3SWnqcPpq3bPy2wh9RqBXr7NC9ifpump",
+            "risingCrossingN": 3,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 16.262287
+          },
+          {
+            "eligibleOrdinal": 266,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "BacNyd3ntDrVgDzPVQaxUYqHC325mC6mXZ5NoCsxpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 26.187931
+          },
+          {
+            "eligibleOrdinal": 267,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 57.013933,
+            "mint": "4kvpo8RMdwpX6sG8ziEzAFntQb9ixdT5cZbCQHxcpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 20.103538
+          },
+          {
+            "eligibleOrdinal": 271,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 23.16087,
+            "mint": "8gC6VSWBuQBD5GJAmGmWSqPM69mDt4gLFWUjAVXxpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 23.16087
+          },
+          {
+            "eligibleOrdinal": 272,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "GqXDd1o5dGvPP2d1DHYEHtxJ5iDqimw6xzhR6N3epump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 22.301837
+          },
+          {
+            "eligibleOrdinal": 273,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 70.200732,
+            "mint": "Hrr2mr9Z3x3RayFjXLxRAeAXyYAuwiu3MucLDqxspump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 70.200732
+          },
+          {
+            "eligibleOrdinal": 274,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "BduSTbjk8ZFZdE44Kg6Rn4J8VgrzXLhCm5avzP8zpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 8.73365
+          },
+          {
+            "eligibleOrdinal": 275,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 103.441485,
+            "mint": "FG3R4SZfGJXx2pYLo1ek9RHYQBFLZC9PUXjRabovpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 103.441485
+          },
+          {
+            "eligibleOrdinal": 277,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 19.463597,
+            "mint": "Dx1Pev3qdxD1Be5WwVhzA54e5pnP8bCPwBWn49cgK5Df",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 19.463597
+          },
+          {
+            "eligibleOrdinal": 278,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 25532.032271,
+            "mint": "stckEbaDMoxn179hXPnShVfydFSKCLeMG8qgDrEKgk3",
+            "risingCrossingN": 10,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 11.862509
+          },
+          {
+            "eligibleOrdinal": 279,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 20.243332,
+            "mint": "5Dd6N96xdWSpnZPrFj68K8CmzyCoFFfMwcU8LghZpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 20.243332
+          },
+          {
+            "eligibleOrdinal": 280,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "HLD9nhixLUvS4QNmTZKrjBDnDwWr8B7CAyT2mQNMpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 59.677667
+          },
+          {
+            "eligibleOrdinal": 281,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 22.267668,
+            "mint": "77Yi3VpTPGmuh4GRG7bDpMA1nC1hF35FM4NfRJkQpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 22.267668
+          },
+          {
+            "eligibleOrdinal": 282,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "GvkhhB6XkM3nv5qN7xbXE4zRJGmSuXdSaZYXedUfCuV7",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 39.963239
+          },
+          {
+            "eligibleOrdinal": 283,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 47.502916,
+            "mint": "Co4mtvmnJXrschbRrG3xKgj3jdsngAAV1dJ2oapupump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 47.502916
+          },
+          {
+            "eligibleOrdinal": 284,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "BJZK6VW3VPhL7coCRsnH1gme7b7TpjFuaeWV1ygZpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 72.082112
+          },
+          {
+            "eligibleOrdinal": 286,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "7eAKtFmi2YPKjBkr5yYHaLd5Nk3fNWmcVPWqHX2Fpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 43.407835
+          },
+          {
+            "eligibleOrdinal": 287,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 24.190106,
+            "mint": "CRejxGoN8fGHPAWPwyb2U6PZvAp94ig5L2DthZAPpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 24.190106
+          },
+          {
+            "eligibleOrdinal": 288,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 36.725517,
+            "mint": "8Lh9x4qHDcpG4XpW9xK6cnv5WZutcV5nv4tNG8Pvpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 36.725517
+          },
+          {
+            "eligibleOrdinal": 289,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 447015.032842,
+            "mint": "Be5sJ6RMq7ttSgSSzbnXM9LEFofofjX62eCnhVWd7zfU",
+            "risingCrossingN": 16,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 10.553679
+          },
+          {
+            "eligibleOrdinal": 290,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 11079.653567,
+            "mint": "5fUzubBrPqYzjNRJtUMdRTWkhNH5BXEfTr8GFVQeDAKG",
+            "risingCrossingN": 14,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 28.567376
+          },
+          {
+            "eligibleOrdinal": 291,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 16396.42477,
+            "mint": "5fUzubBrPqYzjNRJtUMdRTWkhNH5BXEfTr8GFVQeDAKG",
+            "risingCrossingN": 23,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 33.954166
+          },
+          {
+            "eligibleOrdinal": 292,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 144.997795,
+            "mint": "7SQKRzt9wN1VzJW9A4Rr4stwzDhKDSKa7ktFsypYpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 127.013476
+          },
+          {
+            "eligibleOrdinal": 293,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 5.368591,
+            "mint": "9q7ysmfVsfBBtzhC8G5fu3k9GQD2vZbzP9ePqKKZpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 5.368591
+          },
+          {
+            "eligibleOrdinal": 296,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 167.539935,
+            "mint": "Erfj1ZuYSgHQDcXrtbL78jQKbSaFBmjwDTbxT7CUpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 7.03687
+          },
+          {
+            "eligibleOrdinal": 297,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 24633.028656,
+            "mint": "42NA1ConZCUASLDUqP73pV6HgxRb9JBdWe8imjrVpump",
+            "risingCrossingN": 8,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 13.579837
+          },
+          {
+            "eligibleOrdinal": 300,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 90.292868,
+            "mint": "231S4uCBAm4HdEuZhG5Jgnq9DR54UwEXURea91RMpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 90.292868
+          },
+          {
+            "eligibleOrdinal": 301,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 181.526892,
+            "mint": "rqoXyRPiABvBbUUmE5i2zLqHVED9JpMHzfa5TH5pump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 181.526892
+          },
+          {
+            "eligibleOrdinal": 302,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 9832.12269,
+            "mint": "rqoXyRPiABvBbUUmE5i2zLqHVED9JpMHzfa5TH5pump",
+            "risingCrossingN": 7,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 101.708033
+          },
+          {
+            "eligibleOrdinal": 303,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 37.064853,
+            "mint": "8u2a4o51Hsasv5r2UFxUs9Q4FAwdooCrbFPzqwL9pump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 37.064853
+          },
+          {
+            "eligibleOrdinal": 305,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 73.932985,
+            "mint": "GQK2R8AeMRmgyX9Qz88UxUmzd7UtG21MTNjuzssBpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 73.932985
+          },
+          {
+            "eligibleOrdinal": 309,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 64.972526,
+            "mint": "A1jbz2LkDVGfzvtqi5Y3mduD4cUvquv6hMq7pJGbpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 64.972526
+          },
+          {
+            "eligibleOrdinal": 310,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 4499.679357,
+            "mint": "5duhjUPJF6r6JuLy1RyqQUFiVD8Wxowch5QtbREkpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 39.938157
+          },
+          {
+            "eligibleOrdinal": 312,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 40777.128718,
+            "mint": "A9CZBdtKmfSq9niRGVFhwsgUTN6GtdvSbp6EKrsgLa5m",
+            "risingCrossingN": 76,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 26.921615
+          },
+          {
+            "eligibleOrdinal": 313,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 89.525599,
+            "mint": "5ivH3zKRd6TsdawNG4jbi3B3jmyQRbWmzYBgdvC7pump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 89.525599
+          },
+          {
+            "eligibleOrdinal": 314,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 441010.626285,
+            "mint": "A9CZBdtKmfSq9niRGVFhwsgUTN6GtdvSbp6EKrsgLa5m",
+            "risingCrossingN": 232,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 17.872884
+          },
+          {
+            "eligibleOrdinal": 315,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 60.691493,
+            "mint": "T7pKZSiKzsu2kitGC9fsMQbNSxf96MUtNf4mozapump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 60.691493
+          },
+          {
+            "eligibleOrdinal": 316,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "ns52eFupLHEUNovcndinfR41kWi4h6E5ThswQiapump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 37.419327
+          },
+          {
+            "eligibleOrdinal": 318,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 12933.496569,
+            "mint": "2q9uyFeADMCmXs8QdJhykRErSDggatsiKdX9SggPpump",
+            "risingCrossingN": 13,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 4.587823
+          },
+          {
+            "eligibleOrdinal": 319,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 32.561156,
+            "mint": "CK1bdrVvQJzQPEm3rYH6aw6hdZ8XjUJTuivGynkhpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 32.561156
+          },
+          {
+            "eligibleOrdinal": 321,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 177.152206,
+            "mint": "BoyacLGEqdV5PLM27bPTqdBVEs1gdyHvQYKZAYdqpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 165.038784
+          },
+          {
+            "eligibleOrdinal": 322,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 60.084172,
+            "mint": "6sDVtCQnVCCN6zhxApzmGqPewVTxZudSoPXCQaepump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 33.534965
+          },
+          {
+            "eligibleOrdinal": 323,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 57311.051729,
+            "mint": "HAH9woBnkA6sAMyyQn27NKfXFPimWT2oXvhGDEXjpump",
+            "risingCrossingN": 106,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 34.545015
+          },
+          {
+            "eligibleOrdinal": 324,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 13.607777,
+            "mint": "8HKVnsz2txeTC3GNeGEKbotPiJ9vh7SYjKAQgVRkpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 13.607777
+          },
+          {
+            "eligibleOrdinal": 325,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 2775.893308,
+            "mint": "8HKVnsz2txeTC3GNeGEKbotPiJ9vh7SYjKAQgVRkpump",
+            "risingCrossingN": 5,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 6.636837
+          },
+          {
+            "eligibleOrdinal": 326,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": null,
+            "mint": "5jAiqCY6EZWNo2bLtbnJq2Xp74cfVZMTDMyP4JPNpump",
+            "risingCrossingN": 0,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 115.648983
+          },
+          {
+            "eligibleOrdinal": 328,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 19.203491,
+            "mint": "5NN2B3fwfs6Czsya7tQUUiopi7Z73baBKEhRGQk6pump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 19.203491
+          },
+          {
+            "eligibleOrdinal": 332,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 7100.47532,
+            "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+            "risingCrossingN": 7,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 9.605871
+          },
+          {
+            "eligibleOrdinal": 333,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 78658.291268,
+            "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+            "risingCrossingN": 81,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 102.122748
+          },
+          {
+            "eligibleOrdinal": 334,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 96168.316253,
+            "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+            "risingCrossingN": 99,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 60.466826
+          },
+          {
+            "eligibleOrdinal": 336,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 57945.926541,
+            "mint": "LeEDV9NEhqgv5ZF53HcvKcVD7bSXqANmpgKYM5Rpump",
+            "risingCrossingN": 35,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 32.237193
+          },
+          {
+            "eligibleOrdinal": 338,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 50.498023,
+            "mint": "CqC8bDkSWpNgzeszSLyNRQXeqgvTznkkcCJs2JPPpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 50.498023
+          },
+          {
+            "eligibleOrdinal": 339,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 350.286008,
+            "mint": "DZftnjVaUy3pzs4cHoanhifSfKAeg26mD196iusSpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 263.963966
+          },
+          {
+            "eligibleOrdinal": 340,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 27.834092,
+            "mint": "BxYpkBGvhKP9J376itHfXUeSoSDDY7ahmFwj89jnpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 27.834092
+          },
+          {
+            "eligibleOrdinal": 341,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 28938.007177,
+            "mint": "BQHmePDcsp26n6wtkJioygL7Bq3iA1Vbpg3DnnZ6pump",
+            "risingCrossingN": 61,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 36.86481
+          },
+          {
+            "eligibleOrdinal": 342,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 10.776435,
+            "mint": "CE8nFru2x1pz3HjiPpi8SKqtFcgmh5vWAaKNMHYCpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 10.776435
+          },
+          {
+            "eligibleOrdinal": 344,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 35.555548,
+            "mint": "EUGePJqBTeqdvDoVjdqRnYMVvZ159LJaspvgNKFUpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 35.555548
+          },
+          {
+            "eligibleOrdinal": 345,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 77168.645297,
+            "mint": "EUGePJqBTeqdvDoVjdqRnYMVvZ159LJaspvgNKFUpump",
+            "risingCrossingN": 30,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 59.471898
+          },
+          {
+            "eligibleOrdinal": 346,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 95.736128,
+            "mint": "BQCgvEdbz9jF3wZzdUR89LJMR2Baprwfqj73fgSLpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 95.736128
+          },
+          {
+            "eligibleOrdinal": 347,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 58.019249,
+            "mint": "mEKiLnDMgaEKDK5yks9hs7946L3ueundsTkWZtKpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 58.019249
+          },
+          {
+            "eligibleOrdinal": 350,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 22142.342548,
+            "mint": "uhC33w365uThbaFy5TKq6pehGmf6zfhM91kSW3Upump",
+            "risingCrossingN": 17,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 180.896403
+          }
+        ],
+        "teacherStateRecallPct": 78.94736842105263,
+        "threshold": 0.45895488733711354,
+        "thresholdPolicy": "P10 of internal-training teacher-state scores; fixed 90% teacher recall target"
+      }
+    },
+    "TRANSITION_ONLY": {
+      "model": {
+        "assessmentEpisodeN": 76,
+        "coefficients": [
+          {
+            "feature": "transition_log_event_number",
+            "standardizedCoefficient": 0.584368632869923
+          },
+          {
+            "feature": "transition_new_flow250_high",
+            "standardizedCoefficient": 0.3755053925810311
+          },
+          {
+            "feature": "transition_new_price_high",
+            "standardizedCoefficient": 0.34010809085675237
+          },
+          {
+            "feature": "delta_curve_progress",
+            "standardizedCoefficient": 0.30514058997291
+          },
+          {
+            "feature": "transition_log_interarrival_ms",
+            "standardizedCoefficient": 0.28432745406802784
+          },
+          {
+            "feature": "delta_net_flow_sol_250ms",
+            "standardizedCoefficient": 0.2821729819053051
+          },
+          {
+            "feature": "transition_new_buy_count250_high",
+            "standardizedCoefficient": 0.26648682307646365
+          },
+          {
+            "feature": "delta_gross_buy_sol_250ms",
+            "standardizedCoefficient": 0.24394663573359646
+          },
+          {
+            "feature": "delta_buy_count_250ms",
+            "standardizedCoefficient": 0.2371647074093874
+          },
+          {
+            "feature": "delta_log_price_change_250ms",
+            "standardizedCoefficient": 0.23580143584996435
+          },
+          {
+            "feature": "delta_consecutive_buys",
+            "standardizedCoefficient": 0.15433097695831352
+          },
+          {
+            "feature": "delta_net_acceleration_1s",
+            "standardizedCoefficient": 0.1155645848995831
+          },
+          {
+            "feature": "delta_top_buyer_share_1000ms",
+            "standardizedCoefficient": 0.11320130921120664
+          },
+          {
+            "feature": "transition_is_first_observed_state",
+            "standardizedCoefficient": 0.08071363741074666
+          },
+          {
+            "feature": "delta_sell_count_250ms",
+            "standardizedCoefficient": -0.0637674259983353
+          },
+          {
+            "feature": "delta_buy_count_acceleration_1s",
+            "standardizedCoefficient": 0.0033794108388923486
+          }
+        ],
+        "crossBoundaryRepeatDropped": 0,
+        "featureNames": [
+          "transition_log_interarrival_ms",
+          "transition_is_first_observed_state",
+          "transition_log_event_number",
+          "transition_new_price_high",
+          "transition_new_flow250_high",
+          "transition_new_buy_count250_high",
+          "delta_net_flow_sol_250ms",
+          "delta_gross_buy_sol_250ms",
+          "delta_buy_count_250ms",
+          "delta_sell_count_250ms",
+          "delta_log_price_change_250ms",
+          "delta_net_acceleration_1s",
+          "delta_buy_count_acceleration_1s",
+          "delta_consecutive_buys",
+          "delta_top_buyer_share_1000ms",
+          "delta_curve_progress"
+        ],
+        "intercept": -0.9031997985601079,
+        "trainEpisodeN": 177,
+        "trainMeans": {
+          "delta_buy_count_250ms": 0.03770739064856712,
+          "delta_buy_count_acceleration_1s": 0.07290095525389644,
+          "delta_consecutive_buys": 0.09954751131221719,
+          "delta_curve_progress": 0.004463295768735467,
+          "delta_gross_buy_sol_250ms": 0.050270542447963806,
+          "delta_log_price_change_250ms": 0.0012073899771658373,
+          "delta_net_acceleration_1s": 0.06413458072649574,
+          "delta_net_flow_sol_250ms": 0.03216828363750629,
+          "delta_sell_count_250ms": -0.0015082956259426848,
+          "delta_top_buyer_share_1000ms": -0.005886299986132702,
+          "transition_is_first_observed_state": 0.0889894419306184,
+          "transition_log_event_number": 3.280775788306698,
+          "transition_log_interarrival_ms": 2.659962212252037,
+          "transition_new_buy_count250_high": 0.21669180492709905,
+          "transition_new_flow250_high": 0.21820010055304173,
+          "transition_new_price_high": 0.2885872297637003
+        },
+        "trainScales": {
+          "delta_buy_count_250ms": 1.6592856085889693,
+          "delta_buy_count_acceleration_1s": 2.7293195487777653,
+          "delta_consecutive_buys": 2.1553876971598322,
+          "delta_curve_progress": 0.0648668880211844,
+          "delta_gross_buy_sol_250ms": 2.189010179815977,
+          "delta_log_price_change_250ms": 0.11798983071405265,
+          "delta_net_acceleration_1s": 3.4123692976195947,
+          "delta_net_flow_sol_250ms": 2.3386586143043844,
+          "delta_sell_count_250ms": 1.0628787084495463,
+          "delta_top_buyer_share_1000ms": 0.30704182070162794,
+          "transition_is_first_observed_state": 0.28472850429048285,
+          "transition_log_event_number": 1.8087531447882257,
+          "transition_log_interarrival_ms": 2.823146713474217,
+          "transition_new_buy_count250_high": 0.4119908574283355,
+          "transition_new_flow250_high": 0.41302399043116633,
+          "transition_new_price_high": 0.45310555125821794
+        },
+        "training": {
+          "averagePrecision": 0.415815161209687,
+          "positiveN": 177,
+          "rocAuc": 0.9020185580124968,
+          "rowN": 1989,
+          "withinMint": {
+            "actualRankedFirstPct": 72.88135593220339,
+            "actualRankedTop10Pct": 84.7457627118644,
+            "actualRankedTop3Pct": 88.13559322033899,
+            "chanceRankedFirstPct": 20.147604907669542,
+            "chanceRankedTop10Pct": 22.586049244109546,
+            "chanceRankedTop3Pct": 58.46541359306512,
+            "meanCandidateStates": 11.23728813559322,
+            "meanReciprocalRank": 0.8228524143778382,
+            "medianRank": 1,
+            "mintBalancedPairwiseConcordance": 0.9367511638652022,
+            "n": 177
+          }
+        },
+        "validation": {
+          "averagePrecision": 0.08645506948927091,
+          "positiveN": 76,
+          "rocAuc": 0.855073693812326,
+          "rowN": 7750,
+          "withinMint": {
+            "actualRankedFirstPct": 48.68421052631579,
+            "actualRankedTop10Pct": 65.78947368421052,
+            "actualRankedTop3Pct": 73.6842105263158,
+            "chanceRankedFirstPct": 19.615714706781503,
+            "chanceRankedTop10Pct": 22.75938515286985,
+            "chanceRankedTop3Pct": 52.92609148876557,
+            "meanCandidateStates": 101.97368421052632,
+            "meanReciprocalRank": 0.6216324893820161,
+            "medianRank": 2.0,
+            "mintBalancedPairwiseConcordance": 0.8764517047589094,
+            "n": 76
+          }
+        }
+      },
+      "trigger": {
+        "anyRisingCrossingPct": 100.0,
+        "assessmentN": 76,
+        "firstRisingIsTeacherStatePct": 10.526315789473685,
+        "firstRisingLeadMs": {
+          "p50": 179.8374925,
+          "p75": 11789.1615825,
+          "p90": 57628.489134999996
+        },
+        "rows": [
+          {
+            "eligibleOrdinal": 247,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 454929.145231,
+            "mint": "ETetifkD5Tj5pDVCNvgUGjkwN57Ge4CxRsAJZtgqpump",
+            "risingCrossingN": 3,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 9.038921
+          },
+          {
+            "eligibleOrdinal": 249,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 8014.41838,
+            "mint": "Cdmwu1u1mkw29TuDwwvVBxm21hbP1DoWX1H7fAjspump",
+            "risingCrossingN": 3,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 245.114797
+          },
+          {
+            "eligibleOrdinal": 250,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 35.824329,
+            "mint": "7N37bDgM2hZmsdzt3hhnfTQeoKEeGYQQt3uoVqD9pump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 35.824329
+          },
+          {
+            "eligibleOrdinal": 251,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 114.41332,
+            "mint": "8LkzndDpFp4T6T56PnR3K4D1n8rLwKa4osuwSJ9Bpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 114.41332
+          },
+          {
+            "eligibleOrdinal": 252,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 75.863791,
+            "mint": "9HgXuMge5jYyNpYLmwS5x7gYT7Y4HqgS16acPyUcpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 75.863791
+          },
+          {
+            "eligibleOrdinal": 253,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 3819.864199,
+            "mint": "wo7gJ4kRJH1cQ8s8q55sLvhnNuEFyu6mgpFQRBfpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 7.91169
+          },
+          {
+            "eligibleOrdinal": 255,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 1927.112669,
+            "mint": "A6jSo2ynHrL3PrBWFKwWQcQWdzYqds17JYocdFXnpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 110.696484
+          },
+          {
+            "eligibleOrdinal": 256,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 153.282512,
+            "mint": "2hiCi3UKmNGDcmvRer9HSGWjG1r52TNdMparqzsLpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 153.282512
+          },
+          {
+            "eligibleOrdinal": 257,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 2912.443841,
+            "mint": "25sHUmrjSGUAdtZaKSUAiCcJc43FGPaqyhg9ip6ypump",
+            "risingCrossingN": 1,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 75.51503
+          },
+          {
+            "eligibleOrdinal": 259,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 20.119479,
+            "mint": "HdF44BGUtKazye1iF1HXYwfwtTasvHgQbUuyjLXLpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 20.119479
+          },
+          {
+            "eligibleOrdinal": 260,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 45284.708634,
+            "mint": "HdF44BGUtKazye1iF1HXYwfwtTasvHgQbUuyjLXLpump",
+            "risingCrossingN": 3,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 39.485309
+          },
+          {
+            "eligibleOrdinal": 261,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 13768.569504,
+            "mint": "DVE31ex45ur2cX36LFRnFMjTudmKt1DGNDCpUbLipump",
+            "risingCrossingN": 20,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 27.061085
+          },
+          {
+            "eligibleOrdinal": 262,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 11407.716587,
+            "mint": "8WV8PmCKcCJCBF6L3ZMSX2qVpgGcWqshDNTU9Vcupump",
+            "risingCrossingN": 9,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 74.475029
+          },
+          {
+            "eligibleOrdinal": 263,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 7191.709485,
+            "mint": "HdPxbxTkfc5qKQTkPf2DXU2ZRZ9BUKWMc8QVFSa1pump",
+            "risingCrossingN": 10,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 22.75197
+          },
+          {
+            "eligibleOrdinal": 264,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 76960.477851,
+            "mint": "8WV8PmCKcCJCBF6L3ZMSX2qVpgGcWqshDNTU9Vcupump",
+            "risingCrossingN": 117,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 7.189748
+          },
+          {
+            "eligibleOrdinal": 265,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 2792.050643,
+            "mint": "GPxf8V1GkeQT3SWnqcPpq3bPy2wh9RqBXr7NC9ifpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 16.262287
+          },
+          {
+            "eligibleOrdinal": 266,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 2979.559567,
+            "mint": "BacNyd3ntDrVgDzPVQaxUYqHC325mC6mXZ5NoCsxpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 26.187931
+          },
+          {
+            "eligibleOrdinal": 267,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 57.013933,
+            "mint": "4kvpo8RMdwpX6sG8ziEzAFntQb9ixdT5cZbCQHxcpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 20.103538
+          },
+          {
+            "eligibleOrdinal": 271,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 23.16087,
+            "mint": "8gC6VSWBuQBD5GJAmGmWSqPM69mDt4gLFWUjAVXxpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 23.16087
+          },
+          {
+            "eligibleOrdinal": 272,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 200.813134,
+            "mint": "GqXDd1o5dGvPP2d1DHYEHtxJ5iDqimw6xzhR6N3epump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 22.301837
+          },
+          {
+            "eligibleOrdinal": 273,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 70.200732,
+            "mint": "Hrr2mr9Z3x3RayFjXLxRAeAXyYAuwiu3MucLDqxspump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 70.200732
+          },
+          {
+            "eligibleOrdinal": 274,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 9131.083836,
+            "mint": "BduSTbjk8ZFZdE44Kg6Rn4J8VgrzXLhCm5avzP8zpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 8.73365
+          },
+          {
+            "eligibleOrdinal": 275,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 103.441485,
+            "mint": "FG3R4SZfGJXx2pYLo1ek9RHYQBFLZC9PUXjRabovpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 103.441485
+          },
+          {
+            "eligibleOrdinal": 277,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 19.463597,
+            "mint": "Dx1Pev3qdxD1Be5WwVhzA54e5pnP8bCPwBWn49cgK5Df",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 19.463597
+          },
+          {
+            "eligibleOrdinal": 278,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 25532.032271,
+            "mint": "stckEbaDMoxn179hXPnShVfydFSKCLeMG8qgDrEKgk3",
+            "risingCrossingN": 11,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 11.862509
+          },
+          {
+            "eligibleOrdinal": 279,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 20.243332,
+            "mint": "5Dd6N96xdWSpnZPrFj68K8CmzyCoFFfMwcU8LghZpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 20.243332
+          },
+          {
+            "eligibleOrdinal": 280,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 59.677667,
+            "mint": "HLD9nhixLUvS4QNmTZKrjBDnDwWr8B7CAyT2mQNMpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 59.677667
+          },
+          {
+            "eligibleOrdinal": 281,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 22.267668,
+            "mint": "77Yi3VpTPGmuh4GRG7bDpMA1nC1hF35FM4NfRJkQpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 22.267668
+          },
+          {
+            "eligibleOrdinal": 282,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 39.963239,
+            "mint": "GvkhhB6XkM3nv5qN7xbXE4zRJGmSuXdSaZYXedUfCuV7",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 39.963239
+          },
+          {
+            "eligibleOrdinal": 283,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 47.502916,
+            "mint": "Co4mtvmnJXrschbRrG3xKgj3jdsngAAV1dJ2oapupump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 47.502916
+          },
+          {
+            "eligibleOrdinal": 284,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 120.828863,
+            "mint": "BJZK6VW3VPhL7coCRsnH1gme7b7TpjFuaeWV1ygZpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 72.082112
+          },
+          {
+            "eligibleOrdinal": 286,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 280.650786,
+            "mint": "7eAKtFmi2YPKjBkr5yYHaLd5Nk3fNWmcVPWqHX2Fpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 43.407835
+          },
+          {
+            "eligibleOrdinal": 287,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 24.190106,
+            "mint": "CRejxGoN8fGHPAWPwyb2U6PZvAp94ig5L2DthZAPpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 24.190106
+          },
+          {
+            "eligibleOrdinal": 288,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 36.725517,
+            "mint": "8Lh9x4qHDcpG4XpW9xK6cnv5WZutcV5nv4tNG8Pvpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 36.725517
+          },
+          {
+            "eligibleOrdinal": 289,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 447065.803922,
+            "mint": "Be5sJ6RMq7ttSgSSzbnXM9LEFofofjX62eCnhVWd7zfU",
+            "risingCrossingN": 20,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 10.553679
+          },
+          {
+            "eligibleOrdinal": 290,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 11088.016999,
+            "mint": "5fUzubBrPqYzjNRJtUMdRTWkhNH5BXEfTr8GFVQeDAKG",
+            "risingCrossingN": 21,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 28.567376
+          },
+          {
+            "eligibleOrdinal": 291,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 16404.788202,
+            "mint": "5fUzubBrPqYzjNRJtUMdRTWkhNH5BXEfTr8GFVQeDAKG",
+            "risingCrossingN": 32,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 33.954166
+          },
+          {
+            "eligibleOrdinal": 292,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 144.997795,
+            "mint": "7SQKRzt9wN1VzJW9A4Rr4stwzDhKDSKa7ktFsypYpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 127.013476
+          },
+          {
+            "eligibleOrdinal": 293,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 5.368591,
+            "mint": "9q7ysmfVsfBBtzhC8G5fu3k9GQD2vZbzP9ePqKKZpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 5.368591
+          },
+          {
+            "eligibleOrdinal": 296,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 167.539935,
+            "mint": "Erfj1ZuYSgHQDcXrtbL78jQKbSaFBmjwDTbxT7CUpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 7.03687
+          },
+          {
+            "eligibleOrdinal": 297,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 24633.028656,
+            "mint": "42NA1ConZCUASLDUqP73pV6HgxRb9JBdWe8imjrVpump",
+            "risingCrossingN": 10,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 13.579837
+          },
+          {
+            "eligibleOrdinal": 300,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 90.292868,
+            "mint": "231S4uCBAm4HdEuZhG5Jgnq9DR54UwEXURea91RMpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 90.292868
+          },
+          {
+            "eligibleOrdinal": 301,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 181.526892,
+            "mint": "rqoXyRPiABvBbUUmE5i2zLqHVED9JpMHzfa5TH5pump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 181.526892
+          },
+          {
+            "eligibleOrdinal": 302,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 9832.12269,
+            "mint": "rqoXyRPiABvBbUUmE5i2zLqHVED9JpMHzfa5TH5pump",
+            "risingCrossingN": 5,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 101.708033
+          },
+          {
+            "eligibleOrdinal": 303,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 37.064853,
+            "mint": "8u2a4o51Hsasv5r2UFxUs9Q4FAwdooCrbFPzqwL9pump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 37.064853
+          },
+          {
+            "eligibleOrdinal": 305,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 73.932985,
+            "mint": "GQK2R8AeMRmgyX9Qz88UxUmzd7UtG21MTNjuzssBpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 73.932985
+          },
+          {
+            "eligibleOrdinal": 309,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 3470.188592,
+            "mint": "A1jbz2LkDVGfzvtqi5Y3mduD4cUvquv6hMq7pJGbpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 64.972526
+          },
+          {
+            "eligibleOrdinal": 310,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 4656.252456,
+            "mint": "5duhjUPJF6r6JuLy1RyqQUFiVD8Wxowch5QtbREkpump",
+            "risingCrossingN": 4,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 39.938157
+          },
+          {
+            "eligibleOrdinal": 312,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 40777.128718,
+            "mint": "A9CZBdtKmfSq9niRGVFhwsgUTN6GtdvSbp6EKrsgLa5m",
+            "risingCrossingN": 108,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 26.921615
+          },
+          {
+            "eligibleOrdinal": 313,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 89.525599,
+            "mint": "5ivH3zKRd6TsdawNG4jbi3B3jmyQRbWmzYBgdvC7pump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 89.525599
+          },
+          {
+            "eligibleOrdinal": 314,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 441010.626285,
+            "mint": "A9CZBdtKmfSq9niRGVFhwsgUTN6GtdvSbp6EKrsgLa5m",
+            "risingCrossingN": 401,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 17.872884
+          },
+          {
+            "eligibleOrdinal": 315,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 60.691493,
+            "mint": "T7pKZSiKzsu2kitGC9fsMQbNSxf96MUtNf4mozapump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 60.691493
+          },
+          {
+            "eligibleOrdinal": 316,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 37.419327,
+            "mint": "ns52eFupLHEUNovcndinfR41kWi4h6E5ThswQiapump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 37.419327
+          },
+          {
+            "eligibleOrdinal": 318,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 12933.496569,
+            "mint": "2q9uyFeADMCmXs8QdJhykRErSDggatsiKdX9SggPpump",
+            "risingCrossingN": 11,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 4.587823
+          },
+          {
+            "eligibleOrdinal": 319,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 32.561156,
+            "mint": "CK1bdrVvQJzQPEm3rYH6aw6hdZ8XjUJTuivGynkhpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 32.561156
+          },
+          {
+            "eligibleOrdinal": 321,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 177.152206,
+            "mint": "BoyacLGEqdV5PLM27bPTqdBVEs1gdyHvQYKZAYdqpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 165.038784
+          },
+          {
+            "eligibleOrdinal": 322,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 60.084172,
+            "mint": "6sDVtCQnVCCN6zhxApzmGqPewVTxZudSoPXCQaepump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 33.534965
+          },
+          {
+            "eligibleOrdinal": 323,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 57311.051729,
+            "mint": "HAH9woBnkA6sAMyyQn27NKfXFPimWT2oXvhGDEXjpump",
+            "risingCrossingN": 71,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 34.545015
+          },
+          {
+            "eligibleOrdinal": 324,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 13.607777,
+            "mint": "8HKVnsz2txeTC3GNeGEKbotPiJ9vh7SYjKAQgVRkpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 13.607777
+          },
+          {
+            "eligibleOrdinal": 325,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 2775.893308,
+            "mint": "8HKVnsz2txeTC3GNeGEKbotPiJ9vh7SYjKAQgVRkpump",
+            "risingCrossingN": 5,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 6.636837
+          },
+          {
+            "eligibleOrdinal": 326,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 178.148093,
+            "mint": "5jAiqCY6EZWNo2bLtbnJq2Xp74cfVZMTDMyP4JPNpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 115.648983
+          },
+          {
+            "eligibleOrdinal": 328,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 19.203491,
+            "mint": "5NN2B3fwfs6Czsya7tQUUiopi7Z73baBKEhRGQk6pump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 19.203491
+          },
+          {
+            "eligibleOrdinal": 332,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 7100.47532,
+            "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+            "risingCrossingN": 6,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 9.605871
+          },
+          {
+            "eligibleOrdinal": 333,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 78658.291268,
+            "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+            "risingCrossingN": 62,
+            "teacherStatePass": false,
+            "teacherStateToTeacherMs": 102.122748
+          },
+          {
+            "eligibleOrdinal": 334,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 96168.316253,
+            "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+            "risingCrossingN": 82,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 60.466826
+          },
+          {
+            "eligibleOrdinal": 336,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 57945.926541,
+            "mint": "LeEDV9NEhqgv5ZF53HcvKcVD7bSXqANmpgKYM5Rpump",
+            "risingCrossingN": 37,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 32.237193
+          },
+          {
+            "eligibleOrdinal": 338,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 50.498023,
+            "mint": "CqC8bDkSWpNgzeszSLyNRQXeqgvTznkkcCJs2JPPpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 50.498023
+          },
+          {
+            "eligibleOrdinal": 339,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 350.286008,
+            "mint": "DZftnjVaUy3pzs4cHoanhifSfKAeg26mD196iusSpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 263.963966
+          },
+          {
+            "eligibleOrdinal": 340,
+            "firstRisingIsTeacherState": true,
+            "firstRisingToTeacherMs": 27.834092,
+            "mint": "BxYpkBGvhKP9J376itHfXUeSoSDDY7ahmFwj89jnpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 27.834092
+          },
+          {
+            "eligibleOrdinal": 341,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 28938.007177,
+            "mint": "BQHmePDcsp26n6wtkJioygL7Bq3iA1Vbpg3DnnZ6pump",
+            "risingCrossingN": 64,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 36.86481
+          },
+          {
+            "eligibleOrdinal": 342,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 10.776435,
+            "mint": "CE8nFru2x1pz3HjiPpi8SKqtFcgmh5vWAaKNMHYCpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 10.776435
+          },
+          {
+            "eligibleOrdinal": 344,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 50239.019992,
+            "mint": "EUGePJqBTeqdvDoVjdqRnYMVvZ159LJaspvgNKFUpump",
+            "risingCrossingN": 2,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 35.555548
+          },
+          {
+            "eligibleOrdinal": 345,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 127372.109741,
+            "mint": "EUGePJqBTeqdvDoVjdqRnYMVvZ159LJaspvgNKFUpump",
+            "risingCrossingN": 27,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 59.471898
+          },
+          {
+            "eligibleOrdinal": 346,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 95.736128,
+            "mint": "BQCgvEdbz9jF3wZzdUR89LJMR2Baprwfqj73fgSLpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 95.736128
+          },
+          {
+            "eligibleOrdinal": 347,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 58.019249,
+            "mint": "mEKiLnDMgaEKDK5yks9hs7946L3ueundsTkWZtKpump",
+            "risingCrossingN": 1,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 58.019249
+          },
+          {
+            "eligibleOrdinal": 350,
+            "firstRisingIsTeacherState": false,
+            "firstRisingToTeacherMs": 22142.342548,
+            "mint": "uhC33w365uThbaFy5TKq6pehGmf6zfhM91kSW3Upump",
+            "risingCrossingN": 21,
+            "teacherStatePass": true,
+            "teacherStateToTeacherMs": 180.896403
+          }
+        ],
+        "teacherStateRecallPct": 84.21052631578948,
+        "threshold": 0.4892524011494278,
+        "thresholdPolicy": "P10 of internal-training teacher-state scores; fixed 90% teacher recall target"
+      }
+    }
+  },
+  "finalTimingThreshold": 0.5254846746753575,
+  "generatedAtUtc": "2026-09-11T06:19:21.655288Z",
+  "integrity": {
+    "choiceRepairSha256": "82ab598321e437bc1cc37f102f566b42a5c5531bf2317ad529f1130f465f546f",
+    "developmentOrdinals": [
+      1,
+      350
+    ],
+    "outcomesRead": 0,
+    "policySha256": "ab23b3be089e1e762f3d42696bd884186906a8475e4eb80a3bc0747d2e2a94b6",
+    "submissions": 0,
+    "validationRowsRead": 0
+  },
+  "nextGate": "ONE_TIME_SEALED_VALIDATION_AT_N500",
+  "predeclaredSelectionRule": {
+    "minimumTeacherStateRecallPct": 75.0,
+    "order": [
+      "maximize first rising crossing equals final teacher state",
+      "minimize P75 first-rising lead",
+      "maximize within-mint Top-1"
+    ]
+  },
+  "schema": "2CQ_TRANSITION_HAZARD_FREEZE_V1",
+  "selectedFamily": "BASE_PLUS_TRANSITION",
+  "verdict": "2CQ_PRIMARY_TEACHER_IMITATION_POLICY_FROZEN_DEVELOPMENT_ONLY"
+}

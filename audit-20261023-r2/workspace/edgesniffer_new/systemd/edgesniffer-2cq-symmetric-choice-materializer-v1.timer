@@ -1,0 +1,12 @@
+[Unit]
+Description=Checkpoint the prospective 2CQ symmetric choice census hourly
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=1h
+AccuracySec=2min
+Persistent=true
+Unit=edgesniffer-2cq-symmetric-choice-materializer-v1.service
+
+[Install]
+WantedBy=timers.target

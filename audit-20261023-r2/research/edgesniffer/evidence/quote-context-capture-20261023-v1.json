@@ -1,0 +1,68 @@
+{
+  "account_owners": {
+    "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P": 3875,
+    "Sysvar1111111111111111111111111111111111111": 526,
+    "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA": 12,
+    "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb": 74
+  },
+  "bootstrap": {
+    "clock_raw_accounts": 11,
+    "fee_raw_accounts": 11,
+    "global_raw_accounts": 11,
+    "mint_raw_accounts": 236
+  },
+  "bootstrap_delay_from_native_discovery_seconds": {
+    "max": 1.185049115,
+    "median": 0.481032883,
+    "n": 236,
+    "within_1s": 235
+  },
+  "capture_counts": {
+    "ACCOUNT": 4487,
+    "CONNECTED": 1,
+    "CONNECT_ATTEMPT": 1,
+    "CONTEXT_SUBSCRIPTION_REQUESTED": 139,
+    "MINT_DISCOVERED": 236,
+    "OTHER": 6,
+    "PING": 6,
+    "SESSION_END": 1,
+    "SESSION_START": 1,
+    "SLOT": 1579,
+    "TRANSACTION": 7808
+  },
+  "completion": {
+    "counts": {
+      "capture_rows_read": 14265,
+      "missing_accounts": 0,
+      "returned_accounts": 269,
+      "rpc_errors": 0,
+      "rpc_requests": 125
+    },
+    "exit_code": 0,
+    "finished_at_ns": 1792736820148456569,
+    "trading_enabled": false,
+    "unfetched_mints": 0,
+    "unique_discovered_mints": 236,
+    "unparsed_tail_bytes": 0
+  },
+  "connections": 1,
+  "discovered_mints": 236,
+  "discovered_mints_with_native_writes": 9,
+  "implementation_sha256": "b2391376125a9e4cf4bbaf2f926601c8858d574e84bf76bd9b760581879b2c49",
+  "inputs": {
+    "bootstrap.jsonl": "e62db0d79b5ff383b7f4bf53438d14f6eb71facb54af975b79aab7246edb5e2f",
+    "capture.jsonl": "58e5c756178ecec26232281025fefdde7ed5074c5185d45b98d1f24aa90bca58",
+    "completion.json": "c21c3996cf67f6cf1718f434e6f03aadfbf2accd86648b1ee64215f55d062ad8",
+    "manifest.json": "35a85d99db512f80342be20753b754cac0b314192e049636c061cdaa31128771"
+  },
+  "limitations": [
+    "No native subscription activation ack, full write/fork reconciliation or layout/fee/mint validation yet.",
+    "No account update is not evidence of no write. Bootstrap is not usable before response.",
+    "First native receipt and chain state/confirmation are different clocks.",
+    "This separate engineering canary neither changes the original78 signals nor validates a strategy."
+  ],
+  "mints_with_raw_bootstrap": 236,
+  "mints_without_raw_bootstrap": [],
+  "quote_certification": false,
+  "schema": "RAW_QUOTE_CONTEXT_CANARY_QUALITY_V1"
+}

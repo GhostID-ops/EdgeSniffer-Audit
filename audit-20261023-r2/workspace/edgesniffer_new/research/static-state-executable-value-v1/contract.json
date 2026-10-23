@@ -1,0 +1,91 @@
+{
+  "schema": "STATIC_STATE_EXECUTABLE_VALUE_V1_CONTRACT",
+  "study": "STATIC_STATE_EXECUTABLE_VALUE_V1",
+  "population": {
+    "ordinalStart": 1,
+    "ordinalEnd": 6848,
+    "forwardEvaluationFolds": [2, 3, 4, 5],
+    "validationRowsPermitted": 0,
+    "holdoutRowsPermitted": 0
+  },
+  "frozenModel": {
+    "name": "COMBINED_STATIC_HGB",
+    "score": "forward probability of PROFITABLE_CONTINUATION",
+    "features": [
+      "cumulative_net_external_flow_sol",
+      "current_virtual_sol",
+      "hypothetical_entry_impact_bps",
+      "token_age_ms"
+    ],
+    "refitOrTunePermitted": false,
+    "forwardScoreReproductionTolerance": 1e-12
+  },
+  "selection": {
+    "tails": [0.2, 0.1, 0.05],
+    "thresholdSource": "corresponding quantile of frozen combined-static scores on all exact states in the prior chronological training population",
+    "firstCausallyQualifyingStatePerMint": true,
+    "maximumEntriesPerMint": 1,
+    "descriptiveBins": [
+      [0.0, 0.5],
+      [0.5, 0.8],
+      [0.8, 0.9],
+      [0.9, 0.95],
+      [0.95, 1.0]
+    ],
+    "descriptiveBinPopulation": "first forward-scored state per mint; full-discovery quantiles are descriptive only"
+  },
+  "primaryEconomics": {
+    "positionSizeSol": 0.5,
+    "entryOffsetMs": 37,
+    "firstSellableOffsetMs": 261,
+    "positiveBoundaryPct": 10.0,
+    "adverseBoundaryPct": -10.0,
+    "maximumHorizonMsFromDecision": 60000,
+    "standardizedDeliveryOverlaySol": 0.001
+  },
+  "pessimisticExecutionSensitivity": {
+    "name": "P75_ENTRY_AND_FIRST_SELLABLE",
+    "entryOffsetMs": 42,
+    "firstSellableOffsetMs": 372,
+    "allOtherEconomicsUnchanged": true,
+    "source": "EXECUTABLE_OPPORTUNITY_CENSUS_V1 empirical integer P75 offsets"
+  },
+  "robustness": {
+    "removeTopActivityMintFraction": 0.01,
+    "activityDefinition": "number of exact forward-scored decision states per mint",
+    "nonDivergentDefinition": "counterfactualFailedTransactions == 0"
+  },
+  "verdictGate": {
+    "primaryTail": "top10pct",
+    "minimumTrades": 100,
+    "minimumExpectancySol": 0.01,
+    "minimumProfitFactor": 1.25,
+    "minimumProfitFactorAfterRemovingBestTwo": 1.0,
+    "minimumPositiveChronologicalBlocks": 3,
+    "minimumPessimisticProfitFactor": 1.0,
+    "minimumPessimisticExpectancySol": 0.0,
+    "minimumDescriptiveBinSpearman": 0.5,
+    "fragileDefinition": "primary tail has positive expectancy and PF above 1 but misses at least one promising gate",
+    "noEdgeDefinition": "primary tail does not have both positive expectancy and PF above 1"
+  },
+  "parents": {
+    "study": "EVENT_FLOW_COMPETING_RISK_V1",
+    "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+    "analysisScriptSha256": "08bd67bc2dc7c179a2c7f59d9a3089fc1896d3729b2fbd42e9a77d1636079cb3",
+    "buildScriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+    "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd"
+  },
+  "prohibitions": [
+    "event_dynamics_rescue",
+    "feature_addition_or_removal",
+    "model_tuning",
+    "threshold_search",
+    "retrospective_best_state_selection",
+    "validation_or_holdout_access",
+    "ordinal_6849_or_later_access",
+    "new_fingerprint",
+    "live_or_shadow_trading",
+    "service_changes",
+    "package_installation"
+  ]
+}

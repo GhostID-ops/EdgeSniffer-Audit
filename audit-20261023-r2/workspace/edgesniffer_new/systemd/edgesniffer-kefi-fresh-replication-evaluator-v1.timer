@@ -1,0 +1,11 @@
+[Unit]
+Description=Schedule kEFi fresh replication readiness/evaluation checks
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=20min
+Persistent=true
+Unit=edgesniffer-kefi-fresh-replication-evaluator-v1.service
+
+[Install]
+WantedBy=timers.target

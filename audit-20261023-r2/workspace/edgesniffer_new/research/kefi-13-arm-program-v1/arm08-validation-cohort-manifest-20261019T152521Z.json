@@ -1,0 +1,42 @@
+{
+  "schema": "KEFI_ARM08_VALIDATION_COHORT_MANIFEST_V1",
+  "cohort_id": "kefi-arm08-validation-20261019T152521Z",
+  "cohort_started_at_utc": "2026-10-19T15:25:21.339Z",
+  "collection_mode": "RECEIVE_ONLY_OUTCOME_BLIND",
+  "source_mode": "PARALLEL_PUMPSWAP_TAPE_FROM_EXISTING_RECEIVE_ONLY_SOURCE",
+  "native_lineage_required": true,
+  "live_trading_enabled": false,
+  "jupiter_fallback_enabled": false,
+  "no_existing_collector_restart": true,
+  "registry_sha256": "ebf49fb316527a55f02343dd9370f70662b20ed430c4e58da05cc8fadd4a4a2c",
+  "policies_sha256": "b981d869f652294ecdf2c5e3fda1e07ba8830cbe57a9d6361643f2f85c03ffc0",
+  "tracked_wallet": "kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf",
+  "partitions": [
+    {
+      "arm_id": "ARM08_PUMPSWAP_CPI",
+      "role": "PRIMARY_ARM08_SIGNAL",
+      "policy_id": "ARM08_PUMPSWAP_CPI_FAIL_CLOSED_UNTIL_CPI_ATTRIBUTION_V1",
+      "partition": "prospective/arm08-validation-20261019T152521Z/ARM08_PUMPSWAP_CPI",
+      "allow_pnl_read": false,
+      "allow_policy_changes": false,
+      "allow_submissions": false
+    },
+    {
+      "arm_id": "ARM07_PUMPSWAP_DIRECT",
+      "role": "SAME_PERIOD_ROUTE_CONTROL",
+      "policy_id": "kefi-pumpswap-fixed-30s-challenge-v1",
+      "partition": "prospective/arm08-validation-20261019T152521Z/ARM07_PUMPSWAP_DIRECT",
+      "allow_pnl_read": false,
+      "allow_policy_changes": false,
+      "allow_submissions": false
+    }
+  ],
+  "controls": {
+    "same_period_required": true,
+    "route_control": "tracked-wallet direct PumpSwap purchases after boundary, distinct signature and mint",
+    "market_control": "non-tracked-wallet exact PumpSwap trades from the same tape and pools",
+    "matching_is_outcome_blind": true
+  },
+  "policy_contract": "arm08-validation-policy-contract-v1",
+  "promotion_status": "NOT_ELIGIBLE_UNTIL_DISCOVERY_CONTROLS_AND_FRESH_VALIDATION_PASS"
+}

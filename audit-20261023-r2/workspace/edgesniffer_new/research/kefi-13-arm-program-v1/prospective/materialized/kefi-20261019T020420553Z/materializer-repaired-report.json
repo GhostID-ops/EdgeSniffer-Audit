@@ -1,0 +1,15 @@
+{
+  "materialized_observations": 0,
+  "outcome_blind": true,
+  "rejected_rows": 1,
+  "rejections": [
+    {
+      "captured_at_utc": "2026-10-19T02:03:26.218539Z",
+      "line": 6243,
+      "reason": "OBSERVATION_PRE_COHORT_BOUNDARY"
+    }
+  ],
+  "schema": "KEFI_13_ARM_PROSPECTIVE_OBSERVATION_MATERIALIZER_V1",
+  "tracked_teacher_rows": 1,
+  "window_id": "kefi-20261019T020420553Z"
+}

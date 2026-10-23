@@ -1,0 +1,21 @@
+[Unit]
+Description=EdgeSniffer KEFI ARM08 validation receive-only native-lineage PumpSwap tape
+After=network-online.target edgesniffer-kefi-13arm-finalized-rpc-source-v1.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+EnvironmentFile=/root/bot/EdgeSniffer/.env
+Environment=TRACKED_WALLET=kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf
+Environment=KEFI_ARM08_VALIDATION_COHORT_ID=kefi-arm08-validation-20261019T152521Z
+Environment=KEFI_ARM08_VALIDATION_BOUNDARY_UTC=2026-10-19T15:25:21.339Z
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/kefi13ArmPumpSwapTapeSourceV1.py --pool-source /mnt/edgesniffer-kefi-hot/kefi-13-arm-multivenue-prospective-20261019T025634Z/raw-transactions.jsonl --output /mnt/edgesniffer-kefi-hot/kefi-arm08-validation-20261019T152521Z/pumpswap-exact-tape.jsonl --state /mnt/edgesniffer-kefi-hot/kefi-arm08-validation-20261019T152521Z/pumpswap-tape-state.json --cohort-id ${KEFI_ARM08_VALIDATION_COHORT_ID} --boundary-utc ${KEFI_ARM08_VALIDATION_BOUNDARY_UTC} --interval-seconds 15 --limit 25
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

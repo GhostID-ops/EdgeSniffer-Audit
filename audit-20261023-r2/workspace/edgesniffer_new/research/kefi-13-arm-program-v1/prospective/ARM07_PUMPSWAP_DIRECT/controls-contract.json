@@ -1,0 +1,12 @@
+{
+  "schema": "KEFI_ARM07_MATCHED_CONTROL_CONTRACT_V1",
+  "arm_id": "ARM07_PUMPSWAP_DIRECT",
+  "venue": "PUMPSWAP",
+  "outcome_blind": true,
+  "policy_id": "kefi-pumpswap-fixed-30s-challenge-v1",
+  "control_policy_id": "kefi-pumpswap-matched-nonteacher-buy-control-30s-v1",
+  "selection_rule": "For each frozen ARM07 teacher entry, select the latest unused canonical PumpSwap BUY event for the same mint and pool, with exact WSOL state, is_tracked_teacher=false, and received_at in [entry_received_at-30s, entry_received_at). Process frozen entries in chronological order; do not reuse a control event.",
+  "economics_rule": "Apply the same 0.1 SOL quote-in, exact PumpSwap fee model, and fixed 30-second exit to matched controls.",
+  "comparison_rule": "selected targets outperform controls only when selected PnL, profit factor, and win rate are all strictly greater than matched controls; missing controls yields null, not false.",
+  "promotion_effect": "controls_outperformed must be true for promotion; false after the sample gate is a losing-arm decision."
+}

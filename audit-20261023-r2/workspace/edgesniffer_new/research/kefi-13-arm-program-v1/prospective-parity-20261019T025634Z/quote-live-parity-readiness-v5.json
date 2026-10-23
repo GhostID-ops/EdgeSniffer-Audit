@@ -1,0 +1,14 @@
+{
+  "arm_id": "ARM07_PUMPSWAP_DIRECT",
+  "blockers": [],
+  "dust_execution_authorized": false,
+  "frozen_policy_id": "kefi-pumpswap-fixed-30s-challenge-v1",
+  "generated_at_utc": "2026-10-19T03:57:57.279705+00:00",
+  "live_trading_authorized": false,
+  "outcome_source": "POST_FREEZE",
+  "paper_promotion_decision": "PROMOTE_ARM07_TO_QUOTE_LIVE_PARITY_PAPER",
+  "schema": "KEFI_ARM_QUOTE_LIVE_PARITY_READINESS_V1",
+  "status": "READY_FOR_QUOTE_LIVE_PARITY_PAPER",
+  "tape_decoder_errors": 0,
+  "tape_rows": 236
+}

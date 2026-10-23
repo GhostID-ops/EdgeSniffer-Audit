@@ -1,0 +1,71 @@
+{
+  "schema": "EVENT_FLOW_COMPETING_RISK_V1_CONTRACT",
+  "study": "STATIC_STATE_EXECUTABLE_VALUE_V1_P75_SENSITIVITY",
+  "population": {
+    "ordinalStart": 1,
+    "ordinalEnd": 6848,
+    "primaryIndependenceUnit": "mint",
+    "chronologicalBlocks": [[1, 1370], [1371, 2740], [2741, 4110], [4111, 5480], [5481, 6848]],
+    "validationRowsPermitted": 0,
+    "holdoutRowsPermitted": 0
+  },
+  "decisionStates": {
+    "unit": "one state after each atomic successful Pump transaction group containing at least one external buy or sell",
+    "maximumMintAgeMs": 30000,
+    "maximumExternalTransactionGroupsPerMint": 25,
+    "sameTimestampFutureTransactionsPermitted": false,
+    "boundRationale": "Unchanged from EVENT_FLOW_COMPETING_RISK_V1."
+  },
+  "economics": {
+    "positionSizeSol": 0.5,
+    "entryOffsetMs": 42,
+    "firstSellableOffsetMs": 372,
+    "positiveBoundaryPct": 10.0,
+    "adverseBoundaryPct": -10.0,
+    "maximumHorizonMsFromDecision": 60000,
+    "standardizedDeliveryOverlaySol": 0.001,
+    "baseTransactionFeesBothSides": true,
+    "exactPumpAndCreatorFees": true,
+    "exactOwnEntryAndExitImpact": true,
+    "counterfactualReplay": "STRICT_NO_RESUBMISSION_FAILED_TRANSACTIONS_MUTATE_ZERO_STATE"
+  },
+  "features": [
+    "signed_sequence_recency_last5", "consecutive_pure_buy_groups", "sell_event_count_last5",
+    "time_since_previous_external_group_ms", "median_interarrival_last5_ms", "arrival_rate_change_ratio",
+    "gross_buy_last5_sol", "gross_sell_last5_sol", "net_flow_last5_sol", "signed_flow_acceleration_sol",
+    "latest_signed_size_sol", "median_abs_size_last5_sol", "buy_size_progression_ratio",
+    "new_unique_buyers_last5", "repeat_buyer_fraction_last5", "time_since_last_sell_ms",
+    "token_age_ms", "cumulative_net_external_flow_sol", "current_virtual_sol", "hypothetical_entry_impact_bps"
+  ],
+  "models": {
+    "primary": {
+      "class": "HistGradientBoostingClassifier", "loss": "log_loss", "learningRate": 0.05,
+      "maxIter": 60, "maxLeafNodes": 4, "maxDepth": 2, "minSamplesLeaf": 80,
+      "l2Regularization": 10.0, "maxBins": 64, "earlyStopping": false, "randomState": 20260908
+    },
+    "simpleDiagnostic": "not used in P75 sensitivity build",
+    "hyperparameterSearch": false,
+    "modelTournament": false,
+    "mintTrainingWeight": "1 / number of decision states for that mint in the training fold"
+  },
+  "staticBaselines": {
+    "cumulativeNetFlowOnly": ["cumulative_net_external_flow_sol"],
+    "curveStateOnly": ["current_virtual_sol", "hypothetical_entry_impact_bps"],
+    "tokenAgeOnly": ["token_age_ms"],
+    "combinedStatic": ["cumulative_net_external_flow_sol", "current_virtual_sol", "hypothetical_entry_impact_bps", "token_age_ms"]
+  },
+  "incrementalGroups": {},
+  "evaluation": {
+    "method": "not rerun; economic sensitivity labels only",
+    "permutationRepeats": 0,
+    "clusterBootstrapReplicates": 0,
+    "bootstrapSeed": 20260908
+  },
+  "economicDiagnosticIfMaterial": {"buckets": []},
+  "parents": {
+    "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+    "executionLatencyIdentity": "EXECUTABLE_OPPORTUNITY_CENSUS_V1_P75",
+    "exactMath": "existing validated exact Pump integer evaluator and apply_group replay"
+  },
+  "prohibitions": ["validation_or_holdout_access", "fresh_data_access", "live_or_shadow_trading", "collector_or_service_changes"]
+}

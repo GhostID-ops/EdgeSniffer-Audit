@@ -1,0 +1,99 @@
+{
+  "arm_id": "ARM08_PUMPSWAP_CPI",
+  "blocking_reasons": [
+    "lineage_complete",
+    "contemporaneous_controls_minimum",
+    "fresh_prospective_validation"
+  ],
+  "causal_failure_rate": 0.01509433962264151,
+  "checks": {
+    "causal_entries_minimum": true,
+    "causal_failure_rate_bounded": true,
+    "contemporaneous_controls_minimum": false,
+    "discovery_matches_materializer": true,
+    "fresh_prospective_validation": false,
+    "lineage_complete": false,
+    "materializer_matches_gate": true,
+    "policy_selection_disabled": true,
+    "strict_admissions_minimum": true
+  },
+  "clues": {
+    "arm07_count": 938,
+    "arm07_time_window_unix_ns": [
+      1792378613000000000,
+      1792413903000000000
+    ],
+    "arm08_count": 265,
+    "arm08_pre_trade_liquidity_quote_sol": {
+      "max": 565.214523174,
+      "mean": 112.57921641838867,
+      "min": 22.408823129,
+      "n": 265,
+      "p50": 69.2557669,
+      "p90": 294.636477475
+    },
+    "arm08_time_window_unix_ns": [
+      1792414073000000000,
+      1792422511000000000
+    ],
+    "interpretation": [
+      "ARM07 and ARM08 are temporally separated in this snapshot; direct ARM07 is not a contemporaneous control for most ARM08 trades.",
+      "The size-to-liquidity surface should be treated as a sizing-risk clue, not a selected policy."
+    ],
+    "nearest_arm07_control_gap_seconds": {
+      "max": 8608.0,
+      "mean": 4494.588679245283,
+      "min": 170.0,
+      "n": 265,
+      "p50": 4412.0,
+      "p90": 7748.0
+    },
+    "notional_to_pre_trade_liquidity_bps": {
+      "100000000": {
+        "max": 44.62527970537939,
+        "mean": 15.088096846196738,
+        "min": 1.7692397470334502,
+        "n": 265,
+        "p50": 14.439230763900472,
+        "p90": 27.211992455692787
+      },
+      "1000000000": {
+        "max": 446.2527970537939,
+        "mean": 150.88096846196737,
+        "min": 17.6923974703345,
+        "n": 265,
+        "p50": 144.3923076390047,
+        "p90": 272.11992455692786
+      },
+      "500000000": {
+        "max": 223.12639852689696,
+        "mean": 75.44048423098369,
+        "min": 8.84619873516725,
+        "n": 265,
+        "p50": 72.19615381950236,
+        "p90": 136.05996227846393
+      }
+    }
+  },
+  "counts": {
+    "causal_entries": 261,
+    "causal_failures": 4,
+    "contemporaneous_arm07_controls": 4,
+    "discovery_genuine": 265,
+    "materialized_arm08": 265,
+    "strict_admitted": 265
+  },
+  "no_policy_frozen": true,
+  "no_trading_enabled": true,
+  "read_only": true,
+  "schema": "KEFI_ARM08_PROSPECTIVE_GATE_AUDIT_V1",
+  "snapshot_id": "kefi-13-arm-source-immutable-20261019T150904Z",
+  "status": "BLOCKED_NOT_READY",
+  "thresholds": {
+    "control_window_seconds": 300,
+    "maximum_causal_failure_rate": 0.2,
+    "minimum_causal_entries": 50,
+    "minimum_contemporaneous_controls": 50,
+    "minimum_genuine_admissions": 50
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "2CQ_TEACHER_VALIDATION_V1",
+  "wallet": "2CQgjcdNEo7WtbQLpJTAVcC3Ga61pNvRDTgP5grzctFG",
+  "fixedBeforeEconomics": true,
+  "primaryDays": 7,
+  "primaryStartUtc": "2026-09-01T00:00:00Z",
+  "endUtcExclusive": "2026-09-08T00:00:00Z",
+  "contextStartUtc": "2026-08-30T00:00:00Z",
+  "extensionRule": "extend once to 30 complete UTC days only if fewer than 500 closed reconcilable episodes",
+  "createdBeforeEconomicsAtUtc": "2026-09-08T16:46:04.936691Z"
+}

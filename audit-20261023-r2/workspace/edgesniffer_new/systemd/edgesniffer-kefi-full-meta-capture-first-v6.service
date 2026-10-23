@@ -1,0 +1,43 @@
+[Unit]
+Description=EdgeSniffer kEFi fresh economic-replication full-meta source
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=!/mnt/edgesniffer-kefi-hot/kefi-capture-first-live-v6/operations/capacity-pause.json
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=root
+EnvironmentFile=/etc/edgesniffer/kefi-full-meta.env
+Environment=YELLOWSTONE_FULL_META_ENDPOINT=https://grpc.fra.shyft.to
+Environment=YELLOWSTONE_FULL_META_ROOT=/mnt/edgesniffer-kefi-hot/kefi-capture-first-live-v6
+Environment=TRACKED_WALLET_PROMOTION_ROOT=/mnt/edgesniffer-expansion/kefi-capture-first-promotions-v6
+Environment=TRACKED_WALLET=kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf
+Environment=TRACKED_WALLET_LABEL=kefi
+Environment=TRACKED_WALLET_CANDIDATE_FILE=kefi-wallet-pump-candidates.jsonl
+Environment=TRACKED_WALLET_CANDIDATE_SCHEMA=KEFI_FULL_META_WALLET_PUMP_CANDIDATE_V1
+Environment=TRACKED_WALLET_SOURCE=kefi-shyft-yellowstone-full-meta-capture-first-v6
+Environment=TRACKED_WALLET_ROLLING_WINDOW_SECONDS=120
+Environment=TRACKED_WALLET_CAPTURE_FIRST=true
+Environment=TRACKED_WALLET_CAPTURE_RING_MAX_BYTES=6442450944
+Environment=TRACKED_WALLET_SHARED_BURST_QUIET_SECONDS=20
+Environment=TRACKED_WALLET_SHARED_BURST_MAX_SECONDS=120
+Environment=TRACKED_WALLET_SHARED_BURST_PROMOTION_WORKERS=2
+Environment=YELLOWSTONE_INGEST_QUEUE_CAPACITY=32768
+Environment=YELLOWSTONE_SYNC_BATCH_FRAMES=2048
+Environment=YELLOWSTONE_SYNC_INTERVAL_SECONDS=2
+Environment=YELLOWSTONE_RECOVERY_OVERLAP_SLOTS=32
+ExecStartPre=/usr/bin/mkdir -p /mnt/edgesniffer-kefi-hot/kefi-capture-first-live-v6
+ExecStartPre=/usr/bin/mkdir -p /mnt/edgesniffer-expansion/kefi-capture-first-promotions-v6
+ExecStartPre=/usr/bin/test ! -e /mnt/edgesniffer-kefi-hot/kefi-capture-first-live-v6/operations/capacity-pause.json
+ExecStart=/usr/local/bin/edgesniffer-kefi-capture-first-v5
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+LimitNOFILE=65536
+CPUWeight=900
+IOWeight=900
+
+[Install]
+WantedBy=multi-user.target

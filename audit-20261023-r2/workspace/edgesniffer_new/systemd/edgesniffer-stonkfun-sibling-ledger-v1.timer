@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh StonkFun sibling symmetric ledger V1 every five minutes
+
+[Timer]
+OnActiveSec=5min
+OnUnitInactiveSec=5min
+Persistent=true
+Unit=edgesniffer-stonkfun-sibling-ledger-v1.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=Schedule low-impact kEFi fresh replication materialization
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+Persistent=true
+Unit=edgesniffer-kefi-capture-first-control-v2.service
+
+[Install]
+WantedBy=timers.target

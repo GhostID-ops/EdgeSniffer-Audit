@@ -1,0 +1,144 @@
+{
+  "sampling": "last <=200 complete lines within final <=4MiB prefix per source; not a coverage estimate",
+  "schema": "RETAINED_SOURCE_INVENTORY_V1",
+  "sources": {
+    "native-pump-account-state-events.jsonl": {
+      "clock_ranges": {
+        "atMs": [
+          1792721790632,
+          1792721792849
+        ],
+        "decodeCompleteUnixNs": [
+          1792721790632562000,
+          1792721792849098200
+        ],
+        "nativeReceiveMonotonicNs": [
+          91992141852905,
+          91994358388285
+        ],
+        "nativeReceiveUnixNs": [
+          1792721790632541700,
+          1792721792849095000
+        ],
+        "observedAtMs": [
+          1792721790632,
+          1792721792849
+        ],
+        "slot": [
+          460269705,
+          460269715
+        ]
+      },
+      "counts": {
+        "sample_rows": 200
+      },
+      "file_prefix_bytes": 10360203362,
+      "nested_keys": {
+        "serverCreatedAt": {
+          "nanos": 200,
+          "seconds": 200
+        }
+      },
+      "present": true,
+      "sample_bytes_sha256": "6096dd787dc402bed3a7c60cd18255ff51e024d58d4b03f112cf29b49954abd3",
+      "sample_start_byte": 10356009494,
+      "top_level_keys": {
+        "accountTxnSignature": 200,
+        "atMs": 200,
+        "bondingCurve": 200,
+        "complete": 200,
+        "decodeCompleteUnixNs": 200,
+        "kind": 200,
+        "nativeReceiveMonotonicNs": 200,
+        "nativeReceiveSource": 200,
+        "nativeReceiveUnixNs": 200,
+        "observedAtMs": 200,
+        "realSolReserves": 200,
+        "realTokenReserves": 200,
+        "schema": 200,
+        "serverCreatedAt": 200,
+        "slot": 200,
+        "source": 200,
+        "tokenTotalSupply": 200,
+        "virtualSolReserves": 200,
+        "virtualTokenReserves": 200,
+        "writeVersion": 200
+      }
+    },
+    "native-pump-fee-config-snapshots-v1.jsonl": {
+      "clock_ranges": {
+        "capturedAtMs": [
+          1792619025127,
+          1792619025127
+        ],
+        "rpcContextSlot": [
+          459785561,
+          459785561
+        ]
+      },
+      "counts": {
+        "sample_rows": 1
+      },
+      "file_prefix_bytes": 5880,
+      "nested_keys": {},
+      "present": true,
+      "sample_bytes_sha256": "48b54f857eee2b16c91d2d4f1d2098c542a497e5621310a60426622de33a84ce",
+      "sample_start_byte": 0,
+      "top_level_keys": {
+        "accountDataBase64": 1,
+        "accountDataSha256": 1,
+        "capturedAtMs": 1,
+        "feeConfig": 1,
+        "owner": 1,
+        "readOnly": 1,
+        "rpcContextSlot": 1,
+        "schema": 1,
+        "source": 1
+      }
+    },
+    "native-yellowstone-pump-transaction-receipts-v1.jsonl": {
+      "clock_ranges": {
+        "native_receive_monotonic_ns": [
+          89715371593698,
+          91952584679226
+        ],
+        "native_receive_unix_ns": [
+          1792719513862300200,
+          1792721751075385900
+        ],
+        "slot": [
+          460258944,
+          460269521
+        ],
+        "transaction_index": [
+          0,
+          870
+        ]
+      },
+      "counts": {
+        "sample_rows": 200
+      },
+      "file_prefix_bytes": 5606306,
+      "nested_keys": {},
+      "present": true,
+      "sample_bytes_sha256": "17a33c1d9dd074f62c0ab80a4683ee5b406f45302202f042ddd822a88cb6d8d8",
+      "sample_start_byte": 1412181,
+      "top_level_keys": {
+        "bonding_curve": 200,
+        "causal_stream_id": 200,
+        "instruction_index": 200,
+        "kind": 200,
+        "mint": 200,
+        "native_receive_monotonic_ns": 200,
+        "native_receive_source": 200,
+        "native_receive_unix_ns": 200,
+        "schema": 200,
+        "side": 200,
+        "signature": 200,
+        "slot": 200,
+        "source": 200,
+        "transaction_index": 200
+      }
+    }
+  }
+}

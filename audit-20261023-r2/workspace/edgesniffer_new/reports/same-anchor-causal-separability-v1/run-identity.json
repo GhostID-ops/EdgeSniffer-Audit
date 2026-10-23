@@ -1,0 +1,9 @@
+{
+  "anchorReportSha256": "c963b69d35b409347afbeabc6b537b60b3a1f63216cdb285420efb7ae89508bf",
+  "boundaryOrdinal": 6848,
+  "contractSha256": "b5637c1031f787efcd868af6c4391939f6ec03a84846a4ad6df962849801b082",
+  "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+  "featureRegistrySha256": "1819f2f5be5df04f3f08b882dacdbc55f98cf183313675b4b10ccafd6415bff5",
+  "schema": "SAME_ANCHOR_CAUSAL_SEPARABILITY_V1_RUN_IDENTITY",
+  "scriptSha256": "1e56012a7dea5f380fb276885ebaae8de959be0b9bb4d0c59a68c3d2c12c9bb4"
+}

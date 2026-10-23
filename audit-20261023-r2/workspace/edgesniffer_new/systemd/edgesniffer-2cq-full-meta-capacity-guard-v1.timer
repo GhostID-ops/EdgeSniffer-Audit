@@ -1,0 +1,11 @@
+[Unit]
+Description=Run EdgeSniffer 2CQ full-meta capacity guard every five minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Persistent=true
+Unit=edgesniffer-2cq-full-meta-capacity-guard-v1.service
+
+[Install]
+WantedBy=timers.target

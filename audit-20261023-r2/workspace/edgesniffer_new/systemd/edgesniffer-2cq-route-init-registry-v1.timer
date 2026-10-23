@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh EdgeSniffer 2CQ route-init finalized registry V1
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=3min
+Persistent=true
+Unit=edgesniffer-2cq-route-init-registry-v1.service
+
+[Install]
+WantedBy=timers.target

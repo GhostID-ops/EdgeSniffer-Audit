@@ -1,0 +1,9 @@
+{
+  "inventorySha256": "0395393e44af35b32cb0dcc00487aabfc8f7397a013dc653f31538dceb5645b8",
+  "outcomesRead": 0,
+  "reportSha256": "d75173609dbfd9db97c4ac8298c96bdbb907573c592d2f87b8d84b92c1d04dd7",
+  "schema": "2CQ_ROUTE_PROTOCOL_INVENTORY_V1_PROVENANCE",
+  "scriptSha256": "2727c37f27264e44bdca7ee62fc00705c4d4f1ae376b4981ccdd013df8f39914",
+  "sourceStateSha256": "3dc6ff8946a66baf621f6edabc0f4d3dc62e62ace907f13d9b630efeec81e5bf",
+  "validationRowsRead": 0
+}

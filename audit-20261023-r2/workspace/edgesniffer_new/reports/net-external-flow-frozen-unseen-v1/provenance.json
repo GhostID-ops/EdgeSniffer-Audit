@@ -1,0 +1,23 @@
+{
+  "schema": "NET_EXTERNAL_FLOW_FROZEN_UNSEEN_V1_PROVENANCE",
+  "verdict": "TOO_FEW_UNSEEN_MATCHES",
+  "contractSha256": "a575e940d14e6eb0c10695963b2513f72ab6e0bcb96bc3fc7fc5e06e7a936208",
+  "scriptSha256": "1f13c01e562c1e485b5ee4eab701ac3ddb5a3dcf215add55ca3e2d2132d9d646",
+  "thresholdFreezeSha256": "c58f327c5aa4e932cd397bc96e36d9e35c1faa59466b99a1f6c41e589e647243",
+  "featureGateReportSha256": "21e6659a7e05f34ee46536f86ec7a81b45c8635379866f0400ffd6d690e004a4",
+  "featureRowsSha256": "7aff7d71c6c6efe7887b979c6c6523363832ad7d509734c0459eade1eda0a19d",
+  "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+  "unseenPrefixSha256": "d353e345a7156d2e1cd92e538e704e4846ab39041b88e7cac6bef0f1065b07fa",
+  "combinedPrefixSha256": "a1dee24328c9a808435aa8a1ff83d569b052873fa7be865d423d5882bfb5f419",
+  "unseenOrdinalStart": 6849,
+  "unseenOrdinalEnd": 8293,
+  "frozenThreshold": 16.996559399,
+  "eligibleAnchorN": 254,
+  "featureMatchN": 14,
+  "exactEvaluableMatchN": 13,
+  "minimumRequiredN": 40,
+  "outcomeLabelsRead": 0,
+  "economicsEvaluated": false,
+  "validationRowsInspected": 0,
+  "holdoutRowsInspected": 0
+}

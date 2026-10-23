@@ -1,0 +1,26 @@
+{
+  "collectorStatusAtRefresh": {
+    "allFeatureRowsAvailabilityCausal": true,
+    "exactAdmittedN": 8530,
+    "statusGeneratedAtUtc": "2026-09-08T01:24:11.227422+00:00"
+  },
+  "currentEndOrdinal": 8530,
+  "economicsEvaluated": false,
+  "eligibleCausalAnchorN": 309,
+  "endpointFreezeSha256": "3aa01839fc726547765ef54d6fd4b9f9cfed8458b442bdab3ce3d0e3c2f89180",
+  "exactEvaluableMatchN": 16,
+  "featureRowsSha256": "a4abdbf2c24fd1688e554c4e5f8ab417e2f07d287cbb780263c410c2037417c4",
+  "frozenThresholdSol": 16.996559399,
+  "minimumExactEvaluableMatches": 40,
+  "outcomeLabelsRead": 0,
+  "schema": "NET_FLOW_UNSEEN_GATE_REFRESH_V1_REPORT",
+  "thresholdMatchN": 17,
+  "thresholdUnchanged": true,
+  "totalUnseenMints": 1682,
+  "unseenOrdinalRange": [
+    6849,
+    8530
+  ],
+  "unseenPrefixSha256": "8c4f605b143fd7ac47b90824d0629aeabceeae7e5c7adb7397e1378e48a309be",
+  "verdict": "TOO_FEW_UNSEEN_MATCHES"
+}

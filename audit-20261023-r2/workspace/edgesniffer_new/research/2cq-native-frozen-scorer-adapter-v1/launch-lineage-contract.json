@@ -1,0 +1,20 @@
+{
+  "schema": "EDGESNIFFER_2CQ_NATIVE_LAUNCH_LINEAGE_V1",
+  "required_fields": [
+    "mint",
+    "create_receive_ts_ms",
+    "creator",
+    "initial_state.virtual_sol",
+    "initial_state.virtual_token",
+    "initial_state.real_sol",
+    "initial_state.real_token"
+  ],
+  "clock_rule": "create_receive_ts_ms must be an exact CREATE receipt clock and must precede the first native observation",
+  "creator_rule": "creator must come from exact CREATE decoder evidence",
+  "reserve_rule": "initial_state must come from exact CREATE/launch evidence; first observation is not an allowed substitute",
+  "missing_data_policy": "fail-closed",
+  "input_to": "adapt2CQFrozenScorerNativeV1.py --enrichment",
+  "read_only": true,
+  "trading_enabled": false,
+  "promotion_blocked": true
+}

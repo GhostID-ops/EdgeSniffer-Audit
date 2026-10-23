@@ -1,0 +1,149 @@
+{
+  "classification": "RANKER_V2_EXACT_CURVE_RELABEL_COMPLETE",
+  "corpus": {
+    "end_ms": 1788661327191,
+    "end_utc": "2026-09-06T02:22:07.191000+00:00",
+    "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl",
+    "scan": {
+      "cache_reused": true,
+      "grep_return_code": 0,
+      "malformed_matching_rows": 243,
+      "matched_trade_observations": 268164,
+      "unsupported_matching_rows": 0
+    }
+  },
+  "curve_history": {
+    "cached": 0,
+    "complete": 882,
+    "errors": {
+      "curve_history_anchor:no_authoritative_causal_entry_state": 2046,
+      "curve_history_anchor_signature_not_found": 3,
+      "curve_history_boundary_not_retained": 271
+    },
+    "fetched_now": 1156,
+    "incomplete": 2320,
+    "rows": 1579002,
+    "signals": 3202
+  },
+  "curve_history_augmentation": {
+    "chain_block_time_only_added": 52720,
+    "observations_added": 52720,
+    "successful_history_transactions_missing_details": 0
+  },
+  "entry_delays_ms": [
+    25,
+    50,
+    100
+  ],
+  "evaluator": "EXACT_CURVE_ECONOMICS_V1",
+  "evaluator_path": "/mnt/HC_Volume_106775198/edgesniffer-derived/exact-curve-economics-v1/validated-v1/exactCurveEconomicsV1.py",
+  "evaluator_sha256": "badf8d417a155931498422300ffadb5ba1b3e3574bbcad9fd62d52161144ff10",
+  "first_sellable_delays_ms": [
+    250,
+    500,
+    1000,
+    1476
+  ],
+  "generated_utc": "2026-09-06T02:23:51.793000+00:00",
+  "max_hold_ms": 120000,
+  "no_live_changes": true,
+  "no_market_cap_fallback": true,
+  "population": {
+    "historical": {
+      "duplicates": 0,
+      "economics_sha256": "3e950d6a2c81c60eb5e75bacc3ab6a48e7628379b5c3c00db26ac2d57c512666",
+      "rows": 2158,
+      "split_counts": {
+        "final_test": 766,
+        "train": 964,
+        "validation": 428
+      },
+      "trigger_sha256": "2421fc39e75e73201b1d82d764c7d2193ec17b351283e6542dfda5608d767e83"
+    },
+    "prospective": {
+      "n25_v2": {
+        "complete_rows": 24,
+        "gzip_return_code": 0,
+        "malformed_complete_rows": 0,
+        "partial_tail_tolerated": false,
+        "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-n25-tiny-live-v2/signals.jsonl.gz",
+        "stderr_tail": ""
+      },
+      "outcomes": {
+        "complete_rows": 1041,
+        "gzip_return_code": 0,
+        "malformed_complete_rows": 0,
+        "partial_tail_tolerated": false,
+        "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-exact-curve-relabel-v1/run-20260906T0118Z/prospective-outcomes-source-snapshot.jsonl.gz",
+        "stderr_tail": ""
+      },
+      "resolved_old_outcomes": 993,
+      "signals": {
+        "complete_rows": 1044,
+        "gzip_return_code": 0,
+        "malformed_complete_rows": 0,
+        "partial_tail_tolerated": false,
+        "path": "/mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-exact-curve-relabel-v1/run-20260906T0118Z/prospective-signals-source-snapshot.jsonl.gz",
+        "stderr_tail": ""
+      },
+      "tag_counts": {
+        "full_prospective": 1044,
+        "last_24h": 274,
+        "n25_v2_window": 24,
+        "recent_prospective": 685
+      },
+      "threshold_mismatches": 0,
+      "unique_signals": 1044
+    },
+    "total_signals": 3202,
+    "unique_mints": 3202
+  },
+  "rpc_evidence": {
+    "curve_history": {
+      "cache": {
+        "ambiguous_nulls_invalidated": 0,
+        "curve_history_windows": 3202,
+        "supplies": 3198,
+        "supply_failures": 4,
+        "transactions": 342912,
+        "transactions_available": 212378
+      },
+      "supplies_requested_now": 0,
+      "transactions_fetched_now": 75231,
+      "transient_rpc_attempts_retried": {},
+      "unique_signatures": 342912
+    },
+    "final_cache": {
+      "ambiguous_nulls_invalidated": 0,
+      "curve_history_windows": 3202,
+      "supplies": 3198,
+      "supply_failures": 4,
+      "transactions": 342912,
+      "transactions_available": 212378
+    },
+    "source_observations": {
+      "cache": {
+        "ambiguous_nulls_invalidated": 0,
+        "curve_history_windows": 0,
+        "supplies": 3198,
+        "supply_failures": 4,
+        "transactions": 267681,
+        "transactions_available": 137147
+      },
+      "supplies_requested_now": 0,
+      "transactions_fetched_now": 0,
+      "transient_rpc_attempts_retried": {},
+      "unique_signatures": 267671
+    }
+  },
+  "sizes_lamports": [
+    10000000,
+    100000000,
+    500000000,
+    1000000000
+  ],
+  "sl_pct": -20.0,
+  "snapshot_now_ms": 1788661431793,
+  "threshold": 0.590596,
+  "tp_pct": 20.0
+}

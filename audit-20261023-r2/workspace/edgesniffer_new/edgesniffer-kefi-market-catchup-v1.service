@@ -1,0 +1,22 @@
+[Unit]
+Description=Bounded post-boundary kEFi market control catch-up worker
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=root
+Environment=KEFI_CONTROL_OUT=/root/kefi-work/out/kefi-market-controls-catchup-v1
+Environment=KEFI_MIN_SOURCE_PARTITION_UTC=2026/10/07/14
+ExecStart=/usr/bin/python3 /root/kefi-work/bin/kefi_market_control_lane_v1.py
+Restart=on-failure
+RestartSec=30
+Nice=15
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

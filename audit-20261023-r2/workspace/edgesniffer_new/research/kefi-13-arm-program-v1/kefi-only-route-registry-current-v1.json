@@ -1,0 +1,209 @@
+{
+  "generated_at_utc": "2026-10-19T17:09:57.403758Z",
+  "legacy_registry_policy": "The mixed-source 13-arm registry is retained only for historical artifact compatibility.",
+  "live_trading_enabled": false,
+  "policy_selection_performed": false,
+  "promotion_performed": false,
+  "research_only": true,
+  "route_count": 8,
+  "routes": [
+    {
+      "available_pre_entry_state": true,
+      "controls": {
+        "control_route_limitation": "The pool tape proves PumpSwap venue mechanics but does not prove CPI/direct route for non-KEFI control rows.",
+        "route_specific_controls_proven": false,
+        "venue_level_pumpswap_buy_controls": 22691
+      },
+      "decoder": "EXACT_CANONICAL_PUMPSWAP_STATE",
+      "evaluator": "EXACT_PUMPSWAP_CASH_FLOW",
+      "genuine_buys": 938,
+      "genuine_sells": 931,
+      "id": "KEFI_ROUTE_PUMPSWAP_DIRECT",
+      "liquidity_and_fee_fields": true,
+      "policy": {
+        "promotion_allowed": false,
+        "selection_allowed": false,
+        "status": "NOT_FROZEN"
+      },
+      "raw_transactions": 1869,
+      "readiness": "DISCOVERY_READY",
+      "route": "PUMPSWAP_DIRECT",
+      "route_certainty": "EXACT",
+      "route_hypothesis": "KEFI wallet activity on PUMPSWAP_DIRECT",
+      "strategy_search_eligible": true
+    },
+    {
+      "available_pre_entry_state": true,
+      "controls": {
+        "control_route_limitation": "The pool tape proves PumpSwap venue mechanics but does not prove CPI/direct route for non-KEFI control rows.",
+        "route_specific_controls_proven": false,
+        "venue_level_pumpswap_buy_controls": 22691
+      },
+      "decoder": "EXACT_CANONICAL_PUMPSWAP_STATE",
+      "evaluator": "EXACT_PUMPSWAP_CASH_FLOW",
+      "genuine_buys": 265,
+      "genuine_sells": 256,
+      "id": "KEFI_ROUTE_PUMPSWAP_CPI",
+      "liquidity_and_fee_fields": true,
+      "policy": {
+        "promotion_allowed": false,
+        "selection_allowed": false,
+        "status": "NOT_FROZEN"
+      },
+      "raw_transactions": 521,
+      "readiness": "DISCOVERY_READY",
+      "route": "PUMPSWAP_CPI",
+      "route_certainty": "EXACT",
+      "route_hypothesis": "KEFI wallet activity on PUMPSWAP_CPI",
+      "strategy_search_eligible": true
+    },
+    {
+      "available_pre_entry_state": true,
+      "controls": {
+        "control_route_limitation": "The pool tape proves PumpSwap venue mechanics but does not prove CPI/direct route for non-KEFI control rows.",
+        "route_specific_controls_proven": false,
+        "venue_level_pumpswap_buy_controls": 22691
+      },
+      "decoder": "EXACT_CANONICAL_PUMPSWAP_STATE",
+      "evaluator": "NOT_CERTIFIED_FOR_KEFI_STRATEGY",
+      "genuine_buys": 0,
+      "genuine_sells": 9,
+      "id": "KEFI_ROUTE_ROUTER_JUPITER_V6_PUMPSWAP_CPI",
+      "liquidity_and_fee_fields": true,
+      "policy": {
+        "promotion_allowed": false,
+        "selection_allowed": false,
+        "status": "NOT_FROZEN"
+      },
+      "raw_transactions": 9,
+      "readiness": "COVERAGE_OR_ADAPTER_GAP",
+      "route": "ROUTER_JUPITER_V6_PUMPSWAP_CPI",
+      "route_certainty": "EXACT",
+      "route_hypothesis": "KEFI wallet activity on ROUTER_JUPITER_V6_PUMPSWAP_CPI",
+      "strategy_search_eligible": false
+    },
+    {
+      "available_pre_entry_state": false,
+      "controls": {
+        "route_specific_controls_proven": false,
+        "venue_level_controls": 0
+      },
+      "decoder": "NOT_CERTIFIED_FOR_KEFI_STRATEGY",
+      "evaluator": "NOT_CERTIFIED_FOR_KEFI_STRATEGY",
+      "genuine_buys": 0,
+      "genuine_sells": 0,
+      "id": "KEFI_ROUTE_PUMP_BONDING_CURVE",
+      "liquidity_and_fee_fields": false,
+      "policy": {
+        "promotion_allowed": false,
+        "selection_allowed": false,
+        "status": "NOT_FROZEN"
+      },
+      "raw_transactions": 127,
+      "readiness": "COVERAGE_OR_ADAPTER_GAP",
+      "route": "PUMP_BONDING_CURVE",
+      "route_certainty": "EXACT",
+      "route_hypothesis": "KEFI wallet activity on PUMP_BONDING_CURVE",
+      "strategy_search_eligible": false
+    },
+    {
+      "available_pre_entry_state": false,
+      "controls": {
+        "route_specific_controls_proven": false,
+        "venue_level_controls": 0
+      },
+      "decoder": "NOT_CERTIFIED_FOR_KEFI_STRATEGY",
+      "evaluator": "NOT_CERTIFIED_FOR_KEFI_STRATEGY",
+      "genuine_buys": 0,
+      "genuine_sells": 0,
+      "id": "KEFI_ROUTE_RAYDIUM_CLMM_CPI",
+      "liquidity_and_fee_fields": false,
+      "policy": {
+        "promotion_allowed": false,
+        "selection_allowed": false,
+        "status": "NOT_FROZEN"
+      },
+      "raw_transactions": 1,
+      "readiness": "COVERAGE_OR_ADAPTER_GAP",
+      "route": "RAYDIUM_CLMM_CPI",
+      "route_certainty": "EXACT",
+      "route_hypothesis": "KEFI wallet activity on RAYDIUM_CLMM_CPI",
+      "strategy_search_eligible": false
+    },
+    {
+      "available_pre_entry_state": false,
+      "controls": {
+        "route_specific_controls_proven": false,
+        "venue_level_controls": 0
+      },
+      "decoder": "NOT_CERTIFIED_FOR_KEFI_STRATEGY",
+      "evaluator": "NOT_CERTIFIED_FOR_KEFI_STRATEGY",
+      "genuine_buys": 0,
+      "genuine_sells": 0,
+      "id": "KEFI_ROUTE_ROUTER_JUPITER_V6_METEORA_DLMM_CPI",
+      "liquidity_and_fee_fields": false,
+      "policy": {
+        "promotion_allowed": false,
+        "selection_allowed": false,
+        "status": "NOT_FROZEN"
+      },
+      "raw_transactions": 2,
+      "readiness": "COVERAGE_OR_ADAPTER_GAP",
+      "route": "ROUTER_JUPITER_V6_METEORA_DLMM_CPI",
+      "route_certainty": "EXACT",
+      "route_hypothesis": "KEFI wallet activity on ROUTER_JUPITER_V6_METEORA_DLMM_CPI",
+      "strategy_search_eligible": false
+    },
+    {
+      "available_pre_entry_state": false,
+      "controls": {
+        "route_specific_controls_proven": false,
+        "venue_level_controls": 0
+      },
+      "decoder": "NOT_CERTIFIED_FOR_KEFI_STRATEGY",
+      "evaluator": "NOT_CERTIFIED_FOR_KEFI_STRATEGY",
+      "genuine_buys": 0,
+      "genuine_sells": 0,
+      "id": "KEFI_ROUTE_ROUTER_JUPITER_V6_RAYDIUM_CLMM_CPI",
+      "liquidity_and_fee_fields": false,
+      "policy": {
+        "promotion_allowed": false,
+        "selection_allowed": false,
+        "status": "NOT_FROZEN"
+      },
+      "raw_transactions": 7,
+      "readiness": "COVERAGE_OR_ADAPTER_GAP",
+      "route": "ROUTER_JUPITER_V6_RAYDIUM_CLMM_CPI",
+      "route_certainty": "EXACT",
+      "route_hypothesis": "KEFI wallet activity on ROUTER_JUPITER_V6_RAYDIUM_CLMM_CPI",
+      "strategy_search_eligible": false
+    },
+    {
+      "available_pre_entry_state": false,
+      "controls": {
+        "route_specific_controls_proven": false,
+        "venue_level_controls": 0
+      },
+      "decoder": "NOT_CERTIFIED_FOR_KEFI_STRATEGY",
+      "evaluator": "NOT_CERTIFIED_FOR_KEFI_STRATEGY",
+      "genuine_buys": 0,
+      "genuine_sells": 0,
+      "id": "KEFI_ROUTE_UNRESOLVED_ROUTE",
+      "liquidity_and_fee_fields": false,
+      "policy": {
+        "promotion_allowed": false,
+        "selection_allowed": false,
+        "status": "NOT_FROZEN"
+      },
+      "raw_transactions": 12,
+      "readiness": "COVERAGE_OR_ADAPTER_GAP",
+      "route": "UNRESOLVED_ROUTE",
+      "route_certainty": "PARTIAL_OR_UNRESOLVED",
+      "route_hypothesis": "KEFI wallet activity on UNRESOLVED_ROUTE",
+      "strategy_search_eligible": false
+    }
+  ],
+  "schema": "KEFI_ONLY_ROUTE_REGISTRY_V1",
+  "source_census_sha256": "3968e86808da7288975776391575c73e5d3be23ce4a71aed1375c1014d5c05a1",
+  "wallet": "kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf"
+}

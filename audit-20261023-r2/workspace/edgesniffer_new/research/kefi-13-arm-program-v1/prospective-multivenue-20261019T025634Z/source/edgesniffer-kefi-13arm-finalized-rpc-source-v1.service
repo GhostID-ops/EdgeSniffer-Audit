@@ -1,0 +1,21 @@
+[Unit]
+Description=EdgeSniffer KEFI canonical 13-arm finalized RPC research source
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+EnvironmentFile=/root/bot/EdgeSniffer/.env
+Environment=TRACKED_WALLET=kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf
+Environment=KEFI_13ARM_COHORT_ID=kefi-13-arm-multivenue-prospective-20261019T025634Z
+Environment=KEFI_13ARM_BOUNDARY_UTC=2026-10-19T02:56:34.388060Z
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/kefi13ArmFinalizedRpcSourceV1.py --output /mnt/edgesniffer-kefi-hot/kefi-13-arm-multivenue-prospective-20261019T025634Z/raw-transactions.jsonl --state /mnt/edgesniffer-kefi-hot/kefi-13-arm-multivenue-prospective-20261019T025634Z/source-state.json --manifest /mnt/edgesniffer-kefi-hot/kefi-13-arm-multivenue-prospective-20261019T025634Z/source-manifest.json --cohort-id ${KEFI_13ARM_COHORT_ID} --boundary-utc ${KEFI_13ARM_BOUNDARY_UTC} --interval-seconds 10
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

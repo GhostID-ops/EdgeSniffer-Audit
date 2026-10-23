@@ -1,0 +1,26 @@
+{
+  "schema": "KEFI_PROSPECTIVE_SHADOW_PROTOCOL_AMENDMENT_V1",
+  "created_at_utc": "2026-10-07T13:46:44.388564449Z",
+  "status": "FROZEN_BEFORE_SHADOW_OBSERVATIONS",
+  "supersedes_only": "The duration and minimum-sample stopping rule of the shadow coordinator; the frozen fingerprint and control semantics are unchanged.",
+  "start_receipt_path": "/root/kefi-work/out/kefi-prospective-shadow-v1/start-receipt.json",
+  "start_receipt_sha256": "f070ae774dd7008d3a80f626586745ddba97746c379d68c4002b77db19912480",
+  "old_target_hours": 72,
+  "new_target_hours": 24,
+  "target_hours": 24,
+  "minimum_source_partition_start_utc": "2026-10-07T14:00:00Z",
+  "source_boundary_rule": "Count only complete source-partition pairs whose first partition begins at or after the first whole UTC hour following the shadow boundary; older partitions are excluded even if processed later.",
+  "minimum_complete_control_windows": 500,
+  "stopping_rule": "Stop at the first point when 24 wall-clock hours have elapsed and at least 500 complete fresh control windows have been recorded. Continue to 72 hours only if the minimum sample has not been reached or a longer descriptive run is explicitly requested.",
+  "scientific_guards": {
+    "model_modified": false,
+    "threshold_tuning": false,
+    "outcomes_accessed": false,
+    "pnl_accessed": false,
+    "execution_enabled": false,
+    "control_receipts_before_start_excluded": true,
+    "incomplete_windows_fail_closed": true
+  },
+  "rationale": "A 24-hour fresh shadow with a predeclared minimum complete-control sample is sufficient for this exploratory specificity check; the prior 2,473 complete historical controls remain a separate descriptive baseline. This amendment is made before any observations from the new shadow boundary are included.",
+  "validation_status": "No profitability or trading validation is established by this shadow run."
+}

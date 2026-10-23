@@ -1,0 +1,37 @@
+{
+  "schema": "8ycb-canonical-pump-evidence-contract",
+  "schema_version": "v1",
+  "purpose": "Minimum exact evidence contract consumed by the existing frozen 8YCB economic methodology",
+  "frozen_methodology": {
+    "source": "/usr/local/lib/edgesniffer-8ycb-shadow-v4/frozen_spec_template.json",
+    "entry_lane": "ACTUAL_SHADOW_SIGNAL_READY",
+    "primary_first_sellable_ms_after_entry": 178,
+    "position_sol": 0.1,
+    "exit": {"take_profit_pct": 20, "stop_loss_pct": 20, "max_hold_ms": 120000},
+    "curve": {"virtual_sol_reserves": 30000000000, "virtual_token_reserves": 1073000000000000, "pump_fee_bps": 125},
+    "methodology_change": false
+  },
+  "required_per_launch": [
+    "canonical_ordinal", "launch_signature", "mint", "launch_slot", "launch_transaction_index",
+    "create_transaction_signature", "create_instruction_coordinate", "create_pump_instruction_kind",
+    "initial_virtual_sol_reserves", "initial_virtual_token_reserves", "initial_real_sol_reserves", "initial_real_token_reserves",
+    "ordered_pump_events_through_frozen_horizon", "canonical_slot", "canonical_transaction_index",
+    "transaction_signature", "pump_instruction_type", "instruction_coordinate", "side", "wallet",
+    "quote_lamports", "token_amount_raw", "virtual_sol_reserves_after", "virtual_token_reserves_after",
+    "real_sol_reserves_after", "real_token_reserves_after", "source_receive_ns", "source_evidence_id",
+    "source_raw_sha256", "exact_ordering", "horizon_complete", "horizon_end_source_timestamp"
+  ],
+  "event_rules": {
+    "include": ["CREATE", "CREATE_V2", "BUY", "BUY_EXACT_SOL_IN", "BUY_V2", "BUY_EXACT_QUOTE_IN_V2", "SELL", "SELL_V2"],
+    "canonical_order": ["slot", "transaction_index", "instruction_coordinate", "source_receive_ns", "transaction_signature"],
+    "timestamps": "source_receive_ns is required for frozen timing; chain event seconds alone are insufficient for an official historical replay",
+    "creator_sells": "retain wallet identity and side exactly; do not infer creator status",
+    "external_flow": "retain every relevant Pump buy/sell in the launch horizon; no interpolation"
+  },
+  "provenance": {
+    "source": "retained full-meta Yellowstone PEL frames",
+    "raw_frame_digest": "sha256(metadata_json || raw_protobuf)",
+    "retention_rule": "raw source may roll only after normalized tape promotion, horizon closure, and deterministic replay pass"
+  },
+  "submission": {"enabled": false, "count": 0}
+}

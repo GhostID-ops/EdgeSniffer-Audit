@@ -1,0 +1,22 @@
+[package]
+name = "allenhark-current-codec-replay-v1"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]
+anyhow = "1.0"
+hex = "0.4"
+libc = "0.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+solana-entry = { path = "/root/edgesniffer-research/current-jito/entry" }
+solana-ledger = { path = "/root/edgesniffer-research/current-jito/ledger", features = ["agave-unstable-api"] }
+wincode = "0.6"
+
+[patch.crates-io]
+librocksdb-sys = { git = "https://github.com/anza-xyz/rust-rocksdb", rev = "4dba80dfe9434e595a971f5b2985ff9ba4fb31e7" }
+rocksdb = { git = "https://github.com/anza-xyz/rust-rocksdb", rev = "4dba80dfe9434e595a971f5b2985ff9ba4fb31e7" }

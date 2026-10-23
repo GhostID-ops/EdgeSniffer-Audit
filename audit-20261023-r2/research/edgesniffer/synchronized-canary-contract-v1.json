@@ -1,0 +1,29 @@
+{
+  "schema": "A3H4_SYNCHRONIZED_ENGINEERING_CANARY_V1",
+  "status": "DECLARED_BEFORE_CAPTURE_ENGINEERING_ONLY",
+  "population": "A3h4_sync_engineering_canary_v1",
+  "duration_seconds": 75,
+  "signal_period_seconds_from_first_native_transaction": 50,
+  "outcome_drain_seconds_minimum": 25,
+  "signal_rules": "Unchanged burst-persistence-contract-v1.json; first-mint seeds and frozen same-clock controls",
+  "sizes_sol": [0.1, 0.5, 1.0],
+  "checkpoint_request_interval_ms_minimum": 250,
+  "scope": "Native Pump-wide tx/account capture unchanged. Off-path read sets for every independently selected seed and frozen control, regardless of future outcomes.",
+  "read_set": "Canonical curve, mint, fee, global and Clock in a single getMultipleAccounts processed-bank response; minContextSlot equals latest locally observed native transaction slot at request planning.",
+  "clocks": "Keep native receipt/decode, scheduler observation, RPC request/response and slot lifecycle distinct. A checkpoint is available only at response. No HTTP in Rust receive path or trading path.",
+  "age": "Strict one second from request start to boundary, with known conflicting writes/touches invalidating the read set. No mixed-bank splicing or stale carry.",
+  "teacher": "9qz7cWBqYBP2TnGfzMmxX64G4PQip7HtogjPBBnMhWpw event-user labels only; never independent signal/control input",
+  "denominator": "All signal-period seeds times two arms times three sizes. Tail-only seeds recorded separately, persistence rejects/unknowns retained, missing controls not discarded.",
+  "acceptance": [
+    "Frozen signal/control identities reproduce independently; all intended boundaries and intentions accounted",
+    "No future response/write/finality used to repair earlier input; gaps disable the synchronized observer",
+    "Raw context owner/layout/canonical identity and bank-slot checks pass for admitted observation quotes",
+    "A quote is not a fill: transition/fork completeness, own-state replay, network costs and outcome qualification must pass before economic cohort expansion"
+  ],
+  "expansion": "Forbidden automatically. Engineering canary must establish full capture-to-quote-to-outcome acceptance first. No prospective confirmation claim for this sample.",
+  "references": [
+    "https://solana.com/docs/rpc/http/getmultipleaccounts",
+    "https://github.com/rpcpool/yellowstone-grpc/blob/master/yellowstone-grpc-proto/proto/geyser.proto"
+  ],
+  "trading_enabled": false
+}

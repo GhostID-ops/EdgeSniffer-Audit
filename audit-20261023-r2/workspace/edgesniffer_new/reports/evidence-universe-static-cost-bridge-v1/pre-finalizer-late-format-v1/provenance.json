@@ -1,0 +1,12 @@
+{
+  "contractSha256": "2f91ac6e8cb8e4bbdf8fb136778306dc826268c30ab3fdfd5d2677a25e40203a",
+  "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+  "eventBuildProvenanceSha256": "e3e1cbb3a025c30f69889592f3ee5f0c84212df0602fe7699828c0a9cb0306ab",
+  "holdoutRowsInspected": 0,
+  "ordinalsAfter6848Inspected": 0,
+  "reportSha256": "08388193d115ad01b826dd449857b0b8066568bc2f4c045419ac52c3fe7d8f31",
+  "schema": "EVIDENCE_UNIVERSE_AND_STATIC_COST_BRIDGE_V1_PROVENANCE",
+  "scriptSha256": "6b2ada6e12552bec8317bc89c4830537e8f610b417473909f050ff291aae6802",
+  "selectedRowsSha256": "29d5f16c2b46693474cd430ee61c33420410c3436b0efd0fedb045a1eabfc297",
+  "validationRowsInspected": 0
+}

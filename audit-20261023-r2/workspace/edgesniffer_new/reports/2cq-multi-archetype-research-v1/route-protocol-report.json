@@ -1,0 +1,254 @@
+{
+  "cacheMissingByFamily": {},
+  "familyCounts": {
+    "AMBIGUOUS_PUMP_FAMILY": 1,
+    "NON_SOL_PUMP_V2": 121,
+    "OTHER_DEX": 278,
+    "PUMPSWAP": 17,
+    "ROUTER": 50,
+    "SOL_PUMP_CPI": 88,
+    "SOL_PUMP_CURVE": 204
+  },
+  "generatedAtUtc": "2026-09-12T02:27:13.100666Z",
+  "integrity": {
+    "liveTradingModified": false,
+    "outcomesRead": 0,
+    "submissions": 0,
+    "validationRowsRead": 0
+  },
+  "nonSolQuoteMintCounts": {
+    "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh": 8,
+    "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs": 1,
+    "A7bdiYdS5GjqGFtxf17ppRHtDKPkkRqbKtR27dxvQXaS": 5,
+    "DoGEV7LASBkQbibMc5k5vKnTZoMg423GpJ5QtJEGfm7R": 3,
+    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": 1,
+    "SPCXxcqXj6e5dJDVNovHN8744zkbhM2bYudU45BimGb": 10,
+    "SV151D5pjygAKA8aJJcKzm4wFnRX5G92Fye94jQJk7g": 1,
+    "WXMRyRZhsa19ety5erZhHg4N3xj3EVN92u94422teJp": 1,
+    "Xs3eBt7uRfJX8QUs4suhyU8p2M6DoUDrJyWBa8LLZsg": 2,
+    "Xs8S1uUs1zvS2p7iwtsG3b6fkhpvmwz4GYU3gWAmWHZ": 5,
+    "XsCPL9dNWBMvFtTmwcCA5v3xWPSMEBCszbQdiLLq6aN": 9,
+    "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB": 2,
+    "XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp": 3,
+    "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh": 12,
+    "Xsf9mBktVB9BSU5kf4nHxPq5hCBJ2j2ui3ecFGxPRGc": 2,
+    "XsoBhf2ufR8fTyNSjqfU71DYGaE6Z3SUGAidpzriAA4": 1,
+    "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W": 19,
+    "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn": 36
+  },
+  "schema": "2CQ_ROUTE_PROTOCOL_INVENTORY_V1_REPORT",
+  "sourceDecisionN": 759,
+  "transactionCacheCoverageN": 759,
+  "transactionCacheMissingN": 0,
+  "underlyingProgramsByFamily": {
+    "AMBIGUOUS_PUMP_FAMILY": [
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "GsaJ3CwKWKHFkN8cSzrzEQ48B4CumHNhjTgGnKVju3eU"
+      }
+    ],
+    "NON_SOL_PUMP_V2": [
+      {
+        "decisionN": 121,
+        "knownName": "PUMP_BONDING_CURVE",
+        "programId": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"
+      }
+    ],
+    "OTHER_DEX": [
+      {
+        "decisionN": 246,
+        "knownName": "RAYDIUM_LAUNCHLAB",
+        "programId": "LanMV9sAd7wArD4vJFi2qDdfnVhFxYSUg6eADduJ3uj"
+      },
+      {
+        "decisionN": 27,
+        "knownName": null,
+        "programId": "GsaJ3CwKWKHFkN8cSzrzEQ48B4CumHNhjTgGnKVju3eU"
+      },
+      {
+        "decisionN": 19,
+        "knownName": "RAYDIUM_CPMM",
+        "programId": "CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C"
+      },
+      {
+        "decisionN": 9,
+        "knownName": "METEORA_DBC",
+        "programId": "dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN"
+      },
+      {
+        "decisionN": 2,
+        "knownName": null,
+        "programId": "61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH"
+      },
+      {
+        "decisionN": 1,
+        "knownName": "METEORA_DLMM",
+        "programId": "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo"
+      },
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "proVF4pMXVaYqmy4NjniPh4pqKNfMmsihgd4wdkCX3u"
+      },
+      {
+        "decisionN": 1,
+        "knownName": "ORCA_WHIRLPOOL",
+        "programId": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+      },
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "9H6tua7jkLhdm3w8BvgpTn5LZNU7g4ZynDmCiNN3q6Rp"
+      },
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "DF1ow4tspfHX9JwWJsAb9epbkA8hmpSEAtxXy1V27QBH"
+      },
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "DRVSpZ2YUYYKgZP8XtLhAGtT1zYSCKzeHfb4DgRnrgqD"
+      },
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "REALQqNEomY6cQGZJUGwywTBD2UmDT32rZcNnfxQ5N2"
+      }
+    ],
+    "PUMPSWAP": [
+      {
+        "decisionN": 17,
+        "knownName": "PUMPSWAP",
+        "programId": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+      }
+    ],
+    "ROUTER": [
+      {
+        "decisionN": 17,
+        "knownName": null,
+        "programId": "BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi"
+      },
+      {
+        "decisionN": 17,
+        "knownName": "ORCA_WHIRLPOOL",
+        "programId": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+      },
+      {
+        "decisionN": 15,
+        "knownName": "RAYDIUM_CLMM",
+        "programId": "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK"
+      },
+      {
+        "decisionN": 14,
+        "knownName": "METEORA_DLMM",
+        "programId": "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo"
+      },
+      {
+        "decisionN": 8,
+        "knownName": null,
+        "programId": "TessVdML9pBGgG9yGks7o4HewRaXVAMuoVj4x83GLQH"
+      },
+      {
+        "decisionN": 7,
+        "knownName": null,
+        "programId": "ZERor4xhbUycZ6gb9ntrhqscUcZmAbQDjEAtCf4hbZY"
+      },
+      {
+        "decisionN": 6,
+        "knownName": null,
+        "programId": "goonuddtQRrWqqn5nFyczVKaie28f3kDkHWkHtURSLE"
+      },
+      {
+        "decisionN": 6,
+        "knownName": null,
+        "programId": "REALQqNEomY6cQGZJUGwywTBD2UmDT32rZcNnfxQ5N2"
+      },
+      {
+        "decisionN": 4,
+        "knownName": null,
+        "programId": "HpNfyc2Saw7RKkQd8nEL4khUcuPhQ7WwY1B2qjx8jxFq"
+      },
+      {
+        "decisionN": 3,
+        "knownName": null,
+        "programId": "ALPHAQmeA7bjrVuccPsYPiCvsi428SNwte66Srvs4pHA"
+      },
+      {
+        "decisionN": 3,
+        "knownName": null,
+        "programId": "SCoRcH8c2dpjvcJD6FiPbCSQyQgu3PcUAWj2Xxx3mqn"
+      },
+      {
+        "decisionN": 3,
+        "knownName": null,
+        "programId": "ojh19ojaKduoJZuaJADhcVGp4xt1TcdAvZmpVsCorch"
+      },
+      {
+        "decisionN": 3,
+        "knownName": "RAYDIUM_AMM_V4",
+        "programId": "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8"
+      },
+      {
+        "decisionN": 2,
+        "knownName": null,
+        "programId": "DNL1tgEj3nJovHw9jtyCCQD3arssCJzkmpDizknwzey4"
+      },
+      {
+        "decisionN": 2,
+        "knownName": "METEORA_DAMM_V2",
+        "programId": "cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG"
+      },
+      {
+        "decisionN": 2,
+        "knownName": null,
+        "programId": "MNFSTqtC93rEfYHB6hF82sKdZpUDFWkViLByLd1k1Ms"
+      },
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "FUTARELBfJfQ8RDGhg1wdhddq1odMAJUePHFuBYfUxKq"
+      },
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "omnixgS8fnqHfCcTGKWj6JtKjzpJZ1Y5y9pyFkQDkYE"
+      },
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "FLUX6xBayGxLX9UcimVRxXFMHH6q43mAbRvDzSpCsvfK"
+      },
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "QUayE6nexQWYNZAEqfN8FxoNwQDSu3CAzT2qq9J1ArG"
+      },
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "24Uqj9JCLxUeoC3hGfh5W3s9FM9uCHDS2SG3LYwBpyTi"
+      },
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "Eo7WjKq67rjJQSZxS6z3YkapzY3eMj6Xy8X5EQVn5UaB"
+      }
+    ],
+    "SOL_PUMP_CPI": [
+      {
+        "decisionN": 88,
+        "knownName": null,
+        "programId": "3hGfVcg87NiS7W1za5fFY35EgB1WfCLoikJki57UjxTA"
+      }
+    ],
+    "SOL_PUMP_CURVE": [
+      {
+        "decisionN": 1,
+        "knownName": null,
+        "programId": "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95"
+      }
+    ]
+  }
+}

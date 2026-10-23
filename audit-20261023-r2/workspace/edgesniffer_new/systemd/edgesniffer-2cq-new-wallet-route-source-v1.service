@@ -1,0 +1,21 @@
+[Unit]
+Description=EdgeSniffer 2CQ new wallet finalized route source v1 (receive-only)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+EnvironmentFile=/root/bot/EdgeSniffer/.env
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/captureWalletFinalizedRouteSourceV1.py --wallet 9qz7cWBqYBP2TnGfzMmxX64G4PQip7HtogjPBBnMhWpw --cohort-id 2cq-new-wallet-route-census-20261019T000000Z --boundary-utc 2026-10-19T00:00:00Z --output /mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v1/raw-transactions.jsonl --interval-seconds 60
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-research/2cq-new-wallet-route-census-v1
+
+[Install]
+WantedBy=multi-user.target

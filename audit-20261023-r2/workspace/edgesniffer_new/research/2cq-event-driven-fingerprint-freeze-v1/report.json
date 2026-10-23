@@ -1,0 +1,7251 @@
+{
+  "ablations": {
+    "crossMintSelection": {
+      "FULL_CAUSAL": {
+        "assessmentN": 55,
+        "averagePrecision": 0.8389904985676127,
+        "chanceTop1Pct": 7.969878973578766,
+        "mrr": 0.9196969696969698,
+        "rocAuc": 0.9817613636363637,
+        "top1Pct": 85.45454545454545,
+        "top3Pct": 98.18181818181819
+      },
+      "FULL_WITHOUT_250MS": {
+        "assessmentN": 55,
+        "averagePrecision": 0.7803026536549632,
+        "chanceTop1Pct": 7.969878973578766,
+        "mrr": 0.9278787878787879,
+        "rocAuc": 0.9769128787878788,
+        "top1Pct": 87.27272727272727,
+        "top3Pct": 98.18181818181819
+      },
+      "FULL_WITHOUT_AGE_RECENCY": {
+        "assessmentN": 55,
+        "averagePrecision": 0.7513697214672276,
+        "chanceTop1Pct": 7.969878973578766,
+        "mrr": 0.8854545454545455,
+        "rocAuc": 0.9759659090909091,
+        "top1Pct": 80.0,
+        "top3Pct": 96.36363636363636
+      },
+      "LIFECYCLE": {
+        "assessmentN": 55,
+        "averagePrecision": 0.7980683185950879,
+        "chanceTop1Pct": 7.969878973578766,
+        "mrr": 0.8935198135198135,
+        "rocAuc": 0.9612878787878788,
+        "top1Pct": 83.63636363636364,
+        "top3Pct": 94.54545454545455
+      },
+      "LIFECYCLE_FLOW": {
+        "assessmentN": 55,
+        "averagePrecision": 0.7926375897721627,
+        "chanceTop1Pct": 7.969878973578766,
+        "mrr": 0.9042424242424243,
+        "rocAuc": 0.9776704545454545,
+        "top1Pct": 83.63636363636364,
+        "top3Pct": 96.36363636363636
+      }
+    },
+    "sameMintTiming": {
+      "FULL_CAUSAL": {
+        "assessmentN": 76,
+        "averagePrecision": 0.018110954408946677,
+        "chanceTop1Pct": 19.615714706781503,
+        "mrr": 0.7123077989907766,
+        "rocAuc": 0.7039396526891898,
+        "top1Pct": 68.42105263157895,
+        "top3Pct": 69.73684210526316
+      },
+      "FULL_WITHOUT_250MS": {
+        "assessmentN": 76,
+        "averagePrecision": 0.013959096376808094,
+        "chanceTop1Pct": 19.615714706781503,
+        "mrr": 0.7190433280496231,
+        "rocAuc": 0.6439472655446278,
+        "top1Pct": 68.42105263157895,
+        "top3Pct": 71.05263157894737
+      },
+      "FULL_WITHOUT_AGE_RECENCY": {
+        "assessmentN": 76,
+        "averagePrecision": 0.01648784889858619,
+        "chanceTop1Pct": 19.615714706781503,
+        "mrr": 0.7140616323832436,
+        "rocAuc": 0.6759221156879689,
+        "top1Pct": 68.42105263157895,
+        "top3Pct": 69.73684210526316
+      },
+      "LIFECYCLE": {
+        "assessmentN": 76,
+        "averagePrecision": 0.005491280915475264,
+        "chanceTop1Pct": 19.615714706781503,
+        "mrr": 0.6761332113111065,
+        "rocAuc": 0.1683701288012839,
+        "top1Pct": 56.578947368421055,
+        "top3Pct": 76.3157894736842
+      },
+      "LIFECYCLE_FLOW": {
+        "assessmentN": 76,
+        "averagePrecision": 0.014609915001512132,
+        "chanceTop1Pct": 19.615714706781503,
+        "mrr": 0.6849749976196278,
+        "rocAuc": 0.6297657503806428,
+        "top1Pct": 65.78947368421052,
+        "top3Pct": 67.10526315789474
+      }
+    }
+  },
+  "contractSha256": "de9bc64f8c154f6e72e580f192df1251b4e9872525a3af5a11619550510f13bc",
+  "crossMintUnivariate": [
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 1517.2955009870257,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 306.8471634439615,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 92.5,
+          "effect": 952.0880584883138,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 78.125,
+          "effect": 151.1680805760183,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 80.32647408166909,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        308.490945244644,
+        410.48652844856275
+      ],
+      "controlIqr": 0.0149007615,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "gross_buy_sol_5000ms",
+      "minimumAbsoluteBlockEffect": 80.32647408166909,
+      "pairedMedianDifference": 5.48775,
+      "robustPairedEffect": 368.2865469660729,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 90.99526066350711,
+      "teacherBelowControlMedianPct": 1.4218009478672986,
+      "teacherMedian": 5.48775,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 93.10344827586206,
+          "effect": 30.21104592523066,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 22.356946910751983,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 97.5,
+          "effect": 39.82404398834245,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 81.25,
+          "effect": 11.202005657968815,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 92.3076923076923,
+          "effect": 14.750197750083366,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        17.294076778649504,
+        29.963860791936256
+      ],
+      "controlIqr": 0.011070239508404493,
+      "controlMedian": -4.569439185686843e-05,
+      "episodeN": 211,
+      "feature": "log_price_change_250ms",
+      "minimumAbsoluteBlockEffect": 11.202005657968815,
+      "pairedMedianDifference": 0.2608087215723394,
+      "robustPairedEffect": 23.559447053908293,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 93.36492890995261,
+      "teacherBelowControlMedianPct": 6.6350710900473935,
+      "teacherMedian": 0.2610079842996761,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 22.628897615361144,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 97.61904761904762,
+          "effect": 17.148877592340018,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 97.5,
+          "effect": 33.70720971135728,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 81.25,
+          "effect": 7.973282860921212,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 89.74358974358974,
+          "effect": 12.405929148707665,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        13.119416614834547,
+        22.06249361385222
+      ],
+      "controlIqr": 0.014989382659020098,
+      "controlMedian": -6.021890947358822e-05,
+      "episodeN": 211,
+      "feature": "log_price_change_1000ms",
+      "minimumAbsoluteBlockEffect": 7.973282860921212,
+      "pairedMedianDifference": 0.24512977345023487,
+      "robustPairedEffect": 16.353560318424734,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.8909952606635,
+      "teacherBelowControlMedianPct": 7.109004739336493,
+      "teacherMedian": 0.25414616512694904,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 89.65517241379311,
+          "effect": 19.102219494198952,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 13.894344163719715,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 97.5,
+          "effect": 24.780397105582864,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 87.5,
+          "effect": 7.418825008495649,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 87.17948717948718,
+          "effect": 10.76041107011216,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        11.018947544004284,
+        18.299191364459595
+      ],
+      "controlIqr": 0.01789346792159973,
+      "controlMedian": -6.057880958769968e-05,
+      "episodeN": 211,
+      "feature": "log_price_change_2000ms",
+      "minimumAbsoluteBlockEffect": 7.418825008495649,
+      "pairedMedianDifference": 0.2618090411215981,
+      "robustPairedEffect": 14.631542765701706,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.41706161137441,
+      "teacherBelowControlMedianPct": 7.5829383886255926,
+      "teacherMedian": 0.26205652481280567,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 93.10344827586206,
+          "effect": 12.474754888304254,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 97.61904761904762,
+          "effect": 9.057250258813728,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 92.5,
+          "effect": 18.48497747244764,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 87.5,
+          "effect": 6.097558147821761,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 87.17948717948718,
+          "effect": 6.070916648738423,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        8.545529052941582,
+        13.10810949521719
+      ],
+      "controlIqr": 0.02559333064483503,
+      "controlMedian": -6.984746490615933e-05,
+      "episodeN": 211,
+      "feature": "log_price_change_5000ms",
+      "minimumAbsoluteBlockEffect": 6.070916648738423,
+      "pairedMedianDifference": 0.304705066011577,
+      "robustPairedEffect": 11.905643319349265,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 91.94312796208531,
+      "teacherBelowControlMedianPct": 8.056872037914692,
+      "teacherMedian": 0.304770908290149,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 96.55172413793103,
+          "effect": -9.224093591276578,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": -8.286145758744295,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": -7.548494432982847,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 93.75,
+          "effect": -6.24104367879967,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 97.43589743589743,
+          "effect": -5.824433698357377,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        -7.809296382069173,
+        -7.403737072753345
+      ],
+      "controlIqr": 1.3763556111965833,
+      "controlMedian": 10.856601879272327,
+      "episodeN": 211,
+      "feature": "log_age_ms",
+      "minimumAbsoluteBlockEffect": 5.824433698357377,
+      "pairedMedianDifference": -10.484361138557098,
+      "robustPairedEffect": -7.617479852784665,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 2.3696682464454977,
+      "teacherBelowControlMedianPct": 97.6303317535545,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 93.10344827586206,
+          "effect": 5.9091455361929786,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 4.499599515498352,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 6.345820092213342,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 87.5,
+          "effect": 4.785418780512809,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 82.05128205128206,
+          "effect": 4.3179295551792976,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        5.265752531624826,
+        6.037865954523918
+      ],
+      "controlIqr": 0.20226291325,
+      "controlMedian": 0.05,
+      "episodeN": 211,
+      "feature": "last_external_trade_sol",
+      "minimumAbsoluteBlockEffect": 4.3179295551792976,
+      "pairedMedianDifference": 1.1393251844999999,
+      "robustPairedEffect": 5.632892190630008,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.8909952606635,
+      "teacherBelowControlMedianPct": 7.109004739336493,
+      "teacherMedian": 1.2,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 96.55172413793103,
+          "effect": 9.261380746131241,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 97.61904761904762,
+          "effect": 5.905751341842032,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 8.396439946381058,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 87.5,
+          "effect": 3.00187033270275,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 87.17948717948718,
+          "effect": 4.901089348898709,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        5.644074912615722,
+        6.803239104791834
+      ],
+      "controlIqr": 0.9595985309999999,
+      "controlMedian": 0.1604383955,
+      "episodeN": 211,
+      "feature": "total_external_net_sol",
+      "minimumAbsoluteBlockEffect": 3.00187033270275,
+      "pairedMedianDifference": 6.064005627499999,
+      "robustPairedEffect": 6.319315246534074,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.41706161137441,
+      "teacherBelowControlMedianPct": 7.5829383886255926,
+      "teacherMedian": 6.589477460000005,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 70.6896551724138,
+          "effect": -8.517393171418904,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 69.04761904761905,
+          "effect": -6.979255172871734,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 60.0,
+          "effect": -7.4929339968990725,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 56.25,
+          "effect": -2.7525018804005783,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 56.41025641025641,
+          "effect": -2.6955851503356416,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        -14.725364027739381,
+        -7.7661022215972615
+      ],
+      "controlIqr": 0.5784164761817765,
+      "controlMedian": 8.517393171418904,
+      "episodeN": 211,
+      "feature": "log_median_interarrival_ms_5s",
+      "minimumAbsoluteBlockEffect": 2.6955851503356416,
+      "pairedMedianDifference": -6.72563370219085,
+      "robustPairedEffect": -11.627666187152686,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 3.7914691943127963,
+      "teacherBelowControlMedianPct": 63.507109004739334,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 100.0,
+          "effect": -3.054335656080357,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": -2.898417471087021,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": -2.8906857821364706,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 96.875,
+          "effect": -2.8380753329127275,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": -2.5489185434952177,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        -2.975154800405485,
+        -2.8389983441749536
+      ],
+      "controlIqr": 3.18876268317152,
+      "controlMedian": 9.612767531840424,
+      "episodeN": 211,
+      "feature": "log_ms_since_last_external",
+      "minimumAbsoluteBlockEffect": 2.5489185434952177,
+      "pairedMedianDifference": -9.21328992995145,
+      "robustPairedEffect": -2.8892993444052664,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 0.47393364928909953,
+      "teacherBelowControlMedianPct": 99.5260663507109,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 5.5,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 5.75,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 6.651375,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 78.125,
+          "effect": 2.280088355,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 3.960000003,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        3.9285,
+        5.873996874999999
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "gross_buy_sol_2000ms",
+      "minimumAbsoluteBlockEffect": 2.280088355,
+      "pairedMedianDifference": 5.2,
+      "robustPairedEffect": 5.2,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 90.52132701421802,
+      "teacherBelowControlMedianPct": 1.4218009478672986,
+      "teacherMedian": 5.2,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 93.10344827586206,
+          "effect": 5.5,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 97.61904761904762,
+          "effect": 5.6673473515,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 6.651375,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 75.0,
+          "effect": 2.280088355,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 76.92307692307692,
+          "effect": 2.346233051,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        3.7805613120375003,
+        5.8725
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "net_flow_sol_5000ms",
+      "minimumAbsoluteBlockEffect": 2.280088355,
+      "pairedMedianDifference": 5.0625,
+      "robustPairedEffect": 5.0625,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 87.67772511848341,
+      "teacherBelowControlMedianPct": 4.739336492890995,
+      "teacherMedian": 5.0625,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 91.37931034482759,
+          "effect": 5.493875,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 5.3916610955,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 6.5562000000000005,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 75.0,
+          "effect": 2.280088355,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 82.05128205128206,
+          "effect": 2.754388256,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        3.499974901625,
+        5.5
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "net_flow_sol_2000ms",
+      "minimumAbsoluteBlockEffect": 2.280088355,
+      "pairedMedianDifference": 4.999999999,
+      "robustPairedEffect": 4.999999999,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 88.62559241706161,
+      "teacherBelowControlMedianPct": 3.3175355450236967,
+      "teacherMedian": 4.999999999,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 4.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 3.5,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 92.5,
+          "effect": 3.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 84.375,
+          "effect": 2.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 2.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        2.0,
+        3.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "buy_count_250ms",
+      "minimumAbsoluteBlockEffect": 2.0,
+      "pairedMedianDifference": 3.0,
+      "robustPairedEffect": 3.0,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 91.94312796208531,
+      "teacherBelowControlMedianPct": 0.0,
+      "teacherMedian": 3.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 4.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 4.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 3.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 78.125,
+          "effect": 2.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 2.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        2.0,
+        3.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "buy_count_1000ms",
+      "minimumAbsoluteBlockEffect": 2.0,
+      "pairedMedianDifference": 3.0,
+      "robustPairedEffect": 3.0,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 90.52132701421802,
+      "teacherBelowControlMedianPct": 0.47393364928909953,
+      "teacherMedian": 3.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 4.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 4.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 3.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 81.25,
+          "effect": 2.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 2.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        2.0,
+        3.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "unique_buyers_1000ms",
+      "minimumAbsoluteBlockEffect": 2.0,
+      "pairedMedianDifference": 3.0,
+      "robustPairedEffect": 3.0,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 90.99526066350711,
+      "teacherBelowControlMedianPct": 0.47393364928909953,
+      "teacherMedian": 3.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 93.10344827586206,
+          "effect": 3.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 92.85714285714286,
+          "effect": 2.75,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 77.5,
+          "effect": 2.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 62.5,
+          "effect": 2.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 69.23076923076923,
+          "effect": 2.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        2.0,
+        3.0
+      ],
+      "controlIqr": 1.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "consecutive_buys",
+      "minimumAbsoluteBlockEffect": 2.0,
+      "pairedMedianDifference": 2.0,
+      "robustPairedEffect": 2.0,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 81.04265402843602,
+      "teacherBelowControlMedianPct": 4.739336492890995,
+      "teacherMedian": 3.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 2.379648542173366,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 95.23809523809524,
+          "effect": 2.081206489205546,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 97.5,
+          "effect": 4.759393122658077,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 90.625,
+          "effect": 1.8548534353459005,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 2.1908081397388557,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        2.374436067790997,
+        2.890181010775861
+      ],
+      "controlIqr": 0.07486803443333334,
+      "controlMedian": 0.00333128125,
+      "episodeN": 211,
+      "feature": "curve_progress",
+      "minimumAbsoluteBlockEffect": 1.8548534353459005,
+      "pairedMedianDifference": 0.19796981556666668,
+      "robustPairedEffect": 2.644250207248996,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.8909952606635,
+      "teacherBelowControlMedianPct": 7.109004739336493,
+      "teacherMedian": 0.21517553796666666,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 5.4999999995,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 5.499999999,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 92.5,
+          "effect": 6.5562000000000005,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 81.25,
+          "effect": 1.789463355,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 3.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        3.5,
+        5.5
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "gross_buy_sol_250ms",
+      "minimumAbsoluteBlockEffect": 1.789463355,
+      "pairedMedianDifference": 4.999999999,
+      "robustPairedEffect": 4.999999999,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 91.4691943127962,
+      "teacherBelowControlMedianPct": 0.47393364928909953,
+      "teacherMedian": 4.999999999,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 5.4999999995,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 5.499999999,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 6.5562000000000005,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 81.25,
+          "effect": 1.789463355,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 3.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        3.5,
+        5.5
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "gross_buy_sol_1000ms",
+      "minimumAbsoluteBlockEffect": 1.789463355,
+      "pairedMedianDifference": 4.999999999,
+      "robustPairedEffect": 4.999999999,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 90.99526066350711,
+      "teacherBelowControlMedianPct": 0.9478672985781991,
+      "teacherMedian": 4.999999999,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 93.10344827586206,
+          "effect": 5.493875,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 95.23809523809524,
+          "effect": 5.493875,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 87.5,
+          "effect": 6.5562000000000005,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 75.0,
+          "effect": 1.789463355,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 82.05128205128206,
+          "effect": 3.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        3.5,
+        5.5
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "net_acceleration_1s",
+      "minimumAbsoluteBlockEffect": 1.789463355,
+      "pairedMedianDifference": 4.999999999,
+      "robustPairedEffect": 4.999999999,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 87.67772511848341,
+      "teacherBelowControlMedianPct": 4.265402843601896,
+      "teacherMedian": 4.999999999,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 93.10344827586206,
+          "effect": 5.493875,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 5.499999999,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 92.5,
+          "effect": 6.5562000000000005,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 78.125,
+          "effect": 1.789463355,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 3.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        3.5,
+        5.499999999
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "net_flow_sol_250ms",
+      "minimumAbsoluteBlockEffect": 1.789463355,
+      "pairedMedianDifference": 4.950000004,
+      "robustPairedEffect": 4.950000004,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 90.52132701421802,
+      "teacherBelowControlMedianPct": 1.4218009478672986,
+      "teacherMedian": 4.950000004,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 93.10344827586206,
+          "effect": 5.493875,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 97.61904761904762,
+          "effect": 5.4938749995,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 87.5,
+          "effect": 6.5562000000000005,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 75.0,
+          "effect": 1.789463355,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 79.48717948717949,
+          "effect": 2.834033572,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        3.3674250001000003,
+        5.4879031249875
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "net_flow_sol_1000ms",
+      "minimumAbsoluteBlockEffect": 1.789463355,
+      "pairedMedianDifference": 4.59675,
+      "robustPairedEffect": 4.59675,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 87.67772511848341,
+      "teacherBelowControlMedianPct": 4.265402843601896,
+      "teacherMedian": 4.59675,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 93.10344827586206,
+          "effect": 4.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 92.85714285714286,
+          "effect": 3.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 85.0,
+          "effect": 3.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 78.125,
+          "effect": 1.75,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 82.05128205128206,
+          "effect": 2.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        2.0,
+        3.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "buy_count_acceleration_1s",
+      "minimumAbsoluteBlockEffect": 1.75,
+      "pairedMedianDifference": 3.0,
+      "robustPairedEffect": 3.0,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 87.20379146919431,
+      "teacherBelowControlMedianPct": 3.3175355450236967,
+      "teacherMedian": 3.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 3.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 3.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 3.0375,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 81.25,
+          "effect": 1.166822216,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 2.4,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        2.025,
+        3.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "largest_buy_sol_1000ms",
+      "minimumAbsoluteBlockEffect": 1.166822216,
+      "pairedMedianDifference": 2.9,
+      "robustPairedEffect": 2.9,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 90.99526066350711,
+      "teacherBelowControlMedianPct": 0.9478672985781991,
+      "teacherMedian": 2.9,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 1.65,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 1.7241428571428572,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 1.81096027475,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 81.25,
+          "effect": 1.0161429415,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 1.4104415945714286,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        1.4104415945714286,
+        1.701
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "mean_buy_sol_1000ms",
+      "minimumAbsoluteBlockEffect": 1.0161429415,
+      "pairedMedianDifference": 1.5390000000000001,
+      "robustPairedEffect": 1.5390000000000001,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 90.99526066350711,
+      "teacherBelowControlMedianPct": 0.9478672985781991,
+      "teacherMedian": 1.5390000000000001,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 93.10344827586206,
+          "effect": 1.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 97.61904761904762,
+          "effect": 1.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 87.5,
+          "effect": 1.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 75.0,
+          "effect": 1.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 79.48717948717949,
+          "effect": 1.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        1.0,
+        1.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "buy_sell_imbalance_1000ms",
+      "minimumAbsoluteBlockEffect": 1.0,
+      "pairedMedianDifference": 1.0,
+      "robustPairedEffect": 1.0,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 87.67772511848341,
+      "teacherBelowControlMedianPct": 3.3175355450236967,
+      "teacherMedian": 1.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 86.20689655172414,
+          "effect": 3.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 85.71428571428571,
+          "effect": 3.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 85.0,
+          "effect": 3.01875,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 65.625,
+          "effect": 0.9379396085,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 69.23076923076923,
+          "effect": 0.8748,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        1.484604106,
+        3.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "creator_buy_sol_5000ms",
+      "minimumAbsoluteBlockEffect": 0.8748,
+      "pairedMedianDifference": 2.5,
+      "robustPairedEffect": 2.5,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 79.62085308056872,
+      "teacherBelowControlMedianPct": 1.4218009478672986,
+      "teacherMedian": 2.5,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 1.501480228873845,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 95.23809523809524,
+          "effect": 2.304745923243593,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 97.5,
+          "effect": 4.650149638040683,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 90.625,
+          "effect": 0.7636759669716235,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 2.305939987677776,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        2.277844571033175,
+        2.7377468917597123
+      ],
+      "controlIqr": 0.1379746843286087,
+      "controlMedian": 3.372924913131266,
+      "episodeN": 211,
+      "feature": "log_market_cap_sol",
+      "minimumAbsoluteBlockEffect": 0.7636759669716235,
+      "pairedMedianDifference": 0.3469501538458055,
+      "robustPairedEffect": 2.5145928438545178,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.8909952606635,
+      "teacherBelowControlMedianPct": 7.109004739336493,
+      "teacherMedian": 3.7444487810001386,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 1.4926302463652728,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 95.23809523809524,
+          "effect": 2.2974574955933833,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 97.5,
+          "effect": 4.627079976015502,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 90.625,
+          "effect": 0.7598717434486052,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 84.61538461538461,
+          "effect": 2.2969619663969016,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        2.2704803702348193,
+        2.733487686550092
+      ],
+      "controlIqr": 0.14261991427180135,
+      "controlMedian": 0.0072951291255717535,
+      "episodeN": 211,
+      "feature": "distance_from_launch_log_price",
+      "minimumAbsoluteBlockEffect": 0.7598717434486052,
+      "pairedMedianDifference": 0.3570467142013706,
+      "robustPairedEffect": 2.503484285658174,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.8909952606635,
+      "teacherBelowControlMedianPct": 7.109004739336493,
+      "teacherMedian": 0.38977708407636547,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 0.505656262777702,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.5044424850786761,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 92.5,
+          "effect": 0.6166362530413625,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 81.25,
+          "effect": 0.5002502502502503,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 82.05128205128206,
+          "effect": 0.4926443078898433,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.4612546125461255,
+        0.5451187080776791
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "top_buyer_share_1000ms",
+      "minimumAbsoluteBlockEffect": 0.4926443078898433,
+      "pairedMedianDifference": 0.5,
+      "robustPairedEffect": 0.5,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 90.99526066350711,
+      "teacherBelowControlMedianPct": 0.47393364928909953,
+      "teacherMedian": 0.5154639175257731,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 91.37931034482759,
+          "effect": 0.8231822694135132,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 80.95238095238095,
+          "effect": 0.417374730721138,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 82.5,
+          "effect": 1.0714778627762518,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 75.0,
+          "effect": 0.7303010361766122,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 82.05128205128206,
+          "effect": 1.580824595395801,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.6371916082186045,
+        0.9898394748273904
+      ],
+      "controlIqr": 5.8160327587500005,
+      "controlMedian": 1.214592642,
+      "episodeN": 211,
+      "feature": "total_external_buy_sol",
+      "minimumAbsoluteBlockEffect": 0.417374730721138,
+      "pairedMedianDifference": 4.89416107,
+      "robustPairedEffect": 0.8414947564793064,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 83.41232227488152,
+      "teacherBelowControlMedianPct": 16.587677725118482,
+      "teacherMedian": 6.6,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.82758620689656,
+          "effect": 0.34947755136913156,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.3476673221371882,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 92.5,
+          "effect": 0.42176107863312284,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 81.25,
+          "effect": 0.35494838491799086,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 82.05128205128206,
+          "effect": 0.35494838491799086,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.34455043043894135,
+        0.4215486533888306
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "buyer_hhi_1000ms",
+      "minimumAbsoluteBlockEffect": 0.3476673221371882,
+      "pairedMedianDifference": 0.35494838491799086,
+      "robustPairedEffect": 0.35494838491799086,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 90.99526066350711,
+      "teacherBelowControlMedianPct": 0.47393364928909953,
+      "teacherMedian": 0.35494838491799086,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 86.20689655172414,
+          "effect": -0.5,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 85.71428571428571,
+          "effect": -0.4,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 85.0,
+          "effect": -0.25,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 65.625,
+          "effect": -0.25,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 61.53846153846154,
+          "effect": -0.25,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        -0.4,
+        -0.2
+      ],
+      "controlIqr": 5.0,
+      "controlMedian": 2.0,
+      "episodeN": 211,
+      "feature": "unique_sellers_total",
+      "minimumAbsoluteBlockEffect": 0.25,
+      "pairedMedianDifference": -1.5,
+      "robustPairedEffect": -0.3,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 17.53554502369668,
+      "teacherBelowControlMedianPct": 78.19905213270142,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 84.48275862068965,
+          "effect": -0.4942295162375596,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 83.33333333333333,
+          "effect": -0.5683324329066776,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 75.0,
+          "effect": -0.3010299956639811,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 68.75,
+          "effect": -0.3162948418431848,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 58.97435897435897,
+          "effect": -0.17129021301952993,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        -0.4583172566073027,
+        -0.32389053777082133
+      ],
+      "controlIqr": 2.1400661634962708,
+      "controlMedian": 2.3978952727983707,
+      "episodeN": 211,
+      "feature": "log_event_index",
+      "minimumAbsoluteBlockEffect": 0.17129021301952993,
+      "pairedMedianDifference": -0.8754687373539001,
+      "robustPairedEffect": -0.40908489292855715,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 21.327014218009477,
+      "teacherBelowControlMedianPct": 75.35545023696683,
+      "teacherMedian": 1.6094379124341003,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 86.20689655172414,
+          "effect": -0.11886463268006815,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 85.71428571428571,
+          "effect": -0.12802386746073127,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 85.0,
+          "effect": -0.03652248503578969,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 65.625,
+          "effect": -0.05843135703993545,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 58.97435897435897,
+          "effect": -0.042084740863483655,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        -0.1026268579282778,
+        -0.04282210337919926
+      ],
+      "controlIqr": 4.3077694565,
+      "controlMedian": 0.512758493,
+      "episodeN": 211,
+      "feature": "total_external_sell_sol",
+      "minimumAbsoluteBlockEffect": 0.03652248503578969,
+      "pairedMedianDifference": -0.34119005,
+      "robustPairedEffect": -0.07920341453862574,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 18.48341232227488,
+      "teacherBelowControlMedianPct": 77.72511848341232,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 3.4482758620689653,
+          "effect": 0.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 7.142857142857143,
+          "effect": 0.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 2.5,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 3.125,
+          "effect": 0.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 7.6923076923076925,
+          "effect": 0.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "gross_sell_sol_250ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 4.739336492890995,
+      "teacherBelowControlMedianPct": 0.0,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 3.4482758620689653,
+          "effect": 0.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 7.142857142857143,
+          "effect": 0.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 2.5,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 3.125,
+          "effect": 0.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 7.6923076923076925,
+          "effect": 0.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "sell_count_250ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 4.739336492890995,
+      "teacherBelowControlMedianPct": 0.0,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 5.172413793103448,
+          "effect": 0.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 11.904761904761905,
+          "effect": 0.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 5.0,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 6.25,
+          "effect": 0.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 12.820512820512821,
+          "effect": 0.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "gross_sell_sol_1000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 8.056872037914692,
+      "teacherBelowControlMedianPct": 0.9478672985781991,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 5.172413793103448,
+          "effect": 0.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 11.904761904761905,
+          "effect": 0.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 5.0,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 6.25,
+          "effect": 0.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 12.820512820512821,
+          "effect": 0.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "sell_count_1000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 8.056872037914692,
+      "teacherBelowControlMedianPct": 0.9478672985781991,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 6.896551724137931,
+          "effect": 0.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 14.285714285714286,
+          "effect": 0.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 5.0,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 6.25,
+          "effect": 0.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 12.820512820512821,
+          "effect": 0.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "gross_sell_sol_2000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 9.004739336492891,
+      "teacherBelowControlMedianPct": 2.3696682464454977,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 6.896551724137931,
+          "effect": 0.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 14.285714285714286,
+          "effect": 0.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 10.0,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 12.5,
+          "effect": 0.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 15.384615384615385,
+          "effect": 0.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.005410376750000001,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "gross_sell_sol_5000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 9.47867298578199,
+      "teacherBelowControlMedianPct": 7.109004739336493,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 5.172413793103448,
+          "effect": 0.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 11.904761904761905,
+          "effect": 0.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 5.0,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 6.25,
+          "effect": 0.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 12.820512820512821,
+          "effect": 0.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "unique_sellers_1000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 8.056872037914692,
+      "teacherBelowControlMedianPct": 0.9478672985781991,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 3.125,
+          "effect": 0.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 211,
+      "feature": "repeat_buyer_share_1000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 0.0,
+      "teacherBelowControlMedianPct": 0.47393364928909953,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 13.793103448275861,
+          "effect": 0.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 14.285714285714286,
+          "effect": 0.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 5.0,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 25.0,
+          "effect": 0.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 15.384615384615385,
+          "effect": 0.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 1.0,
+      "episodeN": 211,
+      "feature": "creator_participated",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 0.9478672985781991,
+      "teacherBelowControlMedianPct": 14.218009478672986,
+      "teacherMedian": 1.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 48.275862068965516,
+          "effect": 0.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 45.23809523809524,
+          "effect": 0.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 42.5,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 53.125,
+          "effect": 0.25,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 58.97435897435897,
+          "effect": 0.2,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.2
+      ],
+      "controlIqr": 5.0,
+      "controlMedian": 3.0,
+      "episodeN": 211,
+      "feature": "unique_buyers_total",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 46.91943127962085,
+      "teacherBelowControlMedianPct": 39.81042654028436,
+      "teacherMedian": 4.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 63.793103448275865,
+          "effect": 1.0,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 69.04761904761905,
+          "effect": 1.0,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 42.5,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 37.5,
+          "effect": 0.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 23.076923076923077,
+          "effect": 0.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        1.0
+      ],
+      "controlIqr": 2.0,
+      "controlMedian": -1.0,
+      "episodeN": 211,
+      "feature": "last_external_side",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 49.28909952606635,
+      "teacherBelowControlMedianPct": 1.8957345971563981,
+      "teacherMedian": 1.0,
+      "uniqueMintN": 203
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 63.793103448275865,
+          "effect": -0.5,
+          "n": 58,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 69.04761904761905,
+          "effect": -0.5,
+          "n": 42,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 42.5,
+          "effect": 0.0,
+          "n": 40,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 37.5,
+          "effect": 0.0,
+          "n": 32,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 23.076923076923077,
+          "effect": 0.0,
+          "n": 39,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        -0.5,
+        0.0
+      ],
+      "controlIqr": 2.0,
+      "controlMedian": 1.0,
+      "episodeN": 211,
+      "feature": "consecutive_sells",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 2.843601895734597,
+      "teacherBelowControlMedianPct": 49.28909952606635,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 203
+    }
+  ],
+  "eventDrivenReplay": {
+    "anyPreTeacherCrossingN": 64,
+    "assessmentN": 76,
+    "crossWithinTeacherLeadWindow": {
+      "1000ms": 39,
+      "250ms": 38,
+      "5000ms": 42
+    },
+    "firstCrossingIsFinalSelectedStatePct": 31.57894736842105,
+    "firstCrossingLeadMs": {
+      "p25": 36.500220000000006,
+      "p50": 108.9274025,
+      "p75": 13142.26480275,
+      "p90": 57755.46409740001
+    },
+    "limitation": "Teacher-independent event clock, but only teacher-traded mint histories are materialized; full-market unmatched signals/hour is not estimable from this tape.",
+    "rows": [
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 247,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 9.038921,
+        "mint": "ETetifkD5Tj5pDVCNvgUGjkwN57Ge4CxRsAJZtgqpump",
+        "selectedPass": true,
+        "selectedScore": 0.6777068677713084,
+        "selectedStateToTeacherMs": 9.038921
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 249,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "Cdmwu1u1mkw29TuDwwvVBxm21hbP1DoWX1H7fAjspump",
+        "selectedPass": false,
+        "selectedScore": 0.2853114618510404,
+        "selectedStateToTeacherMs": 245.114797
+      },
+      {
+        "crossingStateN": 4,
+        "eligibleOrdinal": 250,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 35.824329,
+        "mint": "7N37bDgM2hZmsdzt3hhnfTQeoKEeGYQQt3uoVqD9pump",
+        "selectedPass": true,
+        "selectedScore": 0.9111369563017845,
+        "selectedStateToTeacherMs": 35.824329
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 251,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 114.41332,
+        "mint": "8LkzndDpFp4T6T56PnR3K4D1n8rLwKa4osuwSJ9Bpump",
+        "selectedPass": true,
+        "selectedScore": 0.5654871250960288,
+        "selectedStateToTeacherMs": 114.41332
+      },
+      {
+        "crossingStateN": 3,
+        "eligibleOrdinal": 252,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 75.863791,
+        "mint": "9HgXuMge5jYyNpYLmwS5x7gYT7Y4HqgS16acPyUcpump",
+        "selectedPass": true,
+        "selectedScore": 0.7505782367137136,
+        "selectedStateToTeacherMs": 75.863791
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 253,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 7.91169,
+        "mint": "wo7gJ4kRJH1cQ8s8q55sLvhnNuEFyu6mgpFQRBfpump",
+        "selectedPass": true,
+        "selectedScore": 0.6982651587539852,
+        "selectedStateToTeacherMs": 7.91169
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 255,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "A6jSo2ynHrL3PrBWFKwWQcQWdzYqds17JYocdFXnpump",
+        "selectedPass": false,
+        "selectedScore": 0.33887785596266606,
+        "selectedStateToTeacherMs": 110.696484
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 256,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 153.282512,
+        "mint": "2hiCi3UKmNGDcmvRer9HSGWjG1r52TNdMparqzsLpump",
+        "selectedPass": true,
+        "selectedScore": 0.602646880613602,
+        "selectedStateToTeacherMs": 153.282512
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 257,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "25sHUmrjSGUAdtZaKSUAiCcJc43FGPaqyhg9ip6ypump",
+        "selectedPass": false,
+        "selectedScore": 0.3032644091135559,
+        "selectedStateToTeacherMs": 75.51503
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 259,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 20.119479,
+        "mint": "HdF44BGUtKazye1iF1HXYwfwtTasvHgQbUuyjLXLpump",
+        "selectedPass": true,
+        "selectedScore": 0.7228863237676704,
+        "selectedStateToTeacherMs": 20.119479
+      },
+      {
+        "crossingStateN": 5,
+        "eligibleOrdinal": 260,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 45284.708634,
+        "mint": "HdF44BGUtKazye1iF1HXYwfwtTasvHgQbUuyjLXLpump",
+        "selectedPass": false,
+        "selectedScore": 0.27990180768970535,
+        "selectedStateToTeacherMs": 39.485309
+      },
+      {
+        "crossingStateN": 79,
+        "eligibleOrdinal": 261,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 13768.569504,
+        "mint": "DVE31ex45ur2cX36LFRnFMjTudmKt1DGNDCpUbLipump",
+        "selectedPass": true,
+        "selectedScore": 0.9518751153914962,
+        "selectedStateToTeacherMs": 27.061085
+      },
+      {
+        "crossingStateN": 19,
+        "eligibleOrdinal": 262,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 11407.716587,
+        "mint": "8WV8PmCKcCJCBF6L3ZMSX2qVpgGcWqshDNTU9Vcupump",
+        "selectedPass": true,
+        "selectedScore": 0.6941453201056794,
+        "selectedStateToTeacherMs": 74.475029
+      },
+      {
+        "crossingStateN": 40,
+        "eligibleOrdinal": 263,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 7191.709485,
+        "mint": "HdPxbxTkfc5qKQTkPf2DXU2ZRZ9BUKWMc8QVFSa1pump",
+        "selectedPass": true,
+        "selectedScore": 0.7806608044613528,
+        "selectedStateToTeacherMs": 22.75197
+      },
+      {
+        "crossingStateN": 394,
+        "eligibleOrdinal": 264,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 76960.477851,
+        "mint": "8WV8PmCKcCJCBF6L3ZMSX2qVpgGcWqshDNTU9Vcupump",
+        "selectedPass": true,
+        "selectedScore": 0.7713731089152223,
+        "selectedStateToTeacherMs": 7.189748
+      },
+      {
+        "crossingStateN": 11,
+        "eligibleOrdinal": 265,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 2792.050643,
+        "mint": "GPxf8V1GkeQT3SWnqcPpq3bPy2wh9RqBXr7NC9ifpump",
+        "selectedPass": false,
+        "selectedScore": 0.39129027872644445,
+        "selectedStateToTeacherMs": 16.262287
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 266,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "BacNyd3ntDrVgDzPVQaxUYqHC325mC6mXZ5NoCsxpump",
+        "selectedPass": false,
+        "selectedScore": 0.30146413992087784,
+        "selectedStateToTeacherMs": 26.187931
+      },
+      {
+        "crossingStateN": 3,
+        "eligibleOrdinal": 267,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 57.013933,
+        "mint": "4kvpo8RMdwpX6sG8ziEzAFntQb9ixdT5cZbCQHxcpump",
+        "selectedPass": true,
+        "selectedScore": 0.8324833044312635,
+        "selectedStateToTeacherMs": 20.103538
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 271,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 23.16087,
+        "mint": "8gC6VSWBuQBD5GJAmGmWSqPM69mDt4gLFWUjAVXxpump",
+        "selectedPass": true,
+        "selectedScore": 0.6252800364391489,
+        "selectedStateToTeacherMs": 23.16087
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 272,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "GqXDd1o5dGvPP2d1DHYEHtxJ5iDqimw6xzhR6N3epump",
+        "selectedPass": false,
+        "selectedScore": 0.2563965531902087,
+        "selectedStateToTeacherMs": 22.301837
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 273,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 70.200732,
+        "mint": "Hrr2mr9Z3x3RayFjXLxRAeAXyYAuwiu3MucLDqxspump",
+        "selectedPass": true,
+        "selectedScore": 0.807235318606526,
+        "selectedStateToTeacherMs": 70.200732
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 274,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "BduSTbjk8ZFZdE44Kg6Rn4J8VgrzXLhCm5avzP8zpump",
+        "selectedPass": false,
+        "selectedScore": 0.2509987244264921,
+        "selectedStateToTeacherMs": 8.73365
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 275,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 103.441485,
+        "mint": "FG3R4SZfGJXx2pYLo1ek9RHYQBFLZC9PUXjRabovpump",
+        "selectedPass": true,
+        "selectedScore": 0.6252800364391489,
+        "selectedStateToTeacherMs": 103.441485
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 277,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 19.463597,
+        "mint": "Dx1Pev3qdxD1Be5WwVhzA54e5pnP8bCPwBWn49cgK5Df",
+        "selectedPass": true,
+        "selectedScore": 0.6711686825522785,
+        "selectedStateToTeacherMs": 19.463597
+      },
+      {
+        "crossingStateN": 39,
+        "eligibleOrdinal": 278,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 25532.032271,
+        "mint": "stckEbaDMoxn179hXPnShVfydFSKCLeMG8qgDrEKgk3",
+        "selectedPass": true,
+        "selectedScore": 0.9358804381886252,
+        "selectedStateToTeacherMs": 11.862509
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 279,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 20.243332,
+        "mint": "5Dd6N96xdWSpnZPrFj68K8CmzyCoFFfMwcU8LghZpump",
+        "selectedPass": true,
+        "selectedScore": 0.4873269929098117,
+        "selectedStateToTeacherMs": 20.243332
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 280,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "HLD9nhixLUvS4QNmTZKrjBDnDwWr8B7CAyT2mQNMpump",
+        "selectedPass": false,
+        "selectedScore": 0.39885487369361505,
+        "selectedStateToTeacherMs": 59.677667
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 281,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 22.267668,
+        "mint": "77Yi3VpTPGmuh4GRG7bDpMA1nC1hF35FM4NfRJkQpump",
+        "selectedPass": true,
+        "selectedScore": 0.6876144012948543,
+        "selectedStateToTeacherMs": 22.267668
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 282,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "GvkhhB6XkM3nv5qN7xbXE4zRJGmSuXdSaZYXedUfCuV7",
+        "selectedPass": false,
+        "selectedScore": 0.40045358960946664,
+        "selectedStateToTeacherMs": 39.963239
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 283,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 47.502916,
+        "mint": "Co4mtvmnJXrschbRrG3xKgj3jdsngAAV1dJ2oapupump",
+        "selectedPass": true,
+        "selectedScore": 0.6447089262335125,
+        "selectedStateToTeacherMs": 47.502916
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 284,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "BJZK6VW3VPhL7coCRsnH1gme7b7TpjFuaeWV1ygZpump",
+        "selectedPass": false,
+        "selectedScore": 0.26784880371609365,
+        "selectedStateToTeacherMs": 72.082112
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 286,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "7eAKtFmi2YPKjBkr5yYHaLd5Nk3fNWmcVPWqHX2Fpump",
+        "selectedPass": false,
+        "selectedScore": 0.3067041541834609,
+        "selectedStateToTeacherMs": 43.407835
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 287,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 24.190106,
+        "mint": "CRejxGoN8fGHPAWPwyb2U6PZvAp94ig5L2DthZAPpump",
+        "selectedPass": true,
+        "selectedScore": 0.6246302397035972,
+        "selectedStateToTeacherMs": 24.190106
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 288,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 36.725517,
+        "mint": "8Lh9x4qHDcpG4XpW9xK6cnv5WZutcV5nv4tNG8Pvpump",
+        "selectedPass": true,
+        "selectedScore": 0.4812029019412275,
+        "selectedStateToTeacherMs": 36.725517
+      },
+      {
+        "crossingStateN": 46,
+        "eligibleOrdinal": 289,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 447015.032842,
+        "mint": "Be5sJ6RMq7ttSgSSzbnXM9LEFofofjX62eCnhVWd7zfU",
+        "selectedPass": true,
+        "selectedScore": 0.8785986815792575,
+        "selectedStateToTeacherMs": 10.553679
+      },
+      {
+        "crossingStateN": 57,
+        "eligibleOrdinal": 290,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 11079.653567,
+        "mint": "5fUzubBrPqYzjNRJtUMdRTWkhNH5BXEfTr8GFVQeDAKG",
+        "selectedPass": true,
+        "selectedScore": 0.5757815293670686,
+        "selectedStateToTeacherMs": 28.567376
+      },
+      {
+        "crossingStateN": 80,
+        "eligibleOrdinal": 291,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 16396.42477,
+        "mint": "5fUzubBrPqYzjNRJtUMdRTWkhNH5BXEfTr8GFVQeDAKG",
+        "selectedPass": true,
+        "selectedScore": 0.7828368983968353,
+        "selectedStateToTeacherMs": 33.954166
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 292,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 144.997795,
+        "mint": "7SQKRzt9wN1VzJW9A4Rr4stwzDhKDSKa7ktFsypYpump",
+        "selectedPass": true,
+        "selectedScore": 0.8744091618412578,
+        "selectedStateToTeacherMs": 127.013476
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 293,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 5.368591,
+        "mint": "9q7ysmfVsfBBtzhC8G5fu3k9GQD2vZbzP9ePqKKZpump",
+        "selectedPass": true,
+        "selectedScore": 0.5448068844373763,
+        "selectedStateToTeacherMs": 5.368591
+      },
+      {
+        "crossingStateN": 3,
+        "eligibleOrdinal": 296,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 167.539935,
+        "mint": "Erfj1ZuYSgHQDcXrtbL78jQKbSaFBmjwDTbxT7CUpump",
+        "selectedPass": true,
+        "selectedScore": 0.8757112648891364,
+        "selectedStateToTeacherMs": 7.03687
+      },
+      {
+        "crossingStateN": 24,
+        "eligibleOrdinal": 297,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 24633.028656,
+        "mint": "42NA1ConZCUASLDUqP73pV6HgxRb9JBdWe8imjrVpump",
+        "selectedPass": true,
+        "selectedScore": 0.6446933338351644,
+        "selectedStateToTeacherMs": 13.579837
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 300,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 90.292868,
+        "mint": "231S4uCBAm4HdEuZhG5Jgnq9DR54UwEXURea91RMpump",
+        "selectedPass": true,
+        "selectedScore": 0.6252800364391489,
+        "selectedStateToTeacherMs": 90.292868
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 301,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 181.526892,
+        "mint": "rqoXyRPiABvBbUUmE5i2zLqHVED9JpMHzfa5TH5pump",
+        "selectedPass": true,
+        "selectedScore": 0.6246302397035972,
+        "selectedStateToTeacherMs": 181.526892
+      },
+      {
+        "crossingStateN": 17,
+        "eligibleOrdinal": 302,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 9832.12269,
+        "mint": "rqoXyRPiABvBbUUmE5i2zLqHVED9JpMHzfa5TH5pump",
+        "selectedPass": true,
+        "selectedScore": 0.7903790238076268,
+        "selectedStateToTeacherMs": 101.708033
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 303,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 37.064853,
+        "mint": "8u2a4o51Hsasv5r2UFxUs9Q4FAwdooCrbFPzqwL9pump",
+        "selectedPass": true,
+        "selectedScore": 0.6553134237139724,
+        "selectedStateToTeacherMs": 37.064853
+      },
+      {
+        "crossingStateN": 3,
+        "eligibleOrdinal": 305,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 73.932985,
+        "mint": "GQK2R8AeMRmgyX9Qz88UxUmzd7UtG21MTNjuzssBpump",
+        "selectedPass": true,
+        "selectedScore": 0.8501139688156487,
+        "selectedStateToTeacherMs": 73.932985
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 309,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 64.972526,
+        "mint": "A1jbz2LkDVGfzvtqi5Y3mduD4cUvquv6hMq7pJGbpump",
+        "selectedPass": true,
+        "selectedScore": 0.67271189927498,
+        "selectedStateToTeacherMs": 64.972526
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 310,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 4499.679357,
+        "mint": "5duhjUPJF6r6JuLy1RyqQUFiVD8Wxowch5QtbREkpump",
+        "selectedPass": false,
+        "selectedScore": 0.1863177611199041,
+        "selectedStateToTeacherMs": 39.938157
+      },
+      {
+        "crossingStateN": 385,
+        "eligibleOrdinal": 312,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 40777.128718,
+        "mint": "A9CZBdtKmfSq9niRGVFhwsgUTN6GtdvSbp6EKrsgLa5m",
+        "selectedPass": true,
+        "selectedScore": 0.8224023363926106,
+        "selectedStateToTeacherMs": 26.921615
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 313,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 89.525599,
+        "mint": "5ivH3zKRd6TsdawNG4jbi3B3jmyQRbWmzYBgdvC7pump",
+        "selectedPass": true,
+        "selectedScore": 0.6252800364391489,
+        "selectedStateToTeacherMs": 89.525599
+      },
+      {
+        "crossingStateN": 1156,
+        "eligibleOrdinal": 314,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 441010.626285,
+        "mint": "A9CZBdtKmfSq9niRGVFhwsgUTN6GtdvSbp6EKrsgLa5m",
+        "selectedPass": true,
+        "selectedScore": 0.8937359004437594,
+        "selectedStateToTeacherMs": 17.872884
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 315,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 60.691493,
+        "mint": "T7pKZSiKzsu2kitGC9fsMQbNSxf96MUtNf4mozapump",
+        "selectedPass": true,
+        "selectedScore": 0.7178735500419148,
+        "selectedStateToTeacherMs": 60.691493
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 316,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "ns52eFupLHEUNovcndinfR41kWi4h6E5ThswQiapump",
+        "selectedPass": false,
+        "selectedScore": 0.3960121045684847,
+        "selectedStateToTeacherMs": 37.419327
+      },
+      {
+        "crossingStateN": 34,
+        "eligibleOrdinal": 318,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 12933.496569,
+        "mint": "2q9uyFeADMCmXs8QdJhykRErSDggatsiKdX9SggPpump",
+        "selectedPass": true,
+        "selectedScore": 0.7454967191408279,
+        "selectedStateToTeacherMs": 4.587823
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 319,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 32.561156,
+        "mint": "CK1bdrVvQJzQPEm3rYH6aw6hdZ8XjUJTuivGynkhpump",
+        "selectedPass": true,
+        "selectedScore": 0.6129297202278691,
+        "selectedStateToTeacherMs": 32.561156
+      },
+      {
+        "crossingStateN": 3,
+        "eligibleOrdinal": 321,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 177.152206,
+        "mint": "BoyacLGEqdV5PLM27bPTqdBVEs1gdyHvQYKZAYdqpump",
+        "selectedPass": true,
+        "selectedScore": 0.831758428489278,
+        "selectedStateToTeacherMs": 165.038784
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 322,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 60.084172,
+        "mint": "6sDVtCQnVCCN6zhxApzmGqPewVTxZudSoPXCQaepump",
+        "selectedPass": true,
+        "selectedScore": 0.6887003925809128,
+        "selectedStateToTeacherMs": 33.534965
+      },
+      {
+        "crossingStateN": 304,
+        "eligibleOrdinal": 323,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 57311.051729,
+        "mint": "HAH9woBnkA6sAMyyQn27NKfXFPimWT2oXvhGDEXjpump",
+        "selectedPass": true,
+        "selectedScore": 0.5943894585504614,
+        "selectedStateToTeacherMs": 34.545015
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 324,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 13.607777,
+        "mint": "8HKVnsz2txeTC3GNeGEKbotPiJ9vh7SYjKAQgVRkpump",
+        "selectedPass": true,
+        "selectedScore": 0.6784269424713704,
+        "selectedStateToTeacherMs": 13.607777
+      },
+      {
+        "crossingStateN": 12,
+        "eligibleOrdinal": 325,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 2775.893308,
+        "mint": "8HKVnsz2txeTC3GNeGEKbotPiJ9vh7SYjKAQgVRkpump",
+        "selectedPass": true,
+        "selectedScore": 0.6895745312691756,
+        "selectedStateToTeacherMs": 6.636837
+      },
+      {
+        "crossingStateN": 0,
+        "eligibleOrdinal": 326,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": null,
+        "mint": "5jAiqCY6EZWNo2bLtbnJq2Xp74cfVZMTDMyP4JPNpump",
+        "selectedPass": false,
+        "selectedScore": 0.35144836810336544,
+        "selectedStateToTeacherMs": 115.648983
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 328,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 19.203491,
+        "mint": "5NN2B3fwfs6Czsya7tQUUiopi7Z73baBKEhRGQk6pump",
+        "selectedPass": true,
+        "selectedScore": 0.7095962610178829,
+        "selectedStateToTeacherMs": 19.203491
+      },
+      {
+        "crossingStateN": 14,
+        "eligibleOrdinal": 332,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 7100.47532,
+        "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+        "selectedPass": true,
+        "selectedScore": 0.5371025438090353,
+        "selectedStateToTeacherMs": 9.605871
+      },
+      {
+        "crossingStateN": 225,
+        "eligibleOrdinal": 333,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 78658.291268,
+        "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+        "selectedPass": false,
+        "selectedScore": 0.18554420435728877,
+        "selectedStateToTeacherMs": 102.122748
+      },
+      {
+        "crossingStateN": 273,
+        "eligibleOrdinal": 334,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 96168.316253,
+        "mint": "9Xp8tKgY8NJJQumUR8g1zaD89CaRciFUG6m4k6zcpump",
+        "selectedPass": true,
+        "selectedScore": 0.6403392272012547,
+        "selectedStateToTeacherMs": 60.466826
+      },
+      {
+        "crossingStateN": 78,
+        "eligibleOrdinal": 336,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 57945.926541,
+        "mint": "LeEDV9NEhqgv5ZF53HcvKcVD7bSXqANmpgKYM5Rpump",
+        "selectedPass": true,
+        "selectedScore": 0.9284323868566385,
+        "selectedStateToTeacherMs": 32.237193
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 338,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 50.498023,
+        "mint": "CqC8bDkSWpNgzeszSLyNRQXeqgvTznkkcCJs2JPPpump",
+        "selectedPass": true,
+        "selectedScore": 0.6784269424713704,
+        "selectedStateToTeacherMs": 50.498023
+      },
+      {
+        "crossingStateN": 5,
+        "eligibleOrdinal": 339,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 350.286008,
+        "mint": "DZftnjVaUy3pzs4cHoanhifSfKAeg26mD196iusSpump",
+        "selectedPass": true,
+        "selectedScore": 0.8989695372579924,
+        "selectedStateToTeacherMs": 263.963966
+      },
+      {
+        "crossingStateN": 2,
+        "eligibleOrdinal": 340,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 27.834092,
+        "mint": "BxYpkBGvhKP9J376itHfXUeSoSDDY7ahmFwj89jnpump",
+        "selectedPass": true,
+        "selectedScore": 0.6859618913491301,
+        "selectedStateToTeacherMs": 27.834092
+      },
+      {
+        "crossingStateN": 234,
+        "eligibleOrdinal": 341,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 28938.007177,
+        "mint": "BQHmePDcsp26n6wtkJioygL7Bq3iA1Vbpg3DnnZ6pump",
+        "selectedPass": true,
+        "selectedScore": 0.8864898708679362,
+        "selectedStateToTeacherMs": 36.86481
+      },
+      {
+        "crossingStateN": 4,
+        "eligibleOrdinal": 342,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 10.776435,
+        "mint": "CE8nFru2x1pz3HjiPpi8SKqtFcgmh5vWAaKNMHYCpump",
+        "selectedPass": true,
+        "selectedScore": 0.8828371470974463,
+        "selectedStateToTeacherMs": 10.776435
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 344,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 35.555548,
+        "mint": "EUGePJqBTeqdvDoVjdqRnYMVvZ159LJaspvgNKFUpump",
+        "selectedPass": true,
+        "selectedScore": 0.48957881798981734,
+        "selectedStateToTeacherMs": 35.555548
+      },
+      {
+        "crossingStateN": 78,
+        "eligibleOrdinal": 345,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 77168.645297,
+        "mint": "EUGePJqBTeqdvDoVjdqRnYMVvZ159LJaspvgNKFUpump",
+        "selectedPass": true,
+        "selectedScore": 0.804235677889816,
+        "selectedStateToTeacherMs": 59.471898
+      },
+      {
+        "crossingStateN": 3,
+        "eligibleOrdinal": 346,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 95.736128,
+        "mint": "BQCgvEdbz9jF3wZzdUR89LJMR2Baprwfqj73fgSLpump",
+        "selectedPass": true,
+        "selectedScore": 0.8689854955018136,
+        "selectedStateToTeacherMs": 95.736128
+      },
+      {
+        "crossingStateN": 1,
+        "eligibleOrdinal": 347,
+        "firstCrossingIsSelectedState": true,
+        "firstCrossingToTeacherMs": 58.019249,
+        "mint": "mEKiLnDMgaEKDK5yks9hs7946L3ueundsTkWZtKpump",
+        "selectedPass": true,
+        "selectedScore": 0.6252800364391489,
+        "selectedStateToTeacherMs": 58.019249
+      },
+      {
+        "crossingStateN": 52,
+        "eligibleOrdinal": 350,
+        "firstCrossingIsSelectedState": false,
+        "firstCrossingToTeacherMs": 22142.342548,
+        "mint": "uhC33w365uThbaFy5TKq6pehGmf6zfhM91kSW3Upump",
+        "selectedPass": true,
+        "selectedScore": 0.9201852788255167,
+        "selectedStateToTeacherMs": 180.896403
+      }
+    ],
+    "selectedStateToTeacherMs": {
+      "p25": 20.11549375,
+      "p50": 36.274923,
+      "p75": 74.06849600000001,
+      "p90": 115.03115149999999
+    },
+    "teacherStatePassN": 60,
+    "teacherStateRecallPct": 78.94736842105263,
+    "threshold": 0.4622968637150163,
+    "thresholdPolicy": "P10 of training teacher-state scores; fixed 90% in-sample teacher recall target"
+  },
+  "eventTriggerInterpretation": "The state ranker is not yet a sufficiently specific standalone trigger. Its frozen training-recall threshold passed 78.95% of assessment teacher states, but only 31.58% of episodes first crossed at the final selected state; the upper-quarter first crossings were materially premature. A full transition/cross-sectional event rule must be validated before prospective use.",
+  "frozenScorerSha256": "7c764e88f156e77cd85f75ea0d44350b84d6e174df596520cdd6e5220546aed7",
+  "generatedAtUtc": "2026-09-11T02:20:12.957354+00:00",
+  "humanReadableFingerprint": "2CQ usually chooses a newly launched, currently moving mint, then enters immediately after a compact externally driven burst: strong positive 250ms flow and price response, several consecutive buys, and less single-buyer concentration. Cross-mint choice is mostly lifecycle/recency; exact within-mint timing depends more on the short flow transition.",
+  "integrity": {
+    "crossBoundaryRepeatMintsExcluded": true,
+    "outcomesRead": 0,
+    "submissions": 0,
+    "teacherTransactionFeaturesExcluded": true,
+    "validationRowsRead": 0
+  },
+  "population": {
+    "crossMintControlStates": 4658,
+    "crossMintN": 211,
+    "crossMintUniqueTeacherMints": 203,
+    "developmentN": 350,
+    "sameMintControlStates": 22980,
+    "sameMintTimingN": 253,
+    "sameMintUniqueMints": 240
+  },
+  "requiredNextGate": "Run frozen scorer once on sealed ordinals 351-500 only after N500 is complete",
+  "sameMintUnivariate": [
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 98.21428571428571,
+          "effect": 2.1421466920958765,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 2.4522488706062786,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 94.11764705882354,
+          "effect": 1.4277539779886312,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 1.7745572712260795,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 93.87755102040816,
+          "effect": 2.117565123221812,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        1.9782111884163305,
+        2.2624845286673487
+      ],
+      "controlIqr": 0.06727924356885301,
+      "controlMedian": 0.001405134795747979,
+      "episodeN": 253,
+      "feature": "log_price_change_250ms",
+      "minimumAbsoluteBlockEffect": 1.4277539779886312,
+      "pairedMedianDifference": 0.1449101584308432,
+      "robustPairedEffect": 2.153861291299201,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 95.25691699604744,
+      "teacherBelowControlMedianPct": 4.743083003952569,
+      "teacherMedian": 0.33393872808079933,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 98.21428571428571,
+          "effect": 2.2148008807607886,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 2.543355877533557,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 96.07843137254902,
+          "effect": 1.4125942148531656,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 88.0,
+          "effect": 1.7339061555569515,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 95.91836734693878,
+          "effect": 1.7605927596567608,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        1.809368767223003,
+        2.0797045322727827
+      ],
+      "controlIqr": 1.4521293545,
+      "controlMedian": 0.028489024,
+      "episodeN": 253,
+      "feature": "net_flow_sol_250ms",
+      "minimumAbsoluteBlockEffect": 1.4125942148531656,
+      "pairedMedianDifference": 2.7286875000000004,
+      "robustPairedEffect": 1.87909396056493,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 95.65217391304348,
+      "teacherBelowControlMedianPct": 4.3478260869565215,
+      "teacherMedian": 5.950558087,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 100.0,
+          "effect": 2.3490636789636317,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 2.37037036334705,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 96.07843137254902,
+          "effect": 1.3825342461251366,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 88.0,
+          "effect": 1.7371618202829342,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 97.95918367346938,
+          "effect": 1.6459700788334175,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        1.7188186626109265,
+        2.0387434982114887
+      ],
+      "controlIqr": 1.44721491575,
+      "controlMedian": 0.2248527935,
+      "episodeN": 253,
+      "feature": "gross_buy_sol_250ms",
+      "minimumAbsoluteBlockEffect": 1.3825342461251366,
+      "pairedMedianDifference": 2.7286875000000004,
+      "robustPairedEffect": 1.8854749700986146,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 96.44268774703558,
+      "teacherBelowControlMedianPct": 3.5573122529644268,
+      "teacherMedian": 6.024899999,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 91.07142857142857,
+          "effect": 1.38423129713414,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 95.74468085106383,
+          "effect": 1.361110019117877,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 94.11764705882354,
+          "effect": 0.8988334371972021,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 0.9976901248965377,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 87.75510204081633,
+          "effect": 1.0084980589239543,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        1.0663926859661366,
+        1.2589860606835395
+      ],
+      "controlIqr": 0.11872841574822615,
+      "controlMedian": 0.0029706199697367664,
+      "episodeN": 253,
+      "feature": "log_price_change_1000ms",
+      "minimumAbsoluteBlockEffect": 0.8988334371972021,
+      "pairedMedianDifference": 0.1373865671409638,
+      "robustPairedEffect": 1.1571498387740966,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 91.699604743083,
+      "teacherBelowControlMedianPct": 8.300395256916996,
+      "teacherMedian": 0.35350102348899676,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 92.85714285714286,
+          "effect": 1.0958414589351837,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 95.74468085106383,
+          "effect": 0.9084884358821657,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 96.07843137254902,
+          "effect": 0.8225561594300865,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 88.0,
+          "effect": 0.7865906227221754,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 89.79591836734694,
+          "effect": 0.714077215038434,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.7974583593245224,
+        0.9902752813962239
+      ],
+      "controlIqr": 3.00956153,
+      "controlMedian": 0.08574836350000001,
+      "episodeN": 253,
+      "feature": "net_flow_sol_1000ms",
+      "minimumAbsoluteBlockEffect": 0.714077215038434,
+      "pairedMedianDifference": 2.716430023,
+      "robustPairedEffect": 0.9025999289006064,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.4901185770751,
+      "teacherBelowControlMedianPct": 7.509881422924901,
+      "teacherMedian": 6.07510125,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.64285714285714,
+          "effect": 0.6666666666666666,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 93.61702127659575,
+          "effect": 1.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 90.19607843137256,
+          "effect": 0.6666666666666666,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 0.6666666666666666,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 91.83673469387755,
+          "effect": 0.6666666666666666,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.6666666666666666,
+        0.6666666666666666
+      ],
+      "controlIqr": 3.0,
+      "controlMedian": 1.0,
+      "episodeN": 253,
+      "feature": "consecutive_buys",
+      "minimumAbsoluteBlockEffect": 0.6666666666666666,
+      "pairedMedianDifference": 2.0,
+      "robustPairedEffect": 0.6666666666666666,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.09486166007905,
+      "teacherBelowControlMedianPct": 5.928853754940712,
+      "teacherMedian": 4.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 89.28571428571429,
+          "effect": 1.0276367334342498,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 93.61702127659575,
+          "effect": 0.9986338211878826,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 96.07843137254902,
+          "effect": 0.6177911634532913,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 0.6013574785965247,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 79.59183673469387,
+          "effect": 0.5884215598420461,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.7347152885503875,
+        0.8539707479239403
+      ],
+      "controlIqr": 0.16968983865446144,
+      "controlMedian": 0.008395412042840774,
+      "episodeN": 253,
+      "feature": "log_price_change_2000ms",
+      "minimumAbsoluteBlockEffect": 0.5884215598420461,
+      "pairedMedianDifference": 0.13422226191474584,
+      "robustPairedEffect": 0.7909858538321906,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 89.72332015810277,
+      "teacherBelowControlMedianPct": 10.276679841897232,
+      "teacherMedian": 0.35350102348899676,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.64285714285714,
+          "effect": 0.8830615128663605,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 95.74468085106383,
+          "effect": 0.8428371732410839,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 94.11764705882354,
+          "effect": 0.5302170809655194,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 88.0,
+          "effect": 0.7687984013612315,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 91.83673469387755,
+          "effect": 0.5023320280287441,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.6222619332706338,
+        0.7134278819501733
+      ],
+      "controlIqr": 3.8247558989999995,
+      "controlMedian": 1.1819206415,
+      "episodeN": 253,
+      "feature": "gross_buy_sol_1000ms",
+      "minimumAbsoluteBlockEffect": 0.5023320280287441,
+      "pairedMedianDifference": 2.538975232,
+      "robustPairedEffect": 0.6638267379792334,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.88537549407114,
+      "teacherBelowControlMedianPct": 7.1146245059288535,
+      "teacherMedian": 6.156,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 92.85714285714286,
+          "effect": 1.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 91.48936170212765,
+          "effect": 1.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 84.31372549019608,
+          "effect": 0.75,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 1.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 93.87755102040816,
+          "effect": 0.5,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.6666666666666666,
+        0.6666666666666666
+      ],
+      "controlIqr": 3.0,
+      "controlMedian": 1.0,
+      "episodeN": 253,
+      "feature": "buy_count_250ms",
+      "minimumAbsoluteBlockEffect": 0.5,
+      "pairedMedianDifference": 2.0,
+      "robustPairedEffect": 0.6666666666666666,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 90.51383399209486,
+      "teacherBelowControlMedianPct": 4.3478260869565215,
+      "teacherMedian": 4.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.64285714285714,
+          "effect": 0.821030772968792,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 93.61702127659575,
+          "effect": 0.7493188000743649,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 96.07843137254902,
+          "effect": 0.5932734112187708,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 90.0,
+          "effect": 0.6025294699105614,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 89.79591836734694,
+          "effect": 0.4683568638456433,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.5854913849878685,
+        0.7113720327602604
+      ],
+      "controlIqr": 4.269917652249999,
+      "controlMedian": 0.06557340800000001,
+      "episodeN": 253,
+      "feature": "net_acceleration_1s",
+      "minimumAbsoluteBlockEffect": 0.4683568638456433,
+      "pairedMedianDifference": 2.7286875000000004,
+      "robustPairedEffect": 0.6390492094296338,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.88537549407114,
+      "teacherBelowControlMedianPct": 7.1146245059288535,
+      "teacherMedian": 6.156,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 91.07142857142857,
+          "effect": 0.7714606559584881,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 93.61702127659575,
+          "effect": 0.6390384521087675,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 96.07843137254902,
+          "effect": 0.5060818183247461,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 84.0,
+          "effect": 0.5340481535467778,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 79.59183673469387,
+          "effect": 0.41241553168156825,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.5438526202245644,
+        0.6183993527029967
+      ],
+      "controlIqr": 4.412500576,
+      "controlMedian": 0.2435904149999999,
+      "episodeN": 253,
+      "feature": "net_flow_sol_2000ms",
+      "minimumAbsoluteBlockEffect": 0.41241553168156825,
+      "pairedMedianDifference": 2.6321183245,
+      "robustPairedEffect": 0.5965139900074655,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 88.93280632411067,
+      "teacherBelowControlMedianPct": 11.067193675889328,
+      "teacherMedian": 6.156,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 91.07142857142857,
+          "effect": -0.4425497938190117,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 80.85106382978724,
+          "effect": -0.3995713877562534,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 76.47058823529412,
+          "effect": -0.5684791123221313,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 86.0,
+          "effect": -0.6130843989802167,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 81.63265306122449,
+          "effect": -0.6097237851925198,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        -0.5418716064378795,
+        -0.5109386226600547
+      ],
+      "controlIqr": 0.51211138406273,
+      "controlMedian": 0.35858045952640816,
+      "episodeN": 253,
+      "feature": "buyer_hhi_1000ms",
+      "minimumAbsoluteBlockEffect": 0.3995713877562534,
+      "pairedMedianDifference": -0.27165903980179074,
+      "robustPairedEffect": -0.5304686602485572,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 16.205533596837945,
+      "teacherBelowControlMedianPct": 83.39920948616601,
+      "teacherMedian": 0.34522160664819945,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 91.07142857142857,
+          "effect": -0.40278558581217294,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 87.23404255319149,
+          "effect": -0.34957355240671656,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 76.47058823529412,
+          "effect": -0.40487248374152857,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 84.0,
+          "effect": -0.4923511457797422,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 85.71428571428571,
+          "effect": -0.46947808803149277,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        -0.44897922172733834,
+        -0.4186737782894713
+      ],
+      "controlIqr": 0.5595085859477826,
+      "controlMedian": 0.4775929184044135,
+      "episodeN": 253,
+      "feature": "top_buyer_share_1000ms",
+      "minimumAbsoluteBlockEffect": 0.34957355240671656,
+      "pairedMedianDifference": -0.24024024024024015,
+      "robustPairedEffect": -0.4293772182839409,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 14.624505928853756,
+      "teacherBelowControlMedianPct": 84.9802371541502,
+      "teacherMedian": 0.45871559633027525,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 91.07142857142857,
+          "effect": 0.582906665498638,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 87.23404255319149,
+          "effect": 0.5437620383973664,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 86.27450980392157,
+          "effect": 0.32498791728417764,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 78.0,
+          "effect": 0.29917006814258795,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 77.55102040816327,
+          "effect": 0.32703832304062636,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.3734648861969757,
+        0.44838061903185794
+      ],
+      "controlIqr": 0.30929529201611317,
+      "controlMedian": 0.040337709298734606,
+      "episodeN": 253,
+      "feature": "log_price_change_5000ms",
+      "minimumAbsoluteBlockEffect": 0.29917006814258795,
+      "pairedMedianDifference": 0.1292699069460308,
+      "robustPairedEffect": 0.41794980487222,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 84.18972332015811,
+      "teacherBelowControlMedianPct": 15.810276679841897,
+      "teacherMedian": 0.36908262706453326,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 89.28571428571429,
+          "effect": 0.5634858440504129,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 89.36170212765957,
+          "effect": 0.4944178150107616,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 88.23529411764706,
+          "effect": 0.3425749193570582,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 86.0,
+          "effect": 0.46615211243178073,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 81.63265306122449,
+          "effect": 0.25052146684677523,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.3317040194777826,
+        0.41663306794310856
+      ],
+      "controlIqr": 6.31850950525,
+      "controlMedian": 2.5446380680000003,
+      "episodeN": 253,
+      "feature": "gross_buy_sol_2000ms",
+      "minimumAbsoluteBlockEffect": 0.25052146684677523,
+      "pairedMedianDifference": 2.3999999999999995,
+      "robustPairedEffect": 0.3798364152187883,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 86.95652173913044,
+      "teacherBelowControlMedianPct": 13.043478260869565,
+      "teacherMedian": 6.6,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 92.85714285714286,
+          "effect": 0.6666666666666666,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 89.36170212765957,
+          "effect": 0.5,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 86.27450980392157,
+          "effect": 0.5,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 86.0,
+          "effect": 0.4,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 85.71428571428571,
+          "effect": 0.25,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.5,
+        0.5
+      ],
+      "controlIqr": 4.0,
+      "controlMedian": 1.0,
+      "episodeN": 253,
+      "feature": "buy_count_acceleration_1s",
+      "minimumAbsoluteBlockEffect": 0.25,
+      "pairedMedianDifference": 2.0,
+      "robustPairedEffect": 0.5,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 88.14229249011858,
+      "teacherBelowControlMedianPct": 7.905138339920948,
+      "teacherMedian": 4.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 100.0,
+          "effect": 0.2198887507339166,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.2509435606770098,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.32000851073132,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.2732465740292921,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.3148331081516262,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.2411730782721256,
+        0.25934065868928435
+      ],
+      "controlIqr": 2.1180872567774953,
+      "controlMedian": 5.730099782973575,
+      "episodeN": 253,
+      "feature": "log_event_index",
+      "minimumAbsoluteBlockEffect": 0.2198887507339166,
+      "pairedMedianDifference": 0.5108256237659907,
+      "robustPairedEffect": 0.2411730782721256,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 100.0,
+      "teacherBelowControlMedianPct": 0.0,
+      "teacherMedian": 1.6094379124341003,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 91.07142857142857,
+          "effect": 0.44107905657589547,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 87.23404255319149,
+          "effect": 0.35695071935290246,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 84.31372549019608,
+          "effect": 0.30178782994360176,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 78.0,
+          "effect": 0.264416277785336,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 77.55102040816327,
+          "effect": 0.1958692059164372,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.2681396185888719,
+        0.33646261908908404
+      ],
+      "controlIqr": 7.8240489452499995,
+      "controlMedian": 1.2030151709999997,
+      "episodeN": 253,
+      "feature": "net_flow_sol_5000ms",
+      "minimumAbsoluteBlockEffect": 0.1958692059164372,
+      "pairedMedianDifference": 2.3999999999999995,
+      "robustPairedEffect": 0.30674654731768336,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 83.79446640316206,
+      "teacherBelowControlMedianPct": 16.205533596837945,
+      "teacherMedian": 6.407001877999999,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 96.42857142857143,
+          "effect": 0.4,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 80.85106382978724,
+          "effect": 0.5,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 78.43137254901961,
+          "effect": 0.21428571428571427,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 86.0,
+          "effect": 0.4,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 81.63265306122449,
+          "effect": 0.1875,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "controlIqr": 6.0,
+      "controlMedian": 3.0,
+      "episodeN": 253,
+      "feature": "unique_buyers_1000ms",
+      "minimumAbsoluteBlockEffect": 0.1875,
+      "pairedMedianDifference": 2.0,
+      "robustPairedEffect": 0.3333333333333333,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 84.9802371541502,
+      "teacherBelowControlMedianPct": 11.462450592885375,
+      "teacherMedian": 4.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 94.64285714285714,
+          "effect": 0.4,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 80.85106382978724,
+          "effect": 0.5,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 78.43137254901961,
+          "effect": 0.21428571428571427,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 86.0,
+          "effect": 0.4,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 81.63265306122449,
+          "effect": 0.1875,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.21428571428571427,
+        0.2857142857142857
+      ],
+      "controlIqr": 7.0,
+      "controlMedian": 4.0,
+      "episodeN": 253,
+      "feature": "buy_count_1000ms",
+      "minimumAbsoluteBlockEffect": 0.1875,
+      "pairedMedianDifference": 2.0,
+      "robustPairedEffect": 0.2857142857142857,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 84.58498023715416,
+      "teacherBelowControlMedianPct": 11.462450592885375,
+      "teacherMedian": 4.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 98.21428571428571,
+          "effect": 0.3130254959552004,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 91.48936170212765,
+          "effect": 0.16830998875911482,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 92.15686274509804,
+          "effect": 0.26987179070392797,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 86.0,
+          "effect": 0.2196066849350388,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 87.75510204081633,
+          "effect": 0.24868202496457167,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.19863216015543372,
+        0.22735078748823487
+      ],
+      "controlIqr": 0.6757327806822127,
+      "controlMedian": 1.1673611639347854,
+      "episodeN": 253,
+      "feature": "distance_from_launch_log_price",
+      "minimumAbsoluteBlockEffect": 0.16830998875911482,
+      "pairedMedianDifference": 0.14719589560712026,
+      "robustPairedEffect": 0.21783151537877568,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 91.30434782608695,
+      "teacherBelowControlMedianPct": 8.695652173913043,
+      "teacherMedian": 0.4635856226636396,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 98.21428571428571,
+          "effect": 0.3090495521654726,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 91.48936170212765,
+          "effect": 0.16553177363754373,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 92.15686274509804,
+          "effect": 0.2669639538190918,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 86.0,
+          "effect": 0.2184439277177616,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 87.75510204081633,
+          "effect": 0.2447003067630133,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.19648538294388568,
+        0.22410565097609453
+      ],
+      "controlIqr": 0.6680059798960052,
+      "controlMedian": 4.509168720711786,
+      "episodeN": 253,
+      "feature": "log_market_cap_sol",
+      "minimumAbsoluteBlockEffect": 0.16553177363754373,
+      "pairedMedianDifference": 0.14339634911346089,
+      "robustPairedEffect": 0.21466327163086887,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 91.30434782608695,
+      "teacherBelowControlMedianPct": 8.695652173913043,
+      "teacherMedian": 3.8165732887155417,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 92.85714285714286,
+          "effect": 0.28242544158986543,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 85.1063829787234,
+          "effect": 0.26703645769490963,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 78.43137254901961,
+          "effect": 0.17198506682182815,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 84.0,
+          "effect": 0.17794490948817687,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 71.42857142857143,
+          "effect": 0.12015923573694978,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.1531767940516066,
+        0.19239597320491658
+      ],
+      "controlIqr": 13.682718802,
+      "controlMedian": 6.083760379999999,
+      "episodeN": 253,
+      "feature": "gross_buy_sol_5000ms",
+      "minimumAbsoluteBlockEffect": 0.12015923573694978,
+      "pairedMedianDifference": 2.380000000000001,
+      "robustPairedEffect": 0.17394203845306802,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 82.6086956521739,
+      "teacherBelowControlMedianPct": 17.391304347826086,
+      "teacherMedian": 6.804,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 98.21428571428571,
+          "effect": 0.24001949949491566,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 91.48936170212765,
+          "effect": 0.10301948417979785,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 92.15686274509804,
+          "effect": 0.24330871605923235,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 86.0,
+          "effect": 0.16492959501079246,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 87.75510204081633,
+          "effect": 0.15033320290097396,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.14328242282937262,
+        0.16597388782993913
+      ],
+      "controlIqr": 0.6025044138416666,
+      "controlMedian": 0.7926242063666666,
+      "episodeN": 253,
+      "feature": "curve_progress",
+      "minimumAbsoluteBlockEffect": 0.10301948417979785,
+      "pairedMedianDifference": 0.08983333333333335,
+      "robustPairedEffect": 0.149099875900562,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 91.30434782608695,
+      "teacherBelowControlMedianPct": 8.695652173913043,
+      "teacherMedian": 0.2608584673666667,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 98.21428571428571,
+          "effect": 0.20728940019966688,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 93.61702127659575,
+          "effect": 0.09588848956045612,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 92.15686274509804,
+          "effect": 0.21892415191071216,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 86.0,
+          "effect": 0.15419465291979,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 91.83673469387755,
+          "effect": 0.17060089115430638,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.12586969302956733,
+        0.14523426118796232
+      ],
+      "controlIqr": 20.914486534749987,
+      "controlMedian": 27.5371376465,
+      "episodeN": 253,
+      "feature": "total_external_net_sol",
+      "minimumAbsoluteBlockEffect": 0.09588848956045612,
+      "pairedMedianDifference": 2.7286875000000004,
+      "robustPairedEffect": 0.13046877796718614,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 92.4901185770751,
+      "teacherBelowControlMedianPct": 7.509881422924901,
+      "teacherMedian": 8.174,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 69.64285714285714,
+          "effect": -0.7522459278990894,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 61.702127659574465,
+          "effect": -0.6643723755770452,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 60.78431372549019,
+          "effect": -0.5501513062405234,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 66.0,
+          "effect": -0.40880737429806213,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 51.02040816326531,
+          "effect": -0.05808828089784712,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        -0.7394207553424379,
+        -0.24009813504586036
+      ],
+      "controlIqr": 0.5705479552093751,
+      "controlMedian": 0.28933880275,
+      "episodeN": 253,
+      "feature": "mean_buy_sol_1000ms",
+      "minimumAbsoluteBlockEffect": 0.05808828089784712,
+      "pairedMedianDifference": -0.32906250000000004,
+      "robustPairedEffect": -0.5767481891671022,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 37.54940711462451,
+      "teacherBelowControlMedianPct": 62.055335968379445,
+      "teacherMedian": 1.701,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 100.0,
+          "effect": 0.012232795118498034,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.015458777875672207,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.06767019985729356,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.036282153349016535,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.034162153709716064,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.020575314422582414,
+        0.025814674306500432
+      ],
+      "controlIqr": 147.203096769,
+      "controlMedian": 101.00881287249999,
+      "episodeN": 253,
+      "feature": "total_external_buy_sol",
+      "minimumAbsoluteBlockEffect": 0.012232795118498034,
+      "pairedMedianDifference": 3.2906250000000004,
+      "robustPairedEffect": 0.0223543191157442,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 100.0,
+      "teacherBelowControlMedianPct": 0.0,
+      "teacherMedian": 8.877511388,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 100.0,
+          "effect": 0.0056657223796034,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.007407407407407408,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.026881720430107527,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.013812154696132596,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 100.0,
+          "effect": 0.011627906976744186,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.008130081300813009,
+        0.01016260162601626
+      ],
+      "controlIqr": 246.0,
+      "controlMedian": 158.0,
+      "episodeN": 253,
+      "feature": "unique_buyers_total",
+      "minimumAbsoluteBlockEffect": 0.0056657223796034,
+      "pairedMedianDifference": 2.0,
+      "robustPairedEffect": 0.008130081300813009,
+      "sameDirectionBlocks": 5,
+      "stableDirection": true,
+      "teacherAboveControlMedianPct": 100.0,
+      "teacherBelowControlMedianPct": 0.0,
+      "teacherMedian": 4.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 25.0,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 34.04255319148936,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 39.21568627450981,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 52.0,
+          "effect": 0.14163564531895997,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 57.142857142857146,
+          "effect": 0.32253584166871413,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 2.776470782457416,
+      "controlMedian": 10.53025451707913,
+      "episodeN": 253,
+      "feature": "log_age_ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 41.10671936758893,
+      "teacherBelowControlMedianPct": 0.0,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 8.928571428571429,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 19.148936170212767,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 19.607843137254903,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 18.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 18.367346938775512,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.994249279,
+      "controlMedian": 0.1018000895,
+      "episodeN": 253,
+      "feature": "gross_sell_sol_250ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 7.509881422924901,
+      "teacherBelowControlMedianPct": 16.600790513833992,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 8.928571428571429,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 17.02127659574468,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 17.647058823529413,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 16.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 16.3265306122449,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 2.0,
+      "controlMedian": 1.0,
+      "episodeN": 253,
+      "feature": "sell_count_250ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 6.719367588932807,
+      "teacherBelowControlMedianPct": 15.019762845849803,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 8.928571428571429,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 21.27659574468085,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 19.607843137254903,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 20.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 18.367346938775512,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 2.966694953,
+      "controlMedian": 0.9345393854999999,
+      "episodeN": 253,
+      "feature": "gross_sell_sol_1000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 9.090909090909092,
+      "teacherBelowControlMedianPct": 17.391304347826086,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 8.928571428571429,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 17.02127659574468,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 19.607843137254903,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 16.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 16.3265306122449,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 4.0,
+      "controlMedian": 3.0,
+      "episodeN": 253,
+      "feature": "sell_count_1000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 7.905138339920948,
+      "teacherBelowControlMedianPct": 15.019762845849803,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 8.928571428571429,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 19.148936170212767,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 19.607843137254903,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 20.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 20.408163265306122,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 4.93362981225,
+      "controlMedian": 2.06679935,
+      "episodeN": 253,
+      "feature": "gross_sell_sol_2000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 10.276679841897232,
+      "teacherBelowControlMedianPct": 16.99604743083004,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 10.714285714285714,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 19.148936170212767,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 19.607843137254903,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 20.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 20.408163265306122,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 9.594381745,
+      "controlMedian": 4.826696963,
+      "episodeN": 253,
+      "feature": "gross_sell_sol_5000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 11.857707509881424,
+      "teacherBelowControlMedianPct": 16.205533596837945,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 19.642857142857142,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 31.914893617021278,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 27.45098039215686,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 36.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 38.775510204081634,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 138.12290977275,
+      "controlMedian": 68.192035065,
+      "episodeN": 253,
+      "feature": "total_external_sell_sol",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 30.434782608695652,
+      "teacherBelowControlMedianPct": 0.0,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 8.928571428571429,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 23.404255319148938,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 19.607843137254903,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 24.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 22.448979591836736,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 1.5030138814138339,
+      "controlMedian": 0.10934876550825127,
+      "episodeN": 253,
+      "feature": "buy_sell_imbalance_1000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 19.367588932806324,
+      "teacherBelowControlMedianPct": 7.509881422924901,
+      "teacherMedian": 1.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 26.785714285714285,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 34.04255319148936,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 39.21568627450981,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 38.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 44.89795918367347,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 1.385,
+      "controlMedian": 0.644777786,
+      "episodeN": 253,
+      "feature": "largest_buy_sol_1000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 36.36363636363637,
+      "teacherBelowControlMedianPct": 5.138339920948616,
+      "teacherMedian": 3.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 8.928571428571429,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 17.02127659574468,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 19.607843137254903,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 16.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 16.3265306122449,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 4.0,
+      "controlMedian": 2.0,
+      "episodeN": 253,
+      "feature": "unique_sellers_1000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 8.300395256916996,
+      "teacherBelowControlMedianPct": 15.019762845849803,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 2.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 4.081632653061225,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 253,
+      "feature": "repeat_buyer_share_1000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 1.1857707509881423,
+      "teacherBelowControlMedianPct": 0.0,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 1.9607843137254901,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 8.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 6.122448979591836,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 253,
+      "feature": "creator_buy_sol_5000ms",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 0.3952569169960474,
+      "teacherBelowControlMedianPct": 3.1620553359683794,
+      "teacherMedian": 3.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 2.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 253,
+      "feature": "creator_participated",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 0.0,
+      "teacherBelowControlMedianPct": 0.3952569169960474,
+      "teacherMedian": 1.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 19.642857142857142,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 31.914893617021278,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 27.45098039215686,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 34.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 38.775510204081634,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 168.0,
+      "controlMedian": 75.0,
+      "episodeN": 253,
+      "feature": "unique_sellers_total",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 30.039525691699605,
+      "teacherBelowControlMedianPct": 0.0,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 2.127659574468085,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 3.9215686274509802,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 4.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 6.122448979591836,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 2.0,
+      "controlMedian": 1.0,
+      "episodeN": 253,
+      "feature": "last_external_side",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 2.3715415019762847,
+      "teacherBelowControlMedianPct": 2.3715415019762847,
+      "teacherMedian": 1.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 48.214285714285715,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 51.06382978723404,
+          "effect": 0.01827512123178595,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 52.94117647058823,
+          "effect": 0.11479225215318922,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 50.0,
+          "effect": -0.01298314666241571,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 55.10204081632653,
+          "effect": 0.3251108536917227,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.14805985133971428
+      ],
+      "controlIqr": 0.67540254225,
+      "controlMedian": 0.208806316,
+      "episodeN": 253,
+      "feature": "last_external_trade_sol",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 49.80237154150198,
+      "teacherBelowControlMedianPct": 39.92094861660079,
+      "teacherMedian": 1.41,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 2.127659574468085,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 3.9215686274509802,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 4.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 6.122448979591836,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 2.0,
+      "controlMedian": 0.0,
+      "episodeN": 253,
+      "feature": "consecutive_sells",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 2.3715415019762847,
+      "teacherBelowControlMedianPct": 2.3715415019762847,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 0.0,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 0.0,
+      "controlMedian": 0.0,
+      "episodeN": 253,
+      "feature": "log_ms_since_last_external",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 0.0,
+      "teacherBelowControlMedianPct": 0.0,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    },
+    {
+      "chronologyBlocks": [
+        {
+          "directionPct": 28.571428571428573,
+          "effect": 0.0,
+          "n": 56,
+          "ordinals": [
+            1,
+            70
+          ]
+        },
+        {
+          "directionPct": 25.53191489361702,
+          "effect": 0.0,
+          "n": 47,
+          "ordinals": [
+            71,
+            140
+          ]
+        },
+        {
+          "directionPct": 29.41176470588235,
+          "effect": 0.0,
+          "n": 51,
+          "ordinals": [
+            141,
+            210
+          ]
+        },
+        {
+          "directionPct": 42.0,
+          "effect": 0.0,
+          "n": 50,
+          "ordinals": [
+            211,
+            280
+          ]
+        },
+        {
+          "directionPct": 38.775510204081634,
+          "effect": 0.0,
+          "n": 49,
+          "ordinals": [
+            281,
+            350
+          ]
+        }
+      ],
+      "clusteredBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "controlIqr": 1.7690680580259843,
+      "controlMedian": 4.1588830833596715,
+      "episodeN": 253,
+      "feature": "log_median_interarrival_ms_5s",
+      "minimumAbsoluteBlockEffect": 0.0,
+      "pairedMedianDifference": 0.0,
+      "robustPairedEffect": 0.0,
+      "sameDirectionBlocks": 0,
+      "stableDirection": false,
+      "teacherAboveControlMedianPct": 21.73913043478261,
+      "teacherBelowControlMedianPct": 31.620553359683793,
+      "teacherMedian": 0.0,
+      "uniqueMintN": 240
+    }
+  ],
+  "schema": "2CQ_EVENT_DRIVEN_FINGERPRINT_FREEZE_V1",
+  "verdict": "2CQ_EVENT_DRIVEN_FINGERPRINT_FROZEN_DEVELOPMENT_ONLY"
+}

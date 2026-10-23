@@ -1,0 +1,265 @@
+{
+  "boundary_counts": {
+    "burst:decision:control": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:mint": 1,
+      "NO_FROZEN_CONTROL": 4,
+      "NO_PRIOR_SYNCHRONIZED_READ_SET": 1,
+      "STRICT_1S_REQUEST_AGE_FAIL": 3,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "denominator": 11,
+      "ready_observation": 2
+    },
+    "burst:decision:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 4,
+      "NO_PRIOR_SYNCHRONIZED_READ_SET": 1,
+      "STRICT_1S_REQUEST_AGE_FAIL": 6,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "denominator": 11,
+      "ready_observation": 1
+    },
+    "burst:entry:control": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 2,
+      "NO_FROZEN_CONTROL": 4,
+      "STRICT_1S_REQUEST_AGE_FAIL": 3,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "denominator": 11,
+      "ready_observation": 2
+    },
+    "burst:entry:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 2,
+      "SAME_SLOT_RPC_TOUCH_UNRESOLVED:curve": 1,
+      "STRICT_1S_NATIVE_CURVE_AGE_FAIL": 1,
+      "STRICT_1S_REQUEST_AGE_FAIL": 5,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:curve": 1,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "denominator": 11,
+      "ready_observation": 2
+    },
+    "burst:exit:control": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 2,
+      "NO_FROZEN_CONTROL": 4,
+      "STRICT_1S_REQUEST_AGE_FAIL": 3,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "denominator": 11,
+      "ready_observation": 1
+    },
+    "burst:exit:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 3,
+      "STRICT_1S_NATIVE_CURVE_AGE_FAIL": 2,
+      "STRICT_1S_REQUEST_AGE_FAIL": 3,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "denominator": 11,
+      "ready_observation": 3
+    },
+    "persistence:decision:control": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 2,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 1,
+      "NO_FROZEN_CONTROL": 4,
+      "STRICT_1S_REQUEST_AGE_FAIL": 2,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "denominator": 11,
+      "ready_observation": 2
+    },
+    "persistence:decision:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 2,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 1,
+      "STRICT_1S_NATIVE_CURVE_AGE_FAIL": 2,
+      "STRICT_1S_REQUEST_AGE_FAIL": 4,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:curve": 1,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:global": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "denominator": 11,
+      "ready_observation": 2
+    },
+    "persistence:entry:control": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 1,
+      "NO_FROZEN_CONTROL": 4,
+      "STRICT_1S_REQUEST_AGE_FAIL": 2,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "denominator": 11,
+      "ready_observation": 1
+    },
+    "persistence:entry:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:curve": 1,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 3,
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:global": 1,
+      "STRICT_1S_REQUEST_AGE_FAIL": 3,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:curve": 1,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:global": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "denominator": 11,
+      "ready_observation": 2
+    },
+    "persistence:exit:control": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 2,
+      "NO_FROZEN_CONTROL": 4,
+      "STRICT_1S_REQUEST_AGE_FAIL": 2,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 2,
+      "denominator": 11,
+      "ready_observation": 3
+    },
+    "persistence:exit:target": {
+      "MISSING_NATIVE_WRITE_FOR_TOUCH:fee": 2,
+      "STRICT_1S_NATIVE_CURVE_AGE_FAIL": 1,
+      "STRICT_1S_REQUEST_AGE_FAIL": 3,
+      "TOUCH_OUTSIDE_SELECTED_BRANCH:fee": 1,
+      "UNSUPPORTED_ADVANCED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_ADVANCED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "UNSUPPORTED_CONTEXT:SUPPLY_MISMATCH": 3,
+      "UNSUPPORTED_CONTEXT:UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+      "denominator": 11,
+      "ready_observation": 3
+    }
+  },
+  "context_chain_intentions": {
+    "burst": {
+      "matched": 0,
+      "target": 0
+    },
+    "persistence": {
+      "matched": 0,
+      "target": 3
+    }
+  },
+  "continuous_state_certified": false,
+  "drain_only_seeds": 8,
+  "implementation_sha256": {
+    "burst_persistence_v1.py": "23e40ac090cc590bd0b7c008c23a35b5fcdb00e6751153e9a0a19da9b8b3126c",
+    "quote_context_adapter_v1.py": "389ad72f62f269d9c0550f871afc49ab48a8d78aa1f721902cf342722cc937b0",
+    "state_continuity_v1.py": "b6bc862f799d10d5b040011c6e6260c3bd1e6b7e5c06450db06d1b115cbf9510",
+    "synchronized_context_v1.py": "4119a8ed0e05a2cfdeffbb202e8df044da99100430b1c555e1ca6fed7d9e36ad",
+    "transaction_evidence_v1.py": "2e3cb96409f467d3dc0e23c4cbf2805917e7847f0267890c2351ae248ef69148"
+  },
+  "inputs": {
+    "bootstrap.jsonl": "7eb787e7cc2120a25d53d3cf78735c95dc48305890a8bef60a56eeb7aa75a1ee",
+    "capture.jsonl": "9743994f9a3916b75789f29fc6bb2d877cc00c1289287970a6146ea75f08a786",
+    "completion.json": "657175657660263c4fe01337888749b325d27d6041cd3a65bfa208f76d2b19cb",
+    "manifest.json": "8fc6ba8de095c2fe78b6177306fa4005313f9e27b53d16f7aebb8dbdc3477ef7",
+    "scheduler.jsonl": "211e1f3b8a2ede9975d42738d3096836472fe73fd328fa9cefab2424bdd8421d"
+  },
+  "intent_statuses": {
+    "POLICY_ABSTENTION": 15,
+    "UNRESOLVED_ECONOMICS": 51
+  },
+  "intentions": 66,
+  "native_advance_specification": true,
+  "native_capture": {
+    "counts": {
+      "clock": 787,
+      "curve": 4943,
+      "fee": 86,
+      "global": 90,
+      "mint": 1013,
+      "other": 3633
+    },
+    "end_ns": 1792762625584952735,
+    "full_write_and_fork_coverage_certified": false,
+    "layout_failures": {},
+    "mint_extension_types": {
+      "1": 4,
+      "12": 31,
+      "14": 48,
+      "16": 4,
+      "18": 975,
+      "19": 975,
+      "25": 29,
+      "26": 29,
+      "3": 2,
+      "4": 31,
+      "6": 30
+    },
+    "normalized_transaction_digest": "1bb398b5b6fc8a76e50d1b839ad2462c59b0109fab797709343537e5683f43ca",
+    "observed_discontinuities_and_requests": {
+      "CONNECTED": 1,
+      "CONTEXT_SUBSCRIPTION_REQUESTED": 215
+    },
+    "raw_to_normalized_transactions": 22363,
+    "server_subscription_activation_acknowledged": false,
+    "slot_status_counts": {
+      "0": 350,
+      "1": 350,
+      "2": 350,
+      "3": 351,
+      "4": 350,
+      "5": 351
+    },
+    "start_ns": 1792762551024516834
+  },
+  "net_economics_certified": false,
+  "observation_quotes": 6,
+  "opportunities": 11,
+  "outputs": {
+    "boundaries.jsonl": "4a7c9f2075174fe1706c525b3fe3a87c3a38d058d306e2b871ccac252e56e4e3",
+    "intentions.jsonl": "e17771a4a87eada8eed5495ab19854aa2fa43ad1b94d8bdd4ffc722711adcb6f",
+    "observation-quotes.jsonl": "e3260618250303b73f4e1114cc9845072b1bde791f6819900377c924ead98f07",
+    "opportunities.jsonl": "267c4d8d32d1945dc926226d1691e3567640c0c9cfd0abb298d8ace5fe4629f7",
+    "teacher-labels.jsonl": "f1b3e270b2180da64096f82bfdf5ef7242c140589c4e258d0c4e089803d08568"
+  },
+  "population": "A3h4_sync_engineering_canary_v2",
+  "prospective_expansion_allowed": false,
+  "recorded_faults": [],
+  "remaining": [
+    "Full transition/fork qualification and own-state hold replay are required; single-bank reads are not fills.",
+    "Execution/network costs, intervening unsupported transactions and non-executable/unknown outcomes must be accounted.",
+    "Original frozen controls and strict age remain unchanged; old78/468 never replaced."
+  ],
+  "schema": "NATIVE_CONTINUITY_READSET_AUDIT_V1",
+  "teacher_event_labels": 15,
+  "timing": {
+    "rpc_response_latency": {
+      "count": 168,
+      "maximum_ms": 432.380336,
+      "median_ms": 303.401336,
+      "over_1s": 0
+    },
+    "scheduler_signal_observation_lag": {
+      "count": 19,
+      "maximum_ms": 1082.275324,
+      "median_ms": 425.146509,
+      "over_1s": 1
+    },
+    "synchronized_response_latency": {
+      "count": 73,
+      "maximum_ms": 432.380336,
+      "median_ms": 389.133789,
+      "over_1s": 0
+    }
+  },
+  "unknown_transaction_privileges": 0,
+  "without_control": 4
+}

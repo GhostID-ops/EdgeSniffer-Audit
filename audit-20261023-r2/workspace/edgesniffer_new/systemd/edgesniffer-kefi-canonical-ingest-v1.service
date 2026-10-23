@@ -1,0 +1,10 @@
+[Unit]
+Description=EdgeSniffer kEfi queue-driven canonical ingestion
+RequiresMountsFor=/mnt/edgesniffer-kefi-hot
+After=edgesniffer-kefi-full-meta-capture-first-v8.service
+
+[Service]
+Type=oneshot
+Nice=19
+IOSchedulingClass=idle
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/kefi_canonical_ingest_runner_v1.py --source-root /mnt/edgesniffer-kefi-hot/kefi-capture-first-live-v8 --collector-unit edgesniffer-kefi-full-meta-capture-first-v8.service --materializer-out /mnt/edgesniffer-kefi-hot/kefi-capture-first-control-v8 --index-root /mnt/edgesniffer-kefi-hot/kefi-canonical-index-v1 --indexer /root/bot/EdgeSniffer/scripts/kefi_incremental_event_index_v1.py

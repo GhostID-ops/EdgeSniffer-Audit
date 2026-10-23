@@ -1,0 +1,9 @@
+{
+  "classification": "NON_AUTHORITATIVE_DEVELOPMENT_PLAYGROUND",
+  "developmentSha256": "2e1f1f14e996b1e13e9b00ce9c1cded750c93edac3fb80de4fcf359c6a1c548e",
+  "outcomesReadBeforeFreeze": 0,
+  "playgroundContractSha256": "6444703adba4524cc49cc08b381f7b0931f5307b8150712714788ee6f18eeefb",
+  "policySha256": "bedb0ec347876948937b92c25c2f9df9a3644ce2bb73f3ac258b956dd4d9d1cc",
+  "schema": "2CQ_N350_MULTI_LEG_ECONOMICS_PLAYGROUND_V1_IDENTITY",
+  "validationRowsRead": 0
+}

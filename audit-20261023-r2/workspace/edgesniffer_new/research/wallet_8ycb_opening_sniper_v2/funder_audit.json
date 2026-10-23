@@ -1,0 +1,12 @@
+{
+  "target_wallet": "8YcbyX92UHTU23HZv3ccP9o13qibErQkKaUjoxqxd7SJ",
+  "candidate_funder": "odinBE4Y5Efui9Dh9EMncGN9tAPQT3oPu3WAdA6rDkL",
+  "source": "Helius enhanced address transactions filtered to TRANSFER",
+  "pages_scanned": 100,
+  "rows_scanned": 4829,
+  "newest_utc": "2026-09-02T21:49:24Z",
+  "oldest_utc": "2026-05-24T20:08:40Z",
+  "candidate_cooccurrence_count": 0,
+  "classification": "NOT_VERIFIED_WITHIN_INDEXED_SCAN",
+  "caveat": "This does not disprove funding before the indexed scan window. Infrastructure/funder identity is not treated as creator identity or alpha."
+}

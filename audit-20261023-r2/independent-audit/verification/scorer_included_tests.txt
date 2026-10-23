@@ -1,0 +1,14 @@
+test_compact_metrics_uses_internal_assessment (testTwoCqEventDrivenFingerprintFreezeV1.TestEventDrivenFingerprintFreeze.test_compact_metrics_uses_internal_assessment) ... ok
+test_effect_uses_paired_control_median (testTwoCqEventDrivenFingerprintFreezeV1.TestEventDrivenFingerprintFreeze.test_effect_uses_paired_control_median) ... ok
+test_frozen_model_preserves_feature_order (testTwoCqEventDrivenFingerprintFreezeV1.TestEventDrivenFingerprintFreeze.test_frozen_model_preserves_feature_order) ... ok
+test_percentile_interpolates (testTwoCqEventDrivenFingerprintFreezeV1.TestEventDrivenFingerprintFreeze.test_percentile_interpolates) ... ok
+test_enrichment_supplies_exact_lineage (testAdapt2CQFrozenScorerNativeV1.FrozenScorerAdapterTests.test_enrichment_supplies_exact_lineage) ... ok
+test_missing_lineage_is_fail_closed (testAdapt2CQFrozenScorerNativeV1.FrozenScorerAdapterTests.test_missing_lineage_is_fail_closed) ... ok
+test_joins_signal_and_control_to_native_windows (testMaterialize2CQFrozenScorerWindowsV1.FrozenScorerWindowTests.test_joins_signal_and_control_to_native_windows) ... ok
+test_exact_decoder_evidence_emits_lineage (testMaterialize2CQNativeLaunchLineageV1.NativeLaunchLineageTests.test_exact_decoder_evidence_emits_lineage) ... ok
+test_missing_creator_and_initial_state_fail_closed (testMaterialize2CQNativeLaunchLineageV1.NativeLaunchLineageTests.test_missing_creator_and_initial_state_fail_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.017s
+
+OK

@@ -1,0 +1,10 @@
+{
+  "evaluatorSha256": "16466e970f68ac875a4ea7f947b405bdccaf00e3ac668f35fc6aa1991df8af84",
+  "outcomesRead": 0,
+  "reportSha256": "6af708b04dddb4debceacc94186f4f70fb3be04a991db693ff3df18c4a67316e",
+  "schema": "2CQ_LAUNCHLAB_COVERAGE_V1_PROVENANCE",
+  "scriptSha256": "c7d0d02d53a6c686a68213a3319c493cd5aa9fe90d374aed538344a89fce2266",
+  "sourceInventorySha256": "3d7daafc2937af6f1b381f3d2b88294d6d40ae0354c1326bd086277fc1c03b64",
+  "transitionsSha256": "45d364c7452cff05fa5e9987670c4ecdd7548a75d369bcf662e8edf0bdf85682",
+  "validationRowsRead": 0
+}

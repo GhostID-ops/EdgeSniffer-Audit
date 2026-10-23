@@ -1,0 +1,95 @@
+{
+  "schema": "PROCESSED_EVIDENCE_JOIN_DIAGNOSTIC_V1",
+  "population_id": "processed-receipt-coverage-a3a-20261022-v1",
+  "inputs": {
+    "accounts": {
+      "source": "/mnt/HC_Volume_106775198/edgesniffer-research/offline-ledger-a3a-20261022-v1/run1/accounts.jsonl",
+      "source_prefix_bytes": 67108156,
+      "source_device": 64785,
+      "source_inode": 61079565,
+      "start_byte": 0,
+      "end_byte": 67108156,
+      "unsealed_tail_bytes_excluded": 0,
+      "snapshot_bytes": 67108156,
+      "sha256": "1ecc2b0e599933c816c4199978429d6315f0e2bdf66efdc943da145e0d91fd28"
+    },
+    "receipts": {
+      "source": "/mnt/HC_Volume_106775198/edgesniffer-research/offline-ledger-a3a-20261022-v1/run1/receipts.jsonl",
+      "source_prefix_bytes": 5895154,
+      "source_device": 64785,
+      "source_inode": 61079566,
+      "start_byte": 0,
+      "end_byte": 5895154,
+      "unsealed_tail_bytes_excluded": 0,
+      "snapshot_bytes": 5895154,
+      "sha256": "60911546ec6770e9cb968437ae812817dc58bd9b54867ca1b6971a51fbf784ae"
+    }
+  },
+  "implementation_sha256": {
+    "processed_evidence_join_v1.py": "65947e51a0b4a9308a098e703c83832ccbe60424b1ba7d9487a0ac2ba0240338",
+    "ledger_v1.py": "b3b5d75cc1efdd7d3ce3e02383d139d311cd9581f698b3966987baad77e9e178"
+  },
+  "output_hashes": {
+    "joins.jsonl": "e5056ce1b970839722e46a24bb0ca04e379e09333d317a3d93f044abf3cf8e34",
+    "ledger.jsonl": "881aa5a38a9756fd9c137cddc7271b148d793f444610572e928c5e8d41b0861c"
+  },
+  "source_counts": {
+    "physical_lines": 80801
+  },
+  "source_kinds": {
+    "rustNativePumpCurveAccountState": 80680,
+    "rustSelectedCandidateCurveCacheStats": 27,
+    "rustNativeTargetTransactionReceipt": 94
+  },
+  "raw_receipt_keys": {
+    "rustNativeTargetTransactionReceipt": {
+      "causalStreamId": 94,
+      "kind": 94,
+      "nativeReceiveMonotonicNs": 94,
+      "nativeReceiveSource": 94,
+      "nativeReceiveUnixNs": 94,
+      "schema": 94,
+      "signature": 94,
+      "slot": 94,
+      "source": 94,
+      "transactionIndex": 94
+    }
+  },
+  "nonmonotonic_account_rows": 0,
+  "receipt_counts": {
+    "physical_lines": 10364
+  },
+  "receipt_kinds": {
+    "rustNativeTargetTransactionReceipt": 10364
+  },
+  "receipt_nonnull_fields": {
+    "signature": 10364,
+    "slot": 10364,
+    "native_receive_unix_ns": 10364
+  },
+  "join_statuses": {
+    "UNRESOLVED": 10364
+  },
+  "join_reasons": {
+    "missing_exact_signature_slot_curve": 10364
+  },
+  "ledger_counts": {
+    "input_rows": 10364,
+    "non_buy_rows": 9988,
+    "identity_conflicts": 376
+  },
+  "ledger_reasons": {},
+  "economic_admissions": 0,
+  "economics_computed": false,
+  "trading_enabled": false,
+  "limitations": [
+    "Bounded retained-file sample, not subscription or market coverage.",
+    "Clock comparisons are diagnostic; common clock epoch/fork not established.",
+    "An account match is not proof of successful swap or executed amounts.",
+    "Matched transaction post-state is not necessarily current state at entry.",
+    "Future-dated account evidence cannot rescue an earlier boundary.",
+    "Backdated appended evidence requires a new snapshot/version, never overwrites old results.",
+    "Receipt kinds/route metadata may be historical or wallet-conditioned.",
+    "Fees, current-state availability, failed attempts and own-state economics remain unproven."
+  ]
+}

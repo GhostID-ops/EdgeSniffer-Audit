@@ -1,0 +1,20 @@
+{
+  "schema": "CONTINUITY_CONTROL_PROPOSAL_V2",
+  "status": "DECLARED_FOR_SEPARATE_FUTURE_EXPERIMENT_NOT_ACTIVATED",
+  "rationale": "Original42 unmatched opportunities:22 had no feature-eligible nonburst mint,20 only other liquidity buckets. Requiring a trade in the preceding250ms selects active controls. Test a state-certified risk set separately, without relaxing liquidity matching to obtain better results.",
+  "population": "New fixed-duration Pump-only native capture after context adapter verification. No reassignment of controls for original78 seeds, original canary, or new context engineering canary.",
+  "signal_rules": "Original burst/persistence contract unchanged, including first-mint seeds and full one-second entry delay",
+  "control_risk_set_at_signal": [
+    "Mint and SOL route known at least1s before the signal; no teacher matching",
+    "Exclude signal mint; verified non-Mayhem and supported mint/fee/state context",
+    "Same floor(log2(virtual SOL reserve lamports)) bucket as the signal at signal time",
+    "Original burst predicate definitively false. Missing/ambiguous data is not false",
+    "A quiet interval can establish false burst only if canonical transition and successful-event coverage is independently certified for the required lookback. No unobserved trade assumption",
+    "State observed by signal time and either <=1s old or independently certified unchanged through signal time using only then-available coverage evidence; no future endpoint checks"
+  ],
+  "selection": "One candidate by minimum SHA256 of canonical JSON [seed_id,mint], as in original selector. Reuse allowed and reported. Future signal status must not exclude a control. No candidate means unmatched, retained in denominator.",
+  "state_rule": "New separately named continuity-certified mark specification; retain original strict-age comparator separately. Gap, startup, unknown fork/order, subscription activation uncertainty, or unverified update completeness means unresolved, not unchanged.",
+  "outcomes": "Identical arm clocks and 0.1/0.5/1 SOL scenarios; report missingness and unique/reused controls plus conditional quote/net outcomes only where certified. Price/flow diagnostics and net economics remain separate.",
+  "registration_gate": "Before collecting the separate experimental cohort, record fixed capture duration, supported context scope, coverage certification algorithm/version and evaluator hash. This proposal alone does not start validation or certify coverage.",
+  "no_retrospective_repair": true
+}

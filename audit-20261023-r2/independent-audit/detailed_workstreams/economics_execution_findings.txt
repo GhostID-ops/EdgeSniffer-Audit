@@ -1,0 +1,227 @@
+# Economics and execution audit — independent workstream
+
+## Scope and evidence status
+
+This review inspected the current independent materializers, strategy lab, account-checkpoint lane, latency study, integer curve helpers, relevant executor quote paths, the older live-trade reconciliation engine, and the N350 frozen-policy and multi-leg sandboxes. No transactions were built or sent, no credentials were read, and no network-facing archive scripts were executed. Source files were not edited. Tests imported audited helper modules and used synthetic fixtures only.
+
+The archive does not contain the native tape, account seed streams, development choice sets, historical finalized transactions, or actual economics outputs referred to by the roadmap. Therefore the reported historical PnL cannot be independently recomputed from this bundle. The findings below establish code behavior and blockers; they do not estimate the actual frequency or historical PnL impact of each bug.
+
+The 32 original unit tests in `testRunIndependentStrategyLabV1`, `testMaterializeNativeReserveHorizonCheckpointsV1`, `testRunNativeLatencyBoundedStudyV1`, and `testExactCurveEconomicsV1` passed. Thirteen separate adversarial probe groups reproduce the behavior below. The runnable script is `probe_economics.py`; numerical output is `probe_results.json`.
+
+## Main conclusion
+
+No current independent strategy result should be called executable PnL. The active lab is primarily a historical reserve-quote surface. It silently loses failed entries, calculates returns only for exits that can be marked, mixes exit clocks with data-update clocks, omits own-trade state propagation, and does not use the production executor's slippage constraints or transaction-cost model. Some errors are optimistic and some pessimistic. The correct response is to repair the measurement system before tuning entry or exit rules, not to declare that all losing results would turn profitable after fixes.
+
+The old counterfactual core is more useful than the current lab in several respects: it mutates reserves after our hypothetical buy, replays later transactions under constraints, and in the N350 path includes a sell landing delay. Reuse those components after protocol-version and evidence-availability repairs; do not treat their `EXACT` labels as end-to-end execution certification.
+
+## Confirmed high-priority defects and blockers
+
+### E01 — Failed entries disappear from the experiment denominator
+
+**Code:** `scripts/runIndependentStrategyLabV1.py:247-268, 429-442`.
+
+`eligible()` returns `buy is not None`, and the evaluation loop simply continues when the quote fails. There is no `FAILED_ENTRY` outcome, no failed-entry count, no attempt fee, and no denominator entry. A larger size or a different stress setting can therefore silently alter the sample population. Comparing 0.1, 0.5 and 1 SOL surfaces is not a same-signal capacity comparison.
+
+**Probe:** One admitted native opportunity with insufficient real-token reserve produced zero outcomes, zero surfaces and an empty rejection dictionary. This is a code-level finding, independent of whether such cases occurred in the unseen tape.
+
+**Repair:** Separate signal eligibility from quote success. Emit an immutable attempt row at signal time, followed by explicit `NOT_SUBMITTED_ENTRY_CONSTRAINT`, `SUBMITTED_FAILED`, `FILLED`, `OPEN_UNRESOLVED`, and terminal outcomes. In read-only shadow tests these are modeled statuses, labeled as such. All sizes share the same primary opportunity population.
+
+### E02 — Missing exits are omitted from net PnL and risk
+
+**Code:** `runIndependentStrategyLabV1.py:382-408`; `runNativeLatencyBoundedStudyV1.py:56-80, 126-140`.
+
+Missing and failed exits have null PnL. The summary sums only `ACTIONABLE` rows and calculates ROI, win rate, profit factor and drawdown on that subset. The report does count some missing outcomes, but the headline PnL is closed-and-markable-trade PnL, not portfolio PnL. Unresolved inventory can carry both loss exposure and capital occupancy.
+
+**Probe:** A row with +2.192002151 SOL and eight unresolved 1 SOL positions reports +2.192002151 SOL, 100% win rate, and zero drawdown. If those eight positions were total losses, total PnL would instead be -5.807997849 SOL, before additional costs. That is a sensitivity bound, not an assertion that all missing positions are worthless.
+
+**Repair:** Show cash balance, inventory by mint, realized PnL, liquidation-value intervals, unresolved notional, age of unresolved inventory, all attempted costs, and capital occupancy. A complete-case metric can remain a diagnostic but cannot be promoted. Reject comparisons whose unresolved uncertainty can change the sign of the conclusion.
+
+### E03 — Checkpoint delays can be manufactured by a late-window / global-cursor race
+
+**Code:** `materializeNativeReserveHorizonCheckpointsV1.py:227-260, 270-303`; `refresh2CQFingerprintMarketWindowsV1.py:27, 32-53`.
+
+Each checkpoint pass loads the currently published windows. It then reads new seeds from a persistent global offset, discards seeds whose curve is not currently pending, and advances the offset permanently. If a window is published only after its first qualifying account update was consumed, that update is never reconsidered. The materializer defaults to a 60-second refresh, while checkpoints include 5-, 10-, and 15-second horizons. There is no retained per-curve history index to recover the earlier update.
+
+**Probe:** With signal time 1,000 ms, entry 2,000 ms, and a 15-second deadline at 17,000 ms, the seed at 17,000 ms is consumed while the windows file is empty. After the window is published, no checkpoint is emitted. Appending a 60,000 ms seed produces a checkpoint labeled 43,000 ms late. Replaying the exact same final files from offset zero produces the 17,000 ms checkpoint with zero delay.
+
+This is a reproducible correctness failure. The proportion of historical latency buckets affected cannot be established without the original window publication times, checkpoint offsets, and account seed stream.
+
+**Repair:** Register opportunities immediately on the signal stream. Retain indexed account history by curve and clock/slot/write version. A later window query must search the retained range back to its earliest unresolved deadline. Require equality between clean replay and incremental execution under randomized file-publication schedules. Fix incomplete-line offset handling at the same boundary: a partial JSON line must not be permanently consumed as invalid.
+
+### E04 — Broad-lane duplicate suppression deletes actual market buys
+
+**Code:** `materialize2CQFingerprintMarketWindowsV1.py:239-258`.
+
+When another early-curve buy matches while the mint is pending, the code increments `duplicate_signal` and `continue`s before appending the row to the pending market tape. It suppresses both the duplicate admission and the market event itself. The event-driven materializer is different: it increments the count without the early continue and appends the row at lines 304-305.
+
+**Effect:** Broad-lane delayed state, flow, price response, and exit marks can omit precisely the repeated buying activity the strategy is trying to study. Bias can point either way. Reusing broad-lane flow/PnL as evidence for an event-driven strategy is invalid.
+
+### E05 — The 300-second strict horizon exceeds the stored window
+
+**Code:** broad materializer expiry at `materialize2CQFingerprintMarketWindowsV1.py:254`; event-driven expiry at `materialize2CQEventDrivenIndependentWindowsV1.py:296`; evaluator deadline at `runIndependentStrategyLabV1.py:325-337`.
+
+Both materializers expire the window at signal +300 seconds. The evaluator starts its clock at signal +1 second, so `FIXED_300S` requires a mark at signal +301 seconds. Under ordered input, completed windows cannot contain this mark. These missing exits are structurally caused by truncation. They are not evidence that the market was illiquid.
+
+**Repair:** Capture at least entry deadline + maximum holding period + bounded exit landing and retry interval, with explicit coverage watermark. A hard horizon must use a timer snapshot, not require the first later trade.
+
+### E06 — Carry behavior depends on future data appended after the deadline
+
+**Code:** `runIndependentStrategyLabV1.py:287-298, 339-347`.
+
+`FIXED_CARRY` first chooses any mark at or after the deadline; it carries the last earlier mark only if no later mark exists anywhere in the artifact. This is not a fixed-deadline carry rule. Its choice depends on whether a future update eventually appears, without a fixed timeout.
+
+**Probe:** For a 17-second deadline and a last known mark at 16 seconds, `CARRY_15S` returned -0.084952088 SOL with reason `CARRY_FORWARD_LAST_NATIVE_STATE`. Appending a mark at 300 seconds changed the same historical trade to -0.589086725 SOL and reason `FIXED_HORIZON`. A rule decided at 17 seconds cannot make that future-dependent choice.
+
+**Repair:** At the deadline, choose a behavior using only then-available data: emit an exit intent against the verified current state, or wait a preregistered maximum timeout and apply a defined fallback. Preserve the original decision once the timer fires. Future data can adjudicate a fill scenario, but cannot change which rule was executed.
+
+### E07 — Observation latency is being confused with executable exit timing
+
+**Code:** checkpoint semantics at `materializeNativeReserveHorizonCheckpointsV1.py:2-11, 182-224`; strict lab `first_at_or_after` at `runIndependentStrategyLabV1.py:287-291`; latency filters at `runNativeLatencyBoundedStudyV1.py:130-144`.
+
+The first account update after a deadline is an observation of a changed account, not proof of the time a hypothetical sell could land. A quiet account does not need another trader to mutate it before we can submit an exit. Conversely, a fresh receive timestamp can describe a delayed or backfilled update.
+
+The existing fast-checkpoint bucket is explicitly outcome-dependent. The roadmap already recognizes that it is not an entry-time filter. The cursor race adds a second reason not to treat these buckets as market behavior.
+
+**Correct semantics:** At entry fill +H, take a snapshot of the latest causally available state and record source continuity, per-account subscription status, slot/write-version provenance, and watermark. A state last changed 40 seconds ago may still be current if the feed is complete. Emit an exit intent at the timer, then replay or bracket changes through a specified exit delivery interval. If coverage is unknown, retain unresolved inventory and valuation bounds. Do not invent a fill at the next account update and do not interpret missing updates as failed liquidation.
+
+### E08 — The lab discards own-trade state propagation; partial legs reuse liquidity
+
+**Code:** buy and sell wrappers at `runIndependentStrategyLabV1.py:208-227`; partial exits at `369-378`; integer helper post-state at `exactCurveEconomicsV1.py:231-238, 291-308`.
+
+The buy helper computes a valid `post_state`, but the lab retains only `token_out` and later sells against an unmodified historical state. That is a quote comparison under a price-taking approximation, not a transaction replay. Partial exits independently quote each leg against its historical mark without propagating the earlier partial sale.
+
+**Probe 1:** On a flat market with zero real SOL before our buy, the lab's unmodified historical exit fails because it contains none of the cash we just deposited. A self-consistent replay can sell and realizes normal fee losses of -0.002479139, -0.012355683 and -0.024701361 SOL for 0.1/0.5/1 SOL. The lab omits these losing positions as unresolved quote failures.
+
+**Probe 2:** Splitting an illustrative 1 SOL position into two halves and quoting both against the same original reserve state overstates second-leg receipts by 0.01435385 SOL relative to updating the reserve state after the first sale.
+
+This error is not uniformly optimistic: omitting our initial buy can double-count price impact or exaggerate liquidity insufficiency. Report both a small-trader mark approximation and a self-consistent counterfactual, explicitly labeled. Once our inserted trade causes many external transactions to fail their constraints, neither is an exact forecast of how other traders would respond.
+
+### E09 — Fee fields do not fail closed and their names have conflicting semantics
+
+**Code:** `runIndependentStrategyLabV1.py:173-205`; `materializeNativeReserveHorizonCheckpointsV1.py:204-209`; `validatePumpExactEvidenceLedgerV1.py:66-75`.
+
+The current lab defaults missing protocol/creator fee components to zero. Checkpoints instead invent 125 bps when absent, and `or 125` also overwrites an explicit zero. The checkpoint `explicit_in_seed` flag is recorded but not enforced by the lab. The checkpoint preserves no fee split, version, configuration address, or availability clock.
+
+There is also an input-schema collision: native `fee_basis_points` is treated as total, while the historical TradeEvent convention in `event_fees()` treats that same name as protocol-only. Passing a historical event with protocol 95 and creator 30 to the lab produces total 95, not 125. Current native rows carrying an explicit protocol split avoid this particular collision; mixed inputs do not.
+
+**Probe:** Removing fee fields from an illustrative 1 SOL exit improved reported PnL by 0.011583012 SOL. Missing and explicit-zero checkpoint fees both became 125 bps.
+
+**Repair:** Use explicit typed fields: aggregate fee, protocol, creator, LP, cashback, buyback allocation; mode/version; exact configuration address/hash; availability and validity interval. Verify sums and fee rounding. Unknown fees produce an unresolved-economics result, never zero or a hidden default. Do not count cashback or claimable creator allocations as immediately available cash unless actually claimable under the modeled wallet and action.
+
+### E10 — Native receipt guard does not prove temporal causality
+
+**Code:** `runIndependentStrategyLabV1.py:230-240`.
+
+The check accepts a boolean `source_receive_clock`, a nonempty source identifier, a signal timestamp and any entry-state dictionary. It does not verify state timestamp <= entry boundary, fee availability, full state validity, freshness, commitment, native coverage, or version.
+
+**Probe:** signal 1,000 ms, intended entry 2,000 ms, and an explicitly declared entry-state receive time of 999,999 ms still passed the guard. This does not prove the normal materializers emit such a row; it proves the claimed independent admission guard cannot enforce its stated boundary.
+
+### E11 — Liquidity and impact filters are misleading or inactive
+
+**Code:** `materialize2CQFingerprintMarketWindowsV1.py:198, 202`; frozen bridge `materialize2CQFrozenScorerWindowsV1.py:118-121`; lab `247-268`.
+
+`effective_quote_reserve_sol` is populated from virtual SOL, then used for `RESERVE_GE_2_SOL`. It is not real withdrawable quote reserve. `entry_impact_bps` is always null in the reviewed materializers, so `IMPACT_LE_100_BPS` rejects every row, rather than testing a capacity filter. If later populated as one scalar, it must be recalculated separately for each size.
+
+**Probe:** virtual quote reserve 30 SOL and real quote reserve zero passes the >=2 SOL filter. The buy may be feasible because it adds cash; the feature still cannot be interpreted as current 2 SOL liquidation depth.
+
+**Sizing illustration:** Under this bundle's 125-bps exact helper and representative virtual SOL of 30 to 46.171004438, average entry curve impact excluding fees is approximately 0.329% to 0.214% at 0.1 SOL, 1.646% to 1.070% at 0.5 SOL, and 3.292% to 2.139% at 1 SOL. At 30 virtual SOL, a 1 SOL buy changes spot price by 6.693%. These are illustrative quotes, not empirical trading returns. Source numbers: `size_impact_examples.json`.
+
+### E12 — Stress bps and network-fee constants are not live execution parity
+
+**Code:** lab `34, 194-225`; dynamic exits `348-386`; executor `1719-1758, 2613-2634, 3394-3411, 3877-3993`.
+
+Stress is implemented as another proportional fee (`lp_bps`), not as stale-state drift, slippage bounds, own-order placement, or failed submission. All lab sells have min-output zero. Dynamic TP/SL/trailing triggers use the triggering mark as the fill state with no exit processing or landing delay. The network fee is a constant 0.00001 SOL per round trip; executor commands also support compute prices, tips, output constraints and landing buffers. The configured production values were not included and were not inferred.
+
+Partial exits call a full round-trip fee wrapper twice; that is not a per-transaction expense ledger. Account creation/rent is not equivalent to an irrevocable fee: record capital locked, recoverable amounts and close actions separately.
+
+**Repair:** Version and preregister instruction semantics, min-out/max-in, send/landing assumptions, first-sellable inventory proof, retries, costs by submitted leg, and terminal failure behavior. Read-only historical telemetry can calibrate scenarios; lack of live execution observations must remain an explicit uncertainty.
+
+### E13 — Current checkpoint lane cannot accept new event-driven/control record types
+
+**Code:** `materializeNativeReserveHorizonCheckpointsV1.py:115-117` accepts only `INDEPENDENT_MARKET_WINDOW` and `MARKET_WINDOW`. The frozen bridge emits `INDEPENDENT_EVENT_DRIVEN_MARKET_WINDOW` or `INDEPENDENT_MARKET_CONTROL_WINDOW` at lines 95-97.
+
+The new scorer and control lane therefore cannot directly reuse the current checkpoint materializer without a schema change. This is a concrete integration blocker, not evidence of zero exit liquidity.
+
+## Historical engines: preserve useful components, narrow their claims
+
+### Original exact live-trade reconciliation
+
+`exactCurveEconomicsV1.py:1492-1501` requires successfully landed buy and sell, usable inventory proof, and complete buy-boundary history. It then assumes entry at selected time +25 ms (`1516`), injects our hypothetical buy (`1628-1630`), and replays external instruction constraints (`1820-1844`). This is substantially better than the current mark-only lab for state mutation.
+
+However, it is a completed-round-trip reconciliation sample, not the universe of all signals or attempts. Hypothetical threshold exits use the trigger state immediately (`1699-1725`), without a sell delivery delay. The actual network-adjusted ROI uses only the paired buy/sell `meta.fee` (`1957-1964`), not all failed attempts, tips, account flows or other legs. The loader attaches an exit by most recent same-mint trade lacking a sell (`842-847`) and the evaluator checks buy inventory but has no corresponding equality check that sell tokens equal the entry inventory. Those assumptions should be enforced as a single-entry/full-exit contract or replaced by a wallet inventory ledger before using multi-leg results.
+
+`summarize_returns()` emits `pnl_sol_at_1_sol_linear` (`1452-1465`). That label is an arithmetic normalization. It must not be interpreted as a 1 SOL nonlinear capacity replay.
+
+### N350 frozen-policy sandbox
+
+`twoCqN350FrozenPolicyEconomicsSandboxV1.py` genuinely checks an N350 development population, hashes the frozen model and engine, and forbids reading validation examples (`67-91`). It chooses teacher, frozen top-one, and deterministic blind states (`105-120`). These are useful safeguards for comparing selection policies on a common historical set.
+
+The decision clock still comes from the teacher choice-set boundary (`256`), so top-one selection answers which mint to choose when the teacher acted. It does not demonstrate that the independent system knows when to create a choice set. `EXACT` exclusion filtering (`274-278, 303-319`) and max-open-one filtering only on exact rows (`340-352`) can also drop unresolved economic exposure.
+
+The shared `executableOpportunityCensusV1.evaluate_cell()` injects our own buy and replays external groups under constraints (`323-357`), then applies sell landing offsets (`262-283`). This is a good basis for a replacement engine. But it unconditionally appends an endpoint at the requested horizon (`358-364`) without accepting a source-health or forward-completeness watermark. A pure probe with zero future groups still returns `EXACT` TP/SL/MAX120 policies at a fabricated 123-second endpoint. That is an evidence-status failure: absence of observed events cannot by itself prove absence of events.
+
+`breakEvenAdditionalDeliveryCostSol` is the maximum over future sampled sell values (`450`), and opportunity MFE is a future maximum (`416, 448`). They are oracle diagnostic upper bounds, not a live strategy's affordable execution budget.
+
+### N350 multi-leg playground
+
+`twoCqN350MultiLegEconomicsPlaygroundV1.py` correctly updates its state after partial sells (`40-57`) and after added buys (`97-104`). It also schedules actions with a configured landing offset (`78-79`), an improvement over the current lab. It remains a development-only set of scenarios over the same N350 (`147-184`), uses the same teacher choice boundaries (`166`), excludes all own-action or final-exit failures (`105, 128`), and aggregates only `EXACT` outcomes (`136-144`). `TEACHER_ACTION_REPLAY` is explicitly absent (`170`), so it cannot establish that the teacher's full multi-leg strategy was reproduced.
+
+A header claiming `parameterSearches=0` does not eliminate researcher selection among the scenario/size/latency outputs. It simply states that the script itself did not optimize a parameter loop. Any selected result needs a later untouched test. The existing multi-leg unit test's partial-sale test checks arithmetic partition of inventory, not transaction replay or state transitions; it is not strong parity evidence.
+
+## Protocol-state requirements
+
+The four reserve integers are necessary but not sufficient. A canonical state must include protocol/program version or deployment hash, instruction variant, curve completion/migration status, mint and quote mint plus decimals and token program, supply, virtual and real reserves, fee configuration and effective mode, pending retained fees, creator identity where economically relevant, and event/create lineage. It must also distinguish local evidence availability from chain execution order and from later finality reconciliation.
+
+Root independently verified current official Pump documentation: `https://github.com/pump-fun/pump-public-docs/blob/main/docs/instructions/TRADE_V3.md`, `SYNTHETIC_MIGRATION.md`, and `VIRTUAL_QUOTE_RESERVES_FEE_ADJUSTMENT.md`. These require a version-aware reconciliation; do not extrapolate legacy reserve transitions to all V3 or synthetic-migration states. Ordinary V3 price/fee behavior and fee custody must be distinguished. The exact helper's old input/output formulas are a useful internal comparator, not an independent certification of every current state transition.
+
+## Highest-information research program from this workstream
+
+### 0. Reconcile the instrument before the strategy — immediate source-only and retained-data tests
+
+Run the 13 adversarial probes plus a golden transaction corpus for each currently admitted instruction/version. On retained evidence, require no-op replay to match each observed executed token amount, fee split, real/virtual reserve transition and failure status at integer precision, with explicitly documented rounding tolerances only. Reconcile transaction atomicity, migration, same-slot multiple writes, late arrivals and fee sweeps. Compare clean replay against incremental execution under randomized publication/arrival/restart schedules. Any unexplained discrepancy blocks economics for its affected mode.
+
+**Report:** `quote_and_capture_parity_report`: complete population by version; exact-match/mismatch/unsupported counts; discrepancy histogram; source-state and fee provenance; exclusion reasons; incremental-vs-clean checksum differences; each mode's admissibility decision. Do not reduce the report to a pass rate that hides an unsupported route.
+
+### 1. Delayed-edge falsification and decay curve — highest value strategy test
+
+Use one independent event rule, a same-period random market baseline, and the preserved scorer as a benchmark where its exact features exist. Compute all-signal net outcomes and paired differences for entry delays 0/250/500/1,000/2,000/5,000 ms. Only 1,000 ms is the primary independently executable hypothesis; shorter delays are diagnostic. Hold entry and exit formulas fixed; primary size 0.1 SOL, primary full exit 15 seconds after modeled entry fill, exit delivery 1,000 ms and a 2,000 ms stress. Recompute 0.5/1 SOL on exactly the same signals as capacity sensitivities. Use measured fee schedules and transaction costs; additive 25/50 bps remains a sensitivity label, not a substitute for landing changes.
+
+Also calculate an explicitly labeled oracle upper bound: best executable liquidation within a fixed horizon under the same delayed entry, costs and complete attempt accounting. If even that generous bound is nonpositive across a broad reliable sample, demote that entry family immediately. A positive oracle does not support a trading claim.
+
+**Features:** native independent buys/sells and distinct buyers over 250 ms and 1 second; signed flow normalized by reserve depth; response per unit signed flow; sequence/run length; concentration; state age and health; genuine launch age when known. Do not slip the one-second wait into both feature discovery and execution delay. If features extend to +1,000 ms, then the final decision is at +1,000 ms and an additional delivery interval must follow.
+
+**Report:** `delay_decay_all_attempts_report`: every opportunity and all sizes; opportunity-vs-control means; gross edge, fees, impact, delivery deterioration, failures and residual inventory bridge; return distribution; worst losses; top-winner concentration; block/launch-cluster confidence intervals; time-block stability; coverage; results for all preregistered delays, with no winner selection.
+
+### 2. Separate selection from timing
+
+Run a small factorial comparison: independently scheduled choice-set clock versus event-burst clock, crossed with simple native features versus the frozen scorer (only where exact coverage exists). Keep teacher-time and teacher-selected results as labeled diagnostic cells. Compare against risk-set sampled contemporaneous controls from the same route/version, time block, genuine age, depth and feed-health stratum. Choose controls at the decision clock; do not remove controls because of a future signal or exit state.
+
+This answers whether historical success reflects mint selection, immediate reaction timing, or teacher-conditioned opportunity availability. It is more informative than adding another take-profit threshold.
+
+**Report:** `selection_timing_factorial_report`: paired effects by clock and selector; independent opportunity rate; incremental predictive contribution; teacher label association separately from future net-return association; class overlap and out-of-support features; attempt accounting and common-cohort controls.
+
+### 3. Longer-lived, deeper-liquidity continuation as an alternative family
+
+If the edge disappears before 1 second, test a slower signal with a longer horizon on adequately captured later-curve or post-migration markets. Candidate features: sustained signed flow over 5 seconds, distinct buyer breadth, sell-pressure absorption, lower volume concentration, and real executable depth. One fixed 30-second hold and 1-second entry/exit delivery is enough for the first experiment. Do not carry the teacher-derived early-curve phase threshold into this family without justification. The venue/version quote adapter must pass the same parity gate first, including signed virtual quote reserves where applicable.
+
+Relative live-survival likelihood is better than a 250-ms burst **only as a hypothesis** because its claimed horizon exceeds delivery latency; profitability is unestablished. No numerical success probability can be justified from this bundle.
+
+**Report:** `slow_signal_capacity_report`: independent opportunities; matched baseline; all-attempt net return; age/depth strata; 0.1/0.5/1 SOL quote and counterfactual capacity curves; latency degradation; migration/admission failures; interval-valued residual exposures.
+
+### 4. Exit policy testing only after an entry effect survives
+
+Once a positive delayed fixed-hold edge survives an untouched cohort, compare the frozen full exit against one preregistered adaptive rule, such as an exit on independently observed sell-flow reversal. Delay execution from the trigger, propagate partial states if any, charge each leg, and keep the number of primary alternatives small. A large exit grid on a negative or unresolved entry signal is a poor information/time trade.
+
+## Sample sizes, pre-registration and invalidation
+
+Use an initial 300–500 independent mint episodes to estimate coverage, return variance, failure rates and cluster dependence; do not call it validation. A subsequent minimum of 2,000 independent episodes across at least 14 days is an operational floor, not proof of statistical power. Calculate the final target from the effect size that matters and the variance of the paired opportunity-minus-control outcome. For a normal approximation, `n_eff >= ((z_(1-alpha)+z_(power))*sigma_delta/delta_min)^2`; use multiplicity-adjusted alpha and cluster design effects. A 1% mean return with 30% standard deviation needs approximately 5,600 independent observations even for one one-sided 5% test at 80% power, before clustering or multiple hypotheses. Heavy-tailed returns require block-bootstrap and concentration diagnostics rather than blind use of this approximation.
+
+Hash the program, supported modes, input cutoff, native clock definition, signal rule, cost schedule, primary size, holding/exit rule, control sampling seed, uncertainty treatment, stopping rule and statistical analysis before the untouched segment starts. Failed attempts and unresolved positions count toward sample progression. No stopping at a profitable peak and no reusing the same segment after a rule change.
+
+Invalidation should be explicit: inability to reconcile the state/fees; coverage differences between candidate and control that can change the result; causal-feature or decision-clock violations; a net-return confidence bound failing the preregistered effect; economic advantage concentrated in one launch/creator/time block; sensitivity sign reversal under plausible landing costs; or insufficient state support for the chosen size. A few negative provisional results need not reject all blockchain opportunities, but they should stop repeated tuning of that exact lead on the same sample.
+
+## Single next build
+
+Build a read-only, versioned opportunity-and-attempt ledger driven by the native receive stream and independent timers. It should register every opportunity immediately, retain launch/account/fee evidence with availability clocks, materialize intent snapshots at entry and exit boundaries, and evaluate quotes/counterfactuals through a fixed delivery interval. It must reproduce identical results from clean and incremental replay, preserve every missing/failing/unresolved case, and expose one auditable decomposition from raw gross movement to all-attempt net economics.
+
+This combines the strongest existing pieces—integer helpers, atomic transaction replay, preserved source lineage—with the missing denominators and clocks. It is the most useful platform for discovering which strategy deserves further work. Enabling live trading is outside this recommendation.

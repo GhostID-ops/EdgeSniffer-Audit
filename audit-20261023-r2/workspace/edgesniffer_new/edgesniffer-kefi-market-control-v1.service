@@ -1,0 +1,19 @@
+[Unit]
+Description=Outcome-blind kEFi market-wide control cohort builder
+After=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3 /root/kefi-work/bin/kefi_market_control_lane_v1.py
+Restart=on-failure
+RestartSec=30
+Nice=15
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

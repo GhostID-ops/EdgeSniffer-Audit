@@ -1,0 +1,99 @@
+{
+  "boundary_utc": "2026-10-19T02:56:34.388060Z",
+  "cohort_id": "kefi-13-arm-multivenue-prospective-20261019T025634Z",
+  "collection_mode": "RECEIVE_ONLY_FINALIZED_RPC",
+  "jupiter_fallback_enabled": false,
+  "live_trading_enabled": false,
+  "schema": "KEFI_13_ARM_FINALIZED_RPC_SOURCE_MANIFEST_V1",
+  "tracked_wallet": "kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf",
+  "watches": [
+    {
+      "arm_ids": [
+        "ARM01_SOL_PUMP_CURVE_2CQ",
+        "ARM02_SOL_PUMP_CPI_2CQ",
+        "ARM03_ACTIVE_SOL_PUMP_5000MS"
+      ],
+      "family": "PUMP_PROGRAM",
+      "program_id": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"
+    },
+    {
+      "arm_ids": [
+        "ARM07_PUMPSWAP_DIRECT",
+        "ARM08_PUMPSWAP_CPI"
+      ],
+      "family": "PUMPSWAP_PROGRAM",
+      "program_id": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+    },
+    {
+      "arm_ids": [
+        "ARM05_RAYDIUM_LAUNCHLAB",
+        "ARM06_STONKFUN_LAUNCHLAB"
+      ],
+      "family": "RAYDIUM_LAUNCHLAB",
+      "program_id": "LanMV9sAd7wArD4vJFi2qDdfnVhFxYSUg6eADduJ3uj"
+    },
+    {
+      "arm_ids": [
+        "ARM12_OTHER_DEX_PROTOCOL_NATIVE"
+      ],
+      "family": "RAYDIUM_CPMM",
+      "program_id": "CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C"
+    },
+    {
+      "arm_ids": [
+        "ARM09_ROUTER_RAYDIUM_CLMM",
+        "ARM12_OTHER_DEX_PROTOCOL_NATIVE"
+      ],
+      "family": "RAYDIUM_CLMM",
+      "program_id": "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK"
+    },
+    {
+      "arm_ids": [
+        "ARM12_OTHER_DEX_PROTOCOL_NATIVE"
+      ],
+      "family": "RAYDIUM_AMM_V4",
+      "program_id": "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8"
+    },
+    {
+      "arm_ids": [
+        "ARM11_ROUTER_METEORA_DLMM"
+      ],
+      "family": "METEORA_DLMM",
+      "program_id": "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo"
+    },
+    {
+      "arm_ids": [
+        "ARM12_OTHER_DEX_PROTOCOL_NATIVE"
+      ],
+      "family": "METEORA_DBC",
+      "program_id": "dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN"
+    },
+    {
+      "arm_ids": [
+        "ARM10_ROUTER_ORCA_WHIRLPOOL"
+      ],
+      "family": "ORCA_WHIRLPOOL",
+      "program_id": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+    },
+    {
+      "arm_ids": [
+        "ARM09_ROUTER_RAYDIUM_CLMM",
+        "ARM10_ROUTER_ORCA_WHIRLPOOL",
+        "ARM11_ROUTER_METEORA_DLMM",
+        "ARM12_OTHER_DEX_PROTOCOL_NATIVE"
+      ],
+      "family": "JUPITER_V6_ROUTER",
+      "program_id": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"
+    },
+    {
+      "arm_ids": [
+        "ARM09_ROUTER_RAYDIUM_CLMM",
+        "ARM10_ROUTER_ORCA_WHIRLPOOL",
+        "ARM11_ROUTER_METEORA_DLMM",
+        "ARM12_OTHER_DEX_PROTOCOL_NATIVE"
+      ],
+      "family": "JUPITER_V4_ROUTER",
+      "program_id": "JUP4Fb2cqiRUcaTHdrPC8h2gNsA2ETXiPDD33WcGuJB"
+    }
+  ]
+}

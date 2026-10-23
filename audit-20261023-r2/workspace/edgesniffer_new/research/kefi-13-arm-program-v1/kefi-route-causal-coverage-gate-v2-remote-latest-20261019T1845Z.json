@@ -1,0 +1,84 @@
+{
+  "eligible_route_count": 0,
+  "gate_status": "BLOCKED_NATIVE_CAUSAL_COVERAGE",
+  "generated_at_utc": "2026-10-19T18:45:04.197108Z",
+  "input_rows": 60,
+  "input_schemas": {
+    "KEFI_ROUTE_CAUSAL_TAPE_V1": 60
+  },
+  "interpretation": {
+    "controls": "Controls are same-route non-KEFI PumpSwap buys captured by the native route source, not venue-only tape rows.",
+    "next_step": "Only eligible routes may enter the preregistered entry/exit hypothesis surface; any selected policy still requires a separate fresh prospective cohort.",
+    "purpose": "Prove that route-specific native evidence can support realistic t+1 economics before searching policies.",
+    "t_plus_1": "A mark is usable only when the same pool/mint has a native post-entry state at least one second after the KEFI buy; the causal threshold additionally requires that mark within 30 seconds."
+  },
+  "native_input_rows": 60,
+  "native_source_required": true,
+  "policy_frozen": false,
+  "policy_selection_performed": false,
+  "read_only": true,
+  "research_only": true,
+  "routes": {
+    "PUMPSWAP_CPI": {
+      "eligible_for_native_causal_economics": false,
+      "entry_delay_seconds": {
+        "max": null,
+        "median": null,
+        "min": null
+      },
+      "genuine_keFi_buys": 0,
+      "genuine_keFi_sells": 0,
+      "lineage_complete": true,
+      "lineage_rows": 53,
+      "lineage_valid_rows": 53,
+      "native_rows": 53,
+      "native_same_route_controls": 12,
+      "t_plus_1_mark_coverage": 0.0,
+      "teacher_entries_with_any_post_entry_mark": 0,
+      "teacher_entries_with_contemporaneous_control": 0,
+      "teacher_entries_with_mark_within_30s": 0,
+      "thresholds": {
+        "maximum_entry_mark_delay_seconds": 30,
+        "minimum_causal_entries": 50,
+        "minimum_genuine_keFi_buys": 50,
+        "minimum_native_controls": 50,
+        "minimum_t_plus_1_mark_coverage": 0.8
+      },
+      "unique_durable_sequences": 53,
+      "unique_mints": 0
+    },
+    "PUMPSWAP_DIRECT": {
+      "eligible_for_native_causal_economics": false,
+      "entry_delay_seconds": {
+        "max": null,
+        "median": null,
+        "min": null
+      },
+      "genuine_keFi_buys": 0,
+      "genuine_keFi_sells": 0,
+      "lineage_complete": true,
+      "lineage_rows": 7,
+      "lineage_valid_rows": 7,
+      "native_rows": 7,
+      "native_same_route_controls": 2,
+      "t_plus_1_mark_coverage": 0.0,
+      "teacher_entries_with_any_post_entry_mark": 0,
+      "teacher_entries_with_contemporaneous_control": 0,
+      "teacher_entries_with_mark_within_30s": 0,
+      "thresholds": {
+        "maximum_entry_mark_delay_seconds": 30,
+        "minimum_causal_entries": 50,
+        "minimum_genuine_keFi_buys": 50,
+        "minimum_native_controls": 50,
+        "minimum_t_plus_1_mark_coverage": 0.8
+      },
+      "unique_durable_sequences": 7,
+      "unique_mints": 0
+    }
+  },
+  "schema": "KEFI_ROUTE_CAUSAL_COVERAGE_GATE_V1",
+  "source_path": "research\\kefi-13-arm-program-v1\\route-causal-tape-v2-remote-latest-20261019T1845Z.jsonl",
+  "source_sha256": "41ab0ec2e124e2782fff00d0b337c3eaa60f84a059b47ef92426b7c668dd1be3",
+  "trading_enabled": false,
+  "validation_started": false
+}

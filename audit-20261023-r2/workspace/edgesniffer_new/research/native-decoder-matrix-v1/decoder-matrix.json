@@ -1,0 +1,33 @@
+{
+  "schema": "EDGESNIFFER_NATIVE_PUMP_DECODER_MATRIX_V1",
+  "program": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+  "source": {
+    "url": "https://github.com/pump-fun/pump-public-docs/blob/main/idl/pump.json",
+    "reviewed": "2026-10-22",
+    "authority": "official Pump public IDL"
+  },
+  "variants": [
+    {"name": "buy", "constant": "BUY_DISCRIMINATOR", "discriminator": [102, 6, 61, 18, 1, 218, 235, 234], "side": "buy", "quote_offset": 16, "quote_semantics": "max_sol_cost_intent", "native_capture": true},
+    {"name": "buy_exact_sol_in", "constant": "BUY_EXACT_SOL_IN_DISCRIMINATOR", "discriminator": [56, 252, 116, 8, 158, 223, 205, 95], "side": "buy", "quote_offset": 8, "quote_semantics": "exact_sol_in_intent", "native_capture": true},
+    {"name": "buy_v2", "constant": "BUY_V2_DISCRIMINATOR", "discriminator": [184, 23, 238, 97, 103, 197, 211, 61], "side": "buy", "quote_offset": 16, "quote_semantics": "max_sol_cost_intent", "native_capture": true},
+    {"name": "buy_exact_quote_in_v2", "constant": "BUY_EXACT_QUOTE_IN_V2_DISCRIMINATOR", "discriminator": [194, 171, 28, 70, 104, 77, 91, 47], "side": "buy", "quote_offset": 8, "quote_semantics": "exact_quote_in_intent", "native_capture": true},
+    {"name": "buy_v3", "constant": "BUY_V3_DISCRIMINATOR", "discriminator": [7, 5, 29, 196, 245, 23, 101, 80], "side": "buy", "quote_offset": 16, "quote_semantics": "max_sol_cost_intent", "native_capture": true},
+    {"name": "buy_exact_quote_in_v3", "constant": "BUY_EXACT_QUOTE_IN_V3_DISCRIMINATOR", "discriminator": [225, 247, 80, 30, 213, 179, 132, 136], "side": "buy", "quote_offset": 8, "quote_semantics": "exact_quote_in_intent", "native_capture": true},
+    {"name": "sell", "constant": "SELL_DISCRIMINATOR", "discriminator": [51, 230, 133, 164, 1, 127, 131, 173], "side": "sell", "token_offset": 8, "quote_semantics": "executed_quote_unavailable_on_native_intent", "native_capture": true},
+    {"name": "sell_v2", "constant": "SELL_V2_DISCRIMINATOR", "discriminator": [93, 246, 130, 60, 231, 233, 64, 178], "side": "sell", "token_offset": 8, "quote_semantics": "executed_quote_unavailable_on_native_intent", "native_capture": true},
+    {"name": "sell_v3", "constant": "SELL_V3_DISCRIMINATOR", "discriminator": [28, 146, 222, 119, 38, 196, 105, 213], "side": "sell", "token_offset": 8, "quote_semantics": "executed_quote_unavailable_on_native_intent", "native_capture": true}
+  ],
+  "execution_boundary": {
+    "native_shred_status": "intent_only; execution success is not present in NativeFlowEvent",
+    "authoritative_state_allowed": false,
+    "required_for_economics": ["processed_or_finalized_success", "executed_quote_or_exact_event", "resolved_accounts", "failure_status"]
+  },
+  "unsupported_or_separate": [
+    "CPI instruction enumeration",
+    "loaded-address/ALT resolution in the native top-level extractor",
+    "failed-transaction status in the raw ShredStream flow",
+    "realized buy amount for max_sol_cost/max_quote_out intent variants",
+    "realized sell quote amount on intent-only native rows"
+  ],
+  "policy": "Unknown or unsupported transitions are quarantined; no instruction budget or minimum-output limit is treated as executed cash flow."
+}

@@ -1,0 +1,131 @@
+{
+  "authoritativeN3000Prefix": {
+    "accountedExcludedMints": 49,
+    "materializedOrAccountedN": 3000,
+    "materializedUniqueMints": 2951,
+    "opportunityRows": 28863,
+    "ordering": "createReceivedAtUnixNs,mint",
+    "ordinalContiguous": true,
+    "ordinalCount": 3000,
+    "ordinals": [
+      1,
+      3000
+    ],
+    "prefixSha256": "74593bd9bcd1ea43f0155cb42d3c0065687365aa3a567a99e2932de826005f9e",
+    "scannerInput": "rows-v2 only",
+    "staleRowsMixed": false,
+    "unaccountedMissingMints": []
+  },
+  "classification": "CORRECTED_N3000_READY_FOR_FINGERPRINT_SCAN",
+  "correctionReason": "POST_ENTRY_CANONICAL_REPLAY_FIX",
+  "createdAtUtc": "2026-09-07T02:03:32.240387Z",
+  "manualExactReplaySpotChecks": [
+    {
+      "canonicalEventRows": 81,
+      "exactAgreement": true,
+      "mint": "3kSHtFuQMERaddiXuY9KndPNwRBgFW3AR3Uxy5czpump",
+      "outcome": "TP",
+      "pnlSolAt0p5": 0.106920099,
+      "returnPct": 21.38380596
+    },
+    {
+      "canonicalEventRows": 31,
+      "exactAgreement": true,
+      "mint": "Dg8hZurxGjQ9iSLSiuYeuRs8MMMMux2F95SXJpKNpump",
+      "outcome": "SL",
+      "pnlSolAt0p5": -0.1300602,
+      "returnPct": -26.01177988
+    },
+    {
+      "canonicalEventRows": 3,
+      "exactAgreement": true,
+      "mint": "AAvjf68EBjLMxpMGiNHnm8S9MvuE8xRRvMbjNoyWpump",
+      "outcome": "MAX_HOLD",
+      "pnlSolAt0p5": -0.009267102,
+      "returnPct": -1.853401866
+    }
+  ],
+  "postEntryReplaySanity": {
+    "size_0.10_entry_25_sellable_500": {
+      "distinctExactReturns": 3740,
+      "exactCells": 27028,
+      "nonEmptyReplayCanonicalEvidenceCells": 12628,
+      "outcomes": {
+        "MAX_HOLD": 24957,
+        "SL": 1236,
+        "TP": 835
+      }
+    },
+    "size_0.50_entry_25_sellable_500": {
+      "distinctExactReturns": 3702,
+      "exactCells": 26744,
+      "nonEmptyReplayCanonicalEvidenceCells": 12374,
+      "outcomes": {
+        "MAX_HOLD": 24722,
+        "SL": 1224,
+        "TP": 798
+      }
+    },
+    "size_1.00_entry_25_sellable_500": {
+      "distinctExactReturns": 3670,
+      "exactCells": 26589,
+      "nonEmptyReplayCanonicalEvidenceCells": 12237,
+      "outcomes": {
+        "MAX_HOLD": 24597,
+        "SL": 1211,
+        "TP": 781
+      }
+    }
+  },
+  "priorFreeze": {
+    "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/PUMP_EXACT_ALPHA_RESEARCH_PIPELINE_V1.freeze.json",
+    "preservedUnchanged": true,
+    "sha256": "41c914990401d6407b198f4bfa5dbb724ebaaffb0b77cb3689d02360be433dcd"
+  },
+  "provenance": {
+    "codeSha256": {
+      "auditPumpExactAlphaPipelineV1.py": "9dfc57eec1a8773c0e2b4f50880446c3a97223ba1502ca7ac8553ddb6add5449",
+      "buildPumpExactAlphaResearchV1.py": "3a8a6d3ba4c743c644a5120b4e1d9da016513e43447102ce2dd74716a9c572ad",
+      "exactCurveEconomicsV1.py": "badf8d417a155931498422300ffadb5ba1b3e3574bbcad9fd62d52161144ff10",
+      "reconcilePumpExactEvidenceLedgerV1.py": "62ccc9312b317a23abd0b6d5b89b68a34073930f3a6cff30741c1bcfcb274616",
+      "scanPumpExactAlphaFingerprintsV1.py": "46e7336fe34ccdd655940a04d3da2654ac1693cdaf2c13835266c22659672569",
+      "trackPumpExactEvidenceReadinessV1.py": "601bb5f88dcd8a321e80398c80be982a1ea3574bd96c05fdf3476c0a8aa17585",
+      "validatePumpExactEvidenceLedgerV1.py": "ee1acc0357a80080806e1e945f200507d7f5c8f798064051eede1aced35378d2"
+    },
+    "partitionManifests": {
+      "readinessCurrentSha256": "5f7d469b0281141ff1aa3134ad1be2e0559c87d927ab39e625c59d895cb4437c",
+      "tableInputManifestsSha256": "47d7f8b0f98dc153ce295a2bdd908596b1b0b90fadca69064c7479a5029b9df0"
+    },
+    "pipelineAuditPath": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/pipeline-freeze-audit-current.json",
+    "pipelineAuditSha256": "b9279c88fc1867527e915c408813c00c2b40a1a9e447f9dd106367d5d09adcd6",
+    "readinessCurrentSha256": "5f7d469b0281141ff1aa3134ad1be2e0559c87d927ab39e625c59d895cb4437c",
+    "tableInputManifestsSha256": "47d7f8b0f98dc153ce295a2bdd908596b1b0b90fadca69064c7479a5029b9df0"
+  },
+  "representedPopulation": {
+    "exactAdmittedN": 3474,
+    "explicitlyExcludedN": 57,
+    "opportunityRows": 33482,
+    "researchTableUniqueMintN": 3417
+  },
+  "scannerHandoff": {
+    "authorizedPrefixOrdinals": [
+      1,
+      3000
+    ],
+    "ready": true,
+    "runInThisTask": false,
+    "validationOrHoldoutPermitted": false
+  },
+  "schema": "PUMP_EXACT_ALPHA_RESEARCH_PIPELINE_CORRECTED_FREEZE_V1",
+  "semanticIntegrity": {
+    "causalFeatureSemanticsUnchanged": true,
+    "economicLabelSchemaSha256": "5ba0f0b999eda111c644c48e608e7d31eca891e9ddf158ce9951ff9ddd98e09b",
+    "exactIntegerPumpMathUnchanged": true,
+    "failedTransactionsMutateState": false,
+    "holdoutRowsInspected": 0,
+    "liveSubmissions": 0,
+    "splitBoundaryDefinitionSha256": "7775b44fd2438214850db74b19824a27ba6f719572ccaa80ddf2ecf27f5c05f3",
+    "timingSemanticsSha256": "e5e0cb0476ad8a2dac3a89a12de962358d4e53698cb561c94136bdce0d46a38e",
+    "validationRowsInspected": 0
+  }
+}

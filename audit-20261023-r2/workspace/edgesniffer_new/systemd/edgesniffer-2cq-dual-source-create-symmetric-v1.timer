@@ -1,0 +1,12 @@
+[Unit]
+Description=Run EdgeSniffer 2CQ future-only dual-source CREATE symmetric cohort V1
+
+[Timer]
+OnBootSec=3min
+OnUnitInactiveSec=10min
+Persistent=true
+Unit=edgesniffer-2cq-dual-source-create-symmetric-v1.service
+
+[Install]
+WantedBy=timers.target
+

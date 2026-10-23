@@ -1,0 +1,21 @@
+{
+  "schema": "TEACHER_TIMING_PREMISE_DIAGNOSTIC_V1",
+  "source_sha256": "c992f866db9f16c5bccc9c5e64c37a07882425bec73c74686f7bc259d9bb54b2",
+  "assessment_rows": 76,
+  "unique_mints": 67,
+  "selected_lead_rows": 76,
+  "selected_lead_median_ms": 36.274923,
+  "selected_lead_ge_1000ms": 0,
+  "first_crossing_rows": 64,
+  "missing_crossing_rows": 12,
+  "first_crossing_lead_median_ms": 108.9274025,
+  "first_crossing_lead_ge_1000ms": 25,
+  "above_threshold_states": 3732,
+  "largest_episode_crossings": 1156,
+  "limitations": [
+    "Teacher-selected mint histories; market-wide false-alert rate unavailable.",
+    "Receipt lead is not chain-order or executable price evidence.",
+    "Repeated states/mints are dependent observations.",
+    "No return, profitability, or calibrated probability computed."
+  ]
+}

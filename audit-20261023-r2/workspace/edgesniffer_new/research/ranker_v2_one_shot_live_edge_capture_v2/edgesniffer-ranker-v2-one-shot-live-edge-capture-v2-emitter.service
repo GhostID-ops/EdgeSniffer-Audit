@@ -1,0 +1,16 @@
+[Unit]
+Description=EdgeSniffer Ranker V2 one-shot live edge-capture direct emitter v2
+After=network-online.target edgesniffer-ranker-v2-one-shot-live-edge-capture-v2.service
+Wants=network-online.target
+Requires=edgesniffer-ranker-v2-one-shot-live-edge-capture-v2.service
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/FinalBot-cya
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /mnt/HC_Volume_106775198/rankerV2ScorerDirectEmitterV1.py --mode direct-emitter-v1 --input /var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl --out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-one-shot-live-edge-capture-v2 --canonical-spec /mnt/HC_Volume_106775198/edgesniffer-derived/executable-alpha-ranker-v2-canonical-freeze/canonical_score_spec.json --semantic-freeze-manifest /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-event-gated-semantic-freeze/freeze_manifest.json --canonical-cohort-manifest /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-prospective-shadow-v2/cohort_manifest.json --canonical-out-dir /mnt/HC_Volume_106775198/edgesniffer-derived/ranker-v2-prospective-shadow-v2 --atlas-script /mnt/HC_Volume_106775198/memecoinExecutableAlphaAtlasV1.py --self-script /mnt/HC_Volume_106775198/rankerV2ScorerDirectEmitterV1.py --poll-ms 1 --read-bytes 65536 --status-every-sec 5 --max-emissions 1000 --direct-handoff --direct-host 127.0.0.1 --direct-port 19134
+Restart=no
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

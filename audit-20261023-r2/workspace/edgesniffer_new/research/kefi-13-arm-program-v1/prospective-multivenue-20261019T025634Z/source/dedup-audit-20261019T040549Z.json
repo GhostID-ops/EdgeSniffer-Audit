@@ -1,0 +1,820 @@
+{
+  "conflicts": [],
+  "dropped": [
+    {
+      "line": 1,
+      "observation_id": "obs-1cfcbbd3f66bf0f6e63bc2da2657df13",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 2,
+      "observation_id": "obs-c0d4d0a8743ae7de4dbc830a1a581429",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 3,
+      "observation_id": "obs-c5707a0d6de97c7f4f90544faddc563e",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 4,
+      "observation_id": "obs-d1878647aab6b4a2446bc2ce71d8f1e6",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 5,
+      "observation_id": "obs-de75185a5cbcfb517790281b6feee88d",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 6,
+      "observation_id": "obs-7f842b4452b92c1a66d5d9299f2fcc70",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 7,
+      "observation_id": "obs-8c447505cf8b5f65a7e35950d3623b40",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 8,
+      "observation_id": "obs-c48c2a04de5c289f71e5284f6ca2382d",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 9,
+      "observation_id": "obs-68187295ec1b25863adb38dbc8fb03fa",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 10,
+      "observation_id": "obs-d2ed37d10f62f3d6cf95c28925e45493",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 11,
+      "observation_id": "obs-e4e618f29ccc16fade21a17805b3a174",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 12,
+      "observation_id": "obs-0f2c74249736764253ba6248dd9bf5e0",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 13,
+      "observation_id": "obs-c0196c0e8afe8c9e157b34e3aff42bd8",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 14,
+      "observation_id": "obs-0f74db40d8450385a7b442d48aae2dff",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 15,
+      "observation_id": "obs-c1218002194641612fc0af13f4206e79",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 16,
+      "observation_id": "obs-a485d2b2d33b1fe8eac12632d80b504f",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 17,
+      "observation_id": "obs-b5b3d8faf84b330195d4d2f1d10feca6",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 18,
+      "observation_id": "obs-287adfd0acad4189af42f5504d08cdcf",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 19,
+      "observation_id": "obs-e1c383bd368566dea4ab129e0666a85a",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 20,
+      "observation_id": "obs-00f1016fd7e51e6e2eb7a58fc3a55a8e",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 21,
+      "observation_id": "obs-19e21fc38dc9b7fd8629ba632920fa12",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 22,
+      "observation_id": "obs-d71931ee1dd77cbcd134fcf0d0519228",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 23,
+      "observation_id": "obs-d65494be2010db649b1c962414eb408b",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 24,
+      "observation_id": "obs-a47ac510a6499c3b7092eea4bfefa398",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 25,
+      "observation_id": "obs-0b4e54f626183be5d81d7c647359f51a",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 26,
+      "observation_id": "obs-ac0d413220b3c4acb55ee4ded18ed46b",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 27,
+      "observation_id": "obs-8e4191aac21027160e01a634c1093c1f",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 28,
+      "observation_id": "obs-3a880129373b7f75d4749bda89fea53e",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 29,
+      "observation_id": "obs-11bbcee7d362b502f229ebe8f66526de",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 30,
+      "observation_id": "obs-c9ff3e83b4514a80469d305c9b339c81",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 31,
+      "observation_id": "obs-22972b8324e116d1d9b192eb0a53c81b",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 32,
+      "observation_id": "obs-33b1d669c2cc3f158d685886175def7f",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 33,
+      "observation_id": "obs-ce15be5430fc38311c506e69edc69d56",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 34,
+      "observation_id": "obs-5358248ab46f9460a4ff7f885dd77c2d",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 35,
+      "observation_id": "obs-7aea4c6d073be854592bf9f02371b9a5",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 36,
+      "observation_id": "obs-ae4f12f21574b952cb851719b9ec0508",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 37,
+      "observation_id": "obs-8744b9a1bb0bde2ca0400992a05f6b5c",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 38,
+      "observation_id": "obs-ff550fbd341f623481d63471f9eb45b9",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 39,
+      "observation_id": "obs-bb7ce5b5994b855fc2543d8b058cc86e",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 40,
+      "observation_id": "obs-79f080277a809e0a330d00eea6595a7b",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 41,
+      "observation_id": "obs-e467c2d091d3160d1c61d1305650cad3",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 42,
+      "observation_id": "obs-bf425b10e8e3d3264765c06433d29e94",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 43,
+      "observation_id": "obs-931f54017e9fb327d8fc5e08eeac07df",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 44,
+      "observation_id": "obs-a27d930e3ad50cab482f022a86a40782",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 45,
+      "observation_id": "obs-bc8370abda35ed4c77416417465512c3",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 46,
+      "observation_id": "obs-db7dd798968338352bbf41aab9d907c5",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 47,
+      "observation_id": "obs-902ecdc646641e0a7f3abe3addc2fcd5",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 48,
+      "observation_id": "obs-84fe202564cc2a52c1df9a0f36282f5e",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 49,
+      "observation_id": "obs-63cd60aaf8c4701108ac560edad785eb",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 50,
+      "observation_id": "obs-a6e379c326e65c861f7478778a19aa9b",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 51,
+      "observation_id": "obs-3389f3621f6887e3d2745db53b3b501e",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 52,
+      "observation_id": "obs-cc3b971fd048a4b1675d55adee997d5d",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 53,
+      "observation_id": "obs-566c807243efffa981931ae1f025ccf2",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 54,
+      "observation_id": "obs-dd02514f24976b56700f700744b15fce",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 55,
+      "observation_id": "obs-a750fdab4f18b677cac6c91da3ff5c2c",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 56,
+      "observation_id": "obs-6794cffbd77e4240db85466659f8e494",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 57,
+      "observation_id": "obs-c0ff1c159544092abffc39e986255482",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 58,
+      "observation_id": "obs-3e608d656692be2520866138e4756c8f",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 59,
+      "observation_id": "obs-5b08677803f5b183ada1161fd4b9b6a6",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 60,
+      "observation_id": "obs-9d7feab65074421659d047255bf48159",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 61,
+      "observation_id": "obs-c283afc364817c0a5f692fc998768137",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 62,
+      "observation_id": "obs-a2ad2b73049c3a112cbfa67fa146ca5e",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 63,
+      "observation_id": "obs-a5d8c36c9ed7bee10193d4e062984f85",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 64,
+      "observation_id": "obs-bd908b6a60b1d6b2f56dcfa3c909da5a",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 65,
+      "observation_id": "obs-3d12f3b9857d5c69929f30bd1e36ba92",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 66,
+      "observation_id": "obs-a2e004b967280643a68372aee55e0a31",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 67,
+      "observation_id": "obs-87a06b95d5076c8e71e63b884d8cf083",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 68,
+      "observation_id": "obs-e549057acbb7c25a04c38ca71f3bd69c",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 69,
+      "observation_id": "obs-9ad23419448042c9d192fb969dc76d32",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 70,
+      "observation_id": "obs-1fee8daccbd6b1fed0ee43acebaa47b3",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 71,
+      "observation_id": "obs-d0ecd24d4ea5d21643d24c3bb944ba6a",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 72,
+      "observation_id": "obs-4238b41277a867611b53d0f3236ea5f9",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 73,
+      "observation_id": "obs-4ef24fb511d0bb89aa3cf68ed465aa64",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 74,
+      "observation_id": "obs-79ba2fc4ef7ca890e1c6cfc1c39959f0",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 75,
+      "observation_id": "obs-ec5e43a71c5498a7c942eaf18a60071f",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 76,
+      "observation_id": "obs-f706787be472fa42831467ead60eccd8",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 77,
+      "observation_id": "obs-ef2414868d92e890d62f0ac54243b5b8",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 78,
+      "observation_id": "obs-c933ab13fd8faff30c640edec20298b6",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 79,
+      "observation_id": "obs-6485605503ac400d2be8e54e38257b10",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 80,
+      "observation_id": "obs-e94f1477b16c3d8ed33640e65bcb6173",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 81,
+      "observation_id": "obs-41dfe2bebf6a04d87a43234fe0710f38",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 82,
+      "observation_id": "obs-74e63c64ad844ed7d16283df9ebcf3c8",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 83,
+      "observation_id": "obs-0daf296338ec814edfbe2d2d42fad4e6",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 84,
+      "observation_id": "obs-13565c5403c22cd1f3f0e61327d23141",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 85,
+      "observation_id": "obs-e52bff0ec8882a591553bd95b5f889a1",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 86,
+      "observation_id": "obs-e9acef42df56f57fb202fd19c546d58a",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 87,
+      "observation_id": "obs-35ea177899f872bcad736dc94a1c136b",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 88,
+      "observation_id": "obs-fac0acd6a17f49d75bf63c728e06d2ed",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 89,
+      "observation_id": "obs-262de62f4193130289ff8ddcaa7b7c38",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 90,
+      "observation_id": "obs-9d167921b17c0e305f654caab131b81d",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 91,
+      "observation_id": "obs-bdbdbd00a47071372bd2b84a312dbcb0",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 92,
+      "observation_id": "obs-48e7ad86b7e050aa76435b093bad4e74",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 93,
+      "observation_id": "obs-0726bd81acdfd8f7a6931e941075a356",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 94,
+      "observation_id": "obs-61e774ca9e6a1bf6c97e6874a7309c14",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 95,
+      "observation_id": "obs-38563a7ec7ffad8ef7bfe9cafed5bcac",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 96,
+      "observation_id": "obs-e1f8de23e537328abc8282c058031f1a",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 97,
+      "observation_id": "obs-20eb410f2ffc4ec94a716272714c93a8",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 98,
+      "observation_id": "obs-21d1260d6a08a8a69a512f30f69dfadd",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 99,
+      "observation_id": "obs-1f85bedb70c17db7c8343e7b4337d78d",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 100,
+      "observation_id": "obs-498c9badde6f6f09cbcfc7ad29788ff1",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 101,
+      "observation_id": "obs-7d8479dde5886f0df2960d73128f4f20",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 102,
+      "observation_id": "obs-df68a1971fd16bd3e9f284aa66fa36cd",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 103,
+      "observation_id": "obs-ae777ddb047d6742772af615432d7044",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 104,
+      "observation_id": "obs-891005c24f09ece636531354b78b847f",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 105,
+      "observation_id": "obs-8b35858b3a62e0d9e18c6c86cf4ac199",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 106,
+      "observation_id": "obs-94750a63ab2bb5ee485438d4735f75cb",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 107,
+      "observation_id": "obs-d8eaf7dce5350a82f457c539edbc78d9",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 108,
+      "observation_id": "obs-29ef6ab16195dedee7e74e27c901247b",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 109,
+      "observation_id": "obs-303852178d127ccd8667fa8f0cc5e084",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 110,
+      "observation_id": "obs-c9c2ce2b867e9b835e60442428a62a4d",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 111,
+      "observation_id": "obs-927e5dcf4108f38e5a53423a56da0461",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 112,
+      "observation_id": "obs-3fd901a84ef6af9b54594ace19fe0651",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 113,
+      "observation_id": "obs-df815ffe389fe1f3c217a5b100eb806d",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 114,
+      "observation_id": "obs-f0f2e5b1d650079bf22fc34af48feaa0",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 115,
+      "observation_id": "obs-92cbedf7edbc41d74660ad7d32943fd9",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 116,
+      "observation_id": "obs-60dc970ec0243724421cd7a627620dc6",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 117,
+      "observation_id": "obs-3ca691779635beb7d051564802a7dfc4",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 118,
+      "observation_id": "obs-249e7bbafe7980e74e6fb4e1169b1fb9",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 119,
+      "observation_id": "obs-af7695543d978eb7e707ea7b098cf2e1",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 120,
+      "observation_id": "obs-2573a27ab15fd7edf3825c5c06154ec0",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 121,
+      "observation_id": "obs-8cde457520911ef8dfc8af7ca7e03493",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 122,
+      "observation_id": "obs-f2b4ee8138f1b9d2ca1278c977895f1d",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 123,
+      "observation_id": "obs-6b0fcae13e1013283e59b7c0f10ddaaf",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 124,
+      "observation_id": "obs-7a89dbe3b337be5a296876307902e407",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 125,
+      "observation_id": "obs-468ef26ac16a5389f49bfcf8045bc7db",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 126,
+      "observation_id": "obs-5901ca2baa0de5be13a80f7d0de4605d",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 127,
+      "observation_id": "obs-fa49eebc39c9fde4e5c5130e219e9035",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 128,
+      "observation_id": "obs-b201eb3371c225f6390098d4aa082646",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 129,
+      "observation_id": "obs-1bd037015f9f4463bffd6761da865773",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 130,
+      "observation_id": "obs-08d5b59fbbce110478852b8ddff9ad46",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 131,
+      "observation_id": "obs-e84f2df69a3f5d41a096afcd11be6f53",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 132,
+      "observation_id": "obs-1f5a22983da0922269b0e31c2cdc8831",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 133,
+      "observation_id": "obs-a05a43ce454eb9a6b7724d994840ba7a",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 134,
+      "observation_id": "obs-903fc04e5d23effbfb77e26d22bec055",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 135,
+      "observation_id": "obs-103a3cfda90fa65ed8747ff8b5fd00b8",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 136,
+      "observation_id": "obs-9709fe375fbf835ee6c8895756aef2d2",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 137,
+      "observation_id": "obs-98b2135b6dc590883949ca3dbcf0c1c1",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 138,
+      "observation_id": "obs-8fc1bb60d162a8f736f43d37b445d4f5",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 139,
+      "observation_id": "obs-2e3a31793d24209483281d538554ecb8",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 140,
+      "observation_id": "obs-a7da2221410da205b966745099207288",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 141,
+      "observation_id": "obs-e05d454bca845dc25111806825a934e4",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 142,
+      "observation_id": "obs-82a8c5841b83f301dca8ec0aeee8ae85",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 143,
+      "observation_id": "obs-dbe5556b16b9a4575361215d84e269ef",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 144,
+      "observation_id": "obs-1de2c72d9041dab33d7ad55b0841d77c",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 145,
+      "observation_id": "obs-f4a5c1664e3a24789e24d37876cc5ca5",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 146,
+      "observation_id": "obs-094020edf3991466c55c4ca1c7df9102",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 147,
+      "observation_id": "obs-d43446d1598bf154dd06b6d83ea6bf51",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 148,
+      "observation_id": "obs-e57184072d933f13cf0fcb924c8fc579",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 149,
+      "observation_id": "obs-8708a129b94aa2526a5709c0d6c4a4c4",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 150,
+      "observation_id": "obs-8caf1af2f4d7b047103043dec3e27e78",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 151,
+      "observation_id": "obs-76e530361abc96cc03fe83ceb0528d8f",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 152,
+      "observation_id": "obs-952f668881493485e16342738562862e",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 153,
+      "observation_id": "obs-e3e84612758d087b85b65dbf225a89e7",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 154,
+      "observation_id": "obs-ccf1bdf50ef2b68fa9993f54151aaaf5",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 155,
+      "observation_id": "obs-d434e0a919394c923e33625bfdbb1b92",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 156,
+      "observation_id": "obs-6d5e28c876ee3e20c759d4bb7737b7cf",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 157,
+      "observation_id": "obs-b249ecc8fd3a94bc840513cd361ea3b1",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 158,
+      "observation_id": "obs-4042093e12cb4df552b68c8486b4f746",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 159,
+      "observation_id": "obs-51fb4c2df9060a7e96549058394d5b6f",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 160,
+      "observation_id": "obs-d046aac277007be2920d27d82aa31c5f",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 161,
+      "observation_id": "obs-868a2964b925cfbc9de5b5a4d89ae9a4",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    },
+    {
+      "line": 162,
+      "observation_id": "obs-2d4023d7f191bc9c94d4d49743906e94",
+      "reason": "EQUIVALENT_OVERLAP_WINDOW"
+    }
+  ],
+  "fresh_rows": 12,
+  "identical_overlaps_dropped": 162,
+  "input_rows": 174,
+  "schema": "KEFI_13_ARM_PROSPECTIVE_BATCH_DEDUP_V1",
+  "status": "PASS"
+}

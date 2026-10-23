@@ -1,0 +1,9 @@
+{
+  "schema": "8ycb-live-calibration-state-v1",
+  "mode": "LIVE_CALIBRATION_ONE_SHOT",
+  "live_calibration_trades_used": 0,
+  "new_entries_enabled": true,
+  "submission_enabled": false,
+  "submission_call_count": 0,
+  "active_trade": null
+}

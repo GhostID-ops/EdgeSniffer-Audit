@@ -1,0 +1,18 @@
+{
+  "decoder_error_count": 1,
+  "decoder_error_samples": [
+    {
+      "error": "PumpSwapExactError:PumpSwap instruction/event cardinality mismatch 0/1",
+      "pool": "88ut5kyLiVQV6wCcxy3QEHyxpYDQkzqb9J1ZoaREFzkm",
+      "signature": "2ehbbsLmxbjDJm9npwxG6Ze7D8pV2wz48ogp87xPmmrx1AYHE76s9zmL4sdqjYxbGgn4ebskb1ntiwaR8AGuXYWH"
+    }
+  ],
+  "economics_ready": false,
+  "outcome_blind": true,
+  "parity_contract": true,
+  "rows": 344,
+  "schema": "KEFI_13_ARM_PUMPSWAP_TAPE_AUDIT_V1",
+  "schema_errors": [],
+  "status": "PASS_TAPE_SCHEMA_FAIL_CLOSED_DECODER_ERRORS",
+  "unique_event_ids": 344
+}

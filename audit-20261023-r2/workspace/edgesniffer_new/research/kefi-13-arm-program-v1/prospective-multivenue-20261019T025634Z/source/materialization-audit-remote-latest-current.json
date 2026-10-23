@@ -1,0 +1,145 @@
+{
+  "by_arm": {
+    "ARM01_SOL_PUMP_CURVE_2CQ": 0,
+    "ARM02_SOL_PUMP_CPI_2CQ": 0,
+    "ARM03_ACTIVE_SOL_PUMP_5000MS": 0,
+    "ARM04_NON_SOL_PUMP_V2_QUOTE_NATIVE": 0,
+    "ARM05_RAYDIUM_LAUNCHLAB": 0,
+    "ARM06_STONKFUN_LAUNCHLAB": 0,
+    "ARM07_PUMPSWAP_DIRECT": 157,
+    "ARM08_PUMPSWAP_CPI": 0,
+    "ARM09_ROUTER_RAYDIUM_CLMM": 0,
+    "ARM10_ROUTER_ORCA_WHIRLPOOL": 0,
+    "ARM11_ROUTER_METEORA_DLMM": 0,
+    "ARM12_OTHER_DEX_PROTOCOL_NATIVE": 0,
+    "ARM13_AMBIGUOUS_PUMP_FAIL_CLOSED": 0
+  },
+  "generated_at_utc": "2026-10-19T03:57:40.288714+00:00",
+  "ignored_event_reasons": {
+    "PUMPSWAP_SELL_NOT_ENTRY": 152,
+    "RAYDIUM_CLMM_EXACT_ENTRY_NOT_MATERIALIZED:validated_transitions=1:wallet_acquisitions=0": 1
+  },
+  "input_rows": 318,
+  "materialized_observations": 157,
+  "outcome_blind": true,
+  "quarantine": [
+    {
+      "line": 32,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "uCWxrVspzyCpKv6pcWfv5GvwrsHjTCkm3M3BUNC3j7aKnhEkSFa4eSuawPZ3xKxdPKdJuiCdK2zbdTfyxTygJqn"
+    },
+    {
+      "line": 38,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "T59xTbpTevjkAPQoaGZW4z6g9XrMDD8qBAtRs7os95X7SvobH7kM5fRq7ZpjxdfJTDC7eMM6Ye6YVLoQbLH9KVC"
+    },
+    {
+      "line": 71,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3ExfqhNUUHJ1oFg7LNkkJo828eL5wrNXd21i8qTDw95oZesj73Kiq7p2dnRw1BbqWVkahgS2YmJ7QGMVS1d2ZWJ6"
+    },
+    {
+      "line": 77,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "24LyitX47aSj3y9bwQ4cshWvPiLZT165bvwSttV1r4jMpeqRvvWokkL6EDZLZ2TpbY4JdSAoNdXSBE9mgB6konSE"
+    },
+    {
+      "line": 158,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "27HFixEMN3FmuCJBMrf5nXMGzb84pihpaFyQyYDZxy3qAJCS2C3JQq2THGzSBE9W3eAWBKgao76nJgJbJDyfag3G"
+    },
+    {
+      "line": 165,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "2HPzWthy2FrpyhDVCrXzoWMPVgdy4wA6i5ij8WUqkb8ZMzNT7WuGueGNDV4GWCWwTR8mEeBfWh6WZxYKbGnCdp6Q"
+    },
+    {
+      "line": 236,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "3iAjQe1EhGBWyko1ppEfaYoB3BwxUeKWYgs8zkWLTixDYGC18xNHWn1PeiSZW8r2VoPNfaAWdKZrTGSbBWqVEcci"
+    },
+    {
+      "line": 303,
+      "pump_activity": {
+        "decoded_trade_instruction_count": 0,
+        "decoded_trade_instructions": [],
+        "instruction_log_names": [
+          "DistributeFeeToHolders"
+        ],
+        "is_exact_trade": false,
+        "trade_event_count": 0
+      },
+      "reason": "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY",
+      "signature": "gXh2s1o69F7DqgQ7GfTg5L4otKuBzQZFHWz7AZeFFVah1SHv4CTVA7BM3L51C9McH7FtwDfqe4Jexx3NnCLyqCu"
+    }
+  ],
+  "quarantine_reasons": {
+    "PUMP_PROGRAM_NON_TRADE_OR_UNSUPPORTED_EXACT_ACTIVITY": 8
+  },
+  "quarantined_rows": 8,
+  "schema": "KEFI_13_ARM_FINALIZED_RPC_MATERIALIZATION_AUDIT_V1",
+  "status": "PASS_OUTCOME_BLIND_FAIL_CLOSED"
+}

@@ -1,0 +1,9 @@
+{
+  "boundaryOrdinal": 6848,
+  "contractSha256": "65cb16764312ecd271ac3f7199762927992d5bdc9c27653c94280fcfca71f0d4",
+  "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+  "parentCensusContractSha256": "82223cf3598d42f89d7a0869c73e19d4d55f1f27dbb2686c716ed0733fd28f62",
+  "parentCensusFinalReportSha256": "4f0e1322abfd32d19fc2c3b4d94d12ccb7e8c500706a6ed6a79ae6167bb0e8dc",
+  "schema": "LIFECYCLE_ANCHOR_BLIND_BASELINES_V1_RUN_IDENTITY",
+  "scriptSha256": "ef91cbed59e3d1d0e0e3bde3861f54a49ba02f23a36a55d0b70db16898d4aa00"
+}

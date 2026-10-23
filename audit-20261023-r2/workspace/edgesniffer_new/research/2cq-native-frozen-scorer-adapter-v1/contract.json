@@ -1,0 +1,27 @@
+{
+  "schema": "EDGESNIFFER_2CQ_NATIVE_FROZEN_SCORER_ADAPTER_V2",
+  "purpose": "Run the preserved 2CQ event-driven scorer only when native launch, reserve, participant, and receipt lineage are complete.",
+  "required_exact_lineage": [
+    "native receive timestamp",
+    "exact create receive timestamp",
+    "exact launch reserve state",
+    "creator identity",
+    "native pre/post reserve state",
+    "native fee fields"
+  ],
+  "missing_data_policy": "fail-closed; no proxy substitution",
+  "score_domain": "probability; score_logit retained for auditability",
+  "decision_boundary": "post_event by default; pre_event is an explicit diagnostic mode",
+  "model_scope": "timing_model_benchmark_only",
+  "composite_policy_implemented": false,
+  "cross_mint_selection_applied": false,
+  "controls": "same-period non-crossing native Pump buys, teacher label excluded",
+  "entry_delay_ms": 1000,
+  "sizes_sol": [0.1, 0.5, 1.0],
+  "exit_horizons_seconds": [5, 10, 15, 30, 60, 120, 300],
+  "selection_performed": false,
+  "policy_frozen": false,
+  "prospective_validation_required": true,
+  "read_only": true,
+  "trading_enabled": false
+}

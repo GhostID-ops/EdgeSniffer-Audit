@@ -1,0 +1,62 @@
+{
+  "task": "AUD-L01A3h3",
+  "date": "2026-10-23",
+  "scope": "Offline adapter, independently checked narrow quote arithmetic, original denominator and causal coverage diagnostic; NOT a passed causal economics gate",
+  "local_tests": {
+    "command_from_git_root": "python -m unittest discover -s research/edgesniffer -p test_*.py",
+    "passed": 92,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "vps_tests": {
+    "directory": "/mnt/HC_Volume_106775198/edgesniffer-research/burst-persistence-v1-WmlstZu7/verification-code",
+    "command": "TEST_WEB3_MODULE=/root/bot/FinalBot-cya/node_modules/@solana/web3.js python3 -m unittest discover -p 'test_*.py'",
+    "passed": 92,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "full_input_replay": {
+    "command": "python3 quote_context_adapter_v1.py --source ../context-canary1 --quality ../context-transactions-quality1 --canonical ../account-boundary-canonical2 --prior-context ../quote-context2 --output ../quote-adapter7 --web3 /root/bot/FinalBot-cya/node_modules/@solana/web3.js --extra-reference ../quote-fixture-reference2/finalized-reference.jsonl",
+    "second_output": "../quote-adapter7-replay",
+    "both_report_sha256": "c686e219dcb9d61ac9213e68384f15915df0de91c18c24e5f09c6a974dd6dd5e",
+    "adapter_sha256": "64409cd2af902313d6c6788372d8b9c73babdf34d2179a65ffde073717d174b8",
+    "source_inputs_checked_unchanged_after_replay": true,
+    "original_sealed_boundaries_and_attempts_checked_against_prior_report": true,
+    "normalized_transactions_reconstructed_from_raw": 7808
+  },
+  "onchain_mathematical_checks": {
+    "independent_finalized_matches": 16,
+    "unique_mints": 6,
+    "supported_variants": 6,
+    "conditional_matches_without_full_finalized_bracket": 148,
+    "unqualified_intervening_curve_touch_among_conditional_matches": 1,
+    "actual_curve_amount_range_lamports": [4711794, 609747088],
+    "three_size_scenarios": "492 conditional nonlinear mathematical fixtures, not492 executed transactions",
+    "negative_guards": ["wrong owner/discriminator", "malformed metadata/TLV", "unknown executions/ALT gaps", "future response clocks", "partial fills", "unsupported variants", "insufficient reserves", "min/max limits", "original468 denominator loss"]
+  },
+  "original_cohort": {
+    "opportunities": 78,
+    "intentions": 468,
+    "complete_causal_burst_entries": 0,
+    "complete_causal_burst_exits": 0,
+    "complete_causal_persistence_entries": 0,
+    "complete_causal_persistence_exits": 0,
+    "overlap_with_new_raw_capture_ns": 0,
+    "original_policy_controls_and_evidence_unchanged": true
+  },
+  "operations": {
+    "new_capture_started": false,
+    "collector_or_service_changes": false,
+    "trading_enabled": false,
+    "orders_submitted": 0,
+    "vps_live_execution_tested": false,
+    "rust_rebuilt": false,
+    "reason": "Offline Python/Node research only; no executor/Rust code changed"
+  },
+  "continuity": {
+    "canonical_task_register": "RESEARCH_TASKS.md",
+    "decision": "RD-018",
+    "next_task": "AUD-L01A3h4 bounded causal write/context continuity proof",
+    "artifact_byte_preservation": "Scoped .gitattributes rules prevent Windows newline conversion of pinned sources and hashed new evidence"
+  }
+}

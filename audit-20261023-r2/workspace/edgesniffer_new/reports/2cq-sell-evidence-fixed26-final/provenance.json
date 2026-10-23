@@ -1,0 +1,8 @@
+{
+  "cohortManifestSha256": "b50c9f5604d2e039bcd9172718885da0e8ddbc5c77993c87d53c992e6a2a905f",
+  "correctedReplayReportSha256": "f1551b8eefaa8fae8db6022570cb546e4f1bae61acc7006785711c9c7eadf1f8",
+  "finalReportSha256": "db1baad892c93e60e9fe986131635b4d4c2e127cb1436b2e5fbcd1fd224e290e",
+  "holdoutRowsInspected": 0,
+  "recoveryReportSha256": "b97784f6ab819f6d3a65ed425baa47e81942124b2df1c5356d91bb4c7db897ad",
+  "validationRowsInspected": 0
+}

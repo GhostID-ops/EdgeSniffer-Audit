@@ -1,0 +1,15 @@
+{
+  "schema": "A3H4_SYNCHRONIZED_ENGINEERING_CANARY_V2",
+  "status": "DECLARED_BEFORE_SECOND_CAPTURE_ENGINEERING_ONLY",
+  "supersedes_acquisition_only": "synchronized-canary-contract-v1.json",
+  "reason": "Signal-triggered-only context begins after the burst decision. Acquire read sets for all native active mints before any burst; keep the first canary as diagnostic evidence.",
+  "population": "A3h4_sync_engineering_canary_v2",
+  "duration_seconds": 75,
+  "signal_period_seconds_from_first_native_transaction": 50,
+  "outcome_drain_seconds_minimum": 25,
+  "pre_signal_scope": "Every mint with a valid native Study event in the preceding1s, regardless of burst, teacher, fee mode or eventual return. No volume-ranked cap. Batch at100 accounts, preserve unobserved/late boundaries.",
+  "post_signal_scope": "Every independently selected seed and original control through seed+20s. Drain-period new seeds are retained separately, not inserted into the cohort.",
+  "unchanged": "All v1 strategy, delay, same-clock control, size, strict age, unknown-accounting, no-fill/no-profit, no-expansion and no-trading constraints remain in force.",
+  "purpose": "Acquisition and causal-context coverage check only; not untouched confirmation or selection on returns.",
+  "trading_enabled": false
+}

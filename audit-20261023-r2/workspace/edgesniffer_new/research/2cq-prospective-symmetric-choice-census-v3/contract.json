@@ -1,0 +1,42 @@
+{
+  "schema": "2CQ_PROSPECTIVE_SYMMETRIC_CHOICE_CENSUS_V3_CONTRACT",
+  "cohortStartUtc": "2026-09-11T07:15:24.437413402Z",
+  "derivedFromV2": "2CQ_PROSPECTIVE_SYMMETRIC_CHOICE_CENSUS_V2",
+  "purpose": "Outcome-blind continuation of the frozen N350 choice cohort with exact-signature multi-source realtime timing for sealed validation.",
+  "population": {
+    "development": "exact frozen V2 first 350 decisions; immutable membership and chronology",
+    "validation": "subsequent 150 eligible decisions under V3 source precedence, sealed until the frozen policy gate",
+    "oldV1OrdinalsMixed": false
+  },
+  "realtimeClockPolicy": {
+    "precedence": [
+      "AllenHark exact-signature local receipt time",
+      "Yellowstone Rust-direct exact-signature local detection time"
+    ],
+    "yellowstoneFallbackOnlyWhenAllenharkAbsent": true,
+    "exactSignatureRequired": true,
+    "canonicalSlotMatchRequired": true,
+    "nearbySameSignatureCrossSourceCalibrationRequired": true,
+    "calibrationMaxAbsoluteDeltaMs": 250,
+    "calibrationMaxDistanceMs": 300000,
+    "clockOffsetApplied": false,
+    "inferredTimestampsPermitted": false,
+    "sourceProvenanceRequired": true
+  },
+  "onlineChoice": {
+    "ageMaximumMs": 120000,
+    "supportedEconomicFamilies": ["SOL_PUMP_CURVE", "SOL_PUMP_CPI"],
+    "selectedMintAndControlsUseIdenticalPreActionRules": true,
+    "completeLiveObservableRiskSetRequired": true,
+    "failedTransactionsMutateState": false,
+    "futureFinalityMayValidateOrInvalidateButNotAddFeatures": true
+  },
+  "integrity": {
+    "outcomesPermitted": false,
+    "profitabilityPermitted": false,
+    "submissionsPermitted": false,
+    "validationRowsPermittedBeforeFreeze": false,
+    "modelFittingBeforeDevelopmentN350": false,
+    "validationSealed": true
+  }
+}

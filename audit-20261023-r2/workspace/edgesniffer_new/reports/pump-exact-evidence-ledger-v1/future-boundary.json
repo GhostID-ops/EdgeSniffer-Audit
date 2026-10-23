@@ -1,0 +1,17 @@
+{
+  "schema": "PUMP_EXACT_EVIDENCE_LEDGER_V1_FUTURE_BOUNDARY_V1",
+  "futureOnlyEvidenceStartUtc": "2026-09-06T05:51:02.166853006Z",
+  "futureOnlyEvidenceStartSlot": 444717456,
+  "firstEvidenceId": "72b1fc3d4bfe5f0c4905cdb92cc2bdb5b57563e252d828806f28c33b5f037844",
+  "firstCompletePartition": "2026/09/06/05",
+  "firstCompletePartitionReconciledUtc": "2026-09-06T06:02:58.050244Z",
+  "firstCompletePartitionObserved": 20967,
+  "firstCompletePartitionFinalized": 20967,
+  "firstCompletePartitionExactReplayComplete": true,
+  "reconciliationHardeningDeployedUtc": "2026-09-06T06:05:08Z",
+  "firstPostHardeningEvidenceUtc": "2026-09-06T06:05:08.955171410Z",
+  "firstPostHardeningEvidenceSlot": 444720123,
+  "binarySha256": "8de9ec9713cb25ab2fd3e14d6123b47eb2bbb16fba36c4dc377537c338c0ca21",
+  "schemaSha256": "16f182ad1dc7e3b2a1a1613e9ac52a897c563e1d7a7fc22eae10331ea137df3f",
+  "note": "The hardening changed partition completion metadata only; raw evidence frame semantics did not change. The immutable cross-partition reconciliation manifest is authoritative for exact replay completion."
+}

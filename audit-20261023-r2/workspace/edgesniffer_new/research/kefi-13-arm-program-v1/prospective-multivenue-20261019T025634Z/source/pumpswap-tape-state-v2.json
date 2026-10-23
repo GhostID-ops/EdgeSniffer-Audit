@@ -1,0 +1,55 @@
+{
+  "boundary_utc": "2026-10-19T02:56:34.388060Z",
+  "cohort_id": "kefi-13-arm-multivenue-prospective-20261019T025634Z",
+  "error_samples": [
+    {
+      "error": "PumpSwapExactError:PumpSwap event cannot be joined uniquely to instruction",
+      "pool": "9Fa1fiC2Pv7V3rM4DM4BRu2athRHqFzApa7H8LtgZidL",
+      "signature": "3rypYYGwboTzuXgXBr9msXVxUJpAgiUbRgvhav6raNwfsdEAXQT79FEtQ1WELtXnBWRv4JvrnGH7mwzBn5EByQSY"
+    },
+    {
+      "error": "PumpSwapExactError:PumpSwap event cannot be joined uniquely to instruction",
+      "pool": "9Fa1fiC2Pv7V3rM4DM4BRu2athRHqFzApa7H8LtgZidL",
+      "signature": "5JyvjQKKjqAoThsoofYHBFDohHbP7czVHgYvQPtW95iuB9yUtCAXCrr1qfCit4JFokLrAaE2ksYmFr4nGGYz8JQY"
+    }
+  ],
+  "errors": 2,
+  "records_written": 25,
+  "schema": "KEFI_13_ARM_PUMPSWAP_TAPE_SOURCE_STATE_V1",
+  "seen_signatures": [
+    "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"
+  ],
+  "updated_at_utc": "2026-10-19T03:11:10.564Z"
+}

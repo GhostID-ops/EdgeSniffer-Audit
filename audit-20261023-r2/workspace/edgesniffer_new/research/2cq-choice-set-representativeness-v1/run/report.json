@@ -1,0 +1,806 @@
+{
+  "categorical": [
+    {
+      "field": "route",
+      "levels": [
+        {
+          "absoluteShareDifference": 0.11210747042176683,
+          "coveredN": 116,
+          "coveredShare": 0.5497630331753555,
+          "level": "PUMP_BONDING_CURVE",
+          "missingN": 92,
+          "missingShare": 0.6618705035971223
+        },
+        {
+          "absoluteShareDifference": 0.11210747042176683,
+          "coveredN": 95,
+          "coveredShare": 0.45023696682464454,
+          "level": "PUMP_CPI",
+          "missingN": 47,
+          "missingShare": 0.3381294964028777
+        }
+      ],
+      "maximumSingleLevelShareDifference": 0.11210747042176683,
+      "totalVariation": 0.11210747042176683
+    },
+    {
+      "field": "acquisitionClass",
+      "levels": [
+        {
+          "absoluteShareDifference": 0.026833509495720956,
+          "coveredN": 8,
+          "coveredShare": 0.037914691943127965,
+          "level": "FLAT_TO_REENTRY",
+          "missingN": 9,
+          "missingShare": 0.06474820143884892
+        },
+        {
+          "absoluteShareDifference": 0.026833509495721053,
+          "coveredN": 203,
+          "coveredShare": 0.9620853080568721,
+          "level": "NEW_FROM_FLAT",
+          "missingN": 130,
+          "missingShare": 0.935251798561151
+        }
+      ],
+      "maximumSingleLevelShareDifference": 0.026833509495721053,
+      "totalVariation": 0.026833509495721004
+    },
+    {
+      "field": "sizeTier",
+      "levels": [
+        {
+          "absoluteShareDifference": 0.08360325957243683,
+          "coveredN": 48,
+          "coveredShare": 0.22748815165876776,
+          "level": "0",
+          "missingN": 20,
+          "missingShare": 0.14388489208633093
+        },
+        {
+          "absoluteShareDifference": 0.07814790821371337,
+          "coveredN": 67,
+          "coveredShare": 0.3175355450236967,
+          "level": "1",
+          "missingN": 55,
+          "missingShare": 0.39568345323741005
+        },
+        {
+          "absoluteShareDifference": 0.006546421630468091,
+          "coveredN": 73,
+          "coveredShare": 0.3459715639810427,
+          "level": "2",
+          "missingN": 49,
+          "missingShare": 0.35251798561151076
+        },
+        {
+          "absoluteShareDifference": 0.015820518940297998,
+          "coveredN": 17,
+          "coveredShare": 0.08056872037914692,
+          "level": "3",
+          "missingN": 9,
+          "missingShare": 0.06474820143884892
+        },
+        {
+          "absoluteShareDifference": 0.014729448668553313,
+          "coveredN": 6,
+          "coveredShare": 0.02843601895734597,
+          "level": "4",
+          "missingN": 6,
+          "missingShare": 0.04316546762589928
+        }
+      ],
+      "maximumSingleLevelShareDifference": 0.08360325957243683,
+      "totalVariation": 0.0994237785127348
+    }
+  ],
+  "causalFeatures": [
+    {
+      "absoluteStandardizedMeanDifference": 0.2546327875656721,
+      "coveredMean": 8.004284709194312,
+      "coveredMedian": 0.0,
+      "field": "total_external_sell_sol",
+      "ksDistance": 0.09100207985270559,
+      "missingMean": 21.79199297427338,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": -0.2546327875656721
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.2531344495331589,
+      "coveredMean": 16.541118178905215,
+      "coveredMedian": 6.6,
+      "field": "total_external_buy_sol",
+      "ksDistance": 0.10760680555082003,
+      "missingMean": 31.90408041598561,
+      "missingMedian": 7.0875,
+      "standardizedMeanDifference": -0.2531344495331589
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.24749725400848557,
+      "coveredMean": 0.18429541417535547,
+      "coveredMedian": 0.0,
+      "field": "gross_sell_sol_250ms",
+      "ksDistance": 0.051791741961880744,
+      "missingMean": 0.030482272316546762,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": 0.24749725400848557
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.24652243116879352,
+      "coveredMean": 9.658767772511847,
+      "coveredMedian": 0.0,
+      "field": "unique_sellers_total",
+      "ksDistance": 0.09100207985270559,
+      "missingMean": 26.424460431654676,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": -0.24652243116879352
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.24599550302688888,
+      "coveredMean": 19.549763033175356,
+      "coveredMedian": 4.0,
+      "field": "unique_buyers_total",
+      "ksDistance": 0.10556104879129868,
+      "missingMean": 41.24460431654676,
+      "missingMedian": 4.0,
+      "standardizedMeanDifference": -0.24599550302688888
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.23915534705979502,
+      "coveredMean": 2.243008487724282,
+      "coveredMedian": 0.0,
+      "field": "log_age_ms",
+      "ksDistance": 0.10065123256844766,
+      "missingMean": 3.30667352552846,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": -0.23915534705979502
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.21137437009981005,
+      "coveredMean": 0.21800947867298578,
+      "coveredMedian": 0.0,
+      "field": "sell_count_250ms",
+      "ksDistance": 0.040199120324593496,
+      "missingMean": 0.06474820143884892,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": 0.21137437009981005
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.2082570460417615,
+      "coveredMean": 1.8970398171924783,
+      "coveredMedian": 1.6094379124341003,
+      "field": "log_event_index",
+      "ksDistance": 0.10801595690272425,
+      "missingMean": 2.2444659791068595,
+      "missingMedian": 1.6094379124341003,
+      "standardizedMeanDifference": -0.2082570460417615
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.16194536527918052,
+      "coveredMean": 0.8530805687203792,
+      "coveredMedian": 1.0,
+      "field": "creator_participated",
+      "ksDistance": 0.06171366224555902,
+      "missingMean": 0.7913669064748201,
+      "missingMedian": 1.0,
+      "standardizedMeanDifference": 0.16194536527918052
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.16036878273161126,
+      "coveredMean": 8.536833469710901,
+      "coveredMedian": 6.6,
+      "field": "total_external_net_sol",
+      "ksDistance": 0.10024208121654332,
+      "missingMean": 10.11208744171223,
+      "missingMedian": 6.70275,
+      "standardizedMeanDifference": -0.16036878273161126
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.14831157371055867,
+      "coveredMean": 0.04265402843601896,
+      "coveredMedian": 0.0,
+      "field": "consecutive_sells",
+      "ksDistance": 0.016502437860138497,
+      "missingMean": 0.007194244604316547,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": 0.14831157371055867
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.1350604396752466,
+      "coveredMean": 0.2740535307063191,
+      "coveredMedian": 0.21728395046666665,
+      "field": "curve_progress",
+      "ksDistance": 0.10269698932796889,
+      "missingMean": 0.31407677679783197,
+      "missingMedian": 0.22066666666666668,
+      "standardizedMeanDifference": -0.1350604396752466
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.13412264636422638,
+      "coveredMean": 0.95260663507109,
+      "coveredMedian": 1.0,
+      "field": "last_external_side",
+      "ksDistance": 0.016502437860138428,
+      "missingMean": 0.9856115107913669,
+      "missingMedian": 1.0,
+      "standardizedMeanDifference": -0.13412264636422638
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.1309466409568435,
+      "coveredMean": 2.5363287283981046,
+      "coveredMedian": 2.5,
+      "field": "creator_buy_sol_5000ms",
+      "ksDistance": 0.13832725288963144,
+      "missingMean": 2.144654383208633,
+      "missingMedian": 1.215,
+      "standardizedMeanDifference": 0.1309466409568435
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.12911703087707807,
+      "coveredMean": 3.8009961873421307,
+      "coveredMedian": 3.747834056090544,
+      "field": "log_market_cap_sol",
+      "ksDistance": 0.10269698932796889,
+      "missingMean": 3.8515913625340246,
+      "missingMedian": 3.7532537026728323,
+      "standardizedMeanDifference": -0.12911703087707807
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.12867806955667097,
+      "coveredMean": 0.4463013633335522,
+      "coveredMedian": 0.39324421350952954,
+      "field": "distance_from_launch_log_price",
+      "ksDistance": 0.10269698932796889,
+      "missingMean": 0.4976646345334024,
+      "missingMedian": 0.39879431516841757,
+      "standardizedMeanDifference": -0.12867806955667097
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.1186095654852379,
+      "coveredMean": 6.0533439090284356,
+      "coveredMedian": 5.5,
+      "field": "gross_buy_sol_2000ms",
+      "ksDistance": 0.08687647038767093,
+      "missingMean": 5.493514425417266,
+      "missingMedian": 4.999999999,
+      "standardizedMeanDifference": 0.1186095654852379
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.1173510598615105,
+      "coveredMean": 0.30073166897165976,
+      "coveredMedian": 0.2745216679219079,
+      "field": "log_price_change_2000ms",
+      "ksDistance": 0.09349108391012317,
+      "missingMean": 0.27099284433671306,
+      "missingMedian": 0.2181147548702766,
+      "standardizedMeanDifference": 0.1173510598615105
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.114585089048387,
+      "coveredMean": 5.59824210920853,
+      "coveredMedian": 5.0625,
+      "field": "gross_buy_sol_250ms",
+      "ksDistance": 0.09458215418186783,
+      "missingMean": 5.073919927366906,
+      "missingMedian": 4.2375,
+      "standardizedMeanDifference": 0.114585089048387
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.10434895427014806,
+      "coveredMean": 2.985781990521327,
+      "coveredMedian": 3.0,
+      "field": "buy_count_250ms",
+      "ksDistance": 0.0906952163387773,
+      "missingMean": 2.7985611510791366,
+      "missingMedian": 3.0,
+      "standardizedMeanDifference": 0.10434895427014806
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.10096161651045676,
+      "coveredMean": 3.0075121126208533,
+      "coveredMedian": 3.0,
+      "field": "largest_buy_sol_1000ms",
+      "ksDistance": 0.09703706229329334,
+      "missingMean": 2.736057734402878,
+      "missingMedian": 2.025,
+      "standardizedMeanDifference": 0.10096161651045676
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.09978403664674984,
+      "coveredMean": 0.3000564413688408,
+      "coveredMedian": 0.26964445161488826,
+      "field": "log_price_change_250ms",
+      "ksDistance": 0.09840090013297409,
+      "missingMean": 0.2757367611397043,
+      "missingMedian": 0.2181147548702766,
+      "standardizedMeanDifference": 0.09978403664674984
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.09760054537328115,
+      "coveredMean": 3.343444324415622,
+      "coveredMedian": 0.0,
+      "field": "log_median_interarrival_ms_5s",
+      "ksDistance": 0.08950185822905654,
+      "missingMean": 3.7055582905204,
+      "missingMedian": 3.5553480614894135,
+      "standardizedMeanDifference": -0.09760054537328115
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.0914713039018692,
+      "coveredMean": 5.720336462990522,
+      "coveredMedian": 5.2,
+      "field": "gross_buy_sol_1000ms",
+      "ksDistance": 0.07156739063725326,
+      "missingMean": 5.295368740309352,
+      "missingMedian": 4.86,
+      "standardizedMeanDifference": 0.0914713039018692
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.08805124424495492,
+      "coveredMean": 5.38104277821327,
+      "coveredMedian": 5.0025200739999995,
+      "field": "net_flow_sol_2000ms",
+      "ksDistance": 0.08510348119608585,
+      "missingMean": 4.944093318007194,
+      "missingMedian": 4.2375,
+      "standardizedMeanDifference": 0.08805124424495492
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.0858609367024926,
+      "coveredMean": 1.9350616176747801,
+      "coveredMedian": 1.65,
+      "field": "mean_buy_sol_1000ms",
+      "ksDistance": 0.09287735688226673,
+      "missingMean": 1.7585800858336722,
+      "missingMedian": 1.6666666666666667,
+      "standardizedMeanDifference": 0.0858609367024926
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.08492443852710349,
+      "coveredMean": 0.2970254866557235,
+      "coveredMedian": 0.26964445161488826,
+      "field": "log_price_change_1000ms",
+      "ksDistance": 0.10269698932796889,
+      "missingMean": 0.27592730765121015,
+      "missingMedian": 0.2181147548702766,
+      "standardizedMeanDifference": 0.08492443852710349
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.08308034390766827,
+      "coveredMean": 0.5781990521327014,
+      "coveredMedian": 0.0,
+      "field": "unique_sellers_1000ms",
+      "ksDistance": 0.05619011899485149,
+      "missingMean": 0.39568345323741005,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": 0.08308034390766827
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.07922831222550471,
+      "coveredMean": 5.413946695033175,
+      "coveredMedian": 4.999999999,
+      "field": "net_flow_sol_250ms",
+      "ksDistance": 0.07562480821030382,
+      "missingMean": 5.04343765505036,
+      "missingMedian": 4.2375,
+      "standardizedMeanDifference": 0.07922831222550471
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.07131345429761263,
+      "coveredMean": 0.900326776797135,
+      "coveredMedian": 1.0,
+      "field": "buy_sell_imbalance_1000ms",
+      "ksDistance": 0.03757373248320775,
+      "missingMean": 0.9225956181586176,
+      "missingMedian": 1.0,
+      "standardizedMeanDifference": -0.07131345429761263
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.07053488133804695,
+      "coveredMean": 0.3670487426966825,
+      "coveredMedian": 0.0,
+      "field": "gross_sell_sol_1000ms",
+      "ksDistance": 0.04671144600906951,
+      "missingMean": 0.2745251753741007,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": 0.07053488133804695
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.06903545779685175,
+      "coveredMean": 5.353287720293839,
+      "coveredMedian": 4.999999999,
+      "field": "net_flow_sol_1000ms",
+      "ksDistance": 0.06945344198574788,
+      "missingMean": 5.020843564935252,
+      "missingMedian": 4.222962599,
+      "standardizedMeanDifference": 0.06903545779685175
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.06838505653471763,
+      "coveredMean": 0.30160485221226285,
+      "coveredMedian": 0.30477090849442334,
+      "field": "log_price_change_5000ms",
+      "ksDistance": 0.0908656960687374,
+      "missingMean": 0.28330193385613195,
+      "missingMedian": 0.25688977043336997,
+      "standardizedMeanDifference": 0.06838505653471763
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.06273726468040339,
+      "coveredMean": 0.5554613427798102,
+      "coveredMedian": 0.36661157024793384,
+      "field": "buyer_hhi_1000ms",
+      "ksDistance": 0.10331071635582534,
+      "missingMean": 0.5754805284437713,
+      "missingMedian": 0.4474163602184139,
+      "standardizedMeanDifference": -0.06273726468040339
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.059237539467464205,
+      "coveredMean": 0.5876777251184834,
+      "coveredMedian": 0.0,
+      "field": "sell_count_1000ms",
+      "ksDistance": 0.04899587439053488,
+      "missingMean": 0.45323741007194246,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": 0.059237539467464205
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.054620122817794256,
+      "coveredMean": 0.6723011308151658,
+      "coveredMedian": 0.0,
+      "field": "gross_sell_sol_2000ms",
+      "ksDistance": 0.04391557843772376,
+      "missingMean": 0.549421107410072,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": 0.054620122817794256
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.048731564106766705,
+      "coveredMean": 3.028436018957346,
+      "coveredMedian": 3.0,
+      "field": "consecutive_buys",
+      "ksDistance": 0.03310716355825294,
+      "missingMean": 3.1366906474820144,
+      "missingMedian": 3.0,
+      "standardizedMeanDifference": -0.048731564106766705
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.04624836564822718,
+      "coveredMean": 5.325532662374408,
+      "coveredMedian": 5.0625,
+      "field": "net_acceleration_1s",
+      "ksDistance": 0.07071499198745274,
+      "missingMean": 5.097593811863309,
+      "missingMedian": 4.5,
+      "standardizedMeanDifference": 0.04624836564822718
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.04075404952367533,
+      "coveredMean": 5.352665857350711,
+      "coveredMedian": 5.2,
+      "field": "net_flow_sol_5000ms",
+      "ksDistance": 0.07630672713014419,
+      "missingMean": 5.137880670187051,
+      "missingMedian": 4.852852505,
+      "standardizedMeanDifference": 0.04075404952367533
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.037946300685080814,
+      "coveredMean": 6.752223865023697,
+      "coveredMedian": 5.99225,
+      "field": "gross_buy_sol_5000ms",
+      "ksDistance": 0.06352074738313612,
+      "missingMean": 6.52891506466187,
+      "missingMedian": 5.454,
+      "standardizedMeanDifference": 0.037946300685080814
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.026647617868366467,
+      "coveredMean": 0.6324912616742516,
+      "coveredMedian": 0.5172413793103449,
+      "field": "top_buyer_share_1000ms",
+      "ksDistance": 0.07122643117733296,
+      "missingMean": 0.6399141487776948,
+      "missingMedian": 0.5284552845528455,
+      "standardizedMeanDifference": -0.026647617868366467
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.02631270951727,
+      "coveredMean": 3.279620853080569,
+      "coveredMedian": 3.0,
+      "field": "unique_buyers_1000ms",
+      "ksDistance": 0.09018377714889692,
+      "missingMean": 3.2158273381294964,
+      "missingMedian": 3.0,
+      "standardizedMeanDifference": 0.02631270951727
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.02078763973406494,
+      "coveredMean": 3.2890995260663507,
+      "coveredMedian": 3.0,
+      "field": "buy_count_1000ms",
+      "ksDistance": 0.09018377714889692,
+      "missingMean": 3.237410071942446,
+      "missingMedian": 3.0,
+      "standardizedMeanDifference": 0.02078763973406494
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.01083784212649375,
+      "coveredMean": 1.7723172276540287,
+      "coveredMedian": 1.3,
+      "field": "last_external_trade_sol",
+      "ksDistance": 0.18759589484810252,
+      "missingMean": 1.7495088176115108,
+      "missingMedian": 1.51875,
+      "standardizedMeanDifference": 0.01083784212649375
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.00796049110265659,
+      "coveredMean": 0.002708192281651997,
+      "coveredMedian": 0.0,
+      "field": "repeat_buyer_share_1000ms",
+      "ksDistance": 0.009649152715742071,
+      "missingMean": 0.0029690533287655588,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": -0.00796049110265659
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.007517437161398377,
+      "coveredMean": 2.7156398104265405,
+      "coveredMedian": 3.0,
+      "field": "buy_count_acceleration_1s",
+      "ksDistance": 0.06928296225578778,
+      "missingMean": 2.7338129496402876,
+      "missingMedian": 3.0,
+      "standardizedMeanDifference": -0.007517437161398377
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.0020427237568465873,
+      "coveredMean": 1.3995580076729857,
+      "coveredMedian": 0.0,
+      "field": "gross_sell_sol_5000ms",
+      "ksDistance": 0.057144805482628014,
+      "missingMean": 1.3910343944748202,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": 0.0020427237568465873
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.0,
+      "coveredMean": 0.0,
+      "coveredMedian": 0.0,
+      "field": "log_ms_since_last_external",
+      "ksDistance": 0.0,
+      "missingMean": 0.0,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": 0.0
+    }
+  ],
+  "chronological": [
+    {
+      "block": 1,
+      "coveredN": 58,
+      "coveredShare": 0.8285714285714286,
+      "n": 70,
+      "ordinals": [
+        1,
+        70
+      ]
+    },
+    {
+      "block": 2,
+      "coveredN": 42,
+      "coveredShare": 0.6,
+      "n": 70,
+      "ordinals": [
+        71,
+        140
+      ]
+    },
+    {
+      "block": 3,
+      "coveredN": 40,
+      "coveredShare": 0.5714285714285714,
+      "n": 70,
+      "ordinals": [
+        141,
+        210
+      ]
+    },
+    {
+      "block": 4,
+      "coveredN": 32,
+      "coveredShare": 0.45714285714285713,
+      "n": 70,
+      "ordinals": [
+        211,
+        280
+      ]
+    },
+    {
+      "block": 5,
+      "coveredN": 39,
+      "coveredShare": 0.5571428571428572,
+      "n": 70,
+      "ordinals": [
+        281,
+        350
+      ]
+    }
+  ],
+  "coverageClassifier": {
+    "assessmentAuc": 0.4974545454545454,
+    "assessmentCoveredN": 55,
+    "assessmentN": 105,
+    "directionAgnosticAssessmentAuc": 0.5025454545454546,
+    "featureN": 52,
+    "trainingN": 245
+  },
+  "crossSectionalPolicyEligibleForSealedValidation": false,
+  "failedGates": [
+    "chronologicalBlockCoveredShareRange",
+    "maximumStructuralAbsoluteSmd"
+  ],
+  "gates": [
+    {
+      "name": "overallCoveredShare",
+      "operator": ">=",
+      "passed": true,
+      "threshold": 0.55,
+      "value": 0.6028571428571429
+    },
+    {
+      "name": "minimumChronologicalBlockCoveredShare",
+      "operator": ">=",
+      "passed": true,
+      "threshold": 0.4,
+      "value": 0.45714285714285713
+    },
+    {
+      "name": "chronologicalBlockCoveredShareRange",
+      "operator": "<=",
+      "passed": false,
+      "threshold": 0.25,
+      "value": 0.3714285714285715
+    },
+    {
+      "name": "maximumCategoricalTotalVariation",
+      "operator": "<=",
+      "passed": true,
+      "threshold": 0.2,
+      "value": 0.11210747042176683
+    },
+    {
+      "name": "maximumCategoricalLevelShareDifference",
+      "operator": "<=",
+      "passed": true,
+      "threshold": 0.2,
+      "value": 0.11210747042176683
+    },
+    {
+      "name": "maximumStructuralAbsoluteSmd",
+      "operator": "<=",
+      "passed": false,
+      "threshold": 0.35,
+      "value": 0.3940569835771186
+    },
+    {
+      "name": "maximumStructuralKs",
+      "operator": "<=",
+      "passed": true,
+      "threshold": 0.25,
+      "value": 0.2209417300282997
+    },
+    {
+      "name": "p90FeatureAbsoluteSmd",
+      "operator": "<=",
+      "passed": true,
+      "threshold": 0.25,
+      "value": 0.24120739384992318
+    },
+    {
+      "name": "maximumFeatureAbsoluteSmd",
+      "operator": "<=",
+      "passed": true,
+      "threshold": 0.5,
+      "value": 0.2546327875656721
+    },
+    {
+      "name": "p90FeatureKs",
+      "operator": "<=",
+      "passed": true,
+      "threshold": 0.25,
+      "value": 0.10398581608646734
+    },
+    {
+      "name": "maximumFeatureKs",
+      "operator": "<=",
+      "passed": true,
+      "threshold": 0.35,
+      "value": 0.18759589484810252
+    },
+    {
+      "name": "coverageClassifierDirectionAgnosticAuc",
+      "operator": "<=",
+      "passed": true,
+      "threshold": 0.65,
+      "value": 0.5025454545454546
+    }
+  ],
+  "integrity": {
+    "developmentOrdinals": [
+      1,
+      350
+    ],
+    "outcomesRead": 0,
+    "submissions": 0,
+    "validationRowsRead": 0
+  },
+  "population": {
+    "coveredN": 211,
+    "coveredShare": 0.6028571428571429,
+    "developmentN": 350,
+    "missingN": 139
+  },
+  "schema": "2CQ_CHOICE_SET_REPRESENTATIVENESS_V1",
+  "sourceHashes": {
+    "choiceSet": "c01621f26192709b1812670a9e6b2f0c91dd506e14d3874600d99798a72d0364",
+    "contract": "fdd1c36e1027034f357b53aad3cd3a2a6a4e67c4b72b0aa256cfe1114c4ef2a8",
+    "entryTape": "6319ec4b88698c93bbac2351f30336b90e0b00201fcf2347af532bf957aa3400",
+    "omissions": "7478da34d57450ca89a5296873700b6028d8079ba5c856d00fd391ccfc789bc6",
+    "script": "0b509455300e0c2147dc0bf1e5f3e88bdbaecf2d19d05800f3992bb0a2b4a410"
+  },
+  "structuralNumeric": [
+    {
+      "absoluteStandardizedMeanDifference": 0.3940569835771186,
+      "coveredMean": 160.1990521327014,
+      "coveredMedian": 150.0,
+      "field": "eligibleOrdinal",
+      "ksDistance": 0.2209417300282997,
+      "missingMean": 198.72661870503597,
+      "missingMedian": 210.0,
+      "standardizedMeanDifference": -0.3940569835771186
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.2530551059575124,
+      "coveredMean": 6354.656392274881,
+      "coveredMedian": 0.0,
+      "field": "causalAgeMs",
+      "ksDistance": 0.10065123256844766,
+      "missingMean": 93853.11371219424,
+      "missingMedian": 0.0,
+      "standardizedMeanDifference": -0.2530551059575124
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.06270824555489984,
+      "coveredMean": 53.85665193364929,
+      "coveredMedian": 39.194684,
+      "field": "decisionToTeacherReceiptMs",
+      "ksDistance": 0.1720140475297487,
+      "missingMean": 62.31390835971222,
+      "missingMedian": 27.061085,
+      "standardizedMeanDifference": -0.06270824555489984
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.045964878417975544,
+      "coveredMean": 2.462541469194313,
+      "coveredMedian": 1.8225,
+      "field": "naturalFirstBuySol",
+      "ksDistance": 0.08360325957243683,
+      "missingMean": 2.5233453237410073,
+      "missingMedian": 1.8225,
+      "standardizedMeanDifference": -0.045964878417975544
+    },
+    {
+      "absoluteStandardizedMeanDifference": 0.2526116256425742,
+      "coveredMean": 37.48341232227488,
+      "coveredMedian": 3.0,
+      "field": "earlierExternalControlN",
+      "ksDistance": 0.10801595690272425,
+      "missingMean": 108.42446043165468,
+      "missingMedian": 3.0,
+      "standardizedMeanDifference": -0.2526116256425742
+    }
+  ],
+  "verdict": "2CQ_CHOICE_SET_REPRESENTATIVENESS_BIAS_BLOCKER"
+}

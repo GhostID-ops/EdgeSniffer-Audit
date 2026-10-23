@@ -1,0 +1,24 @@
+{
+  "schema": "PUMP_CURVE_PROSPECTIVE_EQUAL_SAMPLE_COMPARISON_PROTOCOL_V1",
+  "policy_id": "PUMP_TOP_LEVEL_0_5_SOL_5S_STRESS50_V1",
+  "purpose": "Compare the fresh prospective cohort against the sealed discovery row using the same number of actionable wallet trades and the same full audit metrics.",
+  "target_actionable_wallet_trades": 350,
+  "target_actionable_control_trades": 350,
+  "selection_order": "chronological entry_block_time, anchor_id, event_index",
+  "discovery_reference": {
+    "cohort_id": "2cq-new-wallet-pump-curve-windows-20261020T000000Z",
+    "route": "PUMP_BONDING_CURVE_TOP_LEVEL",
+    "notional_sol": 0.5,
+    "stress_bps": 50,
+    "horizon_seconds": 5,
+    "attempted": 656,
+    "actionable": 350,
+    "pnl_sol": 10.536081453,
+    "profit_factor": 1.6461296462071653,
+    "win_rate": 0.5257142857142857,
+    "max_drawdown_sol": 1.8213807900000003
+  },
+  "metrics": ["pnl_sol", "roi_on_actionable", "profit_factor", "win_rate", "max_drawdown_sol", "gross_loss_sol", "largest_loss_share_of_gross_loss", "chronological_halves"],
+  "promotion_allowed": false,
+  "trading_enabled": false
+}

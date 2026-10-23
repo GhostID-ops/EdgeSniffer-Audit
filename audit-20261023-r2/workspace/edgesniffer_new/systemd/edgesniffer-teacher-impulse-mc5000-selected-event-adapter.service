@@ -1,0 +1,24 @@
+[Unit]
+Description=EdgeSniffer teacher impulse mc5000 accepted receipt to selected-event adapter
+After=network-online.target edgesniffer-teacher-impulse-parity-v1-child-mc5000-nosubmit.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot/FinalBot-cya
+Environment=TEACHER_IMPULSE_RECEIPT_SOURCE=/var/lib/edgesniffer-teacher-impulse-parity-v1/children/mc5000/decision-receipts.jsonl
+Environment=TEACHER_IMPULSE_DECISION_INPUT_SOURCE=/var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl
+Environment=TEACHER_IMPULSE_SELECTED_EVENT_OUTPUT=/var/lib/edgesniffer-teacher-impulse-parity-v1/live-mc5000-selected-events.jsonl
+Environment=TEACHER_IMPULSE_SELECTED_EVENT_LANE=teacher_impulse_mc5000
+Environment=TEACHER_IMPULSE_SELECTED_EVENT_POLICY=teacher_impulse_mc5000_tp20_sl20_dust_calibration
+Environment=TEACHER_IMPULSE_SELECTED_EVENT_START_AT_END=true
+Environment=TEACHER_IMPULSE_SELECTED_EVENT_POLL_MS=10
+ExecStartPre=/usr/bin/mkdir -p /var/lib/edgesniffer-teacher-impulse-parity-v1
+ExecStartPre=/usr/bin/touch /var/lib/edgesniffer-teacher-impulse-parity-v1/live-mc5000-selected-events.jsonl
+ExecStart=/usr/bin/node /root/bot/FinalBot-cya/scripts/teacherImpulseReceiptToSelectedEvents.mjs
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

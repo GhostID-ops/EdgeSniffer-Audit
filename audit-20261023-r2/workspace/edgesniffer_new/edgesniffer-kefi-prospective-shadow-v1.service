@@ -1,0 +1,21 @@
+[Unit]
+Description=Outcome-blind prospective kEFi fingerprint shadow coordinator
+After=network-online.target edgesniffer-kefi-market-control-v1.service
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=root
+Environment=KEFI_CONTROL_OUTS=/root/kefi-work/out/kefi-market-controls-v1,/root/kefi-work/out/kefi-market-controls-catchup-v1
+ExecStart=/usr/bin/python3 /root/kefi-work/bin/kefi_prospective_shadow_v1.py
+Restart=on-failure
+RestartSec=30
+Nice=19
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

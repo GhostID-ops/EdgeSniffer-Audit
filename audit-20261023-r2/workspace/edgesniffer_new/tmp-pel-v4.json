@@ -1,0 +1,983 @@
+{
+  "allObservedFinalized": true,
+  "classification": "LEDGER_ONLY_REPLAY_BLOCKER",
+  "counters": {
+    "admitted_transitions": 2541,
+    "failed_with_trade_event": 19,
+    "failed_zero_state": 10910,
+    "finalized": 15259,
+    "ordering_or_reserve_continuity_mismatch": 763,
+    "reserve_or_fee_mismatch": 1014,
+    "success_failure_mismatch": 10433,
+    "successful": 4349,
+    "unsupported_trade_event_schema": 327
+  },
+  "errors": [
+    {
+      "detail": "sell min-output constraint failed: output=19330174 min=22258814",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 22258814,
+      "eventTokenAmount": 1164766557882,
+      "instructionArg0": 1164766557882,
+      "instructionArg1": 22258814,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "9pK2rfrjMVtw3GheFP7steNfkoK7EaJTJG7aF42hpump",
+      "signature": "5Zj712fYd3nLbcZv8hPiyQmccM2Wew3Q7Ae6FTDukPSvU2H3edHw88qd4KvgqBSNfUUKPe6UxHt4ah4H4yhyBY5p",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=69156623 min=92801332",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 92801332,
+      "eventTokenAmount": 21370110351837,
+      "instructionArg0": 21370110351837,
+      "instructionArg1": 92801332,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "4HT3igBfaaNnZAQ8MVgvANwgT6wa2ZWxWaNKzB6b6NE5rdzYbwtTtXzH4aYuAUWU3RsiAq9ASjKRCymtmDRNPUGP",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=120067415 max=75817159",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 75817159,
+      "eventTokenAmount": 2700479436015,
+      "instructionArg0": 2700479436015,
+      "instructionArg1": 75817159,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "5Q8CS2MFhNjH6uUeKxkinU8ZYFRoH4nU8TmiwjHEpump",
+      "signature": "3Qpb9nz1EL8MKoDD2WMdYbQDbh18F1GFnhMN4SQLfr12xMiGU1d1dMrqYcuyeHxcbd5JaZXrcFWKaNWYYQEw5Wod",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=811603989624825, real_sol=0, real_token=531703989624825)",
+      "signature": "4WZHgEgHXMQ2CuETGZAxCGVMkBJ8i1A9NsPCUJavkihiv33rBPmHbbBBHw12Vp35QTUJdPG8qUS5UFRGTBU46qJG",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=988812654056941, real_sol=0, real_token=708912654056941)",
+      "signature": "3irjhPnq9K85nQEYUUpKZkYqdwovHQP22fPnNmxfRicJgaUgc2ueA2ztvghnpKvqdEvgsu33bcEdaqna91YtW6dG",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1066361413619204, real_sol=0, real_token=786461413619204)",
+      "signature": "36tYopD6kdmuwNDbhWw8hjbdUWGNe3Cjwm8ujRo3fWBciykBzQobvEQqbCEKVkrVs97Tr6HCg6bsp1njPw8L7cPW",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1003539318040545, real_sol=0, real_token=723639318040545)",
+      "signature": "joTLSCJ2qjmhyAu275VpRqMQbz36umanmu1xDBrSXBcAQt7W76w1iBJ8vJAMCDv26iJMtdeEsQWBBMTxDbhBT3X",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "signature": "5E8Dy8WptH7dgvMonVsy9bZDjah5Vbj2ykNRSEQz1Exq5dadtHvJd5qpPYpN3C5xbWtNbYKyuogzMKaT9Cra6kpd",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=57912466 min=76357896",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 76357896,
+      "eventTokenAmount": 24139330219230,
+      "instructionArg0": 24139330219230,
+      "instructionArg1": 76357896,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "5ZP4VB4Rd2VVkCWKnVGj9WHv7uTbLi9p55SankS9bkPh84XpQmvE2YYoLdBwqoovc9XessatV9wyDVgjdYKdK1zD",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=801833980059580, real_sol=0, real_token=521933980059580)",
+      "signature": "gQkDhzo7TEcRMc3rcw9Js8f8qMmSpXNhjRDernU5CrkziSMzE3uXo1tTXDxw4PqbNMp6TbRbziqpyt8kyUycrDT",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=12697207 max=10736070",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 10736070,
+      "eventTokenAmount": 1046019320849,
+      "instructionArg0": 1046019320849,
+      "instructionArg1": 10736070,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "DjfKNq6GUPJsAJScpap3BQZjHSpDCYA2DSNgvCupump",
+      "signature": "3AYUyQbGexuspfdv5xdVq5tgRroStCqgUpqvZMUs7LABNTEa5BCGENSibhJ18zvQYqXqvUXxhFrpNbazd4YAVuS4",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1066227901820491, real_sol=0, real_token=786327901820491)",
+      "signature": "61arNYAC2FSBdRsFuijeY5Tr79MBwsjR8tVkbsEXfLNz1TgEeWcuptZLH8quNNSTVpWafuhTT4GWxWkfi8uMVHiR",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=997238475058135, real_sol=0, real_token=717338475058135)",
+      "signature": "5kS1aGbw9kRdCd7DAnLU4chDDvnXMGFsWZCEy8meFxFAbHZ2eG7Yj4dCbfpbuqXz298M4FyXPSDXFZ5HCX5MnQY6",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1011242711426899, real_sol=0, real_token=731342711426899)",
+      "signature": "27EfaGiuxiSYfjWPucngkfxqqnK8LXDgVwxmRCNSAsNhLSHm5C2TQKr49i653f4mrVE823Ux8P7ASbnbDzG2yagd",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "signature": "SyhUbK3fB4reyKgJCFf4WvDnQV2YmFEsEg66kAfwHbHUZUxNrq7XRYNzzm28SkiraBEpa43vd2Q2tdXnC3rmUpb",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=26448224 min=34643780",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 34643780,
+      "eventTokenAmount": 2094229324491,
+      "instructionArg0": 2094229324491,
+      "instructionArg1": 34643780,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "9pK2rfrjMVtw3GheFP7steNfkoK7EaJTJG7aF42hpump",
+      "signature": "2LLzFC88Z9MCwH1jKbuSB8b6d7pKTqD2LGfLicjF7kj258d86QLmDbZUFuefUTz4QLgnQZnzFq6eHvLd8kJRUQYk",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=7383157 min=8397465",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 8397465,
+      "eventTokenAmount": 691674024928,
+      "instructionArg0": 691674024928,
+      "instructionArg1": 8397465,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "DjfKNq6GUPJsAJScpap3BQZjHSpDCYA2DSNgvCupump",
+      "signature": "4TXF3XovEbnuEwdv6cRVDJDvFn7zECaF9WCvjjvVhExzFAhF13A9bdYyzXg5PgAN9AuihgJSkhpwsaPnvzrDntSD",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=49379852 min=82344168",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 82344168,
+      "eventTokenAmount": 1852288258163,
+      "instructionArg0": 1852288258163,
+      "instructionArg1": 82344168,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "5Q8CS2MFhNjH6uUeKxkinU8ZYFRoH4nU8TmiwjHEpump",
+      "signature": "43E5yujrZgrhngtCTXnwvNXeaPpuv5Zap1Ukr4HmZvoFY1kLHaHrm12dftLKi2PGpSf2yhMkj14wAMJmcy5n8Tip",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=44744426 max=38471628",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 38471628,
+      "eventTokenAmount": 16265970728647,
+      "instructionArg0": 16265970728647,
+      "instructionArg1": 38471628,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "27viMZv2TwggEqWZaAK8cfLAweDN3VhehzNDaNqJBMwHQi8NvJRs2Mzf2ztBZFNRjkHJCYvcLPy25PGgXFNGbJbN",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1016364960281153, real_sol=0, real_token=736464960281153)",
+      "signature": "4yHnjd2MW2NqgWVfecFtYLXGes7XzPDjVVqm8iBkiiUBWXMgom8M1az5QLMuJpoatVbbW8JJzBnJcRcbRKBZs4mG",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1066680039759198, real_sol=0, real_token=786780039759198)",
+      "signature": "4Ne3b964nMJP6yFRjk3MYEneiAmRXLRhfvdjpRCJ8NkibNAVE7RZaPkJs4w777NDMqjfwXLTpvbgwMtbde3uCwgb",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=17681773 max=15523301",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 15523301,
+      "eventTokenAmount": 1230910251376,
+      "instructionArg0": 1230910251376,
+      "instructionArg1": 15523301,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "9pK2rfrjMVtw3GheFP7steNfkoK7EaJTJG7aF42hpump",
+      "signature": "41MGczwdrAZckEYW4r7pMgnsfJ25LxtYBtBpQtQWCDmG7X8QndAMepkUVuRrxU14TVZf2KUd4vJtUM61Jsqd79yA",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=3401556 min=4220301",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 4220301,
+      "eventTokenAmount": 474908832534,
+      "instructionArg0": 474908832534,
+      "instructionArg1": 4220301,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "FQQzZLBtLD9HFozTA4QyJYtzJbYYLbygL5QS2kWDpump",
+      "signature": "5vWdzrEVdfqqALZFUuXW7w2BAjZetEwu5XSQrYQ7oaPveoyC2SvTPUtXJB5ozhQp5bX5Po2BGEGxKHCFPFZnKdbV",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=560417996 max=371742932",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 371742932,
+      "eventTokenAmount": 19771938119210,
+      "instructionArg0": 19771938119210,
+      "instructionArg1": 371742932,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "9nJ8sh5UEtVg2eBFRTK9BnTjcgJRb8HyLP6nyAa6pump",
+      "signature": "4uotdZVsSGzKJfh7Yaa1r4CHXzgYqRF5PdLuwnc9QH77sMF13J9P1oiiSYpKoWRDSEwWjYkmB24Ln3MjbxwdhiB7",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1009603388659471, real_sol=0, real_token=729703388659471)",
+      "signature": "2thR1xRn4hFxCorPKQGiXwL7XmjHJ5fDbKg3g2F6RU6hriShvUNwKw4s4ihbsQcvKsLR4UU5nxPt2GPbPV7FBEzL",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=811379442428652, real_sol=0, real_token=531479442428652)",
+      "signature": "2hNSkqmAjDDDTk5bKUatxEpmqYivtEScEsh8M3wFwpFvuhsu9bAV2qheHtHoRqu7mVkk61RzN2qQA7obDWsmeQyH",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1067949580889282, real_sol=0, real_token=788049580889282)",
+      "signature": "TbwkNTRUw4VZ2tVK9UbXvab8EKN3G92pfHDcC4YmAC6DKXNjAtP3iZszqLwkJSghsutTjGze7FHL9SzMniM5aMR",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=30941108 min=35532188",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 35532188,
+      "eventTokenAmount": 12904507756393,
+      "instructionArg0": 12904507756393,
+      "instructionArg1": 35532188,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "23oi8c25ZZJ1rXx46Zzm8JewMEJEk1uoZe3iWYt8x1VPBkLk7YW5cqt4xcdCNqGgNK2GYZFnarZka1XUS7i5a8zR",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=30017924 max=25083290",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 25083290,
+      "eventTokenAmount": 1741560554898,
+      "instructionArg0": 1741560554898,
+      "instructionArg1": 25083290,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "9pK2rfrjMVtw3GheFP7steNfkoK7EaJTJG7aF42hpump",
+      "signature": "66mGYwoS24u1eyU31MVm1RisVQFAVLo5GCpntdcqkXJFyAtJ2uiDEta7qufTeDGzXKLvWihDbu9XJoDGFUKW8M2M",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1006472339862879, real_sol=0, real_token=726572339862879)",
+      "signature": "3EY4uc4Lzw5rPnxfLKoNV2EhXikghScb7a36wk69F1HpVmbXTfRRC3DKR6XWAsgU92w4GSsjUcwW43vrNXFxXupn",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=72653677 max=51297257",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 51297257,
+      "eventTokenAmount": 1926319764943,
+      "instructionArg0": 1926319764943,
+      "instructionArg1": 51297257,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "5Q8CS2MFhNjH6uUeKxkinU8ZYFRoH4nU8TmiwjHEpump",
+      "signature": "5f6dyeLj8dP7DRcbu9bvAisHwBv3eyk4X4S4wt6uEzwyZcPyGeRVjdZdVfTRycu9oxUduz66aRQD7tpVHtYd68kh",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=171864831 max=117348305",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 117348305,
+      "eventTokenAmount": 4112791366492,
+      "instructionArg0": 4112791366492,
+      "instructionArg1": 117348305,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "84LMunTm3zxT3j9p8cG5R2TUkPxdo2s9xHtWSFQTpump",
+      "signature": "2kJkWN5is7Fms76Vnzb5scGBzaCYLncNKJXvD3wNPF5C7wDsnoWtF2zMNizPRwWvxxP6N7yBXQpFyuqDPWrn7Z4y",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1066733285190415, real_sol=0, real_token=786833285190415)",
+      "signature": "5MjxAUW6uyXL1JtbtkoQsNHUZELwrGnzzKcXmtqfBMBspjYRNfuBQvEio4h8WrYKCgJirNXMbJD7uayKvqPFZACi",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1000453246476370, real_sol=0, real_token=720553246476370)",
+      "signature": "3omsTbwSTR1f5h7QKgmpuWxDDKR2hoHfbfCLiaz1k5GeMo6fBqZJyhLvsMbfHKERBqDXS7bE6RgBbsDPjoBAMDyu",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=10927947 min=14262476",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 14262476,
+      "eventTokenAmount": 1338805891851,
+      "instructionArg0": 1338805891851,
+      "instructionArg1": 14262476,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "DjfKNq6GUPJsAJScpap3BQZjHSpDCYA2DSNgvCupump",
+      "signature": "enkzhUF4A9DkW2LaN6Ef83q3aVBXYA1mb71UdcxbDkAexb44PmNPu3WdC4UuFayzVxpqhpa7xzVRsPsj5TNcLLC",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1007866016402036, real_sol=0, real_token=727966016402036)",
+      "signature": "3T3Dc3S769LD3wvqMx3eSM7g3iYK2idfL8Yjf81Fym8pRXuvSmojhkAxi2rH3NhW1q4Bc4ZfjNXkiMD9D6JfkgMH",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=25189357 min=27182542",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 27182542,
+      "eventTokenAmount": 649167398513,
+      "instructionArg0": 649167398513,
+      "instructionArg1": 27182542,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "84LMunTm3zxT3j9p8cG5R2TUkPxdo2s9xHtWSFQTpump",
+      "signature": "7GH7nLmiDGWoJhFfGGtaKQtF4YJ1TPB4ZvaonTuhQ2KsKPFk7skEP8NYTiXDSmuFRdrBKA1zTeTnAzz8MBxDujg",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=22962460 min=25812950",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 25812950,
+      "eventTokenAmount": 11018977686403,
+      "instructionArg0": 11018977686403,
+      "instructionArg1": 25812950,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "2w2B8QUfumjdKi8YzDmPZW5KvyyZqCNpNHs42Kc4aNs9dRAtuDAbe2qy4Bk9jPE3sqZQG51nQzBQj6KKdvZ4MWZZ",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1067929830460325, real_sol=0, real_token=788029830460325)",
+      "signature": "3atTwcEvprhkKxfLoVnAfWPTbDtRUG33UjC64Dz2XwDEgAMUHCNhqWXK3vuyPsugQVUthQufbLMr77oh1jDSLs3B",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=15236150 max=11906514",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 11906514,
+      "eventTokenAmount": 5783161667701,
+      "instructionArg0": 5783161667701,
+      "instructionArg1": 11906514,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "6sgXEX6ToqzNyBSmUY1rRsvSpmu19ZYPpNUWqdsDpump",
+      "signature": "4GgiJaAZNqvHwFxsSkpycpm85cBQgYDnGpUsZJYkJD9iFr9BUBfzFu3zDQbkhTPasEWtBD6p47VLFrJBWq8GZFhn",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=34740938 min=38101734",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 38101734,
+      "eventTokenAmount": 1561570476576,
+      "instructionArg0": 1561570476576,
+      "instructionArg1": 38101734,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "2vdSJdnygJK3iwu7sJoiBeTuAtgPFcJYAKsoBo5Npump",
+      "signature": "tiRW7XjUQxTfnY5EaGP9rw8ApdqgeVqk3fSTJJ5obN8dbJRiKiB1shHm2WpRacyawQPnwpKBcZtmDf5UkYJf87B",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=37101895 min=53510858",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 53510858,
+      "eventTokenAmount": 1418850706377,
+      "instructionArg0": 1418850706377,
+      "instructionArg1": 53510858,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "5Q8CS2MFhNjH6uUeKxkinU8ZYFRoH4nU8TmiwjHEpump",
+      "signature": "4YaRFBUrUmB396p1iyBC5xRkWm2XAQWT5ygnx61FLxPhyr9wn3MTa1ppSU2steDeXxrvGbq39SM8aBVGP4CNTpLY",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=51634267 max=45587314",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 45587314,
+      "eventTokenAmount": 1174328112671,
+      "instructionArg0": 1174328112671,
+      "instructionArg1": 45587314,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "84LMunTm3zxT3j9p8cG5R2TUkPxdo2s9xHtWSFQTpump",
+      "signature": "3pNW64aeucNeMnDeaKq1AptnZhLtFyN9CxEZbG291fMAWxN8VwjuZyGszUEsfLiSGLvDbpLMmkUc88YvyBVZqJ64",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1018059641508880, real_sol=0, real_token=738159641508880)",
+      "signature": "255FUAFM7xRVuFDkkudP6onMgvVef3kpKcFDZFzJmUUmjwDixaSD6kNtRdv8hDxmnAnD6sZbR6QjdjrmvnFFpWvy",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1027747767840553, real_sol=0, real_token=747847767840553)",
+      "signature": "3E1kTuzw2chBMPzvL8DerHuBPQhJDsvatMxyXSVjx3dcLWpw8AM6ni8eAQxm3RPMyMcaUWfqvJxc2oxKixfrzxFZ",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=101560678 min=113122394",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 113122394,
+      "eventTokenAmount": 38860000821814,
+      "instructionArg0": 38860000821814,
+      "instructionArg1": 113122394,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "44w72Jg8F1F6EqJ3TSFqy8PtY1kbMRt9RVPB1YyaoarqrQDqKjxSA3C9X81A5xqg6as4JW1skGLEtsGJPQTexm9V",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1014262772335170, real_sol=0, real_token=734362772335170)",
+      "signature": "Ugi3w13aHqzq6gxbZs8MB93r5NALKBQDguYkx8hQcexEfS9FGxiQTLEbBLwd9YZuS9yg9eWQVrA8toZmUrLNPvQ",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=47047623 max=37743318",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 37743318,
+      "eventTokenAmount": 2182316852087,
+      "instructionArg0": 2182316852087,
+      "instructionArg1": 37743318,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "9pK2rfrjMVtw3GheFP7steNfkoK7EaJTJG7aF42hpump",
+      "signature": "5WPsLkXnLDetDNYFrB2UAcJRpBp4HUfFN9sxP5VEKJi9XJCygJZ4RicmSPaFa9MJiPDuMKiYEC8PYwR89KZBcW2d",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=46763981 max=42198150",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 42198150,
+      "eventTokenAmount": 957915740788,
+      "instructionArg0": 957915740788,
+      "instructionArg1": 42198150,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "84LMunTm3zxT3j9p8cG5R2TUkPxdo2s9xHtWSFQTpump",
+      "signature": "3GCmxgnDwedBrWqc8aYdWj52hGCbvqGMFmzZkQd9jLQUHbYWVWmPLj2qDc3xw83tRkXtMVnu2gAGAf8LieoGdqrU",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=26217614 max=25531456",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 25531456,
+      "eventTokenAmount": 10120340271700,
+      "instructionArg0": 10120340271700,
+      "instructionArg1": 25531456,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "mafSkcmVay1ypfEX2D6KMfGxf4mNFrgUXo8jCQGAEV7fG5ZD9di4xhaYzmYMZBeBUB8q8rnpDyLFLZVNsh4q3h5",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "signature": "MQDbTMYgksRqmnkTTpeN1RW7B2P2CYG4jrVx9PjEMHkV4MtQY6S4xfSJ1QLsXvSfBPerXbeY8VNy1BjBVuVUmVD",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=68167379 max=59259211",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 59259211,
+      "eventTokenAmount": 2661253392459,
+      "instructionArg0": 2661253392459,
+      "instructionArg1": 59259211,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "2vdSJdnygJK3iwu7sJoiBeTuAtgPFcJYAKsoBo5Npump",
+      "signature": "54qTWKb6TQ6o2GF1z5UbYyae2g4RPCDdS2K741wb2oWTMbuVhG5B1qeawspPvCzCBVGkNQUV6Av3ztroNuNbSrBq",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "signature": "4tJqkTncLdeDfUscCm2BL4hWHjnLdzMbXVVG9Gy7KvcYjq4soVkRTxNCakA8x6PVqRCa1tQkFBwDaedH8DJzThMc",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "signature": "aAx19d8A5yLtYsGP1nGRR9pewAUeH16qWXakxRCUtwuea6uutcXiCAGSkgFtwuaueYWYyzQ65QMfonADRg5pMUW",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "signature": "5tiyFSvhsUb2jKk7wWRkifizfnLHAERrbL8wHy6p62jNkKmiAmY6VtbrRPZkciyRghVHJxvz3ZGUTqMWN2DiiGpG",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "signature": "4XSH74H7FbjnREAJiQa5bH3Zoarmg1AoseJdLo6Rh152ToJ65iaUCyFfvuhRPzqug63aSqxc5ucjdh7dzmF7Pjce",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "signature": "3q3a2CbtUsiARqUJHvaAkQHPuauGssi9SxhuaMQeGmjbWdXSKn1jH6dbiKEXV7P5titX6eheQfTxBJ5YzYRT61Fx",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "signature": "56J3DSvKDMqWcHCZaX9ta9TZAfjdg6h8kweJaBpSx7uGVJTU9BPVgg26mEdC7VUYKsrArr75tKSWxcSMkNAs6eGf",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "signature": "D6yXCkttt2CxRDk5m9TmRfG4RDRKfZDqEFKiBTLUC22F6VW3eYau7SsmLW77jSLhmHTFhuMEgJXEL1dnujqrXZg",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "signature": "5kzc7eQcqj7FRjmMEA9TTHi5khPf3P9frPacP7Z84A7idi3hp4NkdjxB5fZ87Y237BH6pu6VniMrigisSot2VKPt",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=13529899 min=15527618",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 15527618,
+      "eventTokenAmount": 595284523323,
+      "instructionArg0": 595284523323,
+      "instructionArg1": 15527618,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "5Q8CS2MFhNjH6uUeKxkinU8ZYFRoH4nU8TmiwjHEpump",
+      "signature": "3TW1jHa43W19WsWdjz6JERX1CbpfV6metcqw9WqJMJrp4kddeWTLEmPHiPaswTKUSvwohn7CRxrZY1uJFreVkgHS",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1023220243839769, real_sol=0, real_token=743320243839769)",
+      "signature": "41mR9qyLJskJdMPv6K7sP4bFhhSGjzm9t7zHUkS4vqgJmgK4NWWx9fFCjBbdoU3BYcLWy24BBMNnkt8mLLiswrjo",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1068890357235397, real_sol=0, real_token=788990357235397)",
+      "signature": "eSDKoum3xSnXL8BXKWrVxQtVLvM8iqtWYnCX3vGyjppX8Qc3mfq3naoKX2zK65L9E6mdYsbV6PhB5wjrEXVCSt6",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=16742293 min=18542243",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 18542243,
+      "eventTokenAmount": 859368688264,
+      "instructionArg0": 859368688264,
+      "instructionArg1": 18542243,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "9pK2rfrjMVtw3GheFP7steNfkoK7EaJTJG7aF42hpump",
+      "signature": "3mxs2tmbQLz2BarfCkPxuTAx7QfT4kzaTTJWvXnq7yXcBhNqUvHgyaq4F7xmXYiS7QHNJuHzrF78MqnUm8tHBh1v",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=100282378 min=114085556",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 114085556,
+      "eventTokenAmount": 45672553994268,
+      "instructionArg0": 45672553994268,
+      "instructionArg1": 114085556,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "35cLReRevyeByntzQqvLAACD2z84qHBJLMKQN7ty8d2EsgnX7sW8vzpM2BcQy6ZD8MdphMWwSdUat2BdWNfFqekw",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1026483642535563, real_sol=0, real_token=746583642535563)",
+      "signature": "4GfnseoYK4s2ayLpK1AaZz7y1fcVibpG2Q7EYgAM29qgipSTMk2EjAp7ghQvAy5p9iMQTMQhETGSY5FML6iTMeCp",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=53419643 max=48296394",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 48296394,
+      "eventTokenAmount": 1878028119066,
+      "instructionArg0": 1878028119066,
+      "instructionArg1": 48296394,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "2vdSJdnygJK3iwu7sJoiBeTuAtgPFcJYAKsoBo5Npump",
+      "signature": "dShXNz8aV574wtAPd1xDB7r8ywYDyuyQVuiaMZaiN7FLZF7sF4cSmRR27GD6AthemzqXZXwkoGYTb1oYaCPR3Jf",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1067843905939739, real_sol=0, real_token=787943905939739)",
+      "signature": "6451w8nWeDGU2ntw4uoaqjrth2h1F6B7a1qApwVtULsEAGpTqaXaXVAQ6VMCWXJrfHGB8NXMDyczFWyDnrGcGceB",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "signature": "2SGMBoKD1FWg5GafdhSjW5MGmsEauuyxAqVRX5dCPp34JHVTa3njLE1oAjg9E7mecYcGDWZyUvddG3xnMJ7YZkTa",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "signature": "5XoNCnRouBgM2gR2QKEKRm6Ub1GBZxqQRbFhFvFmqvikFPD5uX4g7BQLPdTyz3o9xKiw595nujNhh5YGiM6wsGmZ",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=130950429 min=172857036",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 172857036,
+      "eventTokenAmount": 90545772780066,
+      "instructionArg0": 90545772780066,
+      "instructionArg1": 172857036,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "3LPMU3ivL2bs4iEgHBzEoNRvDaC5M8PsVE8k7CLwHzcb6XJoD1sZATqsf4USsa1iRJq4hPTDpGo7AJZVWA6YtF6i",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1026364783193640, real_sol=0, real_token=746464783193640)",
+      "signature": "3nAvQDmgoMe8EXp1BYkEncvgqFXbySJJVPeF82FgvzcPyETZLwfvyPkzShdQwJA1FMfG1eFr4Nn2S74izp5SMxyg",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=18998209 max=16431060",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 16431060,
+      "eventTokenAmount": 722901917355,
+      "instructionArg0": 722901917355,
+      "instructionArg1": 16431060,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "5Q8CS2MFhNjH6uUeKxkinU8ZYFRoH4nU8TmiwjHEpump",
+      "signature": "5GWrLRcgpnH7ap5acSjoHChwc17MeiuH87VaQNLGkRbCPHj7crHkxwJRRYSZPsk74XWRM4WqZZKJfCmchyrNazgP",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=171131830 max=150934382",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 150934382,
+      "eventTokenAmount": 5217507688894,
+      "instructionArg0": 5217507688894,
+      "instructionArg1": 150934382,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "9nJ8sh5UEtVg2eBFRTK9BnTjcgJRb8HyLP6nyAa6pump",
+      "signature": "4RqCc3FBunFqHvCKqNHaYvCqbAnakdYaiaT3eKaJBhHvBNJvHT6eYvhy6merzZB8p3yhjffvvirNo3t7QrJcGyhn",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=25961365 max=25110319",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 25110319,
+      "eventTokenAmount": 16688021192459,
+      "instructionArg0": 16688021192459,
+      "instructionArg1": 25110319,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "3Ukz9yLNhs2vjTfrAvP3eHGxvZ5HW6GgbXhoPRPi4hKUbDRcK27qGELU2g76o2FRSE6UDzbLUcgd6JRHjrh6mmQk",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1019624173330383, real_sol=0, real_token=739724173330383)",
+      "signature": "4evEFEJZQY4kc57HPPGeMG7RXS5bjukuYsJ4nXLWfyJwzXKqSxHFEe1qRireYCZw6ntG25geVZVxXq7VTt3D3epX",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1025467193423534, real_sol=0, real_token=745567193423534)",
+      "signature": "QR7B78cJkKHoUQFNnXCZJtEHh8gx5oGNqQFKS7MkAZig1Ujtspr6jXSCpENGGMcJaKtFUkUuXRvZ7q1VgTdRiKt",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=241657726 max=178713276",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 178713276,
+      "eventTokenAmount": 6235690646469,
+      "instructionArg0": 6235690646469,
+      "instructionArg1": 178713276,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "2vdSJdnygJK3iwu7sJoiBeTuAtgPFcJYAKsoBo5Npump",
+      "signature": "sJDmvCiirhG62uoZrRJgVEZEwoESBH49mVtA1xGVy5sNN75WH7Fnv6hpGbtSxJbk19ebjCSdzUfu3Npd4bzxKUw",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1067694525668789, real_sol=0, real_token=787794525668789)",
+      "signature": "3JTnRQ4JXRdDVx9npz2rL6PsC3BrSUHExgEaGDWH9PPCTnH3vGceLKbM3zh4CjAvd7fCaM8vCu3trBZ8556L9mhy",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=35976564 max=33399337",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 33399337,
+      "eventTokenAmount": 683154390007,
+      "instructionArg0": 683154390007,
+      "instructionArg1": 33399337,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "84LMunTm3zxT3j9p8cG5R2TUkPxdo2s9xHtWSFQTpump",
+      "signature": "3hNtMBD4Q7y9kNifNTNB8N7XEGm99M4XoXUr1ovjFy6U5hJRYuVJFtBdBU9GK9CwiEnm4xsjohUmHPtc7pYPetaQ",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=129309266 max=113842829",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 113842829,
+      "eventTokenAmount": 67187151816345,
+      "instructionArg0": 67187151816345,
+      "instructionArg1": 113842829,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "4eMkUqJaDouHSAtvi5ZRZfMSgVLVmTPRq63SFS7U2BRxbD3un2GowDknkWpwp4c6eP6i1Q6xhjhxRRPHBdkb7JHE",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1016953480950349, real_sol=0, real_token=737053480950349)",
+      "signature": "22WgNF6TmYgHWifKw9zoZ9fxMpUBUR1AEWMD8Q76NsP3Yi5AcoBzkwLtUFXAaFnT5MXbSPsxLF6VRiGxhpRX6qNR",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1026946997597490, real_sol=0, real_token=747046997597490)",
+      "signature": "2qGBMshNk74WU5v87YK2JpyFKxWueu4HAEDp2T8hLiT2bWEaPwswTsFHAmi9YeyWY6UFcFssz4JWFSqbAzkEVhes",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1024283787234789, real_sol=0, real_token=744383787234789)",
+      "signature": "3MgxaFbHCYHRjvGNhTHWxQbPjzFcvxqMo8ESbYXh9j7dLB3p18oZmifezbKAc14rXpoWMr2HDBmwDonR1fkAfpCG",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=97892063 max=88649680",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 88649680,
+      "eventTokenAmount": 44902385015340,
+      "instructionArg0": 44902385015340,
+      "instructionArg1": 88649680,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "5tj9ScUQrgKaLCtvynEUiABTFfxmxrAt3S1YYNBCEzBnGw8AVxJswdWU8CfrivmAjEGsVKxinwmyNqPuT9t9gTJJ",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=237593580 max=187056345",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 187056345,
+      "eventTokenAmount": 4783710792391,
+      "instructionArg0": 4783710792391,
+      "instructionArg1": 187056345,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "2vdSJdnygJK3iwu7sJoiBeTuAtgPFcJYAKsoBo5Npump",
+      "signature": "5iKJbuEZkaPRWVpYKQjEvkAHj452GgAFgwZBz9iLHM7rjxi2KoPfnmzk8nTA7CcWqDHSMonaZjcqDP3nKgNk7Hrs",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=50194654 max=40632260",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 40632260,
+      "eventTokenAmount": 2083406403362,
+      "instructionArg0": 2083406403362,
+      "instructionArg1": 40632260,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "9pK2rfrjMVtw3GheFP7steNfkoK7EaJTJG7aF42hpump",
+      "signature": "55cvkho78hyKoCpd6QK47LKXNnjHrEA9DedjV6CNFNtT5qQNbMKnrmqksbPakHsnVbVYAwjxyR7iNcysA13CbiVh",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1020836521474269, real_sol=0, real_token=740936521474269)",
+      "signature": "47piLkSGVjippJYKk1wq8rNBBv3RdvsW2f4bZHRoeLgZzxr6knZ2jP7urS8g63EVAjSjNRYWJjxwL44Rq67tVNef",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=70583462 min=76745449",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 76745449,
+      "eventTokenAmount": 34996927806280,
+      "instructionArg0": 34996927806280,
+      "instructionArg1": 76745449,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "2vgXfwA4DEJj4em5goHwLjDNe9RvLLYkSRQkMvX3MKL1cMXsYki7qeYK7hc9YXLy8F15yXV6y6kXtB8GSnRjFbar",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "signature": "3PMPbPTM2QjMxZohh8xQ4WNp9FFVHGoxqgNoWZEEG9fksYBf7NneDhfrbUBAuzoFgLXYnXwXr2praSnrbXSAdp5w",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "detail": "buy max-cost constraint failed: required=11413138 max=10506258",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 10506258,
+      "eventTokenAmount": 399389373068,
+      "instructionArg0": 399389373068,
+      "instructionArg1": 10506258,
+      "instructionKind": "buy",
+      "mayhemMode": true,
+      "mint": "5Q8CS2MFhNjH6uUeKxkinU8ZYFRoH4nU8TmiwjHEpump",
+      "signature": "4yfePDhK9wMWVyUHAnoJybr8NxvPJbB8KNP9ht24sb2wgrxUKwKCbaaBGPV39qHiLFucdJ3oS9H49SuGBJHaBEUr",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "signature": "2u3HZAHeg71N9vPPD7oVBshay4jivqX834ueGuCophiYxzRNRJuLfyYe9xU53tpTs5nsYu7RUnznfjXYDz4b3UHJ",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=44307115 min=62833424",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 62833424,
+      "eventTokenAmount": 2610258234745,
+      "instructionArg0": 2610258234745,
+      "instructionArg1": 62833424,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "9pK2rfrjMVtw3GheFP7steNfkoK7EaJTJG7aF42hpump",
+      "signature": "4yJizMK5EJ5sxhUL4t22tmm4DFFeCwaxeXFZtyCg96JT1krujJxJShnsQvWdad4as7j42cvNn2tde1GqxUgrqqvH",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1029687804345401, real_sol=0, real_token=749787804345401)",
+      "signature": "5t6ZrkTvRCcqghh7PBeHp3PxcnujCbvzGeitd9Fx7rwUz48yg9HgMqmsZowsD6oER27oHXVFAgVhsQ4vbUwU2jtv",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=113693784 min=134629630",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 134629630,
+      "eventTokenAmount": 72094491897063,
+      "instructionArg0": 72094491897063,
+      "instructionArg1": 134629630,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "DYfzWEFC3Mn4ag5VbPAXYh8feK1J7z9H6PrxD75pump",
+      "signature": "YTHbJ83Fci1h1yyQWRUZwsud3YfNWGUZTJqwtcZQ6H5rvwzJdxeThb5k2Um3TxvR5ZQGfXFAtfCccGWHtvxfCKe",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=1027581064843623, real_sol=0, real_token=747681064843623)",
+      "signature": "4d4hF6wv7sQrCVxWNuxBEyFfQ5zTj7wDzcYYKCn6gbtM6SWVjQ8m9mqSVPfLC8K7mMA51ZaB25XsSg95ZdPY98r8",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "detail": "sell min-output constraint failed: output=80200389 min=102970115",
+      "eventCashbackBps": 0,
+      "eventCreatorBps": 0,
+      "eventProtocolBps": 0,
+      "eventSolAmount": 102970115,
+      "eventTokenAmount": 1957731096493,
+      "instructionArg0": 1957731096493,
+      "instructionArg1": 102970115,
+      "instructionKind": "sell",
+      "mayhemMode": true,
+      "mint": "84LMunTm3zxT3j9p8cG5R2TUkPxdo2s9xHtWSFQTpump",
+      "signature": "3HqAbhcqqYcKh9qL3A34TWt7bTZCSzc8tVGnrtaYUDK8zw5agsFGhDYoNwTHtQc5wLX28r9whFVXu1tNPnMUk6hS",
+      "type": "reserve_or_fee_mismatch"
+    },
+    {
+      "signature": "4WXnxsxoHBSPVAq5yhLqbmc6bqK7VBdcEbb31ZHymsyFQGWqY5FK3ECRreiNjmqGRLmw9iWSMRJWst24cFzzSjqj",
+      "type": "success_failure_mismatch"
+    },
+    {
+      "detail": "zero virtual reserve: CurveState(virtual_sol=0, virtual_token=819246170406872, real_sol=0, real_token=539346170406872)",
+      "signature": "2XXiMAnBguCPbMudBWvZppMJW2rfMmZGCMxccoQc2BGHNEChXWT7DwZsjuAQ5aDzhgMKv6fMWgJY57a5yeQdojci",
+      "type": "unsupported_trade_event_schema"
+    },
+    {
+      "signature": "36QDtoNfQ3tvUXBFCUtecfyerh8toFXQRgnUgziLGyF3jeuUK3MvGo9VmqFUbJMVebFXcofBtFAiSY83zZWUBDVV",
+      "type": "success_failure_mismatch"
+    }
+  ],
+  "finalizedTransactions": 15259,
+  "freshMintsFinalizedSuccessful": 35,
+  "freshMintsObserved": 47,
+  "freshMintsWithFinalizedSnapshot": 35,
+  "malformedFinality": 0,
+  "mintsWithAdmittedTransitions": 161,
+  "observedTransactions": 15259,
+  "orphanFinality": 0,
+  "reserveContinuityLinksChecked": 2340,
+  "schema": "PUMP_EXACT_EVIDENCE_LEDGER_V1_VALIDATION",
+  "zeroAdmittedOrderingMismatch": false,
+  "zeroAdmittedReserveMismatch": false,
+  "zeroSuccessFailureMismatch": false
+}

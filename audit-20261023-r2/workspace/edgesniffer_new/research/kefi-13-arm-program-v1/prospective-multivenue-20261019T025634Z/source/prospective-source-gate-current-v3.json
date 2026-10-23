@@ -1,0 +1,34 @@
+{
+  "blockers": [],
+  "cohort_id": "kefi-13-arm-multivenue-prospective-20261019T025634Z",
+  "fresh_cohort_status": "PASS_CLEAN_FRESH_COHORT",
+  "generated_at_utc": "2026-10-19T04:07:45.594890+00:00",
+  "global_comparison_complete": false,
+  "materialization_status": "PASS_OUTCOME_BLIND_FAIL_CLOSED",
+  "outcome_blind": true,
+  "raw_source_status": "PASS_RAW_SOURCE_AUDIT",
+  "schema": "KEFI_13_ARM_PROSPECTIVE_SOURCE_GATE_V1",
+  "source": {
+    "admitted_arm_ids": [
+      "ARM07_PUMPSWAP_DIRECT"
+    ],
+    "fresh_accepted_rows": 177,
+    "materialized_observations": 177,
+    "observed_arm_ids": [
+      "ARM01_SOL_PUMP_CURVE_2CQ",
+      "ARM02_SOL_PUMP_CPI_2CQ",
+      "ARM03_ACTIVE_SOL_PUMP_5000MS",
+      "ARM07_PUMPSWAP_DIRECT",
+      "ARM08_PUMPSWAP_CPI",
+      "ARM09_ROUTER_RAYDIUM_CLMM",
+      "ARM10_ROUTER_ORCA_WHIRLPOOL",
+      "ARM11_ROUTER_METEORA_DLMM",
+      "ARM12_OTHER_DEX_PROTOCOL_NATIVE"
+    ],
+    "raw_rows": 356,
+    "source_fresh": true,
+    "transport_clean": true,
+    "unique_signatures": 356
+  },
+  "status": "PASS_PROSPECTIVE_SOURCE_GATE"
+}

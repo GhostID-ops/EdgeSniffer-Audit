@@ -1,0 +1,11 @@
+[Unit]
+Description=Run EdgeSniffer 2CQ prospective SOL-Pump CREATE provenance registry V1
+
+[Timer]
+OnBootSec=90s
+OnUnitInactiveSec=5min
+Persistent=true
+Unit=edgesniffer-2cq-sol-pump-create-provenance-registry-v1.service
+
+[Install]
+WantedBy=timers.target

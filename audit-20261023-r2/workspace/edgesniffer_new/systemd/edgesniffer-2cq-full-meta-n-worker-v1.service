@@ -1,0 +1,17 @@
+[Unit]
+Description=EdgeSniffer 2CQ bounded full-meta N-production worker
+After=network-online.target edgesniffer-2cq-full-meta-prospective-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/twoCqFullMetaProspectiveNWorkerV1.py --root /mnt/HC_Volume_106775198/edgesniffer-research/2cq-yellowstone-full-meta-prospective-v1 --funnel /mnt/HC_Volume_106775198/edgesniffer-research/2cq-yellowstone-full-meta-prospective-v1/funnel/current-readonly-audit.json --state-db /mnt/HC_Volume_106775198/edgesniffer-research/2cq-yellowstone-full-meta-prospective-v1/state-plane/full-meta-canonical-state.sqlite3 --proof-cache /mnt/HC_Volume_106775198/edgesniffer-research/2cq-yellowstone-full-meta-prospective-v1/automation/canonical-proof-cache-v1.sqlite3 --work-db /mnt/HC_Volume_106775198/edgesniffer-research/2cq-yellowstone-full-meta-prospective-v1/automation/n-worker.sqlite3 --prior-replay /mnt/HC_Volume_106775198/edgesniffer-research/2cq-yellowstone-full-meta-prospective-v1/state-plane/first-valid-n-replay.json --adapter /root/bot/EdgeSniffer/scripts/twoCqFullMetaCanonicalStatePlaneV1.py --normalizer /root/bot/EdgeSniffer/rust-exact-ledger/target/release/yellowstone_state_plane_normalizer --report /mnt/HC_Volume_106775198/edgesniffer-research/2cq-yellowstone-full-meta-prospective-v1/automation/latest.json --ledger /mnt/HC_Volume_106775198/edgesniffer-research/2cq-yellowstone-full-meta-prospective-v1/automation/valid-observations.json --lock /run/edgesniffer-2cq-full-meta-n-worker-v1.lock --batch-size 2 --max-batch-span-s 120 --canonical-fetch-workers 16 --max-batches 2 --refresh-funnel --assignment-script /root/bot/EdgeSniffer/scripts/twoCqProspectiveDatasetAllocationV1.py --assignment-root /mnt/HC_Volume_106775198/edgesniffer-research/2cq-yellowstone-full-meta-prospective-v1/prospective-dataset-allocation-v1 --assignment-policy /mnt/HC_Volume_106775198/edgesniffer-research/2cq-symmetric-cross-sectional-policy-v1/primary-policy.json
+TimeoutStartSec=90min
+Nice=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-research/2cq-yellowstone-full-meta-prospective-v1 /run

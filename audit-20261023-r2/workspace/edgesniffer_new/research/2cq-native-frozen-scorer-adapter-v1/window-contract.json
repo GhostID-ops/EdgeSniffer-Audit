@@ -1,0 +1,19 @@
+{
+  "schema": "EDGESNIFFER_2CQ_FROZEN_SCORER_NATIVE_WINDOWS_V1",
+  "source": "same native receive-time replay as the scorer adapter",
+  "entry_delay_ms": 1000,
+  "candidate_record_type": "INDEPENDENT_EVENT_DRIVEN_MARKET_WINDOW",
+  "control_record_type": "INDEPENDENT_MARKET_CONTROL_WINDOW",
+  "required_entry_fields": [
+    "native receive clock",
+    "native pre/post reserve state",
+    "protocol fee basis points",
+    "creator fee basis points",
+    "total fee basis points"
+  ],
+  "missing_mark_policy": "retain empty marks so mature horizons report MISSED_EXIT_MARK",
+  "teacher_conditioning": false,
+  "read_only": true,
+  "trading_enabled": false,
+  "promotion_blocked": true
+}

@@ -1,0 +1,393 @@
+{
+  "adapter_contract_sha256": "558adaf7096b6afa1117863cf1cafa31273556b5cb3c0f77ff1286930b2957f3",
+  "artifacts": {
+    "onchain-fixtures.jsonl": "f02740014fe444b374c45d01afcad368dfb753b082170a399e8f80355654c516",
+    "original-boundary-coverage.jsonl": "35b9a32d07c1cb1bb789713a2aaf50c319ec51f7831ad302ecb48c60dcc8c9c4",
+    "original-decisions.jsonl": "b8c563c5cfd64f70f999414c1eaa5cef785d3d4e57661bc72f75d2fda957e0c2",
+    "original-intentions.jsonl": "f505c9364a1de8f92f73722619ee3376433ba108135fb51bf2559c373ca1d0ce",
+    "separate-canary-boundaries.jsonl": "04916492c8080645b6267beb945da3eee8f1c6bfef04cc90240fef857d16ff0b",
+    "size-fixtures.jsonl": "bb8fbb7be7c1584f541aa2bfde5127dfb01418baac19636003c89dba69b790e4",
+    "transaction-reconstructions.jsonl": "e97136da16ecb22fb44e0d3ecafd5b93a29ee852322a401a857e532688293125"
+  },
+  "canonical_config_identity": {
+    "fee": {
+      "address": "8Wf5TiAheLUqBrKXeYg2JtAFFMWtKdG2BSFgqUcPVwTt",
+      "bump": 253
+    },
+    "global": {
+      "address": "4wTV1YmiEkRvAtNtsSGPtUrqRYQMe5SKy2uB4Jjaxnjf",
+      "bump": 255
+    }
+  },
+  "capture": {
+    "counts": {
+      "clock": 537,
+      "curve": 2280,
+      "fee": 11,
+      "global": 11,
+      "mint": 322,
+      "other": 1595
+    },
+    "end_ns": 1792736820122095895,
+    "full_write_and_fork_coverage_certified": false,
+    "layout_failures": {},
+    "mint_extension_types": {
+      "1": 5,
+      "12": 47,
+      "14": 73,
+      "16": 5,
+      "18": 291,
+      "19": 291,
+      "25": 46,
+      "26": 46,
+      "3": 1,
+      "4": 47,
+      "6": 46
+    },
+    "normalized_transaction_digest": "e11885554339525fe78d8f803ae0475c7e0990ecce9298e9975847b90809a54d",
+    "observed_discontinuities_and_requests": {
+      "CONNECTED": 1,
+      "CONTEXT_SUBSCRIPTION_REQUESTED": 139
+    },
+    "raw_to_normalized_transactions": 7808,
+    "server_subscription_activation_acknowledged": false,
+    "slot_status_counts": {
+      "0": 263,
+      "1": 263,
+      "2": 263,
+      "3": 263,
+      "4": 264,
+      "5": 263
+    },
+    "start_ns": 1792736760522849394
+  },
+  "frozen_signal_contract_sha256": "9dd698b13ccf5eff7b88755e83e753ea779f8c20c623510788191eb7882391c6",
+  "implementation_sha256": "64409cd2af902313d6c6788372d8b9c73babdf34d2179a65ffde073717d174b8",
+  "inputs": {
+    "../account-boundary-canonical2/boundaries.jsonl": "04d8c750331c0698b9971c6b2e7977da9e985f713b8833fd8729f39030885e23",
+    "../context-canary1/bootstrap.jsonl": "e62db0d79b5ff383b7f4bf53438d14f6eb71facb54af975b79aab7246edb5e2f",
+    "../context-canary1/capture.jsonl": "58e5c756178ecec26232281025fefdde7ed5074c5185d45b98d1f24aa90bca58",
+    "../context-transactions-quality1/finalized-reference.jsonl": "6e4466cb944a1f9a3677f92f8f4d33c21fd30a4e6d881963d650f42712385811",
+    "../context-transactions-quality1/report.json": "56400bb950b2fe7796f9634d8bb6a06aeb2c741143fec1e5cebdb465d71c6270",
+    "../context-transactions-quality1/transactions.jsonl": "c49fc9641e6bfc00b25fdf6eeeff6506e673e763e612d3092d89b3f4f2563cff",
+    "../quote-context2/attempts.jsonl": "9faf512e1b1744689a91879b246d47201594cec9eb801898670b068d52e5e3dc",
+    "../quote-context2/boundary-context.jsonl": "cc169e2ff4cef183955b0a794407342024b7142af4b66a5aa09c0916e78f76bf",
+    "../quote-context2/report.json": "139bc62a2e8a4d8f781b8f55676ea98fdfe9cc63bfc9874d4cd83efe499a11a3",
+    "../quote-fixture-reference2/finalized-reference.jsonl": "3068e8e3e049a6cfdc6250fd563bdf2066f530eede9941c737dd3fa2d8e1a947"
+  },
+  "limitations": [
+    "Arithmetic matches do not prove continuous state/fee/mint availability or execution fills.",
+    "Native subscription activation and global full-write/fork reconciliation remain uncertified.",
+    "Finalized reference is later knowledge; it validates a historical reconstruction, not an original decision input.",
+    "Sizes are nonlinear quote fixtures, not linearly scaled observed PnL. No own-position replay or net economics here.",
+    "Unsupported layouts, instruction variants, extensions, partial fills and modes stay unresolved."
+  ],
+  "original_coverage": {
+    "by_boundary": {
+      "burst:entry_at_ns:control": {
+        "FEE_UPDATE_CONTINUITY_UNCERTIFIED": 36,
+        "MINT_UPDATE_CONTINUITY_UNCERTIFIED": 36,
+        "NO_CAUSAL_VALIDATED_RAW_CLOCK": 36,
+        "NO_CAUSAL_VALIDATED_RAW_CURVE": 36,
+        "NO_CAUSAL_VALIDATED_RAW_FEE": 36,
+        "NO_CAUSAL_VALIDATED_RAW_GLOBAL": 36,
+        "NO_CAUSAL_VALIDATED_RAW_MINT": 36,
+        "NO_ORIGINAL_ELIGIBLE_CONTROL": 42,
+        "ORIGINAL_1S_STATE_AGE_FAIL": 7,
+        "STATE_CONTINUITY_UNCERTIFIED": 36,
+        "denominator": 78,
+        "unresolved": 78
+      },
+      "burst:entry_at_ns:target": {
+        "FEE_UPDATE_CONTINUITY_UNCERTIFIED": 78,
+        "MINT_UPDATE_CONTINUITY_UNCERTIFIED": 78,
+        "NO_CAUSAL_VALIDATED_RAW_CLOCK": 78,
+        "NO_CAUSAL_VALIDATED_RAW_CURVE": 78,
+        "NO_CAUSAL_VALIDATED_RAW_FEE": 78,
+        "NO_CAUSAL_VALIDATED_RAW_GLOBAL": 78,
+        "NO_CAUSAL_VALIDATED_RAW_MINT": 78,
+        "ORIGINAL_1S_STATE_AGE_FAIL": 1,
+        "STATE_CONTINUITY_UNCERTIFIED": 78,
+        "denominator": 78,
+        "unresolved": 78
+      },
+      "burst:exit_at_ns:control": {
+        "FEE_UPDATE_CONTINUITY_UNCERTIFIED": 36,
+        "MINT_UPDATE_CONTINUITY_UNCERTIFIED": 36,
+        "NO_CAUSAL_VALIDATED_RAW_CLOCK": 36,
+        "NO_CAUSAL_VALIDATED_RAW_CURVE": 36,
+        "NO_CAUSAL_VALIDATED_RAW_FEE": 36,
+        "NO_CAUSAL_VALIDATED_RAW_GLOBAL": 36,
+        "NO_CAUSAL_VALIDATED_RAW_MINT": 36,
+        "NO_ORIGINAL_ELIGIBLE_CONTROL": 42,
+        "ORIGINAL_1S_STATE_AGE_FAIL": 15,
+        "STATE_CONTINUITY_UNCERTIFIED": 36,
+        "denominator": 78,
+        "unresolved": 78
+      },
+      "burst:exit_at_ns:target": {
+        "FEE_UPDATE_CONTINUITY_UNCERTIFIED": 78,
+        "MINT_UPDATE_CONTINUITY_UNCERTIFIED": 78,
+        "NO_CAUSAL_VALIDATED_RAW_CLOCK": 78,
+        "NO_CAUSAL_VALIDATED_RAW_CURVE": 78,
+        "NO_CAUSAL_VALIDATED_RAW_FEE": 78,
+        "NO_CAUSAL_VALIDATED_RAW_GLOBAL": 78,
+        "NO_CAUSAL_VALIDATED_RAW_MINT": 78,
+        "ORIGINAL_1S_STATE_AGE_FAIL": 45,
+        "STATE_CONTINUITY_UNCERTIFIED": 78,
+        "denominator": 78,
+        "unresolved": 78
+      },
+      "persistence:entry_at_ns:control": {
+        "FEE_UPDATE_CONTINUITY_UNCERTIFIED": 36,
+        "MINT_UPDATE_CONTINUITY_UNCERTIFIED": 36,
+        "NO_CAUSAL_VALIDATED_RAW_CLOCK": 36,
+        "NO_CAUSAL_VALIDATED_RAW_CURVE": 36,
+        "NO_CAUSAL_VALIDATED_RAW_FEE": 36,
+        "NO_CAUSAL_VALIDATED_RAW_GLOBAL": 36,
+        "NO_CAUSAL_VALIDATED_RAW_MINT": 36,
+        "NO_ORIGINAL_ELIGIBLE_CONTROL": 42,
+        "ORIGINAL_1S_STATE_AGE_FAIL": 7,
+        "STATE_CONTINUITY_UNCERTIFIED": 36,
+        "denominator": 78,
+        "unresolved": 78
+      },
+      "persistence:entry_at_ns:target": {
+        "FEE_UPDATE_CONTINUITY_UNCERTIFIED": 78,
+        "MINT_UPDATE_CONTINUITY_UNCERTIFIED": 78,
+        "NO_CAUSAL_VALIDATED_RAW_CLOCK": 78,
+        "NO_CAUSAL_VALIDATED_RAW_CURVE": 78,
+        "NO_CAUSAL_VALIDATED_RAW_FEE": 78,
+        "NO_CAUSAL_VALIDATED_RAW_GLOBAL": 78,
+        "NO_CAUSAL_VALIDATED_RAW_MINT": 78,
+        "ORIGINAL_1S_STATE_AGE_FAIL": 37,
+        "STATE_CONTINUITY_UNCERTIFIED": 78,
+        "denominator": 78,
+        "unresolved": 78
+      },
+      "persistence:exit_at_ns:control": {
+        "FEE_UPDATE_CONTINUITY_UNCERTIFIED": 36,
+        "MINT_UPDATE_CONTINUITY_UNCERTIFIED": 36,
+        "NO_CAUSAL_VALIDATED_RAW_CLOCK": 36,
+        "NO_CAUSAL_VALIDATED_RAW_CURVE": 36,
+        "NO_CAUSAL_VALIDATED_RAW_FEE": 36,
+        "NO_CAUSAL_VALIDATED_RAW_GLOBAL": 36,
+        "NO_CAUSAL_VALIDATED_RAW_MINT": 36,
+        "NO_ORIGINAL_ELIGIBLE_CONTROL": 42,
+        "ORIGINAL_1S_STATE_AGE_FAIL": 14,
+        "STATE_CONTINUITY_UNCERTIFIED": 36,
+        "denominator": 78,
+        "unresolved": 78
+      },
+      "persistence:exit_at_ns:target": {
+        "FEE_UPDATE_CONTINUITY_UNCERTIFIED": 78,
+        "MINT_UPDATE_CONTINUITY_UNCERTIFIED": 78,
+        "NO_CAUSAL_VALIDATED_RAW_CLOCK": 78,
+        "NO_CAUSAL_VALIDATED_RAW_CURVE": 78,
+        "NO_CAUSAL_VALIDATED_RAW_FEE": 78,
+        "NO_CAUSAL_VALIDATED_RAW_GLOBAL": 78,
+        "NO_CAUSAL_VALIDATED_RAW_MINT": 78,
+        "ORIGINAL_1S_STATE_AGE_FAIL": 47,
+        "STATE_CONTINUITY_UNCERTIFIED": 78,
+        "denominator": 78,
+        "unresolved": 78
+      }
+    },
+    "capture_after_last_boundary_seconds": 4526.820178624,
+    "capture_overlap_ns": 0,
+    "capture_range_utc": [
+      "2026-10-23T06:26:00.522849+00:00",
+      "2026-10-23T06:27:00.122096+00:00"
+    ],
+    "complete_causal_intentions": 0,
+    "historical_recovery_backdated": false,
+    "intentions": 468,
+    "known_nonexecutable_quotes": 0,
+    "opportunities": 78,
+    "original_boundaries_in_capture": 0,
+    "original_boundary_range_ns": [
+      1792731113147226773,
+      1792732233702670770
+    ],
+    "original_boundary_range_utc": [
+      "2026-10-23T04:51:53.147227+00:00",
+      "2026-10-23T05:10:33.702671+00:00"
+    ],
+    "original_decision_boundaries": 312,
+    "original_decisions_complete": 0,
+    "reason_counts_overlap": true,
+    "retained_context_note": "Old normalized reserves and8 prior decoded mint rows are preserved; old raw fee snapshot lacks update continuity. No claim those records never existed.",
+    "submitted_orders": 0,
+    "unresolved_economics": 468,
+    "valid_quotes": 0
+  },
+  "pinned_idls": {
+    "pump-639b87f.json": "7616681ea557975f9f623ac211080f22a93060781eaf4765b0a488d980997207",
+    "pump-fees-639b87f.json": "6b9fa3eccc6e06273076a47b581f9fcb9e531bb7c3c88acbcd44db55a4002b29"
+  },
+  "quote_reconstruction": {
+    "by_variant": {
+      "buy": {
+        "ARITHMETIC_MATCH": 14,
+        "UNRESOLVED": 369
+      },
+      "buy_exact_quote_in_v2": {
+        "ARITHMETIC_MATCH": 36,
+        "UNRESOLVED": 126
+      },
+      "buy_exact_quote_in_v3": {
+        "UNRESOLVED": 90
+      },
+      "buy_exact_sol_in": {
+        "ARITHMETIC_MATCH": 24,
+        "UNRESOLVED": 26
+      },
+      "buy_v2": {
+        "ARITHMETIC_MATCH": 6,
+        "UNRESOLVED": 15
+      },
+      "buy_v3": {
+        "UNRESOLVED": 55
+      },
+      "sell": {
+        "ARITHMETIC_MATCH": 49,
+        "UNRESOLVED": 548
+      },
+      "sell_v2": {
+        "ARITHMETIC_MATCH": 35,
+        "UNRESOLVED": 98
+      },
+      "sell_v3": {
+        "UNRESOLVED": 270
+      }
+    },
+    "causal_quotes_certified": 0,
+    "event_account_join_counts": {
+      "four_reserves_match": 2260,
+      "intermediate_event_before_matching_final_same_mint_event": 7,
+      "successful_events": 2267
+    },
+    "finalized_by_variant": {
+      "buy": 3,
+      "buy_exact_quote_in_v2": 1,
+      "buy_exact_sol_in": 3,
+      "buy_v2": 3,
+      "sell": 3,
+      "sell_v2": 3
+    },
+    "independent_fixture_curve_amount_range_lamports": [
+      4711794,
+      609747088
+    ],
+    "independent_fixture_unique_mints": 6,
+    "independently_reconstructed_finalized_matches": 16,
+    "reconstruction_blockers": {
+      "INTERVENING_SUCCESSFUL_OR_UNKNOWN_CURVE_TOUCH": 1,
+      "NO_SAME_BLOCK_FINALIZED_BRACKET": 147
+    },
+    "size_fixture_count": 492,
+    "size_fixtures_are_not_executed_orders": true,
+    "statuses": {
+      "ARITHMETIC_MATCH": 164,
+      "UNRESOLVED": 3200
+    },
+    "successful_transaction_denominator": 3364,
+    "unresolved_reasons": {
+      "NOT_DECODED_SOL_EVENT": 271,
+      "NOT_SINGLE_EVENT_TRANSACTION": 1115,
+      "NO_INDEPENDENT_PRIOR_RAW_STATE": 125,
+      "NO_PRIOR_VALID_MINT": 23,
+      "PARTIAL_FILL_UNSUPPORTED": 216,
+      "SUPPLY_MISMATCH": 29,
+      "UNKNOWN_INSTRUCTION_TAIL": 1,
+      "UNSUPPORTED_SPECIAL_FEE_MODE": 1304,
+      "UNVALIDATED_INSTRUCTION_VARIANT": 116
+    }
+  },
+  "schema": "CAUSAL_QUOTE_ADAPTER_A3H3_V1",
+  "separate_canary_coverage": {
+    "by_boundary": {
+      "burst:decision:control": {
+        "NO_ORIGINAL_ELIGIBLE_CONTROL": 5,
+        "denominator": 6,
+        "missing_or_unsupported": 5,
+        "present_supported": 1
+      },
+      "burst:decision:target": {
+        "UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+        "denominator": 6,
+        "missing_or_unsupported": 2,
+        "present_supported": 4
+      },
+      "burst:entry:control": {
+        "NO_ORIGINAL_ELIGIBLE_CONTROL": 5,
+        "ORIGINAL_1S_STATE_AGE_FAIL": 1,
+        "denominator": 6,
+        "missing_or_unsupported": 6
+      },
+      "burst:entry:target": {
+        "UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+        "denominator": 6,
+        "missing_or_unsupported": 2,
+        "present_supported": 4
+      },
+      "burst:exit:control": {
+        "NO_ORIGINAL_ELIGIBLE_CONTROL": 5,
+        "denominator": 6,
+        "missing_or_unsupported": 5,
+        "present_supported": 1
+      },
+      "burst:exit:target": {
+        "ORIGINAL_1S_STATE_AGE_FAIL": 3,
+        "UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+        "denominator": 6,
+        "missing_or_unsupported": 5,
+        "present_supported": 1
+      },
+      "persistence:decision:control": {
+        "NO_ORIGINAL_ELIGIBLE_CONTROL": 5,
+        "denominator": 6,
+        "missing_or_unsupported": 5,
+        "present_supported": 1
+      },
+      "persistence:decision:target": {
+        "ORIGINAL_1S_STATE_AGE_FAIL": 1,
+        "UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+        "denominator": 6,
+        "missing_or_unsupported": 3,
+        "present_supported": 3
+      },
+      "persistence:entry:control": {
+        "NO_ORIGINAL_ELIGIBLE_CONTROL": 5,
+        "denominator": 6,
+        "missing_or_unsupported": 5,
+        "present_supported": 1
+      },
+      "persistence:entry:target": {
+        "ORIGINAL_1S_STATE_AGE_FAIL": 1,
+        "UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+        "denominator": 6,
+        "missing_or_unsupported": 3,
+        "present_supported": 3
+      },
+      "persistence:exit:control": {
+        "NO_ORIGINAL_ELIGIBLE_CONTROL": 5,
+        "ORIGINAL_1S_STATE_AGE_FAIL": 1,
+        "denominator": 6,
+        "missing_or_unsupported": 6
+      },
+      "persistence:exit:target": {
+        "ORIGINAL_1S_STATE_AGE_FAIL": 3,
+        "UNSUPPORTED_SPECIAL_FEE_MODE": 2,
+        "denominator": 6,
+        "missing_or_unsupported": 4,
+        "present_supported": 2
+      }
+    },
+    "causal_quotes_certified": 0,
+    "intentions": 36,
+    "interpretation": "Existing frozen signal/control rules applied only for context coverage; no new return endpoint or strategy selection.",
+    "opportunities": 6,
+    "separate_population": "A3h2_60s_engineering_canary_not_original78"
+  }
+}

@@ -1,0 +1,19 @@
+[Unit]
+Description=EdgeSniffer KEFI PumpSwap deterministic parity tape (receive-only)
+After=network-online.target edgesniffer-kefi-13arm-finalized-rpc-source-v1.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer
+EnvironmentFile=/root/bot/EdgeSniffer/.env
+Environment=TRACKED_WALLET=kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf
+ExecStart=/usr/bin/python3 /root/bot/EdgeSniffer/scripts/kefi13ArmPumpSwapTapeSourceV1.py --pool-source /mnt/edgesniffer-kefi-hot/kefi-13-arm-multivenue-prospective-20261019T025634Z/raw-transactions.jsonl --output /mnt/edgesniffer-kefi-hot/kefi-13-arm-multivenue-prospective-20261019T025634Z/pumpswap-exact-tape-v3.jsonl --state /mnt/edgesniffer-kefi-hot/kefi-13-arm-multivenue-prospective-20261019T025634Z/pumpswap-tape-state-v3.json --cohort-id kefi-13-arm-parity-prospective-v1 --boundary-utc 2026-10-19T03:40:40.908468Z --interval-seconds 15 --limit 5
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

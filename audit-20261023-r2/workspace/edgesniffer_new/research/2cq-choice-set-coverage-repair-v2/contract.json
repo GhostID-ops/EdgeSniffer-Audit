@@ -1,0 +1,13 @@
+{
+  "canonicalCreateSemantics": "Pump Create/CreateV2 instruction account[0]",
+  "choiceUniverse": "LAUNCHED_120S",
+  "developmentOrdinals": [
+    1,
+    350
+  ],
+  "outcomesPermitted": false,
+  "schema": "2CQ_CHOICE_SET_COVERAGE_REPAIR_V2_CONTRACT",
+  "teacherOnlyEvidenceSeedingPermitted": false,
+  "tradeWindowSemantics": "all successful Pump trade signatures with AllenHark receipt inside a decision window",
+  "validationPermitted": false
+}

@@ -1,0 +1,12 @@
+[Unit]
+Description=Refresh separate 2CQ route sibling cohorts every five minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitInactiveSec=5min
+AccuracySec=15s
+Persistent=true
+Unit=edgesniffer-2cq-route-sibling-cohorts-v1.service
+
+[Install]
+WantedBy=timers.target

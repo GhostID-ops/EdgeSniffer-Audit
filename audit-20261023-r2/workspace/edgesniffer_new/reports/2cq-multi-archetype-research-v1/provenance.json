@@ -1,0 +1,16 @@
+{
+  "artifacts": {
+    "active-sol-pump-5000ms-choice-sets.jsonl.gz": "1536510da6d9b5210b04d089923ea2b3e637e7071def2141a6807f914d3491e1",
+    "all-route-decision-tape.jsonl.gz": "8511824d1186dde8e562fc330710622cc920473de463114beebe3f8649249c96",
+    "report.json": "c21637ea286abb8be8acb37468a420bd5e7f340b394bc82b6c65acdc5063382e",
+    "route-capability-matrix.json": "2b51fdfe077d2ea9e407c0c3801dea998fc5f5a38a5866936a3ec048c04998bf"
+  },
+  "outcomesRead": 0,
+  "schema": "2CQ_MULTI_ARCHETYPE_RESEARCH_V1_PROVENANCE",
+  "scriptSha256": "cadb7c511f85871763cec15d7f85cadb447b865deed9fb5206a785543844c94a",
+  "statePlaneSha256": "5bee99fbf46fb4bfa6d33e05aeb99e95b8c15977473e5c52921338ba019fb13b",
+  "submissions": 0,
+  "v2ContractSha256": "6d3395b21c067e00776c21fcaa4d1f24076af43e0252147afbc4d7abd93f8bb1",
+  "v2StateSha256": "3dc6ff8946a66baf621f6edabc0f4d3dc62e62ace907f13d9b630efeec81e5bf",
+  "validationRowsRead": 0
+}

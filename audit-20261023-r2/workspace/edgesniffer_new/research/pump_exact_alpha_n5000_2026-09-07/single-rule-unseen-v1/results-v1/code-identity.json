@@ -1,0 +1,7 @@
+{
+  "analysisHarnessPath": "/tmp/single_rule_unseen_check.py",
+  "analysisHarnessSha256": "c9f61b1445c601ef487a8a379f7601f5f730dfe86c4b71576a3cc2c121bf2d03",
+  "discoveryMintIndexSha256AtEvaluation": "0cb7b43e9304919f24d67f0b13684980410d2198cb4780b29ce12bc9e563e93d",
+  "frozenReadinessSha256": "7a55ebd60fcb5ab88b45e48fd5be2e7bcd3763648c6e4abb7a80e9584f18b684",
+  "productionCostPolicySha256": "f25026f1a39619e90119b1acb94f8cf7f4f5c65014112ed66975fd34601cf6ca"
+}

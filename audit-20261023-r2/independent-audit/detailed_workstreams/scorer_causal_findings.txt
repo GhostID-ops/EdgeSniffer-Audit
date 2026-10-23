@@ -1,0 +1,225 @@
+# EdgeSniffer: independent scorer, sampling, and causal-design audit
+
+Audit date: 2026-10-22. Scope: source in `edgesniffer_audit/source`, especially the preserved event-driven fingerprint report, training scripts, native scorer adapter, control generators, and later prospective/development cohort machinery. All probes were offline. No market calls, submissions, credentials, or live trading were used. Source was not modified.
+
+## Judgment
+
+The preserved scorer is a teacher-behavior model trained on teacher-conditioned episodes. Its published metrics do not establish an independently executable trading edge. The native adapter does not implement that model faithfully: it compares a raw logit with a probability cutoff, constructs different event-boundary features, and omits important pieces of the frozen composite policy. Separately, ranking and average-precision implementations can make an entirely uninformative constant classifier look perfect when scores tie. These are reproducible implementation defects, not speculative concerns.
+
+There is useful behavioral evidence in the report: teacher entries often follow short external bursts. But the selected external state preceded the teacher by less than one second in all 76 assessment episodes. A system entering one second later therefore cannot assume that the teacher's observed entry price, pre-entry liquidity, or subsequent opportunity is still available. Earlier threshold crossings exist, but the archive cannot establish their full-market false-alert rate or their executable net returns.
+
+The best research direction is to demote the 48-feature teacher ranker to an exploratory comparator and build a small, bitemporal, all-opportunity replay ledger that can test two or three simple, explicitly executable policies. Preserve the teacher evidence as hypothesis-generation material and post hoc diagnostics. Do not make completing every teacher-specific feature a prerequisite for testing a simpler flow hypothesis that does not need those features.
+
+## What was actually available and verified
+
+The source bundle contains only 12 research artifacts; the frozen report and scorer are present, while their referenced raw episode/example tapes, full native market tape, fitted-policy economics outputs, and later holdout manifests are absent. Consequently, it is possible to reproduce code defects and recompute counts from preserved report rows. It is not possible to independently reprice the purported strategy, reconstruct every historical feature, quantify the defects' realized PnL effect, or certify that a holdout remained unseen.
+
+The report's scorer and contract hashes match the actual bundled files:
+
+| Artifact | SHA-256 |
+|---|---|
+| `research/2cq-event-driven-fingerprint-freeze-v1/contract.json` | `de9bc64f8c154f6e72e580f192df1251b4e9872525a3af5a11619550510f13bc` |
+| `research/2cq-event-driven-fingerprint-freeze-v1/frozen-scorer.json` | `7c764e88f156e77cd85f75ea0d44350b84d6e174df596520cdd6e5220546aed7` |
+
+The following included tests pass: `testTwoCqEventDrivenFingerprintFreezeV1` (4), `testAdapt2CQFrozenScorerNativeV1` (2), `testMaterialize2CQFrozenScorerWindowsV1` (1), and `testMaterialize2CQNativeLaunchLineageV1` (2): **9/9**. Output is preserved in `included_tests.txt`. The adapter tests cover metadata requirements, not scoring-unit or feature-boundary parity. Passing this suite therefore does not contradict the adversarial failures below.
+
+Reproducible additional probes are in `adversarial_scorer_probes.py`, with machine-readable results in `probe_results.json`. They use the actual source functions and, for scoring parity, the actual frozen coefficients. Synthetic cases establish code behavior; they do not estimate its historical frequency or financial impact.
+
+## Confirmed report facts, separated from interpretation
+
+All figures in this section come from `research/2cq-event-driven-fingerprint-freeze-v1/report.json`; repeated-mint and lead-time counts were independently recomputed from its `eventDrivenReplay.rows`.
+
+| Quantity | Preserved result |
+|---|---:|
+| Original development entries | 350 |
+| Usable same-mint timing episodes / unique mints | 253 / 240 |
+| Same-mint control states | 22,980 |
+| Cross-mint choice episodes / unique teacher mints | 211 / 203 |
+| Cross-mint control states | 4,658 |
+| Same-mint assessment episodes / unique mints | 76 / 67 |
+| Same-mint FULL_CAUSAL AUC / AP | 0.70394 / 0.01811 |
+| Same-mint FULL_CAUSAL top-1 / mean random top-1 | 68.42% / 19.62% |
+| Cross-mint FULL_CAUSAL top-1 | 47/55 = 85.45% |
+| Cross-mint LIFECYCLE-only top-1 | 46/55 = 83.64% |
+| Cross-mint FULL_WITHOUT_250MS top-1 | 48/55 = 87.27% |
+| Teacher-selected states above frozen threshold | 60/76 |
+| Episodes with any preteacher crossing | 64/76 |
+| First crossing was final selected state | 24/76 |
+| Selected-state lead at least one second | **0/76** |
+| First-crossing lead at least one second | 25/76 |
+| Total above-threshold states in assessment histories | 3,732 |
+| Maximum above-threshold states in one episode | 1,156 |
+
+The median selected-state-to-teacher lead was 36.274923 ms; its 90th percentile was 115.0311515 ms. Median first-crossing lead was 108.9274025 ms, while its 75th percentile was 13,142.2648 ms. This mixture means the detector sometimes fires much earlier and sometimes only just before the teacher. A recall statistic cannot resolve which crossings are tradable.
+
+WHAT's full model beats the lifecycle model by only one correct assessment choice, while removing 250 ms features produces one more correct choice than the full model. This does not establish that short-flow terms are useless; it establishes that this small teacher-choice assessment does not justify making the full model the central profit hypothesis.
+
+Teacher medians for `log_age_ms` are zero in both the temporal and cross-mint reports. Cross-mint controls have median `log_age_ms` 10.8566 and median `log_ms_since_last_external` 9.6128; teacher recency median is zero. These are strong diagnostics for age/recency sampling separation. They are not proof of profit, nor proof of a specific clock bug without the missing source tapes. Millisecond truncation can make CREATE and the selected trade look co-timed; temporal code also permits future CREATE receipts, as demonstrated below.
+
+The report explicitly admits that full-market unmatched signals/hour cannot be estimated from the teacher-conditioned tape, says outcomes read were zero, and labels the result development-only. Those limitations are sensible. Later use must preserve them rather than treating the report as a performance validation.
+
+## Implementation defects and blockers
+
+### 1. Native scorer compares a logit with a probability threshold — confirmed, critical
+
+`scripts/adapt2CQFrozenScorerNativeV1.py:145–152` returns the linear predictor without applying a sigmoid. Lines 183 and 217–219 compare this value with the preserved `timingThreshold`. That threshold was computed from probabilities: `scripts/twoCqEventDrivenFingerprintFreezeV1.py:184–190,211–215` calls `timing.predict`, whose implementation applies a sigmoid at `scripts/twoCqCausalEntryTimingFingerprintV1.py:557–559`.
+
+The preserved probability cutoff is 0.4622968637150163. Its correct logit cutoff is −0.15109936969630694. The adapter instead uses +0.4622968637150163 as a logit cutoff, equivalent to a probability cutoff of 0.6135589144144981. An actual frozen-model vector constructed to yield logit approximately zero has probability 0.5: the original scorer accepts it and the adapter rejects it.
+
+Fix by defining one shared scoring function with an explicit score domain. Test exact parity across representative and extreme vectors, including the threshold and ties. This is a functional defect even if changing the cutoff happens to improve a particular retrospective PnL table; choosing the accidental version after seeing performance would be a new hypothesis.
+
+### 2. Native and training event boundaries differ — confirmed, critical for any exact-parity claim
+
+Training constructs each selected/control state **after** an external transaction: `twoCqDecisionSystemDecompositionV1.py:410–426` uses `event.post_state` and includes that event in the prior sequence. Its wrapper at lines 382–390 supplies a synthetic current event whose pre-state and post-state both equal the supplied state.
+
+The native adapter calls the generic feature function on the actual event and the earlier history (`adapt2CQFrozenScorerNativeV1.py:201–209`), then appends the current event at line 249. The generic function reads `current.pre_state` and aggregates only `prior` (`twoCqCausalEntryTimingFingerprintV1.py:326–352`). It therefore scores a different point in the event sequence. The sibling native audit reproduced the difference on one external 1 SOL buy: native gross 250 ms buy flow 0 versus training 1 SOL, curve progress 0 versus 0.03333, log event index 0 versus 0.69315.
+
+The preserved scorer JSON also declares a candidate universe of age <=120 seconds, an active curve, complete causal history, selection by `crossMintModel`, and the first rising crossing per lifecycle. The adapter implements only `timingModel`, has no 120-second age gate, only scores buys, and allows a new signal after a 300-second window. Sells update history but do not update `last_score`, so crossings after a sell can be missed or misclassified. These are material policy differences. The adapter contract declares `policy_frozen=false`, so the precise conclusion is that it is not an exact implementation of the preserved composite policy—not that an established live policy has been shown to violate its own final freeze.
+
+Further domain differences need explicit handling: training excludes the teacher wallet from flow aggregates by default; native passes an empty excluded-wallet set. Excluding teacher identity from admission is appropriate for the objective, but a model fit on different flow semantics requires a new development comparison. Excluding teacher transactions from authoritative reserve evolution would be wrong even if teacher identity is never used as a signal.
+
+### 3. Tied scores can manufacture perfect top-1 and AP — confirmed
+
+`twoCqCausalEntryTimingFingerprintV1.py:604` ranks the positive as `1 + number of strictly greater scores`. Thus, every member of a tied maximum receives rank one. `average_precision` at lines 571–582 sorts `(score,label)` in descending order, so positives are placed before negatives within a tie.
+
+Probe: one positive and nine negatives, all scores exactly 0.5. The implementation reports top-1 100%, top-3 100%, MRR 1, and AP 1. Correct randomized top-1 is 10%; threshold-grouped AP is 0.1. The same code correctly reports AUC and pairwise concordance 0.5, making the contradiction visible.
+
+The old sealed validation runner inherits the optimistic ranking implementation (`twoCqPrimaryPolicySealedValidationV1.py:117–135`). Later code explicitly rejects top ties (`twoCqN350FrozenPolicyEconomicsSandboxV1.py:105–112`; `twoCqProspectiveDatasetAllocationV1.py:176–180`). This inconsistency must be resolved before comparing metric versions. The full historical assessment score arrays are absent, so the actual size of tie inflation is unknown. Do not claim that all reported top-1 performance disappears.
+
+A useful repaired report should include unique-top-1, tie-rejected top-1, randomized tie credit, tie mass by feature family, threshold-grouped AP, and rank correlation/concordance. Rank using the raw linear predictor to avoid unnecessary sigmoid saturation ties, while retaining probability scores for thresholds if that is the declared convention.
+
+### 4. A future CREATE receipt can be accepted and converted to age zero — confirmed temporal path
+
+`twoCqDecisionSystemDecompositionV1.py:393–468` does not require CREATE receipt to be at or before each selected external event. The Tier-A diagnostic check at `twoCqPostFixEndToEndCollectionDiagnosticV1.py:309–310` establishes observer-start <= CREATE < teacher, which does not establish CREATE <= selected state. `safe_log` clamps negative ages to zero at `twoCqCausalEntryTimingFingerprintV1.py:304–305,332`.
+
+Probe: selected external event at 1100 ms, CREATE received at 1500 ms, teacher at 2000 ms. The temporal example is accepted, even though CREATE was unavailable at its selected state. Raw age −400 ms becomes `log_age_ms=0`.
+
+The cross-mint builder separately limits CREATE receipts to <= its common boundary (`twoCqDecisionChoiceSetV1.py:226–229`), so this specific proof must not be used to explain the cross-mint age median without further evidence. For both paths, retain nanoseconds and batch/order metadata, reject or mark unavailable future metadata, and audit zero-age positives against actual CREATE lineage.
+
+An older CREATE parser marks every `metadata.discoveredMint` in a CREATE-classified transaction as created (`twoCqDecisionChoiceSetV1.py:134–138`), which can misclassify unrelated accounts/mints. A later repair resolves the actual Create instruction mint (`twoCqChoiceSetCoverageRepairV1.py:36–59`). Missing parent tapes prevent certifying which decoder generated the frozen examples.
+
+### 5. “Cross-boundary repeat mints excluded” covers only the chosen teacher mint
+
+`twoCqDecisionSystemDecompositionV1.py:516–521` records `row['mint']` for training episodes and excludes assessment episodes whose selected mint is in that set. It does not check mints among cross-sectional controls. Synthetic train target A/control C and assessment target B/controls A,C pass with zero exclusions and an A,C candidate-mint intersection.
+
+This is not automatically forward leakage: using earlier observations of an asset in training can be valid for a chronological deployment estimand. It does invalidate a broad claim that the complete candidate populations are mint-disjoint, and it creates correlated trajectories and potentially repeated control observations. The report's 76 timing assessment episodes contain 67 unique mints. Confidence intervals and overlap accounting must reflect that.
+
+Specify the intended generalization target: future time on the live universe, never-before-seen mints, or both. Produce separate metrics for each, purge any train outcome windows overlapping assessment feature/entry windows, and cluster dependence by mint and market time. Do not infer independent sample size from event-row count.
+
+### 6. Native controls can be ongoing high-score states on the signal's own path — confirmed
+
+`adapt2CQFrozenScorerNativeV1.py:239–247` sends every non-crossing buy to controls, even if its score remains above threshold immediately after a signal. The window builder (`materialize2CQFrozenScorerWindowsV1.py:69–135`) can then give signal and control windows the same future marks.
+
+Probe with a constant above-threshold toy model: one signal at 1000 ms, three controls at 1100, 2200, and 7000 ms; all controls are above threshold, all share the signal's mint, and the first control and signal share exactly the same downstream mark signatures `s2`,`s3`.
+
+This could be a deliberately paired comparison of first crossing versus persistence. It cannot serve as an independent clean no-signal baseline. Decide whether the target is a policy comparison, a matched opportunity excess return, or descriptive conditional returns. Generate controls accordingly and model covariance explicitly. A legacy separate control generator also selects rows from its candidate set without removing them and fails to enforce its populated `used_mints`; root audit owns that finding.
+
+### 7. Autonomous cross-sectional ranking uses each mint's last-event clock — confirmed
+
+At `twoCqAutonomousWhenV2.py:145`, features are constructed using `e.received_ns`, the mint's last event, instead of the common `tick_ns`. The candidates are then ranked against each other at the common tick. Short-flow and recency features therefore remain frozen on stale activity rather than decaying with time.
+
+Probe: last event 1100 ms, decision tick 5000 ms. Emitted-style features show 250 ms gross buy flow 2 SOL and recency zero. At the actual decision tick, that 250 ms flow is zero and `log_ms_since_last_external` is log1p(3900), approximately 8.269. Historical cross-mint feature construction correctly used the common boundary (`twoCqDecisionChoiceSetV1.py:244–246`), so this is another training/deployment semantic difference.
+
+The same autonomous script deliberately removes teacher trades from both state updates and ticks (`twoCqAutonomousWhenV2.py:117–124`). Teacher identity must not cause admission, but all actual trades must update market state. Otherwise reserve paths, flow, and candidate persistence differ from the market an independent executor experiences. A teacher-exclusion sensitivity analysis should be explicitly diagnostic, not the market-state truth.
+
+### 8. Finalized information is associated with earlier receipt clocks — availability issue requiring evidence
+
+`twoCqDecisionSystemDecompositionV1.py:292–326` decodes successful finalized transaction TradeEvent logs into pre/post reserves, then assigns the earlier compact-arrival receipt timestamp. `twoCqDecisionChoiceSetV1.py:118–149` similarly considers successful finalized transactions. This can provide correct eventual chain history but does not prove that success status, complete inner instructions, actual amounts, and reserve effects were known when the live receiver saw a shred.
+
+The missing data are the availability clocks, not merely another market timestamp. Each record needs market order, first receipt, full transaction availability, decode completion, execution-success availability, and confirmation/finality clocks. A reconstruction may be correct as an ex-post state label yet unavailable to a strategy at its stated decision time. The exact magnitude of this potential availability/selection bias cannot be measured from this bundle. Native audit covers its concrete transport and state materializer implications.
+
+## What the present model estimates
+
+Temporal labels designate the final external event before an eventual teacher entry as positive, with earlier external states in the same eventual teacher episode as controls (`twoCqDecisionSystemDecompositionV1.py:403–444`). This is a defensible supervised target for studying teacher timing. It is not a sample of every market opportunity, and it does not distinguish a profitable entry from an unprofitable teacher action. Sampling the last state before a known future teacher event is target definition; the critical leakage risk appears when its selected timing/universe is treated as independently available opportunity selection.
+
+The cross-mint task asks which mint the teacher selected at a teacher-chosen decision clock. The chosen mint just had a fresh event while many controls are older/quieter. Candidate eligibility also depends on `teacher_exposure_raw(prior) <= 1` (`twoCqDecisionChoiceSetV1.py:206–207,237–239`; repaired builder `twoCqChoiceSetCoverageRepairV1.py:278–280`). That represents teacher inventory availability, not the independent strategy's inventory and capital constraints. An independent executable universe must substitute the strategy's own deterministic position state.
+
+Class-balanced training gives each positive weight 0.5 and divides 0.5 among its episode's negatives (`twoCqCausalEntryTimingFingerprintV1.py:501–513`). The resulting sigmoid is not a calibrated natural-market probability of teacher action, much less a probability of net profit. The P10 threshold is a training-recall target. It has no demonstrated relationship to alert frequency, expected PnL, transaction cost, or capital capacity.
+
+The teacher may still be useful: teacher-associated market bursts are hypotheses worth testing. A one-second delayed system could also benefit from a persistent phenomenon that begins before or around teacher activity. But the profitability test must start at an independently observable boundary and charge for the later actual entry state. Deleting subsequent teacher demand from replay is not a valid market counterfactual; stratifying subsequent teacher presence is a diagnostic to see whether an apparent signal is concentrated around that special actor.
+
+## Cohort, experimentation, and freeze audit
+
+The source contains several different N350 concepts; their ordinal ranges must never be merged under a generic N350 label.
+
+| Lane | Intended split / evidence | Audit interpretation |
+|---|---|---|
+| Historical teacher decision freeze | Original development 1–350; sealed 351–500. `twoCqDecisionSystemDecompositionV1.py:174–185` | Preserved report is development-only; sealed report absent. |
+| Later full-meta allocation | WHAT validation 1–150; V2 development 151–500; V2 holdout 501–650; reserve 651+. `twoCqProspectiveDatasetAllocationV1.py:25–30` | Source has hashed, chained allocation logic; actual allocation manifests absent. |
+| V2 fingerprint development | Verifies exact 151–500, unique signature/mint, chronology, hashes; five expanding folds. `twoCqV2FingerprintDevelopmentV1.py:71–101,153–170` | Good development discipline. Compact/full selection uses development folds; fresh validation still required. |
+| Autonomous frozen development fit | Pins protocol, manifest, receipt, and model hashes; refuses overwrite. `twoCqAutonomousWhenFrozenDevelopmentFitV1.py:342–351` | Good immutability structure, but source cohort and evidence absent. |
+| Autonomous threshold choice | Tests 51 threshold quantiles and chooses precision subject to >=90% recall on OOS development folds. Same file 403,428–456 | Those folds become model-selection data. Do not reuse their selected performance as untouched validation. |
+| N350 economics sandbox | Pins policy/model/engine/data, disallows validation access; rejects ties. `twoCqN350FrozenPolicyEconomicsSandboxV1.py:67–91,105–112` | Explicitly teacher-conditioned development economics, not autonomous validation. |
+| Multileg economics playground | `twoCqN350MultiLegEconomicsPlaygroundV1.py`, non-authoritative development labeling | Honest exploratory labeling does not restore independence after repeated outcome viewing. |
+| Older executable fingerprint discovery | Leaderboard score includes `holdout['pf'] * 0.7`; `durableExecutableFingerprintDiscoveryV2.py:620–663` | This “holdout” is used for selection and is validation data, not a final confirmation set. Active-lane dependency is unproven. |
+
+The preserved event freeze hashes its input data and contract but not trainer code, and overwrites scorer/report on rerun (`twoCqEventDrivenFingerprintFreezeV1.py:354–378,425,465`). A code change can therefore produce a different frozen scorer under the same accepted input contract. Later scripts have stronger immutability checks. The appropriate fix is an immutable experiment registry linking code revision, exact source input hashes, complete policy, selected hyperparameters, reason for each trial, and every output viewed. No supplied evidence proves a sealed cohort was secretly accessed; no source flag can prove that humans did not inspect it elsewhere.
+
+One additional integration issue worth checking before any future sealed run: `twoCqPrimaryPolicySealedValidationV1.py:89` expects split name `VALIDATION_SEALED`, while the current V3 census writes `UNTOUCHED_VALIDATION` at `twoCqProspectiveTierAEntryCensusV3.py:599`. This is a blocker if these files are directly connected without a transformation. Their active wiring is not established by the archive.
+
+## Single best next build
+
+Build one **bitemporal opportunity ledger plus shared replay engine**, initially for one native venue and one exact event representation. It should be small enough to finish before collecting another teacher-conditioned laboratory.
+
+1. Append every opportunity and every exclusion before looking at outcomes. Use all market events or a fixed clock, not teacher activity, to form the risk set. Keep one immutable opportunity ID through signal, intended order, rejection/failure, fill, inventory, exit attempts, and realized liquidation.
+2. Share one pure feature function across historical replay, synthetic fixtures, and native observation. Explicitly pass `decision_available_at` and a market-state snapshot. Define whether the triggering transaction is included, use a common cross-sectional clock, preserve actual transaction effects irrespective of teacher identity, and record unavailable inputs instead of silently inventing them.
+3. Separate features requiring exact launch lineage from features requiring only recent complete history and current reserves. Exact age/creator/launch-relative features need validated CREATE data. A short-flow detector using a complete recent interval does not require exact launch age. Economic simulation still requires an authoritative current reserve/fee state and exact route/amount semantics.
+4. At signal time t, freeze the decision. At t+1000 ms, create the intended attempt from the latest state genuinely available then. If a condition is checked at t+1000 ms and can cancel or choose the trade, the policy decision has moved to that time; charge a further execution delay appropriate to that decision. Capture fills, misses, failures, migration, unavailable liquidation, and stale states explicitly.
+5. Use the same own-inventory/capital/concurrency rules for candidates and controls. A repeated same-mint signal while a position is open cannot quietly become another independent trade. Keep a counterfactual event-response study separate from a feasible portfolio simulation.
+6. Provide structural invariants: changing/deleting future records cannot change an earlier feature/action; code/model/fee hashes are fixed; every fee and token amount reconciles; duplicates do not duplicate fills; tied ranks follow a declared rule; common-clock feature age decays; all admitted amounts and states have their availability clocks; no sample is dropped solely because its exit is unattractive or unobservable.
+
+This build resolves the highest-value uncertainty: whether independently observable conditions survive a one-second entry delay and complete execution economics. Completing the 48-feature classifier alone cannot resolve that.
+
+## Ranked experiment program
+
+Ranks below express expected information gained per engineering time and relative likelihood of surviving parity scrutiny, not numerical probabilities of making money. Immediate means executable against supplied source/report or against the owner's already-preserved data if the missing tapes are available; it does not imply this archive contains those tapes.
+
+### Rank 1 — Causal/parity falsification, immediate, hours
+
+**Question:** Are the reported signals actually the declared signals at the declared clock? Run the supplied adversarial probes, correct score units and metrics in an isolated branch, then replay identical event fixtures through training and native entry points. Include post-buy, post-sell, multi-event transaction, same-clock ordering, future CREATE, missing lineage, duplicate event, stale candidate, and threshold ties. Use actual frozen coefficients as a comparator; do not refit.
+
+**Output:** `parity-audit` with feature-level deltas, score delta, threshold decision delta, universe/admission delta, deterministic fixtures, exact code/model hashes, and prefix-invariance results. **Invalidation:** any unexplained difference in the same declared policy blocks interpreting its native experiment as a frozen-policy test. This is the highest-information/lowest-cost first step; it is an engineering qualification, not a profit test.
+
+### Rank 2 — Teacher-edge decomposition and cost ceiling, existing tapes if available, one to two days
+
+**Question:** Does the interesting movement occur before an independent entry could reach it, and does any plausible post-delay opportunity remain? Reconstruct each preserved historical episode with observable external-event boundaries, including nonselected earlier states; produce price/reserve paths relative to signal, teacher, and t+1000 ms. Compare the simplest 250 ms flow/price burst against the repaired frozen timing score and a lifecycle/recency baseline. Correct ties, clock reversals, candidate lineage, and within-mint overlap before describing relative metrics.
+
+For all intended sizes 0.1/0.5/1 SOL, use authoritative fee/reserve economics and separately show spot-mark, executable quote, full round-trip, and failure-inclusive outcomes. Report pre-entry run-up, execution-cost share, immediate round-trip loss, net fixed-horizon return at 5/15/60 seconds, and an explicitly labeled oracle maximum-exit upper bound. The oracle bound is only a falsification device: if even a perfect hindsight exit fails at the delayed executable entry, stop optimizing exits for that cohort. An oracle positive result is not a strategy.
+
+**Controls:** same-clock eligible mints with matched predecision depth, venue, age band, and baseline volatility; do not match on the particular burst variable whose incremental value is being tested. Report both overlapping path diagnostics and a nonoverlapping one-entry-per-mint policy study. **Output:** `delay-cost-decomposition`, with every episode, all exclusions, unconditional attempted-trade denominator, cost components, lead distributions, control covariance, and leave-best-winner-out sensitivity. **Invalidation:** missing true state/fees prevents a profitability interpretation; negligible or negative delayed oracle ceiling deprioritizes this family. This test is information-rich but cannot certify market-wide profitability because the source universe remains teacher-conditioned.
+
+### Rank 3 — Simple independent burst continuation, new native capture, primary economic test
+
+**Hypothesis:** a short multi-participant burst predicts enough subsequent demand to cover entry/exit impact and fees after one second. Use only features with proved native semantics: signed executed flow over 250 ms and one second, positive quote-price change over 250 ms, consecutive buys, distinct buyers, concentration, recent sell pressure, and current depth. A starting fixed rule can be the existing simple positive-250-ms-flow/positive-price/consecutive-two-buys rule, explicitly named development candidate; select at most one modest participant/depth refinement on a separate development block.
+
+**Boundary:** after the triggering executed event is completely available; evaluate the post-event state. **Delay:** 1000 ms primary; 2000/3000 ms diagnostics reported without selecting the best delay. **Size:** 0.1 SOL primary; 0.5/1 SOL paired capacity cases, not three independently optimized policies. **Exit:** fixed 15 seconds after actual entry, with explicit exit execution delay and a predetermined retry/time-out/liquidation rule. Five- and 60-second exits may be descriptive diagnostics, not alternative confirmatory winners. Use actual current fee schedule, integer rounding, impact, network fee/priority/tip, account creation, slippage limits, failures, and residual inventory.
+
+**Controls:** uniformly sampled eligible same-clock opportunities from the full native risk set, matched on predecision venue/fee epoch/depth/age/baseline volatility and independent of future outcomes. Exclude the same active mint/path from the unpaired no-signal comparator. Additionally run a shared-stream capital-constrained control policy; the treatment mean and the paired excess-return mean answer different questions.
+
+**Minimum staging targets:** roughly 100 independent episodes for engineering coverage only; 500 distinct nonoverlapping development episodes over at least seven market days to estimate cost/tail structure; then a power-sized fresh test, with 1,000 independent opportunities over at least 14 days as a practical floor rather than a proof threshold. A planned effect of 0.5% with 10% per-trade standard deviation requires about 3,136 IID observations for 80% power at a conventional two-sided 5% level; 20% standard deviation requires about 12,544, before clustering/heavy tails. Use these calculations to set realistic collection time.
+
+**Output:** `burst-native-fixed15` with complete funnel, net SOL per intended attempt, per filled attempt, per capital-time, mean and block/mint-clustered interval, daily PnL, loss quantiles, capacity table, missing-state downside bounds, concentration in best winners/days, entry/exit failures, hold-time and inventory metrics, matched excess return, and latency stress. **Invalidation:** no positive net mean under primary all-attempt accounting, cost dominance, unresolved availability mismatch, or inability to liquidate makes the candidate fail; a planned futility checkpoint may reject if its upper confidence bound cannot support a worthwhile effect. No live recommendation follows a positive result.
+
+### Rank 4 — Persistence / slower confirmation, same native capture, stronger parity prospects
+
+**Hypothesis:** bursts that remain supported after an observable confirmation interval have more durable edge and lower timing fragility. Use the same baseline opportunity ledger. At a predetermined one- or two-second confirmation point, require sustained net flow, multiple distinct buyers, low sell reversal, and acceptable cost/depth. This is a new decision at confirmation time; charge the one-second delay from that point, not from the original burst. Choose one confirmation interval and one fixed exit using development data; compare against the burst family on a fresh common block.
+
+The primary 0.1 SOL/15-second policy can remain fixed; 0.5/1 SOL show capacity. Consider a 30-second exit only as a separately registered family, not as silent optimization. **Output:** `persistence-vs-burst`, with the entire admission funnel, conditional survival rate, extra delay, forgone trades, trade-level paired differences where meaningful, and portfolio opportunity-cost comparison. **Invalidation:** apparent improvement that comes solely from dropping failed observations, using future confirmation while retaining earlier entry prices, or concentration in one token/time block. Relative parity prospects are better than a subsecond imitation hypothesis because the rule explicitly waits for sustained information; expected edge is unknown.
+
+### Rank 5 — Slower/deeper venue family, new native capture, potentially better economic feasibility
+
+**Hypothesis:** a slower flow/absorption or shallow-pullback continuation signal in deeper pools survives one-second latency and 0.5–1 SOL impact better than very early bonding curves. Define venue/pool eligibility prospectively from current depth and executable routes. Do not select only tokens later known to migrate or survive. Use 5–30 second flow features, sell absorption (net selling with limited price decline), recovered buy participation, and quote-cost/depth as development candidates.
+
+Use one fixed 60-second exit and the same 1000 ms delay, fee/impact/failure accounting, three sizes, own-inventory constraints, and contemporaneous baseline. **Output:** `venue-feasibility-and-absorption`, reporting eligible universe size, cost floor/capacity, signal prevalence, route/reliability coverage, net conditional response, and same-time risk-adjusted control comparison. **Invalidation:** no cost advantage, insufficient independent opportunities, unavailable routes/exits, or no excess return after costs. Rank behind the simpler shared-Pump experiment in information per initial build time because it may require a new exact decoder/state engine; rank favorably on potential latency/impact robustness, not on unobserved profitability.
+
+### Rank 6 — Exit optimization, only after an entry family survives
+
+Fix entry/admission/delay first. On separate development data, compare a very small set of executable fixed-time or event exits, each with exit latency and fill constraints. A stop requires an observable crossing, an order submitted after that crossing, and its subsequent fill or failure; no instantaneous fill at a favorable bar threshold. Evaluate exits on a common inventory/stream ledger and account for censoring and delayed liquidation. Freeze one exit before fresh validation. Adaptive exits that need dozens of thresholds are low-priority until there is evidence of robust entry edge.
+
+## Registration, stopping, and final evidence standard
+
+Register the target population, sample unit, decision clock, feature semantics, exact code/model hashes, three-size treatment, primary size/exit, all costs, slippage/failure rules, capital/concurrency, number of planned families, development/validation windows, primary endpoint, dependence model, and stopping rule before any confirmatory outcomes are read. Bug fixes affecting actions or accounting reset the confirmatory version. Old results remain exploratory and useful for diagnosis; they cannot become untouched by relabeling a report.
+
+A credible positive shadow result needs at least: causal prefix invariance and feature parity; a complete opportunity/attempt denominator; independently priced and liquidatable entries/exits; stable positive net return after costs with a defensible uncertainty interval; positive incremental return against a valid contemporaneous baseline; no dependence on one token/day; and survival under predetermined latency/fee/missed-fill stress. Sample size must be based on precision and dependency, not on a round episode count. A high profit factor, impressive MFE, teacher top-1 accuracy, or positive selected-cohort mean meets none of those gates alone.
+
+No result available in this archive is enough to call the strategy profitable. The fastest credible path is to reduce the number of hypotheses, repair the causal/accounting path, observe the complete native opportunity population, and let one fixed economic experiment kill or justify each candidate family.

@@ -1,0 +1,11 @@
+{
+  "schema": "KEFI_CANONICAL_VENUE_RESOLUTION_V1",
+  "outcome_blind": true,
+  "4z9emEudWUav1nD83CqpQJYYj7ihJmMfSzdMAHTPj848KYZJLxSrSVYSRr2kW9hjJUumwuFCPk5i9KCTGRMC6Wiw": {
+    "arm_id": "ARM07_PUMPSWAP_DIRECT",
+    "program_id": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+    "direct_invocation": true,
+    "canonical_slot": 458661820,
+    "resolution_source": "finalized_transaction_program_log"
+  }
+}

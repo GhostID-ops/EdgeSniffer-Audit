@@ -1,0 +1,24 @@
+[Unit]
+Description=EdgeSniffer 2CQ route-init finalized registry V1 (outcome-blind)
+After=edgesniffer-2cq-route-init-arrival-observer-v1.service
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/bot/EdgeSniffer/scripts
+RuntimeDirectory=edgesniffer-2cq-route-init-registry-v1
+# Immutable boundary after the observer moved to explicit init/migration-only capture.
+Environment=ROUTE_INIT_STRICT_CAPTURE_START_UNIX_NS=1789888076859856694
+ExecStart=/usr/bin/flock -n /run/edgesniffer-2cq-route-init-registry-v1/finalize.lock /usr/bin/python3 /root/bot/EdgeSniffer/scripts/twoCqRouteInitRegistryV1.py --arrival-root /mnt/HC_Volume_106775198/edgesniffer-research/2cq-route-init-registry-v1/arrival-candidates-compact --env /root/bot/EdgeSniffer/.env --output /mnt/HC_Volume_106775198/edgesniffer-research/2cq-route-init-registry-v1 --limit 250
+Nice=15
+IOSchedulingClass=idle
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-research/2cq-route-init-registry-v1
+TimeoutStartSec=20min
+MemoryHigh=1G
+MemoryMax=2G
+CPUWeight=10
+IOWeight=10

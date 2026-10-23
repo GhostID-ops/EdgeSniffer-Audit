@@ -1,0 +1,11 @@
+{
+  "schema": "KEFI_MIXED_SOURCE_REGISTRY_LEGACY_MARKER_V1",
+  "status": "LEGACY_RESEARCH_INFRASTRUCTURE",
+  "source_registry": "research/kefi-13-arm-program-v1/registry.json",
+  "source_registry_sha256": "ebf49fb316527a55f02343dd9370f70662b20ed430c4e58da05cc8fadd4a4a2c",
+  "reason": "The registry combines KEFI route candidates with 2CQ-derived populations and route inventory. It is preserved for evidence compatibility but must not be interpreted as a KEFI-only fingerprint registry.",
+  "keFi_evidence_rule": "Only route observations proven from the KEFI wallet may enter the replacement KEFI-only registry.",
+  "preserve_existing_hashes": true,
+  "live_trading_enabled": false,
+  "collectors_changed": false
+}

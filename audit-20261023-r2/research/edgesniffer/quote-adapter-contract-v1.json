@@ -1,0 +1,41 @@
+{
+  "schema": "A3H3_QUOTE_RECONSTRUCTION_AND_AVAILABILITY_V1",
+  "purpose": "Retrospective engineering validation, not strategy selection or prospective economic validation",
+  "original_opportunities": 78,
+  "original_intentions": 468,
+  "sizes_lamports": [100000000, 500000000, 1000000000],
+  "frozen_policy": "burst receipt+1s; persistence receipt+3s; hold15s plus1s exit delivery; original controls and1s maximum mark age unchanged",
+  "two_distinct_gates": {
+    "arithmetic": "Raw prior canonical curve state plus raw instruction arguments plus separately decoded mint/fee configuration predict realized amounts, four post reserves, protocol/creator fees. Finalized full-block predecessor bracket and cash/token deltas independently check the reconstruction. Never infer pre-state by subtracting the tested event amounts.",
+    "causal": "Every input must be available by the decision/entry/exit boundary. Native decode clocks and later RPC response/reference clocks remain distinct. Layout presence and a recent timestamp alone do not certify write/fork/config continuity. Unknown remains unresolved."
+  },
+  "supported_arithmetic_scope": {
+    "instructions": ["buy", "buy_v2", "buy_exact_sol_in", "buy_exact_quote_in_v2", "sell", "sell_v2"],
+    "quote_currency": "SOL",
+    "curve": "incomplete, non-Mayhem, non-cashback, non-holder-reward, depth0; no configurable creator fee",
+    "mint": "Legacy SPL or Token2022 with no transfer fee and no unsupported transfer-affecting extensions",
+    "exclusions": "v3, partial fills, non-SOL, changed supply, special fee modes, transfer-fee execution and unknown layouts remain unresolved, not failed orders",
+    "size_fixtures": "0.1/0.5/1 SOL are nonlinear mathematical scenarios; do not imply actual executions at those sizes"
+  },
+  "reference_selection": "up to3 signature-hash-ranked same-slot independently decodable predecessor brackets per instruction variant; no arithmetic agreement or return filter; all failures retained",
+  "instruction_comparison": "Preserve program/accounts/raw args/outer index/inner index/inner stack height. Normalize only top-level missing depth versus1 and non-economic UI float/string formatting.",
+  "immutable_results": "Output must be a new directory; pin inputs and verify unchanged after replay. Preserve original boundaries, attempts, controls and policy admission.",
+  "sources": [
+    {
+      "url": "https://github.com/pump-fun/pump-public-docs/tree/639b87fb45c3adeffa6f7c4a1bf0cb85e392bf22/idl",
+      "files": {
+        "reference/pump-639b87f.json": "7616681ea557975f9f623ac211080f22a93060781eaf4765b0a488d980997207",
+        "reference/pump-fees-639b87f.json": "6b9fa3eccc6e06273076a47b581f9fcb9e531bb7c3c88acbcd44db55a4002b29"
+      },
+      "limit": "Pinned public layouts are not proof that every deployed program version implements every semantic assumption. Real transactions validate the reported narrow scope."
+    },
+    {
+      "url": "https://github.com/solana-program/token-2022/blob/3d94b2fa6bf4369f4eb98ea69c188726b05ad64c/interface/src/extension/transfer_fee/mod.rs",
+      "file": "reference/token2022-transfer-fee.rs",
+      "sha256": "2f51ac04733271b7578f0fb8c05805aac237f1521ffa1505b4055c03b6cbda5c",
+      "scope": "Transfer-fee layout, ceiling/cap calculation, older/newer epoch selection; tested arithmetic only, not on-chain transfer-fee route certification"
+    }
+  ],
+  "no_trading": true,
+  "no_net_pnl": true
+}

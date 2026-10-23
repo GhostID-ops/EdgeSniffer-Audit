@@ -1,0 +1,9 @@
+{
+  "schema": "2CQ_AUTONOMOUS_WHEN_V1_INVALID_RUN_V1",
+  "boundaryUtc": "2026-09-25T04:54:06.652833Z",
+  "continuityFailureUtc": "2026-09-25T05:03:36.573689Z",
+  "failure": "ExactCurveError: invalid Borsh bool 211",
+  "ticksBeforeFailure": 527,
+  "scientificStatus": "ABORTED_NO_WHEN_DEVELOPMENT_ROWS_ADMITTED",
+  "outcomeBlind": true
+}

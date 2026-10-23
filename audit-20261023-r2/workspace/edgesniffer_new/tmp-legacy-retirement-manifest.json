@@ -1,0 +1,830 @@
+{
+  "deletions": [
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "3",
+          "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl",
+          "pid": 875549
+        },
+        {
+          "fd": "4",
+          "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl",
+          "pid": 875580
+        },
+        {
+          "fd": "9",
+          "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl",
+          "pid": 1352465
+        },
+        {
+          "fd": "9",
+          "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl",
+          "pid": 1352469
+        },
+        {
+          "fd": "30",
+          "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl",
+          "pid": 1352521
+        }
+      ],
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/candidate-capsules.jsonl",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 31634859479,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "4",
+          "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl",
+          "pid": 875549
+        },
+        {
+          "fd": "6",
+          "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl",
+          "pid": 1352473
+        },
+        {
+          "fd": "6",
+          "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl",
+          "pid": 1352477
+        },
+        {
+          "fd": "6",
+          "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl",
+          "pid": 1352480
+        },
+        {
+          "fd": "6",
+          "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl",
+          "pid": 1352490
+        },
+        {
+          "fd": "3",
+          "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl",
+          "pid": 1352513
+        }
+      ],
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/decision-inputs.jsonl",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 26317948575,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "4",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/decision-receipts.jsonl",
+          "pid": 1352513
+        }
+      ],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/decision-receipts.jsonl",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 4457472873,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [],
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/live-mc5000-selected-events.jsonl",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 324399201,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "3",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_mc5000_prospective_v1/qualifications.jsonl",
+          "pid": 1352473
+        },
+        {
+          "fd": "4",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_mc5000_prospective_v1/outcomes.jsonl",
+          "pid": 1352473
+        },
+        {
+          "fd": "5",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_mc5000_prospective_v1/status.jsonl",
+          "pid": 1352473
+        }
+      ],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_mc5000_prospective_v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 173867232,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "3",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_0p5_v1/qualifications.jsonl",
+          "pid": 1352477
+        },
+        {
+          "fd": "4",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_0p5_v1/outcomes.jsonl",
+          "pid": 1352477
+        },
+        {
+          "fd": "5",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_0p5_v1/status.jsonl",
+          "pid": 1352477
+        }
+      ],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_0p5_v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 362486883,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "3",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_1p0_v1/qualifications.jsonl",
+          "pid": 1352480
+        },
+        {
+          "fd": "4",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_1p0_v1/outcomes.jsonl",
+          "pid": 1352480
+        },
+        {
+          "fd": "5",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_1p0_v1/status.jsonl",
+          "pid": 1352480
+        }
+      ],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_1p0_v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 325851124,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "3",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_2p0_v1/qualifications.jsonl",
+          "pid": 1352490
+        },
+        {
+          "fd": "4",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_2p0_v1/outcomes.jsonl",
+          "pid": 1352490
+        },
+        {
+          "fd": "5",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_2p0_v1/status.jsonl",
+          "pid": 1352490
+        }
+      ],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/bc100_ge2_net60_ge_2p0_v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 292963468,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "3",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1/grossbuy_1s_ge5_fastdetector_v1/qualifications.jsonl",
+          "pid": 1352501
+        },
+        {
+          "fd": "4",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1/grossbuy_2s_ge5_fastdetector_v1/qualifications.jsonl",
+          "pid": 1352501
+        },
+        {
+          "fd": "5",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1/bc50_ge2_grossbuy5s_ge5_fastdetector_v1/qualifications.jsonl",
+          "pid": 1352501
+        },
+        {
+          "fd": "6",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1/status.jsonl",
+          "pid": 1352501
+        }
+      ],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/fast-flow-detector-v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 125968582,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "3",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net1s_ge_5_prospective_v1/qualifications.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "4",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net2s_ge_5_prospective_v1/qualifications.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "5",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_net5s_ge5_prospective_v1/qualifications.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "6",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_1s_ge5_prospective_v1/qualifications.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "7",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_2s_ge5_prospective_v1/qualifications.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "8",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_grossbuy5s_ge5_prospective_v1/qualifications.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "9",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_1s_ge5_prospective_v1/qualifications.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "10",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_2s_ge5_prospective_v1/qualifications.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "11",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_truenet5s_ge5_prospective_v1/qualifications.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "12",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net1s_ge_5_prospective_v1/outcomes.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "13",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net2s_ge_5_prospective_v1/outcomes.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "14",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_net5s_ge5_prospective_v1/outcomes.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "15",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_1s_ge5_prospective_v1/outcomes.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "16",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_2s_ge5_prospective_v1/outcomes.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "17",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_grossbuy5s_ge5_prospective_v1/outcomes.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "18",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_1s_ge5_prospective_v1/outcomes.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "19",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_2s_ge5_prospective_v1/outcomes.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "20",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_truenet5s_ge5_prospective_v1/outcomes.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "21",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net1s_ge_5_prospective_v1/status.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "22",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/net2s_ge_5_prospective_v1/status.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "23",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_net5s_ge5_prospective_v1/status.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "24",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_1s_ge5_prospective_v1/status.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "25",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/grossbuy_2s_ge5_prospective_v1/status.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "26",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_grossbuy5s_ge5_prospective_v1/status.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "27",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_1s_ge5_prospective_v1/status.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "28",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/truenet_2s_ge5_prospective_v1/status.jsonl",
+          "pid": 1352521
+        },
+        {
+          "fd": "29",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1/bc50_ge2_truenet5s_ge5_prospective_v1/status.jsonl",
+          "pid": 1352521
+        }
+      ],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/top3-flow-prospective-v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 1463673777,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/research/full-universe-top3-flow-validation-v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 6787182,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "8",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/service_health.jsonl",
+          "pid": 1352469
+        }
+      ],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/service_health.jsonl",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 169187167,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "3",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/all_scores.jsonl.gz",
+          "pid": 1352469
+        }
+      ],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/all_scores.jsonl.gz",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 71043852,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-production-translation-v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 2231679,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "3",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/all_1s_scores.jsonl.gz",
+          "pid": 1352465
+        }
+      ],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/all_1s_scores.jsonl.gz",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 16981404,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [
+        {
+          "fd": "8",
+          "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/status.jsonl",
+          "pid": 1352465
+        }
+      ],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/model-a-1s-prospective-v2-20260902T221912Z/status.jsonl",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 188822,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-scorer-direct-emitter-v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 138483088,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/executable-alpha-enrichment-v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 94830977,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/memecoin-executable-alpha-atlas-v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 71513975,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/durable-executable-fingerprint-v2",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 65841896,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/reacceleration-v1-forensics-v1",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 47232332,
+      "symlink": false
+    },
+    {
+      "classification": "SUPERSEDED_PROXY_DATA",
+      "intendedAction": "DELETE_AFTER_WRITER_RETIREMENT",
+      "openFdsBeforeRetirement": [],
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/executable-alpha-ranking-engine-v2-full-universe",
+      "reason": "Retired Ranker/MC-proxy derived output, reproducible from preserved normalized evidence and frozen source/specification.",
+      "reproducible": true,
+      "sizeBytes": 220144160,
+      "symlink": false
+    }
+  ],
+  "dfBefore": "Filesystem        1B-blocks        Used   Available Use% Mounted on\n/dev/sda1       80290492416 40597037056 39676678144  51% /\n/dev/sdb       105089261568 83975995392 15727779840  85% /mnt/HC_Volume_106775198",
+  "generatedUtc": "2026-09-06T14:06:37.916690+00:00",
+  "keepUnits": [
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1604933",
+      "unit": "pump-exact-evidence-ledger-v1.service"
+    },
+    {
+      "active": "active",
+      "enabled": "disabled",
+      "mainPid": "1238806",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-source-feed.service"
+    },
+    {
+      "active": "active",
+      "enabled": "disabled",
+      "mainPid": "875556",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-detected-swap-adapter.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "875562",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-mayhem-supply-enricher.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1352461",
+      "unit": "edgesniffer-8ycb-prospective-shadow-v3.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1352462",
+      "unit": "edgesniffer-8ycb-production-translation-v1.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1544856",
+      "unit": "8ycb-sniper.service"
+    }
+  ],
+  "ledger": {
+    "active": "active",
+    "binarySha256": "8de9ec9713cb25ab2fd3e14d6123b47eb2bbb16fba36c4dc377537c338c0ca21",
+    "pid": 1604933
+  },
+  "preservation": [
+    {
+      "classification": "KEEP_UNIQUE_RAW",
+      "exists": true,
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl",
+      "reason": "Point-in-time normalized source evidence and active 8YCB input.",
+      "sha256": null,
+      "sizeBytes": 25084305852
+    },
+    {
+      "classification": "KEEP_UNIQUE_RAW",
+      "exists": true,
+      "path": "/var/lib/edgesniffer-teacher-impulse-parity-v1/detected-swaps.jsonl",
+      "reason": "Source swap evidence feeding normalized observations.",
+      "sha256": "12d0cb32be1c5d123467dde2facb648c70f642d371f21284b74cb90e29e020bb",
+      "sizeBytes": 54289762
+    },
+    {
+      "classification": "KEEP_UNIQUE_RAW",
+      "exists": true,
+      "path": "/root/bot/EdgeSniffer/runtime/research-cache/ranker-v2-exact-curve-rpc-v1.sqlite",
+      "reason": "Historical finalized transaction cache used by exact validation.",
+      "sha256": null,
+      "sizeBytes": 988381184
+    },
+    {
+      "classification": "KEEP_IMMUTABLE_AUDIT",
+      "exists": true,
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/exact-curve-economics-v1",
+      "reason": "Validated exact evaluator evidence.",
+      "sha256": null,
+      "sizeBytes": 28011233
+    },
+    {
+      "classification": "KEEP_IMMUTABLE_AUDIT",
+      "exists": true,
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/exact-curve-independent-redteam-v1",
+      "reason": "Independent red-team evidence and checksums.",
+      "sha256": null,
+      "sizeBytes": 1703749
+    },
+    {
+      "classification": "KEEP_IMMUTABLE_AUDIT",
+      "exists": true,
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-exact-curve-relabel-v1",
+      "reason": "MC-proxy sign-reversal and retirement proof.",
+      "sha256": null,
+      "sizeBytes": 343549301
+    },
+    {
+      "classification": "KEEP_LIVE_EVIDENCE",
+      "exists": true,
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-n25-tiny-live-v1",
+      "reason": "Ranker N25 V1 live evidence.",
+      "sha256": null,
+      "sizeBytes": 131908111
+    },
+    {
+      "classification": "KEEP_LIVE_EVIDENCE",
+      "exists": true,
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-n25-tiny-live-v2",
+      "reason": "Ranker N25 V2 live evidence.",
+      "sha256": null,
+      "sizeBytes": 230492073
+    },
+    {
+      "classification": "KEEP_LIVE_EVIDENCE",
+      "exists": true,
+      "path": "/root/bot/EdgeSniffer/runtime/ranker-v2-n25-tiny-live-v3",
+      "reason": "Ranker N25 V3 transaction, inventory, and exit evidence.",
+      "sha256": null,
+      "sizeBytes": 127135026
+    },
+    {
+      "classification": "KEEP_IMMUTABLE_AUDIT",
+      "exists": true,
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/executable-alpha-ranker-v2-canonical-freeze",
+      "reason": "Frozen scorer and canonical specification.",
+      "sha256": null,
+      "sizeBytes": 235726
+    },
+    {
+      "classification": "KEEP_IMMUTABLE_AUDIT",
+      "exists": true,
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/signals.jsonl.gz",
+      "reason": "Compact prospective Ranker signal evidence.",
+      "sha256": "b4385d070b71c1a1a7bd2f7b411cb97560d68ba1ae7ff037a6aa969e53c2d4d7",
+      "sizeBytes": 475852
+    },
+    {
+      "classification": "KEEP_IMMUTABLE_AUDIT",
+      "exists": true,
+      "path": "/var/lib/edgesniffer-storage-offload-v3/edgesniffer-derived/ranker-v2-prospective-shadow-v2/outcomes.jsonl.gz",
+      "reason": "Compact prospective Ranker outcome evidence.",
+      "sha256": "6375314c2a8bd98bbb130acf29bc529007b09b247ddc9820bab5b1ca1cf5d97b",
+      "sizeBytes": 691044
+    },
+    {
+      "classification": "KEEP_ACTIVE_RUNTIME",
+      "exists": true,
+      "path": "/var/lib/pump-exact-evidence-ledger-v1",
+      "reason": "Active exact evidence ledger.",
+      "sha256": null,
+      "sizeBytes": 926772083
+    },
+    {
+      "classification": "KEEP_ACTIVE_RUNTIME",
+      "exists": true,
+      "path": "/root/bot/8ycb-sniper",
+      "reason": "8YCB project, explicitly out of scope.",
+      "sha256": null,
+      "sizeBytes": 5150830435
+    },
+    {
+      "classification": "KEEP_ACTIVE_RUNTIME",
+      "exists": true,
+      "path": "/var/lib/8ycb-sniper",
+      "reason": "8YCB runtime, explicitly out of scope.",
+      "sha256": null,
+      "sizeBytes": 1004943
+    }
+  ],
+  "retireUnits": [
+    {
+      "active": "inactive",
+      "enabled": "disabled",
+      "mainPid": "0",
+      "unit": "edgesniffer-ranker-v2-n25-tiny-live-v3-emitter.service"
+    },
+    {
+      "active": "active",
+      "enabled": "disabled",
+      "mainPid": "1357511",
+      "unit": "edgesniffer-ranker-v2-n25-tiny-live-v3.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1354398",
+      "unit": "edgesniffer-ranker-v2-n25-v3-disk-guard.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1352467",
+      "unit": "edgesniffer-ranker-v2-production-translation-v1.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1352469",
+      "unit": "edgesniffer-ranker-v2-prospective-shadow-v2.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1352465",
+      "unit": "edgesniffer-model-a-1s-prospective-v2.service"
+    },
+    {
+      "active": "active",
+      "enabled": "disabled",
+      "mainPid": "1352473",
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-mc5000-prospective-v1.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1352477",
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-0p5-v1.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1352480",
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-1p0-v1.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1352490",
+      "unit": "edgesniffer-teacher-impulse-bc100-ge2-net60-ge-2p0-v1.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1352501",
+      "unit": "edgesniffer-teacher-impulse-fast-flow-detector-v1.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1352521",
+      "unit": "edgesniffer-teacher-impulse-top3-flow-prospective-v1.service"
+    },
+    {
+      "active": "active",
+      "enabled": "disabled",
+      "mainPid": "875580",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-observation-emitter.service"
+    },
+    {
+      "active": "active",
+      "enabled": "disabled",
+      "mainPid": "875549",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-capsule-normalizer.service"
+    },
+    {
+      "active": "active",
+      "enabled": "disabled",
+      "mainPid": "1352513",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-nosubmit.service"
+    },
+    {
+      "active": "active",
+      "enabled": "enabled",
+      "mainPid": "1352506",
+      "unit": "edgesniffer-teacher-impulse-mc5000-selected-event-adapter.service"
+    },
+    {
+      "active": "activating",
+      "enabled": "disabled",
+      "mainPid": "0",
+      "unit": "edgesniffer-teacher-impulse-production-rule-a-v1.service"
+    },
+    {
+      "active": "inactive",
+      "enabled": "enabled",
+      "mainPid": "0",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-child-mc5000-nosubmit.service"
+    },
+    {
+      "active": "inactive",
+      "enabled": "enabled",
+      "mainPid": "0",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-child-mc5000-dom55-nosubmit.service"
+    },
+    {
+      "active": "inactive",
+      "enabled": "enabled",
+      "mainPid": "0",
+      "unit": "edgesniffer-teacher-impulse-parity-v1-child-mc5000-fb5000-nosubmit.service"
+    }
+  ],
+  "schema": "EDGESNIFFER_LEGACY_RESEARCH_RETIREMENT_V1",
+  "totalDeleteBytes": 66383957728,
+  "walletFlat": true
+}

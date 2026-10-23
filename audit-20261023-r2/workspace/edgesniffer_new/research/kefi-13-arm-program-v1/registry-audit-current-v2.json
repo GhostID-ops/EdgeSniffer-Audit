@@ -1,0 +1,13 @@
+{
+  "arm_count": 13,
+  "blocked_or_partial_count": 9,
+  "exact_component_missing_paths": [],
+  "frozen_policy_count": 13,
+  "jupiter_fallback_enabled": false,
+  "live_trading_enabled": false,
+  "non_exact_referenced_missing_paths": [],
+  "ready_for_discovery_count": 4,
+  "schema": "KEFI_CANONICAL_13_ARM_REGISTRY_AUDIT_V1",
+  "status": "PASS",
+  "unique_arm_ids": true
+}

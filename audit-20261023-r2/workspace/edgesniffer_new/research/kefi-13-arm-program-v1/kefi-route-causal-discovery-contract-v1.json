@@ -1,0 +1,97 @@
+{
+  "schema": "KEFI_ROUTE_CAUSAL_DISCOVERY_CONTRACT_V1",
+  "contract_id": "kefi-route-causal-discovery-v1",
+  "status": "PREREGISTERED_NOT_SELECTED",
+  "read_only": true,
+  "research_only": true,
+  "trading_enabled": false,
+  "routes": [
+    {
+      "route_id": "KEFI_ROUTE_PUMPSWAP_DIRECT",
+      "route": "PUMPSWAP_DIRECT",
+      "required_evidence": "native exact top-level PumpSwap route, genuine KEFI wallet transition, native same-route controls"
+    },
+    {
+      "route_id": "KEFI_ROUTE_PUMPSWAP_CPI",
+      "route": "PUMPSWAP_CPI",
+      "required_evidence": "native exact PumpSwap CPI route, genuine KEFI wallet transition, native same-route controls"
+    }
+  ],
+  "clue_use": {
+    "source": "kefi-route-clue-audit-current-v1.json",
+    "use": "descriptive_context_only",
+    "may_select_policy": false,
+    "may_change_frozen_policy": false,
+    "may_read_validation_outcomes": false
+  },
+  "causal_execution": {
+    "entry_delay_seconds": 1,
+    "sizes_sol": [
+      0.1,
+      0.5,
+      1.0
+    ],
+    "extra_slippage_stress_bps": [
+      0,
+      25,
+      50
+    ],
+    "fees": "canonical native route fee fields",
+    "price_impact": "canonical PumpSwap constant-product quote using native pre-entry state",
+    "failed_or_missed_trades": "counted explicitly and retained as failures"
+  },
+  "entry_filters": [
+    "BASELINE",
+    "MIN_PRE_LIQUIDITY_25_SOL",
+    "MIN_PRE_LIQUIDITY_50_SOL",
+    "MIN_PRE_LIQUIDITY_100_SOL",
+    "MAX_ENTRY_NOTIONAL_LIQUIDITY_25_BPS",
+    "MAX_ENTRY_NOTIONAL_LIQUIDITY_50_BPS",
+    "MAX_ENTRY_NOTIONAL_LIQUIDITY_100_BPS",
+    "NONNEGATIVE_PRE_30S_NET_BUY_FLOW",
+    "PRE_30S_NET_BUY_FLOW_AT_LEAST_1_SOL"
+  ],
+  "exit_policies": [
+    "FIXED_5S",
+    "FIXED_10S",
+    "FIXED_15S",
+    "FIXED_30S",
+    "FIXED_60S",
+    "FIXED_120S",
+    "FIXED_300S",
+    "TP100",
+    "TP200",
+    "PROTECT100_0",
+    "PARTIAL50_TP100",
+    "PARTIAL50_TP200"
+  ],
+  "controls": {
+    "required": true,
+    "same_market_period": true,
+    "route_specific": true,
+    "control_definition": "native exact non-KEFI PumpSwap BUY on the same route and same pool/time window",
+    "venue_only_controls_allowed_for_promotion": false
+  },
+  "discovery_rule": {
+    "historical_discovery_allowed": true,
+    "validation_data_allowed": false,
+    "policy_selection": "disabled_until_native_coverage_gate_and_complete_controls",
+    "ranking": "descriptive_only_until_predeclared_selection_gate",
+    "no_mixing_direct_and_cpi": true
+  },
+  "promotion_gate": {
+    "minimum_genuine_keFi_buys_per_route": 50,
+    "minimum_native_controls_per_route": 50,
+    "minimum_causal_entries_per_route": 50,
+    "minimum_t_plus_1_mark_coverage": 0.8,
+    "maximum_causal_mark_delay_seconds": 30,
+    "native_lineage_required": true,
+    "fresh_prospective_validation_required": true,
+    "live_or_dust_execution_allowed": false
+  },
+  "freeze": {
+    "policy_frozen": false,
+    "winner_selected": false,
+    "promotion_performed": false
+  }
+}

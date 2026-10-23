@@ -1,0 +1,316 @@
+{
+  "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+  "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+  "holdoutRowsInspected": 0,
+  "partitions": [
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 4382,
+        "missingRawArrival": 879
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 33,
+      "exactStateN": 177,
+      "mintN": 64,
+      "partitionKey": "2026/09/06/05",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-06-05.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "839c036dc080033f2d9cc5eddc9bf223c674adf74d53e3868c2bb1e34524706f",
+      "sourceIdentitySha256": "039f009c4c59c02f733a2575f1431f2cb4f1927bee8c3894bc608b4cd90cf127"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 66992,
+        "missingRawArrival": 39336
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 191,
+      "exactStateN": 1324,
+      "mintN": 387,
+      "partitionKey": "2026/09/06/14",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-06-14.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "d0a4bcc12c5c3c079490186e9d529f49a8edc6c717019888d07573dd70e19e2d",
+      "sourceIdentitySha256": "a4b16032333a9c390eb964ddfebf024cdf86c0364de07940154fbf80859fe017"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 63322,
+        "missingRawArrival": 23638
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 245,
+      "exactStateN": 1312,
+      "mintN": 485,
+      "partitionKey": "2026/09/06/17",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-06-17.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "3a7e68b498a09dc1b7c7e628daeceff6cf002d2ba7c0a72487c425a69a60fb9f",
+      "sourceIdentitySha256": "9678af4fdc97c8e84c283f0c5713e59a526a451c0cb031aa84b3d06fcf5a0e21"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 62870,
+        "missingRawArrival": 30810
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 257,
+      "exactStateN": 2378,
+      "mintN": 538,
+      "partitionKey": "2026/09/06/19",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-06-19.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "ff0acc94b87a9b7c6967578666af2aae2885bc7c63c18bd441851886ca554dbd",
+      "sourceIdentitySha256": "346a4253ceebfab26e3600f2ed2924f9fa055abfb87bbe03316eb1aa6bf52784"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 35301,
+        "missingRawArrival": 8171
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 165,
+      "exactStateN": 1037,
+      "mintN": 336,
+      "partitionKey": "2026/09/06/20",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-06-20.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "b3eb48b639acb10f5517db113ea5434e8b77ae9f62b4dce296b4d841db2a9059",
+      "sourceIdentitySha256": "fcd36c4f6bdbacc5759ed230b2cdf19d8d3dadef04bd4e18c7bd9ab4a7066b73"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 61869,
+        "missingRawArrival": 26637
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 263,
+      "exactStateN": 2236,
+      "mintN": 516,
+      "partitionKey": "2026/09/06/21",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-06-21.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "bc1604a997d3be00eda7d47451ca6b1fd73fd1fb924d8ca96e9df811b065f7fa",
+      "sourceIdentitySha256": "b622fabb45cddf3dd209606b1aa4f9a3ba8f79004bb389b323625fa601732617"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 65577,
+        "missingRawArrival": 44670
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 296,
+      "exactStateN": 2277,
+      "mintN": 632,
+      "partitionKey": "2026/09/06/22",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-06-22.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "4f2fd7487a7ab20bad5419fc7cffd1fde8c439bcfee44e110392b2fb0f6302f7",
+      "sourceIdentitySha256": "33a00b203addab685284d49929c85bcbd927a9f309b2d4a0e5b60343f9475447"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 38022,
+        "missingRawArrival": 17277
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 200,
+      "exactStateN": 783,
+      "mintN": 516,
+      "partitionKey": "2026/09/06/23",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-06-23.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "cb57372fd995dd51ba7df6c5b45947df7038316a35790f734dd1a5b3e0fc230c",
+      "sourceIdentitySha256": "b0394f6fc6265ae2bc82a3868b8da79f79b7cf4ff70e841e5f0751bac4fa3695"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 65725,
+        "missingRawArrival": 16052
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 230,
+      "exactStateN": 1023,
+      "mintN": 446,
+      "partitionKey": "2026/09/07/00",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-07-00.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "0a5d66a009b72e03892d1620ce86adb6896ab2017ff5f2caaa934e9f17b0edd0",
+      "sourceIdentitySha256": "10ec7d00eb251c2e71738735eca97602847b70ae5b8a4887403172cfeba0f2ed"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 32227,
+        "missingRawArrival": 10814
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 133,
+      "exactStateN": 800,
+      "mintN": 343,
+      "partitionKey": "2026/09/07/02",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-07-02.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "f5d831492b2c36c409f7b60f9f18d3507497cb02ef5654001965c6d3333ae883",
+      "sourceIdentitySha256": "b6905e029be68aa10416981f3d1a5de4cc8b065e4f04ff83a7f50ac298b683a2"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 37275,
+        "missingRawArrival": 11119
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 109,
+      "exactStateN": 643,
+      "mintN": 273,
+      "partitionKey": "2026/09/07/04",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-07-04.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "d0acd8e4c69b2eb864edcce6e4fc6c6dfcf88d1665afcc11d0034ff082479501",
+      "sourceIdentitySha256": "cbb291a82eaddb9baaae4f0e1edf6d4288a379fa42232812e91c75b070147b33"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 38554,
+        "missingRawArrival": 15716
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 177,
+      "exactStateN": 1466,
+      "mintN": 352,
+      "partitionKey": "2026/09/07/05",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-07-05.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "eb615e85fe6796bcc444384dc7b7ed8644a7aff9949de487c5016a7a728e7b94",
+      "sourceIdentitySha256": "dfc91674598b996a682241fa069010a4e33b2ddf7f9749d2bdb8b7315d06a412"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 53485,
+        "missingRawArrival": 13393
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 146,
+      "exactStateN": 833,
+      "mintN": 283,
+      "partitionKey": "2026/09/07/06",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-07-06.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "2b5be8b7813d30a3954bb024877de85dcab862b81ff024398757ad05a0167668",
+      "sourceIdentitySha256": "999364bc99dc0ff355b6acab7ab565412689c58c450bcc86c14b34c69325e0dc"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 51477,
+        "missingRawArrival": 18109
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 174,
+      "exactStateN": 1218,
+      "mintN": 362,
+      "partitionKey": "2026/09/07/07",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-07-07.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "9716beb306586c41cfcdded5503e9234fc6eeb3a542c9e3e84405c2ed733e64a",
+      "sourceIdentitySha256": "89f8534726f2f043d1e8d87ccaade6709b399e249572d0e0095a99633e6eea57"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 41722,
+        "missingRawArrival": 16465
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 151,
+      "exactStateN": 1212,
+      "mintN": 259,
+      "partitionKey": "2026/09/07/08",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-07-08.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "377cdfb6ce9695199d361c0807d34f19925c4cc3790ac09bb26cf98ec3ca13c4",
+      "sourceIdentitySha256": "0f18cdf19e0b99458d55751246af36436af9d2e1b84986db910c92b2331884df"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 38906,
+        "missingRawArrival": 21633
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 191,
+      "exactStateN": 1288,
+      "mintN": 348,
+      "partitionKey": "2026/09/07/09",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-07-09.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "6071ee4984f77c4b547102231b9a7610ec664e0aa55e794895f92cfc210bf8b6",
+      "sourceIdentitySha256": "83cbf803035c3715097f72a98b90392080be601213be05a71a38144b33c82709"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 42942,
+        "missingRawArrival": 24040
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 214,
+      "exactStateN": 1468,
+      "mintN": 353,
+      "partitionKey": "2026/09/07/10",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-07-10.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "17ae8911f4e5c52582ffcb78b76825303912a638d84265fc2c27fb3c94a345c0",
+      "sourceIdentitySha256": "6fb99247a3df844fd5c63c9da93c84b34f5d409bcad6744a9e45651ddae7eb37"
+    },
+    {
+      "collectionCounters": {
+        "failedOrMissingFinalizedTransactions": 45144,
+        "missingRawArrival": 24641
+      },
+      "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+      "exactMintN": 202,
+      "exactStateN": 1435,
+      "mintN": 355,
+      "partitionKey": "2026/09/07/11",
+      "path": "/mnt/HC_Volume_106775198/edgesniffer-research/event-flow-competing-risk/EVENT_FLOW_COMPETING_RISK_V1/partitions/2026-09-07-11.jsonl.gz",
+      "reused": false,
+      "schema": "EVENT_FLOW_COMPETING_RISK_V1_PARTITION",
+      "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+      "sha256": "307b3627f3220070f44ff6bc8972e3fce0da13ca8705c9d1b2692bda2836f85c",
+      "sourceIdentitySha256": "4b01a6a7ac22cca78d5171799002d916fdf8115729a3e7e3bc84e29e7c0f22a8"
+    }
+  ],
+  "schema": "EVENT_FLOW_COMPETING_RISK_V1_BUILD_PROVENANCE",
+  "scriptSha256": "02384f13c56611388d4d1c2d423eceeca542f1d26e283e5251be07b4cb1c373b",
+  "validationRowsInspected": 0
+}

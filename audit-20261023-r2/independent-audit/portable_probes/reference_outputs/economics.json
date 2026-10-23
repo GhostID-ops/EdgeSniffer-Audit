@@ -1,0 +1,173 @@
+{
+  "carry_rule_depends_on_future_append": {
+    "after_future_append": {
+      "exit_reason": "FIXED_HORIZON",
+      "mae_sol": -0.08495208800000002,
+      "mfe_sol": -0.08495208800000002,
+      "pnl_sol": -0.5890867249999999,
+      "status": "ACTIONABLE"
+    },
+    "appended_future_mark_ms": 300000,
+    "before_future_append": {
+      "exit_reason": "CARRY_FORWARD_LAST_NATIVE_STATE",
+      "mae_sol": -0.08495208800000002,
+      "mfe_sol": -0.08495208800000002,
+      "pnl_sol": -0.08495208800000002,
+      "status": "ACTIONABLE"
+    },
+    "deadline_ms": 17000,
+    "latest_before_deadline_ms": 16000
+  },
+  "checkpoint_fee_imputation": {
+    "absent_fee_explicit_flag": false,
+    "absent_fee_output_bps": 125,
+    "explicit_zero_fee_explicit_flag": true,
+    "explicit_zero_fee_output_bps": 125
+  },
+  "checkpoint_late_window_cursor_race": {
+    "clean_replay_checkpoint_ms": 17000,
+    "clean_replay_delay_ms": 0,
+    "first_pass_unmatched_seed_rows": 1,
+    "incremental_checkpoint_ms": 60000,
+    "incremental_reported_delay_ms": 43000,
+    "same_final_window_and_seed_files": true,
+    "second_pass_checkpoints": 0
+  },
+  "failed_entry_disappears": {
+    "input_signals": 1,
+    "outcome_rows": 0,
+    "rejections": {},
+    "surfaces": 0
+  },
+  "fee_namespace_collision": {
+    "expected_total_under_trade_event_convention": 125,
+    "lab_inferred_total_bps": 95,
+    "trade_event_creator_bps": 30,
+    "trade_event_protocol_bps": 95
+  },
+  "future_entry_state_boundary_accepted": {
+    "accepted": true,
+    "intended_entry_ts_ms": 2000,
+    "signal_ts_ms": 1000,
+    "state_receive_ts_ms": 999999
+  },
+  "gross_fee_subtraction_vs_exact_inverse": [
+    {
+      "curve_in_exact_lamports": 98765431,
+      "curve_in_subtract_gross_125bps_lamports": 98750000,
+      "difference_lamports": -15431,
+      "notional_sol": 0.1
+    },
+    {
+      "curve_in_exact_lamports": 493827159,
+      "curve_in_subtract_gross_125bps_lamports": 493750000,
+      "difference_lamports": -77159,
+      "notional_sol": 0.5
+    },
+    {
+      "curve_in_exact_lamports": 987654320,
+      "curve_in_subtract_gross_125bps_lamports": 987500000,
+      "difference_lamports": -154320,
+      "notional_sol": 1.0
+    }
+  ],
+  "historical_core_empty_future_still_exact": {
+    "counterfactualAttemptedTransactions": 0,
+    "entryMs": 2000,
+    "horizonMs": 122000,
+    "policies": {
+      "FIXED_5S_SL20": {
+        "landingAtMs": 8000,
+        "landingStateAtMs": 2000,
+        "outcome": "FIXED_EXIT",
+        "pnlSol": -0.002479139,
+        "returnPct": -2.4790150492475376,
+        "sellProceedsLamports": 97525861,
+        "status": "EXACT",
+        "triggerAtMs": 7000,
+        "triggerRoiPct": -2.4790150492475376
+      },
+      "TP20_SL20_MAX120": {
+        "landingAtMs": 123000,
+        "landingStateAtMs": 123000,
+        "outcome": "MAX_HOLD",
+        "pnlSol": -0.002479139,
+        "returnPct": -2.4790150492475376,
+        "sellProceedsLamports": 97525861,
+        "status": "EXACT",
+        "triggerAtMs": 122000,
+        "triggerRoiPct": -2.4790150492475376
+      },
+      "TRAIL20_12_SL20_120S": {
+        "landingAtMs": 123000,
+        "landingStateAtMs": 123000,
+        "outcome": "MAX_HOLD",
+        "pnlSol": -0.002479139,
+        "returnPct": -2.4790150492475376,
+        "sellProceedsLamports": 97525861,
+        "status": "EXACT",
+        "triggerAtMs": 122000,
+        "triggerRoiPct": -2.4790150492475376
+      }
+    },
+    "status": "EXACT"
+  },
+  "missing_exit_fees_default_zero": {
+    "fee_object": {
+      "creator_bps": 0,
+      "lp_bps": 0,
+      "protocol_bps": 0
+    },
+    "overstatement_sol": 0.011583012000000004,
+    "pnl_125bps_sol": -0.08495208800000002,
+    "pnl_missing_fee_sol": -0.07336907600000002
+  },
+  "own_buy_state_omission": [
+    {
+      "flat_market_self_consistent_roundtrip_pnl_sol": -0.002479139000000009,
+      "historical_unmodified_mark_pnl": null,
+      "notional_sol": 0.1
+    },
+    {
+      "flat_market_self_consistent_roundtrip_pnl_sol": -0.012355682999999996,
+      "historical_unmodified_mark_pnl": null,
+      "notional_sol": 0.5
+    },
+    {
+      "flat_market_self_consistent_roundtrip_pnl_sol": -0.024701361000000022,
+      "historical_unmodified_mark_pnl": null,
+      "notional_sol": 1.0
+    }
+  ],
+  "partial_sells_reuse_liquidity": {
+    "first_leg_receipts_lamports": 464705880,
+    "overstatement_sol": 0.01435385,
+    "scope": "Static no-external-flow counterexample; actual partial paths require replay.",
+    "second_leg_receipts_reused_state_lamports": 464705880,
+    "second_leg_receipts_updated_state_lamports": 450352030
+  },
+  "unresolved_inventory_omitted": {
+    "if_eight_unresolved_positions_are_total_losses_sol": -5.8079978489999995,
+    "note": "Sensitivity bound only; does not assert that unresolved positions are worthless.",
+    "reported": {
+      "actionable": 1,
+      "attempted": 9,
+      "immature": 0,
+      "matured": 9,
+      "max_drawdown_sol": 0.0,
+      "mean_mae_sol": 0.0,
+      "mean_mfe_sol": 0.0,
+      "missed_or_failed": 8,
+      "pnl_sol": 2.192002151,
+      "profit_factor": null,
+      "roi_on_actionable": 2.192002151,
+      "win_rate": 1.0,
+      "wins": 1
+    }
+  },
+  "virtual_reserve_is_not_real_liquidity": {
+    "real_quote_sol": 0,
+    "reserve_ge_2_sol_passes": true,
+    "virtual_quote_sol": 30
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "A3H4_BOUNDED_OBSERVATION_VERIFICATION_V1",
+  "status": "VERIFIED_ACQUISITION_OBSERVATION_SLICE_NOT_COMPLETE_ECONOMICS",
+  "local_tests": {"command": "python -m unittest discover -s ../../research/edgesniffer -p 'test_*.py'", "passed": 120, "skipped": 0},
+  "vps_tests": {"directory": "h4-code4", "command": "TEST_WEB3_MODULE=/root/bot/FinalBot-cya/node_modules/@solana/web3.js python3 -m unittest discover -p 'test_*.py'", "passed": 120, "skipped": 0},
+  "independent_read_only_review": "Guard counterexamples reproduced, repaired and separately rechecked; valid descendant fixture still passes. Reviewer did not independently verify full VPS suite.",
+  "vps_root": "/mnt/HC_Volume_106775198/edgesniffer-research/burst-persistence-v1-WmlstZu7",
+  "canaries": ["h4-sync-canary1", "h4-sync-canary2"],
+  "preserved_failed_replay": "h4-sync-audit1: TypeError comparing native integer write_version against RPC None in the same slot; repaired, not deleted",
+  "preserved_snapshot_only_reports": ["h4-sync-audit2", "h4-sync-audit3"],
+  "final_replay_directories": ["h4-sync-native-audit2", "h4-sync-native-audit2-replay"],
+  "replay_command": "python3 state_continuity_v1.py --source ../h4-sync-canary2 --output NEW_DIRECTORY --web3-module /root/bot/FinalBot-cya/node_modules/@solana/web3.js --native-advance",
+  "identical_artifacts": {
+    "report.json": "c8cf501263eaa3cf9b1f372ed89c1b6df80d5600cb67a650715b3e62105d82df",
+    "boundaries.jsonl": "4a7c9f2075174fe1706c525b3fe3a87c3a38d058d306e2b871ccac252e56e4e3",
+    "intentions.jsonl": "e17771a4a87eada8eed5495ab19854aa2fa43ad1b94d8bdd4ffc722711adcb6f",
+    "observation-quotes.jsonl": "e3260618250303b73f4e1114cc9845072b1bde791f6819900377c924ead98f07",
+    "opportunities.jsonl": "267c4d8d32d1945dc926226d1691e3567640c0c9cfd0abb298d8ace5fe4629f7",
+    "teacher-labels.jsonl": "f1b3e270b2180da64096f82bfdf5ef7242c140589c4e258d0c4e089803d08568"
+  },
+  "unchanged_capture_binary_sha256": "2709cf053c77bae19dad44ca605b292e34b766e370c5448a2bd0ca4ce3eeb419",
+  "rust_changes_or_rebuild_this_stage": false,
+  "live_receive_only_canary_tested": true,
+  "live_trading_tested": false,
+  "original78_and468_modified": false,
+  "full_capture_to_net_outcome_acceptance": false,
+  "larger_prospective_cohort_started": false,
+  "services_restarted": false,
+  "trading_enabled": false,
+  "exact_next": "A3h4b: bounded nonblocking off-path context requests with separate response/publication clocks and unchanged native signal/control replay; then qualify writable-touch continuity and own-state/cost outcomes. Do not expand until the fixed bounded end-to-end gate passes."
+}

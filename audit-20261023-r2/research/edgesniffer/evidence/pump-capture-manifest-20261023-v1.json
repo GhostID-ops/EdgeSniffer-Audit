@@ -1,0 +1,9 @@
+{
+  "schema": "PUMP_CAPTURE_RUN_V1",
+  "started_at_ns": 1792728122111842116,
+  "duration_seconds": 120,
+  "binary_path": "/root/bot/EdgeSniffer/rust-exact-ledger/target/release/edgesniffer-pump-evidence-capture",
+  "binary_sha256": "5be69002c0d76722ec2d7c267b3d6230654321cf7cd16cf53c3ec8ed21d2d88f",
+  "mode": "receive_only",
+  "endpoint_credentials_retained": false
+}

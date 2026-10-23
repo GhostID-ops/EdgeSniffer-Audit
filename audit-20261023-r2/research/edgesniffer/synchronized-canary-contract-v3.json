@@ -1,0 +1,14 @@
+{
+  "schema": "A3H4_NONBLOCKING_CONTEXT_CANARY_V1",
+  "status": "DECLARED_BEFORE_THIRD_ENGINEERING_CAPTURE",
+  "population": "A3h4_sync_engineering_canary_v3",
+  "duration_seconds": 75,
+  "signal_period_seconds": 50,
+  "drain_seconds": 25,
+  "unchanged": "v2 frozen signal/control/size/timing/age and no-trading/no-profit constraints",
+  "repair": "Two off-path RPC workers, at most one outstanding checkpoint and one bootstrap; no queued stale requests. Observer keeps consuming native records while requests run. Fixed cyclic batching when active context exceeds100 accounts.",
+  "availability": "Preserve request/response clocks and separate observer publication time. Quote admission uses publication, never the earlier response clock.",
+  "acceptance": "Delayed worker tests preserve native consumption, bounded queues, late-publication containment and failure recording; scheduled seeds/controls reproduce exactly. Report actual lag and complete causal boundary coverage before any economic expansion.",
+  "prospective_expansion_allowed": false,
+  "trading_enabled": false
+}

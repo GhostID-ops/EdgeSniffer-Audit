@@ -1,0 +1,11 @@
+{
+  "schema": "2CQ_AUTONOMOUS_WHEN_V1_ABORTED_BOUNDARY_V1",
+  "boundaryUtc": "2026-09-25T04:42:04.945704Z",
+  "reason": "FULL_META_SOURCE_HEALTH_STALLED",
+  "sourceLastHealthyUtc": "2026-09-25T04:40:44.780957511Z",
+  "observedStaleAtUtc": "2026-09-25T04:45:22Z",
+  "autonomousTicksRecorded": 0,
+  "teacherLabelsRecorded": 0,
+  "scientificStatus": "INVALID_FOR_WHEN_DEVELOPMENT",
+  "action": "DO_NOT_COUNT_THIS_BOUNDARY_OR_ANY_INTERVAL_AFTER_SOURCE_STALL"
+}

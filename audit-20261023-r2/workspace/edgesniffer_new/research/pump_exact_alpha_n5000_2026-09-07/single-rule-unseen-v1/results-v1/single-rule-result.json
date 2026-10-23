@@ -1,0 +1,402 @@
+{
+  "accounting": {
+    "fixed25MaterializedN": 1815,
+    "fixed25UnmaterializedN": 33,
+    "matchedOrdinals": [
+      5033,
+      5045,
+      5085,
+      5165,
+      5199,
+      5264,
+      5339,
+      5347,
+      5377,
+      5422,
+      5484,
+      5500,
+      5542,
+      5544,
+      5552,
+      5557,
+      5562,
+      5589,
+      5594,
+      5596,
+      5603,
+      5622,
+      5628,
+      5631,
+      5633,
+      5635,
+      5637,
+      5638,
+      5640,
+      5649,
+      5702,
+      5704,
+      5712,
+      5727,
+      5733,
+      5801,
+      5888,
+      5901,
+      5929,
+      5964,
+      5979,
+      6035,
+      6086,
+      6096,
+      6165,
+      6206,
+      6208,
+      6212,
+      6214,
+      6219,
+      6222,
+      6225,
+      6234,
+      6254,
+      6276,
+      6290,
+      6303,
+      6346,
+      6351,
+      6398,
+      6445,
+      6478,
+      6489,
+      6506,
+      6508,
+      6511,
+      6553,
+      6578,
+      6579,
+      6583,
+      6589,
+      6593,
+      6594,
+      6603,
+      6694,
+      6708,
+      6718,
+      6729,
+      6758,
+      6776,
+      6813,
+      6824
+    ],
+    "matchingUniqueMintN": 82
+  },
+  "baselineExactLabels": {
+    "0.50": {
+      "PF": 1.0196280780994564,
+      "expectancyReturnPct": 0.11494139191941402,
+      "incrementalCostBeyondLabelSolPerTrade": 0.0,
+      "matchingUniqueMintN": 82,
+      "meanPnlSolPerTrade": 0.0005747127066666666,
+      "passN": 75,
+      "passRate": 0.9146341463414634,
+      "totalDeliveryCostSolPerTrade": null,
+      "totalPnlSol": 0.04310345299999999
+    },
+    "1.00": {
+      "PF": 0.563201299390644,
+      "expectancyReturnPct": -3.278418405241307,
+      "incrementalCostBeyondLabelSolPerTrade": 0.0,
+      "matchingUniqueMintN": 82,
+      "meanPnlSolPerTrade": -0.03278434797333333,
+      "passN": 75,
+      "passRate": 0.9146341463414634,
+      "totalDeliveryCostSolPerTrade": null,
+      "totalPnlSol": -2.458826098
+    }
+  },
+  "breakEvenDeliveryCost": {
+    "0.50": {
+      "additionalCostBeyondCurrentLabelSolPerTrade": 0.0005747127066666666,
+      "totalExecutionDeliveryCostSolPerTradeIncludingLabelBaseFees": 0.0005847127066666666
+    },
+    "1.00": {
+      "additionalCostBeyondCurrentLabelSolPerTrade": -0.03278434797333333,
+      "totalExecutionDeliveryCostSolPerTradeIncludingLabelBaseFees": -0.032774347973333326
+    }
+  },
+  "chronologicalHalves": {
+    "FIRST_HALF": {
+      "economics": {
+        "0.50": {
+          "PF": 0.9846128917082682,
+          "expectancyReturnPct": -0.08934833681966212,
+          "incrementalCostBeyondLabelSolPerTrade": 0.0,
+          "matchingUniqueMintN": 38,
+          "meanPnlSolPerTrade": -0.00044674615151515137,
+          "passN": 33,
+          "passRate": 0.868421052631579,
+          "totalDeliveryCostSolPerTrade": null,
+          "totalPnlSol": -0.014742622999999995
+        },
+        "1.00": {
+          "PF": 0.4340200528294126,
+          "expectancyReturnPct": -4.405309127999814,
+          "incrementalCostBeyondLabelSolPerTrade": 0.0,
+          "matchingUniqueMintN": 38,
+          "meanPnlSolPerTrade": -0.04405331154545455,
+          "passN": 33,
+          "passRate": 0.868421052631579,
+          "totalDeliveryCostSolPerTrade": null,
+          "totalPnlSol": -1.453759281
+        }
+      },
+      "matchingUniqueMintN": 38,
+      "ordinals": [
+        5001,
+        5924
+      ]
+    },
+    "SECOND_HALF": {
+      "economics": {
+        "0.50": {
+          "PF": 1.0467294027286804,
+          "expectancyReturnPct": 0.2754547502144024,
+          "incrementalCostBeyondLabelSolPerTrade": 0.0,
+          "matchingUniqueMintN": 44,
+          "meanPnlSolPerTrade": 0.0013772875238095234,
+          "passN": 42,
+          "passRate": 0.9545454545454546,
+          "totalDeliveryCostSolPerTrade": null,
+          "totalPnlSol": 0.05784607599999998
+        },
+        "1.00": {
+          "PF": 0.6716140869035427,
+          "expectancyReturnPct": -2.3930042659310513,
+          "incrementalCostBeyondLabelSolPerTrade": 0.0,
+          "matchingUniqueMintN": 44,
+          "meanPnlSolPerTrade": -0.023930162309523807,
+          "passN": 42,
+          "passRate": 0.9545454545454546,
+          "totalDeliveryCostSolPerTrade": null,
+          "totalPnlSol": -1.005066817
+        }
+      },
+      "matchingUniqueMintN": 44,
+      "ordinals": [
+        5925,
+        6848
+      ]
+    }
+  },
+  "costAdjusted": {
+    "CURRENT_FIRST_TRADE_CASH_COST_INCLUDING_165B_ATA": {
+      "economics": {
+        "0.50": {
+          "PF": 0.525625738813173,
+          "expectancyReturnPct": -3.996131297353693,
+          "incrementalCostBeyondLabelSolPerTrade": 0.020555569,
+          "matchingUniqueMintN": 82,
+          "meanPnlSolPerTrade": -0.01998085629333333,
+          "passN": 75,
+          "passRate": 0.9146341463414634,
+          "totalDeliveryCostSolPerTrade": 0.020565569,
+          "totalPnlSol": -1.498564222
+        },
+        "1.00": {
+          "PF": 0.39893901950873234,
+          "expectancyReturnPct": -5.333965027508196,
+          "incrementalCostBeyondLabelSolPerTrade": 0.020555569,
+          "matchingUniqueMintN": 82,
+          "meanPnlSolPerTrade": -0.05333991697333333,
+          "passN": 75,
+          "passRate": 0.9146341463414634,
+          "totalDeliveryCostSolPerTrade": 0.020565569,
+          "totalPnlSol": -4.000493773
+        }
+      },
+      "totalDeliveryCostSolPerTrade": 0.020565569
+    },
+    "CURRENT_IRREVERSIBLE_DELIVERY_POLICY": {
+      "economics": {
+        "0.50": {
+          "PF": 0.5569271519069198,
+          "expectancyReturnPct": -3.625021208454582,
+          "incrementalCostBeyondLabelSolPerTrade": 0.0187,
+          "matchingUniqueMintN": 82,
+          "meanPnlSolPerTrade": -0.018125287293333334,
+          "passN": 75,
+          "passRate": 0.9146341463414634,
+          "totalDeliveryCostSolPerTrade": 0.01871,
+          "totalPnlSol": -1.359396547
+        },
+        "1.00": {
+          "PF": 0.41130386806789043,
+          "expectancyReturnPct": -5.148409055288056,
+          "incrementalCostBeyondLabelSolPerTrade": 0.0187,
+          "matchingUniqueMintN": 82,
+          "meanPnlSolPerTrade": -0.05148434797333333,
+          "passN": 75,
+          "passRate": 0.9146341463414634,
+          "totalDeliveryCostSolPerTrade": 0.01871,
+          "totalPnlSol": -3.8613260979999997
+        }
+      },
+      "totalDeliveryCostSolPerTrade": 0.01871
+    },
+    "TOTAL_COST_0.005_SOL": {
+      "economics": {
+        "0.50": {
+          "PF": 0.8625276566186536,
+          "expectancyReturnPct": -0.8830486281803847,
+          "incrementalCostBeyondLabelSolPerTrade": 0.0049900000000000005,
+          "matchingUniqueMintN": 82,
+          "meanPnlSolPerTrade": -0.004415287293333332,
+          "passN": 75,
+          "passRate": 0.9146341463414634,
+          "totalDeliveryCostSolPerTrade": 0.005,
+          "totalPnlSol": -0.3311465469999999
+        },
+        "1.00": {
+          "PF": 0.5169622747961592,
+          "expectancyReturnPct": -3.777415910253782,
+          "incrementalCostBeyondLabelSolPerTrade": 0.0049900000000000005,
+          "matchingUniqueMintN": 82,
+          "meanPnlSolPerTrade": -0.03777434797333333,
+          "passN": 75,
+          "passRate": 0.9146341463414634,
+          "totalDeliveryCostSolPerTrade": 0.005,
+          "totalPnlSol": -2.833076098
+        }
+      },
+      "totalDeliveryCostSolPerTrade": 0.005
+    },
+    "TOTAL_COST_0.010_SOL": {
+      "economics": {
+        "0.50": {
+          "PF": 0.7328927199516443,
+          "expectancyReturnPct": -1.8830386282803837,
+          "incrementalCostBeyondLabelSolPerTrade": 0.00999,
+          "matchingUniqueMintN": 82,
+          "meanPnlSolPerTrade": -0.009415287293333333,
+          "passN": 75,
+          "passRate": 0.9146341463414634,
+          "totalDeliveryCostSolPerTrade": 0.01,
+          "totalPnlSol": -0.706146547
+        },
+        "1.00": {
+          "PF": 0.47461951676991393,
+          "expectancyReturnPct": -4.2774134102662815,
+          "incrementalCostBeyondLabelSolPerTrade": 0.00999,
+          "matchingUniqueMintN": 82,
+          "meanPnlSolPerTrade": -0.04277434797333333,
+          "passN": 75,
+          "passRate": 0.9146341463414634,
+          "totalDeliveryCostSolPerTrade": 0.01,
+          "totalPnlSol": -3.208076098
+        }
+      },
+      "totalDeliveryCostSolPerTrade": 0.01
+    },
+    "TOTAL_COST_0.020_SOL": {
+      "economics": {
+        "0.50": {
+          "PF": 0.5349736786557993,
+          "expectancyReturnPct": -3.8830186284803827,
+          "incrementalCostBeyondLabelSolPerTrade": 0.01999,
+          "matchingUniqueMintN": 82,
+          "meanPnlSolPerTrade": -0.019415287293333337,
+          "passN": 75,
+          "passRate": 0.9146341463414634,
+          "totalDeliveryCostSolPerTrade": 0.02,
+          "totalPnlSol": -1.4561465470000001
+        },
+        "1.00": {
+          "PF": 0.4026623691999336,
+          "expectancyReturnPct": -5.277408410291282,
+          "incrementalCostBeyondLabelSolPerTrade": 0.01999,
+          "matchingUniqueMintN": 82,
+          "meanPnlSolPerTrade": -0.05277434797333334,
+          "passN": 75,
+          "passRate": 0.9146341463414634,
+          "totalDeliveryCostSolPerTrade": 0.02,
+          "totalPnlSol": -3.9580760980000003
+        }
+      },
+      "totalDeliveryCostSolPerTrade": 0.02
+    }
+  },
+  "frozenRange": {
+    "endOrdinal": 6848,
+    "frozenReadinessGeneratedAtUtc": "2026-09-07T15:09:02.419074Z",
+    "frozenReadinessSha256": "7a55ebd60fcb5ab88b45e48fd5be2e7bcd3763648c6e4abb7a80e9584f18b684",
+    "launchN": 1848,
+    "prefixThroughEndMintSha256": "b26a7c87f06ca871676a2926e0bf061237f142fbe33f1344ce88eaf5703e5030",
+    "startOrdinal": 5001,
+    "unseenMintSha256": "aa7593e54f93b1c8af4f5efb84abaf91b7d77639aa6409a234cd9fb7b66889df"
+  },
+  "labelCostCoverage": {
+    "heliusTips": false,
+    "jitoTips": false,
+    "networkBaseFeeModel": "fixed 5,000 lamports on buy plus fixed 5,000 on sell",
+    "networkBaseFees": true,
+    "newMintAccountCosts": false,
+    "priorityFees": false,
+    "pumpCurveTradingFees": true
+  },
+  "labelIncludedTotalDeliveryCostSolPerTrade": 1e-05,
+  "noTouch": {
+    "holdoutRowsInspected": 0,
+    "newFeatures": 0,
+    "otherRulesEvaluated": 0,
+    "retuning": false,
+    "scannerRuns": 0,
+    "serviceChanges": 0,
+    "validationRowsInspected": 0
+  },
+  "productionCostPolicySha256": "f25026f1a39619e90119b1acb94f8cf7f4f5c65014112ed66975fd34601cf6ca",
+  "rule": {
+    "clauses": [
+      [
+        "firstBuyerShareBps",
+        "le",
+        360.40437631955825
+      ]
+    ],
+    "ranked": false,
+    "retuned": false,
+    "ruleN": 1,
+    "searched": false,
+    "state": "FIXED_25MS"
+  },
+  "schema": "PUMP_EXACT_ALPHA_SINGLE_FROZEN_RULE_UNSEEN_V1",
+  "sourceRows": [
+    {
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-06.jsonl.gz",
+      "sha256": "5a4f78fa48b1aa7a928d900e1f4f204b2a64d8140fbb2f712ee5cd8e47d22d82"
+    },
+    {
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-07.jsonl.gz",
+      "sha256": "6d12db6283a2e748f2c57e940ed214242d80749e306b52df060b93a5a47b0f85"
+    },
+    {
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-08.jsonl.gz",
+      "sha256": "40e79faba75e89d53190ca8e735edcbbd583b4db5fd9cae5ad9ad8a0f216d0b5"
+    },
+    {
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-09.jsonl.gz",
+      "sha256": "b7f74530c406204835e5e221f8131742828a0e48067902351b550a8cb12ec6c3"
+    },
+    {
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-10.jsonl.gz",
+      "sha256": "b78d11419811262a72c0057c633139a4720150c8b79f9c90ff5bbb29bce3f27f"
+    },
+    {
+      "path": "/var/lib/pump-exact-evidence-ledger-v1/exact-alpha-research-v1/rows-v2/2026-09-07-11.jsonl.gz",
+      "sha256": "c6b7f14308996e13bc24c51e60317a7bff7fa05fd61bcce02f7263947fe7d95e"
+    }
+  ],
+  "verdict": "FAILS_UNSEEN",
+  "verdictRuleFrozenBeforeOutcomeRead": {
+    "FAILS_UNSEEN": "adequate N but persistence condition fails",
+    "PERSISTS_UNSEEN": "adequate N and PF>1, expectancy>0, PnL>0 at both sizes in aggregate and both halves",
+    "TOO_FEW_MATCHES": "matching N <30 or either chronological half matching N <10"
+  }
+}

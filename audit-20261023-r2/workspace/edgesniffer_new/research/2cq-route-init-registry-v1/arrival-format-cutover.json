@@ -1,0 +1,9 @@
+{
+  "schema": "2CQ_ROUTE_INIT_ARRIVAL_FORMAT_CUTOVER_V1",
+  "reason": "The initial candidate format retained redundant account lists although canonical finalized transactions remain the sole source of pool/mint layout. The compact format preserves signature, local receipt timestamp, slot/order, source provenance, route program reference, direct instruction discriminator hash, and LaunchLab initialize hint.",
+  "previousArrivalRoot": "arrival-candidates",
+  "currentArrivalRoot": "arrival-candidates-compact",
+  "previousEvidenceDisposition": "PRESERVED_BOOTSTRAP_RAW_NOT_DELETED",
+  "outcomesRead": 0,
+  "submissions": 0
+}

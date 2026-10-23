@@ -1,0 +1,60 @@
+[Unit]
+Description=EdgeSniffer 8YCB prospective observation-only shadow v2
+After=network-online.target edgesniffer-teacher-impulse-parity-v1-source-feed.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=edgeshadow8ycb
+Group=edgeshadow8ycb
+WorkingDirectory=/mnt/HC_Volume_106775198/edgesniffer-derived/8ycb-prospective-shadow-v2
+EnvironmentFile=/etc/edgesniffer/8ycb-shadow-v2-stream.env
+Environment=PYTHONUNBUFFERED=1
+Environment=NO_SUBMIT_HARD_GUARD=8YCB_OBSERVATION_ONLY_V2
+Environment=RUST_EXECUTOR_ENABLED=false
+Environment=RUST_SELECTED_CANDIDATE_SUBMIT_ENABLED=false
+Environment=JUPITER_FALLBACK_ENABLED=false
+Environment=SHADOW_WALLET_STREAM_FILE=/mnt/HC_Volume_106775198/edgesniffer-derived/8ycb-prospective-shadow-v2/wallet_stream_observations.jsonl
+Environment=SHADOW_WALLET_STREAM_MAX_BYTES=268435456
+UnsetEnvironment=PRIVATE_KEY_BASE58 SOLANA_PRIVATE_KEY WALLET_PRIVATE_KEY JITO_BLOCK_ENGINE_URL JITO_AUTH_KEYPAIR_PATH RPC_URL SOLANA_RPC_URL HELIUS_RPC_URL
+ExecStartPre=/usr/bin/python3 /usr/local/lib/edgesniffer-8ycb-shadow-v2/broadcast_safety_audit.py --service /etc/systemd/system/edgesniffer-8ycb-prospective-shadow-v2.service --observer /usr/local/lib/edgesniffer-8ycb-shadow-v2/shadow_observer.py --watcher /usr/local/lib/edgesniffer-8ycb-shadow-v2/wallet_stream_watcher.ts --safe-env /etc/edgesniffer/8ycb-shadow-v2-stream.env --spec /usr/local/lib/edgesniffer-8ycb-shadow-v2/frozen_spec.json
+ExecStart=/usr/bin/python3 /usr/local/lib/edgesniffer-8ycb-shadow-v2/shadow_observer.py --spec /usr/local/lib/edgesniffer-8ycb-shadow-v2/frozen_spec.json --output /mnt/HC_Volume_106775198/edgesniffer-derived/8ycb-prospective-shadow-v2 --global-feed /var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl --wallet-feed /mnt/HC_Volume_106775198/edgesniffer-derived/8ycb-prospective-shadow-v2/wallet_stream_observations.jsonl --watcher /usr/local/lib/edgesniffer-8ycb-shadow-v2/node_modules/.bin/tsx --watcher-script /usr/local/lib/edgesniffer-8ycb-shadow-v2/wallet_stream_watcher.ts
+Restart=always
+RestartSec=2
+TimeoutStopSec=20
+Nice=12
+CPUWeight=10
+CPUQuota=10%
+MemoryHigh=192M
+MemoryMax=256M
+IOWeight=10
+IOSchedulingClass=idle
+UMask=0007
+NoNewPrivileges=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectProc=invisible
+ProcSubset=pid
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictNamespaces=true
+LockPersonality=true
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+InaccessiblePaths=/root/bot/EdgeSniffer/.env /root/bot/FinalBot-cya/.env /root/.ssh /root/.config -/root/.local/share/solana
+ReadOnlyPaths=/var/lib/edgesniffer-teacher-impulse-parity-v1/normalized-observations.jsonl /usr/local/lib/edgesniffer-8ycb-shadow-v2
+ReadWritePaths=/mnt/HC_Volume_106775198/edgesniffer-derived/8ycb-prospective-shadow-v2
+BindReadOnlyPaths=/root/bot/FinalBot-cya/node_modules:/usr/local/lib/edgesniffer-8ycb-shadow-v2/node_modules
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,68 @@
+{
+  "blockers": [
+    "TRANSPORT_NOT_CLEAN",
+    "CANDIDATES_METADATA_ONLY_NOT_CANONICAL_OBSERVATIONS"
+  ],
+  "canonical_ingest_ready": false,
+  "cohort_id": "kefi-13-arm-prospective-20261019T020337Z",
+  "cohort_started_at_utc": "2026-10-19T02:03:37.986067+00:00",
+  "generated_at_utc": "2026-10-19T02:11:10Z",
+  "metadata_compatibility": {
+    "forbidden_outcome_field_counts": {
+      "drawdown": 0,
+      "exit": 0,
+      "mae": 0,
+      "mfe": 0,
+      "outcome": 0,
+      "pnl": 0,
+      "profit_factor": 0,
+      "roi": 0
+    },
+    "missing_field_counts": {
+      "arm_id": 13086,
+      "cohort_id": 13086,
+      "finalized_slot": 13086,
+      "frozen_policy_id": 13086,
+      "observation_id": 13086,
+      "policy_sha256": 13086,
+      "registry_sha256": 13086,
+      "state": 13086,
+      "venue": 13086
+    },
+    "required_canonical_fields": [
+      "arm_id",
+      "cohort_id",
+      "finalized_slot",
+      "frozen_policy_id",
+      "observation_id",
+      "policy_sha256",
+      "registry_sha256",
+      "state",
+      "venue"
+    ]
+  },
+  "outcome_blind": true,
+  "registry_arm_count": 13,
+  "schema": "KEFI_13_ARM_SOURCE_COMPATIBILITY_AUDIT_V1",
+  "source": {
+    "candidate_rows": 13086,
+    "candidate_schema_counts": {
+      "KEFI_FULL_META_WALLET_PUMP_CANDIDATE_V1": 13086
+    },
+    "canonical_observation_rows": 2,
+    "fresh_canonical_observation_rows": 2,
+    "health_counters": {
+      "continuityGaps": 0,
+      "framesMetaIncomplete": 1,
+      "receiveErrors": 0,
+      "reconnects": 0
+    },
+    "latest_persisted_window_at_utc": "2026-10-19T02:10:51.628Z",
+    "latest_persisted_window_complete": true,
+    "latest_persisted_window_post_freeze": true,
+    "latest_persisted_window_raw_truth": true,
+    "source_fresh": true,
+    "transport_clean": false
+  },
+  "status": "BLOCKED_SOURCE_OR_MATERIALIZATION"
+}

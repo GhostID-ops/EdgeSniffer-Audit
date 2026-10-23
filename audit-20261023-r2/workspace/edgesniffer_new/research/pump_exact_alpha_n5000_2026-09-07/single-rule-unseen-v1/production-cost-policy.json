@@ -1,0 +1,94 @@
+{
+  "schema": "PUMP_EXECUTION_DELIVERY_COST_POLICY_EVIDENCE_V1",
+  "capturedAtUtc": "2026-09-07T15:34:00Z",
+  "scope": "Current installed production Pump executor policy; the reference submitting unit is presently inactive and was not started or changed.",
+  "referenceUnit": {
+    "name": "edgesniffer-teacher-impulse-mc5000-dust.service",
+    "stateObserved": "inactive (dead)",
+    "enabled": true,
+    "unitFileSha256": "c6c5368f8a4ec2b6c63f61952c529f23c9a80ad544e4e986459419daed41359f",
+    "environmentFilePath": "/root/bot/FinalBot-cya/.env",
+    "environmentFileSha256": "e3e6815d9edac11504dccc35e9a7fd6d08a73ffa81aaa303eba826693a230a85",
+    "executionFeeCapPctOfBuy": 10
+  },
+  "whitelistedEffectiveInputs": {
+    "computeUnitLimit": 400000,
+    "buyPriorityFeeMicroLamportsPerCu": 18000000,
+    "buyJitoTipLamports": 10000000,
+    "buyHeliusTipLamports": 1500000,
+    "sellPriorityFeeMicroLamportsPerCu": 0,
+    "sellJitoTipLamports": 0,
+    "sellHeliusTipLamports": 0,
+    "useJitoDirect": true,
+    "useJitoFallback": true,
+    "broadcastRaceEnabled": true,
+    "executionMultiSendEnabled": true
+  },
+  "computedPolicy": {
+    "buyPriorityFeeLamports": 7200000,
+    "buyTipsLamports": 11500000,
+    "buyOptionalDeliveryLamports": 18700000,
+    "sellOptionalDeliveryLamports": 0,
+    "roundTripBaseNetworkFeesLamports": 10000,
+    "roundTripIrreversibleDeliveryCostLamports": 18710000,
+    "newMintAtaRentCashOutlayLamports": 1855569,
+    "firstTradeRoundTripCashCostIncludingAtaLamports": 20565569,
+    "feeCapBindingAt0p5Sol": false,
+    "feeCapBindingAt1Sol": false
+  },
+  "ataRentEvidence": {
+    "rpcMethod": "getMinimumBalanceForRentExemption",
+    "rpcEndpoint": "https://api.mainnet-beta.solana.com",
+    "accountDataBytes": 165,
+    "commitment": "finalized",
+    "resultLamports": 1855569,
+    "qualification": "ATA rent is a wallet cash outlay/capital lock and may be recoverable if the account is later closed; it is shown separately from irreversible delivery cost. Token-2022 extension sizing can differ."
+  },
+  "codeEvidence": {
+    "labelBuilder": {
+      "path": "/root/bot/EdgeSniffer/scripts/buildPumpExactAlphaResearchV1.py",
+      "sha256": "3a8a6d3ba4c743c644a5120b4e1d9da016513e43447102ce2dd74716a9c572ad",
+      "facts": [
+        "NETWORK_FEE = 5_000",
+        "buy cost = gross + NETWORK_FEE",
+        "sell proceeds = immediate_quote_out - NETWORK_FEE",
+        "pnlSol and returnPct are calculated only from those values"
+      ]
+    },
+    "curveEconomics": {
+      "path": "/root/bot/EdgeSniffer/scripts/exactCurveEconomicsV1.py",
+      "sha256": "badf8d417a155931498422300ffadb5ba1b3e3574bbcad9fd62d52161144ff10",
+      "facts": [
+        "Pump protocol, creator and LP fees are included inside exact buy/sell curve quotes",
+        "RPC transaction meta network_fee is parsed for evidence but is not passed into label PnL"
+      ]
+    },
+    "productionMain": {
+      "path": "/root/bot/FinalBot-cya/rust-sidecar/src/main.rs",
+      "sha256": "1a60903c240489e848390707a2becb4e80600d49d5c84de646cce71e3e83782e",
+      "facts": [
+        "priority fee is ceil(microLamportsPerCU * computeUnitLimit / 1,000,000)",
+        "configured Jito and Helius tips are added to the estimated optional execution fee",
+        "selected buy and sell fee profiles resolve environment overrides"
+      ]
+    },
+    "productionExecutor": {
+      "path": "/root/bot/FinalBot-cya/rust-sidecar/src/executor.rs",
+      "sha256": "7850ef1c9ab9c013f0bd68f0219475ea91e36f4d5fcc10313a93bf3f5c1cec23",
+      "facts": [
+        "Pump.fun buy transaction always appends idempotent creation of the user's mint ATA",
+        "with Jito direct and fallback enabled, the first compiled tip set contains both configured tip transfers",
+        "Pump.fun sell transaction has its own priority/tip inputs"
+      ]
+    }
+  },
+  "labelCoverageConclusion": {
+    "pumpCurveTradingFees": true,
+    "networkBaseFees": true,
+    "networkBaseFeeModel": "fixed 5,000 lamports on buy plus fixed 5,000 on sell",
+    "priorityFees": false,
+    "jitoTips": false,
+    "heliusTips": false,
+    "newMintAccountCosts": false
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "checks": {
+    "compact_stream_bytes": 861427742,
+    "compact_stream_rows_from_extractor": 3879386,
+    "coverage": {
+      "generic_complete_horizons": 1094,
+      "selected_unique_flow_rows": 32269,
+      "target_complete_horizons": 219
+    },
+    "final_classification": "8YCB_PUBLIC_EVENT_PROMISING_NEEDS_PROSPECTIVE_SHADOW",
+    "json_files_parsed": 14,
+    "jsonl_rows": {
+      "external_buyer_arrivals.jsonl.gz": 1313,
+      "first_sellable_telemetry.jsonl.gz": 52,
+      "follower_latency_outcomes.jsonl.gz": 23640,
+      "generic_control_enhanced_transactions.jsonl.gz": 1095,
+      "generic_control_metadata.jsonl.gz": 1095,
+      "generic_control_selection.jsonl.gz": 1095,
+      "reflexivity_counterfactual_outcomes.jsonl.gz": 657,
+      "signal_component_rows.jsonl.gz": 1313
+    }
+  },
+  "root": "/mnt/HC_Volume_106775198/edgesniffer-derived/wallet-8ycb-causal-followability-v3",
+  "schema": "8ycb-causal-followability-v3-validation-v1",
+  "status": "PASS",
+  "validated_at_utc": "2026-09-03T01:24:14.471958+00:00"
+}

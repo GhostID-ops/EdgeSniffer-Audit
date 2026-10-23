@@ -1,0 +1,259 @@
+{
+  "arms": [
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/exactCurveEconomicsV1.py"
+        }
+      ],
+      "arm_id": "ARM01_SOL_PUMP_CURVE_2CQ",
+      "declared_adapter_count": 1,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "READY_FOR_DISCOVERY",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "Pump.fun bonding curve"
+    },
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/exactCurveEconomicsV1.py"
+        }
+      ],
+      "arm_id": "ARM02_SOL_PUMP_CPI_2CQ",
+      "declared_adapter_count": 1,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "READY_FOR_DISCOVERY",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "Pump.fun CPI launch path"
+    },
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/exactCurveEconomicsV1.py"
+        }
+      ],
+      "arm_id": "ARM03_ACTIVE_SOL_PUMP_5000MS",
+      "declared_adapter_count": 1,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "READY_FOR_DISCOVERY",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "Pump.fun SOL curve/CPI launch paths"
+    },
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/exactCurveEconomicsQuoteV2.py"
+        }
+      ],
+      "arm_id": "ARM04_NON_SOL_PUMP_V2_QUOTE_NATIVE",
+      "declared_adapter_count": 1,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "PARTIAL_ADAPTER",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "Pump.fun V2 non-SOL quote market"
+    },
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/launchLabExactEconomicsV1.py"
+        }
+      ],
+      "arm_id": "ARM05_RAYDIUM_LAUNCHLAB",
+      "declared_adapter_count": 1,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "PARTIAL_ADAPTER",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "Raydium LaunchLab"
+    },
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/launchLabExactEconomicsV1.py"
+        }
+      ],
+      "arm_id": "ARM06_STONKFUN_LAUNCHLAB",
+      "declared_adapter_count": 1,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "PARTIAL_ADAPTER",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "Raydium LaunchLab with Stonk.fun platform configuration"
+    },
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/pumpSwapExactEconomicsV1.py"
+        },
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/pumpSwapInitDecoderV1.py"
+        }
+      ],
+      "arm_id": "ARM07_PUMPSWAP_DIRECT",
+      "declared_adapter_count": 2,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "READY_FOR_DISCOVERY",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "PumpSwap direct pool"
+    },
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/pumpSwapExactEconomicsV1.py"
+        },
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/pumpSwapInitDecoderV1.py"
+        }
+      ],
+      "arm_id": "ARM08_PUMPSWAP_CPI",
+      "declared_adapter_count": 2,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "PARTIAL_ADAPTER",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "PumpSwap pool reached through CPI-linked launch path"
+    },
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/raydiumClmmExactEconomicsV1.py"
+        }
+      ],
+      "arm_id": "ARM09_ROUTER_RAYDIUM_CLMM",
+      "declared_adapter_count": 1,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "PARTIAL_ADAPTER",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "Raydium CLMM underlying a router transaction"
+    },
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/orcaWhirlpoolExactEconomicsV1.py"
+        }
+      ],
+      "arm_id": "ARM10_ROUTER_ORCA_WHIRLPOOL",
+      "declared_adapter_count": 1,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "PARTIAL_ADAPTER",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "Orca Whirlpool underlying a router transaction"
+    },
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/meteoraDlmmExactEconomicsV1.py"
+        }
+      ],
+      "arm_id": "ARM11_ROUTER_METEORA_DLMM",
+      "declared_adapter_count": 1,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "PARTIAL_ADAPTER",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "Meteora DLMM underlying a router transaction"
+    },
+    {
+      "adapter_checks": [
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/raydiumCpmmExactEconomicsV1.py"
+        },
+        {
+          "error": null,
+          "exists": true,
+          "importable": true,
+          "path": "scripts/meteoraDbcExactEconomicsV1.py"
+        }
+      ],
+      "arm_id": "ARM12_OTHER_DEX_PROTOCOL_NATIVE",
+      "declared_adapter_count": 2,
+      "economic_promotion_ready": false,
+      "exact_module_ready": true,
+      "fixture_parity_verified": false,
+      "registry_readiness": "BLOCKED_EXACT_ADAPTER",
+      "status": "MODULE_COVERAGE_PASS",
+      "venue": "Protocol-specific non-router DEX (resolved per program)"
+    },
+    {
+      "adapter_checks": [],
+      "arm_id": "ARM13_AMBIGUOUS_PUMP_FAIL_CLOSED",
+      "declared_adapter_count": 0,
+      "economic_promotion_ready": false,
+      "exact_module_ready": false,
+      "fixture_parity_verified": false,
+      "registry_readiness": "FAIL_CLOSED",
+      "status": "FAIL_CLOSED_NO_ADAPTER",
+      "venue": "Unresolved / no real venue admitted"
+    }
+  ],
+  "generated_at_utc": "2026-10-19T04:01:20.408549+00:00",
+  "registry_schema": "KEFI_CANONICAL_13_ARM_REGISTRY_V1",
+  "schema": "KEFI_CANONICAL_13_ARM_EXACT_COVERAGE_AUDIT_V1",
+  "summary": {
+    "arm_count": 13,
+    "economic_promotion_ready": 0,
+    "fixture_parity_verified": 0,
+    "module_coverage_pass": 12,
+    "status": "PASS_MODULE_AUDIT_WITH_RUNTIME_GATES_REMAINING"
+  }
+}

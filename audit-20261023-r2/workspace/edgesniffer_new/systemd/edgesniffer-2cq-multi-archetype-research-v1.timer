@@ -1,0 +1,12 @@
+[Unit]
+Description=Refresh the outcome-blind 2CQ multi-archetype research views hourly
+
+[Timer]
+OnBootSec=20min
+OnUnitActiveSec=1h
+AccuracySec=2min
+Persistent=true
+Unit=edgesniffer-2cq-multi-archetype-research-v1.service
+
+[Install]
+WantedBy=timers.target

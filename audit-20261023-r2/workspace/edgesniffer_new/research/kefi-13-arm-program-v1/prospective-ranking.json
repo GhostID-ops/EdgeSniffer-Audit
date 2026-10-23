@@ -1,0 +1,154 @@
+{
+  "arms": [
+    {
+      "arm_id": "ARM01_SOL_PUMP_CURVE_2CQ",
+      "evaluator_status": "EXACT",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "Pump.fun bonding curve"
+    },
+    {
+      "arm_id": "ARM02_SOL_PUMP_CPI_2CQ",
+      "evaluator_status": "EXACT",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "Pump.fun CPI launch path"
+    },
+    {
+      "arm_id": "ARM03_ACTIVE_SOL_PUMP_5000MS",
+      "evaluator_status": "EXACT",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "Pump.fun SOL curve/CPI launch paths"
+    },
+    {
+      "arm_id": "ARM04_NON_SOL_PUMP_V2_QUOTE_NATIVE",
+      "evaluator_status": "BLOCKED",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "Pump.fun V2 non-SOL quote market"
+    },
+    {
+      "arm_id": "ARM05_RAYDIUM_LAUNCHLAB",
+      "evaluator_status": "PARTIAL",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "Raydium LaunchLab"
+    },
+    {
+      "arm_id": "ARM06_STONKFUN_LAUNCHLAB",
+      "evaluator_status": "SANDBOX_ONLY",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "Raydium LaunchLab with Stonk.fun platform configuration"
+    },
+    {
+      "arm_id": "ARM07_PUMPSWAP_DIRECT",
+      "evaluator_status": "EXACT",
+      "kill_decision": "PROMOTE_CANDIDATE",
+      "metrics": {
+        "actionable_n": 51,
+        "controls_actionable_n": 50,
+        "controls_n": 52,
+        "controls_outperformed": true,
+        "mae_quote": -1.755969267,
+        "max_drawdown_quote": -0.054434059,
+        "mfe_quote": 2.717320978,
+        "observations_n": 53,
+        "pnl_quote": 0.144208672,
+        "profit_factor": 1.6429821534537834,
+        "roi_mean_bps": 282.76210196078426,
+        "win_rate_pct": 66.66666666666667
+      },
+      "promotion_eligible": true,
+      "status": "PASS_GATE",
+      "venue": "PumpSwap direct pool"
+    },
+    {
+      "arm_id": "ARM08_PUMPSWAP_CPI",
+      "evaluator_status": "PARTIAL",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "PumpSwap pool reached through CPI-linked launch path"
+    },
+    {
+      "arm_id": "ARM09_ROUTER_RAYDIUM_CLMM",
+      "evaluator_status": "EXACT_UNDERLYING_ADAPTER",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "Raydium CLMM underlying a router transaction"
+    },
+    {
+      "arm_id": "ARM10_ROUTER_ORCA_WHIRLPOOL",
+      "evaluator_status": "EXACT_UNDERLYING_ADAPTER",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "Orca Whirlpool underlying a router transaction"
+    },
+    {
+      "arm_id": "ARM11_ROUTER_METEORA_DLMM",
+      "evaluator_status": "EXACT_UNDERLYING_ADAPTER",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "Meteora DLMM underlying a router transaction"
+    },
+    {
+      "arm_id": "ARM12_OTHER_DEX_PROTOCOL_NATIVE",
+      "evaluator_status": "PROTOCOL_ADAPTERS_AVAILABLE_NOT_SELECTED",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "Protocol-specific non-router DEX (resolved per program)"
+    },
+    {
+      "arm_id": "ARM13_AMBIGUOUS_PUMP_FAIL_CLOSED",
+      "evaluator_status": "NOT_APPLICABLE",
+      "kill_decision": "DEFER_NO_DATA",
+      "promotion_eligible": false,
+      "status": "NOT_EVALUATED_NO_FRESH_COHORT",
+      "venue": "Unresolved / no real venue admitted"
+    }
+  ],
+  "fresh_only": true,
+  "generated_at_utc": "2026-10-19T04:03:59.659931+00:00",
+  "min_actionable_n": 50,
+  "promote_only_winner": true,
+  "promotion_rule": "actionable_n >= threshold, positive PnL, PF > 1, and controls_outperformed=true",
+  "ranking": [
+    {
+      "arm_id": "ARM07_PUMPSWAP_DIRECT",
+      "evaluator_status": "EXACT",
+      "kill_decision": "PROMOTE_CANDIDATE",
+      "metrics": {
+        "actionable_n": 51,
+        "controls_actionable_n": 50,
+        "controls_n": 52,
+        "controls_outperformed": true,
+        "mae_quote": -1.755969267,
+        "max_drawdown_quote": -0.054434059,
+        "mfe_quote": 2.717320978,
+        "observations_n": 53,
+        "pnl_quote": 0.144208672,
+        "profit_factor": 1.6429821534537834,
+        "roi_mean_bps": 282.76210196078426,
+        "win_rate_pct": 66.66666666666667
+      },
+      "promotion_eligible": true,
+      "status": "PASS_GATE",
+      "venue": "PumpSwap direct pool"
+    }
+  ],
+  "schema": "KEFI_CANONICAL_13_ARM_PROSPECTIVE_RANKING_V1",
+  "status": "WINNER_CANDIDATE_REQUIRES_FINAL_REVIEW",
+  "winner": "ARM07_PUMPSWAP_DIRECT"
+}

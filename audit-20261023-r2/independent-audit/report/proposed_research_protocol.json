@@ -1,0 +1,126 @@
+{
+  "status": "PROPOSED_RESEARCH_PROTOCOL_NOT_YET_REGISTERED",
+  "live_trading_recommended": false,
+  "primary_entry_delay_ms": 1000,
+  "primary_exit_delay_ms": 1000,
+  "primary_size_sol": 0.1,
+  "capacity_sizes_sol": [
+    0.5,
+    1
+  ],
+  "minimum_output_fraction_of_decision_quote": 0.99,
+  "maximum_average_entry_impact_fraction": 0.05,
+  "additional_cost_stress_bps_per_side": [
+    25,
+    50
+  ],
+  "delay_stress_ms": 2000,
+  "exit_attempts": "Initial full-liquidation intent plus at most one retry after confirmed failure and new available quote; each separately delayed/costed; unknown status retains open inventory",
+  "state_at_landing": "State valid at the specified modeled boundary; prior state may be carried only with proven continuity; never slide silently to next mutation",
+  "teacher_usage": "Hypothesis generation and diagnostics only; no teacher identity or inventory in admission; actual teacher transactions remain in market-state evolution",
+  "primary_early_curve_sampling": "First observed qualifying opportunity after complete warm-up; persistent mint registry; one entry per mint per policy version",
+  "sample_stages": {
+    "engineering_episodes": 100,
+    "development_episodes": 500,
+    "development_min_days": 7,
+    "confirmation_floor_opportunities": 2000,
+    "confirmation_min_days": 14,
+    "confirmation_target": "Increase based on predeclared effect, paired variance, cluster dependence and multiple testing; floor alone is not proof"
+  },
+  "portfolio_scenario": {
+    "initial_capital_sol": 10,
+    "cost_liquidity_reserve_sol": 1,
+    "max_positions": 3,
+    "ordering": "earliest decision then deterministic mint ID",
+    "same_mint_overlap": false,
+    "borrowing": false
+  },
+  "families": [
+    {
+      "id": "T0",
+      "name": "Measurement falsification",
+      "data": "Bundle plus retained raw qualification corpus",
+      "target": "10000 transitions,500 mints plus all supported modes and rare failure/order fixtures",
+      "report": "quote_and_capture_parity_report"
+    },
+    {
+      "id": "T1",
+      "name": "Delayed-edge decomposition",
+      "hold_seconds": 15,
+      "delay_diagnostics_ms": [
+        0,
+        250,
+        500,
+        1000,
+        2000,
+        5000
+      ],
+      "other_hold_diagnostics_seconds": [
+        5,
+        60
+      ],
+      "data": "Retained tapes if available; teacher-conditioned diagnostics explicitly labeled",
+      "report": "delay_decay_all_attempts_report"
+    },
+    {
+      "id": "T2",
+      "name": "Simple independent burst",
+      "lookback_ms": 250,
+      "minimum_distinct_buyers": 2,
+      "consecutive_buys": 2,
+      "signed_flow": "positive",
+      "price_change": "positive",
+      "max_virtual_sol_comparability_arm": 46.171004438,
+      "hold_seconds": 15,
+      "controls_per_opportunity": 3,
+      "report": "burst_native_fixed15"
+    },
+    {
+      "id": "T3",
+      "name": "Persistence",
+      "seed_family": "T2",
+      "confirmation_ms": 2000,
+      "minimum_initial_log_gain_retained": 0.5,
+      "confirmation_signed_flow": "positive",
+      "minimum_new_buyers": 2,
+      "maximum_buyer_buy_sol_share": 0.6,
+      "earliest_entry_after_seed_ms": 3000,
+      "hold_seconds": 30,
+      "report": "persistence_vs_burst"
+    },
+    {
+      "id": "T4",
+      "name": "Sell-shock recovery",
+      "shock_window_ms": 2000,
+      "minimum_sells": 2,
+      "minimum_price_drawdown": 0.05,
+      "confirmation_ms": 1000,
+      "confirmation": "no new low, positive signed flow, at least2 new distinct buyers",
+      "hold_seconds": 30,
+      "report": "sell_shock_recovery_report"
+    },
+    {
+      "id": "T5",
+      "name": "Established PumpSwap slow flow",
+      "clock_ms": 1000,
+      "lookback_ms": 5000,
+      "minimum_buyers": 5,
+      "signed_flow": "positive",
+      "price_change": "positive",
+      "max_1sol_average_impact": 0.005,
+      "hold_seconds": 60,
+      "sampling": "first qualifying per mint perUTCday,no overlapping position;cluster all same-mint episodes",
+      "report": "venue_feasibility_and_slow_flow"
+    },
+    {
+      "id": "T6",
+      "name": "One adaptive exit challenger",
+      "prerequisite": "entry family survives fixed-hold delayed economic gates",
+      "take_profit_net_liquidation_return": 0.05,
+      "stop_loss_net_liquidation_return": -0.05,
+      "max_hold": "original frozen entry-family horizon",
+      "report": "frozen_vs_adaptive_exit_report"
+    }
+  ],
+  "notes": "All thresholds are deliberately fixed audit proposals, not optimized or empirical discoveries. Read the report for controls, complete costs, phase/route requirements, sampling and invalidation. This JSON is not executable configuration and does not register a trial."
+}

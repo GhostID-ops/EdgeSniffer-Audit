@@ -1,0 +1,67 @@
+{
+  "schema": "KEFI_PRE_H3_ACTIONABILITY_EVALUATOR_CONTRACT_V1",
+  "status": "FROZEN_APPROVED_CANONICAL_INPUT_REMEDIATED_NO_BOUNDARY",
+  "boundary_created": false,
+  "cohort_created": false,
+  "pnl_accessed": false,
+  "primary_populations": {
+    "A_T_all": "all admitted pre-entry eligible targets, including zero-control targets",
+    "Delta_A_paired": "only targets with at least one frozen matched control; controls equal-target weighted"
+  },
+  "control_strata": {
+    "same_source_instance_epoch": true,
+    "availability_bucket_ns": 20000000000,
+    "canonical_wsol_non_wsol_base": true,
+    "same_amount_mode": true,
+    "same_fee_tuple": [
+      "lp_fee_bps",
+      "protocol_fee_bps",
+      "coin_creator_bps",
+      "cashback_bps",
+      "buyback_bps"
+    ],
+    "pool_age_buckets_seconds": [30, 120, 300, 900],
+    "liquidity_log10_bucket_width": 0.5,
+    "different_mint": true,
+    "post_entry_fields_used": false,
+    "selection": "ascending SHA-256(frozen-control-seed || target-event-key || control-event-key)"
+  },
+  "bootstrap": {
+    "replicates": 10000,
+    "confidence_interval": "two-sided 95% cluster bootstrap",
+    "cluster": ["source_instance_id", "continuity_epoch", "pool", "20-second availability bucket"],
+    "resampling": "retain every target with its entire frozen control set"
+  },
+  "representation_gates": {
+    "minimum_targets": 300,
+    "minimum_distinct_pools": 40,
+    "minimum_chronological_blocks": 8,
+    "maximum_pool_share": 0.1,
+    "minimum_control_coverage": 0.7
+  },
+  "decision_thresholds": {
+    "minimum_A_T_all_ci95_lower": 0.7,
+    "minimum_Delta_A_paired_ci95_lower": 0.1,
+    "reject_if_A_T_all_ci95_upper_below": 0.7,
+    "reject_if_Delta_A_paired_ci95_upper_at_or_below": 0.0
+  },
+  "outcomes": ["PASS", "REJECT", "INCONCLUSIVE"],
+  "implementation": {
+    "mechanics_script": "scripts/kefi_h3_pumpswap_mechanics_v1.py",
+    "mechanics_sha256": "45a168b7f1e93456b3f23c6c202ed2fd82116708be5eaf882d65863474366924",
+    "assignment_builder_script": "scripts/kefi_pre_h3_assignment_builder_v1.py",
+    "assignment_builder_sha256": "1b78bb03f54a323174ca4c2740197dab2b7e0eba8efa63344c2f389f7e1cc39b",
+    "assignment_builder_contract": "requires frozen fingerprint + boundary receipt + canonical intrinsic-event JSONL + hash-bound canonical-input manifest + verified append-only epoch registry; scientific receipt concatenation is forbidden; emits assignments but cannot evaluate them",
+    "evaluator_script": "scripts/kefi_pre_h3_actionability_evaluator_v1.py",
+    "evaluator_sha256": "b4c47e3b5d4de8cd6c583077cee5d40c2c2e77732fe21c0c20d1433765e30aa8",
+    "canonical_index_script": "scripts/kefi_incremental_event_index_v1.py",
+    "canonical_index_sha256": "e8139b71c585e0058b7083ce63e712faa85e2961bbfa422f9b6c07c9603577ed",
+    "canonical_input_schema": "KEFI_INCREMENTAL_EVENT_INDEX_V2_QUALIFICATION_INPUT_V1",
+    "canonical_input_contract": "canonical-events.jsonl contains each intrinsic (source_frame_sha256,event_index) once; window-exposures.jsonl preserves multiplicity only as provenance; the manifest hashes both and declares the required input policy",
+    "epoch_registry_script": "scripts/kefi_scientific_epoch_registry_v1.py",
+    "epoch_registry_sha256": "bff3ed4d5f7e085d0ae4ec72a743a64cdcfa416c11fc02de0e026e69f86499f1",
+    "qualification_runner_script": "scripts/kefi_pre_h3_qualification_runner_v1.py",
+    "qualification_runner_sha256": "97b32a855d4d493c378828d63b9b779bb492d5317e51ec4b9749c937cd0bd766",
+    "frozen_fingerprint_sha256": "db08899d92f4d69d8c0234cfff9cbd05bd27dfb1365aed88d08b85f88cfc1b4a"
+  }
+}

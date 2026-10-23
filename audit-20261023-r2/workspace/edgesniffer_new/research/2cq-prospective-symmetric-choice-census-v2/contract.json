@@ -1,0 +1,55 @@
+{
+  "schema": "2CQ_PROSPECTIVE_SYMMETRIC_CHOICE_CENSUS_V2_CONTRACT",
+  "cohortStartUtc": "2026-09-11T07:15:24.437413402Z",
+  "derivedFromV1ContractSha256": "aa326867c78eb05d09cd1dc105648455d2a55adb407f750b36ea247af063fb36",
+  "purpose": "Outcome-blind rematerialization of scientifically valid live-observable 2CQ cross-sectional choices, linked to but not gated by a strict forensic Tier-A subset.",
+  "population": {
+    "development": "first 350 V2-online-eligible decisions in canonical chronology from the unchanged prospective start",
+    "validation": "next 150 V2-online-eligible decisions, sealed until one primary policy is frozen",
+    "dedupe": "independent 2CQ entry episode under the existing finalized wallet acquisition semantics",
+    "oldV1OrdinalsMixed": false
+  },
+  "onlineChoice": {
+    "ageMaximumMs": 120000,
+    "supportedEconomicFamilies": [
+      "SOL_PUMP_CURVE",
+      "SOL_PUMP_CPI"
+    ],
+    "teacherAction": "canonical finalized successful independent acquisition observed prospectively by the AllenHark capture-first detector",
+    "boundary": "capture-first AllenHark local receipt time of the exact teacher action",
+    "selectedActionCompactDuplicateRequired": false,
+    "selectedActionCompactDuplicateRationale": "the teacher action establishes the boundary but is not a pre-action feature; duplicate compact-observer presence is retained as forensic evidence",
+    "selectedMintAndControlsUseIdenticalPreActionRules": true,
+    "completeLiveObservableRiskSetRequired": true,
+    "failedTransactionsMutateState": false,
+    "futureFinalityMayValidateOrInvalidateButNotAddFeatures": true
+  },
+  "forensicTierA": {
+    "linkedSubsetOnly": true,
+    "gatesOnlinePopulation": false,
+    "purpose": "audit reconstruction error, realtime missingness, route coverage, and strict evidence completeness"
+  },
+  "reconciliation": {
+    "exactReplayCompleteRequiredBeforeEvidenceTerminalization": true,
+    "generationAware": true,
+    "supersessionRequiredWhenGenerationChanges": true
+  },
+  "routeFamilies": [
+    "SOL_PUMP_CURVE",
+    "SOL_PUMP_CPI",
+    "NON_SOL_PUMP_V2",
+    "PUMPSWAP",
+    "PUMPSWAP_CPI",
+    "ROUTER",
+    "OTHER_DEX",
+    "AMBIGUOUS_PUMP_FAMILY"
+  ],
+  "integrity": {
+    "outcomesPermitted": false,
+    "profitabilityPermitted": false,
+    "submissionsPermitted": false,
+    "validationRowsPermittedBeforeFreeze": false,
+    "modelFittingBeforeDevelopmentN350": false,
+    "validationSealed": true
+  }
+}

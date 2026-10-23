@@ -1,0 +1,132 @@
+{
+  "schema": "EVENT_FLOW_COMPETING_RISK_V1_CONTRACT",
+  "study": "EVENT_FLOW_COMPETING_RISK_V1",
+  "population": {
+    "ordinalStart": 1,
+    "ordinalEnd": 6848,
+    "primaryIndependenceUnit": "mint",
+    "chronologicalBlocks": [[1, 1370], [1371, 2740], [2741, 4110], [4111, 5480], [5481, 6848]],
+    "validationRowsPermitted": 0,
+    "holdoutRowsPermitted": 0
+  },
+  "decisionStates": {
+    "unit": "one state after each atomic successful Pump transaction group containing at least one external buy or sell",
+    "maximumMintAgeMs": 30000,
+    "maximumExternalTransactionGroupsPerMint": 25,
+    "sameTimestampFutureTransactionsPermitted": false,
+    "boundRationale": "Early-lifecycle tractability bound frozen before outcome analysis."
+  },
+  "economics": {
+    "positionSizeSol": 0.5,
+    "entryOffsetMs": 37,
+    "firstSellableOffsetMs": 261,
+    "positiveBoundaryPct": 10.0,
+    "adverseBoundaryPct": -10.0,
+    "maximumHorizonMsFromDecision": 60000,
+    "standardizedDeliveryOverlaySol": 0.001,
+    "baseTransactionFeesBothSides": true,
+    "exactPumpAndCreatorFees": true,
+    "exactOwnEntryAndExitImpact": true,
+    "counterfactualReplay": "STRICT_NO_RESUBMISSION_FAILED_TRANSACTIONS_MUTATE_ZERO_STATE"
+  },
+  "features": [
+    "signed_sequence_recency_last5",
+    "consecutive_pure_buy_groups",
+    "sell_event_count_last5",
+    "time_since_previous_external_group_ms",
+    "median_interarrival_last5_ms",
+    "arrival_rate_change_ratio",
+    "gross_buy_last5_sol",
+    "gross_sell_last5_sol",
+    "net_flow_last5_sol",
+    "signed_flow_acceleration_sol",
+    "latest_signed_size_sol",
+    "median_abs_size_last5_sol",
+    "buy_size_progression_ratio",
+    "new_unique_buyers_last5",
+    "repeat_buyer_fraction_last5",
+    "time_since_last_sell_ms",
+    "token_age_ms",
+    "cumulative_net_external_flow_sol",
+    "current_virtual_sol",
+    "hypothetical_entry_impact_bps"
+  ],
+  "models": {
+    "primary": {
+      "class": "HistGradientBoostingClassifier",
+      "loss": "log_loss",
+      "learningRate": 0.05,
+      "maxIter": 60,
+      "maxLeafNodes": 4,
+      "maxDepth": 2,
+      "minSamplesLeaf": 80,
+      "l2Regularization": 10.0,
+      "maxBins": 64,
+      "earlyStopping": false,
+      "randomState": 20260908
+    },
+    "simpleDiagnostic": "multinomial logistic regression with median imputation and standardization",
+    "hyperparameterSearch": false,
+    "modelTournament": false,
+    "mintTrainingWeight": "1 / number of decision states for that mint in the training fold"
+  },
+  "staticBaselines": {
+    "cumulativeNetFlowOnly": ["cumulative_net_external_flow_sol"],
+    "curveStateOnly": ["current_virtual_sol", "hypothetical_entry_impact_bps"],
+    "tokenAgeOnly": ["token_age_ms"],
+    "combinedStatic": ["cumulative_net_external_flow_sol", "current_virtual_sol", "hypothetical_entry_impact_bps", "token_age_ms"]
+  },
+  "incrementalGroups": {
+    "timing": ["time_since_previous_external_group_ms", "median_interarrival_last5_ms", "arrival_rate_change_ratio"],
+    "acceleration": ["net_flow_last5_sol", "signed_flow_acceleration_sol"],
+    "sequence": ["signed_sequence_recency_last5", "consecutive_pure_buy_groups", "sell_event_count_last5"],
+    "buySizeProgression": ["latest_signed_size_sol", "median_abs_size_last5_sol", "buy_size_progression_ratio"],
+    "recentSelling": ["sell_event_count_last5", "gross_sell_last5_sol", "time_since_last_sell_ms"]
+  },
+  "evaluation": {
+    "method": "expanding-window chronological; block 1 train-only; blocks 2-5 forward scored",
+    "eventMetrics": ["macro_ovr_auc", "profitable_continuation_auc", "multiclass_log_loss", "accuracy"],
+    "mintClusteredMetrics": "same event predictions weighted 1 / states per mint",
+    "clusterBootstrapReplicates": 500,
+    "bootstrapSeed": 20260908,
+    "permutationRepeats": 10,
+    "materialIncrementalSignal": {
+      "primaryModelMintWeightedMacroAucDeltaVsStrongestStaticGte": 0.02,
+      "clusterBootstrapAucDelta95CiLowerGt": 0.0,
+      "mintWeightedLogLossMustImprove": true,
+      "positiveAucDeltaBlocksRequired": 3
+    }
+  },
+  "economicDiagnosticIfMaterial": {
+    "score": "forward probability of PROFITABLE_CONTINUATION",
+    "buckets": [0.05, 0.10, 0.20],
+    "cutoffSource": "corresponding percentile of model scores on that fold's prior chronological training population",
+    "firstQualifyingStatePerMint": true,
+    "actionableGate": {
+      "top10FirstPerMintMinimumN": 50,
+      "PFAbove": 1.0,
+      "expectancySolAbove": 0.0,
+      "PFAfterRemovingBestTwoAbove": 1.0,
+      "positiveChronologicalEvaluationBlocksRequired": 3
+    }
+  },
+  "parents": {
+    "discoveryPrefixSha256": "d85533d6c246161bc5992f1d61cae4273d50d8c67fca8d4b38a65c23ad994fdd",
+    "executionLatencyIdentity": "RANKER_V2_N25_V2_10_ORDINARY_RUST_ATTEMPTS",
+    "exactMath": "existing validated exact Pump integer evaluator and apply_group replay"
+  },
+  "prohibitions": [
+    "fixed_flow_anchor_entry",
+    "old_ranker_inheritance",
+    "threshold_search",
+    "hyperparameter_search",
+    "wallet_reputation",
+    "creator_metadata",
+    "cross_sectional_features",
+    "validation_or_holdout_access",
+    "fresh_data_access",
+    "live_or_shadow_trading",
+    "collector_or_service_changes",
+    "package_installation"
+  ]
+}

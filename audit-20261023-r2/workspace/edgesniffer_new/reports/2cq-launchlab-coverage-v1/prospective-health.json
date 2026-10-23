@@ -1,0 +1,42 @@
+{
+  "arrivalJournalOffset": 0,
+  "arrivalsN": 15843,
+  "causalAdmission": "FAIL_CLOSED_ON_UNRESOLVED_OR_CONTINUITY_GAP",
+  "causalRealtimeExactTransitionN": 3039,
+  "compactJournalOffset": 37572235256,
+  "compactRecordsIndexedThisRun": 124144,
+  "continuityComparisonsN": 2842,
+  "continuityGapN": 0,
+  "errorN": 1,
+  "exactTradeTransactionN": 3040,
+  "exactTransitionMissingRealtimeN": 9,
+  "exactTransitionN": 3048,
+  "finalizedN": 15843,
+  "generatedAtUtc": "2026-09-12T05:04:44.174667Z",
+  "inexactExcludedN": 1,
+  "integrity": {
+    "outcomesRead": 0,
+    "submissions": 0,
+    "validationRowsRead": 0
+  },
+  "lastRun": {
+    "attempted": 322,
+    "errors": 1,
+    "exact": 169,
+    "finalized": 322,
+    "successful": 176
+  },
+  "newArrivalsIngested": 0,
+  "observerRegistryPoolN": 381,
+  "poolN": 206,
+  "programSignatureDiscovery": {
+    "discovered": 321,
+    "withRealtimeArrival": 320,
+    "withoutRealtimeArrival": 1
+  },
+  "realtimeArrivalBackfilledThisRun": 0,
+  "realtimeArrivalStillMissingN": 15,
+  "schema": "LAUNCHLAB_EVIDENCE_LEDGER_V1_HEALTH",
+  "successfulN": 3069,
+  "unresolvedN": 0
+}

@@ -1,0 +1,10 @@
+[Unit]
+Description=Run low-priority kEfi canonical ingestion
+
+[Timer]
+OnBootSec=3m
+OnUnitInactiveSec=5m
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,58 @@
+{
+  "schema": "2CQ_CHOICE_SET_REPRESENTATIVENESS_V1_CONTRACT",
+  "frozenAtUtc": "2026-09-11T06:58:00Z",
+  "population": "2CQ_PROSPECTIVE_TIER_A_ENTRY_CENSUS_V3 development eligible ordinals 1-350",
+  "coveredDefinition": "episodeId present in exhaustive LAUNCHED_120S choice-set repair V2",
+  "missingDefinition": "development episode absent from exhaustive LAUNCHED_120S choice-set repair V2",
+  "permittedInputs": [
+    "development entry-decision tape",
+    "development LAUNCHED_120S choice-set membership",
+    "development omission reasons"
+  ],
+  "forbiddenInputs": [
+    "validation ordinals 351-500",
+    "PnL",
+    "ROI",
+    "future returns",
+    "trade outcomes"
+  ],
+  "chronologicalAssessment": {
+    "blocks": 5,
+    "minimumCoveredSharePerBlock": 0.40,
+    "maximumCoveredShareRange": 0.25
+  },
+  "categoricalAssessment": {
+    "fields": ["route", "acquisitionClass", "sizeTier"],
+    "maximumTotalVariation": 0.20,
+    "maximumSingleLevelShareDifference": 0.20
+  },
+  "structuralNumericAssessment": {
+    "fields": [
+      "eligibleOrdinal",
+      "causalAgeMs",
+      "decisionToTeacherReceiptMs",
+      "naturalFirstBuySol",
+      "earlierExternalControlN"
+    ],
+    "maximumAbsoluteStandardizedMeanDifference": 0.35,
+    "maximumKsDistance": 0.25
+  },
+  "causalFeatureAssessment": {
+    "fields": "all numeric fields in entry-decision-tape.features",
+    "maximumP90AbsoluteStandardizedMeanDifference": 0.25,
+    "maximumAbsoluteStandardizedMeanDifference": 0.50,
+    "maximumP90KsDistance": 0.25,
+    "maximumKsDistance": 0.35
+  },
+  "coverageClassifierAssessment": {
+    "trainingOrdinals": [1, 245],
+    "assessmentOrdinals": [246, 350],
+    "inputs": "structural numeric plus all causal numeric features; no omission reason",
+    "maximumDirectionAgnosticAssessmentAuc": 0.65
+  },
+  "minimumOverallCoveredShare": 0.55,
+  "authorizationRule": "Every frozen gate must pass. Otherwise the historical cross-sectional policy is not eligible for sealed validation.",
+  "outcomesPermitted": false,
+  "validationPermitted": false,
+  "submissionsPermitted": false
+}

@@ -1,0 +1,11 @@
+[Unit]
+Description=Run conservative 2CQ full-meta retention audit hourly
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+RandomizedDelaySec=90
+Unit=edgesniffer-2cq-full-meta-retention-v1.service
+
+[Install]
+WantedBy=timers.target

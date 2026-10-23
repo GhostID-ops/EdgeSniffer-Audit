@@ -1,0 +1,231 @@
+{
+  "contractSha256": "3289abd2d498e8873c91ddcd2af090bc3f3a4df05d0765f488c6e42da4bf09b8",
+  "economicDiagnostic": null,
+  "economicDiagnosticRun": false,
+  "economicallyActionableGatePassed": false,
+  "eventInformation": {
+    "acceleration": {
+      "folds": 4,
+      "meanMacroAucDrop": 0.0008051871628120821,
+      "positiveDropFolds": 3
+    },
+    "buySizeProgression": {
+      "folds": 4,
+      "meanMacroAucDrop": 0.003911420479029981,
+      "positiveDropFolds": 4
+    },
+    "recentSelling": {
+      "folds": 4,
+      "meanMacroAucDrop": 0.0007850662632399863,
+      "positiveDropFolds": 2
+    },
+    "sequence": {
+      "folds": 4,
+      "meanMacroAucDrop": 0.0012015864902686635,
+      "positiveDropFolds": 4
+    },
+    "timing": {
+      "folds": 4,
+      "meanMacroAucDrop": 0.003443509373831838,
+      "positiveDropFolds": 4
+    }
+  },
+  "freshOrdinalsInspected": 0,
+  "holdoutRowsInspected": 0,
+  "incrementalSignal": {
+    "afterRemovingTop1PctStateCountMintsDelta": 0.007712384345509027,
+    "chronological": [
+      {
+        "delta": 0.004249617948680395,
+        "eventAuc": 0.892618097565772,
+        "fold": 2,
+        "ordinalRange": [
+          1371,
+          2740
+        ],
+        "staticAuc": 0.8883684796170916
+      },
+      {
+        "delta": 0.010162914726226657,
+        "eventAuc": 0.8686600073382369,
+        "fold": 3,
+        "ordinalRange": [
+          2741,
+          4110
+        ],
+        "staticAuc": 0.8584970926120102
+      },
+      {
+        "delta": 0.003436910560455697,
+        "eventAuc": 0.8003381865627722,
+        "fold": 4,
+        "ordinalRange": [
+          4111,
+          5480
+        ],
+        "staticAuc": 0.7969012760023165
+      },
+      {
+        "delta": 0.021350750541576646,
+        "eventAuc": 0.8272701005074287,
+        "fold": 5,
+        "ordinalRange": [
+          5481,
+          6848
+        ],
+        "staticAuc": 0.805919349965852
+      }
+    ],
+    "materialGatePassed": false,
+    "mintClusterBootstrapDelta95CI": [
+      0.004618989487087594,
+      0.01038912277704114
+    ],
+    "mintWeightedLogLossImprovement": 0.005813734487897515,
+    "mintWeightedMacroAucDelta": 0.007391481983808568,
+    "positiveDeltaBlocks": 4,
+    "requiredPositiveBlocks": 3,
+    "strongestStaticBaseline": "COMBINED_STATIC_HGB"
+  },
+  "models": {
+    "COMBINED_STATIC_HGB": {
+      "event": {
+        "N": 18263,
+        "accuracy": 0.7222252641953677,
+        "macroOvrAuc": 0.7960611774155478,
+        "multiclassLogLoss": 0.6864594672872516,
+        "profitableContinuationAuc": 0.7814756739896164
+      },
+      "mintClustered": {
+        "N": 18263,
+        "accuracy": 0.8688178343547086,
+        "macroOvrAuc": 0.8440852679186447,
+        "multiclassLogLoss": 0.38009581884107563,
+        "profitableContinuationAuc": 0.8141702082711084
+      }
+    },
+    "CUMULATIVE_NET_FLOW_HGB": {
+      "event": {
+        "N": 18263,
+        "accuracy": 0.6996659913486284,
+        "macroOvrAuc": 0.7643838730729513,
+        "multiclassLogLoss": 0.7611340849586246,
+        "profitableContinuationAuc": 0.7816402054209357
+      },
+      "mintClustered": {
+        "N": 18263,
+        "accuracy": 0.854146863931046,
+        "macroOvrAuc": 0.8063773114303308,
+        "multiclassLogLoss": 0.42716432874875004,
+        "profitableContinuationAuc": 0.8074139111429719
+      }
+    },
+    "CURVE_STATE_HGB": {
+      "event": {
+        "N": 18263,
+        "accuracy": 0.6233368011827192,
+        "macroOvrAuc": 0.7346121353808496,
+        "multiclassLogLoss": 0.7854346906678027,
+        "profitableContinuationAuc": 0.7042543236564364
+      },
+      "mintClustered": {
+        "N": 18263,
+        "accuracy": 0.8234515798093441,
+        "macroOvrAuc": 0.8141869393374658,
+        "multiclassLogLoss": 0.4234093231623223,
+        "profitableContinuationAuc": 0.7675408683669898
+      }
+    },
+    "EVENT_FULL_HGB": {
+      "event": {
+        "N": 18263,
+        "accuracy": 0.7219514866122761,
+        "macroOvrAuc": 0.8049587384357322,
+        "multiclassLogLoss": 0.675619314766239,
+        "profitableContinuationAuc": 0.7919350059522116
+      },
+      "mintClustered": {
+        "N": 18263,
+        "accuracy": 0.8694401082741355,
+        "macroOvrAuc": 0.8514767499024533,
+        "multiclassLogLoss": 0.3742820843531781,
+        "profitableContinuationAuc": 0.8218438691376055
+      }
+    },
+    "EVENT_FULL_LOGISTIC": {
+      "event": {
+        "N": 18263,
+        "accuracy": 0.550511964080381,
+        "macroOvrAuc": 0.7950517068144659,
+        "multiclassLogLoss": 1.0702665058442222,
+        "profitableContinuationAuc": 0.7904019403383011
+      },
+      "mintClustered": {
+        "N": 18263,
+        "accuracy": 0.7065178723249029,
+        "macroOvrAuc": 0.8336680026534613,
+        "multiclassLogLoss": 0.7733560564424833,
+        "profitableContinuationAuc": 0.8112737081764593
+      }
+    },
+    "TOKEN_AGE_HGB": {
+      "event": {
+        "N": 18263,
+        "accuracy": 0.6121119202759678,
+        "macroOvrAuc": 0.6078792651547016,
+        "multiclassLogLoss": 0.9489507263598345,
+        "profitableContinuationAuc": 0.5486001665823348
+      },
+      "mintClustered": {
+        "N": 18263,
+        "accuracy": 0.8393631748650818,
+        "macroOvrAuc": 0.6317754830591982,
+        "multiclassLogLoss": 0.5237327936692117,
+        "profitableContinuationAuc": 0.593658357789942
+      }
+    }
+  },
+  "nextBlockIfJustified": null,
+  "population": {
+    "counterfactualDivergentStateN": 8586,
+    "exactMintN": 3377,
+    "exactStateN": 22910,
+    "forwardScoredMintN": 2700,
+    "forwardScoredStateN": 18263,
+    "outcomes": {
+      "ADVERSE_FLOW": 6847,
+      "FLOW_DECAY_TIMEOUT": 13646,
+      "PROFITABLE_CONTINUATION": 2417
+    }
+  },
+  "schema": "EVENT_FLOW_COMPETING_RISK_V1_REPORT",
+  "scriptSha256": "08bd67bc2dc7c179a2c7f59d9a3089fc1896d3729b2fbd42e9a77d1636079cb3",
+  "uncertainty": {
+    "highest10pct": {
+      "N": 1827,
+      "accuracy": 0.3946360153256705,
+      "medianEntropy": 1.0441913813535308,
+      "medianMintAgeMs": 8290,
+      "outcomes": {
+        "ADVERSE_FLOW": 538,
+        "FLOW_DECAY_TIMEOUT": 596,
+        "PROFITABLE_CONTINUATION": 693
+      },
+      "uniqueMintN": 255
+    },
+    "lowest10pct": {
+      "N": 1827,
+      "accuracy": 0.9753694581280788,
+      "medianEntropy": 0.09108648492427102,
+      "medianMintAgeMs": 676,
+      "outcomes": {
+        "ADVERSE_FLOW": 4,
+        "FLOW_DECAY_TIMEOUT": 1782,
+        "PROFITABLE_CONTINUATION": 41
+      },
+      "uniqueMintN": 1042
+    }
+  },
+  "validationRowsInspected": 0,
+  "verdict": "EVENT_FLOW_HAS_NO_USEFUL_INCREMENTAL_SIGNAL"
+}
